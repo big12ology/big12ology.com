@@ -15,10 +15,26 @@ import os
 import sys
 import urllib.parse
 import urllib.request
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent.parent
 API = "https://api.collegefootballdata.com/games"
+
+
+def local_date(start: str, tz: ZoneInfo) -> str:
+    """CFBD reports kickoff in UTC; convert to the venue's local calendar date
+    (an evening game otherwise lands on the next day)."""
+    if not start:
+        return ""
+    try:
+        dt = datetime.fromisoformat(start.replace("Z", "+00:00"))
+    except ValueError:
+        return start[:10]
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=ZoneInfo("UTC"))
+    return dt.astimezone(tz).date().isoformat()
 
 
 def fetch_games(year: int, api_key: str) -> list:
@@ -55,9 +71,9 @@ def update_seasons_index(year: int) -> None:
 def main(year: int) -> None:
     api_key = load_api_key()
 
-    teams = {
-        t["team"] for t in json.loads((ROOT / "data" / "teams.json").read_text())["teams"]
-    }
+    teams_data = json.loads((ROOT / "data" / "teams.json").read_text())["teams"]
+    teams = {t["team"] for t in teams_data}
+    timezones = {t["team"]: ZoneInfo(t["timezone"]) for t in teams_data}
     overrides_path = ROOT / "data" / "venue-overrides.json"
     venue_overrides = (
         json.loads(overrides_path.read_text()).get(str(year), {})
@@ -96,7 +112,7 @@ def main(year: int) -> None:
             "team": home,
             "week": g.get("week"),
             "opponent": g.get("awayTeam") or g.get("away_team"),
-            "date": (g.get("startDate") or g.get("start_date") or "")[:10],
+            "date": local_date(g.get("startDate") or g.get("start_date"), timezones[home]),
             "attendance": g.get("attendance"),
         }
         if venue in alt:

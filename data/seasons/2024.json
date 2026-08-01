@@ -23,21 +23,21 @@
       "team": "Arizona",
       "week": 1,
       "opponent": "New Mexico",
-      "date": "2024-09-01",
+      "date": "2024-08-31",
       "attendance": 44748
     },
     {
       "team": "Arizona State",
       "week": 1,
       "opponent": "Wyoming",
-      "date": "2024-09-01",
+      "date": "2024-08-31",
       "attendance": 48108
     },
     {
       "team": "BYU",
       "week": 1,
       "opponent": "Southern Illinois",
-      "date": "2024-09-01",
+      "date": "2024-08-31",
       "attendance": 63712
     },
     {
@@ -58,7 +58,7 @@
       "team": "Colorado",
       "week": 1,
       "opponent": "North Dakota State",
-      "date": "2024-08-30",
+      "date": "2024-08-29",
       "attendance": 49438
     },
     {
@@ -79,7 +79,7 @@
       "team": "Kansas",
       "week": 1,
       "opponent": "Lindenwood",
-      "date": "2024-08-30",
+      "date": "2024-08-29",
       "attendance": 20829,
       "venue": "Children's Mercy Park",
       "capacity": 18467
@@ -117,7 +117,7 @@
       "team": "Utah",
       "week": 1,
       "opponent": "Southern Utah",
-      "date": "2024-08-30",
+      "date": "2024-08-29",
       "attendance": 52210
     },
     {
@@ -131,14 +131,14 @@
       "team": "Arizona",
       "week": 2,
       "opponent": "Northern Arizona",
-      "date": "2024-09-08",
+      "date": "2024-09-07",
       "attendance": 47746
     },
     {
       "team": "Arizona State",
       "week": 2,
       "opponent": "Mississippi State",
-      "date": "2024-09-08",
+      "date": "2024-09-07",
       "attendance": 45504
     },
     {
@@ -159,7 +159,7 @@
       "team": "TCU",
       "week": 2,
       "opponent": "Long Island University",
-      "date": "2024-09-08",
+      "date": "2024-09-07",
       "attendance": 44063
     },
     {
@@ -194,7 +194,7 @@
       "team": "Houston",
       "week": 3,
       "opponent": "Rice",
-      "date": "2024-09-15",
+      "date": "2024-09-14",
       "attendance": 28146
     },
     {
@@ -210,7 +210,7 @@
       "team": "Kansas State",
       "week": 3,
       "opponent": "Arizona",
-      "date": "2024-09-14",
+      "date": "2024-09-13",
       "attendance": 51290
     },
     {
@@ -231,7 +231,7 @@
       "team": "BYU",
       "week": 4,
       "opponent": "Kansas State",
-      "date": "2024-09-22",
+      "date": "2024-09-21",
       "attendance": 64201
     },
     {
@@ -245,7 +245,7 @@
       "team": "Colorado",
       "week": 4,
       "opponent": "Baylor",
-      "date": "2024-09-22",
+      "date": "2024-09-21",
       "attendance": 52794
     },
     {
@@ -311,7 +311,7 @@
       "team": "Texas Tech",
       "week": 5,
       "opponent": "Cincinnati",
-      "date": "2024-09-29",
+      "date": "2024-09-28",
       "attendance": 60229
     },
     {
@@ -325,21 +325,21 @@
       "team": "Utah",
       "week": 5,
       "opponent": "Arizona",
-      "date": "2024-09-29",
+      "date": "2024-09-28",
       "attendance": 52898
     },
     {
       "team": "Arizona",
       "week": 6,
       "opponent": "Texas Tech",
-      "date": "2024-10-06",
+      "date": "2024-10-05",
       "attendance": 45773
     },
     {
       "team": "Arizona State",
       "week": 6,
       "opponent": "Kansas",
-      "date": "2024-10-06",
+      "date": "2024-10-05",
       "attendance": 54639
     },
     {
@@ -367,7 +367,7 @@
       "team": "Arizona State",
       "week": 7,
       "opponent": "Utah",
-      "date": "2024-10-12",
+      "date": "2024-10-11",
       "attendance": 45310
     },
     {
@@ -381,7 +381,7 @@
       "team": "Colorado",
       "week": 7,
       "opponent": "Kansas State",
-      "date": "2024-10-13",
+      "date": "2024-10-12",
       "attendance": 53972
     },
     {
@@ -395,7 +395,7 @@
       "team": "West Virginia",
       "week": 7,
       "opponent": "Iowa State",
-      "date": "2024-10-13",
+      "date": "2024-10-12",
       "attendance": 55202
     },
     {
@@ -409,7 +409,7 @@
       "team": "BYU",
       "week": 8,
       "opponent": "Oklahoma State",
-      "date": "2024-10-19",
+      "date": "2024-10-18",
       "attendance": 62841
     },
     {
@@ -446,7 +446,7 @@
       "team": "Utah",
       "week": 8,
       "opponent": "TCU",
-      "date": "2024-10-20",
+      "date": "2024-10-19",
       "attendance": 53299
     },
     {
@@ -474,7 +474,7 @@
       "team": "Colorado",
       "week": 9,
       "opponent": "Cincinnati",
-      "date": "2024-10-27",
+      "date": "2024-10-26",
       "attendance": 53202
     },
     {
@@ -488,7 +488,7 @@
       "team": "Kansas State",
       "week": 9,
       "opponent": "Kansas",
-      "date": "2024-10-27",
+      "date": "2024-10-26",
       "attendance": 52074
     },
     {
@@ -509,7 +509,7 @@
       "team": "Baylor",
       "week": 10,
       "opponent": "TCU",
-      "date": "2024-11-03",
+      "date": "2024-11-02",
       "attendance": 44171
     },
     {
@@ -544,7 +544,7 @@
       "team": "Arizona State",
       "week": 11,
       "opponent": "UCF",
-      "date": "2024-11-10",
+      "date": "2024-11-09",
       "attendance": 44940
     },
     {
@@ -567,7 +567,7 @@
       "team": "TCU",
       "week": 11,
       "opponent": "Oklahoma State",
-      "date": "2024-11-10",
+      "date": "2024-11-09",
       "attendance": 45348
     },
     {
@@ -581,21 +581,21 @@
       "team": "Utah",
       "week": 11,
       "opponent": "BYU",
-      "date": "2024-11-10",
+      "date": "2024-11-09",
       "attendance": 54383
     },
     {
       "team": "Arizona",
       "week": 12,
       "opponent": "Houston",
-      "date": "2024-11-16",
+      "date": "2024-11-15",
       "attendance": 38538
     },
     {
       "team": "BYU",
       "week": 12,
       "opponent": "Kansas",
-      "date": "2024-11-17",
+      "date": "2024-11-16",
       "attendance": 62704
     },
     {
@@ -609,14 +609,14 @@
       "team": "Iowa State",
       "week": 12,
       "opponent": "Cincinnati",
-      "date": "2024-11-17",
+      "date": "2024-11-16",
       "attendance": 52881
     },
     {
       "team": "Kansas State",
       "week": 12,
       "opponent": "Arizona State",
-      "date": "2024-11-17",
+      "date": "2024-11-16",
       "attendance": 51880
     },
     {
@@ -637,7 +637,7 @@
       "team": "Houston",
       "week": 13,
       "opponent": "Baylor",
-      "date": "2024-11-24",
+      "date": "2024-11-23",
       "attendance": 34166
     },
     {
@@ -653,7 +653,7 @@
       "team": "Kansas State",
       "week": 13,
       "opponent": "Cincinnati",
-      "date": "2024-11-24",
+      "date": "2024-11-23",
       "attendance": 50988
     },
     {
@@ -674,7 +674,7 @@
       "team": "Utah",
       "week": 13,
       "opponent": "Iowa State",
-      "date": "2024-11-24",
+      "date": "2024-11-23",
       "attendance": 52152
     },
     {
@@ -695,7 +695,7 @@
       "team": "BYU",
       "week": 14,
       "opponent": "Houston",
-      "date": "2024-12-01",
+      "date": "2024-11-30",
       "attendance": 59213
     },
     {
@@ -723,7 +723,7 @@
       "team": "Iowa State",
       "week": 14,
       "opponent": "Kansas State",
-      "date": "2024-12-01",
+      "date": "2024-11-30",
       "attendance": 56228
     },
     {
@@ -737,7 +737,7 @@
       "team": "UCF",
       "week": 14,
       "opponent": "Utah",
-      "date": "2024-11-30",
+      "date": "2024-11-29",
       "attendance": 40747
     }
   ]

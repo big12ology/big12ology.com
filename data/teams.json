@@ -4,25 +4,171 @@
     "SOURCING POLICY: for the current season, capacity always comes from the university/athletic department. For past seasons, Wikipedia or newspapers of record are acceptable when no official figure is findable.",
     "capacity and stadium are keyed by year and resolved to the most recent entry at or before the season being viewed (so 2026 inherits 2025 values until updated).",
     "Capacities verified 2026-08 against official athletic-department sources; where the athletic department publishes a figure it overrides Wikipedia. Texas Tech 60,229 (texastech.com sellout announcements match exactly), TCU 46,000 (gofrogs.com), Cincinnati 38,088 ('just over 38,000', gobearcats.com; precise figure per stadium records), UCF 44,206 (ucfknights.com stadium facts), Houston 40,000 (uhcougars.com), Oklahoma State 52,168 for 2025 (okstate.com; seating-bowl upgrade completed for the 2024 season).",
-    "Kansas 2024 capacity is null: all six designated home games were played at Kansas City venues during the Memorial Stadium rebuild — per-game venue capacities live in venue-overrides.json. Phase Two of the rebuild has no announced capacity change, so 2025's 41,525 carries forward.",
+    "Kansas 2024 capacity is null: all six designated home games were played at Kansas City venues during the Memorial Stadium rebuild \u2014 per-game venue capacities live in venue-overrides.json. Phase Two of the rebuild has no announced capacity change, so 2025's 41,525 carries forward.",
     "Texas Tech's stadium is renamed Galaxy Stadium beginning with the 2026 season (15-year naming-rights deal, texastech.com)."
   ],
   "teams": [
-    { "team": "Arizona", "stadium": { "2024": "Arizona Stadium" }, "capacity": { "2024": 50782 } },
-    { "team": "Arizona State", "stadium": { "2024": "Mountain America Stadium" }, "capacity": { "2024": 53599 } },
-    { "team": "BYU", "stadium": { "2024": "LaVell Edwards Stadium" }, "capacity": { "2024": 63470 } },
-    { "team": "Baylor", "stadium": { "2024": "McLane Stadium" }, "capacity": { "2024": 45140 } },
-    { "team": "Cincinnati", "stadium": { "2024": "Nippert Stadium" }, "capacity": { "2024": 38088 } },
-    { "team": "Colorado", "stadium": { "2024": "Folsom Field" }, "capacity": { "2024": 50183 } },
-    { "team": "Houston", "stadium": { "2024": "TDECU Stadium" }, "capacity": { "2024": 40000 } },
-    { "team": "Iowa State", "stadium": { "2024": "Jack Trice Stadium" }, "capacity": { "2024": 61500 } },
-    { "team": "Kansas", "stadium": { "2024": "David Booth Kansas Memorial Stadium" }, "capacity": { "2024": null, "2025": 41525 } },
-    { "team": "Kansas State", "stadium": { "2024": "Bill Snyder Family Football Stadium" }, "capacity": { "2024": 50000 } },
-    { "team": "Oklahoma State", "stadium": { "2024": "Boone Pickens Stadium" }, "capacity": { "2024": 52168 } },
-    { "team": "TCU", "stadium": { "2024": "Amon G. Carter Stadium" }, "capacity": { "2024": 46000 } },
-    { "team": "Texas Tech", "stadium": { "2024": "Jones AT&T Stadium", "2026": "Galaxy Stadium" }, "capacity": { "2024": 60229 } },
-    { "team": "UCF", "stadium": { "2024": "FBC Mortgage Stadium" }, "capacity": { "2024": 44206 } },
-    { "team": "Utah", "stadium": { "2024": "Rice-Eccles Stadium" }, "capacity": { "2024": 51444 } },
-    { "team": "West Virginia", "stadium": { "2024": "Milan Puskar Stadium" }, "capacity": { "2024": 60000 } }
+    {
+      "team": "Arizona",
+      "stadium": {
+        "2024": "Arizona Stadium"
+      },
+      "capacity": {
+        "2024": 50782
+      },
+      "timezone": "America/Phoenix"
+    },
+    {
+      "team": "Arizona State",
+      "stadium": {
+        "2024": "Mountain America Stadium"
+      },
+      "capacity": {
+        "2024": 53599
+      },
+      "timezone": "America/Phoenix"
+    },
+    {
+      "team": "BYU",
+      "stadium": {
+        "2024": "LaVell Edwards Stadium"
+      },
+      "capacity": {
+        "2024": 63470
+      },
+      "timezone": "America/Denver"
+    },
+    {
+      "team": "Baylor",
+      "stadium": {
+        "2024": "McLane Stadium"
+      },
+      "capacity": {
+        "2024": 45140
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "team": "Cincinnati",
+      "stadium": {
+        "2024": "Nippert Stadium"
+      },
+      "capacity": {
+        "2024": 38088
+      },
+      "timezone": "America/New_York"
+    },
+    {
+      "team": "Colorado",
+      "stadium": {
+        "2024": "Folsom Field"
+      },
+      "capacity": {
+        "2024": 50183
+      },
+      "timezone": "America/Denver"
+    },
+    {
+      "team": "Houston",
+      "stadium": {
+        "2024": "TDECU Stadium"
+      },
+      "capacity": {
+        "2024": 40000
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "team": "Iowa State",
+      "stadium": {
+        "2024": "Jack Trice Stadium"
+      },
+      "capacity": {
+        "2024": 61500
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "team": "Kansas",
+      "stadium": {
+        "2024": "David Booth Kansas Memorial Stadium"
+      },
+      "capacity": {
+        "2024": null,
+        "2025": 41525
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "team": "Kansas State",
+      "stadium": {
+        "2024": "Bill Snyder Family Football Stadium"
+      },
+      "capacity": {
+        "2024": 50000
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "team": "Oklahoma State",
+      "stadium": {
+        "2024": "Boone Pickens Stadium"
+      },
+      "capacity": {
+        "2024": 52168
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "team": "TCU",
+      "stadium": {
+        "2024": "Amon G. Carter Stadium"
+      },
+      "capacity": {
+        "2024": 46000
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "team": "Texas Tech",
+      "stadium": {
+        "2024": "Jones AT&T Stadium",
+        "2026": "Galaxy Stadium"
+      },
+      "capacity": {
+        "2024": 60229
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "team": "UCF",
+      "stadium": {
+        "2024": "FBC Mortgage Stadium"
+      },
+      "capacity": {
+        "2024": 44206
+      },
+      "timezone": "America/New_York"
+    },
+    {
+      "team": "Utah",
+      "stadium": {
+        "2024": "Rice-Eccles Stadium"
+      },
+      "capacity": {
+        "2024": 51444
+      },
+      "timezone": "America/Denver"
+    },
+    {
+      "team": "West Virginia",
+      "stadium": {
+        "2024": "Milan Puskar Stadium"
+      },
+      "capacity": {
+        "2024": 60000
+      },
+      "timezone": "America/New_York"
+    }
   ]
 }
