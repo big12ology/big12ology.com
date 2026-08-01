@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Big 12 Attendance Tracker</title>
+  <link rel="stylesheet" href="site/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Big 12 Attendance Tracker</h1>
+    <div class="controls">
+      <label for="season">Season</label>
+      <select id="season"></select>
+    </div>
+  </header>
+
+  <section id="summary" class="cards"></section>
+
+  <main>
+    <div class="table-wrap">
+      <table id="attendance-table"></table>
+    </div>
+    <p id="empty-note" class="note" hidden></p>
+  </main>
+
+  <footer>
+    <p id="source-note" class="note"></p>
+  </footer>
+
+  <script type="module" src="site/app.js"></script>
+</body>
+</html>

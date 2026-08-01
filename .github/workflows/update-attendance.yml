@@ -1,0 +1,43 @@
+name: Update attendance
+
+on:
+  schedule:
+    # Sundays 14:00 UTC (7/8am Arizona), late Aug through mid-Dec — after
+    # Saturday games, when CFBD has attendance posted.
+    - cron: "0 14 * 8-12 0"
+  workflow_dispatch:
+    inputs:
+      year:
+        description: "Season year"
+        default: "2026"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch attendance from CFBD
+        env:
+          CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+        run: python3 scripts/fetch_attendance.py "${{ inputs.year || '2026' }}"
+
+      - name: Rebuild snapshots
+        run: node scripts/build_snapshots.mjs "${{ inputs.year || '2026' }}"
+
+      - name: Run parity tests
+        run: node --test tests/parity.test.mjs
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "attendance-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No new attendance data."
+          else
+            git commit -m "Attendance update: $(date -u +%Y-%m-%d)"
+            git push
+          fi

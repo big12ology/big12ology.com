@@ -1,0 +1,182 @@
+{
+  "teams": {
+    "Kansas State": {
+      "games": 6,
+      "total": 310639,
+      "pct": 1.035463333
+    },
+    "Arizona State": {
+      "games": 7,
+      "total": 381109,
+      "pct": 1.015767885
+    },
+    "Colorado": {
+      "games": 7,
+      "total": 353284,
+      "pct": 1.005701988
+    },
+    "BYU": {
+      "games": 6,
+      "total": 382733,
+      "pct": 1.005023371
+    },
+    "Utah": {
+      "games": 6,
+      "total": 310208,
+      "pct": 1.005002203
+    },
+    "Texas Tech": {
+      "games": 7,
+      "total": 420999,
+      "pct": 0.9948508665
+    },
+    "Iowa State": {
+      "games": 6,
+      "total": 365174,
+      "pct": 0.9896314363
+    },
+    "UCF": {
+      "games": 7,
+      "total": 303861,
+      "pct": 0.9582286105
+    },
+    "Kansas": {
+      "games": 7,
+      "total": 276346,
+      "pct": 0.9507043949
+    },
+    "TCU": {
+      "games": 6,
+      "total": 259911,
+      "pct": 0.9417065217
+    },
+    "West Virginia": {
+      "games": 6,
+      "total": 327036,
+      "pct": 0.9084333333
+    },
+    "Cincinnati": {
+      "games": 7,
+      "total": 252364,
+      "pct": 0.9013
+    },
+    "Baylor": {
+      "games": 7,
+      "total": 276126,
+      "pct": 0.873871764
+    },
+    "Oklahoma State": {
+      "games": 7,
+      "total": 312649,
+      "pct": 0.8293406899
+    },
+    "Arizona": {
+      "games": 7,
+      "total": 292471,
+      "pct": 0.8227634089
+    },
+    "Houston": {
+      "games": 6,
+      "total": 193291,
+      "pct": 0.8053791667
+    }
+  },
+  "weekly": [
+    {
+      "week": 0,
+      "attendance": 41525,
+      "capacity": 41525,
+      "games": 1
+    },
+    {
+      "week": 1,
+      "attendance": 647657,
+      "capacity": 675809,
+      "games": 13
+    },
+    {
+      "week": 2,
+      "attendance": 460416,
+      "capacity": 473134,
+      "games": 9
+    },
+    {
+      "week": 3,
+      "attendance": 422457,
+      "capacity": 449830,
+      "games": 9
+    },
+    {
+      "week": 4,
+      "attendance": 320190,
+      "capacity": 333448,
+      "games": 7
+    },
+    {
+      "week": 5,
+      "attendance": 316042,
+      "capacity": 316807,
+      "games": 6
+    },
+    {
+      "week": 6,
+      "attendance": 307400,
+      "capacity": 330693,
+      "games": 7
+    },
+    {
+      "week": 7,
+      "attendance": 344370,
+      "capacity": 356718,
+      "games": 7
+    },
+    {
+      "week": 8,
+      "attendance": 281720,
+      "capacity": 302225,
+      "games": 6
+    },
+    {
+      "week": 9,
+      "attendance": 360972,
+      "capacity": 368522,
+      "games": 7
+    },
+    {
+      "week": 10,
+      "attendance": 317776,
+      "capacity": 339792,
+      "games": 7
+    },
+    {
+      "week": 11,
+      "attendance": 245257,
+      "capacity": 262537,
+      "games": 5
+    },
+    {
+      "week": 12,
+      "attendance": 300402,
+      "capacity": 316518,
+      "games": 6
+    },
+    {
+      "week": 13,
+      "attendance": 303875,
+      "capacity": 339210,
+      "games": 7
+    },
+    {
+      "week": 14,
+      "attendance": 348142,
+      "capacity": 413589,
+      "games": 8
+    }
+  ],
+  "season": {
+    "attendance": 5018201,
+    "capacity": 5320357,
+    "games": 105,
+    "pct": 0.9432075705
+  }
+}

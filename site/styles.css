@@ -1,0 +1,101 @@
+:root {
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --text: #1a1d21;
+  --muted: #6b7280;
+  --border: #e3e4e8;
+  --accent: #8a1538; /* deep cardinal, nod to the conference */
+  --full: #0d7a3f;
+  --low: #b45309;
+  font-size: 15px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16181d;
+    --surface: #1e2127;
+    --text: #e8eaed;
+    --muted: #9aa0a6;
+    --border: #2e323a;
+    --full: #4ade80;
+    --low: #fbbf24;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.45;
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding: 1.25rem 1.5rem 0.5rem;
+}
+h1 { font-size: 1.35rem; margin: 0; letter-spacing: -0.01em; }
+.controls { display: flex; align-items: center; gap: 0.5rem; color: var(--muted); }
+select {
+  font: inherit;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  min-width: 9.5rem;
+}
+.card .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.card .value { font-size: 1.3rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+
+main { padding: 0.25rem 1.5rem 1rem; }
+.table-wrap {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+table { border-collapse: collapse; width: max-content; min-width: 100%; }
+th, td {
+  padding: 0.42rem 0.65rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.86rem;
+}
+th { color: var(--muted); font-weight: 600; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.04em; }
+th.team, td.team { text-align: left; position: sticky; left: 0; background: var(--surface); z-index: 1; }
+td.team { font-weight: 600; }
+td.team .stadium { display: block; font-weight: 400; font-size: 0.72rem; color: var(--muted); }
+tr:hover td { background: color-mix(in srgb, var(--accent) 4%, var(--surface)); }
+
+td .pct { display: block; font-size: 0.72rem; color: var(--muted); }
+td .pct.full { color: var(--full); }
+td .pct.low { color: var(--low); }
+td.season-total { font-weight: 650; border-left: 1px solid var(--border); }
+
+tfoot td { font-weight: 600; border-top: 2px solid var(--border); }
+tfoot td.team { font-weight: 650; }
+tfoot .sub td { font-weight: 400; color: var(--muted); border-top: none; font-size: 0.78rem; }
+
+.note { color: var(--muted); font-size: 0.8rem; padding: 0 1.5rem; }
+footer { padding-bottom: 1.5rem; }
