@@ -9,12 +9,13 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-import { seasonSummary } from "../site/stats.js";
+import { seasonSummary, teamsForSeason } from "../site/stats.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const year = process.argv[2] ?? "2025";
 
-const { teams } = JSON.parse(readFileSync(join(ROOT, "data/teams.json")));
+const teamsData = JSON.parse(readFileSync(join(ROOT, "data/teams.json")));
+const teams = teamsForSeason(teamsData, Number(year));
 const season = JSON.parse(readFileSync(join(ROOT, `data/seasons/${year}.json`)));
 const reported = season.games.filter((g) => g.attendance != null);
 const numWeeks = season.weekLabels.length;

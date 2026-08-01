@@ -1,0 +1,12 @@
+{
+  "2024": {
+    "Kansas": {
+      "reason": "David Booth Kansas Memorial Stadium rebuild — all six designated home games played in Kansas City; CFBD flags them neutral-site",
+      "source": "kuathletics.com (2024-01-30 schedule announcement); capacities: Children's Mercy Park 18,467 seats (sportingkc.com; ~2,000 additional standing room explains >100% figures), GEHA Field at Arrowhead Stadium 76,416",
+      "venues": {
+        "Children's Mercy Park": 18467,
+        "GEHA Field at Arrowhead Stadium": 76416
+      }
+    }
+  }
+}

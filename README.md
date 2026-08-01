@@ -8,12 +8,20 @@ the repo as-is, and a scheduled GitHub Action updates the data files weekly.
 
 - `index.html`, `site/` — the site. `site/stats.js` is the single source of
   truth for all attendance math (used by the browser and the snapshot builder).
-- `data/teams.json` — teams, stadiums, capacities. **Capacity is assumed
-  constant within a season**; values imported from the 2025 sheet — verify
-  before each season.
-- `data/seasons/<year>.json` — one game per Big 12 home game (non-neutral).
+- `data/teams.json` — teams, stadiums, capacities, **keyed by year** (resolved
+  to the most recent entry at or before the season viewed). Sourcing policy:
+  current season capacity always comes from the university/athletic
+  department; past seasons may fall back to Wikipedia or newspapers of record.
+  Sources are cited in the file's notes.
+- `data/venue-overrides.json` — designated home games at alternate venues
+  (CFBD flags these neutral-site), with per-venue capacities. E.g. Kansas 2024
+  in Kansas City during the Memorial Stadium rebuild.
+- `data/manual-attendance.json` — hand-verified figures for games the API
+  lacks, each citing an official box score. Merged in by the fetch script.
+- `data/seasons/<year>.json` — one game per Big 12 home game.
   `attendance: null` means unplayed/unreported; such games are excluded from
-  every total and game count.
+  every total and game count. Games at alternate venues carry their own
+  `venue` and `capacity`; percent-full always divides by the per-game capacity.
 - `data/snapshots/<year>/week-NN.json` — cumulative standings through each week.
 - `tests/parity.test.mjs` — asserts the stats module reproduces every number
   from the audited 2025 spreadsheet (fixture = the sheet's own computed values).

@@ -6,6 +6,7 @@
       "team": "Kansas State",
       "stadium": "Bill Snyder Family Football Stadium",
       "capacity": 50000,
+      "multiVenue": false,
       "games": 4,
       "weeks": [
         {
@@ -36,6 +37,7 @@
       "team": "Colorado",
       "stadium": "Folsom Field",
       "capacity": 50183,
+      "multiVenue": false,
       "games": 5,
       "weeks": [
         {
@@ -71,6 +73,7 @@
       "team": "Arizona State",
       "stadium": "Mountain America Stadium",
       "capacity": 53599,
+      "multiVenue": false,
       "games": 5,
       "weeks": [
         {
@@ -106,6 +109,7 @@
       "team": "BYU",
       "stadium": "LaVell Edwards Stadium",
       "capacity": 63470,
+      "multiVenue": false,
       "games": 4,
       "weeks": [
         {
@@ -136,6 +140,7 @@
       "team": "Utah",
       "stadium": "Rice-Eccles Stadium",
       "capacity": 51444,
+      "multiVenue": false,
       "games": 4,
       "weeks": [
         {
@@ -166,6 +171,7 @@
       "team": "Iowa State",
       "stadium": "Jack Trice Stadium",
       "capacity": 61500,
+      "multiVenue": false,
       "games": 4,
       "weeks": [
         {
@@ -195,42 +201,80 @@
     {
       "team": "Texas Tech",
       "stadium": "Jones AT&T Stadium",
-      "capacity": 60454,
+      "capacity": 60229,
+      "multiVenue": false,
       "games": 5,
       "weeks": [
         {
           "week": 1,
           "attendance": 60229,
-          "pct": 0.9962781619082277
+          "pct": 1
         },
         {
           "week": 2,
           "attendance": 60229,
-          "pct": 0.9962781619082277
+          "pct": 1
         },
         {
           "week": 3,
           "attendance": 60229,
-          "pct": 0.9962781619082277
+          "pct": 1
         },
         {
           "week": 7,
           "attendance": 60229,
-          "pct": 0.9962781619082277
+          "pct": 1
         },
         {
           "week": 9,
           "attendance": 59625,
-          "pct": 0.986287094319648
+          "pct": 0.9899716083614206
         }
       ],
       "total": 300541,
-      "pct": 0.9942799483905118
+      "pct": 0.9979943216722841
+    },
+    {
+      "team": "UCF",
+      "stadium": "FBC Mortgage Stadium",
+      "capacity": 44206,
+      "multiVenue": false,
+      "games": 5,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 43043,
+          "pct": 0.973691354114826
+        },
+        {
+          "week": 2,
+          "attendance": 44009,
+          "pct": 0.9955435913676877
+        },
+        {
+          "week": 4,
+          "attendance": 44206,
+          "pct": 1
+        },
+        {
+          "week": 6,
+          "attendance": 43229,
+          "pct": 0.9778989277473646
+        },
+        {
+          "week": 8,
+          "attendance": 43445,
+          "pct": 0.9827851422883771
+        }
+      ],
+      "total": 217932,
+      "pct": 0.9859838031036511
     },
     {
       "team": "Kansas",
       "stadium": "David Booth Kansas Memorial Stadium",
       "capacity": 41525,
+      "multiVenue": false,
       "games": 5,
       "weeks": [
         {
@@ -266,6 +310,7 @@
       "team": "TCU",
       "stadium": "Amon G. Carter Stadium",
       "capacity": 46000,
+      "multiVenue": false,
       "games": 4,
       "weeks": [
         {
@@ -293,44 +338,10 @@
       "pct": 0.9698641304347826
     },
     {
-      "team": "UCF",
-      "stadium": "FBC Mortgage Stadium",
-      "capacity": 45301,
-      "games": 5,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 43043,
-          "pct": 0.9501556257036269
-        },
-        {
-          "week": 2,
-          "attendance": 44009,
-          "pct": 0.971479658285689
-        },
-        {
-          "week": 4,
-          "attendance": 44206,
-          "pct": 0.9758283481600848
-        },
-        {
-          "week": 6,
-          "attendance": 43229,
-          "pct": 0.9542614953312288
-        },
-        {
-          "week": 8,
-          "attendance": 43445,
-          "pct": 0.959029601995541
-        }
-      ],
-      "total": 217932,
-      "pct": 0.9621509458952341
-    },
-    {
       "team": "West Virginia",
       "stadium": "Milan Puskar Stadium",
       "capacity": 60000,
+      "multiVenue": false,
       "games": 4,
       "weeks": [
         {
@@ -358,9 +369,46 @@
       "pct": 0.9469833333333333
     },
     {
+      "team": "Cincinnati",
+      "stadium": "Nippert Stadium",
+      "capacity": 38088,
+      "multiVenue": false,
+      "games": 5,
+      "weeks": [
+        {
+          "week": 2,
+          "attendance": 35421,
+          "pct": 0.9299779458097038
+        },
+        {
+          "week": 3,
+          "attendance": 30014,
+          "pct": 0.7880172232724217
+        },
+        {
+          "week": 6,
+          "attendance": 38007,
+          "pct": 0.9978733459357277
+        },
+        {
+          "week": 7,
+          "attendance": 35782,
+          "pct": 0.9394559966393615
+        },
+        {
+          "week": 9,
+          "attendance": 38007,
+          "pct": 0.9978733459357277
+        }
+      ],
+      "total": 177231,
+      "pct": 0.9306395715185886
+    },
+    {
       "team": "Baylor",
       "stadium": "McLane Stadium",
       "capacity": 45140,
+      "multiVenue": false,
       "games": 4,
       "weeks": [
         {
@@ -388,44 +436,46 @@
       "pct": 0.90279131590607
     },
     {
-      "team": "Cincinnati",
-      "stadium": "Nippert Stadium",
-      "capacity": 40000,
+      "team": "Oklahoma State",
+      "stadium": "Boone Pickens Stadium",
+      "capacity": 52168,
+      "multiVenue": false,
       "games": 5,
       "weeks": [
         {
-          "week": 2,
-          "attendance": 35421,
-          "pct": 0.885525
+          "week": 1,
+          "attendance": 44809,
+          "pct": 0.8589365128047846
         },
         {
           "week": 3,
-          "attendance": 30014,
-          "pct": 0.75035
+          "attendance": 48842,
+          "pct": 0.9362444410366508
         },
         {
-          "week": 6,
-          "attendance": 38007,
-          "pct": 0.950175
+          "week": 4,
+          "attendance": 45689,
+          "pct": 0.8758050912436743
         },
         {
           "week": 7,
-          "attendance": 35782,
-          "pct": 0.89455
+          "attendance": 44941,
+          "pct": 0.861466799570618
         },
         {
-          "week": 9,
-          "attendance": 38007,
-          "pct": 0.950175
+          "week": 8,
+          "attendance": 46901,
+          "pct": 0.8990377242754178
         }
       ],
-      "total": 177231,
-      "pct": 0.886155
+      "total": 231182,
+      "pct": 0.8862981137862291
     },
     {
       "team": "Houston",
       "stadium": "TDECU Stadium",
       "capacity": 40000,
+      "multiVenue": false,
       "games": 4,
       "weeks": [
         {
@@ -453,44 +503,10 @@
       "pct": 0.8586875
     },
     {
-      "team": "Oklahoma State",
-      "stadium": "Boone Pickens Stadium",
-      "capacity": 53855,
-      "games": 5,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 44809,
-          "pct": 0.8320304521400056
-        },
-        {
-          "week": 3,
-          "attendance": 48842,
-          "pct": 0.906916720824436
-        },
-        {
-          "week": 4,
-          "attendance": 45689,
-          "pct": 0.8483706248259214
-        },
-        {
-          "week": 7,
-          "attendance": 44941,
-          "pct": 0.834481478042893
-        },
-        {
-          "week": 8,
-          "attendance": 46901,
-          "pct": 0.8708754990251601
-        }
-      ],
-      "total": 231182,
-      "pct": 0.8585349549716832
-    },
-    {
       "team": "Arizona",
       "stadium": "Arizona Stadium",
       "capacity": 50782,
+      "multiVenue": false,
       "games": 5,
       "weeks": [
         {
@@ -535,29 +551,29 @@
       "week": 1,
       "games": 13,
       "attendance": 647657,
-      "capacity": 675809,
-      "pct": 0.9583432597079944
+      "capacity": 672802,
+      "pct": 0.9626264487917694
     },
     {
       "week": 2,
       "games": 9,
       "attendance": 460416,
-      "capacity": 473134,
-      "pct": 0.9731196658874652
+      "capacity": 469902,
+      "pct": 0.9798128120331473
     },
     {
       "week": 3,
       "games": 9,
       "attendance": 422457,
-      "capacity": 449830,
-      "pct": 0.9391481226241024
+      "capacity": 446006,
+      "pct": 0.947200261879885
     },
     {
       "week": 4,
       "games": 7,
       "attendance": 320190,
-      "capacity": 333448,
-      "pct": 0.9602396775509224
+      "capacity": 330666,
+      "pct": 0.9683184845130736
     },
     {
       "week": 5,
@@ -570,29 +586,29 @@
       "week": 6,
       "games": 7,
       "attendance": 307400,
-      "capacity": 330693,
-      "pct": 0.9295630690701043
+      "capacity": 327686,
+      "pct": 0.9380931745634541
     },
     {
       "week": 7,
       "games": 7,
       "attendance": 344370,
-      "capacity": 356718,
-      "pct": 0.9653844213075875
+      "capacity": 352894,
+      "pct": 0.9758454380068803
     },
     {
       "week": 8,
       "games": 6,
       "attendance": 281720,
-      "capacity": 302225,
-      "pct": 0.93215319712135
+      "capacity": 299443,
+      "pct": 0.9408134436270008
     },
     {
       "week": 9,
       "games": 7,
       "attendance": 360972,
-      "capacity": 368522,
-      "pct": 0.9795127563618997
+      "capacity": 366385,
+      "pct": 0.9852259235503636
     },
     {
       "week": 10,
@@ -633,7 +649,7 @@
   "totals": {
     "games": 72,
     "attendance": 3502749,
-    "capacity": 3648711,
-    "pct": 0.9599962836190644
+    "capacity": 3624116,
+    "pct": 0.9665112816477177
   }
 }

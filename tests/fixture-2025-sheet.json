@@ -178,5 +178,23 @@
     "capacity": 5320357,
     "games": 105,
     "pct": 0.9432075705
+  },
+  "sheetCapacities": {
+    "Arizona": 50782,
+    "Arizona State": 53599,
+    "BYU": 63470,
+    "Baylor": 45140,
+    "Cincinnati": 40000,
+    "Colorado": 50183,
+    "Houston": 40000,
+    "Iowa State": 61500,
+    "Kansas": 41525,
+    "Kansas State": 50000,
+    "Oklahoma State": 53855,
+    "TCU": 46000,
+    "Texas Tech": 60454,
+    "UCF": 45301,
+    "Utah": 51444,
+    "West Virginia": 60000
   }
 }

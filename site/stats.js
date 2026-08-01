@@ -3,26 +3,52 @@
 // a game counts if it exists in the season data, regardless of attendance value,
 // so a 200-person or zero-attendance game can never silently drop from totals
 // (a fragility the original sheet had).
+//
+// Capacity is per-game: a game's own capacity (alternate venue, e.g. Kansas
+// 2024 in Kansas City) wins over the team's stadium capacity for that year.
+// Season percent divides by the sum of per-game capacities — identical to the
+// sheet's games × capacity when capacity is constant, correct when it isn't.
+
+// teams.json keys capacity and stadium by year; resolve to the most recent
+// entry at or before the requested season.
+function resolveByYear(byYear, year) {
+  if (byYear == null || typeof byYear !== "object") return byYear;
+  const years = Object.keys(byYear)
+    .map(Number)
+    .filter((y) => y <= year)
+    .sort((a, b) => b - a);
+  return years.length ? byYear[years[0]] : null;
+}
+
+export function teamsForSeason(teamsData, year) {
+  return teamsData.teams.map((t) => ({
+    team: t.team,
+    stadium: resolveByYear(t.stadium, year),
+    capacity: resolveByYear(t.capacity, year),
+  }));
+}
 
 export function teamSeason(team, games) {
   const played = games
     .filter((g) => g.team === team.team && g.attendance != null)
     .sort((a, b) => a.week - b.week);
+  const capOf = (g) => g.capacity ?? team.capacity;
   const total = played.reduce((s, g) => s + g.attendance, 0);
-  const capacity = team.capacity;
+  const capTotal = played.reduce((s, g) => s + capOf(g), 0);
   return {
     team: team.team,
     stadium: team.stadium,
-    capacity,
+    capacity: team.capacity,
+    multiVenue: played.some((g) => g.capacity != null),
     games: played.length,
     weeks: played.map((g) => ({
       week: g.week,
       attendance: g.attendance,
-      pct: g.attendance / capacity,
+      venue: g.venue,
+      pct: g.attendance / capOf(g),
     })),
     total,
-    // Season % assumes constant stadium capacity for the year (as the sheet did).
-    pct: played.length ? total / (played.length * capacity) : 0,
+    pct: capTotal ? total / capTotal : 0,
   };
 }
 
@@ -32,7 +58,7 @@ export function weeklyTotals(teams, games, numWeeks) {
   for (let w = 0; w < numWeeks; w++) {
     const wk = games.filter((g) => g.week === w && g.attendance != null);
     const attendance = wk.reduce((s, g) => s + g.attendance, 0);
-    const capacity = wk.reduce((s, g) => s + byCap[g.team], 0);
+    const capacity = wk.reduce((s, g) => s + (g.capacity ?? byCap[g.team]), 0);
     weeks.push({
       week: w,
       games: wk.length,

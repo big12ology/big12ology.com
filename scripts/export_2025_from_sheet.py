@@ -39,22 +39,10 @@ def main(xlsx_path: str) -> None:
             if att is not None:
                 games.append({"team": team, "week": week, "attendance": int(att)})
 
-    teams.sort(key=lambda t: t["team"])
     games.sort(key=lambda g: (g["week"], g["team"]))
 
-    (ROOT / "data" / "teams.json").write_text(
-        json.dumps(
-            {
-                "conference": "Big 12",
-                # Capacities imported from the 2025 sheet; verify against 2026
-                # stadium listings before the season (renovations change these).
-                "capacitySource": "2025 season Google Sheet (user-maintained)",
-                "teams": teams,
-            },
-            indent=2,
-        )
-        + "\n"
-    )
+    # NOTE: data/teams.json is hand-curated (per-year capacities with verified
+    # sources) and is deliberately NOT written here anymore.
     (ROOT / "data" / "seasons" / "2025.json").write_text(
         json.dumps(
             {

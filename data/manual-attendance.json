@@ -1,0 +1,16 @@
+{
+  "2024": [
+    {
+      "team": "Texas Tech",
+      "week": 1,
+      "attendance": 60229,
+      "source": "ACU official box score, acusports.com (vs Texas Tech, 2024-08-31)"
+    },
+    {
+      "team": "Kansas State",
+      "week": 5,
+      "attendance": 51741,
+      "source": "Sports-Reference box score (Oklahoma State at Kansas State, 2024-09-28)"
+    }
+  ]
+}

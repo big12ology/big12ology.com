@@ -1,0 +1,744 @@
+{
+  "season": 2024,
+  "source": "CollegeFootballData API (collegefootballdata.com)",
+  "weekLabels": [
+    "Week 0",
+    "Week 1",
+    "Week 2",
+    "Week 3",
+    "Week 4",
+    "Week 5",
+    "Week 6",
+    "Week 7",
+    "Week 8",
+    "Week 9",
+    "Week 10",
+    "Week 11",
+    "Week 12",
+    "Week 13",
+    "Week 14"
+  ],
+  "games": [
+    {
+      "team": "Arizona",
+      "week": 1,
+      "opponent": "New Mexico",
+      "date": "2024-09-01",
+      "attendance": 44748
+    },
+    {
+      "team": "Arizona State",
+      "week": 1,
+      "opponent": "Wyoming",
+      "date": "2024-09-01",
+      "attendance": 48108
+    },
+    {
+      "team": "BYU",
+      "week": 1,
+      "opponent": "Southern Illinois",
+      "date": "2024-09-01",
+      "attendance": 63712
+    },
+    {
+      "team": "Baylor",
+      "week": 1,
+      "opponent": "Tarleton State",
+      "date": "2024-08-31",
+      "attendance": 42272
+    },
+    {
+      "team": "Cincinnati",
+      "week": 1,
+      "opponent": "Towson",
+      "date": "2024-08-31",
+      "attendance": 37654
+    },
+    {
+      "team": "Colorado",
+      "week": 1,
+      "opponent": "North Dakota State",
+      "date": "2024-08-30",
+      "attendance": 49438
+    },
+    {
+      "team": "Houston",
+      "week": 1,
+      "opponent": "UNLV",
+      "date": "2024-08-31",
+      "attendance": 25750
+    },
+    {
+      "team": "Iowa State",
+      "week": 1,
+      "opponent": "North Dakota",
+      "date": "2024-08-31",
+      "attendance": 56148
+    },
+    {
+      "team": "Kansas",
+      "week": 1,
+      "opponent": "Lindenwood",
+      "date": "2024-08-30",
+      "attendance": 20829,
+      "venue": "Children's Mercy Park",
+      "capacity": 18467
+    },
+    {
+      "team": "Kansas State",
+      "week": 1,
+      "opponent": "UT Martin",
+      "date": "2024-08-31",
+      "attendance": 51240
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 1,
+      "opponent": "South Dakota State",
+      "date": "2024-08-31",
+      "attendance": 52202
+    },
+    {
+      "team": "Texas Tech",
+      "week": 1,
+      "opponent": "Abilene Christian",
+      "date": "2024-08-31",
+      "attendance": 60229,
+      "attendanceSource": "ACU official box score, acusports.com (vs Texas Tech, 2024-08-31)"
+    },
+    {
+      "team": "UCF",
+      "week": 1,
+      "opponent": "New Hampshire",
+      "date": "2024-08-29",
+      "attendance": 44206
+    },
+    {
+      "team": "Utah",
+      "week": 1,
+      "opponent": "Southern Utah",
+      "date": "2024-08-30",
+      "attendance": 52210
+    },
+    {
+      "team": "West Virginia",
+      "week": 1,
+      "opponent": "Penn State",
+      "date": "2024-08-31",
+      "attendance": 62084
+    },
+    {
+      "team": "Arizona",
+      "week": 2,
+      "opponent": "Northern Arizona",
+      "date": "2024-09-08",
+      "attendance": 47746
+    },
+    {
+      "team": "Arizona State",
+      "week": 2,
+      "opponent": "Mississippi State",
+      "date": "2024-09-08",
+      "attendance": 45504
+    },
+    {
+      "team": "Cincinnati",
+      "week": 2,
+      "opponent": "Pittsburgh",
+      "date": "2024-09-07",
+      "attendance": 37992
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 2,
+      "opponent": "Arkansas",
+      "date": "2024-09-07",
+      "attendance": 52202
+    },
+    {
+      "team": "TCU",
+      "week": 2,
+      "opponent": "Long Island University",
+      "date": "2024-09-08",
+      "attendance": 44063
+    },
+    {
+      "team": "UCF",
+      "week": 2,
+      "opponent": "Sam Houston",
+      "date": "2024-09-07",
+      "attendance": 43807
+    },
+    {
+      "team": "Utah",
+      "week": 2,
+      "opponent": "Baylor",
+      "date": "2024-09-07",
+      "attendance": 52827
+    },
+    {
+      "team": "West Virginia",
+      "week": 2,
+      "opponent": "UAlbany",
+      "date": "2024-09-07",
+      "attendance": 50073
+    },
+    {
+      "team": "Baylor",
+      "week": 3,
+      "opponent": "Air Force",
+      "date": "2024-09-14",
+      "attendance": 46212
+    },
+    {
+      "team": "Houston",
+      "week": 3,
+      "opponent": "Rice",
+      "date": "2024-09-15",
+      "attendance": 28146
+    },
+    {
+      "team": "Kansas",
+      "week": 3,
+      "opponent": "UNLV",
+      "date": "2024-09-13",
+      "attendance": 21493,
+      "venue": "Children's Mercy Park",
+      "capacity": 18467
+    },
+    {
+      "team": "Kansas State",
+      "week": 3,
+      "opponent": "Arizona",
+      "date": "2024-09-14",
+      "attendance": 51290
+    },
+    {
+      "team": "TCU",
+      "week": 3,
+      "opponent": "UCF",
+      "date": "2024-09-14",
+      "attendance": 48889
+    },
+    {
+      "team": "Texas Tech",
+      "week": 3,
+      "opponent": "North Texas",
+      "date": "2024-09-14",
+      "attendance": 57865
+    },
+    {
+      "team": "BYU",
+      "week": 4,
+      "opponent": "Kansas State",
+      "date": "2024-09-22",
+      "attendance": 64201
+    },
+    {
+      "team": "Cincinnati",
+      "week": 4,
+      "opponent": "Houston",
+      "date": "2024-09-21",
+      "attendance": 38007
+    },
+    {
+      "team": "Colorado",
+      "week": 4,
+      "opponent": "Baylor",
+      "date": "2024-09-22",
+      "attendance": 52794
+    },
+    {
+      "team": "Iowa State",
+      "week": 4,
+      "opponent": "Arkansas State",
+      "date": "2024-09-21",
+      "attendance": 55428
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 4,
+      "opponent": "Utah",
+      "date": "2024-09-21",
+      "attendance": 52202
+    },
+    {
+      "team": "Texas Tech",
+      "week": 4,
+      "opponent": "Arizona State",
+      "date": "2024-09-21",
+      "attendance": 58795
+    },
+    {
+      "team": "West Virginia",
+      "week": 4,
+      "opponent": "Kansas",
+      "date": "2024-09-21",
+      "attendance": 52428
+    },
+    {
+      "team": "Baylor",
+      "week": 5,
+      "opponent": "BYU",
+      "date": "2024-09-28",
+      "attendance": 39583
+    },
+    {
+      "team": "Houston",
+      "week": 5,
+      "opponent": "Iowa State",
+      "date": "2024-09-28",
+      "attendance": 25138
+    },
+    {
+      "team": "Kansas",
+      "week": 5,
+      "opponent": "TCU",
+      "date": "2024-09-28",
+      "attendance": 47928,
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "capacity": 76416
+    },
+    {
+      "team": "Kansas State",
+      "week": 5,
+      "opponent": "Oklahoma State",
+      "date": "2024-09-28",
+      "attendance": 51741,
+      "attendanceSource": "Sports-Reference box score (Oklahoma State at Kansas State, 2024-09-28)"
+    },
+    {
+      "team": "Texas Tech",
+      "week": 5,
+      "opponent": "Cincinnati",
+      "date": "2024-09-29",
+      "attendance": 60229
+    },
+    {
+      "team": "UCF",
+      "week": 5,
+      "opponent": "Colorado",
+      "date": "2024-09-28",
+      "attendance": 45702
+    },
+    {
+      "team": "Utah",
+      "week": 5,
+      "opponent": "Arizona",
+      "date": "2024-09-29",
+      "attendance": 52898
+    },
+    {
+      "team": "Arizona",
+      "week": 6,
+      "opponent": "Texas Tech",
+      "date": "2024-10-06",
+      "attendance": 45773
+    },
+    {
+      "team": "Arizona State",
+      "week": 6,
+      "opponent": "Kansas",
+      "date": "2024-10-06",
+      "attendance": 54639
+    },
+    {
+      "team": "Iowa State",
+      "week": 6,
+      "opponent": "Baylor",
+      "date": "2024-10-05",
+      "attendance": 61500
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 6,
+      "opponent": "West Virginia",
+      "date": "2024-10-05",
+      "attendance": 52202
+    },
+    {
+      "team": "TCU",
+      "week": 6,
+      "opponent": "Houston",
+      "date": "2024-10-04",
+      "attendance": 44211
+    },
+    {
+      "team": "Arizona State",
+      "week": 7,
+      "opponent": "Utah",
+      "date": "2024-10-12",
+      "attendance": 45310
+    },
+    {
+      "team": "BYU",
+      "week": 7,
+      "opponent": "Arizona",
+      "date": "2024-10-12",
+      "attendance": 64420
+    },
+    {
+      "team": "Colorado",
+      "week": 7,
+      "opponent": "Kansas State",
+      "date": "2024-10-13",
+      "attendance": 53972
+    },
+    {
+      "team": "UCF",
+      "week": 7,
+      "opponent": "Cincinnati",
+      "date": "2024-10-12",
+      "attendance": 42611
+    },
+    {
+      "team": "West Virginia",
+      "week": 7,
+      "opponent": "Iowa State",
+      "date": "2024-10-13",
+      "attendance": 55202
+    },
+    {
+      "team": "Arizona",
+      "week": 8,
+      "opponent": "Colorado",
+      "date": "2024-10-19",
+      "attendance": 50724
+    },
+    {
+      "team": "BYU",
+      "week": 8,
+      "opponent": "Oklahoma State",
+      "date": "2024-10-19",
+      "attendance": 62841
+    },
+    {
+      "team": "Cincinnati",
+      "week": 8,
+      "opponent": "Arizona State",
+      "date": "2024-10-19",
+      "attendance": 38007
+    },
+    {
+      "team": "Iowa State",
+      "week": 8,
+      "opponent": "UCF",
+      "date": "2024-10-19",
+      "attendance": 61500
+    },
+    {
+      "team": "Kansas",
+      "week": 8,
+      "opponent": "Houston",
+      "date": "2024-10-19",
+      "attendance": 38619,
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "capacity": 76416
+    },
+    {
+      "team": "Texas Tech",
+      "week": 8,
+      "opponent": "Baylor",
+      "date": "2024-10-19",
+      "attendance": 60229
+    },
+    {
+      "team": "Utah",
+      "week": 8,
+      "opponent": "TCU",
+      "date": "2024-10-20",
+      "attendance": 53299
+    },
+    {
+      "team": "West Virginia",
+      "week": 8,
+      "opponent": "Kansas State",
+      "date": "2024-10-19",
+      "attendance": 54327
+    },
+    {
+      "team": "Arizona",
+      "week": 9,
+      "opponent": "West Virginia",
+      "date": "2024-10-26",
+      "attendance": 49888
+    },
+    {
+      "team": "Baylor",
+      "week": 9,
+      "opponent": "Oklahoma State",
+      "date": "2024-10-26",
+      "attendance": 44987
+    },
+    {
+      "team": "Colorado",
+      "week": 9,
+      "opponent": "Cincinnati",
+      "date": "2024-10-27",
+      "attendance": 53202
+    },
+    {
+      "team": "Houston",
+      "week": 9,
+      "opponent": "Utah",
+      "date": "2024-10-26",
+      "attendance": 28251
+    },
+    {
+      "team": "Kansas State",
+      "week": 9,
+      "opponent": "Kansas",
+      "date": "2024-10-27",
+      "attendance": 52074
+    },
+    {
+      "team": "TCU",
+      "week": 9,
+      "opponent": "Texas Tech",
+      "date": "2024-10-26",
+      "attendance": 42144
+    },
+    {
+      "team": "UCF",
+      "week": 9,
+      "opponent": "BYU",
+      "date": "2024-10-26",
+      "attendance": 42144
+    },
+    {
+      "team": "Baylor",
+      "week": 10,
+      "opponent": "TCU",
+      "date": "2024-11-03",
+      "attendance": 44171
+    },
+    {
+      "team": "Houston",
+      "week": 10,
+      "opponent": "Kansas State",
+      "date": "2024-11-02",
+      "attendance": 23085
+    },
+    {
+      "team": "Iowa State",
+      "week": 10,
+      "opponent": "Texas Tech",
+      "date": "2024-11-02",
+      "attendance": 61500
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 10,
+      "opponent": "Arizona State",
+      "date": "2024-11-02",
+      "attendance": 52202
+    },
+    {
+      "team": "UCF",
+      "week": 10,
+      "opponent": "Arizona",
+      "date": "2024-11-02",
+      "attendance": 42110
+    },
+    {
+      "team": "Arizona State",
+      "week": 11,
+      "opponent": "UCF",
+      "date": "2024-11-10",
+      "attendance": 44940
+    },
+    {
+      "team": "Cincinnati",
+      "week": 11,
+      "opponent": "West Virginia",
+      "date": "2024-11-09",
+      "attendance": 38007
+    },
+    {
+      "team": "Kansas",
+      "week": 11,
+      "opponent": "Iowa State",
+      "date": "2024-11-09",
+      "attendance": 51109,
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "capacity": 76416
+    },
+    {
+      "team": "TCU",
+      "week": 11,
+      "opponent": "Oklahoma State",
+      "date": "2024-11-10",
+      "attendance": 45348
+    },
+    {
+      "team": "Texas Tech",
+      "week": 11,
+      "opponent": "Colorado",
+      "date": "2024-11-09",
+      "attendance": 60229
+    },
+    {
+      "team": "Utah",
+      "week": 11,
+      "opponent": "BYU",
+      "date": "2024-11-10",
+      "attendance": 54383
+    },
+    {
+      "team": "Arizona",
+      "week": 12,
+      "opponent": "Houston",
+      "date": "2024-11-16",
+      "attendance": 38538
+    },
+    {
+      "team": "BYU",
+      "week": 12,
+      "opponent": "Kansas",
+      "date": "2024-11-17",
+      "attendance": 62704
+    },
+    {
+      "team": "Colorado",
+      "week": 12,
+      "opponent": "Utah",
+      "date": "2024-11-16",
+      "attendance": 54646
+    },
+    {
+      "team": "Iowa State",
+      "week": 12,
+      "opponent": "Cincinnati",
+      "date": "2024-11-17",
+      "attendance": 52881
+    },
+    {
+      "team": "Kansas State",
+      "week": 12,
+      "opponent": "Arizona State",
+      "date": "2024-11-17",
+      "attendance": 51880
+    },
+    {
+      "team": "West Virginia",
+      "week": 12,
+      "opponent": "Baylor",
+      "date": "2024-11-16",
+      "attendance": 52376
+    },
+    {
+      "team": "Arizona State",
+      "week": 13,
+      "opponent": "BYU",
+      "date": "2024-11-23",
+      "attendance": 55400
+    },
+    {
+      "team": "Houston",
+      "week": 13,
+      "opponent": "Baylor",
+      "date": "2024-11-24",
+      "attendance": 34166
+    },
+    {
+      "team": "Kansas",
+      "week": 13,
+      "opponent": "Colorado",
+      "date": "2024-11-23",
+      "attendance": 56470,
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "capacity": 76416
+    },
+    {
+      "team": "Kansas State",
+      "week": 13,
+      "opponent": "Cincinnati",
+      "date": "2024-11-24",
+      "attendance": 50988
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 13,
+      "opponent": "Texas Tech",
+      "date": "2024-11-23",
+      "attendance": 52202
+    },
+    {
+      "team": "TCU",
+      "week": 13,
+      "opponent": "Arizona",
+      "date": "2024-11-23",
+      "attendance": 42977
+    },
+    {
+      "team": "Utah",
+      "week": 13,
+      "opponent": "Iowa State",
+      "date": "2024-11-24",
+      "attendance": 52152
+    },
+    {
+      "team": "West Virginia",
+      "week": 13,
+      "opponent": "UCF",
+      "date": "2024-11-23",
+      "attendance": 40722
+    },
+    {
+      "team": "Arizona",
+      "week": 14,
+      "opponent": "Arizona State",
+      "date": "2024-11-30",
+      "attendance": 49813
+    },
+    {
+      "team": "BYU",
+      "week": 14,
+      "opponent": "Houston",
+      "date": "2024-12-01",
+      "attendance": 59213
+    },
+    {
+      "team": "Baylor",
+      "week": 14,
+      "opponent": "Kansas",
+      "date": "2024-11-30",
+      "attendance": 36585
+    },
+    {
+      "team": "Cincinnati",
+      "week": 14,
+      "opponent": "TCU",
+      "date": "2024-11-30",
+      "attendance": 30021
+    },
+    {
+      "team": "Colorado",
+      "week": 14,
+      "opponent": "Oklahoma State",
+      "date": "2024-11-29",
+      "attendance": 51030
+    },
+    {
+      "team": "Iowa State",
+      "week": 14,
+      "opponent": "Kansas State",
+      "date": "2024-12-01",
+      "attendance": 56228
+    },
+    {
+      "team": "Texas Tech",
+      "week": 14,
+      "opponent": "West Virginia",
+      "date": "2024-11-30",
+      "attendance": 52785
+    },
+    {
+      "team": "UCF",
+      "week": 14,
+      "opponent": "Utah",
+      "date": "2024-11-30",
+      "attendance": 40747
+    }
+  ]
+}

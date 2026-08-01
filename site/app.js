@@ -1,4 +1,4 @@
-import { seasonSummary } from "./stats.js";
+import { seasonSummary, teamsForSeason } from "./stats.js";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -18,7 +18,8 @@ function pctClass(p) {
 
 function render(teamsData, season) {
   const numWeeks = season.weekLabels.length;
-  const summary = seasonSummary(teamsData.teams, season.games, numWeeks);
+  const teams = teamsForSeason(teamsData, season.season);
+  const summary = seasonSummary(teams, season.games, numWeeks);
   // Only render week columns that have at least one game (2026 preseason
   // renders no week columns until data arrives).
   const activeWeeks = summary.weeks.filter((w) => w.games > 0).map((w) => w.week);
@@ -51,9 +52,12 @@ function render(teamsData, season) {
             : "<td></td>";
         })
         .join("");
+      const stadiumLabel = row.multiVenue
+        ? [...new Set(row.weeks.map((w) => w.venue).filter(Boolean))].join(" / ")
+        : row.stadium;
       return `<tr>
-        <td class="team">${row.team}<span class="stadium">${row.stadium}</span></td>
-        <td>${row.games}</td><td>${num(row.capacity)}</td>${cells}
+        <td class="team">${row.team}<span class="stadium">${stadiumLabel}</span></td>
+        <td>${row.games}</td><td>${row.capacity != null ? num(row.capacity) : "varies"}</td>${cells}
         <td class="season-total">${num(row.total)}<span class="${pctClass(row.pct)}">${pct(row.pct)}</span></td>
       </tr>`;
     })
@@ -74,7 +78,7 @@ function render(teamsData, season) {
   const empty = $("#empty-note");
   empty.hidden = activeWeeks.length > 0;
   empty.textContent = `No attendance reported yet for the ${season.season} season — check back after the first week of games.`;
-  $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ stadium capacity; season percent assumes constant capacity (${teamsData.capacitySource}).`;
+  $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records).`;
 }
 
 async function main() {
