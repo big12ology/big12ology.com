@@ -1,4 +1,5 @@
 import { seasonSummary, teamsForSeason } from "./stats.js";
+import { renderCharts } from "./charts.js";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -328,15 +329,25 @@ async function main() {
     loadJSON("data/seasons/index.json"),
     loadJSON("data/teams.json"),
   ]);
+  const seasonsData = Object.fromEntries(
+    await Promise.all(
+      index.seasons.map(async (y) => [y, await loadJSON(`data/seasons/${y}.json`)])
+    )
+  );
 
   const select = $("#season");
   select.innerHTML = index.seasons
     .map((y) => `<option value="${y}" ${y === index.default ? "selected" : ""}>${y}</option>`)
     .join("");
 
-  const show = async (year) =>
-    render(teamsData, await loadJSON(`data/seasons/${year}.json`));
+  const show = (year) => {
+    render(teamsData, seasonsData[year]);
+    renderCharts($("#charts"), teamsData, seasonsData, year);
+  };
   select.addEventListener("change", () => show(select.value));
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", () => show(select.value));
 
   // Delegated listeners survive table re-renders.
   const table = $("#attendance-table");
@@ -352,7 +363,7 @@ async function main() {
     if (e.target.closest("td.game")) hideTooltip();
   });
 
-  await show(index.default);
+  show(index.default);
 }
 
 main().catch((err) => {

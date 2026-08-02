@@ -106,6 +106,29 @@ tfoot .sub td { font-weight: 400; color: var(--muted); border-top: none; font-si
 .note { color: var(--muted); font-size: 0.8rem; padding: 0 1.5rem; }
 footer { padding-bottom: 1.5rem; }
 
+#charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 34rem), 1fr)); gap: 1rem; margin-top: 1.25rem; }
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  min-width: 0;
+}
+.chart-card h2 { margin: 0; font-size: 0.95rem; letter-spacing: -0.01em; }
+.chart-sub { margin: 0.15rem 0 0.6rem; color: var(--muted); font-size: 0.76rem; }
+.chart-card svg { width: 100%; height: auto; display: block; }
+.chart-card .tick { font-size: 10px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.chart-card .lbl { font-size: 11px; fill: var(--text); }
+.chart-card .val { font-size: 10px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.chart-empty { color: var(--muted); font-size: 0.82rem; }
+.chart-legend { display: flex; gap: 1rem; font-size: 0.76rem; color: var(--muted); margin-bottom: 0.4rem; }
+.chart-legend > span { display: inline-flex; align-items: center; gap: 0.35rem; }
+.key-line { display: inline-block; width: 14px; height: 2px; border-radius: 1px; }
+.key-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+.heat-legend { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; font-size: 0.72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.heat-scale { display: inline-block; width: 8rem; height: 8px; border-radius: 4px; }
+#tooltip .tip-key { display: inline-block; width: 12px; height: 2.5px; border-radius: 1px; margin-right: 0.4rem; vertical-align: middle; }
+
 td.game { cursor: default; }
 td.game:hover { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
 td.game.sched .opp, td.game.away .opp {
