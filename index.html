@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>Big12ology — the study of the Big 12</title>
+<meta name=description content="Unofficial fan-built tools and data projects about Big 12 football: tiebreaker tracking, attendance history, season previews.">
+<style>
+:root {
+  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #6b7280;
+  --line: #e2ddd2; --accent: #c8102e; --accent2: #003087;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
+    --line: #2e323a; --accent: #ff5a6e; --accent2: #7aa2ff;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 17px/1.6 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+header { border-bottom: 4px solid var(--accent); padding: 56px 20px 36px;
+  background: var(--panel); text-align: center; }
+header img { height: 64px; width: auto; margin-bottom: 14px; }
+h1 { margin: 0; font-size: 40px; letter-spacing: -.02em; }
+h1 .ology { color: var(--accent); }
+header p { margin: 8px auto 0; color: var(--dim); max-width: 520px; }
+main { max-width: 820px; margin: 0 auto; padding: 28px 20px 40px;
+  display: grid; gap: 18px; }
+.card { background: var(--panel); border: 1px solid var(--line);
+  border-radius: 12px; padding: 22px 24px; display: block;
+  text-decoration: none; color: var(--ink); transition: border-color .15s; }
+a.card:hover { border-color: var(--accent); }
+.card h2 { margin: 0 0 6px; font-size: 20px; display: flex;
+  align-items: center; gap: 10px; }
+.card p { margin: 0; color: var(--dim); font-size: 15px; }
+.tag { font-size: 11px; border-radius: 20px; padding: 2px 10px;
+  font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.tag.live { background: color-mix(in srgb, #15803d 15%, transparent); color: #15803d; }
+@media (prefers-color-scheme: dark) {
+  .tag.live { background: color-mix(in srgb, #4ade80 15%, transparent); color: #4ade80; }
+}
+.tag.soon { background: color-mix(in srgb, var(--dim) 15%, transparent);
+  color: var(--dim); }
+footer { max-width: 820px; margin: 0 auto; padding: 0 20px 48px;
+  color: var(--dim); font-size: 13.5px; text-align: center; }
+footer a { color: var(--accent2); }
+</style>
+</head>
+<body>
+<header>
+  <img src=big12.svg alt="">
+  <h1>Big12<span class=ology>ology</span></h1>
+  <p>The study of the Big 12. Unofficial fan-built tools and data projects
+  about the sixteen-team league — its standings math, its stadiums, and its
+  chaos.</p>
+</header>
+<main>
+  <a class=card href="https://big12ology.github.io/tiebreaker/">
+    <h2>Tiebreaker Tracker <span class="tag live">live</span></h2>
+    <p>The official Big 12 tiebreaking procedures applied to live results
+    after every game — projected championship matchup, step-by-step tie
+    narratives, and a what-if simulator with five rating models.</p>
+  </a>
+  <div class=card>
+    <h2>Attendance Almanac <span class="tag soon">in the lab</span></h2>
+    <p>Stadium-by-stadium attendance history across the conference — capacity
+    sourcing, sellout streaks, and how realignment moved the crowds.</p>
+  </div>
+  <div class=card>
+    <h2>Preview Machine <span class="tag soon">annual</span></h2>
+    <p>A season preview built by pipeline, not vibes: roster continuity, QB
+    modeling, schedule chains, and the Chain rating that powers the
+    tiebreaker simulator's house model.</p>
+  </div>
+</main>
+<footer>
+  A fan project. Not affiliated with the Big 12 Conference; conference marks
+  belong to their owners and appear for identification only.
+  Code on <a href="https://github.com/big12ology">GitHub</a>.
+</footer>
+</body>
+</html>
