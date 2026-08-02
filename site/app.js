@@ -76,6 +76,9 @@ function renderTable() {
   const roadGames = new Map(
     season.games.filter((g) => g.role).map((g) => [`${g.team}|${g.week}`, g])
   );
+  const homeInfo = new Map(
+    season.games.filter((g) => !g.role).map((g) => [`${g.team}|${g.week}`, g])
+  );
   // Per-team first/last week of any game — weeks between with no game are byes.
   const range = {};
   for (const g of season.games) {
@@ -108,8 +111,18 @@ function renderTable() {
       const cells = activeWeeks
         .map((w) => {
           const g = byWeek[w];
-          if (g)
-            return `<td class="game" data-team="${row.team}" data-week="${w}">${num(g.attendance)}<span class="${pctClass(g.pct)}">${pct(g.pct)}</span></td>`;
+          if (g) {
+            const info = homeInfo.get(`${row.team}|${w}`);
+            let sub = "";
+            if (info?.opponent) {
+              const result =
+                info.pointsFor != null
+                  ? ` · <span class="${info.pointsFor > info.pointsAgainst ? "win" : "loss"}">${info.pointsFor > info.pointsAgainst ? "W" : "L"} ${info.pointsFor}–${info.pointsAgainst}</span>`
+                  : "";
+              sub = `<span class="sub">${info.opponent}${result}</span>`;
+            }
+            return `<td class="game" data-team="${row.team}" data-week="${w}">${num(g.attendance)}<span class="${pctClass(g.pct)}">${pct(g.pct)}</span>${sub}</td>`;
+          }
           const s = scheduled.get(`${row.team}|${w}`);
           if (s)
             return `<td class="game sched" data-team="${row.team}" data-week="${w}"><span class="opp">${s.opponent ?? "TBD"}</span><span class="pct">${fmtDateShort(s.date)}</span></td>`;
