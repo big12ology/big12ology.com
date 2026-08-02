@@ -284,7 +284,7 @@
       "stadium": "Boone Pickens Stadium",
       "capacity": 52168,
       "multiVenue": false,
-      "games": 3,
+      "games": 2,
       "weeks": [
         {
           "week": 1,
@@ -292,18 +292,13 @@
           "pct": 0.8589365128047846
         },
         {
-          "week": 3,
+          "week": 4,
           "attendance": 48842,
           "pct": 0.9362444410366508
-        },
-        {
-          "week": 4,
-          "attendance": 45689,
-          "pct": 0.8758050912436743
         }
       ],
-      "total": 139340,
-      "pct": 0.8903286816950365
+      "total": 93651,
+      "pct": 0.8975904769207177
     },
     {
       "team": "Cincinnati",
@@ -398,17 +393,17 @@
     },
     {
       "week": 3,
-      "games": 9,
-      "attendance": 422457,
-      "capacity": 446006,
-      "pct": 0.947200261879885
+      "games": 8,
+      "attendance": 373615,
+      "capacity": 393838,
+      "pct": 0.9486514759875888
     },
     {
       "week": 4,
       "games": 7,
-      "attendance": 320190,
+      "attendance": 323343,
       "capacity": 330666,
-      "pct": 0.9683184845130736
+      "pct": 0.9778537859955363
     },
     {
       "week": 5,
@@ -482,9 +477,9 @@
     }
   ],
   "totals": {
-    "games": 39,
-    "attendance": 1892245,
-    "capacity": 1960901,
-    "pct": 0.964987523592471
+    "games": 38,
+    "attendance": 1846556,
+    "capacity": 1908733,
+    "pct": 0.967424988198978
   }
 }

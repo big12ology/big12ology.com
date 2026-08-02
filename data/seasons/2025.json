@@ -1,6 +1,6 @@
 {
   "season": 2025,
-  "source": "Manual entry via Google Sheet (imported)",
+  "source": "CollegeFootballData API (collegefootballdata.com); weather via Open-Meteo",
   "weekLabels": [
     "Week 0",
     "Week 1",
@@ -22,527 +22,1683 @@
     {
       "team": "Kansas",
       "week": 0,
-      "attendance": 41525
+      "opponent": "Fresno State",
+      "date": "2025-08-23",
+      "time": "17:30",
+      "attendance": 41525,
+      "espnId": 401756847,
+      "pointsFor": 31,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 83,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 1,
-      "attendance": 42423
+      "opponent": "Hawai'i",
+      "date": "2025-08-30",
+      "time": "19:30",
+      "attendance": 42423,
+      "espnId": 401756849,
+      "pointsFor": 40,
+      "pointsAgainst": 6,
+      "weather": {
+        "tempF": 96,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
       "week": 1,
-      "attendance": 56759
+      "opponent": "Northern Arizona",
+      "date": "2025-08-30",
+      "time": "19:00",
+      "attendance": 56759,
+      "espnId": 401756850,
+      "pointsFor": 38,
+      "pointsAgainst": 19,
+      "weather": {
+        "tempF": 100,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 1,
-      "attendance": 64494
+      "opponent": "Portland State",
+      "date": "2025-08-30",
+      "time": "18:00",
+      "attendance": 64494,
+      "espnId": 401756851,
+      "pointsFor": 69,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 77,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 1,
-      "attendance": 45233
+      "opponent": "Auburn",
+      "date": "2025-08-29",
+      "time": "19:00",
+      "attendance": 45233,
+      "espnId": 401752667,
+      "pointsFor": 24,
+      "pointsAgainst": 38,
+      "weather": {
+        "tempF": 90,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
       "week": 1,
-      "attendance": 52868
+      "opponent": "Georgia Tech",
+      "date": "2025-08-29",
+      "time": "18:00",
+      "attendance": 52868,
+      "espnId": 401754375,
+      "pointsFor": 20,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 71,
+        "windMph": 4,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "Houston",
       "week": 1,
-      "attendance": 28150
+      "opponent": "Stephen F. Austin",
+      "date": "2025-08-28",
+      "time": "19:00",
+      "attendance": 28150,
+      "espnId": 401756852,
+      "pointsFor": 27,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 86,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 1,
-      "attendance": 61500
+      "opponent": "South Dakota",
+      "date": "2025-08-30",
+      "time": "14:30",
+      "attendance": 61500,
+      "espnId": 401756853,
+      "pointsFor": 55,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 79,
+        "windMph": 6,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "Kansas",
       "week": 1,
-      "attendance": 39129
+      "opponent": "Wagner",
+      "date": "2025-08-29",
+      "time": "18:30",
+      "attendance": 39129,
+      "espnId": 401756854,
+      "pointsFor": 46,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 80,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 1,
-      "attendance": 51927
+      "opponent": "North Dakota",
+      "date": "2025-08-30",
+      "time": "18:00",
+      "attendance": 51927,
+      "espnId": 401756855,
+      "pointsFor": 38,
+      "pointsAgainst": 35,
+      "weather": {
+        "tempF": 72,
+        "windMph": 8,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 1,
-      "attendance": 44809
+      "opponent": "UT Martin",
+      "date": "2025-08-28",
+      "time": "18:30",
+      "attendance": 44809,
+      "espnId": 401756876,
+      "pointsFor": 27,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 76,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 1,
-      "attendance": 60229
+      "opponent": "Arkansas-Pine Bluff",
+      "date": "2025-08-30",
+      "time": "18:30",
+      "attendance": 60229,
+      "espnId": 401756877,
+      "pointsFor": 67,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 88,
+        "windMph": 9,
+        "precipIn": 0.0
+      }
     },
     {
       "team": "UCF",
       "week": 1,
-      "attendance": 43043
+      "opponent": "Jacksonville State",
+      "date": "2025-08-28",
+      "time": "19:00",
+      "attendance": 43043,
+      "espnId": 401756848,
+      "pointsFor": 17,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 77,
+        "windMph": 5,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "West Virginia",
       "week": 1,
-      "attendance": 57093
+      "opponent": "Robert Morris",
+      "date": "2025-08-30",
+      "time": "14:00",
+      "attendance": 57093,
+      "espnId": 401756878,
+      "pointsFor": 45,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 69,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 2,
-      "attendance": 40038
+      "opponent": "Weber State",
+      "date": "2025-09-06",
+      "time": "19:00",
+      "attendance": 40038,
+      "espnId": 401756879,
+      "pointsFor": 48,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 84,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 2,
-      "attendance": 64692
+      "opponent": "Stanford",
+      "date": "2025-09-06",
+      "time": "20:15",
+      "attendance": 64692,
+      "espnId": 401754526,
+      "pointsFor": 27,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 72,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 2,
-      "attendance": 35421
+      "opponent": "Bowling Green",
+      "date": "2025-09-06",
+      "time": "15:30",
+      "attendance": 35421,
+      "espnId": 401756880,
+      "pointsFor": 34,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 72,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
       "week": 2,
-      "attendance": 50341
+      "opponent": "Delaware",
+      "date": "2025-09-06",
+      "time": "13:30",
+      "attendance": 50341,
+      "espnId": 401756881,
+      "pointsFor": 31,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 73,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 2,
-      "attendance": 61500
+      "opponent": "Iowa",
+      "date": "2025-09-06",
+      "time": "11:00",
+      "attendance": 61500,
+      "espnId": 401752822,
+      "pointsFor": 16,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 58,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 2,
-      "attendance": 52723
+      "opponent": "Army",
+      "date": "2025-09-06",
+      "time": "18:00",
+      "attendance": 52723,
+      "espnId": 401756882,
+      "pointsFor": 21,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 71,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 2,
-      "attendance": 60229
+      "opponent": "Kent State",
+      "date": "2025-09-06",
+      "time": "11:00",
+      "attendance": 60229,
+      "espnId": 401756885,
+      "pointsFor": 62,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 62,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 2,
-      "attendance": 44009
+      "opponent": "North Carolina A&T",
+      "date": "2025-09-06",
+      "time": "19:00",
+      "attendance": 44009,
+      "espnId": 401756886,
+      "pointsFor": 68,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 79,
+        "windMph": 3,
+        "precipIn": 0.0
+      }
     },
     {
       "team": "Utah",
       "week": 2,
-      "attendance": 51463
+      "opponent": "Cal Poly",
+      "date": "2025-09-06",
+      "time": "16:00",
+      "attendance": 51463,
+      "espnId": 401756887,
+      "pointsFor": 63,
+      "pointsAgainst": 9,
+      "weather": {
+        "tempF": 78,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 3,
-      "attendance": 40051
+      "opponent": "Kansas State",
+      "date": "2025-09-12",
+      "time": "18:00",
+      "attendance": 40051,
+      "espnId": 401756888,
+      "pointsFor": 23,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 90,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
       "week": 3,
-      "attendance": 54005
+      "opponent": "Texas State",
+      "date": "2025-09-13",
+      "time": "19:30",
+      "attendance": 54005,
+      "espnId": 401756889,
+      "pointsFor": 34,
+      "pointsAgainst": 15,
+      "weather": {
+        "tempF": 92,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 3,
-      "attendance": 41215
+      "opponent": "Samford",
+      "date": "2025-09-13",
+      "time": "11:00",
+      "attendance": 41215,
+      "espnId": 401756891,
+      "pointsFor": 42,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 84,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 3,
-      "attendance": 30014
+      "opponent": "Northwestern State",
+      "date": "2025-09-13",
+      "time": "15:30",
+      "attendance": 30014,
+      "espnId": 401756892,
+      "pointsFor": 70,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 86,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 3,
-      "attendance": 37899
-    },
-    {
-      "team": "Oklahoma State",
-      "week": 3,
-      "attendance": 48842
+      "opponent": "Colorado",
+      "date": "2025-09-12",
+      "time": "18:30",
+      "attendance": 37899,
+      "espnId": 401756893,
+      "pointsFor": 36,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 87,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 3,
-      "attendance": 48094
+      "opponent": "Abilene Christian",
+      "date": "2025-09-13",
+      "time": "19:00",
+      "attendance": 48094,
+      "espnId": 401756894,
+      "pointsFor": 42,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 90,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 3,
-      "attendance": 60229
+      "opponent": "Oregon State",
+      "date": "2025-09-13",
+      "time": "14:30",
+      "attendance": 60229,
+      "espnId": 401752938,
+      "pointsFor": 45,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 83,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
       "week": 3,
-      "attendance": 62108
+      "opponent": "Pittsburgh",
+      "date": "2025-09-13",
+      "time": "15:30",
+      "attendance": 62108,
+      "espnId": 401754638,
+      "pointsFor": 31,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 82,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 4,
-      "attendance": 40964
+      "opponent": "Arizona State",
+      "date": "2025-09-20",
+      "time": "18:30",
+      "attendance": 40964,
+      "espnId": 401756896,
+      "pointsFor": 24,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 91,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
       "week": 4,
-      "attendance": 53442
+      "opponent": "Wyoming",
+      "date": "2025-09-20",
+      "time": "20:15",
+      "attendance": 53442,
+      "espnId": 401756897,
+      "pointsFor": 37,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 60,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
       "week": 4,
-      "attendance": 40320
+      "opponent": "West Virginia",
+      "date": "2025-09-20",
+      "time": "17:00",
+      "attendance": 40320,
+      "espnId": 401756899,
+      "pointsFor": 41,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 79,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 4,
-      "attendance": 45689
+      "opponent": "Tulsa",
+      "date": "2025-09-19",
+      "time": "18:30",
+      "attendance": 48842,
+      "espnId": 401756900,
+      "pointsFor": 12,
+      "pointsAgainst": 19,
+      "weather": {
+        "tempF": 85,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 4,
-      "attendance": 43333
+      "opponent": "SMU",
+      "date": "2025-09-20",
+      "time": "11:00",
+      "attendance": 43333,
+      "espnId": 401754636,
+      "pointsFor": 35,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 86,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 4,
-      "attendance": 44206
+      "opponent": "North Carolina",
+      "date": "2025-09-20",
+      "time": "15:30",
+      "attendance": 44206,
+      "espnId": 401754640,
+      "pointsFor": 34,
+      "pointsAgainst": 9,
+      "weather": {
+        "tempF": 87,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
       "week": 4,
-      "attendance": 52236
+      "opponent": "Texas Tech",
+      "date": "2025-09-20",
+      "time": "10:00",
+      "attendance": 52236,
+      "espnId": 401756901,
+      "pointsFor": 10,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 71,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
       "week": 5,
-      "attendance": 53774
+      "opponent": "TCU",
+      "date": "2025-09-26",
+      "time": "18:00",
+      "attendance": 53774,
+      "espnId": 401756902,
+      "pointsFor": 27,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 73,
+        "windMph": 8,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "Colorado",
       "week": 5,
-      "attendance": 52265
+      "opponent": "BYU",
+      "date": "2025-09-27",
+      "time": "20:15",
+      "attendance": 52265,
+      "espnId": 401756903,
+      "pointsFor": 21,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 61,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 5,
-      "attendance": 61500
+      "opponent": "Arizona",
+      "date": "2025-09-27",
+      "time": "18:00",
+      "attendance": 61500,
+      "espnId": 401756904,
+      "pointsFor": 39,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 75,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
       "week": 5,
-      "attendance": 41525
+      "opponent": "Cincinnati",
+      "date": "2025-09-27",
+      "time": "11:00",
+      "attendance": 41525,
+      "espnId": 401756905,
+      "pointsFor": 34,
+      "pointsAgainst": 37,
+      "weather": {
+        "tempF": 74,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 5,
-      "attendance": 53013
+      "opponent": "UCF",
+      "date": "2025-09-27",
+      "time": "11:00",
+      "attendance": 53013,
+      "espnId": 401756906,
+      "pointsFor": 34,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 74,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 5,
+      "opponent": "Baylor",
+      "date": "2025-09-27",
+      "time": "14:30",
+      "attendance": 45689,
+      "espnId": 401756907,
+      "pointsFor": 27,
+      "pointsAgainst": 45,
+      "weather": {
+        "tempF": 88,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
       "week": 5,
-      "attendance": 53965
+      "opponent": "Utah",
+      "date": "2025-09-27",
+      "time": "15:30",
+      "attendance": 53965,
+      "espnId": 401756908,
+      "pointsFor": 14,
+      "pointsAgainst": 48,
+      "weather": {
+        "tempF": 72,
+        "windMph": 4,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "Arizona",
       "week": 6,
-      "attendance": 40685
+      "opponent": "Oklahoma State",
+      "date": "2025-10-04",
+      "time": "12:00",
+      "attendance": 40685,
+      "espnId": 401756910,
+      "pointsFor": 41,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 87,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 6,
-      "attendance": 63917
+      "opponent": "West Virginia",
+      "date": "2025-10-03",
+      "time": "20:30",
+      "attendance": 63917,
+      "espnId": 401756909,
+      "pointsFor": 38,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 61,
+        "windMph": 7,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "Baylor",
       "week": 6,
-      "attendance": 35596
+      "opponent": "Kansas State",
+      "date": "2025-10-04",
+      "time": "11:00",
+      "attendance": 35596,
+      "espnId": 401756911,
+      "pointsFor": 35,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 79,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 6,
-      "attendance": 38007
+      "opponent": "Iowa State",
+      "date": "2025-10-04",
+      "time": "12:00",
+      "attendance": 38007,
+      "espnId": 401756912,
+      "pointsFor": 38,
+      "pointsAgainst": 30,
+      "weather": {
+        "tempF": 78,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 6,
-      "attendance": 42806
+      "opponent": "Texas Tech",
+      "date": "2025-10-04",
+      "time": "18:00",
+      "attendance": 42806,
+      "espnId": 401756913,
+      "pointsFor": 11,
+      "pointsAgainst": 35,
+      "weather": {
+        "tempF": 85,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 6,
-      "attendance": 43160
+      "opponent": "Colorado",
+      "date": "2025-10-04",
+      "time": "18:30",
+      "attendance": 43160,
+      "espnId": 401756914,
+      "pointsFor": 35,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 85,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 6,
-      "attendance": 43229
+      "opponent": "Kansas",
+      "date": "2025-10-04",
+      "time": "19:30",
+      "attendance": 43229,
+      "espnId": 401756915,
+      "pointsFor": 20,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 77,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 7,
-      "attendance": 47960
+      "opponent": "BYU",
+      "date": "2025-10-11",
+      "time": "17:00",
+      "attendance": 47960,
+      "espnId": 401756916,
+      "pointsFor": 27,
+      "pointsAgainst": 33,
+      "weather": {
+        "tempF": 76,
+        "windMph": 4,
+        "precipIn": 0.0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 7,
-      "attendance": 35782
+      "opponent": "UCF",
+      "date": "2025-10-11",
+      "time": "12:00",
+      "attendance": 35782,
+      "espnId": 401756917,
+      "pointsFor": 20,
+      "pointsAgainst": 11,
+      "weather": {
+        "tempF": 64,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
       "week": 7,
-      "attendance": 52698
+      "opponent": "Iowa State",
+      "date": "2025-10-11",
+      "time": "13:30",
+      "attendance": 52698,
+      "espnId": 401756918,
+      "pointsFor": 24,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 63,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 7,
-      "attendance": 51316
+      "opponent": "TCU",
+      "date": "2025-10-11",
+      "time": "14:30",
+      "attendance": 51316,
+      "espnId": 401756919,
+      "pointsFor": 41,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 80,
+        "windMph": 13,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 7,
-      "attendance": 44941
+      "opponent": "Houston",
+      "date": "2025-10-11",
+      "time": "11:00",
+      "attendance": 44941,
+      "espnId": 401756920,
+      "pointsFor": 17,
+      "pointsAgainst": 39,
+      "weather": {
+        "tempF": 76,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 7,
-      "attendance": 60229
+      "opponent": "Kansas",
+      "date": "2025-10-11",
+      "time": "18:30",
+      "attendance": 60229,
+      "espnId": 401756921,
+      "pointsFor": 42,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 82,
+        "windMph": 14,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
       "week": 7,
-      "attendance": 51444
+      "opponent": "Arizona State",
+      "date": "2025-10-11",
+      "time": "20:15",
+      "attendance": 51444,
+      "espnId": 401756922,
+      "pointsFor": 42,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 44,
+        "windMph": 5,
+        "precipIn": 0.05
+      }
     },
     {
       "team": "Arizona State",
       "week": 8,
-      "attendance": 54177
+      "opponent": "Texas Tech",
+      "date": "2025-10-18",
+      "time": "13:00",
+      "attendance": 54177,
+      "espnId": 401756923,
+      "pointsFor": 26,
+      "pointsAgainst": 22,
+      "weather": {
+        "tempF": 81,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 8,
-      "attendance": 64794
+      "opponent": "Utah",
+      "date": "2025-10-18",
+      "time": "18:00",
+      "attendance": 64794,
+      "espnId": 401756924,
+      "pointsFor": 24,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 56,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 8,
-      "attendance": 28535
+      "opponent": "Arizona",
+      "date": "2025-10-18",
+      "time": "11:00",
+      "attendance": 28535,
+      "espnId": 401756925,
+      "pointsFor": 31,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 84,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 8,
-      "attendance": 46901
+      "opponent": "Cincinnati",
+      "date": "2025-10-18",
+      "time": "19:00",
+      "attendance": 46901,
+      "espnId": 401756926,
+      "pointsFor": 17,
+      "pointsAgainst": 49,
+      "weather": {
+        "tempF": 72,
+        "windMph": 16,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 8,
-      "attendance": 43868
+      "opponent": "Baylor",
+      "date": "2025-10-18",
+      "time": "11:00",
+      "attendance": 43868,
+      "espnId": 401756927,
+      "pointsFor": 42,
+      "pointsAgainst": 36,
+      "weather": {
+        "tempF": 78,
+        "windMph": 10,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "UCF",
       "week": 8,
-      "attendance": 43445
+      "opponent": "West Virginia",
+      "date": "2025-10-18",
+      "time": "13:00",
+      "attendance": 43445,
+      "espnId": 401756928,
+      "pointsFor": 45,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 81,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
       "week": 9,
-      "attendance": 54256
+      "opponent": "Houston",
+      "date": "2025-10-25",
+      "time": "17:00",
+      "attendance": 54256,
+      "espnId": 401756929,
+      "pointsFor": 16,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 81,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 9,
-      "attendance": 38007
+      "opponent": "Baylor",
+      "date": "2025-10-25",
+      "time": "16:00",
+      "attendance": 38007,
+      "espnId": 401756930,
+      "pointsFor": 41,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 54,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 9,
-      "attendance": 61500
+      "opponent": "BYU",
+      "date": "2025-10-25",
+      "time": "14:30",
+      "attendance": 61500,
+      "espnId": 401756931,
+      "pointsFor": 27,
+      "pointsAgainst": 41,
+      "weather": {
+        "tempF": 57,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
       "week": 9,
-      "attendance": 41525
+      "opponent": "Kansas State",
+      "date": "2025-10-25",
+      "time": "11:00",
+      "attendance": 41525,
+      "espnId": 401756932,
+      "pointsFor": 17,
+      "pointsAgainst": 42,
+      "attendanceSource": "Kansas State official box score, kstatesports.com (at Kansas, 2025-10-25)",
+      "weather": {
+        "tempF": 53,
+        "windMph": 8,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "Texas Tech",
       "week": 9,
-      "attendance": 59625
+      "opponent": "Oklahoma State",
+      "date": "2025-10-25",
+      "time": "15:00",
+      "attendance": 59625,
+      "espnId": 401756933,
+      "pointsFor": 42,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 62,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
       "week": 9,
-      "attendance": 51949
+      "opponent": "Colorado",
+      "date": "2025-10-25",
+      "time": "20:15",
+      "attendance": 51949,
+      "espnId": 401756934,
+      "pointsFor": 53,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 66,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
       "week": 9,
-      "attendance": 54110
+      "opponent": "TCU",
+      "date": "2025-10-25",
+      "time": "18:00",
+      "attendance": 54110,
+      "espnId": 401756935,
+      "pointsFor": 17,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 50,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 10,
-      "attendance": 40212
+      "opponent": "UCF",
+      "date": "2025-11-01",
+      "time": "11:00",
+      "attendance": 40212,
+      "espnId": 401756936,
+      "pointsFor": 30,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 57,
+        "windMph": 4,
+        "precipIn": 0.04
+      }
     },
     {
       "team": "Colorado",
       "week": 10,
-      "attendance": 48322
+      "opponent": "Arizona",
+      "date": "2025-11-01",
+      "time": "17:00",
+      "attendance": 48322,
+      "espnId": 401756937,
+      "pointsFor": 17,
+      "pointsAgainst": 52,
+      "weather": {
+        "tempF": 59,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 10,
-      "attendance": 25049
+      "opponent": "West Virginia",
+      "date": "2025-11-01",
+      "time": "11:00",
+      "attendance": 25049,
+      "espnId": 401756938,
+      "pointsFor": 35,
+      "pointsAgainst": 45,
+      "weather": {
+        "tempF": 66,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 10,
-      "attendance": 60899
+      "opponent": "Arizona State",
+      "date": "2025-11-01",
+      "time": "12:00",
+      "attendance": 60899,
+      "espnId": 401756939,
+      "pointsFor": 19,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 45,
+        "windMph": 11,
+        "precipIn": 0.0
+      }
     },
     {
       "team": "Kansas",
       "week": 10,
-      "attendance": 39511
+      "opponent": "Oklahoma State",
+      "date": "2025-11-01",
+      "time": "15:00",
+      "attendance": 39511,
+      "espnId": 401756940,
+      "pointsFor": 38,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 50,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 10,
-      "attendance": 52111
+      "opponent": "Texas Tech",
+      "date": "2025-11-01",
+      "time": "14:30",
+      "attendance": 52111,
+      "espnId": 401756941,
+      "pointsFor": 20,
+      "pointsAgainst": 43,
+      "weather": {
+        "tempF": 48,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
       "week": 10,
-      "attendance": 51672
+      "opponent": "Cincinnati",
+      "date": "2025-11-01",
+      "time": "20:15",
+      "attendance": 51672,
+      "espnId": 401756942,
+      "pointsFor": 45,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 51,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 11,
-      "attendance": 41115
+      "opponent": "Kansas",
+      "date": "2025-11-08",
+      "time": "13:30",
+      "attendance": 41115,
+      "espnId": 401756943,
+      "pointsFor": 24,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 83,
+        "windMph": 0,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 11,
-      "attendance": 44197
+      "opponent": "Iowa State",
+      "date": "2025-11-08",
+      "time": "14:30",
+      "attendance": 44197,
+      "espnId": 401756944,
+      "pointsFor": 17,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 81,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 11,
-      "attendance": 60229
+      "opponent": "BYU",
+      "date": "2025-11-08",
+      "time": "11:00",
+      "attendance": 60229,
+      "espnId": 401756945,
+      "pointsFor": 29,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 67,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 11,
-      "attendance": 44206
+      "opponent": "Houston",
+      "date": "2025-11-07",
+      "time": "20:00",
+      "attendance": 44206,
+      "espnId": 401756946,
+      "pointsFor": 27,
+      "pointsAgainst": 30,
+      "weather": {
+        "tempF": 72,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
       "week": 11,
-      "attendance": 55510
+      "opponent": "Colorado",
+      "date": "2025-11-08",
+      "time": "12:00",
+      "attendance": 55510,
+      "espnId": 401756947,
+      "pointsFor": 29,
+      "pointsAgainst": 22,
+      "weather": {
+        "tempF": 61,
+        "windMph": 11,
+        "precipIn": 0.0
+      }
     },
     {
       "team": "Arizona State",
       "week": 12,
-      "attendance": 54101
+      "opponent": "West Virginia",
+      "date": "2025-11-15",
+      "time": "11:00",
+      "attendance": 54101,
+      "espnId": 401756948,
+      "pointsFor": 25,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 75,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 12,
-      "attendance": 64447
+      "opponent": "TCU",
+      "date": "2025-11-15",
+      "time": "20:15",
+      "attendance": 64447,
+      "espnId": 401756950,
+      "pointsFor": 44,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 53,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 12,
-      "attendance": 38186
+      "opponent": "Utah",
+      "date": "2025-11-15",
+      "time": "18:00",
+      "attendance": 38186,
+      "espnId": 401756949,
+      "pointsFor": 28,
+      "pointsAgainst": 55,
+      "weather": {
+        "tempF": 78,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 12,
-      "attendance": 37099
+      "opponent": "Arizona",
+      "date": "2025-11-15",
+      "time": "12:00",
+      "attendance": 37099,
+      "espnId": 401756951,
+      "pointsFor": 24,
+      "pointsAgainst": 30,
+      "weather": {
+        "tempF": 64,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 12,
-      "attendance": 46340
+      "opponent": "Kansas State",
+      "date": "2025-11-15",
+      "time": "11:00",
+      "attendance": 46340,
+      "espnId": 401756952,
+      "pointsFor": 6,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 72,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 12,
-      "attendance": 60229
+      "opponent": "UCF",
+      "date": "2025-11-15",
+      "time": "14:30",
+      "attendance": 60229,
+      "espnId": 401756953,
+      "pointsFor": 48,
+      "pointsAgainst": 9,
+      "weather": {
+        "tempF": 87,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 13,
-      "attendance": 40199
+      "opponent": "Baylor",
+      "date": "2025-11-22",
+      "time": "11:00",
+      "attendance": 40199,
+      "espnId": 401756954,
+      "pointsFor": 41,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 71,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 13,
-      "attendance": 38034
+      "opponent": "BYU",
+      "date": "2025-11-22",
+      "time": "20:00",
+      "attendance": 38034,
+      "espnId": 401756955,
+      "pointsFor": 14,
+      "pointsAgainst": 26,
+      "weather": {
+        "tempF": 44,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
       "week": 13,
-      "attendance": 43348
+      "opponent": "Arizona State",
+      "date": "2025-11-22",
+      "time": "18:00",
+      "attendance": 43348,
+      "espnId": 401756956,
+      "pointsFor": 17,
+      "pointsAgainst": 42,
+      "weather": {
+        "tempF": 44,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 13,
-      "attendance": 30852
+      "opponent": "TCU",
+      "date": "2025-11-22",
+      "time": "15:00",
+      "attendance": 30852,
+      "espnId": 401756957,
+      "pointsFor": 14,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 77,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 13,
-      "attendance": 58275
+      "opponent": "Kansas",
+      "date": "2025-11-22",
+      "time": "11:00",
+      "attendance": 58275,
+      "espnId": 401756958,
+      "pointsFor": 38,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 48,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 13,
-      "attendance": 41723
+      "opponent": "Oklahoma State",
+      "date": "2025-11-22",
+      "time": "16:00",
+      "attendance": 41723,
+      "espnId": 401756959,
+      "pointsFor": 17,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 80,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
       "week": 13,
-      "attendance": 51444
+      "opponent": "Kansas State",
+      "date": "2025-11-22",
+      "time": "14:00",
+      "attendance": 51444,
+      "espnId": 401756960,
+      "pointsFor": 51,
+      "pointsAgainst": 47,
+      "weather": {
+        "tempF": 47,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
       "week": 14,
-      "attendance": 54037
+      "opponent": "Arizona",
+      "date": "2025-11-28",
+      "time": "19:00",
+      "attendance": 54037,
+      "espnId": 401756961,
+      "pointsFor": 7,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 63,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 14,
-      "attendance": 60389
+      "opponent": "UCF",
+      "date": "2025-11-29",
+      "time": "11:00",
+      "attendance": 60389,
+      "espnId": 401756963,
+      "pointsFor": 41,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 41,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 14,
-      "attendance": 34720
+      "opponent": "Houston",
+      "date": "2025-11-29",
+      "time": "11:00",
+      "attendance": 34720,
+      "espnId": 401756962,
+      "pointsFor": 24,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 64,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
       "week": 14,
-      "attendance": 32811
+      "opponent": "Utah",
+      "date": "2025-11-28",
+      "time": "11:00",
+      "attendance": 32811,
+      "espnId": 401756964,
+      "pointsFor": 21,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 32,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 14,
-      "attendance": 49549
+      "opponent": "Colorado",
+      "date": "2025-11-29",
+      "time": "11:00",
+      "attendance": 49549,
+      "espnId": 401756965,
+      "pointsFor": 24,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 32,
+        "windMph": 21,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 14,
-      "attendance": 35127
+      "opponent": "Iowa State",
+      "date": "2025-11-29",
+      "time": "11:00",
+      "attendance": 35127,
+      "espnId": 401756966,
+      "pointsFor": 13,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 57,
+        "windMph": 17,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 14,
-      "attendance": 37259
+      "opponent": "Cincinnati",
+      "date": "2025-11-29",
+      "time": "14:30",
+      "attendance": 37259,
+      "espnId": 401756967,
+      "pointsFor": 45,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 68,
+        "windMph": 3,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "West Virginia",
       "week": 14,
-      "attendance": 44250
+      "opponent": "Texas Tech",
+      "date": "2025-11-29",
+      "time": "12:00",
+      "attendance": 44250,
+      "espnId": 401756968,
+      "pointsFor": 0,
+      "pointsAgainst": 49,
+      "weather": {
+        "tempF": 35,
+        "windMph": 0,
+        "precipIn": 0
+      }
     }
   ]
 }

@@ -250,27 +250,6 @@
       "pct": 0.9575542755870625
     },
     {
-      "team": "Oklahoma State",
-      "stadium": "Boone Pickens Stadium",
-      "capacity": 52168,
-      "multiVenue": false,
-      "games": 2,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 44809,
-          "pct": 0.8589365128047846
-        },
-        {
-          "week": 3,
-          "attendance": 48842,
-          "pct": 0.9362444410366508
-        }
-      ],
-      "total": 93651,
-      "pct": 0.8975904769207177
-    },
-    {
       "team": "Cincinnati",
       "stadium": "Nippert Stadium",
       "capacity": 38088,
@@ -290,6 +269,22 @@
       ],
       "total": 65435,
       "pct": 0.8589975845410628
+    },
+    {
+      "team": "Oklahoma State",
+      "stadium": "Boone Pickens Stadium",
+      "capacity": 52168,
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 44809,
+          "pct": 0.8589365128047846
+        }
+      ],
+      "total": 44809,
+      "pct": 0.8589365128047846
     },
     {
       "team": "Houston",
@@ -363,10 +358,10 @@
     },
     {
       "week": 3,
-      "games": 9,
-      "attendance": 422457,
-      "capacity": 446006,
-      "pct": 0.947200261879885
+      "games": 8,
+      "attendance": 373615,
+      "capacity": 393838,
+      "pct": 0.9486514759875888
     },
     {
       "week": 4,
@@ -447,9 +442,9 @@
     }
   ],
   "totals": {
-    "games": 32,
-    "attendance": 1572055,
-    "capacity": 1630235,
-    "pct": 0.9643118936840395
+    "games": 31,
+    "attendance": 1523213,
+    "capacity": 1578067,
+    "pct": 0.9652397521778227
   }
 }

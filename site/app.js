@@ -4,6 +4,14 @@ const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
 
+// Current view state: computed summary plus sort order. Default sort matches
+// the original sheet: season percent-full, best first.
+const view = {
+  season: null,
+  summary: null,
+  sort: { key: "pct", dir: "desc" },
+};
+
 async function loadJSON(path) {
   const resp = await fetch(path);
   if (!resp.ok) throw new Error(`${path}: ${resp.status}`);
@@ -16,39 +24,67 @@ function pctClass(p) {
   return "pct";
 }
 
-function render(teamsData, season) {
-  const numWeeks = season.weekLabels.length;
-  const teams = teamsForSeason(teamsData, season.season);
-  const summary = seasonSummary(teams, season.games, numWeeks);
-  // Only render week columns that have at least one game (2026 preseason
-  // renders no week columns until data arrives).
+// Sort-value extractor per column key. Week columns use that week's
+// attendance. Missing values sort last regardless of direction.
+function sortValue(row, key) {
+  if (key === "team") return row.team.toLowerCase();
+  if (key.startsWith("week:")) {
+    const w = Number(key.slice(5));
+    return row.weeks.find((x) => x.week === w)?.attendance ?? null;
+  }
+  return row[key] ?? null;
+}
+
+function sortedRows() {
+  const { key, dir } = view.sort;
+  const sign = dir === "asc" ? 1 : -1;
+  return [...view.summary.rows].sort((a, b) => {
+    const va = sortValue(a, key);
+    const vb = sortValue(b, key);
+    if (va == null && vb == null) return a.team.localeCompare(b.team);
+    if (va == null) return 1;
+    if (vb == null) return -1;
+    const cmp = typeof va === "string" ? va.localeCompare(vb) : va - vb;
+    return cmp ? sign * cmp : a.team.localeCompare(b.team);
+  });
+}
+
+function setSort(key) {
+  if (view.sort.key === key) {
+    view.sort.dir = view.sort.dir === "desc" ? "asc" : "desc";
+  } else {
+    // Fresh column: text starts ascending, numbers start descending.
+    view.sort = { key, dir: key === "team" ? "asc" : "desc" };
+  }
+  renderTable();
+}
+
+function renderTable() {
+  const { summary, season } = view;
   const activeWeeks = summary.weeks.filter((w) => w.games > 0).map((w) => w.week);
 
-  $("#summary").innerHTML = [
-    ["Total attendance", num(summary.totals.attendance)],
-    ["Percent full", pct(summary.totals.pct)],
-    ["Games", num(summary.totals.games)],
-    ["Weeks played", num(activeWeeks.length)],
-  ]
-    .map(
-      ([label, value]) =>
-        `<div class="card"><div class="label">${label}</div><div class="value">${value}</div></div>`
-    )
-    .join("");
+  const arrow = (key) =>
+    view.sort.key === key ? (view.sort.dir === "desc" ? " ▾" : " ▴") : "";
+  const th = (key, label, cls = "") =>
+    `<th class="sortable ${cls}" data-sort="${key}"${
+      view.sort.key === key
+        ? ` aria-sort="${view.sort.dir === "desc" ? "descending" : "ascending"}"`
+        : ""
+    }>${label}${arrow(key)}</th>`;
 
   const head = `<thead><tr>
-      <th class="team">Team</th><th>G</th><th>Capacity</th>
-      ${activeWeeks.map((w) => `<th>${season.weekLabels[w]}</th>`).join("")}
-      <th>Season</th></tr></thead>`;
+      ${th("team", "Team", "team")}${th("games", "G")}${th("capacity", "Capacity")}
+      ${activeWeeks.map((w) => th(`week:${w}`, season.weekLabels[w])).join("")}
+      ${th("pct", "Season")}</tr></thead>`;
 
-  const body = summary.rows
+  const body = sortedRows()
     .map((row) => {
       const byWeek = Object.fromEntries(row.weeks.map((w) => [w.week, w]));
       const cells = activeWeeks
         .map((w) => {
           const g = byWeek[w];
           return g
-            ? `<td>${num(g.attendance)}<span class="${pctClass(g.pct)}">${pct(g.pct)}</span></td>`
+            ? `<td class="game" data-team="${row.team}" data-week="${w}">${num(g.attendance)}<span class="${pctClass(g.pct)}">${pct(g.pct)}</span></td>`
             : "<td></td>";
         })
         .join("");
@@ -75,10 +111,139 @@ function render(teamsData, season) {
     </tfoot>`;
 
   $("#attendance-table").innerHTML = head + `<tbody>${body}</tbody>` + foot;
+}
+
+// ---- game-detail tooltip ----------------------------------------------
+
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function fmtDate(iso) {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  return `${DAYS[dt.getDay()]}, ${MONTHS[m - 1]} ${d}, ${y}`;
+}
+
+function fmtTime(hhmm) {
+  if (!hhmm) return "";
+  let [h, m] = hhmm.split(":").map(Number);
+  const ap = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return `${h}:${String(m).padStart(2, "0")} ${ap}`;
+}
+
+function tooltipHTML(team, week) {
+  const game = view.season.games.find((g) => g.team === team && g.week === week);
+  if (!game) return null;
+  const row = view.summary.rows.find((r) => r.team === team);
+  const wk = row.weeks.find((w) => w.week === week);
+  const cap = game.capacity ?? row.capacity;
+
+  const lines = [];
+  const when = [fmtDate(game.date), fmtTime(game.time)].filter(Boolean).join(" · ");
+  lines.push(`<div class="tip-head">${view.season.weekLabels[week]}${when ? " · " + when : ""}</div>`);
+  if (game.opponent) {
+    let result = "";
+    if (game.pointsFor != null) {
+      const won = game.pointsFor > game.pointsAgainst;
+      result = ` — <strong class="${won ? "win" : "loss"}">${won ? "W" : "L"} ${game.pointsFor}–${game.pointsAgainst}</strong>`;
+    }
+    lines.push(`<div class="tip-opp">vs ${game.opponent}${result}</div>`);
+  }
+  if (wk) {
+    lines.push(
+      `<div>${num(wk.attendance)} · ${pct(wk.pct)}${cap ? ` of ${num(cap)}` : ""}${game.venue ? ` · ${game.venue}` : ""}</div>`
+    );
+  }
+  if (game.weather) {
+    const w = game.weather;
+    const parts = [`${w.tempF}°F`];
+    if (w.windMph != null) parts.push(`wind ${w.windMph} mph`);
+    if (w.precipIn > 0) parts.push(`${w.precipIn}" precip`);
+    lines.push(`<div class="tip-wx">${parts.join(" · ")}</div>`);
+  }
+  if (game.attendanceSource) {
+    lines.push(`<div class="tip-src">Attendance: ${game.attendanceSource}</div>`);
+  }
+  if (game.espnId) {
+    lines.push(
+      `<a href="https://www.espn.com/college-football/boxscore/_/gameId/${game.espnId}" target="_blank" rel="noopener">Box score ↗</a>`
+    );
+  }
+  return lines.join("");
+}
+
+let hideTimer = null;
+
+function tooltipEl() {
+  let el = $("#tooltip");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "tooltip";
+    el.hidden = true;
+    document.body.appendChild(el);
+    el.addEventListener("mouseenter", () => clearTimeout(hideTimer));
+    el.addEventListener("mouseleave", hideTooltip);
+  }
+  return el;
+}
+
+function showTooltip(td) {
+  const html = tooltipHTML(td.dataset.team, Number(td.dataset.week));
+  if (!html) return;
+  clearTimeout(hideTimer);
+  const el = tooltipEl();
+  el.innerHTML = html;
+  el.hidden = false;
+  const r = td.getBoundingClientRect();
+  el.style.left = "0px";
+  el.style.top = "0px";
+  const w = el.offsetWidth;
+  let x = window.scrollX + r.left + r.width / 2 - w / 2;
+  x = Math.max(8, Math.min(x, window.scrollX + document.documentElement.clientWidth - w - 8));
+  el.style.left = `${x}px`;
+  el.style.top = `${window.scrollY + r.bottom + 6}px`;
+}
+
+function hideTooltip() {
+  hideTimer = setTimeout(() => {
+    tooltipEl().hidden = true;
+  }, 150);
+}
+
+function render(teamsData, season) {
+  const numWeeks = season.weekLabels.length;
+  const teams = teamsForSeason(teamsData, season.season);
+  view.season = season;
+  view.summary = seasonSummary(teams, season.games, numWeeks);
+  const summary = view.summary;
+  const activeWeeks = summary.weeks.filter((w) => w.games > 0).map((w) => w.week);
+
+  // If the sorted column is a week that doesn't exist in this season, fall
+  // back to the default sort.
+  if (view.sort.key.startsWith("week:") && !activeWeeks.includes(Number(view.sort.key.slice(5)))) {
+    view.sort = { key: "pct", dir: "desc" };
+  }
+
+  $("#summary").innerHTML = [
+    ["Total attendance", num(summary.totals.attendance)],
+    ["Percent full", pct(summary.totals.pct)],
+    ["Games", num(summary.totals.games)],
+    ["Weeks played", num(activeWeeks.length)],
+  ]
+    .map(
+      ([label, value]) =>
+        `<div class="card"><div class="label">${label}</div><div class="value">${value}</div></div>`
+    )
+    .join("");
+
+  renderTable();
+
   const empty = $("#empty-note");
   empty.hidden = activeWeeks.length > 0;
   empty.textContent = `No attendance reported yet for the ${season.season} season — check back after the first week of games.`;
-  $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records).`;
+  $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records). Click a column header to sort.`;
 }
 
 async function main() {
@@ -95,6 +260,21 @@ async function main() {
   const show = async (year) =>
     render(teamsData, await loadJSON(`data/seasons/${year}.json`));
   select.addEventListener("change", () => show(select.value));
+
+  // Delegated listeners survive table re-renders.
+  const table = $("#attendance-table");
+  table.addEventListener("click", (e) => {
+    const header = e.target.closest("th[data-sort]");
+    if (header) setSort(header.dataset.sort);
+  });
+  table.addEventListener("mouseover", (e) => {
+    const td = e.target.closest("td.game");
+    if (td) showTooltip(td);
+  });
+  table.addEventListener("mouseout", (e) => {
+    if (e.target.closest("td.game")) hideTooltip();
+  });
+
   await show(index.default);
 }
 

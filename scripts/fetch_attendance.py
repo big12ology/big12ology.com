@@ -6,42 +6,69 @@ Big 12 teams, and merges them into data/seasons/<year>.json. Games without
 attendance yet (unplayed or unreported) are kept with attendance: null so the
 site can show the schedule; totals only count reported games.
 
+Each game is enriched with opponent, local kickoff date/time, final score,
+the ESPN game id (CFBD reuses ESPN ids, so box-score links are free), and
+kickoff-hour weather from the Open-Meteo historical archive (free, keyless;
+skipped silently if unavailable).
+
 Requires CFBD_API_KEY (free key: https://collegefootballdata.com/key).
+
+Week numbers are derived from each game's venue-local date (see display_week)
+rather than trusting CFBD's week field.
 
 Usage: CFBD_API_KEY=... python3 scripts/fetch_attendance.py 2026
 """
+from __future__ import annotations
+
 import json
 import os
 import sys
 import urllib.parse
 import urllib.request
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent.parent
-API = "https://api.collegefootballdata.com/games"
+API = "https://api.collegefootballdata.com"
+WEATHER_API = "https://archive-api.open-meteo.com/v1/archive"
 
 
-def local_date(start: str, tz: ZoneInfo) -> str:
-    """CFBD reports kickoff in UTC; convert to the venue's local calendar date
-    (an evening game otherwise lands on the next day)."""
+def get_json(url: str, headers: dict | None = None):
+    req = urllib.request.Request(url, headers=headers or {})
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return json.load(resp)
+
+
+def cfbd(path: str, api_key: str, **params):
+    url = f"{API}{path}?{urllib.parse.urlencode(params)}"
+    return get_json(url, {"Authorization": f"Bearer {api_key}"})
+
+
+def display_week(d: date, season: int) -> int:
+    """Week number derived from the game's local date, using the fan
+    convention: Week 1 is the Sunday–Saturday window containing the Saturday
+    before Labor Day; the week before that is Week 0. Neither the sheet's
+    hand-entered weeks nor CFBD's week field is reliable at boundaries (CFBD
+    has no Week 0; a Friday game belongs with the following Saturday)."""
+    sept1 = date(season, 9, 1)
+    labor_day = sept1 + timedelta(days=(7 - sept1.weekday()) % 7)
+    week1_sunday = labor_day - timedelta(days=8)
+    return 1 + (d - week1_sunday).days // 7
+
+
+def kickoff_local(start: str, tz: ZoneInfo) -> datetime | None:
+    """CFBD reports kickoff in UTC; convert to venue-local time (an evening
+    game otherwise lands on the next calendar day)."""
     if not start:
-        return ""
+        return None
     try:
         dt = datetime.fromisoformat(start.replace("Z", "+00:00"))
     except ValueError:
-        return start[:10]
+        return None
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=ZoneInfo("UTC"))
-    return dt.astimezone(tz).date().isoformat()
-
-
-def fetch_games(year: int, api_key: str) -> list:
-    url = f"{API}?{urllib.parse.urlencode({'year': year, 'seasonType': 'regular', 'conference': 'B12'})}"
-    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {api_key}"})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return json.load(resp)
+    return dt.astimezone(tz)
 
 
 def load_api_key() -> str:
@@ -68,6 +95,62 @@ def update_seasons_index(year: int) -> None:
         path.write_text(json.dumps(index, indent=2) + "\n")
 
 
+def fetch_weather(games: list, venues_by_id: dict) -> None:
+    """Attach kickoff-hour weather to completed games, one Open-Meteo archive
+    call per venue (hourly series spanning that venue's games). Best-effort:
+    any failure just leaves games without weather."""
+    by_venue = {}
+    for g in games:
+        vid = g.pop("_venueId", None)
+        dt = g.pop("_kickoffUtc", None)
+        if vid is None or dt is None or not g.get("_completed", True):
+            continue
+        coords = venues_by_id.get(vid)
+        if not coords:
+            continue
+        by_venue.setdefault((vid, coords), []).append((g, dt))
+
+    for (vid, (lat, lon)), items in by_venue.items():
+        dates = [dt.date() for _, dt in items]
+        try:
+            resp = get_json(
+                f"{WEATHER_API}?"
+                + urllib.parse.urlencode(
+                    {
+                        "latitude": lat,
+                        "longitude": lon,
+                        "start_date": min(dates).isoformat(),
+                        "end_date": max(dates).isoformat(),
+                        "hourly": "temperature_2m,precipitation,wind_speed_10m",
+                        "temperature_unit": "fahrenheit",
+                        "wind_speed_unit": "mph",
+                        "precipitation_unit": "inch",
+                        "timezone": "UTC",
+                    }
+                )
+            )
+            hourly = resp["hourly"]
+            idx = {t: i for i, t in enumerate(hourly["time"])}
+        except Exception as e:
+            print(f"  weather unavailable for venue {vid}: {e}")
+            continue
+        for g, dt in items:
+            key = dt.strftime("%Y-%m-%dT%H:00")
+            i = idx.get(key)
+            if i is None:
+                continue
+            temp = hourly["temperature_2m"][i]
+            wind = hourly["wind_speed_10m"][i]
+            precip = hourly["precipitation"][i]
+            if temp is None:
+                continue
+            g["weather"] = {
+                "tempF": round(temp),
+                "windMph": round(wind) if wind is not None else None,
+                "precipIn": round(precip, 2) if precip else 0,
+            }
+
+
 def main(year: int) -> None:
     api_key = load_api_key()
 
@@ -89,7 +172,15 @@ def main(year: int) -> None:
             else []
         )
     }
-    raw = fetch_games(year, api_key)
+
+    out = ROOT / "data" / "seasons" / f"{year}.json"
+    raw = cfbd("/games", api_key, year=year, seasonType="regular", conference="B12")
+    venues = cfbd("/venues", api_key)
+    venues_by_id = {
+        v["id"]: (v["latitude"], v["longitude"])
+        for v in venues
+        if v.get("latitude") is not None
+    }
 
     games = []
     for g in raw:
@@ -108,13 +199,29 @@ def main(year: int) -> None:
         alt = venue_overrides.get(home, {}).get("venues", {})
         if neutral and venue not in alt:
             continue
+        kickoff = kickoff_local(g.get("startDate") or g.get("start_date"), timezones[home])
+        completed = g.get("completed", g.get("homePoints") is not None)
         game = {
             "team": home,
-            "week": g.get("week"),
+            "week": (
+                display_week(kickoff.date(), year) if kickoff else g.get("week")
+            ),
             "opponent": g.get("awayTeam") or g.get("away_team"),
-            "date": local_date(g.get("startDate") or g.get("start_date"), timezones[home]),
+            "date": kickoff.date().isoformat() if kickoff else "",
+            "time": (
+                kickoff.strftime("%H:%M")
+                if kickoff and not g.get("startTimeTBD")
+                else None
+            ),
             "attendance": g.get("attendance"),
+            "espnId": g.get("id"),
+            "_venueId": g.get("venueId"),
+            "_kickoffUtc": kickoff.astimezone(ZoneInfo("UTC")) if kickoff else None,
+            "_completed": completed,
         }
+        if completed and g.get("homePoints") is not None:
+            game["pointsFor"] = g.get("homePoints")
+            game["pointsAgainst"] = g.get("awayPoints")
         if venue in alt:
             game["venue"] = venue
             game["capacity"] = alt[venue]
@@ -123,15 +230,21 @@ def main(year: int) -> None:
             game["attendance"] = m["attendance"]
             game["attendanceSource"] = m["source"]
         games.append(game)
+
+    fetch_weather(games, venues_by_id)
+    for g in games:
+        g.pop("_venueId", None)
+        g.pop("_kickoffUtc", None)
+        g.pop("_completed", None)
     games.sort(key=lambda x: (x["week"], x["team"]))
 
-    out = ROOT / "data" / "seasons" / f"{year}.json"
     num_weeks = max((g["week"] for g in games), default=14) + 1
+    source = "CollegeFootballData API (collegefootballdata.com); weather via Open-Meteo"
     out.write_text(
         json.dumps(
             {
                 "season": year,
-                "source": "CollegeFootballData API (collegefootballdata.com)",
+                "source": source,
                 "weekLabels": [f"Week {w}" for w in range(num_weeks)],
                 "games": games,
             },
@@ -141,7 +254,8 @@ def main(year: int) -> None:
     )
     update_seasons_index(year)
     reported = sum(1 for g in games if g["attendance"] is not None)
-    print(f"{year}: {len(games)} home games, {reported} with attendance -> {out}")
+    weathered = sum(1 for g in games if "weather" in g)
+    print(f"{year}: {len(games)} home games, {reported} with attendance, {weathered} with weather -> {out}")
     per_team = {t: sum(1 for g in games if g["team"] == t) for t in teams}
     missing = [t for t, n in per_team.items() if n == 0]
     if missing:

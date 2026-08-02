@@ -1,6 +1,6 @@
 {
   "season": 2024,
-  "source": "CollegeFootballData API (collegefootballdata.com)",
+  "source": "CollegeFootballData API (collegefootballdata.com); weather via Open-Meteo",
   "weekLabels": [
     "Week 0",
     "Week 1",
@@ -24,721 +24,1630 @@
       "week": 1,
       "opponent": "New Mexico",
       "date": "2024-08-31",
-      "attendance": 44748
+      "time": "19:30",
+      "attendance": 44748,
+      "espnId": 401636608,
+      "pointsFor": 61,
+      "pointsAgainst": 39,
+      "weather": {
+        "tempF": 92,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
       "week": 1,
       "opponent": "Wyoming",
       "date": "2024-08-31",
-      "attendance": 48108
+      "time": "19:30",
+      "attendance": 48108,
+      "espnId": 401636609,
+      "pointsFor": 48,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 96,
+        "windMph": 19,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 1,
       "opponent": "Southern Illinois",
       "date": "2024-08-31",
-      "attendance": 63712
+      "time": "18:00",
+      "attendance": 63712,
+      "espnId": 401634240,
+      "pointsFor": 41,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 86,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 1,
       "opponent": "Tarleton State",
       "date": "2024-08-31",
-      "attendance": 42272
+      "time": "18:00",
+      "attendance": 42272,
+      "espnId": 401636610,
+      "pointsFor": 45,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 93,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 1,
       "opponent": "Towson",
       "date": "2024-08-31",
-      "attendance": 37654
+      "time": "14:30",
+      "attendance": 37654,
+      "espnId": 401628591,
+      "pointsFor": 38,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 80,
+        "windMph": 4,
+        "precipIn": 0.13
+      }
     },
     {
       "team": "Colorado",
       "week": 1,
       "opponent": "North Dakota State",
       "date": "2024-08-29",
-      "attendance": 49438
+      "time": "18:00",
+      "attendance": 49438,
+      "espnId": 401634206,
+      "pointsFor": 31,
+      "pointsAgainst": 26,
+      "weather": {
+        "tempF": 79,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 1,
       "opponent": "UNLV",
       "date": "2024-08-31",
-      "attendance": 25750
+      "time": "18:00",
+      "attendance": 25750,
+      "espnId": 401636611,
+      "pointsFor": 7,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 83,
+        "windMph": 11,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "Iowa State",
       "week": 1,
       "opponent": "North Dakota",
       "date": "2024-08-31",
-      "attendance": 56148
+      "time": "14:30",
+      "attendance": 56148,
+      "espnId": 401634197,
+      "pointsFor": 21,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 79,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
       "week": 1,
       "opponent": "Lindenwood",
       "date": "2024-08-29",
+      "time": "19:00",
       "attendance": 20829,
+      "espnId": 401636606,
+      "pointsFor": 48,
+      "pointsAgainst": 3,
       "venue": "Children's Mercy Park",
-      "capacity": 18467
+      "capacity": 18467,
+      "weather": {
+        "tempF": 87,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 1,
       "opponent": "UT Martin",
       "date": "2024-08-31",
-      "attendance": 51240
+      "time": "18:00",
+      "attendance": 51240,
+      "espnId": 401636612,
+      "pointsFor": 41,
+      "pointsAgainst": 6,
+      "weather": {
+        "tempF": 81,
+        "windMph": 0,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 1,
       "opponent": "South Dakota State",
       "date": "2024-08-31",
-      "attendance": 52202
+      "time": "13:00",
+      "attendance": 52202,
+      "espnId": 401634212,
+      "pointsFor": 44,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 84,
+        "windMph": 6,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "Texas Tech",
       "week": 1,
       "opponent": "Abilene Christian",
       "date": "2024-08-31",
+      "time": "18:30",
       "attendance": 60229,
-      "attendanceSource": "ACU official box score, acusports.com (vs Texas Tech, 2024-08-31)"
+      "espnId": 401636613,
+      "pointsFor": 52,
+      "pointsAgainst": 51,
+      "attendanceSource": "ACU official box score, acusports.com (vs Texas Tech, 2024-08-31)",
+      "weather": {
+        "tempF": 85,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 1,
       "opponent": "New Hampshire",
       "date": "2024-08-29",
-      "attendance": 44206
+      "time": "19:00",
+      "attendance": 44206,
+      "espnId": 401628582,
+      "pointsFor": 57,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 83,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
       "week": 1,
       "opponent": "Southern Utah",
       "date": "2024-08-29",
-      "attendance": 52210
+      "time": "19:00",
+      "attendance": 52210,
+      "espnId": 401636607,
+      "pointsFor": 49,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 75,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
       "week": 1,
       "opponent": "Penn State",
       "date": "2024-08-31",
-      "attendance": 62084
+      "time": "12:00",
+      "attendance": 62084,
+      "espnId": 401628457,
+      "pointsFor": 12,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 78,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 2,
       "opponent": "Northern Arizona",
       "date": "2024-09-07",
-      "attendance": 47746
+      "time": "19:00",
+      "attendance": 47746,
+      "espnId": 401636614,
+      "pointsFor": 22,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 93,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
       "week": 2,
       "opponent": "Mississippi State",
       "date": "2024-09-07",
-      "attendance": 45504
+      "time": "19:30",
+      "attendance": 45504,
+      "espnId": 401628343,
+      "pointsFor": 30,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 96,
+        "windMph": 22,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 2,
       "opponent": "Pittsburgh",
       "date": "2024-09-07",
-      "attendance": 37992
+      "time": "12:00",
+      "attendance": 37992,
+      "espnId": 401635538,
+      "pointsFor": 27,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 64,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 2,
       "opponent": "Arkansas",
       "date": "2024-09-07",
-      "attendance": 52202
+      "time": "11:00",
+      "attendance": 52202,
+      "espnId": 401628336,
+      "pointsFor": 39,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 71,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 2,
       "opponent": "Long Island University",
       "date": "2024-09-07",
-      "attendance": 44063
+      "time": "19:00",
+      "attendance": 44063,
+      "espnId": 401636615,
+      "pointsFor": 45,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 80,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 2,
       "opponent": "Sam Houston",
       "date": "2024-09-07",
-      "attendance": 43807
+      "time": "18:30",
+      "attendance": 43807,
+      "espnId": 401636617,
+      "pointsFor": 45,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 81,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
       "week": 2,
       "opponent": "Baylor",
       "date": "2024-09-07",
-      "attendance": 52827
+      "time": "13:30",
+      "attendance": 52827,
+      "espnId": 401636618,
+      "pointsFor": 23,
+      "pointsAgainst": 12,
+      "weather": {
+        "tempF": 88,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
       "week": 2,
       "opponent": "UAlbany",
       "date": "2024-09-07",
-      "attendance": 50073
+      "time": "18:00",
+      "attendance": 50073,
+      "espnId": 401628593,
+      "pointsFor": 49,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 67,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 3,
       "opponent": "Air Force",
       "date": "2024-09-14",
-      "attendance": 46212
+      "time": "18:30",
+      "attendance": 46212,
+      "espnId": 401636860,
+      "pointsFor": 31,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 95,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 3,
       "opponent": "Rice",
       "date": "2024-09-14",
-      "attendance": 28146
+      "time": "19:00",
+      "attendance": 28146,
+      "espnId": 401636862,
+      "pointsFor": 33,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 87,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
       "week": 3,
       "opponent": "UNLV",
       "date": "2024-09-13",
+      "time": "18:00",
       "attendance": 21493,
+      "espnId": 401636863,
+      "pointsFor": 20,
+      "pointsAgainst": 23,
       "venue": "Children's Mercy Park",
-      "capacity": 18467
+      "capacity": 18467,
+      "weather": {
+        "tempF": 75,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 3,
       "opponent": "Arizona",
       "date": "2024-09-13",
-      "attendance": 51290
+      "time": "19:00",
+      "attendance": 51290,
+      "espnId": 401636864,
+      "pointsFor": 31,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 80,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 3,
       "opponent": "UCF",
       "date": "2024-09-14",
-      "attendance": 48889
+      "time": "18:30",
+      "attendance": 48889,
+      "espnId": 401636866,
+      "pointsFor": 34,
+      "pointsAgainst": 35,
+      "weather": {
+        "tempF": 95,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 3,
       "opponent": "North Texas",
       "date": "2024-09-14",
-      "attendance": 57865
+      "time": "11:00",
+      "attendance": 57865,
+      "espnId": 401636868,
+      "pointsFor": 66,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 85,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 4,
       "opponent": "Kansas State",
       "date": "2024-09-21",
-      "attendance": 64201
+      "time": "20:30",
+      "attendance": 64201,
+      "espnId": 401636872,
+      "pointsFor": 38,
+      "pointsAgainst": 9,
+      "weather": {
+        "tempF": 61,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 4,
       "opponent": "Houston",
       "date": "2024-09-21",
-      "attendance": 38007
+      "time": "12:00",
+      "attendance": 38007,
+      "espnId": 401636873,
+      "pointsFor": 34,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 81,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
       "week": 4,
       "opponent": "Baylor",
       "date": "2024-09-21",
-      "attendance": 52794
+      "time": "18:00",
+      "attendance": 52794,
+      "espnId": 401636874,
+      "pointsFor": 38,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 65,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 4,
       "opponent": "Arkansas State",
       "date": "2024-09-21",
-      "attendance": 55428
+      "time": "13:00",
+      "attendance": 55428,
+      "espnId": 401636875,
+      "pointsFor": 52,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 86,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 4,
       "opponent": "Utah",
       "date": "2024-09-21",
-      "attendance": 52202
+      "time": "15:00",
+      "attendance": 52202,
+      "espnId": 401636876,
+      "pointsFor": 19,
+      "pointsAgainst": 22,
+      "weather": {
+        "tempF": 96,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 4,
       "opponent": "Arizona State",
       "date": "2024-09-21",
-      "attendance": 58795
+      "time": "14:30",
+      "attendance": 58795,
+      "espnId": 401636877,
+      "pointsFor": 30,
+      "pointsAgainst": 22,
+      "weather": {
+        "tempF": 87,
+        "windMph": 15,
+        "precipIn": 0.0
+      }
     },
     {
       "team": "West Virginia",
       "week": 4,
       "opponent": "Kansas",
       "date": "2024-09-21",
-      "attendance": 52428
+      "time": "12:00",
+      "attendance": 52428,
+      "espnId": 401636879,
+      "pointsFor": 32,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 79,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 5,
       "opponent": "BYU",
       "date": "2024-09-28",
-      "attendance": 39583
+      "time": "11:00",
+      "attendance": 39583,
+      "espnId": 401636880,
+      "pointsFor": 28,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 80,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 5,
       "opponent": "Iowa State",
       "date": "2024-09-28",
-      "attendance": 25138
+      "time": "18:00",
+      "attendance": 25138,
+      "espnId": 401636881,
+      "pointsFor": 0,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 88,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
       "week": 5,
       "opponent": "TCU",
       "date": "2024-09-28",
+      "time": "14:30",
       "attendance": 47928,
+      "espnId": 401636882,
+      "pointsFor": 27,
+      "pointsAgainst": 38,
       "venue": "GEHA Field at Arrowhead Stadium",
-      "capacity": 76416
+      "capacity": 76416,
+      "weather": {
+        "tempF": 79,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 5,
       "opponent": "Oklahoma State",
       "date": "2024-09-28",
+      "time": "11:00",
       "attendance": 51741,
-      "attendanceSource": "Sports-Reference box score (Oklahoma State at Kansas State, 2024-09-28)"
+      "espnId": 401636883,
+      "pointsFor": 42,
+      "pointsAgainst": 20,
+      "attendanceSource": "Sports-Reference box score (Oklahoma State at Kansas State, 2024-09-28)",
+      "weather": {
+        "tempF": 75,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 5,
       "opponent": "Cincinnati",
       "date": "2024-09-28",
-      "attendance": 60229
+      "time": "19:00",
+      "attendance": 60229,
+      "espnId": 401636884,
+      "pointsFor": 44,
+      "pointsAgainst": 41,
+      "weather": {
+        "tempF": 83,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 5,
       "opponent": "Colorado",
       "date": "2024-09-28",
-      "attendance": 45702
+      "time": "15:30",
+      "attendance": 45702,
+      "espnId": 401636885,
+      "pointsFor": 21,
+      "pointsAgainst": 48,
+      "weather": {
+        "tempF": 84,
+        "windMph": 9,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "Utah",
       "week": 5,
       "opponent": "Arizona",
       "date": "2024-09-28",
-      "attendance": 52898
+      "time": "20:15",
+      "attendance": 52898,
+      "espnId": 401636886,
+      "pointsFor": 10,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 77,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 6,
       "opponent": "Texas Tech",
       "date": "2024-10-05",
-      "attendance": 45773
+      "time": "20:00",
+      "attendance": 45773,
+      "espnId": 401636887,
+      "pointsFor": 22,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 92,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
       "week": 6,
       "opponent": "Kansas",
       "date": "2024-10-05",
-      "attendance": 54639
+      "time": "17:00",
+      "attendance": 54639,
+      "espnId": 401636888,
+      "pointsFor": 35,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 106,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 6,
       "opponent": "Baylor",
       "date": "2024-10-05",
-      "attendance": 61500
+      "time": "18:30",
+      "attendance": 61500,
+      "espnId": 401636889,
+      "pointsFor": 43,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 84,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 6,
       "opponent": "West Virginia",
       "date": "2024-10-05",
-      "attendance": 52202
+      "time": "15:00",
+      "attendance": 52202,
+      "espnId": 401636890,
+      "pointsFor": 14,
+      "pointsAgainst": 38,
+      "weather": {
+        "tempF": 87,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 6,
       "opponent": "Houston",
       "date": "2024-10-04",
-      "attendance": 44211
+      "time": "18:30",
+      "attendance": 44211,
+      "espnId": 401636891,
+      "pointsFor": 19,
+      "pointsAgainst": 30,
+      "weather": {
+        "tempF": 89,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
       "week": 7,
       "opponent": "Utah",
       "date": "2024-10-11",
-      "attendance": 45310
+      "time": "19:30",
+      "attendance": 45310,
+      "espnId": 401636892,
+      "pointsFor": 27,
+      "pointsAgainst": 19,
+      "weather": {
+        "tempF": 95,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 7,
       "opponent": "Arizona",
       "date": "2024-10-12",
-      "attendance": 64420
+      "time": "14:00",
+      "attendance": 64420,
+      "espnId": 401636893,
+      "pointsFor": 41,
+      "pointsAgainst": 19,
+      "weather": {
+        "tempF": 77,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
       "week": 7,
       "opponent": "Kansas State",
       "date": "2024-10-12",
-      "attendance": 53972
+      "time": "20:15",
+      "attendance": 53972,
+      "espnId": 401636894,
+      "pointsFor": 28,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 62,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 7,
       "opponent": "Cincinnati",
       "date": "2024-10-12",
-      "attendance": 42611
+      "time": "15:30",
+      "attendance": 42611,
+      "espnId": 401636895,
+      "pointsFor": 13,
+      "pointsAgainst": 19,
+      "weather": {
+        "tempF": 81,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
       "week": 7,
       "opponent": "Iowa State",
       "date": "2024-10-12",
-      "attendance": 55202
+      "time": "20:00",
+      "attendance": 55202,
+      "espnId": 401636896,
+      "pointsFor": 16,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 60,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 8,
       "opponent": "Colorado",
       "date": "2024-10-19",
-      "attendance": 50724
+      "time": "13:00",
+      "attendance": 50724,
+      "espnId": 401636897,
+      "pointsFor": 7,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 66,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 8,
       "opponent": "Oklahoma State",
       "date": "2024-10-18",
-      "attendance": 62841
+      "time": "20:15",
+      "attendance": 62841,
+      "espnId": 401636898,
+      "pointsFor": 38,
+      "pointsAgainst": 35,
+      "weather": {
+        "tempF": 43,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 8,
       "opponent": "Arizona State",
       "date": "2024-10-19",
-      "attendance": 38007
+      "time": "12:00",
+      "attendance": 38007,
+      "espnId": 401636899,
+      "pointsFor": 24,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 61,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 8,
       "opponent": "UCF",
       "date": "2024-10-19",
-      "attendance": 61500
+      "time": "18:30",
+      "attendance": 61500,
+      "espnId": 401636900,
+      "pointsFor": 38,
+      "pointsAgainst": 35,
+      "weather": {
+        "tempF": 68,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
       "week": 8,
       "opponent": "Houston",
       "date": "2024-10-19",
+      "time": "14:30",
       "attendance": 38619,
+      "espnId": 401636901,
+      "pointsFor": 42,
+      "pointsAgainst": 14,
       "venue": "GEHA Field at Arrowhead Stadium",
-      "capacity": 76416
+      "capacity": 76416,
+      "weather": {
+        "tempF": 73,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 8,
       "opponent": "Baylor",
       "date": "2024-10-19",
-      "attendance": 60229
+      "time": "15:00",
+      "attendance": 60229,
+      "espnId": 401636902,
+      "pointsFor": 35,
+      "pointsAgainst": 59,
+      "weather": {
+        "tempF": 68,
+        "windMph": 20,
+        "precipIn": 0.0
+      }
     },
     {
       "team": "Utah",
       "week": 8,
       "opponent": "TCU",
       "date": "2024-10-19",
-      "attendance": 53299
+      "time": "20:30",
+      "attendance": 53299,
+      "espnId": 401636903,
+      "pointsFor": 7,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 45,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
       "week": 8,
       "opponent": "Kansas State",
       "date": "2024-10-19",
-      "attendance": 54327
+      "time": "19:30",
+      "attendance": 54327,
+      "espnId": 401636904,
+      "pointsFor": 18,
+      "pointsAgainst": 45,
+      "weather": {
+        "tempF": 55,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 9,
       "opponent": "West Virginia",
       "date": "2024-10-26",
-      "attendance": 49888
+      "time": "16:00",
+      "attendance": 49888,
+      "espnId": 401636905,
+      "pointsFor": 26,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 98,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 9,
       "opponent": "Oklahoma State",
       "date": "2024-10-26",
-      "attendance": 44987
+      "time": "14:30",
+      "attendance": 44987,
+      "espnId": 401636906,
+      "pointsFor": 38,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 87,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
       "week": 9,
       "opponent": "Cincinnati",
       "date": "2024-10-26",
-      "attendance": 53202
+      "time": "20:15",
+      "attendance": 53202,
+      "espnId": 401636907,
+      "pointsFor": 34,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 54,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 9,
       "opponent": "Utah",
       "date": "2024-10-26",
-      "attendance": 28251
+      "time": "18:00",
+      "attendance": 28251,
+      "espnId": 401636908,
+      "pointsFor": 17,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 82,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 9,
       "opponent": "Kansas",
       "date": "2024-10-26",
-      "attendance": 52074
+      "time": "19:00",
+      "attendance": 52074,
+      "espnId": 401636909,
+      "pointsFor": 29,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 56,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 9,
       "opponent": "Texas Tech",
       "date": "2024-10-26",
-      "attendance": 42144
+      "time": "14:30",
+      "attendance": 42144,
+      "espnId": 401636910,
+      "pointsFor": 35,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 83,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 9,
       "opponent": "BYU",
       "date": "2024-10-26",
-      "attendance": 42144
+      "time": "15:30",
+      "attendance": 42144,
+      "espnId": 401636911,
+      "pointsFor": 24,
+      "pointsAgainst": 37,
+      "weather": {
+        "tempF": 81,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 10,
       "opponent": "TCU",
       "date": "2024-11-02",
-      "attendance": 44171
+      "time": "19:00",
+      "attendance": 44171,
+      "espnId": 401636912,
+      "pointsFor": 37,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 77,
+        "windMph": 14,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 10,
       "opponent": "Kansas State",
       "date": "2024-11-02",
-      "attendance": 23085
+      "time": "14:30",
+      "attendance": 23085,
+      "espnId": 401636913,
+      "pointsFor": 24,
+      "pointsAgainst": 19,
+      "weather": {
+        "tempF": 79,
+        "windMph": 12,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "Iowa State",
       "week": 10,
       "opponent": "Texas Tech",
       "date": "2024-11-02",
-      "attendance": 61500
+      "time": "14:30",
+      "attendance": 61500,
+      "espnId": 401636914,
+      "pointsFor": 22,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 55,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 10,
       "opponent": "Arizona State",
       "date": "2024-11-02",
-      "attendance": 52202
+      "time": "14:30",
+      "attendance": 52202,
+      "espnId": 401636915,
+      "pointsFor": 21,
+      "pointsAgainst": 42,
+      "weather": {
+        "tempF": 71,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 10,
       "opponent": "Arizona",
       "date": "2024-11-02",
-      "attendance": 42110
+      "time": "15:30",
+      "attendance": 42110,
+      "espnId": 401636916,
+      "pointsFor": 56,
+      "pointsAgainst": 12,
+      "weather": {
+        "tempF": 79,
+        "windMph": 11,
+        "precipIn": 0.0
+      }
     },
     {
       "team": "Arizona State",
       "week": 11,
       "opponent": "UCF",
       "date": "2024-11-09",
-      "attendance": 44940
+      "time": "17:00",
+      "attendance": 44940,
+      "espnId": 401636917,
+      "pointsFor": 35,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 72,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 11,
       "opponent": "West Virginia",
       "date": "2024-11-09",
-      "attendance": 38007
+      "time": "12:00",
+      "attendance": 38007,
+      "espnId": 401636918,
+      "pointsFor": 24,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 57,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
       "week": 11,
       "opponent": "Iowa State",
       "date": "2024-11-09",
+      "time": "14:30",
       "attendance": 51109,
+      "espnId": 401636919,
+      "pointsFor": 45,
+      "pointsAgainst": 36,
       "venue": "GEHA Field at Arrowhead Stadium",
-      "capacity": 76416
+      "capacity": 76416,
+      "weather": {
+        "tempF": 61,
+        "windMph": 11,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "TCU",
       "week": 11,
       "opponent": "Oklahoma State",
       "date": "2024-11-09",
-      "attendance": 45348
+      "time": "18:00",
+      "attendance": 45348,
+      "espnId": 401636920,
+      "pointsFor": 38,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 62,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 11,
       "opponent": "Colorado",
       "date": "2024-11-09",
-      "attendance": 60229
+      "time": "15:00",
+      "attendance": 60229,
+      "espnId": 401636921,
+      "pointsFor": 27,
+      "pointsAgainst": 41,
+      "weather": {
+        "tempF": 63,
+        "windMph": 13,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
       "week": 11,
       "opponent": "BYU",
       "date": "2024-11-09",
-      "attendance": 54383
+      "time": "20:15",
+      "attendance": 54383,
+      "espnId": 401636922,
+      "pointsFor": 21,
+      "pointsAgainst": 22,
+      "weather": {
+        "tempF": 36,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 12,
       "opponent": "Houston",
       "date": "2024-11-15",
-      "attendance": 38538
+      "time": "20:15",
+      "attendance": 38538,
+      "espnId": 401636923,
+      "pointsFor": 27,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 62,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 12,
       "opponent": "Kansas",
       "date": "2024-11-16",
-      "attendance": 62704
+      "time": "20:15",
+      "attendance": 62704,
+      "espnId": 401636924,
+      "pointsFor": 13,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 30,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
       "week": 12,
       "opponent": "Utah",
       "date": "2024-11-16",
-      "attendance": 54646
+      "time": "10:00",
+      "attendance": 54646,
+      "espnId": 401636925,
+      "pointsFor": 49,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 47,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 12,
       "opponent": "Cincinnati",
       "date": "2024-11-16",
-      "attendance": 52881
+      "time": "19:00",
+      "attendance": 52881,
+      "espnId": 401636926,
+      "pointsFor": 34,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 50,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 12,
       "opponent": "Arizona State",
       "date": "2024-11-16",
-      "attendance": 51880
+      "time": "18:00",
+      "attendance": 51880,
+      "espnId": 401636927,
+      "pointsFor": 14,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 59,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
       "week": 12,
       "opponent": "Baylor",
       "date": "2024-11-16",
-      "attendance": 52376
+      "time": "16:00",
+      "attendance": 52376,
+      "espnId": 401636929,
+      "pointsFor": 35,
+      "pointsAgainst": 49,
+      "weather": {
+        "tempF": 52,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
       "week": 13,
       "opponent": "BYU",
       "date": "2024-11-23",
-      "attendance": 55400
+      "time": "13:30",
+      "attendance": 55400,
+      "espnId": 401636930,
+      "pointsFor": 28,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 74,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
       "week": 13,
       "opponent": "Baylor",
       "date": "2024-11-23",
-      "attendance": 34166
+      "time": "18:00",
+      "attendance": 34166,
+      "espnId": 401636931,
+      "pointsFor": 10,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 63,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
       "week": 13,
       "opponent": "Colorado",
       "date": "2024-11-23",
+      "time": "14:30",
       "attendance": 56470,
+      "espnId": 401636932,
+      "pointsFor": 37,
+      "pointsAgainst": 21,
       "venue": "GEHA Field at Arrowhead Stadium",
-      "capacity": 76416
+      "capacity": 76416,
+      "weather": {
+        "tempF": 54,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
       "week": 13,
       "opponent": "Cincinnati",
       "date": "2024-11-23",
-      "attendance": 50988
+      "time": "19:00",
+      "attendance": 50988,
+      "espnId": 401636933,
+      "pointsFor": 41,
+      "pointsAgainst": 15,
+      "weather": {
+        "tempF": 53,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
       "week": 13,
       "opponent": "Texas Tech",
       "date": "2024-11-23",
-      "attendance": 52202
+      "time": "14:30",
+      "attendance": 52202,
+      "espnId": 401636934,
+      "pointsFor": 48,
+      "pointsAgainst": 56,
+      "weather": {
+        "tempF": 65,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
       "week": 13,
       "opponent": "Arizona",
       "date": "2024-11-23",
-      "attendance": 42977
+      "time": "14:00",
+      "attendance": 42977,
+      "espnId": 401636935,
+      "pointsFor": 49,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 72,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
       "week": 13,
       "opponent": "Iowa State",
       "date": "2024-11-23",
-      "attendance": 52152
+      "time": "17:30",
+      "attendance": 52152,
+      "espnId": 401636936,
+      "pointsFor": 28,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 52,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
       "week": 13,
       "opponent": "UCF",
       "date": "2024-11-23",
-      "attendance": 40722
+      "time": "15:30",
+      "attendance": 40722,
+      "espnId": 401636937,
+      "pointsFor": 31,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 45,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 14,
       "opponent": "Arizona State",
       "date": "2024-11-30",
-      "attendance": 49813
+      "time": "13:30",
+      "attendance": 49813,
+      "espnId": 401636940,
+      "pointsFor": 7,
+      "pointsAgainst": 49,
+      "weather": {
+        "tempF": 75,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
       "week": 14,
       "opponent": "Houston",
       "date": "2024-11-30",
-      "attendance": 59213
+      "time": "20:15",
+      "attendance": 59213,
+      "espnId": 401636942,
+      "pointsFor": 30,
+      "pointsAgainst": 18,
+      "weather": {
+        "tempF": 32,
+        "windMph": 0,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
       "week": 14,
       "opponent": "Kansas",
       "date": "2024-11-30",
-      "attendance": 36585
+      "time": "11:00",
+      "attendance": 36585,
+      "espnId": 401636941,
+      "pointsFor": 45,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 52,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
       "week": 14,
       "opponent": "TCU",
       "date": "2024-11-30",
-      "attendance": 30021
+      "time": "18:00",
+      "attendance": 30021,
+      "espnId": 401636943,
+      "pointsFor": 13,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 32,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
       "week": 14,
       "opponent": "Oklahoma State",
       "date": "2024-11-29",
-      "attendance": 51030
+      "time": "10:00",
+      "attendance": 51030,
+      "espnId": 401636938,
+      "pointsFor": 52,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 27,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Iowa State",
       "week": 14,
       "opponent": "Kansas State",
       "date": "2024-11-30",
-      "attendance": 56228
+      "time": "18:30",
+      "attendance": 56228,
+      "espnId": 401636944,
+      "pointsFor": 29,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 23,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
       "week": 14,
       "opponent": "West Virginia",
       "date": "2024-11-30",
-      "attendance": 52785
+      "time": "11:00",
+      "attendance": 52785,
+      "espnId": 401636945,
+      "pointsFor": 52,
+      "pointsAgainst": 15,
+      "weather": {
+        "tempF": 48,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
       "week": 14,
       "opponent": "Utah",
       "date": "2024-11-29",
-      "attendance": 40747
+      "time": "20:00",
+      "attendance": 40747,
+      "espnId": 401636939,
+      "pointsFor": 14,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 58,
+        "windMph": 9,
+        "precipIn": 0.01
+      }
     }
   ]
 }

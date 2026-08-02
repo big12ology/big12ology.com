@@ -8,16 +8,15 @@ import { readFileSync } from "node:fs";
 import { seasonSummary } from "../site/stats.js";
 
 const read = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url)));
-const teamsData = read("../data/teams.json");
-const { games } = read("../data/seasons/2025.json");
 const fixture = read("./fixture-2025-sheet.json");
 
-// The fixture is a pure math-engine check: feed the engine the sheet's own
-// inputs (including its original capacities, some since corrected in
-// teams.json) and require the sheet's own outputs.
-const teams = teamsData.teams.map((t) => ({
-  team: t.team,
-  capacity: fixture.sheetCapacities[t.team],
+// The fixture is a pure math-engine check, fully self-contained: the sheet's
+// own inputs (its games, week labels, and original capacities — some since
+// corrected in production data) must reproduce the sheet's own outputs.
+const games = fixture.games;
+const teams = Object.entries(fixture.sheetCapacities).map(([team, capacity]) => ({
+  team,
+  capacity,
 }));
 
 const summary = seasonSummary(teams, games);

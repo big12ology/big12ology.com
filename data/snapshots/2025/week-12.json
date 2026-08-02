@@ -523,12 +523,12 @@
           "pct": 0.8589365128047846
         },
         {
-          "week": 3,
+          "week": 4,
           "attendance": 48842,
           "pct": 0.9362444410366508
         },
         {
-          "week": 4,
+          "week": 5,
           "attendance": 45689,
           "pct": 0.8758050912436743
         },
@@ -653,24 +653,24 @@
     },
     {
       "week": 3,
-      "games": 9,
-      "attendance": 422457,
-      "capacity": 446006,
-      "pct": 0.947200261879885
+      "games": 8,
+      "attendance": 373615,
+      "capacity": 393838,
+      "pct": 0.9486514759875888
     },
     {
       "week": 4,
       "games": 7,
-      "attendance": 320190,
+      "attendance": 323343,
       "capacity": 330666,
-      "pct": 0.9683184845130736
+      "pct": 0.9778537859955363
     },
     {
       "week": 5,
-      "games": 6,
-      "attendance": 316042,
-      "capacity": 316807,
-      "pct": 0.9975852806282689
+      "games": 7,
+      "attendance": 361731,
+      "capacity": 368975,
+      "pct": 0.9803672335524087
     },
     {
       "week": 6,

@@ -18,13 +18,22 @@ the repo as-is, and a scheduled GitHub Action updates the data files weekly.
   in Kansas City during the Memorial Stadium rebuild.
 - `data/manual-attendance.json` — hand-verified figures for games the API
   lacks, each citing an official box score. Merged in by the fetch script.
-- `data/seasons/<year>.json` — one game per Big 12 home game.
+- `data/seasons/<year>.json` — one game per Big 12 home game, with opponent,
+  venue-local date/time, final score, ESPN game id (box-score links), and
+  kickoff-hour weather (Open-Meteo historical archive, free/keyless).
   `attendance: null` means unplayed/unreported; such games are excluded from
   every total and game count. Games at alternate venues carry their own
   `venue` and `capacity`; percent-full always divides by the per-game capacity.
+  **Week numbers are derived from the game date** (Week 1 = the Sun–Sat window
+  containing the Saturday before Labor Day; Week 0 precedes it) — CFBD's week
+  field has no Week 0, and hand-entered weeks proved unreliable at Fri/Sat
+  boundaries.
 - `data/snapshots/<year>/week-NN.json` — cumulative standings through each week.
-- `tests/parity.test.mjs` — asserts the stats module reproduces every number
-  from the audited 2025 spreadsheet (fixture = the sheet's own computed values).
+- `tests/parity.test.mjs` — self-contained math-engine check: the original
+  2025 sheet's inputs (embedded in the fixture) must reproduce the sheet's own
+  outputs. Production 2025 data now comes from the CFBD API (values verified
+  identical to the sheet, game for game) with date-derived weeks and corrected
+  capacities, so it intentionally differs from the fixture.
 
 ## Differences from the spreadsheet (deliberate)
 
