@@ -90,8 +90,12 @@ th[aria-sort] { color: var(--accent); }
   th[aria-sort] { color: var(--text); }
 }
 th.team, td.team { text-align: left; position: sticky; left: 0; background: var(--surface); z-index: 1; }
-td.team { font-weight: 600; }
+td.team { font-weight: 600; box-shadow: inset 3px 0 0 var(--tc, transparent); }
+td.team .team-name { display: inline-block; vertical-align: middle; }
 td.team .stadium { display: block; font-weight: 400; font-size: 0.72rem; color: var(--muted); }
+.team-logo { width: 22px; height: 22px; object-fit: contain; vertical-align: middle; margin-right: 0.5rem; }
+h1 { display: flex; align-items: center; gap: 0.6rem; }
+h1 .brand { height: 30px; width: auto; }
 tr:hover td { background: color-mix(in srgb, var(--accent) 4%, var(--surface)); }
 
 td .pct { display: block; font-size: 0.72rem; color: var(--muted); }

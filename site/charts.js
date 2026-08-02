@@ -173,7 +173,7 @@ function teamBars(cardEl, summary) {
   const t = theme();
   const rows = summary.rows.filter((r) => r.games > 0);
   if (!rows.length) return emptyNote(cardEl, "No attendance yet this season.");
-  const rowH = 26, W = 720, m = { t: 8, r: 56, b: 8, l: 128 };
+  const rowH = 26, W = 720, m = { t: 8, r: 56, b: 8, l: 152 };
   const H = m.t + m.b + rows.length * rowH;
   const iw = W - m.l - m.r;
   const maxPct = Math.max(1.05, ...rows.map((r) => r.pct));
@@ -181,8 +181,13 @@ function teamBars(cardEl, summary) {
   rows.forEach((r, i) => {
     const yy = m.t + i * rowH + (rowH - 16) / 2;
     const w = (r.pct / maxPct) * iw;
-    marks += `<text x="${m.l - 8}" y="${yy + 12}" text-anchor="end" class="lbl">${r.team}</text>` +
-      `<path d="${roundedRightBar(m.l, yy, w, 16)}" fill="${t.series[0]}" data-i="${i}" class="hit"/>` +
+    // Brand color is decoration here — identity rides the name label and logo.
+    const fill = r.color ?? t.series[0];
+    const logo = r.logo
+      ? `<image href="${r.logo}" x="${m.l - 24}" y="${yy - 1}" width="18" height="18"/>`
+      : "";
+    marks += `<text x="${m.l - 30}" y="${yy + 12}" text-anchor="end" class="lbl">${r.team}</text>` + logo +
+      `<path d="${roundedRightBar(m.l, yy, w, 16)}" fill="${fill}" data-i="${i}" class="hit"/>` +
       `<text x="${m.l + w + 6}" y="${yy + 12}" class="val">${pct(r.pct)}</text>`;
   });
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");

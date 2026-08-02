@@ -5,7 +5,8 @@
     "capacity and stadium are keyed by year and resolved to the most recent entry at or before the season being viewed (so 2026 inherits 2025 values until updated).",
     "Capacities verified 2026-08 against official athletic-department sources; where the athletic department publishes a figure it overrides Wikipedia. Texas Tech 60,229 (texastech.com sellout announcements match exactly), TCU 46,000 (gofrogs.com), Cincinnati 38,088 ('just over 38,000', gobearcats.com; precise figure per stadium records), UCF 44,206 (ucfknights.com stadium facts), Houston 40,000 (uhcougars.com), Oklahoma State 52,168 for 2025 (okstate.com; seating-bowl upgrade completed for the 2024 season).",
     "Kansas 2024 capacity is null: all six designated home games were played at Kansas City venues during the Memorial Stadium rebuild \u2014 per-game venue capacities live in venue-overrides.json. Phase Two of the rebuild has no announced capacity change, so 2025's 41,525 carries forward.",
-    "Texas Tech's stadium is renamed Galaxy Stadium beginning with the 2026 season (15-year naming-rights deal, texastech.com)."
+    "Texas Tech's stadium is renamed Galaxy Stadium beginning with the 2026 season (15-year naming-rights deal, texastech.com).",
+    "color/altColor from the CFBD /teams endpoint (fetched 2026-08); logo files in assets/logos/ are Wikimedia marks with provenance in assets/logos/SOURCES.json."
   ],
   "teams": [
     {
@@ -16,7 +17,10 @@
       "capacity": {
         "2024": 50782
       },
-      "timezone": "America/Phoenix"
+      "timezone": "America/Phoenix",
+      "color": "#0c234b",
+      "altColor": "#ab0520",
+      "logo": "assets/logos/ariz.svg"
     },
     {
       "team": "Arizona State",
@@ -26,7 +30,10 @@
       "capacity": {
         "2024": 53599
       },
-      "timezone": "America/Phoenix"
+      "timezone": "America/Phoenix",
+      "color": "#8e0c3a",
+      "altColor": "#ffc72c",
+      "logo": "assets/logos/asu.svg"
     },
     {
       "team": "BYU",
@@ -36,7 +43,10 @@
       "capacity": {
         "2024": 63470
       },
-      "timezone": "America/Denver"
+      "timezone": "America/Denver",
+      "color": "#003da5",
+      "altColor": "#ffffff",
+      "logo": "assets/logos/byu.png"
     },
     {
       "team": "Baylor",
@@ -46,7 +56,10 @@
       "capacity": {
         "2024": 45140
       },
-      "timezone": "America/Chicago"
+      "timezone": "America/Chicago",
+      "color": "#154734",
+      "altColor": "#ffb81c",
+      "logo": "assets/logos/bay.svg"
     },
     {
       "team": "Cincinnati",
@@ -56,7 +69,10 @@
       "capacity": {
         "2024": 38088
       },
-      "timezone": "America/New_York"
+      "timezone": "America/New_York",
+      "color": "#e00122",
+      "altColor": "#000000",
+      "logo": "assets/logos/cin.svg"
     },
     {
       "team": "Colorado",
@@ -66,7 +82,10 @@
       "capacity": {
         "2024": 50183
       },
-      "timezone": "America/Denver"
+      "timezone": "America/Denver",
+      "color": "#cfb87c",
+      "altColor": "#000000",
+      "logo": "assets/logos/cu.svg"
     },
     {
       "team": "Houston",
@@ -76,7 +95,10 @@
       "capacity": {
         "2024": 40000
       },
-      "timezone": "America/Chicago"
+      "timezone": "America/Chicago",
+      "color": "#c92a39",
+      "altColor": "#ffffff",
+      "logo": "assets/logos/hou.svg"
     },
     {
       "team": "Iowa State",
@@ -86,7 +108,10 @@
       "capacity": {
         "2024": 61500
       },
-      "timezone": "America/Chicago"
+      "timezone": "America/Chicago",
+      "color": "#822433",
+      "altColor": "#fdca2f",
+      "logo": "assets/logos/isu.svg"
     },
     {
       "team": "Kansas",
@@ -97,7 +122,10 @@
         "2024": null,
         "2025": 41525
       },
-      "timezone": "America/Chicago"
+      "timezone": "America/Chicago",
+      "color": "#0051ba",
+      "altColor": "#e8000d",
+      "logo": "assets/logos/ku.svg"
     },
     {
       "team": "Kansas State",
@@ -107,7 +135,10 @@
       "capacity": {
         "2024": 50000
       },
-      "timezone": "America/Chicago"
+      "timezone": "America/Chicago",
+      "color": "#3c0969",
+      "altColor": "#e2e3e4",
+      "logo": "assets/logos/ksu.svg"
     },
     {
       "team": "Oklahoma State",
@@ -117,7 +148,10 @@
       "capacity": {
         "2024": 52168
       },
-      "timezone": "America/Chicago"
+      "timezone": "America/Chicago",
+      "color": "#ff7300",
+      "altColor": "#000000",
+      "logo": "assets/logos/okst.svg"
     },
     {
       "team": "TCU",
@@ -127,7 +161,10 @@
       "capacity": {
         "2024": 46000
       },
-      "timezone": "America/Chicago"
+      "timezone": "America/Chicago",
+      "color": "#4d1979",
+      "altColor": "#f1f2f3",
+      "logo": "assets/logos/tcu.svg"
     },
     {
       "team": "Texas Tech",
@@ -138,7 +175,10 @@
       "capacity": {
         "2024": 60229
       },
-      "timezone": "America/Chicago"
+      "timezone": "America/Chicago",
+      "color": "#cc0000",
+      "altColor": "#000000",
+      "logo": "assets/logos/ttu.svg"
     },
     {
       "team": "UCF",
@@ -148,7 +188,10 @@
       "capacity": {
         "2024": 44206
       },
-      "timezone": "America/New_York"
+      "timezone": "America/New_York",
+      "color": "#ba9b37",
+      "altColor": "#000000",
+      "logo": "assets/logos/ucf.svg"
     },
     {
       "team": "Utah",
@@ -158,7 +201,10 @@
       "capacity": {
         "2024": 51444
       },
-      "timezone": "America/Denver"
+      "timezone": "America/Denver",
+      "color": "#ea002a",
+      "altColor": "#ffffff",
+      "logo": "assets/logos/utah.svg"
     },
     {
       "team": "West Virginia",
@@ -168,7 +214,10 @@
       "capacity": {
         "2024": 60000
       },
-      "timezone": "America/New_York"
+      "timezone": "America/New_York",
+      "color": "#002855",
+      "altColor": "#eaaa00",
+      "logo": "assets/logos/wvu.svg"
     }
   ]
 }

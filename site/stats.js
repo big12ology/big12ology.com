@@ -25,6 +25,9 @@ export function teamsForSeason(teamsData, year) {
     team: t.team,
     stadium: resolveByYear(t.stadium, year),
     capacity: resolveByYear(t.capacity, year),
+    color: t.color,
+    altColor: t.altColor,
+    logo: t.logo,
   }));
 }
 
@@ -42,6 +45,8 @@ export function teamSeason(team, games) {
     team: team.team,
     stadium: team.stadium,
     capacity: team.capacity,
+    color: team.color,
+    logo: team.logo,
     multiVenue: played.some((g) => g.capacity != null),
     games: played.length,
     weeks: played.map((g) => ({

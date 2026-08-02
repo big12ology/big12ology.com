@@ -145,8 +145,9 @@ function renderTable() {
       const stadiumLabel = row.multiVenue
         ? [...new Set(row.weeks.map((w) => w.venue).filter(Boolean))].join(" / ")
         : row.stadium;
+      const logo = row.logo ? `<img class="team-logo" src="${row.logo}" alt="" loading="lazy" />` : "";
       return `<tr>
-        <td class="team">${row.team}<span class="stadium">${stadiumLabel}</span></td>
+        <td class="team" style="--tc:${row.color ?? "transparent"}">${logo}<span class="team-name">${row.team}<span class="stadium">${stadiumLabel}</span></span></td>
         <td>${row.games}</td><td>${row.capacity != null ? num(row.capacity) : "varies"}</td>${cells}
         <td class="season-total">${num(row.total)}<span class="${pctClass(row.pct)}">${pct(row.pct)}</span></td>
       </tr>`;
@@ -321,7 +322,7 @@ function render(teamsData, season) {
   } else if (!hasPlayed) {
     empty.textContent = `Schedule loaded — attendance replaces each matchup as games are played.`;
   }
-  $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records). Click a column header to sort.`;
+  $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records). Click a column header to sort. Team and conference marks via Wikimedia Commons (provenance in the repo); trademarks belong to their owners.`;
 }
 
 async function main() {
