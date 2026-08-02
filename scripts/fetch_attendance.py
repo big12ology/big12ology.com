@@ -46,15 +46,16 @@ def cfbd(path: str, api_key: str, **params):
 
 
 def display_week(d: date, season: int) -> int:
-    """Week number derived from the game's local date, using the fan
-    convention: Week 1 is the Sunday–Saturday window containing the Saturday
-    before Labor Day; the week before that is Week 0. Neither the sheet's
-    hand-entered weeks nor CFBD's week field is reliable at boundaries (CFBD
-    has no Week 0; a Friday game belongs with the following Saturday)."""
+    """Week number derived from the game's local date. Weeks run
+    Tuesday–Monday: Week 1 ends on Labor Day Monday (so Labor Day games count
+    toward Week 1, and a Tuesday game starts the next week); Week 0 is the
+    week before. Neither the sheet's hand-entered weeks nor CFBD's week field
+    is reliable at boundaries (CFBD has no Week 0; a Friday game belongs with
+    the following Saturday)."""
     sept1 = date(season, 9, 1)
     labor_day = sept1 + timedelta(days=(7 - sept1.weekday()) % 7)
-    week1_sunday = labor_day - timedelta(days=8)
-    return 1 + (d - week1_sunday).days // 7
+    week1_tuesday = labor_day - timedelta(days=6)
+    return 1 + (d - week1_tuesday).days // 7
 
 
 def kickoff_local(start: str, tz: ZoneInfo) -> datetime | None:
