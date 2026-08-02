@@ -108,13 +108,21 @@ footer { padding-bottom: 1.5rem; }
 
 td.game { cursor: default; }
 td.game:hover { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
-td.game.sched .opp {
+td.game.sched .opp, td.game.away .opp {
   display: block;
   max-width: 7.5rem;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--muted);
   font-weight: 500;
+}
+td.game.away { opacity: 0.45; }
+td.game.away:hover { opacity: 1; }
+td.bye {
+  color: var(--border);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-align: center;
 }
 .card .value .of { font-size: 0.85rem; font-weight: 500; color: var(--muted); }
 

@@ -17,7 +17,7 @@ const year = process.argv[2] ?? "2025";
 const teamsData = JSON.parse(readFileSync(join(ROOT, "data/teams.json")));
 const teams = teamsForSeason(teamsData, Number(year));
 const season = JSON.parse(readFileSync(join(ROOT, `data/seasons/${year}.json`)));
-const reported = season.games.filter((g) => g.attendance != null);
+const reported = season.games.filter((g) => !g.role && g.attendance != null);
 const numWeeks = season.weekLabels.length;
 
 const outDir = join(ROOT, "data/snapshots", String(year));

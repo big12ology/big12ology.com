@@ -177,7 +177,8 @@ def main(year: int) -> None:
     out = ROOT / "data" / "seasons" / f"{year}.json"
     raw = cfbd("/games", api_key, year=year, seasonType="regular", conference="B12")
     venues = cfbd("/venues", api_key)
-    venues_by_id = {
+    venues_by_id = {v["id"]: v for v in venues}
+    coords_by_id = {
         v["id"]: (v["latitude"], v["longitude"])
         for v in venues
         if v.get("latitude") is not None
@@ -188,51 +189,87 @@ def main(year: int) -> None:
         # CFBD field names: homeTeam/neutralSite in current API, home_team/
         # neutral_site in older versions — accept either.
         home = g.get("homeTeam") or g.get("home_team")
+        away = g.get("awayTeam") or g.get("away_team")
         neutral = g.get("neutralSite", g.get("neutral_site", False))
         venue = g.get("venue")
-        if home not in teams:
-            continue
+        venue_info = venues_by_id.get(g.get("venueId"), {})
+        completed = g.get("completed", g.get("homePoints") is not None)
+
         # CFBD flags designated home games at alternate venues (e.g. Kansas
         # 2024 in Kansas City during the Memorial Stadium rebuild) as neutral.
         # venue-overrides.json whitelists those venues per team/season, with
         # each venue's capacity; anything else neutral is a true neutral-site
-        # game and stays excluded.
-        alt = venue_overrides.get(home, {}).get("venues", {})
-        if neutral and venue not in alt:
-            continue
-        kickoff = kickoff_local(g.get("startDate") or g.get("start_date"), timezones[home])
-        completed = g.get("completed", g.get("homePoints") is not None)
-        game = {
-            "team": home,
-            "week": (
-                display_week(kickoff.date(), year) if kickoff else g.get("week")
-            ),
-            "opponent": g.get("awayTeam") or g.get("away_team"),
+        # game (counted for nobody, shown dimmed for the Big 12 side).
+        alt = venue_overrides.get(home, {}).get("venues", {}) if home in teams else {}
+        home_counts = home in teams and (not neutral or venue in alt)
+
+        # Kickoff in the venue's local time (falls back to a participant's
+        # home timezone when CFBD lacks the venue record).
+        tz = ZoneInfo(venue_info["timezone"]) if venue_info.get("timezone") else timezones.get(
+            home if home in teams else away
+        )
+        kickoff = kickoff_local(g.get("startDate") or g.get("start_date"), tz)
+        week = display_week(kickoff.date(), year) if kickoff else g.get("week")
+        base = {
+            "week": week,
             "date": kickoff.date().isoformat() if kickoff else "",
             "time": (
                 kickoff.strftime("%H:%M")
                 if kickoff and not g.get("startTimeTBD")
                 else None
             ),
-            "attendance": g.get("attendance"),
             "espnId": g.get("id"),
-            "_venueId": g.get("venueId"),
-            "_kickoffUtc": kickoff.astimezone(ZoneInfo("UTC")) if kickoff else None,
-            "_completed": completed,
         }
-        if completed and g.get("homePoints") is not None:
-            game["pointsFor"] = g.get("homePoints")
-            game["pointsAgainst"] = g.get("awayPoints")
-        if venue in alt:
-            game["venue"] = venue
-            game["capacity"] = alt[venue]
-        if game["attendance"] is None and (home, game["week"]) in manual:
-            m = manual[(home, game["week"])]
-            game["attendance"] = m["attendance"]
-            game["attendanceSource"] = m["source"]
-        games.append(game)
 
-    fetch_weather(games, venues_by_id)
+        if home_counts:
+            game = {
+                "team": home,
+                **base,
+                "opponent": away,
+                "attendance": g.get("attendance"),
+                "_venueId": g.get("venueId"),
+                "_kickoffUtc": kickoff.astimezone(ZoneInfo("UTC")) if kickoff else None,
+                "_completed": completed,
+            }
+            if completed and g.get("homePoints") is not None:
+                game["pointsFor"] = g.get("homePoints")
+                game["pointsAgainst"] = g.get("awayPoints")
+            if venue in alt:
+                game["venue"] = venue
+                game["capacity"] = alt[venue]
+            if game["attendance"] is None and (home, week) in manual:
+                m = manual[(home, week)]
+                game["attendance"] = m["attendance"]
+                game["attendanceSource"] = m["source"]
+            games.append(game)
+
+        # Non-summing perspective entries: a Big 12 team on the road, or in a
+        # true neutral-site game. Shown dimmed on the site; excluded from all
+        # attendance math (stats.js skips any entry with a role).
+        perspectives = []
+        if away in teams:
+            perspectives.append((away, home, "away" if home_counts or not neutral else "neutral",
+                                 g.get("awayPoints"), g.get("homePoints")))
+        if home in teams and not home_counts:
+            perspectives.append((home, away, "neutral", g.get("homePoints"), g.get("awayPoints")))
+        for team, opp, role, pf, pa in perspectives:
+            entry = {
+                "team": team,
+                **base,
+                "opponent": opp,
+                "attendance": g.get("attendance"),
+                "role": role,
+                "venue": venue,
+            }
+            if venue_info.get("city"):
+                entry["city"] = venue_info["city"]
+                entry["state"] = venue_info.get("state")
+            if completed and pf is not None:
+                entry["pointsFor"] = pf
+                entry["pointsAgainst"] = pa
+            games.append(entry)
+
+    fetch_weather(games, coords_by_id)
     for g in games:
         g.pop("_venueId", None)
         g.pop("_kickoffUtc", None)
@@ -254,10 +291,14 @@ def main(year: int) -> None:
         + "\n"
     )
     update_seasons_index(year)
-    reported = sum(1 for g in games if g["attendance"] is not None)
-    weathered = sum(1 for g in games if "weather" in g)
-    print(f"{year}: {len(games)} home games, {reported} with attendance, {weathered} with weather -> {out}")
-    per_team = {t: sum(1 for g in games if g["team"] == t) for t in teams}
+    home_games = [g for g in games if "role" not in g]
+    reported = sum(1 for g in home_games if g["attendance"] is not None)
+    weathered = sum(1 for g in home_games if "weather" in g)
+    print(
+        f"{year}: {len(home_games)} home games ({reported} with attendance, "
+        f"{weathered} with weather), {len(games) - len(home_games)} road/neutral -> {out}"
+    )
+    per_team = {t: sum(1 for g in home_games if g["team"] == t) for t in teams}
     missing = [t for t, n in per_team.items() if n == 0]
     if missing:
         print(f"WARNING: no home games found for: {', '.join(sorted(missing))}")

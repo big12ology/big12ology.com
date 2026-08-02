@@ -28,9 +28,12 @@ export function teamsForSeason(teamsData, year) {
   }));
 }
 
+// Season files may contain non-summing perspective entries (a Big 12 team on
+// the road or at a true neutral site), marked with a `role` field. Every
+// computation here skips them — they exist purely for display.
 export function teamSeason(team, games) {
   const played = games
-    .filter((g) => g.team === team.team && g.attendance != null)
+    .filter((g) => g.team === team.team && !g.role && g.attendance != null)
     .sort((a, b) => a.week - b.week);
   const capOf = (g) => g.capacity ?? team.capacity;
   const total = played.reduce((s, g) => s + g.attendance, 0);
@@ -56,7 +59,7 @@ export function weeklyTotals(teams, games, numWeeks) {
   const byCap = Object.fromEntries(teams.map((t) => [t.team, t.capacity]));
   const weeks = [];
   for (let w = 0; w < numWeeks; w++) {
-    const wk = games.filter((g) => g.week === w && g.attendance != null);
+    const wk = games.filter((g) => g.week === w && !g.role && g.attendance != null);
     const attendance = wk.reduce((s, g) => s + g.attendance, 0);
     const capacity = wk.reduce((s, g) => s + (g.capacity ?? byCap[g.team]), 0);
     weeks.push({

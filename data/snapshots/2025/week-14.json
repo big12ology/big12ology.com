@@ -809,6 +809,13 @@
       "attendance": 348142,
       "capacity": 411902,
       "pct": 0.8452058984904176
+    },
+    {
+      "week": 15,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
     }
   ],
   "totals": {

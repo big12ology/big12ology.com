@@ -67,10 +67,22 @@ function fmtDateShort(iso) {
 
 function renderTable() {
   const { summary, season } = view;
-  // A week is shown if it has any played OR scheduled game.
+  // A week is shown if it has any game — played, scheduled, or road/neutral.
   const scheduled = new Map(
-    season.games.filter((g) => g.attendance == null).map((g) => [`${g.team}|${g.week}`, g])
+    season.games
+      .filter((g) => !g.role && g.attendance == null)
+      .map((g) => [`${g.team}|${g.week}`, g])
   );
+  const roadGames = new Map(
+    season.games.filter((g) => g.role).map((g) => [`${g.team}|${g.week}`, g])
+  );
+  // Per-team first/last week of any game — weeks between with no game are byes.
+  const range = {};
+  for (const g of season.games) {
+    const r = (range[g.team] ??= { min: g.week, max: g.week });
+    r.min = Math.min(r.min, g.week);
+    r.max = Math.max(r.max, g.week);
+  }
   const weekSet = new Set(season.games.map((g) => g.week));
   const activeWeeks = summary.weeks
     .filter((w) => w.games > 0 || weekSet.has(w.week))
@@ -101,6 +113,18 @@ function renderTable() {
           const s = scheduled.get(`${row.team}|${w}`);
           if (s)
             return `<td class="game sched" data-team="${row.team}" data-week="${w}"><span class="opp">${s.opponent ?? "TBD"}</span><span class="pct">${fmtDateShort(s.date)}</span></td>`;
+          const r = roadGames.get(`${row.team}|${w}`);
+          if (r) {
+            const at = r.role === "neutral" ? "vs" : "@";
+            const sub =
+              r.pointsFor != null
+                ? `${r.pointsFor > r.pointsAgainst ? "W" : "L"} ${r.pointsFor}–${r.pointsAgainst}`
+                : fmtDateShort(r.date);
+            return `<td class="game away" data-team="${row.team}" data-week="${w}"><span class="opp">${at} ${r.opponent ?? "TBD"}</span><span class="pct">${sub}</span></td>`;
+          }
+          const tr = range[row.team];
+          if (tr && w > tr.min && w < tr.max)
+            return `<td class="bye">BYE</td>`;
           return "<td></td>";
         })
         .join("");
@@ -127,6 +151,7 @@ function renderTable() {
     </tfoot>`;
 
   $("#attendance-table").innerHTML = head + `<tbody>${body}</tbody>` + foot;
+  tooltipEl().hidden = true;
 }
 
 // ---- game-detail tooltip ----------------------------------------------
@@ -165,9 +190,16 @@ function tooltipHTML(team, week) {
       const won = game.pointsFor > game.pointsAgainst;
       result = ` — <strong class="${won ? "win" : "loss"}">${won ? "W" : "L"} ${game.pointsFor}–${game.pointsAgainst}</strong>`;
     }
-    lines.push(`<div class="tip-opp">vs ${game.opponent}${result}</div>`);
+    const prep = game.role === "away" ? "at" : "vs";
+    lines.push(`<div class="tip-opp">${prep} ${game.opponent}${result}</div>`);
   }
-  if (wk) {
+  if (game.role) {
+    const where = [game.venue, game.city ? `${game.city}, ${game.state ?? ""}`.replace(/, $/, "") : null]
+      .filter(Boolean)
+      .join(" · ");
+    if (where) lines.push(`<div>${where}${game.role === "neutral" ? " (neutral site)" : ""}</div>`);
+    if (game.attendance != null) lines.push(`<div class="tip-wx">Attendance ${num(game.attendance)}</div>`);
+  } else if (wk) {
     lines.push(
       `<div>${num(wk.attendance)} · ${pct(wk.pct)}${cap ? ` of ${num(cap)}` : ""}${game.venue ? ` · ${game.venue}` : ""}</div>`
     );
@@ -246,7 +278,7 @@ function render(teamsData, season) {
     view.sort = { key: "pct", dir: "desc" };
   }
 
-  const scheduledCount = season.games.filter((g) => g.attendance == null).length;
+  const scheduledCount = season.games.filter((g) => !g.role && g.attendance == null).length;
   $("#summary").innerHTML = [
     ["Total attendance", num(summary.totals.attendance)],
     ["Percent full", pct(summary.totals.pct)],
