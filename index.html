@@ -5,11 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Big 12 Attendance Tracker</title>
   <link rel="icon" href="assets/logos/big12.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/brand.css" />
   <link rel="stylesheet" href="site/styles.css" />
 </head>
 <body>
+  <nav class="b12-topbar">
+    <a class="b12-brand" href="/">Big12<span>ology</span></a>
+    <a href="/tiebreaker/">Tiebreaker</a>
+    <a class="on" href="/attendance/">Attendance</a>
+    <a class="b12-right" href="/privacy">Privacy</a>
+  </nav>
   <header>
-    <h1><img src="assets/logos/big12.svg" alt="Big 12" class="brand" />Attendance Tracker</h1>
+    <div>
+      <h1><img src="assets/logos/big12.svg" alt="Big 12" class="brand" />Attendance Tracker</h1>
+      <p class="tagline">Unofficial fan tool. Weekly home-game attendance for
+      all sixteen Big 12 teams.</p>
+    </div>
     <div class="controls">
       <label for="season">Season</label>
       <select id="season"></select>
@@ -26,10 +37,14 @@
     <section id="charts"></section>
   </main>
 
-  <footer>
-    <p id="source-note" class="note"></p>
-    <p class="note">Part of <a href="https://big12ology.com/">Big12ology</a> ·
-    <a href="https://big12ology.com/privacy">Privacy</a></p>
+  <footer class="b12-footer">
+    <p id="source-note"></p>
+    A Big12ology project · not affiliated with the Big 12 Conference;
+    conference and team marks belong to their owners and appear for
+    identification only.<br>
+    <a href="https://github.com/big12ology">GitHub</a> ·
+    <a href="https://big12ology.com/privacy">Privacy</a> ·
+    <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
   </footer>
 
   <script type="module" src="site/app.js"></script>
