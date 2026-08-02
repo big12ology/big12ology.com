@@ -453,6 +453,7 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   <a href="https://big12ology.com/privacy">Privacy</a>.
   Last updated {updated}.
 </footer>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
 </body>
 </html>
 """
