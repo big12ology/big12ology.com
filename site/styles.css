@@ -108,6 +108,15 @@ footer { padding-bottom: 1.5rem; }
 
 td.game { cursor: default; }
 td.game:hover { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+td.game.sched .opp {
+  display: block;
+  max-width: 7.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--muted);
+  font-weight: 500;
+}
+.card .value .of { font-size: 0.85rem; font-weight: 500; color: var(--muted); }
 
 #tooltip {
   position: absolute;

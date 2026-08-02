@@ -1,6 +1,976 @@
 {
   "season": 2026,
-  "source": "CollegeFootballData API (collegefootballdata.com)",
-  "weekLabels": ["Week 0", "Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6", "Week 7", "Week 8", "Week 9", "Week 10", "Week 11", "Week 12", "Week 13", "Week 14"],
-  "games": []
+  "source": "CollegeFootballData API (collegefootballdata.com); weather via Open-Meteo",
+  "weekLabels": [
+    "Week 0",
+    "Week 1",
+    "Week 2",
+    "Week 3",
+    "Week 4",
+    "Week 5",
+    "Week 6",
+    "Week 7",
+    "Week 8",
+    "Week 9",
+    "Week 10",
+    "Week 11",
+    "Week 12",
+    "Week 13"
+  ],
+  "games": [
+    {
+      "team": "Arizona",
+      "week": 1,
+      "opponent": "Northern Arizona",
+      "date": "2026-09-05",
+      "time": "18:30",
+      "attendance": null,
+      "espnId": 401856773
+    },
+    {
+      "team": "Arizona State",
+      "week": 1,
+      "opponent": "Morgan State",
+      "date": "2026-09-05",
+      "time": "18:00",
+      "attendance": null,
+      "espnId": 401856774
+    },
+    {
+      "team": "BYU",
+      "week": 1,
+      "opponent": "Utah Tech",
+      "date": "2026-09-05",
+      "time": "18:00",
+      "attendance": null,
+      "espnId": 401856775
+    },
+    {
+      "team": "Cincinnati",
+      "week": 1,
+      "opponent": "Boston College",
+      "date": "2026-09-05",
+      "time": "15:30",
+      "attendance": null,
+      "espnId": 401856777
+    },
+    {
+      "team": "Houston",
+      "week": 1,
+      "opponent": "Oregon State",
+      "date": "2026-09-05",
+      "time": "11:00",
+      "attendance": null,
+      "espnId": 401856778
+    },
+    {
+      "team": "Iowa State",
+      "week": 1,
+      "opponent": "Southeast Missouri State",
+      "date": "2026-09-05",
+      "time": "12:00",
+      "attendance": null,
+      "espnId": 401856779
+    },
+    {
+      "team": "Kansas",
+      "week": 1,
+      "opponent": "Long Island University",
+      "date": "2026-09-04",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856769
+    },
+    {
+      "team": "Kansas State",
+      "week": 1,
+      "opponent": "Nicholls",
+      "date": "2026-09-05",
+      "time": "18:00",
+      "attendance": null,
+      "espnId": 401856771
+    },
+    {
+      "team": "Texas Tech",
+      "week": 1,
+      "opponent": "Abilene Christian",
+      "date": "2026-09-05",
+      "time": "18:00",
+      "attendance": null,
+      "espnId": 401856770
+    },
+    {
+      "team": "UCF",
+      "week": 1,
+      "opponent": "Bethune-Cookman",
+      "date": "2026-09-03",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856767
+    },
+    {
+      "team": "Utah",
+      "week": 1,
+      "opponent": "Idaho",
+      "date": "2026-09-03",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856768
+    },
+    {
+      "team": "West Virginia",
+      "week": 1,
+      "opponent": "Coastal Carolina",
+      "date": "2026-09-05",
+      "time": "12:00",
+      "attendance": null,
+      "espnId": 401856780
+    },
+    {
+      "team": "BYU",
+      "week": 2,
+      "opponent": "Arizona",
+      "date": "2026-09-12",
+      "time": "13:30",
+      "attendance": null,
+      "espnId": 401856810
+    },
+    {
+      "team": "Baylor",
+      "week": 2,
+      "opponent": "Prairie View A&M",
+      "date": "2026-09-12",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856784
+    },
+    {
+      "team": "Cincinnati",
+      "week": 2,
+      "opponent": "Western Carolina",
+      "date": "2026-09-12",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856786
+    },
+    {
+      "team": "Colorado",
+      "week": 2,
+      "opponent": "Weber State",
+      "date": "2026-09-12",
+      "time": "13:30",
+      "attendance": null,
+      "espnId": 401856785
+    },
+    {
+      "team": "Houston",
+      "week": 2,
+      "opponent": "Southern",
+      "date": "2026-09-12",
+      "time": "18:00",
+      "attendance": null,
+      "espnId": 401856787
+    },
+    {
+      "team": "Kansas",
+      "week": 2,
+      "opponent": "Missouri",
+      "date": "2026-09-11",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856678
+    },
+    {
+      "team": "Kansas State",
+      "week": 2,
+      "opponent": "Washington State",
+      "date": "2026-09-12",
+      "time": "11:00",
+      "attendance": null,
+      "espnId": 401856781
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 2,
+      "opponent": "Oregon",
+      "date": "2026-09-12",
+      "time": "11:00",
+      "attendance": null,
+      "espnId": 401856782
+    },
+    {
+      "team": "TCU",
+      "week": 2,
+      "opponent": "Grambling",
+      "date": "2026-09-12",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856789
+    },
+    {
+      "team": "Utah",
+      "week": 2,
+      "opponent": "Arkansas",
+      "date": "2026-09-12",
+      "time": "20:15",
+      "attendance": null,
+      "espnId": 401856670
+    },
+    {
+      "team": "West Virginia",
+      "week": 2,
+      "opponent": "UT Martin",
+      "date": "2026-09-12",
+      "time": "13:00",
+      "attendance": null,
+      "espnId": 401856791
+    },
+    {
+      "team": "Arizona",
+      "week": 3,
+      "opponent": "Northern Illinois",
+      "date": "2026-09-19",
+      "time": "19:30",
+      "attendance": null,
+      "espnId": 401856793
+    },
+    {
+      "team": "Baylor",
+      "week": 3,
+      "opponent": "Louisiana Tech",
+      "date": "2026-09-19",
+      "time": "15:00",
+      "attendance": null,
+      "espnId": 401867804
+    },
+    {
+      "team": "Cincinnati",
+      "week": 3,
+      "opponent": "Miami (OH)",
+      "date": "2026-09-19",
+      "time": "15:30",
+      "attendance": null,
+      "espnId": 401856797
+    },
+    {
+      "team": "Iowa State",
+      "week": 3,
+      "opponent": "Bowling Green",
+      "date": "2026-09-19",
+      "time": "11:00",
+      "attendance": null,
+      "espnId": 401856798
+    },
+    {
+      "team": "Kansas State",
+      "week": 3,
+      "opponent": "Tulane",
+      "date": "2026-09-19",
+      "time": "11:00",
+      "attendance": null,
+      "espnId": 401856792
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 3,
+      "opponent": "Murray State",
+      "date": "2026-09-19",
+      "time": "18:00",
+      "attendance": null,
+      "espnId": 401856803
+    },
+    {
+      "team": "TCU",
+      "week": 3,
+      "opponent": "Arkansas State",
+      "date": "2026-09-19",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856799
+    },
+    {
+      "team": "Texas Tech",
+      "week": 3,
+      "opponent": "Houston",
+      "date": "2026-09-18",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856811
+    },
+    {
+      "team": "UCF",
+      "week": 3,
+      "opponent": "Georgia State",
+      "date": "2026-09-19",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856800
+    },
+    {
+      "team": "Utah",
+      "week": 3,
+      "opponent": "Utah State",
+      "date": "2026-09-19",
+      "time": "13:30",
+      "attendance": null,
+      "espnId": 401856801
+    },
+    {
+      "team": "Baylor",
+      "week": 4,
+      "opponent": "Colorado",
+      "date": "2026-09-25",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856813
+    },
+    {
+      "team": "Cincinnati",
+      "week": 4,
+      "opponent": "Kansas State",
+      "date": "2026-09-26",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856814
+    },
+    {
+      "team": "Iowa State",
+      "week": 4,
+      "opponent": "Utah",
+      "date": "2026-09-25",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856816
+    },
+    {
+      "team": "Texas Tech",
+      "week": 4,
+      "opponent": "Sam Houston",
+      "date": "2026-09-25",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856805
+    },
+    {
+      "team": "UCF",
+      "week": 4,
+      "opponent": "TCU",
+      "date": "2026-09-26",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856815
+    },
+    {
+      "team": "West Virginia",
+      "week": 4,
+      "opponent": "Oklahoma State",
+      "date": "2026-09-26",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856881
+    },
+    {
+      "team": "Arizona",
+      "week": 5,
+      "opponent": "Cincinnati",
+      "date": "2026-10-02",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856820
+    },
+    {
+      "team": "Arizona State",
+      "week": 5,
+      "opponent": "Baylor",
+      "date": "2026-10-02",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856817
+    },
+    {
+      "team": "Colorado",
+      "week": 5,
+      "opponent": "Texas Tech",
+      "date": "2026-10-02",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856821
+    },
+    {
+      "team": "Houston",
+      "week": 5,
+      "opponent": "UCF",
+      "date": "2026-10-02",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856819
+    },
+    {
+      "team": "Iowa State",
+      "week": 5,
+      "opponent": "West Virginia",
+      "date": "2026-10-02",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856822
+    },
+    {
+      "team": "Kansas",
+      "week": 5,
+      "opponent": "Middle Tennessee",
+      "date": "2026-10-02",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856807
+    },
+    {
+      "team": "TCU",
+      "week": 5,
+      "opponent": "BYU",
+      "date": "2026-10-02",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856818
+    },
+    {
+      "team": "Arizona State",
+      "week": 6,
+      "opponent": "Hawai'i",
+      "date": "2026-10-09",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856808
+    },
+    {
+      "team": "BYU",
+      "week": 6,
+      "opponent": "Iowa State",
+      "date": "2026-10-09",
+      "time": "20:15",
+      "attendance": null,
+      "espnId": 401856826
+    },
+    {
+      "team": "Kansas State",
+      "week": 6,
+      "opponent": "Houston",
+      "date": "2026-10-09",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856825
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 6,
+      "opponent": "UCF",
+      "date": "2026-10-09",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856824
+    },
+    {
+      "team": "Utah",
+      "week": 6,
+      "opponent": "Kansas",
+      "date": "2026-10-09",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856827
+    },
+    {
+      "team": "West Virginia",
+      "week": 6,
+      "opponent": "Arizona",
+      "date": "2026-10-10",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856823
+    },
+    {
+      "team": "BYU",
+      "week": 7,
+      "opponent": "Notre Dame",
+      "date": "2026-10-16",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856809
+    },
+    {
+      "team": "Baylor",
+      "week": 7,
+      "opponent": "TCU",
+      "date": "2026-10-16",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856832
+    },
+    {
+      "team": "Colorado",
+      "week": 7,
+      "opponent": "Utah",
+      "date": "2026-10-16",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856833
+    },
+    {
+      "team": "Houston",
+      "week": 7,
+      "opponent": "Oklahoma State",
+      "date": "2026-10-16",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856831
+    },
+    {
+      "team": "Kansas State",
+      "week": 7,
+      "opponent": "Kansas",
+      "date": "2026-10-16",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856830
+    },
+    {
+      "team": "Texas Tech",
+      "week": 7,
+      "opponent": "Arizona State",
+      "date": "2026-10-16",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856828
+    },
+    {
+      "team": "West Virginia",
+      "week": 7,
+      "opponent": "Cincinnati",
+      "date": "2026-10-17",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856829
+    },
+    {
+      "team": "Arizona",
+      "week": 8,
+      "opponent": "Iowa State",
+      "date": "2026-10-23",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856838
+    },
+    {
+      "team": "Arizona State",
+      "week": 8,
+      "opponent": "Kansas State",
+      "date": "2026-10-23",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856839
+    },
+    {
+      "team": "Cincinnati",
+      "week": 8,
+      "opponent": "Texas Tech",
+      "date": "2026-10-24",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856840
+    },
+    {
+      "team": "Kansas",
+      "week": 8,
+      "opponent": "Baylor",
+      "date": "2026-10-23",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856834
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 8,
+      "opponent": "Colorado",
+      "date": "2026-10-23",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856836
+    },
+    {
+      "team": "TCU",
+      "week": 8,
+      "opponent": "West Virginia",
+      "date": "2026-10-23",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856841
+    },
+    {
+      "team": "UCF",
+      "week": 8,
+      "opponent": "BYU",
+      "date": "2026-10-24",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856835
+    },
+    {
+      "team": "Utah",
+      "week": 8,
+      "opponent": "Houston",
+      "date": "2026-10-23",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856837
+    },
+    {
+      "team": "BYU",
+      "week": 9,
+      "opponent": "Arizona State",
+      "date": "2026-10-30",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856843
+    },
+    {
+      "team": "Cincinnati",
+      "week": 9,
+      "opponent": "Utah",
+      "date": "2026-10-31",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856848
+    },
+    {
+      "team": "Colorado",
+      "week": 9,
+      "opponent": "Kansas State",
+      "date": "2026-10-30",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856846
+    },
+    {
+      "team": "Iowa State",
+      "week": 9,
+      "opponent": "Oklahoma State",
+      "date": "2026-10-30",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856847
+    },
+    {
+      "team": "TCU",
+      "week": 9,
+      "opponent": "Kansas",
+      "date": "2026-10-30",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856845
+    },
+    {
+      "team": "Texas Tech",
+      "week": 9,
+      "opponent": "Arizona",
+      "date": "2026-10-30",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856842
+    },
+    {
+      "team": "UCF",
+      "week": 9,
+      "opponent": "Baylor",
+      "date": "2026-10-30",
+      "time": "19:30",
+      "attendance": null,
+      "espnId": 401856844
+    },
+    {
+      "team": "Arizona",
+      "week": 10,
+      "opponent": "TCU",
+      "date": "2026-11-06",
+      "time": "20:15",
+      "attendance": null,
+      "espnId": 401856855
+    },
+    {
+      "team": "Arizona State",
+      "week": 10,
+      "opponent": "Colorado",
+      "date": "2026-11-06",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856852
+    },
+    {
+      "team": "Baylor",
+      "week": 10,
+      "opponent": "Iowa State",
+      "date": "2026-11-06",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856853
+    },
+    {
+      "team": "Houston",
+      "week": 10,
+      "opponent": "Cincinnati",
+      "date": "2026-11-06",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856851
+    },
+    {
+      "team": "Kansas",
+      "week": 10,
+      "opponent": "UCF",
+      "date": "2026-11-06",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856850
+    },
+    {
+      "team": "Kansas State",
+      "week": 10,
+      "opponent": "Oklahoma State",
+      "date": "2026-11-06",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856854
+    },
+    {
+      "team": "Texas Tech",
+      "week": 10,
+      "opponent": "West Virginia",
+      "date": "2026-11-06",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856856
+    },
+    {
+      "team": "Utah",
+      "week": 10,
+      "opponent": "BYU",
+      "date": "2026-11-06",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856849
+    },
+    {
+      "team": "Arizona",
+      "week": 11,
+      "opponent": "Utah",
+      "date": "2026-11-13",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856864
+    },
+    {
+      "team": "BYU",
+      "week": 11,
+      "opponent": "Baylor",
+      "date": "2026-11-13",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856858
+    },
+    {
+      "team": "Colorado",
+      "week": 11,
+      "opponent": "Houston",
+      "date": "2026-11-13",
+      "time": "20:15",
+      "attendance": null,
+      "espnId": 401856860
+    },
+    {
+      "team": "Iowa State",
+      "week": 11,
+      "opponent": "Cincinnati",
+      "date": "2026-11-13",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856859
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 11,
+      "opponent": "Texas Tech",
+      "date": "2026-11-13",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856863
+    },
+    {
+      "team": "TCU",
+      "week": 11,
+      "opponent": "Kansas State",
+      "date": "2026-11-13",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856862
+    },
+    {
+      "team": "UCF",
+      "week": 11,
+      "opponent": "Arizona State",
+      "date": "2026-11-14",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856857
+    },
+    {
+      "team": "West Virginia",
+      "week": 11,
+      "opponent": "Kansas",
+      "date": "2026-11-14",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856861
+    },
+    {
+      "team": "Arizona State",
+      "week": 12,
+      "opponent": "Oklahoma State",
+      "date": "2026-11-20",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856870
+    },
+    {
+      "team": "Baylor",
+      "week": 12,
+      "opponent": "Texas Tech",
+      "date": "2026-11-20",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856871
+    },
+    {
+      "team": "Cincinnati",
+      "week": 12,
+      "opponent": "Colorado",
+      "date": "2026-11-21",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856867
+    },
+    {
+      "team": "Kansas",
+      "week": 12,
+      "opponent": "BYU",
+      "date": "2026-11-20",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856866
+    },
+    {
+      "team": "Kansas State",
+      "week": 12,
+      "opponent": "Arizona",
+      "date": "2026-11-20",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856865
+    },
+    {
+      "team": "TCU",
+      "week": 12,
+      "opponent": "Utah",
+      "date": "2026-11-20",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856872
+    },
+    {
+      "team": "UCF",
+      "week": 12,
+      "opponent": "Iowa State",
+      "date": "2026-11-20",
+      "time": "18:00",
+      "attendance": null,
+      "espnId": 401856869
+    },
+    {
+      "team": "West Virginia",
+      "week": 12,
+      "opponent": "Houston",
+      "date": "2026-11-21",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856868
+    },
+    {
+      "team": "Arizona",
+      "week": 13,
+      "opponent": "Arizona State",
+      "date": "2026-11-27",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856873
+    },
+    {
+      "team": "BYU",
+      "week": 13,
+      "opponent": "Cincinnati",
+      "date": "2026-11-27",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856876
+    },
+    {
+      "team": "Colorado",
+      "week": 13,
+      "opponent": "UCF",
+      "date": "2026-11-27",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856875
+    },
+    {
+      "team": "Houston",
+      "week": 13,
+      "opponent": "Baylor",
+      "date": "2026-11-27",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856874
+    },
+    {
+      "team": "Iowa State",
+      "week": 13,
+      "opponent": "Kansas State",
+      "date": "2026-11-27",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856878
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 13,
+      "opponent": "Kansas",
+      "date": "2026-11-27",
+      "time": null,
+      "attendance": null,
+      "espnId": 401856877
+    },
+    {
+      "team": "Texas Tech",
+      "week": 13,
+      "opponent": "TCU",
+      "date": "2026-11-26",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856879
+    },
+    {
+      "team": "Utah",
+      "week": 13,
+      "opponent": "West Virginia",
+      "date": "2026-11-27",
+      "time": "19:00",
+      "attendance": null,
+      "espnId": 401856880
+    }
+  ]
 }

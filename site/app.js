@@ -59,9 +59,22 @@ function setSort(key) {
   renderTable();
 }
 
+function fmtDateShort(iso) {
+  if (!iso) return "";
+  const [, m, d] = iso.split("-").map(Number);
+  return `${MONTHS[m - 1]} ${d}`;
+}
+
 function renderTable() {
   const { summary, season } = view;
-  const activeWeeks = summary.weeks.filter((w) => w.games > 0).map((w) => w.week);
+  // A week is shown if it has any played OR scheduled game.
+  const scheduled = new Map(
+    season.games.filter((g) => g.attendance == null).map((g) => [`${g.team}|${g.week}`, g])
+  );
+  const weekSet = new Set(season.games.map((g) => g.week));
+  const activeWeeks = summary.weeks
+    .filter((w) => w.games > 0 || weekSet.has(w.week))
+    .map((w) => w.week);
 
   const arrow = (key) =>
     view.sort.key === key ? (view.sort.dir === "desc" ? " ▾" : " ▴") : "";
@@ -83,9 +96,12 @@ function renderTable() {
       const cells = activeWeeks
         .map((w) => {
           const g = byWeek[w];
-          return g
-            ? `<td class="game" data-team="${row.team}" data-week="${w}">${num(g.attendance)}<span class="${pctClass(g.pct)}">${pct(g.pct)}</span></td>`
-            : "<td></td>";
+          if (g)
+            return `<td class="game" data-team="${row.team}" data-week="${w}">${num(g.attendance)}<span class="${pctClass(g.pct)}">${pct(g.pct)}</span></td>`;
+          const s = scheduled.get(`${row.team}|${w}`);
+          if (s)
+            return `<td class="game sched" data-team="${row.team}" data-week="${w}"><span class="opp">${s.opponent ?? "TBD"}</span><span class="pct">${fmtDateShort(s.date)}</span></td>`;
+          return "<td></td>";
         })
         .join("");
       const stadiumLabel = row.multiVenue
@@ -103,10 +119,10 @@ function renderTable() {
   const foot = `<tfoot>
       <tr><td class="team">Big 12 total</td><td>${summary.totals.games}</td>
         <td>${num(summary.rows.reduce((s, r) => s + r.capacity, 0))}</td>
-        ${activeWeeks.map((w) => `<td>${num(wk(w).attendance)}<span class="${pctClass(wk(w).pct)}">${pct(wk(w).pct)}</span></td>`).join("")}
+        ${activeWeeks.map((w) => (wk(w).games ? `<td>${num(wk(w).attendance)}<span class="${pctClass(wk(w).pct)}">${pct(wk(w).pct)}</span></td>` : "<td>—</td>")).join("")}
         <td class="season-total">${num(summary.totals.attendance)}<span class="${pctClass(summary.totals.pct)}">${pct(summary.totals.pct)}</span></td></tr>
       <tr class="sub"><td class="team">Capacity in play / games</td><td></td><td></td>
-        ${activeWeeks.map((w) => `<td>${num(wk(w).capacity)} · ${wk(w).games}g</td>`).join("")}
+        ${activeWeeks.map((w) => (wk(w).games ? `<td>${num(wk(w).capacity)} · ${wk(w).games}g</td>` : "<td>—</td>")).join("")}
         <td>${num(summary.totals.capacity)} · ${summary.totals.games}g</td></tr>
     </tfoot>`;
 
@@ -167,8 +183,12 @@ function tooltipHTML(team, week) {
     lines.push(`<div class="tip-src">Attendance: ${game.attendanceSource}</div>`);
   }
   if (game.espnId) {
+    const played = game.attendance != null || game.pointsFor != null;
+    const link = played
+      ? `https://www.espn.com/college-football/boxscore/_/gameId/${game.espnId}`
+      : `https://www.espn.com/college-football/game/_/gameId/${game.espnId}`;
     lines.push(
-      `<a href="https://www.espn.com/college-football/boxscore/_/gameId/${game.espnId}" target="_blank" rel="noopener">Box score ↗</a>`
+      `<a href="${link}" target="_blank" rel="noopener">${played ? "Box score" : "Game preview"} ↗</a>`
     );
   }
   return lines.join("");
@@ -226,11 +246,17 @@ function render(teamsData, season) {
     view.sort = { key: "pct", dir: "desc" };
   }
 
+  const scheduledCount = season.games.filter((g) => g.attendance == null).length;
   $("#summary").innerHTML = [
     ["Total attendance", num(summary.totals.attendance)],
     ["Percent full", pct(summary.totals.pct)],
-    ["Games", num(summary.totals.games)],
-    ["Weeks played", num(activeWeeks.length)],
+    [
+      "Games",
+      scheduledCount
+        ? `${num(summary.totals.games)} <span class="of">of ${num(summary.totals.games + scheduledCount)}</span>`
+        : num(summary.totals.games),
+    ],
+    ["Weeks played", num(summary.weeks.filter((w) => w.games > 0).length)],
   ]
     .map(
       ([label, value]) =>
@@ -241,8 +267,14 @@ function render(teamsData, season) {
   renderTable();
 
   const empty = $("#empty-note");
-  empty.hidden = activeWeeks.length > 0;
-  empty.textContent = `No attendance reported yet for the ${season.season} season — check back after the first week of games.`;
+  const hasPlayed = summary.totals.games > 0;
+  const hasSchedule = season.games.length > 0;
+  empty.hidden = hasPlayed;
+  if (!hasSchedule) {
+    empty.textContent = `No schedule loaded yet for the ${season.season} season.`;
+  } else if (!hasPlayed) {
+    empty.textContent = `Schedule loaded — attendance replaces each matchup as games are played.`;
+  }
   $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records). Click a column header to sort.`;
 }
 
