@@ -255,6 +255,18 @@ TEMPLATE = """<!doctype html>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>Big 12 Tiebreaker Tracker — {year}</title>
+<meta name=description content="The official Big 12 tiebreaking procedures applied to live results after every game — projected championship matchup, tie narratives, and a what-if simulator.">
+<link rel=canonical href="https://big12ology.com/tiebreaker/">
+<link rel=icon type=image/svg+xml href=favicon.svg>
+<meta property=og:type content=website>
+<meta property=og:site_name content=Big12ology>
+<meta property=og:title content="Big 12 Tiebreaker Tracker — {year}">
+<meta property=og:description content="The official Big 12 tiebreaking procedures applied to live results after every game — plus a what-if simulator with five rating models.">
+<meta property=og:url content="https://big12ology.com/tiebreaker/">
+<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta property=og:image:width content=1200>
+<meta property=og:image:height content=630>
+<meta name=twitter:card content=summary_large_image>
 <style>
 :root {{
   --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #6b7280;
