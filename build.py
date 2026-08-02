@@ -448,7 +448,10 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   Big 12 tiebreaker policy</a> · not affiliated with the Big 12 Conference.
   Conference and team marks belong to their institutions (via Wikimedia
   Commons; provenance in <a href="logos/SOURCES.json">SOURCES.json</a>) and are
-  used here for identification only. Last updated {updated}.
+  used here for identification only. Part of
+  <a href="https://big12ology.com/">Big12ology</a> ·
+  <a href="https://big12ology.com/privacy">Privacy</a>.
+  Last updated {updated}.
 </footer>
 </body>
 </html>
