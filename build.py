@@ -267,6 +267,7 @@ TEMPLATE = """<!doctype html>
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
+<link rel=stylesheet href=/brand.css>
 <style>
 :root {{
   --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #6b7280;
@@ -340,9 +341,6 @@ ul.games li {{ padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 
 .ccgtag {{ color: var(--accent); font-weight: 700; font-size: 12px;
   text-transform: uppercase; }}
 .rules ol {{ padding-left: 22px; }} .rules li {{ margin: 7px 0; font-size: 14px; }}
-footer {{ max-width: 880px; margin: 0 auto; padding: 10px 20px 40px;
-  color: var(--dim); font-size: 13px; }}
-footer a {{ color: var(--accent2); }}
 progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 .sorter {{ font-size: 13px; color: var(--dim); margin: 10px 0 6px; }}
 .sorter button {{ font: inherit; border: 1px solid var(--line); background: none;
@@ -377,6 +375,12 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 </style>
 </head>
 <body>
+<nav class=b12-topbar>
+  <a class=b12-brand href=/>Big12<span>ology</span></a>
+  <a class=on href=/tiebreaker/>Tiebreaker</a>
+  <a href=/attendance/>Attendance</a>
+  <a class=b12-right href=/privacy>Privacy</a>
+</nav>
 <header>
   <div class=hwrap>
     <img src=logos/big12.svg alt="Big 12" class=conflogo>
@@ -441,17 +445,17 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 <script id=payload type=application/json>{payload}</script>
 <script src=engine.js></script>
 <script src=app.js></script>
-<footer>
-  Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a>.
-  Procedure per the <a
+<footer class=b12-footer>
+  Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> ·
+  procedure per the <a
   href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official
-  Big 12 tiebreaker policy</a> · not affiliated with the Big 12 Conference.
-  Conference and team marks belong to their institutions (via Wikimedia
-  Commons; provenance in <a href="logos/SOURCES.json">SOURCES.json</a>) and are
-  used here for identification only. Part of
-  <a href="https://big12ology.com/">Big12ology</a> ·
-  <a href="https://big12ology.com/privacy">Privacy</a>.
-  Last updated {updated}.
+  Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (provenance in
+  <a href="logos/SOURCES.json">SOURCES.json</a>) · last updated {updated}.<br>
+  A Big12ology project · not affiliated with the Big 12 Conference; conference
+  and team marks belong to their owners and appear for identification only.<br>
+  <a href="https://github.com/big12ology">GitHub</a> ·
+  <a href="https://big12ology.com/privacy">Privacy</a> ·
+  <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
 </footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
 </body>
