@@ -16,6 +16,7 @@
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
+<link rel=stylesheet href=/brand.css>
 <style>
 :root {
   --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #6b7280;
@@ -53,12 +54,15 @@ a.card:hover { border-color: var(--accent); }
 }
 .tag.soon { background: color-mix(in srgb, var(--dim) 15%, transparent);
   color: var(--dim); }
-footer { max-width: 820px; margin: 0 auto; padding: 0 20px 48px;
-  color: var(--dim); font-size: 13.5px; text-align: center; }
-footer a { color: var(--accent2); }
 </style>
 </head>
 <body>
+<nav class=b12-topbar>
+  <a class=b12-brand href=/>Big12<span>ology</span></a>
+  <a href=/tiebreaker/>Tiebreaker</a>
+  <a href=/attendance/>Attendance</a>
+  <a class=b12-right href=/privacy>Privacy</a>
+</nav>
 <header>
   <img src=big12.svg alt="">
   <h1>Big12<span class=ology>ology</span></h1>
@@ -86,11 +90,12 @@ footer a { color: var(--accent2); }
     tiebreaker simulator's house model.</p>
   </div>
 </main>
-<footer>
-  A fan project. Not affiliated with the Big 12 Conference; conference marks
-  belong to their owners and appear for identification only.
-  Code on <a href="https://github.com/big12ology">GitHub</a> ·
-  <a href="/privacy">Privacy</a>.
+<footer class=b12-footer>
+  A Big12ology project · not affiliated with the Big 12 Conference; conference
+  and team marks belong to their owners and appear for identification only.<br>
+  <a href="https://github.com/big12ology">GitHub</a> ·
+  <a href="/privacy">Privacy</a> ·
+  <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
 </footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
 </body>

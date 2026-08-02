@@ -1,0 +1,28 @@
+/* Big12ology shared chrome — served at big12ology.com/brand.css
+ * Used by the hub, /tiebreaker/, and /attendance/. Topbar and footer only;
+ * each project keeps its own body styles. Colors are fixed (not themed) in
+ * the topbar so the family chrome is identical on every page. */
+
+.b12-topbar {
+  display: flex; align-items: center; gap: 16px; padding: 8px 20px;
+  background: #14161a;
+  font: 13.5px/1.4 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.b12-topbar .b12-brand {
+  font-weight: 800; font-size: 14.5px; color: #fff; text-decoration: none;
+  letter-spacing: -.01em;
+}
+.b12-topbar .b12-brand span { color: #ff5a6e; }
+.b12-topbar a { color: #9aa0aa; text-decoration: none; }
+.b12-topbar a:hover, .b12-topbar a.on { color: #fff; }
+.b12-topbar .b12-right { margin-left: auto; }
+
+.b12-footer {
+  max-width: 880px; margin: 0 auto; padding: 10px 20px 44px;
+  color: #6b7280; font-size: 13.5px; line-height: 1.7; text-align: center;
+}
+.b12-footer a { color: #003087; }
+@media (prefers-color-scheme: dark) {
+  .b12-footer { color: #9aa0aa; }
+  .b12-footer a { color: #7aa2ff; }
+}
