@@ -46,8 +46,8 @@ are separate fields and a reported game always counts, whatever its value.
 
 1. Get a free API key at <https://collegefootballdata.com/key> and add it as a
    repo secret named `CFBD_API_KEY`.
-2. `.github/workflows/update-attendance.yml` runs twice each week during the
-   season (Sunday 14:00 UTC and Sunday evening / Monday 02:00 UTC, plus on
+2. `.github/workflows/update-attendance.yml` runs five times each game
+   weekend (Sat 3pm / 7pm / 11:30pm and Sun 7am / 7pm, Arizona time, plus on
    demand): fetches Big 12 games, rebuilds snapshots, runs the parity tests,
    and commits only if data changed.
 
