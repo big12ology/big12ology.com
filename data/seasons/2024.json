@@ -175,12 +175,7 @@
       "opponent": "UT Martin",
       "attendance": 51240,
       "pointsFor": 41,
-      "pointsAgainst": 6,
-      "weather": {
-        "tempF": 81,
-        "windMph": 0,
-        "precipIn": 0
-      }
+      "pointsAgainst": 6
     },
     {
       "team": "Oklahoma State",
@@ -191,12 +186,7 @@
       "opponent": "South Dakota State",
       "attendance": 52202,
       "pointsFor": 44,
-      "pointsAgainst": 20,
-      "weather": {
-        "tempF": 84,
-        "windMph": 6,
-        "precipIn": 0.01
-      }
+      "pointsAgainst": 20
     },
     {
       "team": "TCU",
@@ -440,12 +430,7 @@
       "opponent": "Arkansas",
       "attendance": 52202,
       "pointsFor": 39,
-      "pointsAgainst": 31,
-      "weather": {
-        "tempF": 71,
-        "windMph": 8,
-        "precipIn": 0
-      }
+      "pointsAgainst": 31
     },
     {
       "team": "TCU",
@@ -660,12 +645,7 @@
       "opponent": "Arizona",
       "attendance": 51290,
       "pointsFor": 31,
-      "pointsAgainst": 7,
-      "weather": {
-        "tempF": 80,
-        "windMph": 7,
-        "precipIn": 0
-      }
+      "pointsAgainst": 7
     },
     {
       "team": "Oklahoma State",
@@ -907,12 +887,7 @@
       "opponent": "Utah",
       "attendance": 52202,
       "pointsFor": 19,
-      "pointsAgainst": 22,
-      "weather": {
-        "tempF": 96,
-        "windMph": 10,
-        "precipIn": 0
-      }
+      "pointsAgainst": 22
     },
     {
       "team": "TCU",
@@ -1094,12 +1069,7 @@
       "pointsFor": 27,
       "pointsAgainst": 38,
       "venue": "GEHA Field at Arrowhead Stadium",
-      "capacity": 76416,
-      "weather": {
-        "tempF": 79,
-        "windMph": 12,
-        "precipIn": 0
-      }
+      "capacity": 76416
     },
     {
       "team": "Kansas State",
@@ -1111,12 +1081,7 @@
       "attendance": 51741,
       "pointsFor": 42,
       "pointsAgainst": 20,
-      "attendanceSource": "Sports-Reference box score (Oklahoma State at Kansas State, 2024-09-28)",
-      "weather": {
-        "tempF": 75,
-        "windMph": 8,
-        "precipIn": 0
-      }
+      "attendanceSource": "Sports-Reference box score (Oklahoma State at Kansas State, 2024-09-28)"
     },
     {
       "team": "Oklahoma State",
@@ -1298,12 +1263,7 @@
       "opponent": "West Virginia",
       "attendance": 52202,
       "pointsFor": 14,
-      "pointsAgainst": 38,
-      "weather": {
-        "tempF": 87,
-        "windMph": 10,
-        "precipIn": 0
-      }
+      "pointsAgainst": 38
     },
     {
       "team": "TCU",
@@ -1656,12 +1616,7 @@
       "pointsFor": 42,
       "pointsAgainst": 14,
       "venue": "GEHA Field at Arrowhead Stadium",
-      "capacity": 76416,
-      "weather": {
-        "tempF": 73,
-        "windMph": 7,
-        "precipIn": 0
-      }
+      "capacity": 76416
     },
     {
       "team": "Kansas State",
@@ -1889,12 +1844,7 @@
       "opponent": "Kansas",
       "attendance": 52074,
       "pointsFor": 29,
-      "pointsAgainst": 27,
-      "weather": {
-        "tempF": 56,
-        "windMph": 7,
-        "precipIn": 0
-      }
+      "pointsAgainst": 27
     },
     {
       "team": "Oklahoma State",
@@ -2090,12 +2040,7 @@
       "opponent": "Arizona State",
       "attendance": 52202,
       "pointsFor": 21,
-      "pointsAgainst": 42,
-      "weather": {
-        "tempF": 71,
-        "windMph": 10,
-        "precipIn": 0
-      }
+      "pointsAgainst": 42
     },
     {
       "team": "TCU",
@@ -2231,12 +2176,7 @@
       "pointsFor": 45,
       "pointsAgainst": 36,
       "venue": "GEHA Field at Arrowhead Stadium",
-      "capacity": 76416,
-      "weather": {
-        "tempF": 61,
-        "windMph": 11,
-        "precipIn": 0.01
-      }
+      "capacity": 76416
     },
     {
       "team": "Oklahoma State",
@@ -2479,12 +2419,7 @@
       "opponent": "Arizona State",
       "attendance": 51880,
       "pointsFor": 14,
-      "pointsAgainst": 24,
-      "weather": {
-        "tempF": 59,
-        "windMph": 12,
-        "precipIn": 0
-      }
+      "pointsAgainst": 24
     },
     {
       "team": "Utah",
@@ -2650,12 +2585,7 @@
       "pointsFor": 37,
       "pointsAgainst": 21,
       "venue": "GEHA Field at Arrowhead Stadium",
-      "capacity": 76416,
-      "weather": {
-        "tempF": 54,
-        "windMph": 8,
-        "precipIn": 0
-      }
+      "capacity": 76416
     },
     {
       "team": "Kansas State",
@@ -2666,12 +2596,7 @@
       "opponent": "Cincinnati",
       "attendance": 50988,
       "pointsFor": 41,
-      "pointsAgainst": 15,
-      "weather": {
-        "tempF": 53,
-        "windMph": 10,
-        "precipIn": 0
-      }
+      "pointsAgainst": 15
     },
     {
       "team": "Oklahoma State",
@@ -2682,12 +2607,7 @@
       "opponent": "Texas Tech",
       "attendance": 52202,
       "pointsFor": 48,
-      "pointsAgainst": 56,
-      "weather": {
-        "tempF": 65,
-        "windMph": 12,
-        "precipIn": 0
-      }
+      "pointsAgainst": 56
     },
     {
       "team": "TCU",

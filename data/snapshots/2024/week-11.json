@@ -6,6 +6,8 @@
       "team": "Colorado",
       "stadium": "Folsom Field",
       "capacity": 50183,
+      "color": "#cfb87c",
+      "logo": "assets/logos/cu.svg",
       "multiVenue": false,
       "games": 4,
       "weeks": [
@@ -37,6 +39,8 @@
       "team": "Utah",
       "stadium": "Rice-Eccles Stadium",
       "capacity": 51444,
+      "color": "#ea002a",
+      "logo": "assets/logos/utah.svg",
       "multiVenue": false,
       "games": 5,
       "weeks": [
@@ -73,6 +77,8 @@
       "team": "Kansas State",
       "stadium": "Bill Snyder Family Football Stadium",
       "capacity": 50000,
+      "color": "#3c0969",
+      "logo": "assets/logos/ksu.svg",
       "multiVenue": false,
       "games": 4,
       "weeks": [
@@ -104,6 +110,8 @@
       "team": "BYU",
       "stadium": "LaVell Edwards Stadium",
       "capacity": 63470,
+      "color": "#003da5",
+      "logo": "assets/logos/byu.png",
       "multiVenue": false,
       "games": 4,
       "weeks": [
@@ -135,6 +143,8 @@
       "team": "Oklahoma State",
       "stadium": "Boone Pickens Stadium",
       "capacity": 52168,
+      "color": "#ff7300",
+      "logo": "assets/logos/okst.svg",
       "multiVenue": false,
       "games": 5,
       "weeks": [
@@ -171,6 +181,8 @@
       "team": "Cincinnati",
       "stadium": "Nippert Stadium",
       "capacity": 38088,
+      "color": "#e00122",
+      "logo": "assets/logos/cin.svg",
       "multiVenue": false,
       "games": 5,
       "weeks": [
@@ -207,6 +219,8 @@
       "team": "Texas Tech",
       "stadium": "Jones AT&T Stadium",
       "capacity": 60229,
+      "color": "#cc0000",
+      "logo": "assets/logos/ttu.svg",
       "multiVenue": false,
       "games": 6,
       "weeks": [
@@ -248,6 +262,8 @@
       "team": "UCF",
       "stadium": "FBC Mortgage Stadium",
       "capacity": 44206,
+      "color": "#ba9b37",
+      "logo": "assets/logos/ucf.svg",
       "multiVenue": false,
       "games": 6,
       "weeks": [
@@ -289,6 +305,8 @@
       "team": "TCU",
       "stadium": "Amon G. Carter Stadium",
       "capacity": 46000,
+      "color": "#4d1979",
+      "logo": "assets/logos/tcu.svg",
       "multiVenue": false,
       "games": 5,
       "weeks": [
@@ -325,6 +343,8 @@
       "team": "Iowa State",
       "stadium": "Jack Trice Stadium",
       "capacity": 61500,
+      "color": "#822433",
+      "logo": "assets/logos/isu.svg",
       "multiVenue": false,
       "games": 5,
       "weeks": [
@@ -361,6 +381,8 @@
       "team": "Baylor",
       "stadium": "McLane Stadium",
       "capacity": 45140,
+      "color": "#154734",
+      "logo": "assets/logos/bay.svg",
       "multiVenue": false,
       "games": 5,
       "weeks": [
@@ -397,6 +419,8 @@
       "team": "Arizona",
       "stadium": "Arizona Stadium",
       "capacity": 50782,
+      "color": "#0c234b",
+      "logo": "assets/logos/ariz.svg",
       "multiVenue": false,
       "games": 5,
       "weeks": [
@@ -433,6 +457,8 @@
       "team": "West Virginia",
       "stadium": "Milan Puskar Stadium",
       "capacity": 60000,
+      "color": "#002855",
+      "logo": "assets/logos/wvu.svg",
       "multiVenue": false,
       "games": 5,
       "weeks": [
@@ -469,6 +495,8 @@
       "team": "Arizona State",
       "stadium": "Mountain America Stadium",
       "capacity": 53599,
+      "color": "#8e0c3a",
+      "logo": "assets/logos/asu.svg",
       "multiVenue": false,
       "games": 5,
       "weeks": [
@@ -505,6 +533,8 @@
       "team": "Kansas",
       "stadium": "David Booth Kansas Memorial Stadium",
       "capacity": null,
+      "color": "#0051ba",
+      "logo": "assets/logos/ku.svg",
       "multiVenue": true,
       "games": 5,
       "weeks": [
@@ -546,6 +576,8 @@
       "team": "Houston",
       "stadium": "TDECU Stadium",
       "capacity": 40000,
+      "color": "#c92a39",
+      "logo": "assets/logos/hou.svg",
       "multiVenue": false,
       "games": 5,
       "weeks": [
