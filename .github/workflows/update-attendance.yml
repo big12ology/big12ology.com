@@ -2,9 +2,13 @@ name: Update attendance
 
 on:
   schedule:
-    # Sundays 14:00 UTC (7/8am Arizona), late Aug through mid-Dec — after
+    # Sundays 14:00 UTC (7am Arizona), late Aug through mid-Dec — after
     # Saturday games, when CFBD has attendance posted.
     - cron: "0 14 * 8-12 0"
+    # Sunday evening pass (Mon 02:00 UTC = Sun 7pm Arizona): catches
+    # late-reporting games; the ESPN-direct fallback in the fetch covers
+    # anything CFBD hasn't ingested yet. Commits only if data changed.
+    - cron: "0 2 * 8-12 1"
   workflow_dispatch:
     inputs:
       year:
@@ -30,6 +34,11 @@ jobs:
       - name: Run parity tests
         run: node --test tests/parity.test.mjs
 
+      - name: Cross-check attendance vs ESPN
+        id: verify
+        continue-on-error: true
+        run: python3 scripts/verify_attendance.py "${{ inputs.year || '2026' }}"
+
       - name: Commit and push if changed
         run: |
           git config user.name "attendance-bot"
@@ -41,3 +50,9 @@ jobs:
             git commit -m "Attendance update: $(date -u +%Y-%m-%d)"
             git push
           fi
+
+      - name: Fail run if cross-check found mismatches
+        if: steps.verify.outcome == 'failure'
+        run: |
+          echo "Attendance mismatch between CFBD and ESPN — see data/verification/. Official school box scores are the arbiter."
+          exit 1

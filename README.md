@@ -46,9 +46,30 @@ are separate fields and a reported game always counts, whatever its value.
 
 1. Get a free API key at <https://collegefootballdata.com/key> and add it as a
    repo secret named `CFBD_API_KEY`.
-2. `.github/workflows/update-attendance.yml` runs Sundays 14:00 UTC during the
-   season (and on demand): fetches Big 12 home games, rebuilds snapshots, runs
-   the parity tests, and commits only if data changed.
+2. `.github/workflows/update-attendance.yml` runs twice each week during the
+   season (Sunday 14:00 UTC and Sunday evening / Monday 02:00 UTC, plus on
+   demand): fetches Big 12 games, rebuilds snapshots, runs the parity tests,
+   and commits only if data changed.
+
+### Attendance sources & verification
+
+- **Primary: CFBD.** **Fallback: ESPN's summary API hit directly** — same
+  upstream, different pipeline; on game night ESPN often has attendance
+  before CFBD's ingest, so the first source that has a number wins
+  (`attendanceSource` marks ESPN-filled games; the next CFBD ingest
+  normally converges to the same value).
+- **Cross-check:** `scripts/verify_attendance.py` compares every completed
+  home game against ESPN and writes `data/verification/<year>.json`; the
+  workflow turns red on any true mismatch. As of the 2024–2025 backfill:
+  206 games checked, 203 agree, 3 manual, 0 mismatches.
+- **The tail:** every historical gap traced to ESPN itself (attendance 0 at
+  the source), so no ESPN-chain feed can fill it. Truly independent sources
+  were evaluated and are not automatable: stats.ncaa.org (Akamai wall),
+  sports-reference.com (Cloudflare wall), school/conference Sidearm sites
+  (Incapsula; archived box-score APIs return empty), ncaa.com's modern feed
+  (carries no attendance at all). `missing_both` entries in the
+  verification report are the queue for `manual-attendance.json` fixes
+  citing the school's official box score — the arbiter for any dispute.
 3. Manual run: `CFBD_API_KEY=... python3 scripts/fetch_attendance.py 2026`
    then `node scripts/build_snapshots.mjs 2026`.
 

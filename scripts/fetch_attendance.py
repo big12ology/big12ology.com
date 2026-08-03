@@ -23,6 +23,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta
@@ -32,6 +33,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parent.parent
 API = "https://api.collegefootballdata.com"
 WEATHER_API = "https://archive-api.open-meteo.com/v1/archive"
+ESPN_SUMMARY = "https://site.api.espn.com/apis/site/v2/sports/football/college-football/summary"
 
 
 def get_json(url: str, headers: dict | None = None):
@@ -86,6 +88,19 @@ def load_api_key() -> str:
             "(gitignored). Free key: https://collegefootballdata.com/key"
         )
     return key
+
+
+def espn_attendance(espn_id) -> int | None:
+    """Second fetcher: ESPN's summary API, hit directly. Same upstream chain
+    as CFBD but a different pipeline — on game night ESPN has attendance
+    before CFBD's ingest picks it up, so 'first source that has it' wins.
+    ESPN reports 0 when no attendance was recorded; treat that as missing."""
+    try:
+        d = get_json(f"{ESPN_SUMMARY}?event={espn_id}", {"User-Agent": "Mozilla/5.0"})
+        att = d.get("gameInfo", {}).get("attendance")
+        return att if att else None
+    except Exception:
+        return None
 
 
 def update_seasons_index(year: int) -> None:
@@ -268,6 +283,22 @@ def main(year: int) -> None:
                 entry["pointsFor"] = pf
                 entry["pointsAgainst"] = pa
             games.append(entry)
+
+    # Fill CFBD gaps from ESPN directly (completed home games only) — catches
+    # CFBD ingest lag on game night. Manual entries above still take priority.
+    for g in games:
+        if (
+            "role" not in g
+            and g["attendance"] is None
+            and g.get("_completed")
+            and g.get("espnId")
+        ):
+            att = espn_attendance(g["espnId"])
+            if att:
+                g["attendance"] = att
+                g["attendanceSource"] = "ESPN summary API (not yet in CFBD)"
+                print(f"  filled from ESPN: {g['team']} wk{g['week']} = {att}")
+            time.sleep(0.5)
 
     fetch_weather(games, coords_by_id)
     for g in games:
