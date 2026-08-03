@@ -24,10 +24,9 @@ the repo as-is, and a scheduled GitHub Action updates the data files weekly.
   `attendance: null` means unplayed/unreported; such games are excluded from
   every total and game count. Games at alternate venues carry their own
   `venue` and `capacity`; percent-full always divides by the per-game capacity.
-  **Week numbers are derived from the game date** (Week 1 = the Sun–Sat window
-  containing the Saturday before Labor Day; Week 0 precedes it) — CFBD's week
-  field has no Week 0, and hand-entered weeks proved unreliable at Fri/Sat
-  boundaries.
+  **Week numbers are derived from the game date** (weeks run Tuesday–Monday;
+  Week 1 ends Labor Day Monday, Week 0 precedes it) — CFBD's week field has
+  no Week 0, and hand-entered weeks proved unreliable at Fri/Sat boundaries.
 - `data/snapshots/<year>/week-NN.json` — cumulative standings through each week.
 - `tests/parity.test.mjs` — self-contained math-engine check: the original
   2025 sheet's inputs (embedded in the fixture) must reproduce the sheet's own
@@ -72,10 +71,6 @@ are separate fields and a reported game always counts, whatever its value.
   citing the school's official box score — the arbiter for any dispute.
 3. Manual run: `CFBD_API_KEY=... python3 scripts/fetch_attendance.py 2026`
    then `node scripts/build_snapshots.mjs 2026`.
-
-Note: CFBD numbers "Week 0" games as week 1; the 2025 data keeps the sheet's
-original Week 0–14 labels. Week labels come from each season file, so the two
-conventions coexist.
 
 ## Development
 
