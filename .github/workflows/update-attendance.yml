@@ -2,12 +2,18 @@ name: Update attendance
 
 on:
   schedule:
-    # Sundays 14:00 UTC (7am Arizona), late Aug through mid-Dec — after
-    # Saturday games, when CFBD has attendance posted.
+    # All times below are Arizona (MST, UTC-7, no DST); season months only
+    # (late Aug – mid Dec). Every run commits only if data changed; the
+    # ESPN-direct fallback catches anything CFBD hasn't ingested yet.
+    # Saturday 3pm — early kickoffs are final, afternoon games in progress.
+    - cron: "0 22 * 8-12 6"
+    # Saturday 7pm — most afternoon/early-evening games final.
+    - cron: "0 2 * 8-12 0"
+    # Saturday overnight (11:30pm) — late Mountain/Pacific kickoffs final.
+    - cron: "30 6 * 8-12 0"
+    # Sunday morning 7am — the traditional full sweep.
     - cron: "0 14 * 8-12 0"
-    # Sunday evening pass (Mon 02:00 UTC = Sun 7pm Arizona): catches
-    # late-reporting games; the ESPN-direct fallback in the fetch covers
-    # anything CFBD hasn't ingested yet. Commits only if data changed.
+    # Sunday night 7pm — follow-up for late-reporting games and corrections.
     - cron: "0 2 * 8-12 1"
   workflow_dispatch:
     inputs:
