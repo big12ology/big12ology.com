@@ -123,7 +123,12 @@
       "opponent": "Auburn",
       "attendance": 45233,
       "pointsFor": 24,
-      "pointsAgainst": 38
+      "pointsAgainst": 38,
+      "weather": {
+        "tempF": 90,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
@@ -181,7 +186,12 @@
       "opponent": "South Dakota",
       "attendance": 61500,
       "pointsFor": 55,
-      "pointsAgainst": 7
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 79,
+        "windMph": 6,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "Kansas",
@@ -380,7 +390,12 @@
       "opponent": "Bowling Green",
       "attendance": 35421,
       "pointsFor": 34,
-      "pointsAgainst": 20
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 72,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -422,7 +437,12 @@
       "opponent": "Iowa",
       "attendance": 61500,
       "pointsFor": 16,
-      "pointsAgainst": 13
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 58,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
@@ -574,7 +594,12 @@
       "opponent": "Samford",
       "attendance": 41215,
       "pointsFor": 42,
-      "pointsAgainst": 7
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 84,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
@@ -585,7 +610,12 @@
       "opponent": "Northwestern State",
       "attendance": 30014,
       "pointsFor": 70,
-      "pointsAgainst": 0
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 86,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -750,7 +780,12 @@
       "opponent": "Arizona State",
       "attendance": 40964,
       "pointsFor": 24,
-      "pointsAgainst": 27
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 91,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -994,7 +1029,12 @@
       "opponent": "Arizona",
       "attendance": 61500,
       "pointsFor": 39,
-      "pointsAgainst": 14
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 75,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
@@ -1146,7 +1186,12 @@
       "opponent": "Kansas State",
       "attendance": 35596,
       "pointsFor": 35,
-      "pointsAgainst": 34
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 79,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
@@ -1157,7 +1202,12 @@
       "opponent": "Iowa State",
       "attendance": 38007,
       "pointsFor": 38,
-      "pointsAgainst": 30
+      "pointsAgainst": 30,
+      "weather": {
+        "tempF": 78,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -1367,7 +1417,12 @@
       "opponent": "UCF",
       "attendance": 35782,
       "pointsFor": 20,
-      "pointsAgainst": 11
+      "pointsAgainst": 11,
+      "weather": {
+        "tempF": 64,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -1765,7 +1820,12 @@
       "opponent": "Baylor",
       "attendance": 38007,
       "pointsFor": 41,
-      "pointsAgainst": 20
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 54,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -1806,7 +1866,12 @@
       "opponent": "BYU",
       "attendance": 61500,
       "pointsFor": 27,
-      "pointsAgainst": 41
+      "pointsAgainst": 41,
+      "weather": {
+        "tempF": 57,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
@@ -1957,7 +2022,12 @@
       "opponent": "UCF",
       "attendance": 40212,
       "pointsFor": 30,
-      "pointsAgainst": 3
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 57,
+        "windMph": 4,
+        "precipIn": 0.04
+      }
     },
     {
       "team": "Cincinnati",
@@ -2015,7 +2085,12 @@
       "opponent": "Arizona State",
       "attendance": 60899,
       "pointsFor": 19,
-      "pointsAgainst": 24
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 45,
+        "windMph": 11,
+        "precipIn": 0.0
+      }
     },
     {
       "team": "Kansas",
@@ -2336,7 +2411,12 @@
       "opponent": "Utah",
       "attendance": 38186,
       "pointsFor": 28,
-      "pointsAgainst": 55
+      "pointsAgainst": 55,
+      "weather": {
+        "tempF": 78,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
@@ -2347,7 +2427,12 @@
       "opponent": "Arizona",
       "attendance": 37099,
       "pointsFor": 24,
-      "pointsAgainst": 30
+      "pointsAgainst": 30,
+      "weather": {
+        "tempF": 64,
+        "windMph": 11,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
@@ -2526,7 +2611,12 @@
       "opponent": "BYU",
       "attendance": 38034,
       "pointsFor": 14,
-      "pointsAgainst": 26
+      "pointsAgainst": 26,
+      "weather": {
+        "tempF": 44,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -2569,7 +2659,12 @@
       "opponent": "Kansas",
       "attendance": 58275,
       "pointsFor": 38,
-      "pointsAgainst": 14
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 48,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
@@ -2719,7 +2814,12 @@
       "opponent": "Houston",
       "attendance": 34720,
       "pointsFor": 24,
-      "pointsAgainst": 31
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 64,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",

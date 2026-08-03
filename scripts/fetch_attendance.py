@@ -128,28 +128,36 @@ def fetch_weather(games: list, venues_by_id: dict) -> None:
 
     for (vid, (lat, lon)), items in by_venue.items():
         dates = [dt.date() for _, dt in items]
-        try:
-            resp = get_json(
-                f"{WEATHER_API}?"
-                + urllib.parse.urlencode(
-                    {
-                        "latitude": lat,
-                        "longitude": lon,
-                        "start_date": min(dates).isoformat(),
-                        "end_date": max(dates).isoformat(),
-                        "hourly": "temperature_2m,precipitation,wind_speed_10m",
-                        "temperature_unit": "fahrenheit",
-                        "wind_speed_unit": "mph",
-                        "precipitation_unit": "inch",
-                        "timezone": "UTC",
-                    }
-                )
-            )
-            hourly = resp["hourly"]
-            idx = {t: i for i, t in enumerate(hourly["time"])}
-        except Exception as e:
-            print(f"  weather unavailable for venue {vid}: {e}")
+        url = f"{WEATHER_API}?" + urllib.parse.urlencode(
+            {
+                "latitude": lat,
+                "longitude": lon,
+                "start_date": min(dates).isoformat(),
+                "end_date": max(dates).isoformat(),
+                "hourly": "temperature_2m,precipitation,wind_speed_10m",
+                "temperature_unit": "fahrenheit",
+                "wind_speed_unit": "mph",
+                "precipitation_unit": "inch",
+                "timezone": "UTC",
+            }
+        )
+        # Open-Meteo's free tier rate-limits bursts (it dropped ~15% of venue
+        # calls on the CI runner) — pace the calls and retry once with backoff.
+        hourly = None
+        for attempt in range(2):
+            try:
+                resp = get_json(url)
+                hourly = resp["hourly"]
+                break
+            except Exception as e:
+                if attempt == 0:
+                    time.sleep(5)
+                else:
+                    print(f"  weather unavailable for venue {vid}: {e}")
+        if hourly is None:
             continue
+        idx = {t: i for i, t in enumerate(hourly["time"])}
+        time.sleep(0.7)
         for g, dt in items:
             key = dt.strftime("%Y-%m-%dT%H:00")
             i = idx.get(key)
@@ -306,6 +314,19 @@ def main(year: int) -> None:
         g.pop("_kickoffUtc", None)
         g.pop("_completed", None)
     games.sort(key=lambda x: (x["week"], x["team"]))
+
+    # Never let a flaky upstream erase enrichment we already have: if the
+    # previous season file had weather for a game and this fetch didn't get
+    # it, carry the old value forward.
+    if out.exists():
+        prior = {
+            (p["team"], p["week"], p.get("role")): p
+            for p in json.loads(out.read_text())["games"]
+        }
+        for g in games:
+            old = prior.get((g["team"], g["week"], g.get("role")))
+            if old and "weather" in old and "weather" not in g:
+                g["weather"] = old["weather"]
 
     num_weeks = max((g["week"] for g in games), default=14) + 1
     source = "CollegeFootballData API (collegefootballdata.com); weather via Open-Meteo"
