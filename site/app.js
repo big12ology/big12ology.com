@@ -19,22 +19,31 @@ async function loadJSON(path) {
   return resp.json();
 }
 
-// Continuous fill scale: green at 100%+, yellowing toward 80%, then red,
-// fully saturated by 50% and below. Lightness comes from --pctl so light
-// and dark themes each get a legible shade.
-function pctColor(p) {
-  let h, s, t;
-  if (p >= 1) {
-    h = 140; s = 62;
-  } else if (p >= 0.8) {
-    t = (p - 0.8) / 0.2;      // 80%..100% -> yellow..green
-    h = 45 + t * 95; s = 65;
-  } else {
-    t = Math.max(0, (p - 0.5) / 0.3); // 50%..80% -> red..yellow
-    h = t * 45;
-    s = 100 - t * 30;          // saturation climbs as it falls
+// Continuous fill scale, kept in sync with charts.js pctFill. Lightness
+// comes from --pctl so light and dark themes each get a legible shade.
+function pctHue(p) {
+  // Anchor curve, log-like: hue resolution is spent where the data lives.
+  // 98% vs 105% must look different; 60% vs 65% can both just be red.
+  const A = [[0.55, 0], [0.70, 20], [0.80, 45], [0.90, 75],
+             [0.95, 95], [1.00, 120], [1.08, 150]];
+  if (p <= A[0][0]) return A[0][1];
+  if (p >= A[A.length - 1][0]) return A[A.length - 1][1];
+  for (let i = 1; i < A.length; i++) {
+    if (p <= A[i][0]) {
+      const t = (p - A[i - 1][0]) / (A[i][0] - A[i - 1][0]);
+      return A[i - 1][1] + t * (A[i][1] - A[i - 1][1]);
+    }
   }
-  return `hsl(${Math.round(h)} ${Math.round(s)}% var(--pctl))`;
+  return A[A.length - 1][1];
+}
+function pctHSL(p) {
+  const h = pctHue(p);
+  const s = h < 45 ? 100 - (h / 45) * 35 : 65 - ((h - 45) / 105) * 5;
+  return [Math.round(h), Math.round(s)];
+}
+function pctColor(p) {
+  const [h, s] = pctHSL(p);
+  return `hsl(${h} ${s}% var(--pctl))`;
 }
 function pctSpan(p) {
   return `<span class="pct" style="color:${pctColor(p)}">${pct(p)}</span>`;

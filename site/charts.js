@@ -209,20 +209,32 @@ function teamBars(cardEl, summary) {
 
 // ---- panel 3: team × week heatmap -----------------------------------------
 
-// Same fill semantics as the table's percent colors (see app.js pctColor —
-// keep in sync): green at 100%+, yellowing toward 80%, red saturating by
-// 50%. Hue carries the meaning, so light and dark themes read identically
-// and "more red = emptier" needs no legend footnote.
-function pctFill(p) {
-  let h, s, u;
-  if (p >= 1) {
-    h = 140; s = 62;
-  } else if (p >= 0.8) {
-    u = (p - 0.8) / 0.2; h = 45 + u * 95; s = 65;
-  } else {
-    u = Math.max(0, (p - 0.5) / 0.3); h = u * 45; s = 100 - u * 30;
+// Same fill semantics as the table's percent colors (see app.js — keep in
+// sync). Hue carries the meaning; the anchor curve is log-like so the top
+// of the scale (where most games land) gets most of the resolution.
+function pctHueC(p) {
+  // Anchor curve, log-like: hue resolution is spent where the data lives.
+  // 98% vs 105% must look different; 60% vs 65% can both just be red.
+  const A = [[0.55, 0], [0.70, 20], [0.80, 45], [0.90, 75],
+             [0.95, 95], [1.00, 120], [1.08, 150]];
+  if (p <= A[0][0]) return A[0][1];
+  if (p >= A[A.length - 1][0]) return A[A.length - 1][1];
+  for (let i = 1; i < A.length; i++) {
+    if (p <= A[i][0]) {
+      const t = (p - A[i - 1][0]) / (A[i][0] - A[i - 1][0]);
+      return A[i - 1][1] + t * (A[i][1] - A[i - 1][1]);
+    }
   }
-  return `hsl(${Math.round(h)} ${Math.round(s)}% ${isDark() ? 60 : 38}%)`;
+  return A[A.length - 1][1];
+}
+function pctHSLC(p) {
+  const h = pctHueC(p);
+  const s = h < 45 ? 100 - (h / 45) * 35 : 65 - ((h - 45) / 105) * 5;
+  return [Math.round(h), Math.round(s)];
+}
+function pctFill(p) {
+  const [h, s] = pctHSLC(p);
+  return `hsl(${h} ${s}% ${isDark() ? 60 : 38}%)`;
 }
 
 function heatmap(cardEl, summary, season) {
