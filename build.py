@@ -232,17 +232,12 @@ def render(year, games):
 
     standcard = STAND_CARD.format(
         played=len(reg_played), total=len(reg), table=table, stories=stories)
-    # Side-by-side while there are games to pick: picker left, standings
-    # right (sticky). Once the season is done, standings go back full width.
-    if whatif:
-        mid = f"<div class=duo>{whatif}{standcard}</div>"
-    else:
-        mid = standcard
 
     return TEMPLATE.format(
         year=year,
         card=card,
-        mid=mid,
+        whatif=whatif,
+        standcard=standcard,
         results=results,
         upcoming=upcoming,
         payload=payload,
@@ -360,11 +355,16 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   gap: 20px; align-items: start; }}
 .duo > .stack {{ display: grid; gap: 20px; align-content: start;
   min-width: 0; }}
-.duo .standcard {{ position: sticky; top: 14px;
-  max-height: calc(100vh - 28px); overflow-y: auto; }}
 @media (max-width: 1023px) {{
   .duo {{ grid-template-columns: 1fr; }}
-  .duo .standcard {{ position: static; max-height: none; }}
+  /* flatten the columns so cards can interleave in reading order */
+  .duo > .stack {{ display: contents; }}
+  #whatif {{ order: 1; }}
+  .standcard {{ order: 2; }}
+  #teamwhy {{ order: 3; }}
+  #resultscard {{ order: 4; }}
+  #upnextcard {{ order: 5; }}
+  .rules {{ order: 6; }}
 }}
 .card {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 18px 20px; }}
@@ -473,10 +473,10 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 <main>
 {card}
 
-{mid}
-
 <div class=duo>
 <div class=stack>
+
+{whatif}
 
 <div class=card id=teamwhy>
   <h2>Why is my team where they are?
@@ -491,7 +491,7 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   <a href=how.html>how the tiebreakers work</a>.</p>
 </div>
 
-<div class=card>
+<div class=card id=resultscard>
   <h2>Latest results</h2>
   <ul class=games>{results}</ul>
 </div>
@@ -499,7 +499,9 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 </div>
 <div class=stack>
 
-<div class=card>
+{standcard}
+
+<div class=card id=upnextcard>
   <h2>Up next</h2>
   <ul class=games>{upcoming}</ul>
 </div>
@@ -529,6 +531,9 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   remaining teams restart the procedure from the top; at two teams the
   two-team rules apply. Steps 6–7 use non-public inputs, so when a projection
   reaches them it is flagged until the conference's values are known.</p>
+</div>
+
+</div>
 </div>
 </main>
 <script id=payload type=application/json>{payload}</script>
