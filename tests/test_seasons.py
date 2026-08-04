@@ -41,7 +41,9 @@ def main():
                 f"seed1 = {ccg['seed1']} (want Arizona State)")
     ok &= check(ccg["seed2"] == "Iowa State",
                 f"seed2 = {ccg['seed2']} (want Iowa State)")
-    order, log, resolved = tb.break_tie(groups[0], games)
+    order, log, resolved, events = tb.break_tie(groups[0], games)
+    ok &= check(all(e["team"] and e["step"] and e["line"] for e in events),
+                f"seed events populated: {[(e['team'], e['step']) for e in events]}")
     print("  tiebreaker narrative:")
     for line in log:
         print(f"    {line}")

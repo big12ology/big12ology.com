@@ -38,19 +38,7 @@ Every unplayed conference game gets a pair of pick buttons; picks re-run the
 official procedure instantly in the browser and update the matchup card,
 standings, and tie narratives. A model selector marks favorites (★, with
 projected margins): SP+, FPI, Elo, and SRS from collegefootballdata.com —
-each falls back to the prior season until the new year's ratings exist — plus
-the local **Chain** model. Chain ratings come from the sibling
-`big12-preview-machine` project; refresh them with:
-
-```bash
-cd ~/ClaudeProjects/big12-preview-machine && python3 -c "
-import json, chain
-R = chain.rate()
-out = {chain.NAME_OF[k]: round(v['base'], 2) for k, v in R.items()}
-json.dump({'season': 2026, 'scale_pts': 1.9, 'home_edge': 5.0, 'ratings': out},
-          open('$HOME/development/big12-tiebreaker/chain_ratings.json', 'w'), indent=1)
-"
-```
+each falls back to the prior season until the new year's ratings exist.
 
 Steps (f) SportSource and (g) coin toss use non-public inputs; when a real
 tie reaches them, put the values in `overrides.json`:

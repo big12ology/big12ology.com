@@ -186,6 +186,13 @@
   var tablewrap = document.getElementById("tablewrap");
   var origWrapHidden = tablewrap ? tablewrap.hidden : false;
 
+  // Current-state cache for the team explainer: actual season at load,
+  // replaced by the simulated season while what-if picks are active.
+  var actualRows = B12Engine.standings(payload.games, payload.overrides || {});
+  var actualCcg = B12Engine.championship(payload.games, payload.overrides || {});
+  var lastRows = actualRows;
+  var lastCcg = actualCcg;
+
   function refresh() {
     renderPickList();
     if (!active()) {
@@ -194,6 +201,9 @@
       if (stories) stories.innerHTML = orig.stories;
       if (chip) chip.hidden = true;
       if (tablewrap) tablewrap.hidden = origWrapHidden;
+      lastRows = actualRows;
+      lastCcg = actualCcg;
+      renderTeamWhy();
       applySort();
       return;
     }
@@ -206,8 +216,153 @@
     if (stories) stories.innerHTML = renderStories(rows);
     if (chip) chip.hidden = false;
     if (tablewrap) tablewrap.hidden = rows.length === 0;
+    lastRows = rows;
+    lastCcg = ccg;
+    renderTeamWhy();
     applySort();
   }
+
+  // ------------------------------------------------------- team explainer
+
+  var STEP_NAMES = {
+    a: "head-to-head",
+    b: "record against common opponents",
+    c: "the standings walk (next-highest-placed common opponent)",
+    d: "strength of conference schedule",
+    e: "total wins",
+    f: "the SportSource Analytics rating",
+    g: "a coin toss",
+  };
+
+  function ordinal(n) {
+    var s = ["th", "st", "nd", "rd"];
+    var v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  function fmtRec(r) {
+    return r.conf_w + "–" + r.conf_l;
+  }
+
+  function renderTeamWhy() {
+    var out = document.getElementById("team-out");
+    var sel = document.getElementById("team-sel");
+    if (!out || !sel) return;
+    var chip2 = document.getElementById("w-chip2");
+    if (chip2) chip2.hidden = !active();
+    var team = sel.value;
+    if (!team) {
+      out.innerHTML = "<p class=dim>Pick a team to get a plain-English " +
+        "explanation of exactly where they stand and which rule put them " +
+        "there.</p>";
+      return;
+    }
+    var rows = lastRows;
+    var scenario = active() ? "In your what-if scenario, " : "";
+    if (!rows.length) {
+      out.innerHTML = "<p class=dim>All sixteen teams are 0–0 — there " +
+        "are no standings to explain yet. Pick winners in the what-if " +
+        "section above and this tool will explain the simulated pecking " +
+        "order.</p>";
+      return;
+    }
+    var row = null;
+    rows.forEach(function (r) { if (r.team === team) row = r; });
+    if (!row) {
+      out.innerHTML = "<p class=dim>" + esc(team) + " has no completed " +
+        "conference games in this scenario yet, so they have no standing " +
+        "to explain.</p>";
+      return;
+    }
+
+    var p = row.conf_w / (row.conf_w + row.conf_l);
+    var html = "<div class=whyhead>" + mark(team, 22) + esc(team) + "</div>";
+    html += "<p>" + esc(scenario) + esc(team) + " is <b>" +
+      ordinal(row.rank) + "</b> at <b>" + fmtRec(row) + "</b> (" +
+      p.toFixed(3) + " in conference play).";
+    if (row.rank === 1) {
+      html += " That is the projected <b>#1 seed</b> — in the championship " +
+        "game.";
+    } else if (row.rank === 2) {
+      html += " That is the projected <b>#2 seed</b> — in the championship " +
+        "game.";
+    } else if (row.rank === 3) {
+      html += " First team out: the top two make the championship game.";
+    } else {
+      html += " The top two make the championship game.";
+    }
+    html += "</p>";
+
+    if (!row.tie_group) {
+      var above = null, below = null;
+      rows.forEach(function (r) {
+        if (r.rank === row.rank - 1) above = r;
+        if (r.rank === row.rank + 1) below = r;
+      });
+      html += "<p>No tiebreaker involved — no other team has their exact " +
+        "winning percentage" +
+        (above ? ", trailing " + esc(above.team) + " (" + fmtRec(above) + ")"
+               : "") +
+        (below ? (above ? " and" : ",") + " leading " + esc(below.team) +
+          " (" + fmtRec(below) + ")" : "") +
+        " on record alone. The official standard is winning percentage, " +
+        "not raw wins, so games-played differences don't matter.</p>";
+    } else {
+      var groupRows = rows.filter(function (r) {
+        return r.tie_group === row.tie_group;
+      });
+      var first = groupRows[0];
+      var others = groupRows.filter(function (r) { return r.team !== team; })
+        .map(function (r) { return r.team; });
+      var pos = groupRows.indexOf(row) + 1;
+      html += "<p>They're in a <b>" + groupRows.length + "-way tie</b> at " +
+        fmtRec(row) + " with " + others.map(esc).join(", ") + ".";
+      var ev = null;
+      (first.events || []).forEach(function (e) {
+        if (e.team === team) ev = e;
+      });
+      if (ev) {
+        html += " The procedure seeded them <b>" + ordinal(pos) + " of " +
+          groupRows.length + "</b> in the group at step (" + ev.step +
+          "), " + STEP_NAMES[ev.step] + ":</p>" +
+          "<span class=evline>" + esc(ev.line) + "</span>";
+      } else if (first.resolved) {
+        html += " They took the <b>last spot in the group</b> by " +
+          "elimination — every tiebreaker step broke someone else's way " +
+          "first:</p>";
+        (first.events || []).forEach(function (e) {
+          html += "<span class=evline>" + esc(e.line) + "</span>";
+        });
+      } else {
+        html += " This tie <b>cannot be fully resolved from public data</b> " +
+          "— it reaches the SportSource Analytics rating or coin toss, " +
+          "which only the conference holds. The order shown is provisional." +
+          "</p>";
+      }
+      html += "<details><summary>Full step-by-step for this tie group" +
+        "</summary><ol class=steps>" +
+        (first.log || []).map(function (x) {
+          return "<li>" + esc(x) + "</li>";
+        }).join("") + "</ol></details>";
+    }
+    if (row.rank <= 2 && lastCcg && lastCcg.note) {
+      html += "<p class=dim>" + esc(lastCcg.note) + "</p>";
+    }
+    out.innerHTML = html;
+  }
+
+  (function bindTeamWhy() {
+    var sel = document.getElementById("team-sel");
+    if (!sel) return;
+    Object.keys(teams).sort().forEach(function (t) {
+      var o = document.createElement("option");
+      o.value = t;
+      o.textContent = t;
+      sel.appendChild(o);
+    });
+    sel.onchange = renderTeamWhy;
+    renderTeamWhy();
+  })();
 
   // ------------------------------------------------------------- pick panel
 

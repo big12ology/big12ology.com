@@ -110,10 +110,10 @@ def main():
         for pr, jr in zip(prows, jrows):
             if (pr["rank"], pr["team"], pr["conf_w"], pr["conf_l"],
                 pr["overall_w"], pr["overall_l"], pr["tie_group"],
-                pr["resolved"], pr["log"]) != \
+                pr["resolved"], pr["log"], pr["events"]) != \
                (jr["rank"], jr["team"], jr["conf_w"], jr["conf_l"],
                 jr["overall_w"], jr["overall_l"], jr["tie_group"],
-                jr["resolved"], jr["log"]):
+                jr["resolved"], jr["log"], jr["events"]):
                 bad += 1
                 print(f"[FAIL] {label} row {pr['rank']}:\n  py {pr}\n  js {jr}")
                 break

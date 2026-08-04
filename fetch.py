@@ -101,8 +101,7 @@ SYSTEMS = {
 def fetch_ratings(year):
     """Rating systems for the what-if favorites. Preseason numbers for a new
     year appear in late August; each system falls back to the prior season
-    until then. The local Chain model (chain_ratings.json, exported from
-    big12-preview-machine) is folded in when present.
+    until then.
 
     Writes data/ratings_<year>.json =
         {"systems": {name: {year, hfa, per_pt, ratings: {team: r}}}}
@@ -122,13 +121,6 @@ def fetch_ratings(year):
         if got:
             systems[name] = {"year": used, "hfa": hfa, "per_pt": per_pt,
                              "ratings": got}
-    chain_p = os.path.join(HERE, "chain_ratings.json")
-    if os.path.exists(chain_p):
-        c = json.load(open(chain_p))
-        systems["Chain"] = {
-            "year": c.get("season"), "hfa": c.get("home_edge", 5.0),
-            "per_pt": c.get("scale_pts", 1.9), "ratings": c["ratings"],
-        }
     out = os.path.join(DATA, f"ratings_{year}.json")
     with open(out, "w") as f:
         json.dump({"systems": systems}, f, indent=1)

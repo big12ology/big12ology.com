@@ -356,6 +356,7 @@
     tied = tied.slice().sort();
     var log = [];
     var order = [];
+    var events = [];
     var remaining = tied.slice();
     while (remaining.length > 1) {
       var n0 = remaining.length;
@@ -364,8 +365,11 @@
         log.push("UNRESOLVED: " + remaining.join(", ") +
           " cannot be separated with available data.");
         order = order.concat(remaining);
-        return { order: order, log: log, resolved: false };
+        return { order: order, log: log, resolved: false, events: events };
       }
+      var line = log[log.length - 1];
+      var step = line.charAt(0) === "(" ? line.charAt(1) : null;
+      events.push({ team: seeded, step: step, line: line });
       order.push(seeded);
       remaining.splice(remaining.indexOf(seeded), 1);
       if (remaining.length > 1 && n0 > 2) {
@@ -374,7 +378,7 @@
       }
     }
     order = order.concat(remaining);
-    return { order: order, log: log, resolved: true };
+    return { order: order, log: log, resolved: true, events: events };
   }
 
   function standings(games, overrides) {
@@ -403,12 +407,13 @@
     var rows = [];
     var rank = 1;
     placementGroups(games).forEach(function (grp) {
-      var ordered, log, resolved, tieId;
+      var ordered, log, resolved, tieId, events;
       if (grp.length === 1) {
-        ordered = grp; log = null; resolved = true; tieId = null;
+        ordered = grp; log = null; resolved = true; tieId = null; events = null;
       } else {
         var r = breakTie(grp, games, overrides);
         ordered = r.order; log = r.log; resolved = r.resolved;
+        events = r.events;
         tieId = grp.slice().sort().join("+");
       }
       ordered.forEach(function (t, i) {
@@ -419,6 +424,7 @@
           overall_w: o[0], overall_l: o[1],
           tie_group: tieId,
           log: i === 0 ? log : null,
+          events: i === 0 ? events : null,
           resolved: resolved,
         });
       });

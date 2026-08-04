@@ -304,13 +304,16 @@ def step_coin_toss(tied, overrides, log):
 def break_tie(tied, games, overrides=None):
     """Order a group of tied teams per the official procedure.
 
-    Returns (ordered_teams, log, resolved). If a tie bottoms out at an
-    unavailable step (f/g without overrides) the remaining teams are appended
-    in alphabetical order and resolved=False.
+    Returns (ordered_teams, log, resolved, events). events records which step
+    seeded each team: [{"team", "step", "line"}] — teams seeded by
+    elimination (the last one standing) have no event. If a tie bottoms out
+    at an unavailable step (f/g without overrides) the remaining teams are
+    appended in alphabetical order and resolved=False.
     """
     tied = sorted(tied)
     log = []
     order = []
+    events = []
     remaining = list(tied)
 
     while len(remaining) > 1:
@@ -323,14 +326,17 @@ def break_tie(tied, games, overrides=None):
             log.append(f"UNRESOLVED: {', '.join(remaining)} cannot be "
                        f"separated with available data.")
             order.extend(remaining)
-            return order, log, False
+            return order, log, False, events
+        line = log[-1]
+        step = line[1] if line.startswith("(") else None
+        events.append({"team": seeded, "step": step, "line": line})
         order.append(seeded)
         remaining.remove(seeded)
         if len(remaining) > 1 and n0 > 2:
             log.append(f"Restarting procedure for remaining tied teams: "
                        f"{', '.join(remaining)}.")
     order.extend(remaining)
-    return order, log, True
+    return order, log, True, events
 
 
 def _run_two_team(tied, games, overrides, log):
@@ -394,9 +400,9 @@ def standings(games, overrides=None):
     rank = 1
     for grp in placement_groups(games):
         if len(grp) == 1:
-            ordered, log, resolved, tie_id = grp, None, True, None
+            ordered, log, resolved, tie_id, events = grp, None, True, None, None
         else:
-            ordered, log, resolved = break_tie(grp, games, overrides)
+            ordered, log, resolved, events = break_tie(grp, games, overrides)
             tie_id = "+".join(sorted(grp))
         for i, t in enumerate(ordered):
             w, l = rec[t]
@@ -407,6 +413,7 @@ def standings(games, overrides=None):
                 "overall_w": ow, "overall_l": ol,
                 "tie_group": tie_id,
                 "log": log if i == 0 else None,  # attach log once per group
+                "events": events if i == 0 else None,
                 "resolved": resolved,
             })
         rank += len(ordered)

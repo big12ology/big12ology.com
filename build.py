@@ -39,7 +39,7 @@ def load_ratings(year):
     return json.load(open(p)) if os.path.exists(p) else {"systems": {}}
 
 
-MODEL_ORDER = ["SP+", "Chain", "FPI", "Elo", "SRS"]
+MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS"]
 
 
 def favorites_for(games, systems):
@@ -291,6 +291,14 @@ header {{ border-bottom: 4px solid var(--accent); padding: 28px 20px 18px;
   background: var(--panel); }}
 header h1 {{ margin: 0; font-size: 26px; letter-spacing: -.02em; }}
 header p {{ margin: 4px 0 0; color: var(--dim); font-size: 14px; }}
+header p a {{ color: var(--accent2); text-decoration: none; }}
+.whyout {{ margin-top: 6px; }}
+.whyout p {{ font-size: 15px; margin: 8px 0; }}
+.whyhead {{ display: flex; align-items: center; gap: 4px; font-weight: 700;
+  font-size: 17px; margin: 6px 0; }}
+.evline {{ display: block; background: var(--bg); border-left: 3px solid
+  var(--accent); border-radius: 4px; padding: 6px 10px; margin: 6px 0;
+  font-size: 13.5px; color: var(--dim); }}
 main {{ max-width: 880px; margin: 0 auto; padding: 20px; display: grid; gap: 20px; }}
 .card {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 18px 20px; }}
@@ -387,7 +395,8 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
     <div>
       <h1>Big 12 Tiebreaker Tracker <span class=dim>· {year}</span></h1>
       <p>Unofficial fan tool. Applies the official Big 12 tiebreaking
-      procedures to live results after every game.</p>
+      procedures to live results after every game.
+      <a href=how.html>How it works &rarr;</a></p>
     </div>
   </div>
 </header>
@@ -402,6 +411,19 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   <progress max={total} value={played}></progress>
   {table}
   <div style="margin-top:14px" id=stories>{stories}</div>
+</div>
+
+<div class=card id=teamwhy>
+  <h2>Why is my team where they are?
+  <span id=w-chip2 class=wchip hidden>what-if</span></h2>
+  <div class=wcontrols>
+    <label class=dim for=team-sel>Team</label>
+    <select id=team-sel class=wbtn><option value="">Choose a team&hellip;</option></select>
+  </div>
+  <div id=team-out class=whyout></div>
+  <p class=note>Follows your what-if picks when they're active. Full
+  walkthrough of the procedure:
+  <a href=how.html>how the tiebreakers work</a>.</p>
 </div>
 
 <div class=cols>
@@ -463,6 +485,219 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 """
 
 
+EXPLAINER = """<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>How the Big 12 tiebreakers work — Big12ology</title>
+<meta name=description content="A plain-English walkthrough of the official Big 12 football tiebreaking procedures, with the 2024 four-way tie worked step by step.">
+<link rel=canonical href="https://big12ology.com/tiebreaker/how.html">
+<link rel=icon type=image/svg+xml href=favicon.svg>
+<link rel=stylesheet href=/brand.css>
+<meta property=og:type content=article>
+<meta property=og:site_name content=Big12ology>
+<meta property=og:title content="How the Big 12 tiebreakers actually work">
+<meta property=og:description content="The official procedure in plain English, plus the 2024 four-way tie worked step by step by the tracker's rules engine.">
+<meta property=og:url content="https://big12ology.com/tiebreaker/how.html">
+<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta name=twitter:card content=summary_large_image>
+<style>
+:root {{
+  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #6b7280;
+  --line: #e2ddd2; --accent: #c8102e; --accent2: #003087;
+}}
+@media (prefers-color-scheme: dark) {{
+  :root {{
+    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
+    --line: #2e323a; --accent: #ff5a6e; --accent2: #7aa2ff;
+  }}
+}}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; background: var(--bg); color: var(--ink);
+  font: 17px/1.65 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
+header {{ border-bottom: 4px solid var(--accent); padding: 24px 20px 16px;
+  background: var(--panel); }}
+.hwrap {{ display: flex; align-items: center; gap: 16px; max-width: 780px;
+  margin: 0 auto; }}
+.hwrap img {{ height: 46px; width: auto; }}
+header h1 {{ margin: 0; font-size: 23px; letter-spacing: -.02em; }}
+header p {{ margin: 3px 0 0; color: var(--dim); font-size: 14px; }}
+header a {{ color: inherit; text-decoration: none; }}
+main {{ max-width: 780px; margin: 0 auto; padding: 26px 20px 48px; }}
+h2 {{ font-size: 21px; margin: 34px 0 10px; }}
+h3 {{ font-size: 17px; margin: 22px 0 8px; }}
+p, li {{ font-size: 16.5px; }}
+a {{ color: var(--accent2); }}
+.lead {{ font-size: 18px; }}
+ol.rules > li {{ margin: 10px 0; }}
+ol.rules b {{ color: var(--ink); }}
+.aside {{ background: var(--panel); border: 1px solid var(--line);
+  border-left: 4px solid var(--accent); border-radius: 8px;
+  padding: 12px 16px; font-size: 15px; color: var(--dim); margin: 16px 0; }}
+.worked {{ background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 18px 22px; margin: 16px 0; }}
+.worked ol {{ padding-left: 20px; }}
+.worked li {{ margin: 8px 0; font-size: 15px; }}
+.worked .meta {{ color: var(--dim); font-size: 14px; margin: 0 0 10px; }}
+table.models {{ border-collapse: collapse; width: 100%; margin: 12px 0; }}
+table.models th, table.models td {{ text-align: left; padding: 8px 10px;
+  border-bottom: 1px solid var(--line); font-size: 15px; vertical-align: top; }}
+table.models th {{ font-size: 12px; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--dim); }}
+.backlink {{ display: inline-block; margin-top: 8px; }}
+</style>
+</head>
+<body>
+<nav class=b12-topbar>
+  <a class=b12-brand href=/>Big12<span>ology</span></a>
+  <a class=on href=/tiebreaker/>Tiebreaker</a>
+  <a href=/attendance/>Attendance</a>
+  <a class=b12-right href=/privacy>Privacy</a>
+</nav>
+<header>
+  <div class=hwrap>
+    <img src=logos/big12.svg alt="">
+    <div>
+      <h1><a href="./">Big 12 Tiebreaker Tracker</a> · How it works</h1>
+      <p>The official procedure, in plain English, with a real worked example.</p>
+    </div>
+  </div>
+</header>
+<main>
+
+<p class=lead>Sixteen teams, nine conference games each, no round robin —
+which means two teams can finish with identical records having played
+completely different schedules. The Big 12 sends its two best conference
+winning percentages to the championship game, and when teams tie, a strict
+seven-step procedure decides who goes. This site runs that procedure,
+verbatim, after every game.</p>
+
+<h2>The two golden rules</h2>
+<p>Before any step-counting, two structural rules do a lot of work:</p>
+<ul>
+  <li><b>Win percentage, not raw wins.</b> The goal is the two best conference
+  <i>winning percentages</i> — mid-season, a 5–1 team outranks a 6–2 team.
+  (The standings table has a toggle if you want to see it both ways.)</li>
+  <li><b>A two-way tie for first between teams that met is no tie at all.</b>
+  Both are in the championship game; the head-to-head winner is the #1 seed.
+  The procedure below is for everything messier.</li>
+</ul>
+
+<h2>The seven steps</h2>
+<p>Applied in order; the first step that separates anyone wins. With three or
+more tied teams, the moment one team is seeded, the survivors go back to the
+top and start over (dropping to the two-team rules once only two remain).</p>
+<ol class=rules>
+  <li><b>Head-to-head.</b> For two teams: did you play, and who won? For
+  three-plus: winning percentage in games among the tied group — with one
+  twist: a team that beat every other team in the group is seeded even if the
+  group didn't all play each other.</li>
+  <li><b>Common opponents.</b> Win percentage against the conference opponents
+  every tied team played. Different schedules, same yardstick.</li>
+  <li><b>The standings walk.</b> Compare records against the best-placed team
+  everyone played, then the next, on down the standings. Tied placement groups
+  count as one collective opponent — you're compared against the group, not
+  its members individually.</li>
+  <li><b>Strength of schedule.</b> Combined conference record of each team's
+  nine conference opponents. The tiebreaker equivalent of "who had the harder
+  road."</li>
+  <li><b>Total wins</b> across the full 12-game season — with at most one win
+  over an FCS opponent counting, so a cupcake-heavy September can't decide a
+  title.</li>
+  <li><b>SportSource Analytics rating.</b> A proprietary metric the conference
+  buys; it is not public. When a projection reaches this step, the site flags
+  it rather than guessing.</li>
+  <li><b>Coin toss.</b> Yes, really. It has never come to this.</li>
+</ol>
+
+<h2>A real one: the 2024 four-way tie</h2>
+<p>The procedure's baptism by fire came immediately: in its first season at
+sixteen teams, Arizona State, BYU, Colorado, and Iowa State all finished
+7–2. Two championship-game spots, four teams, none of whom had all played
+each other. Here is the full resolution — generated by this site's rules
+engine from the 2024 results, matching the conference's official outcome
+(Arizona State #1, Iowa State #2):</p>
+<div class=worked>
+  <p class=meta>Engine output, 2024 season, tie group: Arizona State · BYU ·
+  Colorado · Iowa State</p>
+  <ol>
+{worked_2024}
+  </ol>
+</div>
+<p>Worth noticing: head-to-head never fired (the four didn't all meet),
+Arizona State escaped on <b>common opponents</b>, the standings walk twice
+found information but never a <i>single</i> leader, and Iowa State's ticket
+was punched by <b>strength of schedule</b> — step four — while BYU and
+Colorado never trailed anyone by record. That's the procedure working as
+designed: it keeps asking narrower questions until exactly one team has the
+better answer.</p>
+
+<h2>The what-if simulator</h2>
+<p>Every unplayed conference game on the main page has two buttons. Pick
+winners — one game or all seventy-two — and the site replays the entire
+procedure on the simulated season instantly, in your browser. The matchup
+card, standings, and tie narratives all update; clear your picks and reality
+returns. Nothing is uploaded or saved.</p>
+<p>The ★ marks each game's favorite under the selected rating model, with the
+projected margin (home field included) in the hover text:</p>
+<table class=models>
+  <tr><th>Model</th><th>What it is</th></tr>
+  <tr><td><b>SP+</b></td><td>Bill Connelly's efficiency-based rating —
+  the industry-standard public power number.</td></tr>
+  <tr><td><b>FPI</b></td><td>ESPN's Football Power Index.</td></tr>
+  <tr><td><b>Elo</b></td><td>The chess rating applied to football: beat good
+  teams, number goes up.</td></tr>
+  <tr><td><b>SRS</b></td><td>Simple Rating System — margin of victory
+  adjusted for schedule. The classic.</td></tr>
+</table>
+<div class=aside>Preseason, the models carry last season's ratings until the
+new year's numbers publish — each is labeled with the year it comes
+from.</div>
+
+<h2>Where the data comes from</h2>
+<p>Scores arrive from
+<a href="https://collegefootballdata.com">collegefootballdata.com</a>; the
+procedure text comes from the
+<a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official
+Big 12 tiebreaker policy</a>. During the season the site rebuilds itself
+hourly through weekend game windows (and daily otherwise), so the projection
+updates within about an hour of a final whistle. The rules engine is
+validated against the 2024 and 2025 seasons and every displayed conclusion
+comes with its step-by-step reasoning — if you think it's wrong, the receipts
+are right there. Found a bug anyway? <a
+href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
+
+<a class=backlink href="./">← Back to the tracker</a>
+</main>
+<footer class=b12-footer>
+  A Big12ology project · not affiliated with the Big 12 Conference; conference
+  and team marks belong to their owners and appear for identification only.<br>
+  <a href="https://github.com/big12ology">GitHub</a> ·
+  <a href="https://big12ology.com/privacy">Privacy</a> ·
+  <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
+</footer>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
+</body>
+</html>
+"""
+
+
+def build_explainer():
+    """Render site/how.html. The 2024 worked example is generated live by the
+    rules engine from the frozen season data in history/."""
+    games = json.load(open(os.path.join(HERE, "history", "games_2024.json")))
+    groups = tb.placement_groups(games)
+    order, log, resolved, _events = tb.break_tie(groups[0], games)
+    assert resolved and order[0] == "Arizona State" and order[1] == "Iowa State", \
+        "2024 worked example no longer matches the historical outcome"
+    worked = "".join(f"    <li>{esc(line)}</li>\n" for line in log)
+    out = os.path.join(SITE, "how.html")
+    with open(out, "w") as f:
+        f.write(EXPLAINER.format(worked_2024=worked))
+    print(f"built {out}")
+
+
 def main():
     argv = [a for a in sys.argv[1:] if not a.startswith("--")]
     year = int(argv[0]) if argv else default_season()
@@ -482,6 +717,7 @@ def main():
     with open(out, "w") as f:
         f.write(render(year, games))
     print(f"built {out} for {year}")
+    build_explainer()
 
 
 if __name__ == "__main__":
