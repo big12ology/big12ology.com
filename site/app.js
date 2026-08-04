@@ -93,7 +93,7 @@
 
   function pickable() {
     return payload.games.filter(function (g) {
-      return g.conference_game && !g.ccg && !g.completed;
+      return !g.ccg && !g.completed;
     });
   }
 
@@ -129,7 +129,7 @@
       ? "<span class='badge ok'>resolved</span>"
       : "<span class='badge warn'>needs SportSource rating or coin toss</span>";
     var status = nLeft === 0 ? "What-if championship matchup"
-      : "What-if projection (" + nLeft + " conference games still unpicked)";
+      : "What-if projection (" + nLeft + " games still unpicked)";
     var html = "<h2>" + status + " " + badge + "</h2><div class=matchup>";
     [ccg.seed1, ccg.seed2].forEach(function (t, i) {
       html += "<div class=side style='border-bottom-color:" + color(t) + "'>" +
@@ -495,6 +495,7 @@
           pickBtn(id, g.away, fav) +
           "<span class=at>at</span>" +
           pickBtn(id, g.home, fav) +
+          (g.conference_game ? "" : "<span class=nctag>non-conf</span>") +
           "<span class=wdate>" + date + "</span></div>";
       }).join("");
       var picked = byWeek[wk].filter(function (g) {
@@ -545,9 +546,10 @@
     note.textContent = "★ marks the " + model + " (" + modelYear(model) +
       " ratings) favorite; hover for the projected margin in points, " +
       "home field included. Picks re-run the full official tiebreaker " +
-      "instantly — the matchup, standings, and tie narratives above update " +
-      "to the simulated season. Non-conference results stay as they actually " +
-      "happened (they only matter for the total-wins step).";
+      "instantly — the matchup, standings, and tie narratives update to " +
+      "the simulated season. Non-conference games don't move the " +
+      "conference standings, but they feed the Non-conf and Overall " +
+      "columns and the total-wins tiebreaker step.";
   }
 
   (function bindControls() {

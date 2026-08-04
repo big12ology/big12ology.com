@@ -114,9 +114,11 @@ def fetch_ratings(year):
         for used in (year, year - 1):
             raw = get(f"{path}?year={used}", k)
             if isinstance(raw, list):
+                # keep every rated team, not just the Big 12 — non-conference
+                # favorites need the opponents' numbers too
                 got = {r["team"]: r.get(field) for r in raw
-                       if r.get("team") in BIG12 and r.get(field) is not None}
-            if len(got) == len(BIG12):
+                       if r.get("team") and r.get(field) is not None}
+            if all(t in got for t in BIG12):
                 break
         if got:
             systems[name] = {"year": used, "hfa": hfa, "per_pt": per_pt,

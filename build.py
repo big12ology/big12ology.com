@@ -43,22 +43,31 @@ MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS"]
 
 
 def favorites_for(games, systems):
-    """{system: {game_id: {team, margin}}} for every unplayed conference game.
-    Margin is converted to scoring points via the system's per_pt scale and
-    includes its home-field bump."""
+    """{system: {game_id: {team, margin}}} for every unplayed game (conference
+    and non-conference). Margin is converted to scoring points via the
+    system's per_pt scale and includes its home-field bump. Opponents the
+    system doesn't rate (FCS and lower) get a floor rating well below the
+    worst rated team."""
     out = {}
     for name, s in systems.items():
         r, hfa, per = s["ratings"], s["hfa"], s.get("per_pt", 1.0) or 1.0
+        floor = min(r.values()) - 10 * per
         m = {}
         for g in games:
-            if not g["conference_game"] or g.get("ccg") or g["completed"]:
+            if g.get("ccg") or g["completed"]:
                 continue
-            if g["home"] in r and g["away"] in r:
-                d = r[g["home"]] - r[g["away"]] + hfa
-                m[str(g["id"])] = {
-                    "team": g["home"] if d >= 0 else g["away"],
-                    "margin": round(abs(d) / per, 1),
-                }
+            hr, ar = r.get(g["home"]), r.get(g["away"])
+            if hr is None and ar is None:
+                continue
+            if hr is None:
+                hr = floor
+            if ar is None:
+                ar = floor
+            d = hr - ar + hfa
+            m[str(g["id"])] = {
+                "team": g["home"] if d >= 0 else g["away"],
+                "margin": round(abs(d) / per, 1),
+            }
         if m:
             out[name] = m
     return out
@@ -117,10 +126,9 @@ def render(year, games):
               for n in MODEL_ORDER if n in favorites]
     rows = tb.standings(games, overrides)
     ccg = tb.championship(games, overrides)
-    conf = [g for g in games if (g["conference_game"] or g.get("ccg"))]
-    reg = [g for g in conf if not g.get("ccg")]
-    played = [g for g in conf if g["completed"] and g["home_points"] is not None]
-    remaining = [g for g in conf if not g["completed"]]
+    reg = [g for g in games if g["conference_game"] and not g.get("ccg")]
+    played = [g for g in games if g["completed"] and g["home_points"] is not None]
+    remaining = [g for g in games if not g["completed"]]
     reg_played = [g for g in reg if g["completed"] and g["home_points"] is not None]
     now = datetime.datetime.now(datetime.timezone.utc)
 
@@ -214,7 +222,8 @@ def render(year, games):
         "overrides": overrides,
     }).replace("</", "<\\/")
 
-    n_remaining = len([g for g in reg if not g["completed"]])
+    n_remaining = len([g for g in games
+                       if not g["completed"] and not g.get("ccg")])
     model_opts = "".join(
         f"<option value='{esc(m['name'])}'>{esc(m['name'])}"
         f" ({esc(m['year'])})</option>" for m in models)
@@ -252,7 +261,7 @@ STAND_CARD = """<div class="card standcard">
 
 WHATIF_CARD = """<div class=card id=whatif>
   <h2>What if&hellip; <span class=dim style="text-transform:none">pick winners
-  for the {n} remaining conference games</span></h2>
+  for the {n} remaining games, conference and non-conference</span></h2>
   <div class=wcontrols>
     <label class=dim for=w-model>Model</label>
     <select id=w-model class=wbtn>{model_opts}</select>
@@ -349,6 +358,8 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   margin: 0 auto; }}
 .duo {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 20px; align-items: start; }}
+.duo > .stack {{ display: grid; gap: 20px; align-content: start;
+  min-width: 0; }}
 .duo .standcard {{ position: sticky; top: 14px;
   max-height: calc(100vh - 28px); overflow-y: auto; }}
 @media (max-width: 1023px) {{
@@ -428,6 +439,9 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 .wgame:last-child {{ border-bottom: none; }}
 .wgame .at {{ color: var(--dim); font-size: 12px; }}
 .wgame .wdate {{ color: var(--dim); font-size: 12px; margin-left: auto; }}
+.nctag {{ color: var(--dim); font-size: 10.5px; border: 1px solid var(--line);
+  border-radius: 20px; padding: 1px 7px; text-transform: uppercase;
+  letter-spacing: .04em; }}
 .pick {{ font: inherit; font-size: 13.5px; display: inline-flex;
   align-items: center; gap: 6px; border: 1px solid var(--line);
   background: var(--panel); color: var(--ink); border-radius: 8px;
@@ -461,6 +475,9 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 
 {mid}
 
+<div class=duo>
+<div class=stack>
+
 <div class=card id=teamwhy>
   <h2>Why is my team where they are?
   <span id=w-chip2 class=wchip hidden>what-if</span></h2>
@@ -474,15 +491,17 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   <a href=how.html>how the tiebreakers work</a>.</p>
 </div>
 
-<div class=cols>
-  <div class=card>
-    <h2>Latest results</h2>
-    <ul class=games>{results}</ul>
-  </div>
-  <div class=card>
-    <h2>Up next</h2>
-    <ul class=games>{upcoming}</ul>
-  </div>
+<div class=card>
+  <h2>Latest results</h2>
+  <ul class=games>{results}</ul>
+</div>
+
+</div>
+<div class=stack>
+
+<div class=card>
+  <h2>Up next</h2>
+  <ul class=games>{upcoming}</ul>
 </div>
 
 <div class="card rules">
