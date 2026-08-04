@@ -166,13 +166,15 @@ def render(year, games):
             f"</span>{logo_img(r['team'])}{esc(r['team'])}{mark}</td>"
             f"<td>{r['conf_w']}–{r['conf_l']}</td>"
             f"<td>{'—' if p is None else f'{p:.3f}'}</td>"
+            f"<td class=dimcell>{r['nonconf_w']}–{r['nonconf_l']}</td>"
             f"<td>{r['overall_w']}–{r['overall_l']}</td></tr>")
     sorter = ("<div class=sorter>Sort: "
               "<button class='on' id=sort-pct>Win % (official)</button>"
               "<button id=sort-raw>Raw wins</button></div>")
     table = (f"<div id=tablewrap{'' if rows else ' hidden'}>" + sorter +
              "<table><thead><tr><th></th><th>Team</th><th>Conf</th>"
-             "<th>Pct</th><th>Overall</th></tr></thead><tbody id=stand>"
+             "<th>Pct</th><th>Non-conf</th><th>Overall</th></tr></thead>"
+             "<tbody id=stand>"
              + "".join(body) + "</tbody></table></div>")
 
     # -- tiebreaker narratives ---------------------------------------------
@@ -219,19 +221,33 @@ def render(year, games):
     whatif = "" if not n_remaining else WHATIF_CARD.format(
         n=n_remaining, model_opts=model_opts)
 
+    standcard = STAND_CARD.format(
+        played=len(reg_played), total=len(reg), table=table, stories=stories)
+    # Side-by-side while there are games to pick: picker left, standings
+    # right (sticky). Once the season is done, standings go back full width.
+    if whatif:
+        mid = f"<div class=duo>{whatif}{standcard}</div>"
+    else:
+        mid = standcard
+
     return TEMPLATE.format(
         year=year,
         card=card,
-        whatif=whatif,
-        table=table,
-        stories=stories,
+        mid=mid,
         results=results,
         upcoming=upcoming,
-        played=len(reg_played),
-        total=len(reg),
         payload=payload,
         updated=now.strftime("%Y-%m-%d %H:%M UTC"),
     )
+
+
+STAND_CARD = """<div class="card standcard">
+  <h2>Conference standings · {played} of {total} games played
+  <span id=w-chip class=wchip hidden>what-if</span></h2>
+  <progress max={total} value={played}></progress>
+  {table}
+  <div style="margin-top:14px" id=stories>{stories}</div>
+</div>"""
 
 
 WHATIF_CARD = """<div class=card id=whatif>
@@ -327,7 +343,18 @@ header p a {{ color: var(--accent2); text-decoration: none; }}
     transparent); }}
 }}
 .lstep .evline {{ margin: 5px 0 0; }}
-main {{ max-width: 880px; margin: 0 auto; padding: 20px; display: grid; gap: 20px; }}
+main {{ max-width: 1240px; margin: 0 auto; padding: 20px; display: grid;
+  gap: 20px; }}
+main > .card, main > .cols {{ max-width: 880px; width: 100%;
+  margin: 0 auto; }}
+.duo {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px; align-items: start; }}
+.duo .standcard {{ position: sticky; top: 14px;
+  max-height: calc(100vh - 28px); overflow-y: auto; }}
+@media (max-width: 1023px) {{
+  .duo {{ grid-template-columns: 1fr; }}
+  .duo .standcard {{ position: static; max-height: none; }}
+}}
 .card {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 18px 20px; }}
 .card h2 {{ margin: 0 0 10px; font-size: 15px; text-transform: uppercase;
@@ -359,6 +386,7 @@ th, td {{ text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--li
   font-variant-numeric: tabular-nums; }}
 th {{ font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
   color: var(--dim); }}
+.dimcell {{ color: var(--dim); }}
 tr.tie0 td {{ background: var(--tie0); }}
 tr.tie1 td {{ background: var(--tie1); }}
 tr.tie2 td {{ background: var(--tie2); }}
@@ -431,15 +459,7 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 <main>
 {card}
 
-{whatif}
-
-<div class=card>
-  <h2>Conference standings · {played} of {total} games played
-  <span id=w-chip class=wchip hidden>what-if</span></h2>
-  <progress max={total} value={played}></progress>
-  {table}
-  <div style="margin-top:14px" id=stories>{stories}</div>
-</div>
+{mid}
 
 <div class=card id=teamwhy>
   <h2>Why is my team where they are?

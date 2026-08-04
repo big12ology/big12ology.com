@@ -385,21 +385,25 @@
     var rec = confRecords(games);
     if (Object.keys(rec).length === 0) return [];
     var overall = {};
+    var nonconf = {};
     games.forEach(function (g) {
       if (!g.completed) return;
       var w = winner(g);
       [g.home, g.away].forEach(function (t) {
-        if (rec[t] && !overall[t]) overall[t] = [0, 0];
+        if (rec[t] && !overall[t]) { overall[t] = [0, 0]; nonconf[t] = [0, 0]; }
       });
+      var nc = !g.conference_game && !g.ccg;
       if (w && rec[w]) {
-        if (!overall[w]) overall[w] = [0, 0];
+        if (!overall[w]) { overall[w] = [0, 0]; nonconf[w] = [0, 0]; }
         overall[w][0] += 1;
+        if (nc) nonconf[w][0] += 1;
       }
       if (w) {
         var loser = w === g.home ? g.away : g.home;
         if (rec[loser]) {
-          if (!overall[loser]) overall[loser] = [0, 0];
+          if (!overall[loser]) { overall[loser] = [0, 0]; nonconf[loser] = [0, 0]; }
           overall[loser][1] += 1;
+          if (nc) nonconf[loser][1] += 1;
         }
       }
     });
@@ -418,9 +422,11 @@
       }
       ordered.forEach(function (t, i) {
         var o = overall[t] || [0, 0];
+        var n = nonconf[t] || [0, 0];
         rows.push({
           rank: rank + i, team: t,
           conf_w: rec[t][0], conf_l: rec[t][1],
+          nonconf_w: n[0], nonconf_l: n[1],
           overall_w: o[0], overall_l: o[1],
           tie_group: tieId,
           log: i === 0 ? log : null,

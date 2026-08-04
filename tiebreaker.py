@@ -382,6 +382,7 @@ def standings(games, overrides=None):
     if not rec:
         return []
     overall = {}
+    nonconf = {}
     for g in games:
         if not g["completed"]:
             continue
@@ -389,12 +390,17 @@ def standings(games, overrides=None):
         for t in (g["home"], g["away"]):
             if t in rec:
                 overall.setdefault(t, [0, 0])
+                nonconf.setdefault(t, [0, 0])
         if w and w in rec:
             overall[w][0] += 1
+            if not g["conference_game"] and not g.get("ccg"):
+                nonconf[w][0] += 1
         if w:
             loser = g["away"] if w == g["home"] else g["home"]
             if loser in rec:
                 overall[loser][1] += 1
+                if not g["conference_game"] and not g.get("ccg"):
+                    nonconf[loser][1] += 1
 
     rows = []
     rank = 1
@@ -407,9 +413,11 @@ def standings(games, overrides=None):
         for i, t in enumerate(ordered):
             w, l = rec[t]
             ow, ol = overall.get(t, [0, 0])
+            nw, nl = nonconf.get(t, [0, 0])
             rows.append({
                 "rank": rank + i, "team": t,
                 "conf_w": w, "conf_l": l,
+                "nonconf_w": nw, "nonconf_l": nl,
                 "overall_w": ow, "overall_l": ol,
                 "tie_group": tie_id,
                 "log": log if i == 0 else None,  # attach log once per group

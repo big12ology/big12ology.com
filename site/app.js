@@ -162,6 +162,7 @@
         color(r.team) + "'></span>" + mark(r.team, 20) + esc(r.team) + mk +
         "</td><td>" + r.conf_w + "–" + r.conf_l + "</td>" +
         "<td>" + fmtPct(p) + "</td>" +
+        "<td class=dimcell>" + r.nonconf_w + "–" + r.nonconf_l + "</td>" +
         "<td>" + r.overall_w + "–" + r.overall_l + "</td></tr>";
     }).join("");
     return html;
