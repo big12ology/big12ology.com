@@ -308,47 +308,150 @@
         " on record alone. The official standard is winning percentage, " +
         "not raw wins, so games-played differences don't matter.</p>";
     } else {
-      var groupRows = rows.filter(function (r) {
-        return r.tie_group === row.tie_group;
-      });
-      var first = groupRows[0];
-      var others = groupRows.filter(function (r) { return r.team !== team; })
-        .map(function (r) { return r.team; });
-      var pos = groupRows.indexOf(row) + 1;
-      html += "<p>They're in a <b>" + groupRows.length + "-way tie</b> at " +
-        fmtRec(row) + " with " + others.map(esc).join(", ") + ".";
-      var ev = null;
-      (first.events || []).forEach(function (e) {
-        if (e.team === team) ev = e;
-      });
-      if (ev) {
-        html += " The procedure seeded them <b>" + ordinal(pos) + " of " +
-          groupRows.length + "</b> in the group at step (" + ev.step +
-          "), " + STEP_NAMES[ev.step] + ":</p>" +
-          "<span class=evline>" + esc(ev.line) + "</span>";
-      } else if (first.resolved) {
-        html += " They took the <b>last spot in the group</b> by " +
-          "elimination — every tiebreaker step broke someone else's way " +
-          "first:</p>";
-        (first.events || []).forEach(function (e) {
-          html += "<span class=evline>" + esc(e.line) + "</span>";
-        });
-      } else {
-        html += " This tie <b>cannot be fully resolved from public data</b> " +
-          "— it reaches the SportSource Analytics rating or coin toss, " +
-          "which only the conference holds. The order shown is provisional." +
-          "</p>";
-      }
-      html += "<details><summary>Full step-by-step for this tie group" +
-        "</summary><ol class=steps>" +
-        (first.log || []).map(function (x) {
-          return "<li>" + esc(x) + "</li>";
-        }).join("") + "</ol></details>";
+      html += renderLadder(team, row, rows);
     }
     if (row.rank <= 2 && lastCcg && lastCcg.note) {
       html += "<p class=dim>" + esc(lastCcg.note) + "</p>";
     }
     out.innerHTML = html;
+  }
+
+  // Full resolution trace: every round the team was part of, every step of
+  // the ladder in that round, each with a verdict — won here, lost here (to
+  // whom), no separation, or not reached.
+  var LETTERS = ["a", "b", "c", "d", "e", "f", "g"];
+
+  function splitRounds(log) {
+    var rounds = [{ lines: [], unresolved: false }];
+    (log || []).forEach(function (l) {
+      if (l.indexOf("Restarting procedure") === 0) {
+        rounds.push({ lines: [], unresolved: false });
+      } else if (l.indexOf("UNRESOLVED:") === 0) {
+        rounds[rounds.length - 1].unresolved = true;
+      } else {
+        rounds[rounds.length - 1].lines.push(l);
+      }
+    });
+    return rounds;
+  }
+
+  function renderLadder(team, row, rows) {
+    var groupRows = rows.filter(function (r) {
+      return r.tie_group === row.tie_group;
+    });
+    var first = groupRows[0];
+    var events = first.events || [];
+    var others = groupRows.filter(function (r) { return r.team !== team; })
+      .map(function (r) { return r.team; });
+    var pos = groupRows.indexOf(row) + 1;
+    var rounds = splitRounds(first.log);
+    var myEvIdx = -1;
+    events.forEach(function (e, i) { if (e.team === team) myEvIdx = i; });
+
+    var html = "<p>They're in a <b>" + groupRows.length + "-way tie</b> at " +
+      fmtRec(row) + " with " + others.map(esc).join(", ") + ", and finished <b>" +
+      ordinal(pos) + " of " + groupRows.length + "</b> in it. ";
+    if (myEvIdx >= 0) {
+      html += "Here is every level of the procedure they went through:</p>";
+    } else if (first.resolved) {
+      html += "They never won a level — the last spot is theirs by " +
+        "elimination. Here is each level and who took it:</p>";
+    } else {
+      html += "Their tie <b>can't be fully broken from public data</b> — " +
+        "it reaches the SportSource rating or coin toss, which only the " +
+        "conference holds. Here is how far the public steps got:</p>";
+    }
+
+    html += "<div class=ladder>";
+    var remaining = groupRows.map(function (r) { return r.team; });
+    for (var ri = 0; ri < rounds.length; ri++) {
+      var round = rounds[ri];
+      var decider = ri < events.length ? events[ri] : null;
+      var inRound = remaining.indexOf(team) !== -1;
+      if (!inRound) {
+        html += "<p class=dim style='font-size:14px'>" + esc(team) +
+          " was already placed; the remaining teams (" +
+          remaining.map(esc).join(", ") + ") re-ran the procedure — see the " +
+          "full narrative below.</p>";
+        break;
+      }
+      if (rounds.length > 1) {
+        html += "<div class=roundhead>Round " + (ri + 1) + " · " +
+          remaining.map(esc).join(" · ") + "</div>";
+      }
+      // lines per letter for this round
+      var byLetter = {};
+      round.lines.forEach(function (l) {
+        var letter = l.charAt(0) === "(" ? l.charAt(1) : null;
+        if (!letter) return;
+        (byLetter[letter] = byLetter[letter] || []).push(l);
+      });
+      var deciderLetter = decider ? decider.step : null;
+      var decided = false;
+      LETTERS.forEach(function (L) {
+        var lines = byLetter[L] || [];
+        var isDecider = decider && L === deciderLetter;
+        var status, chip, cls = "";
+        if (decided || (!lines.length && !isDecider)) {
+          if (decided) {
+            status = "not reached — tie already broken";
+            chip = "<span class='lchip skip'>not reached</span>";
+            cls = " skip";
+            lines = [];
+          } else {
+            return; // step never evaluated and nothing decided yet: shouldn't happen
+          }
+        } else if (isDecider) {
+          decided = true;
+          if (decider.team === team) {
+            chip = "<span class='lchip win'>" + esc(team) + " wins here</span>";
+          } else {
+            chip = "<span class='lchip lose'>lost — " + esc(decider.team) +
+              " seeded</span>";
+          }
+        } else {
+          chip = "<span class='lchip none'>no separation</span>";
+        }
+        html += "<div class='lstep" + cls + "'>" +
+          "<span class=lletter>" + L + "</span><div class=lbody>" +
+          "<span class=lname>" + esc(STEP_NAMES[L]) + "</span>" + chip +
+          lines.map(function (l) {
+            return "<span class=evline>" + esc(l) + "</span>";
+          }).join("") + "</div></div>";
+      });
+      if (round.unresolved) {
+        html += "<p class=dim style='font-size:14px'>The remaining steps " +
+          "need the conference's SportSource rating or a coin toss — " +
+          "order among the stuck teams is provisional until then.</p>";
+      }
+      if (decider) {
+        remaining = remaining.filter(function (t) {
+          return t !== decider.team;
+        });
+        if (decider.team === team) {
+          if (remaining.length > 1) {
+            html += "<p class=dim style='font-size:14px'>With " + esc(team) +
+              " placed, the remaining teams (" + remaining.map(esc).join(", ") +
+              ") restarted the procedure without them.</p>";
+          }
+          break;
+        }
+        if (remaining.length === 1) {
+          // selected team is the last one standing
+          html += "<p class=dim style='font-size:14px'>That left " +
+            esc(team) + " as the only team remaining — they take the last " +
+            "spot in the group without another comparison.</p>";
+          break;
+        }
+      }
+    }
+    html += "</div>";
+    html += "<details><summary>Raw engine narrative for this tie group" +
+      "</summary><ol class=steps>" +
+      (first.log || []).map(function (x) {
+        return "<li>" + esc(x) + "</li>";
+      }).join("") + "</ol></details>";
+    return html;
   }
 
   (function bindTeamWhy() {

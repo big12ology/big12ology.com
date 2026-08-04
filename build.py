@@ -299,6 +299,34 @@ header p a {{ color: var(--accent2); text-decoration: none; }}
 .evline {{ display: block; background: var(--bg); border-left: 3px solid
   var(--accent); border-radius: 4px; padding: 6px 10px; margin: 6px 0;
   font-size: 13.5px; color: var(--dim); }}
+.ladder {{ margin: 10px 0 4px; }}
+.roundhead {{ font-size: 13px; text-transform: uppercase; letter-spacing:
+  .05em; color: var(--dim); font-weight: 600; margin: 16px 0 6px; }}
+.lstep {{ display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid
+  var(--line); align-items: baseline; }}
+.lstep:last-child {{ border-bottom: none; }}
+.lstep.skip {{ opacity: .45; }}
+.lletter {{ flex: 0 0 22px; height: 22px; border-radius: 6px; background:
+  var(--line); color: var(--ink); font-size: 12px; font-weight: 700;
+  text-align: center; line-height: 22px; align-self: flex-start; }}
+.lbody {{ flex: 1; min-width: 0; }}
+.lname {{ font-size: 14px; font-weight: 600; }}
+.lchip {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
+  font-weight: 700; letter-spacing: .03em; margin-left: 8px;
+  vertical-align: 1px; white-space: nowrap; }}
+.lchip.win {{ background: color-mix(in srgb, var(--ok, #15803d) 15%,
+  transparent); color: #15803d; }}
+.lchip.lose {{ background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent); }}
+.lchip.none {{ background: color-mix(in srgb, var(--dim) 14%, transparent);
+  color: var(--dim); }}
+.lchip.skip {{ background: none; border: 1px solid var(--line);
+  color: var(--dim); font-weight: 500; }}
+@media (prefers-color-scheme: dark) {{
+  .lchip.win {{ color: #4ade80; background: color-mix(in srgb, #4ade80 14%,
+    transparent); }}
+}}
+.lstep .evline {{ margin: 5px 0 0; }}
 main {{ max-width: 880px; margin: 0 auto; padding: 20px; display: grid; gap: 20px; }}
 .card {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 18px 20px; }}
