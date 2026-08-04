@@ -8,6 +8,7 @@
   --full: #0d7a3f;
   --low: #b45309;
   --bad: #c0392b;
+  --pctl: 32%;
   font-size: 15px;
 }
 @media (prefers-color-scheme: dark) {
@@ -21,6 +22,7 @@
     --full: #4ade80;
     --low: #fbbf24;
     --bad: #f87171;
+    --pctl: 63%;
   }
 }
 
@@ -106,9 +108,7 @@ h1 .brand { height: 34px; width: auto; vertical-align: -8px; margin-right: 10px;
 tr:hover td { background: color-mix(in srgb, var(--accent) 4%, var(--surface)); }
 
 td .pct { display: block; font-size: 0.72rem; color: var(--muted); }
-td .pct.full { color: var(--full); }
-td .pct.low { color: var(--low); }
-td .pct.bad { color: var(--bad); }
+
 td.season-total { font-weight: 650; border-left: 1px solid var(--border); }
 
 tfoot td { font-weight: 600; border-top: 2px solid var(--border); }
@@ -196,3 +196,5 @@ td.bye {
 @media (prefers-color-scheme: dark) {
   #tooltip a { color: #e08aa4; }
 }
+
+th .sortmode { color: var(--accent); font-weight: 700; }

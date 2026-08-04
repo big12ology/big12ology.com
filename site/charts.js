@@ -209,6 +209,22 @@ function teamBars(cardEl, summary) {
 
 // ---- panel 3: team × week heatmap -----------------------------------------
 
+// Same fill semantics as the table's percent colors (see app.js pctColor —
+// keep in sync): green at 100%+, yellowing toward 80%, red saturating by
+// 50%. Hue carries the meaning, so light and dark themes read identically
+// and "more red = emptier" needs no legend footnote.
+function pctFill(p) {
+  let h, s, u;
+  if (p >= 1) {
+    h = 140; s = 62;
+  } else if (p >= 0.8) {
+    u = (p - 0.8) / 0.2; h = 45 + u * 95; s = 65;
+  } else {
+    u = Math.max(0, (p - 0.5) / 0.3); h = u * 45; s = 100 - u * 30;
+  }
+  return `hsl(${Math.round(h)} ${Math.round(s)}% ${isDark() ? 60 : 38}%)`;
+}
+
 function heatmap(cardEl, summary, season) {
   const t = theme();
   const rows = summary.rows.filter((r) => r.games > 0);
@@ -222,9 +238,7 @@ function heatmap(cardEl, summary, season) {
       hi = Math.max(hi, w.pct);
       cells.push({ team: r.team, ...w });
     }
-  const ramp = t.seq;
-  const color = (p) =>
-    ramp[Math.max(0, Math.min(ramp.length - 1, Math.round(((p - lo) / Math.max(hi - lo, 1e-9)) * (ramp.length - 1))))];
+  const color = pctFill;
 
   const cw = 34, ch = 22, gap = 2, m = { t: 22, r: 8, b: 8, l: 128 };
   const W = m.l + weeks.length * (cw + gap) + m.r;
@@ -267,7 +281,9 @@ function heatmap(cardEl, summary, season) {
   lowLbl.textContent = pct(lo);
   const bar = document.createElement("span");
   bar.className = "heat-scale";
-  bar.style.background = `linear-gradient(to right, ${ramp[0]}, ${ramp[Math.floor(ramp.length / 2)]}, ${ramp[ramp.length - 1]})`;
+  const stops = Array.from({ length: 9 }, (_, i) =>
+    pctFill(lo + ((hi - lo) * i) / 8));
+  bar.style.background = `linear-gradient(to right, ${stops.join(", ")})`;
   const hiLbl = document.createElement("span");
   hiLbl.textContent = pct(hi);
   legend.append(lowLbl, bar, hiLbl);
@@ -433,7 +449,7 @@ export function renderCharts(root, teamsData, seasonsData, currentYear) {
   const c2 = card(`Season percent full by team — ${currentYear}`, "Attendance ÷ per-game capacity, season to date");
   teamBars(c2, summary);
 
-  const c3 = card(`Percent full, team × week — ${currentYear}`, "Darker (light mode) / brighter (dark mode) = fuller");
+  const c3 = card(`Percent full, team × week — ${currentYear}`, "Same scale as the table: green is full, red is empty seats");
   heatmap(c3, summary, season);
 
   const c4 = card("Weekly percent full, year over year", "Each line is a season; conference-wide");

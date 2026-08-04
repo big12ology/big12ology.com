@@ -10,7 +10,7 @@ const pct = (p) => (p * 100).toFixed(1) + "%";
 const view = {
   season: null,
   summary: null,
-  sort: { key: "pct", dir: "desc" },
+  sort: { key: "pct", dir: "desc", metric: "pct" },
 };
 
 async function loadJSON(path) {
@@ -19,30 +19,52 @@ async function loadJSON(path) {
   return resp.json();
 }
 
-// Banded fill scale: under 75% red, 75-90% amber, 90%+ green.
-function pctClass(p) {
-  if (p >= 0.9) return "pct full";
-  if (p < 0.75) return "pct bad";
-  return "pct low";
+// Continuous fill scale: green at 100%+, yellowing toward 80%, then red,
+// fully saturated by 50% and below. Lightness comes from --pctl so light
+// and dark themes each get a legible shade.
+function pctColor(p) {
+  let h, s, t;
+  if (p >= 1) {
+    h = 140; s = 62;
+  } else if (p >= 0.8) {
+    t = (p - 0.8) / 0.2;      // 80%..100% -> yellow..green
+    h = 45 + t * 95; s = 65;
+  } else {
+    t = Math.max(0, (p - 0.5) / 0.3); // 50%..80% -> red..yellow
+    h = t * 45;
+    s = 100 - t * 30;          // saturation climbs as it falls
+  }
+  return `hsl(${Math.round(h)} ${Math.round(s)}% var(--pctl))`;
+}
+function pctSpan(p) {
+  return `<span class="pct" style="color:${pctColor(p)}">${pct(p)}</span>`;
 }
 
-// Sort-value extractor per column key. Week columns use that week's
-// attendance. Missing values sort last regardless of direction.
-function sortValue(row, key) {
+// Sort-value extractor per column key. Week and Season columns carry two
+// metrics (raw attendance and percent full); view.sort.metric picks one.
+// Missing values sort last regardless of direction.
+function dualMetric(key) {
+  return key.startsWith("week:") || key === "pct";
+}
+
+function sortValue(row, key, metric) {
   if (key === "team") return row.team.toLowerCase();
   if (key.startsWith("week:")) {
     const w = Number(key.slice(5));
-    return row.weeks.find((x) => x.week === w)?.attendance ?? null;
+    const wk = row.weeks.find((x) => x.week === w);
+    if (!wk) return null;
+    return (metric === "pct" ? wk.pct : wk.attendance) ?? null;
   }
+  if (key === "pct") return (metric === "pct" ? row.pct : row.total) ?? null;
   return row[key] ?? null;
 }
 
 function sortedRows() {
-  const { key, dir } = view.sort;
+  const { key, dir, metric } = view.sort;
   const sign = dir === "asc" ? 1 : -1;
   return [...view.summary.rows].sort((a, b) => {
-    const va = sortValue(a, key);
-    const vb = sortValue(b, key);
+    const va = sortValue(a, key, metric);
+    const vb = sortValue(b, key, metric);
     if (va == null && vb == null) return a.team.localeCompare(b.team);
     if (va == null) return 1;
     if (vb == null) return -1;
@@ -53,10 +75,22 @@ function sortedRows() {
 
 function setSort(key) {
   if (view.sort.key === key) {
-    view.sort.dir = view.sort.dir === "desc" ? "asc" : "desc";
+    if (dualMetric(key)) {
+      // Cycle: raw desc -> raw asc -> % desc -> % asc -> raw desc ...
+      const { dir, metric } = view.sort;
+      if (dir === "desc") view.sort.dir = "asc";
+      else {
+        view.sort.dir = "desc";
+        view.sort.metric = metric === "raw" ? "pct" : "raw";
+      }
+    } else {
+      view.sort.dir = view.sort.dir === "desc" ? "asc" : "desc";
+    }
   } else {
     // Fresh column: text starts ascending, numbers start descending.
-    view.sort = { key, dir: key === "team" ? "asc" : "desc" };
+    // Dual-metric columns start on the raw number.
+    view.sort = { key, dir: key === "team" ? "asc" : "desc",
+                  metric: key === "pct" ? "pct" : "raw" };
   }
   renderTable();
 }
@@ -93,14 +127,18 @@ function renderTable() {
     .filter((w) => w.games > 0 || weekSet.has(w.week))
     .map((w) => w.week);
 
-  const arrow = (key) =>
-    view.sort.key === key ? (view.sort.dir === "desc" ? " ▾" : " ▴") : "";
+  const arrow = (key) => {
+    if (view.sort.key !== key) return "";
+    const a = view.sort.dir === "desc" ? "▾" : "▴";
+    if (!dualMetric(key)) return ` ${a}`;
+    return ` <span class="sortmode">${view.sort.metric === "pct" ? "%" : "#"}${a}</span>`;
+  };
   const th = (key, label, cls = "") =>
     `<th class="sortable ${cls}" data-sort="${key}"${
       view.sort.key === key
         ? ` aria-sort="${view.sort.dir === "desc" ? "descending" : "ascending"}"`
         : ""
-    }>${label}${arrow(key)}</th>`;
+    }${dualMetric(key) ? ' title="Click cycles: attendance ▾▴, then percent full ▾▴"' : ""}>${label}${arrow(key)}</th>`;
 
   const head = `<thead><tr>
       ${th("team", "Team", "team")}${th("games", "G")}${th("capacity", "Capacity")}
@@ -123,7 +161,7 @@ function renderTable() {
                   : "";
               sub = `<span class="sub">${info.opponent}${result}</span>`;
             }
-            return `<td class="game" data-team="${row.team}" data-week="${w}">${num(g.attendance)}<span class="${pctClass(g.pct)}">${pct(g.pct)}</span>${sub}</td>`;
+            return `<td class="game" data-team="${row.team}" data-week="${w}">${num(g.attendance)}${pctSpan(g.pct)}${sub}</td>`;
           }
           const s = scheduled.get(`${row.team}|${w}`);
           if (s)
@@ -150,7 +188,7 @@ function renderTable() {
       return `<tr>
         <td class="team" style="--tc:${row.color ?? "transparent"}">${logo}<span class="team-name">${row.team}<span class="stadium">${stadiumLabel}</span></span></td>
         <td>${row.games}</td><td>${row.capacity != null ? num(row.capacity) : "varies"}</td>${cells}
-        <td class="season-total">${num(row.total)}<span class="${pctClass(row.pct)}">${pct(row.pct)}</span></td>
+        <td class="season-total">${num(row.total)}${pctSpan(row.pct)}</td>
       </tr>`;
     })
     .join("");
@@ -159,8 +197,8 @@ function renderTable() {
   const foot = `<tfoot>
       <tr><td class="team">Big 12 total</td><td>${summary.totals.games}</td>
         <td>${num(summary.rows.reduce((s, r) => s + r.capacity, 0))}</td>
-        ${activeWeeks.map((w) => (wk(w).games ? `<td>${num(wk(w).attendance)}<span class="${pctClass(wk(w).pct)}">${pct(wk(w).pct)}</span></td>` : "<td>—</td>")).join("")}
-        <td class="season-total">${num(summary.totals.attendance)}<span class="${pctClass(summary.totals.pct)}">${pct(summary.totals.pct)}</span></td></tr>
+        ${activeWeeks.map((w) => (wk(w).games ? `<td>${num(wk(w).attendance)}${pctSpan(wk(w).pct)}</td>` : "<td>—</td>")).join("")}
+        <td class="season-total">${num(summary.totals.attendance)}${pctSpan(summary.totals.pct)}</td></tr>
       <tr class="sub"><td class="team">Capacity in play / games</td><td></td><td></td>
         ${activeWeeks.map((w) => (wk(w).games ? `<td>${num(wk(w).capacity)} · ${wk(w).games}g</td>` : "<td>—</td>")).join("")}
         <td>${num(summary.totals.capacity)} · ${summary.totals.games}g</td></tr>
@@ -291,7 +329,7 @@ function render(teamsData, season) {
   // If the sorted column is a week that doesn't exist in this season, fall
   // back to the default sort.
   if (view.sort.key.startsWith("week:") && !activeWeeks.includes(Number(view.sort.key.slice(5)))) {
-    view.sort = { key: "pct", dir: "desc" };
+    view.sort = { key: "pct", dir: "desc", metric: "pct" };
   }
 
   const scheduledCount = season.games.filter((g) => !g.role && g.attendance == null).length;
@@ -323,7 +361,7 @@ function render(teamsData, season) {
   } else if (!hasPlayed) {
     empty.textContent = `Schedule loaded — attendance replaces each matchup as games are played.`;
   }
-  $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records). Click a column header to sort. Team and conference marks via Wikimedia Commons (provenance in the repo); trademarks belong to their owners.`;
+  $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records). Click a column header to sort; game and season columns cycle raw attendance and percent full, descending then ascending. Team and conference marks via Wikimedia Commons (provenance in the repo); trademarks belong to their owners.`;
 }
 
 async function main() {
