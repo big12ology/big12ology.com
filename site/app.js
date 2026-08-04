@@ -19,10 +19,11 @@ async function loadJSON(path) {
   return resp.json();
 }
 
+// Banded fill scale: under 75% red, 75-90% amber, 90%+ green.
 function pctClass(p) {
-  if (p >= 1) return "pct full";
-  if (p < 0.85) return "pct low";
-  return "pct";
+  if (p >= 0.9) return "pct full";
+  if (p < 0.75) return "pct bad";
+  return "pct low";
 }
 
 // Sort-value extractor per column key. Week columns use that week's

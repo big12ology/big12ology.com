@@ -7,6 +7,7 @@
   --accent: #c8102e; /* Big12ology brand red */
   --full: #0d7a3f;
   --low: #b45309;
+  --bad: #c0392b;
   font-size: 15px;
 }
 @media (prefers-color-scheme: dark) {
@@ -19,6 +20,7 @@
     --accent: #ff5a6e;
     --full: #4ade80;
     --low: #fbbf24;
+    --bad: #f87171;
   }
 }
 
@@ -106,6 +108,7 @@ tr:hover td { background: color-mix(in srgb, var(--accent) 4%, var(--surface)); 
 td .pct { display: block; font-size: 0.72rem; color: var(--muted); }
 td .pct.full { color: var(--full); }
 td .pct.low { color: var(--low); }
+td .pct.bad { color: var(--bad); }
 td.season-total { font-weight: 650; border-left: 1px solid var(--border); }
 
 tfoot td { font-weight: 600; border-top: 2px solid var(--border); }
@@ -158,7 +161,7 @@ td.game .sub {
   font-size: 0.7rem;
 }
 td.game .sub .win { color: var(--full); }
-td.game .sub .loss { color: var(--low); }
+td.game .sub .loss { color: var(--bad); }
 td.game.away { opacity: 0.45; }
 td.game.away:hover { opacity: 1; }
 td.bye {
@@ -185,7 +188,7 @@ td.bye {
 #tooltip .tip-head { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
 #tooltip .tip-opp { font-weight: 600; }
 #tooltip .win { color: var(--full); }
-#tooltip .loss { color: var(--low); }
+#tooltip .loss { color: var(--bad); }
 #tooltip .tip-wx, #tooltip .tip-src { color: var(--muted); }
 #tooltip .tip-src { font-size: 0.72rem; }
 #tooltip a { color: var(--accent); text-decoration: none; font-weight: 600; }
