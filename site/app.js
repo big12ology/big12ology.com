@@ -120,6 +120,28 @@
     return p === null ? "—" : p.toFixed(3);
   }
 
+  // Win-percentage color curve — anchors kept in sync with winpct_color in
+  // build.py; same visual language as the attendance tracker.
+  var WINPCT_ANCHORS = [[0.0, 0], [0.30, 20], [0.45, 45], [0.60, 75],
+                        [0.70, 95], [0.80, 118], [0.90, 140], [1.0, 168]];
+
+  function winPctColor(p) {
+    var a = WINPCT_ANCHORS;
+    var h = a[a.length - 1][1];
+    if (p <= a[0][0]) h = a[0][1];
+    else {
+      for (var i = 1; i < a.length; i++) {
+        if (p <= a[i][0]) {
+          var t = (p - a[i - 1][0]) / (a[i][0] - a[i - 1][0]);
+          h = a[i - 1][1] + t * (a[i][1] - a[i - 1][1]);
+          break;
+        }
+      }
+    }
+    var s = h < 45 ? 100 - (h / 45) * 35 : 65;
+    return "hsl(" + Math.round(h) + " " + Math.round(s) + "% var(--pctl))";
+  }
+
   function renderMatch(ccg, nLeft) {
     if (!ccg) {
       return "<h2>What-if projection</h2><p>Not enough simulated results " +
@@ -161,7 +183,8 @@
         "<td class=teamcell><span class=cbar style='background:" +
         color(r.team) + "'></span>" + mark(r.team, 20) + esc(r.team) + mk +
         "</td><td>" + r.conf_w + "–" + r.conf_l + "</td>" +
-        "<td>" + fmtPct(p) + "</td>" +
+        "<td" + (p === null ? "" : " style='color:" + winPctColor(p) + "'") +
+        ">" + fmtPct(p) + "</td>" +
         "<td class=dimcell>" + r.nonconf_w + "–" + r.nonconf_l + "</td>" +
         "<td>" + r.overall_w + "–" + r.overall_l + "</td></tr>";
     }).join("");

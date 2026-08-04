@@ -87,6 +87,29 @@ def team_color(teams, team, fallback="#888888"):
     return c
 
 
+# Win-percentage color curve — same visual language as the attendance
+# tracker's fill gradient, mapped to the 0..1.000 win% domain with the
+# resolution concentrated at the top. Kept in sync with winPctColor in
+# site/app.js.
+WINPCT_ANCHORS = [(0.0, 0), (0.30, 20), (0.45, 45), (0.60, 75),
+                  (0.70, 95), (0.80, 118), (0.90, 140), (1.0, 168)]
+
+
+def winpct_color(p):
+    a = WINPCT_ANCHORS
+    h = a[-1][1]
+    if p <= a[0][0]:
+        h = a[0][1]
+    else:
+        for i in range(1, len(a)):
+            if p <= a[i][0]:
+                t = (p - a[i - 1][0]) / (a[i][0] - a[i - 1][0])
+                h = a[i - 1][1] + t * (a[i][1] - a[i - 1][1])
+                break
+    s = 100 - (h / 45) * 35 if h < 45 else 65
+    return f"hsl({round(h)} {round(s)}% var(--pctl))"
+
+
 def default_season(today=None):
     today = today or datetime.date.today()
     return today.year if today.month >= 6 else today.year - 1
@@ -173,7 +196,8 @@ def render(year, games):
             f"<td class=teamcell><span class=cbar style='background:{c}'>"
             f"</span>{logo_img(r['team'])}{esc(r['team'])}{mark}</td>"
             f"<td>{r['conf_w']}–{r['conf_l']}</td>"
-            f"<td>{'—' if p is None else f'{p:.3f}'}</td>"
+            + ("<td>—</td>" if p is None else
+               f"<td style='color:{winpct_color(p)}'>{p:.3f}</td>") +
             f"<td class=dimcell>{r['nonconf_w']}–{r['nonconf_l']}</td>"
             f"<td>{r['overall_w']}–{r['overall_l']}</td></tr>")
     sorter = ("<div class=sorter>Sort: "
@@ -294,6 +318,7 @@ TEMPLATE = """<!doctype html>
   --line: #e2ddd2; --accent: #c8102e; --accent2: #003087;
   --ok: #15803d; --warn: #b45309;
   --tie0: #fff3f4; --tie1: #eef4ff; --tie2: #f0fdf4; --tie3: #fefce8;
+  --pctl: 32%;
 }}
 @media (prefers-color-scheme: dark) {{
   :root {{
@@ -301,6 +326,7 @@ TEMPLATE = """<!doctype html>
     --line: #2e323a; --accent: #ff5a6e; --accent2: #7aa2ff;
     --ok: #4ade80; --warn: #fbbf24;
     --tie0: #2a1d20; --tie1: #1d2330; --tie2: #1d2a22; --tie3: #2a281d;
+    --pctl: 63%;
   }}
   .mark {{ background: #f0ede6; border-radius: 4px; padding: 2px; }}
 }}
