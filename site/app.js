@@ -21,24 +21,29 @@ async function loadJSON(path) {
 
 // Continuous fill scale, kept in sync with charts.js pctFill. Lightness
 // comes from --pctl so light and dark themes each get a legible shade.
-function pctHue(p) {
-  // Anchor curve, log-like: hue resolution is spent where the data lives.
-  // 98% vs 105% must look different; 60% vs 65% can both just be red.
+function pctHSL(p) {
+  // Two regimes with a hard break at sold out. Below 100% the hue tops out
+  // at 110 (yellow-green) — a not-quite-full house never reads truly green.
+  // At 100% the hue jumps to green and over-capacity ramps toward teal, so
+  // 100 vs 105 vs 110 are unmistakably different.
+  if (p >= 1) {
+    const u = Math.min((p - 1) / 0.10, 1); // 100%..110%+
+    return [Math.round(145 + u * 35), Math.round(65 + u * 15)];
+  }
   const A = [[0.55, 0], [0.70, 20], [0.80, 45], [0.90, 75],
-             [0.95, 95], [1.00, 120], [1.08, 150]];
-  if (p <= A[0][0]) return A[0][1];
-  if (p >= A[A.length - 1][0]) return A[A.length - 1][1];
-  for (let i = 1; i < A.length; i++) {
-    if (p <= A[i][0]) {
-      const t = (p - A[i - 1][0]) / (A[i][0] - A[i - 1][0]);
-      return A[i - 1][1] + t * (A[i][1] - A[i - 1][1]);
+             [0.95, 92], [1.00, 110]];
+  let h = A[A.length - 1][1];
+  if (p <= A[0][0]) h = A[0][1];
+  else {
+    for (let i = 1; i < A.length; i++) {
+      if (p <= A[i][0]) {
+        const t = (p - A[i - 1][0]) / (A[i][0] - A[i - 1][0]);
+        h = A[i - 1][1] + t * (A[i][1] - A[i - 1][1]);
+        break;
+      }
     }
   }
-  return A[A.length - 1][1];
-}
-function pctHSL(p) {
-  const h = pctHue(p);
-  const s = h < 45 ? 100 - (h / 45) * 35 : 65 - ((h - 45) / 105) * 5;
+  const s = h < 45 ? 100 - (h / 45) * 35 : 65;
   return [Math.round(h), Math.round(s)];
 }
 function pctColor(p) {
