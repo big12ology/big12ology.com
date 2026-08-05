@@ -83,7 +83,32 @@ main { padding: 0.25rem 1.5rem 1rem; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
+  position: relative;
 }
+/* The week columns run off the right edge and nothing said so — the table
+   read as if Games and Capacity were all of it. This fades the live edge
+   and drops the fade once you have scrolled to the end. */
+.table-scroll { position: relative; }
+.table-scroll::after {
+  content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 44px;
+  pointer-events: none; border-radius: 0 8px 8px 0;
+  background: linear-gradient(to right, transparent, var(--surface));
+  opacity: 1; transition: opacity .18s ease;
+}
+.table-scroll.at-end::after { opacity: 0; }
+/* Above the table, not below it: a 16-row grid means nobody scrolls far
+   enough to find a hint parked at the bottom. */
+.scroll-hint {
+  font-size: 0.74rem; color: var(--muted); margin: 0 0 0.4rem;
+  display: flex; align-items: center; gap: 0.35rem; justify-content: flex-end;
+}
+.scroll-hint .arrow { animation: nudge 1.6s ease-in-out infinite; }
+@keyframes nudge { 0%, 100% { transform: translateX(0) }
+                   50% { transform: translateX(3px) } }
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint .arrow { animation: none; }
+}
+
 
 table { border-collapse: collapse; width: max-content; min-width: 100%; }
 th, td {
@@ -101,7 +126,10 @@ th[aria-sort] { color: var(--accent); }
 @media (prefers-color-scheme: dark) {
   th[aria-sort] { color: var(--text); }
 }
-th.team, td.team { text-align: left; position: sticky; left: 0; background: var(--surface); z-index: 1; }
+th.team, td.team { text-align: left; position: sticky; left: 0;
+  background: var(--surface); z-index: 1; }
+.table-scroll:not(.at-start) th.team, .table-scroll:not(.at-start) td.team {
+  box-shadow: 6px 0 6px -5px rgba(0, 0, 0, .22); }
 td.team { font-weight: 600; box-shadow: inset 3px 0 0 var(--tc, transparent); }
 td.team .team-name { display: inline-block; vertical-align: middle; }
 td.team .stadium { display: block; font-weight: 400; font-size: 0.72rem; color: var(--muted); }
@@ -210,7 +238,9 @@ th .sortmode { color: var(--accent); font-weight: 700; }
   font-size: 0.85rem; table-layout: fixed; }
 .records-table th, .records-table td { text-align: left; padding: 0.35rem 0.6rem;
   border-bottom: 1px solid var(--border); vertical-align: top;
-  overflow-wrap: anywhere; }
+  /* Cells inherit nowrap from the week grid, which left long venue names
+     running out of their column and into the next one. */
+  white-space: normal; overflow-wrap: anywhere; }
 .records-table th { font-size: 0.7rem; text-transform: uppercase;
   letter-spacing: 0.04em; color: var(--muted); }
 .records-table th:first-child, .records-table td:first-child { width: 26%; }

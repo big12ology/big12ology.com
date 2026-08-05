@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=28";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=28";
-import { gameTooltipHTML } from "./gametip.js?v=28";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=30";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=30";
+import { gameTooltipHTML } from "./gametip.js?v=30";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -588,3 +588,30 @@ main().catch((err) => {
   $("#empty-note").hidden = false;
   $("#empty-note").textContent = `Failed to load data: ${err.message}`;
 });
+
+
+// The week grid scrolls sideways and nothing said so — people read Games and
+// Capacity as the whole table. Fade the live edge, shadow the pinned team
+// column, and drop both cues once there is nothing more to see.
+(function scrollCues() {
+  const wrap = $("#table-scroll");
+  const hint = $("#scroll-hint");
+  if (!wrap) return;
+  const update = () => {
+    const max = wrap.scrollWidth - wrap.clientWidth;
+    const scrollable = max > 2;
+    wrap.classList.toggle("at-end", !scrollable || wrap.scrollLeft >= max - 2);
+    wrap.classList.toggle("at-start", wrap.scrollLeft <= 2);
+    // Fades out once you have reached the end; it has done its job.
+    if (hint) {
+      hint.hidden = !scrollable;
+      hint.style.opacity = wrap.classList.contains("at-end") ? "0" : "1";
+      hint.style.transition = "opacity .2s ease";
+    }
+  };
+  wrap.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  new ResizeObserver(update).observe(wrap);
+  new MutationObserver(update).observe(wrap, { childList: true, subtree: true });
+  update();
+})();
