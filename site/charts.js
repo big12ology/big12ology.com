@@ -620,6 +620,96 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
 
 
 
+
+// ---- road draw: who fills someone else's stadium ---------------------------
+
+function roadDraw(cardEl, seasonsData, teamsData) {
+  const t = theme();
+  // For every home game, compare the crowd to that host's own season
+  // average fill. A visitor's road draw is the average of those gaps —
+  // it isolates the visitor from the host's baseline popularity.
+  const byVisitor = new Map();
+  const colorOf = new Map();
+  for (const [year, season] of Object.entries(seasonsData)) {
+    const teams = teamsForSeason(teamsData, Number(year));
+    teams.forEach((x) => colorOf.set(x.team, x.color));
+    const summary = seasonSummary(teams, season.games,
+                                  season.weekLabels.length);
+    const hostPct = new Map(summary.rows.filter((r) => r.games > 0)
+                                        .map((r) => [r.team, r.pct]));
+    const capOf = new Map(teams.map((x) => [x.team, x]));
+    for (const g of season.games) {
+      if (g.role || g.attendance == null || !g.opponent) continue;
+      const base = hostPct.get(g.team);
+      const cap = g.capacity ?? capOf.get(g.team)?.capacity;
+      if (!base || !cap) continue;
+      const gap = g.attendance / cap - base;
+      const cur = byVisitor.get(g.opponent) ?? { n: 0, sum: 0, hosts: [] };
+      cur.n += 1;
+      cur.sum += gap;
+      cur.hosts.push({ host: g.team, year, gap, att: g.attendance });
+      byVisitor.set(g.opponent, cur);
+    }
+  }
+  const rows = [...byVisitor.entries()]
+    .filter(([, v]) => v.n >= 2)
+    .map(([team, v]) => ({ team, avg: v.sum / v.n, n: v.n, hosts: v.hosts }))
+    .sort((a, b) => b.avg - a.avg);
+  if (rows.length < 4) {
+    return emptyNote(cardEl, "Not enough road games yet to compare.");
+  }
+  const top = rows.slice(0, 10);
+  const bottom = rows.slice(-6).filter((r) => !top.includes(r));
+  const show = [...top, ...bottom];
+
+  const rowH = 22, gap = 4;
+  const m = { t: 10, r: 60, b: 26, l: 132 };
+  const W = 640;
+  const H = m.t + show.length * (rowH + gap) + m.b;
+  const iw = W - m.l - m.r;
+  const maxAbs = Math.max(...show.map((r) => Math.abs(r.avg)), 0.05);
+  const x0 = m.l + iw / 2;
+  const x = (v) => x0 + (v / maxAbs) * (iw / 2);
+  let marks = `<line x1="${x0}" x2="${x0}" y1="${m.t}" y2="${H - m.b}" class="grid"/>`;
+  show.forEach((r, i) => {
+    const y = m.t + i * (rowH + gap);
+    const isBig12 = colorOf.has(r.team);
+    const fill = r.avg >= 0
+      ? (isDark() ? "#4ade80" : "#0d7a3f")
+      : (isDark() ? "#f87171" : "#c0392b");
+    const w = Math.abs(x(r.avg) - x0);
+    marks += `<rect x="${r.avg >= 0 ? x0 : x0 - w}" y="${y}" width="${w}"
+      height="${rowH}" rx="3" fill="${fill}" fill-opacity="${isBig12 ? 0.95 : 0.5}"
+      data-i="${i}" class="hit"/>`;
+    marks += `<text x="${m.l - 8}" y="${y + rowH / 2 + 4}" text-anchor="end"
+      class="lbl">${r.team.length > 15 ? r.team.slice(0, 14) + "…" : r.team}` +
+      `<tspan class="tick"> ${r.n}</tspan></text>`;
+    marks += `<text x="${r.avg >= 0 ? x0 + w + 6 : x0 - w - 6}"
+      y="${y + rowH / 2 + 4}" text-anchor="${r.avg >= 0 ? "start" : "end"}"
+      class="val">${r.avg >= 0 ? "+" : ""}${(r.avg * 100).toFixed(1)}</text>`;
+  });
+  marks += `<text x="${x0}" y="${H - 8}" text-anchor="middle" class="tick">
+    points of fill vs the host's season average · small number = road trips</text>`;
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = marks;
+  svg.addEventListener("pointermove", (e) => {
+    const el = e.target.closest(".hit");
+    if (!el) return hideTip();
+    const r = show[Number(el.dataset.i)];
+    const best = [...r.hosts].sort((a, b) => b.gap - a.gap)[0];
+    showTip(e.clientX, e.clientY, [
+      { head: `${r.team} on the road` },
+      { value: `${r.avg >= 0 ? "+" : ""}${(r.avg * 100).toFixed(1)} pts`,
+        label: `vs host average · ${r.n} trips` },
+      { value: `${best.host} ${best.year}`,
+        label: `best draw, ${num(best.att)} · ${best.gap >= 0 ? "+" : ""}${(best.gap * 100).toFixed(1)} pts` },
+    ]);
+  });
+  svg.addEventListener("pointerleave", hideTip);
+  cardEl.appendChild(svg);
+}
+
 // ---- team comparison ------------------------------------------------------
 
 function multiLine(cardEl, seriesList, xLabels, yFmt, yMinPad, yMaxPad) {
@@ -788,11 +878,16 @@ export function renderAllTimeCharts(root, teamsData, seasonsData) {
     `Cumulative: every tracked home game ${span}; ringed dots = rain; dashed line = least-squares trend`);
   weatherScatter(c2, seasonsData, teamsData);
 
+  const cRoad = card(`Road draw (${span})`,
+    "How much each visiting team lifts — or dents — the host's usual crowd. " +
+    "Big 12 members solid, outside visitors faded; two-trip samples are noisy");
+  roadDraw(cRoad, seasonsData, teamsData);
+
   const c3 = card(`Weekly percent full, year over year (${span})`, "Each line is a season; conference-wide");
   yoyLines(c3, seasonsData, teamsData);
 
   const c4 = card(`Season percent full by team, year over year (${span})`, "One dot per season; the connector spans a team's range");
   yoyTeams(c4, seasonsData, teamsData);
 
-  root.append(c1, c2, c3, c4);
+  root.append(c1, c2, cRoad, c3, c4);
 }
