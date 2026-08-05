@@ -6,10 +6,12 @@ on:
     branches: [main]
   schedule:
     # Cron times are UTC. US game windows: Sat noon–midnight ET is
-    # 16:00 Sat – 08:00 Sun UTC; Thu/Fri night games end by ~08:00 UTC.
-    - cron: "0 * * 9-12 6,0"     # hourly Sat + Sun, Sep–Dec
-    - cron: "0 0-8/2 * 9-12 5,6" # every 2h Fri/Sat early UTC (Thu/Fri night games)
-    - cron: "0 18 * 8-12 *"      # daily catch-all, Aug–Dec
+    # 16:00 Sat – 08:00 Sun UTC; Thu/Fri/Sun night games end in the next
+    # UTC day's early hours. Aug included — the season opens Aug 29.
+    - cron: "0 * * 8-12 6,0"       # hourly Sat + Sun, Aug–Dec
+    - cron: "0 0-8/2 * 8-12 1,5,6" # every 2h Mon/Fri/Sat early UTC
+                                   # (Thu, Fri, and Sun night games)
+    - cron: "0 18 * 8-12 *"        # daily catch-all, Aug–Dec
 
 permissions:
   contents: read
