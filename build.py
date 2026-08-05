@@ -15,6 +15,7 @@ import sys
 
 import chaos as chaos_mod
 import clinch as clinch_mod
+import feed as feed_mod
 import fetch as fetcher
 import odds as odds_mod
 import tiebreaker as tb
@@ -426,6 +427,7 @@ TEMPLATE = """<!doctype html>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
 <link rel=stylesheet href=/brand.css>
+<link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href=feed.xml>
 <style>
 :root {{
   --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #6b7280;
@@ -978,6 +980,12 @@ def main():
         f.write(render(year, games))
     print(f"built {out} for {year}")
     build_explainer()
+    overrides = tb.load_overrides()
+    systems = load_ratings(year).get("systems", {})
+    fp = os.path.join(SITE, "feed.xml")
+    with open(fp, "w") as f:
+        f.write(feed_mod.build_feed(games, year, systems, overrides))
+    print(f"built {fp}")
 
 
 if __name__ == "__main__":

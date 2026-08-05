@@ -51,6 +51,10 @@ game.
   60% odds entropy, 25% tie tangle among living teams, 15% alive breadth.
   Shown atop the race card; formula documented on the explainer page;
   invariants in `tests/test_chaos.py`.
+- `feed.py` — the RSS feed (`site/feed.xml`): game finals with as-of
+  records, clinch/elimination calls, and weekly Chaos Index wraps. Fully
+  derived from season data with stable guids and game-clock pubDates, so
+  the stateless builds never duplicate items. `tests/test_feed.py`.
 
 ## What-if simulator
 
