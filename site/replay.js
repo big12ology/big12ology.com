@@ -45,11 +45,11 @@
     return "";
   }
 
-  function teamCell(r, pos) {
+  function teamCell(r, pos, trail) {
     var t = r.t;
     return "<td class='teamcell" + statusClass(r.s, pos) +
       "'><span class=cbar style='background:" + color(t) + "'></span>" +
-      mark(t) + esc(t) + "</td>";
+      mark(t) + esc(t) + (trail || "") + "</td>";
   }
 
   function recCells(r) {
@@ -70,15 +70,47 @@
     return null;
   }
 
+  // The official board's position as a number: "T5" and "5" are both 5th,
+  // "—" is a team with no conference result yet.
+  function posNum(p) {
+    var n = parseInt(String(p).replace("T", ""), 10);
+    return isNaN(n) ? null : n;
+  }
+
+  function priorPos(k, team) {
+    if (k <= 0) return null;
+    var rows = frames[k - 1].left;
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].t === team) return posNum(rows[i].p);
+    }
+    return null;
+  }
+
+  // Places gained since the previous frame; positive is a climb.
+  function arrow(d) {
+    return d === 0 ? "" :
+      "<span class='mv " + (d > 0 ? "up" : "down") + "'>" +
+      (d > 0 ? "▲" : "▼") + Math.abs(d) + "</span>";
+  }
+
+  function movedClass(d) {
+    return d === 0 ? "" : " moved " + (d > 0 ? "up" : "down");
+  }
+
   function renderLeft(k) {
     return frames[k].left.map(function (r) {
       var pos = r.i === 0
         ? "<td class=posc" + (r.n > 1 ? " rowspan=" + r.n : "") + ">" +
           esc(r.p) + "</td>"
         : "";
-      var cls = (r.n > 1 && r.i === r.n - 1) ? " class=grpend" : "";
-      return "<tr" + cls + ">" + pos + teamCell(r, r.p) + recCells(r) +
-        "</tr>";
+      // Movement against the official board, where a whole tied group can
+      // move together. The arrow rides in the team cell because the
+      // position cell is shared by everyone at that place.
+      var was = priorPos(k, r.t), now = posNum(r.p);
+      var d = (was === null || now === null) ? 0 : was - now;
+      var cls = ((r.n > 1 && r.i === r.n - 1) ? " grpend" : "") + movedClass(d);
+      return "<tr" + (cls ? " class='" + cls.trim() + "'" : "") + ">" + pos +
+        teamCell(r, r.p, arrow(d)) + recCells(r) + "</tr>";
     }).join("");
   }
 
@@ -86,11 +118,9 @@
     return frames[k].right.map(function (r, i) {
       var was = priorRank(k, r.t);
       var d = was === null ? 0 : was - (i + 1);
-      var mv = d === 0 ? "" :
-        "<span class='mv " + (d > 0 ? "up" : "down") + "'>" +
-        (d > 0 ? "▲" : "▼") + Math.abs(d) + "</span>";
-      var cls = d === 0 ? "" : " class='moved " + (d > 0 ? "up" : "down") + "'";
-      return "<tr" + cls + "><td class=posc>" + esc(r.p) + mv + "</td>" +
+      var cls = movedClass(d);
+      return "<tr" + (cls ? " class='" + cls.trim() + "'" : "") +
+        "><td class=posc>" + esc(r.p) + arrow(d) + "</td>" +
         teamCell(r, r.p) + recCells(r) + "</tr>";
     }).join("");
   }
