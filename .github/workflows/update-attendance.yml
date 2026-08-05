@@ -15,6 +15,10 @@ on:
     - cron: "0 14 * 8-12 0"
     # Sunday night 7pm — follow-up for late-reporting games and corrections.
     - cron: "0 2 * 8-12 1"
+    # Friday and Saturday mornings 7am — Thursday/Friday night games.
+    - cron: "0 14 * 8-12 5,6"
+    # Monday morning 7am — Sunday games (weeks 1-2 have Sunday slates).
+    - cron: "0 14 * 8-12 1"
   workflow_dispatch:
     inputs:
       year:
