@@ -1300,6 +1300,35 @@ championship-game pairings of the championship era, 2017 through 2025</b>,
 from the game results alone. It also reproduces the 2024 four-way tie exactly,
 which is the case that pins down the rule discussed above.</p>
 
+<h2>Where the policy is silent, and what we chose</h2>
+<p>The published procedure is specific about the ladder and mostly specific
+about the mechanics, but a working implementation has to answer a few
+questions the text doesn't. In the interest of showing our work:</p>
+<ul>
+  <li><b>Teams that trail but don't lose outright.</b> The policy removes a
+  team from a multi-team tie only by <i>seeding</i> it ("after one team has an
+  advantage and is seeded, all remaining teams … repeat the tie-breaking
+  procedure"). It never says a team that merely trails at some step drops out.
+  We carry the whole group forward — and 2024 confirms it, since bouncing
+  Colorado at step (b) would have sent BYU rather than Iowa State.</li>
+  <li><b>Whether tied teams count as their own common opponents.</b> Step (b)
+  says "all common conference opponents played by all other teams involved in
+  the tie." We read the tied teams themselves out of that set, because games
+  among them are precisely what step (a) already weighed; counting them twice
+  would let step (a) decide step (b).</li>
+  <li><b>A standings group that separates without crowning anyone.</b> Step
+  (c) says to compare against the next highest placed common opponent
+  "proceeding through the standings." When a placement group splits the tied
+  teams but leaves two or more still level at the top, we keep walking down
+  the standings, and fall through to step (d) only after the whole ladder of
+  opponents is exhausted.</li>
+  <li><b>The championship game itself.</b> Step (e) counts wins "in a 12-game
+  season," so the title game — a thirteenth — is excluded from that count, and
+  from conference records everywhere on this site.</li>
+</ul>
+<p>Every one of these choices is testable, and the nine championship pairings
+above are the test.</p>
+
 <h2>Where the data comes from</h2>
 <p>Scores arrive from
 <a href="https://collegefootballdata.com">collegefootballdata.com</a>; the
