@@ -554,8 +554,8 @@ def build_subpage(title, active, body, year, matchcard):
 <link rel=stylesheet href=brand.css>
 <link rel=alternate type=application/rss+xml href=feed.xml>
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style></head><body>
-<nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
-<a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a></nav>
+<nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
+<a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a></nav>
 {tracker_top(year, active, matchcard)}
 {body}
 </main>
@@ -1001,9 +1001,9 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 </head>
 <body>
 <nav class=b12-topbar>
-  <a class=b12-brand href=/>Big12<span>ology</span></a>
-  <a class=on href=/tiebreaker/>Tiebreaker</a>
-  <a href=/attendance/>Attendance</a>
+  <a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
+  <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
+  <a href="https://big12ology.com/attendance/">Attendance</a>
 </nav>
 {top}
 
@@ -1170,9 +1170,9 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
 </head>
 <body>
 <nav class=b12-topbar>
-  <a class=b12-brand href=/>Big12<span>ology</span></a>
-  <a class=on href=/tiebreaker/>Tiebreaker</a>
-  <a href=/attendance/>Attendance</a>
+  <a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
+  <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
+  <a href="https://big12ology.com/attendance/">Attendance</a>
 </nav>
 {top}
 
@@ -1235,6 +1235,16 @@ engine from the 2024 results, matching the conference's official outcome
 {worked_2024}
   </ol>
 </div>
+<div class=aside><b>A question this example settles.</b> When a step
+separates the group but leaves two teams tied at the top — here BYU and Iowa
+State at .800 with Colorado at .600 — does Colorado get bounced, with the
+other two restarting as a two-team tie? Reasonable, and many conferences do
+work that way, but the Big 12 does not: its policy only removes a team from a
+multi-team tie by <i>seeding</i> it, and 2024 proves the point. Bouncing
+Colorado at step (b) would put <b>BYU</b> in the championship game on step
+(c). The conference sent <b>Iowa State</b> — exactly what carrying all three
+teams to step (d) produces.</div>
+
 <p>Worth noticing: head-to-head never fired (the four didn't all meet),
 Arizona State escaped on <b>common opponents</b>, the standings walk twice
 found information but never a <i>single</i> leader, and Iowa State's ticket

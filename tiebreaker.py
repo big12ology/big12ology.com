@@ -15,6 +15,17 @@ Steps (identical lettering to the policy):
              with the "defeated all others without playing all" removal rule,
              and after any team is seeded the survivors restart the procedure.
 
+A group only ever shrinks from the TOP. A step that separates the group
+without producing a single leader does NOT drop the trailing teams: the whole
+group carries to the next step. The policy supports this literally ("After one
+team has an advantage and is 'seeded', all remaining teams ... repeat the
+tie-breaking procedure" — no elimination-from-below clause), and 2024 proves
+it empirically. Arizona State, BYU, Colorado and Iowa State tied at 7-2; at
+step (b) BYU and Iowa State led at .800 with Colorado at .600. Bouncing
+Colorado there would send BYU to the championship game on step (c). The
+conference sent Iowa State, which is what this ladder produces by carrying all
+three to step (d). Do not "fix" this without re-reading that season.
+
 Steps f and g cannot be computed from public data; they read overrides.json
 ({"sportsource": {"Team": rank}, "coin_toss": ["WinnerA", ...]}). Without an
 override the tie is reported unresolved at that step.
