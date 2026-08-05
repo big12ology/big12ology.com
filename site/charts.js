@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=27";
-import { gameTooltipHTML } from "./gametip.js?v=27";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=28";
+import { gameTooltipHTML } from "./gametip.js?v=28";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";

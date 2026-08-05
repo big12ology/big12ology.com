@@ -1,9 +1,12 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=27";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=27";
-import { gameTooltipHTML } from "./gametip.js?v=27";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=28";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=28";
+import { gameTooltipHTML } from "./gametip.js?v=28";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
+// Data-sourced strings land in attributes; keep quotes and angle brackets out.
+const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const pct = (p) => (p * 100).toFixed(1) + "%";
 
 // Current view state: computed summary plus sort order. Default sort matches
@@ -206,7 +209,7 @@ function renderTable() {
         `<span class="conf">${confOf[row.team] ?? "—"}</span>`;
       return `<tr>
         <td class="team" style="--tc:${row.color ?? "transparent"}">${logo}<span class="team-name">${row.team}${confTag}<span class="stadium">${stadiumLabel}</span></span></td>
-        <td>${row.games}</td><td>${row.capacity != null ? num(row.capacity) : "varies"}</td>${cells}
+        <td>${row.games}</td><td>${row.capacity != null ? num(row.capacity) : "varies"}${row.capacityEstimate ? ` <abbr class=estmark title="${esc(row.capacityEstimate)}">est</abbr>` : ""}</td>${cells}
         <td class="season-total">${num(row.total)}${pctSpan(row.pct)}</td>
       </tr>`;
     })

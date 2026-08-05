@@ -300,3 +300,13 @@ svg text.val-in {
   background: var(--surface); color: var(--muted); border-radius: 20px;
   padding: 0.15rem 0.7rem; cursor: pointer; }
 .erabar button:hover { border-color: var(--accent); color: var(--text); }
+
+/* A capacity carried forward because the school has not published one. */
+.estmark {
+  font-size: 10px; font-weight: 700; letter-spacing: .4px;
+  text-transform: uppercase; text-decoration: none;
+  border: 1px solid var(--line); border-radius: 4px;
+  padding: 0 4px; margin-left: 5px; color: var(--dim);
+  cursor: help; vertical-align: 1px;
+}
+.estmark:hover { border-color: var(--accent); color: var(--accent); }

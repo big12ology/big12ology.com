@@ -1,6 +1,6 @@
 {
  "conference": "Big 12",
- "notes": "Capacities and stadium names are season-specific and keyed by the first season each value applied. Sourcing policy: the current season comes from the university or athletic department; earlier seasons from athletic-department media guides and archived facility pages where available, otherwise stadium records of note. Researched August 2026 for the 2012-2026 span.\n\nCases worth knowing about. Houston had no home stadium in 2013 (Robertson demolished, TDECU not yet open) and split the season between Reliant Stadium and BBVA Compass Stadium - those games carry per-game venues and capacities in venue-overrides.json. Cincinnati played all of 2014 at Paul Brown Stadium during the Nippert rebuild. Baylor moved from Floyd Casey to McLane in 2014. Kansas played 2024 away from campus during the Memorial Stadium rebuild (two games at Children's Mercy Park, four at Arrowhead; see venue-overrides.json).\n\nKnown uncertainty. Kansas re-listed capacity mid-2019 (50,071 -> 47,233); the change is keyed to 2019. Kansas has published NO capacity for 2026, when the rebuilt east side is only partially open - the 2026 figure inherits 2025's 41,525 and is provisional until KU publishes. Iowa State's 2013 value is left at 55,000 because the 56,800 that circulates appears to be the 2012 single-game attendance record. Cincinnati's drop to 38,088 is keyed to the 2017 field widening, which the university's current page supports but Wikipedia dates to 2024. Oklahoma State and TCU figures come from media guides and archived official pages; several widely-quoted numbers for both (Wikipedia's 53,885 for OSU, 47,000 for TCU) are uncited or misdated and were not used. Several stadiums sell standing room, so utilization above 100% is expected and correct.",
+ "notes": "Capacities and stadium names are season-specific and keyed by the first season each value applied. Sourcing policy: the current season comes from the university or athletic department; earlier seasons from athletic-department media guides and archived facility pages where available, otherwise stadium records of note. Researched August 2026 for the 2012-2026 span.\n\nCases worth knowing about. Houston had no home stadium in 2013 (Robertson demolished, TDECU not yet open) and split the season between Reliant Stadium and BBVA Compass Stadium - those games carry per-game venues and capacities in venue-overrides.json. Cincinnati played all of 2014 at Paul Brown Stadium during the Nippert rebuild. Baylor moved from Floyd Casey to McLane in 2014. Kansas played 2024 away from campus during the Memorial Stadium rebuild (two games at Children's Mercy Park, four at Arrowhead; see venue-overrides.json).\n\nKnown uncertainty. Kansas re-listed capacity mid-2019 (50,071 -> 47,233); the change is keyed to 2019. Kansas has published NO capacity for 2026, when the rebuilt east side is only partially open - the 2026 figure is carried forward from 2025 at 41,525 and is flagged in capacityEstimated, which the site surfaces as 'est'. Phase II demolished the east stand in December 2025 and returns only its lower bowl for 2026, so the true capacity is lower and Kansas percent full reads low until KU publishes. Iowa State's 2013 value is left at 55,000 because the 56,800 that circulates appears to be the 2012 single-game attendance record. Cincinnati's drop to 38,088 is keyed to the 2017 field widening, which the university's current page supports but Wikipedia dates to 2024. Oklahoma State and TCU figures come from media guides and archived official pages; several widely-quoted numbers for both (Wikipedia's 53,885 for OSU, 47,000 for TCU) are uncited or misdated and were not used. Several stadiums sell standing room, so utilization above 100% is expected and correct.",
  "teams": [
   {
    "team": "Arizona",
@@ -144,12 +144,16 @@
     "2012": 50071,
     "2019": 47233,
     "2024": 18467,
-    "2025": 41525
+    "2025": 41525,
+    "2026": 41525
    },
    "timezone": "America/Chicago",
    "color": "#0051ba",
    "altColor": "#e8000d",
-   "logo": "assets/logos/ku.svg"
+   "logo": "assets/logos/ku.svg",
+   "capacityEstimated": {
+    "2026": "KU has published no 2026 capacity. Phase II of the Gateway rebuild demolished the east stand in December 2025 and only its lower bowl returns this season, so the real figure is below the 41,525 carried forward from 2025 — percent full for Kansas home games reads low until the university publishes a number."
+   }
   },
   {
    "team": "Kansas State",
