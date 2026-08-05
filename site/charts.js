@@ -596,11 +596,11 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
       const s = streaks.get(team) ?? 0;
       let cell;
       if (s > 0) {
-        cell = `<b>${s} game${s > 1 ? "s" : ""}</b>`;
+        cell = `<span class="rw-good">${s} game${s > 1 ? "s" : ""} active</span>`;
       } else if (ended.has(team)) {
         const e = ended.get(team);
-        cell = `<b>ended</b><span class="rw-sub">after ${e.count} ` +
-          `· ${e.opp} ${e.year}, ${num(e.short)} short</span>`;
+        cell = `<span class="rw-bad">ended</span><span class="rw-sub">` +
+          `after ${e.count} · ${e.opp} ${e.year}, ${num(e.short)} short</span>`;
       } else {
         cell = `<span class="rw-dim">none</span>` +
           `<span class="rw-sub">no sellout since ${first}</span>`;

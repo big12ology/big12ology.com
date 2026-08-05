@@ -1,5 +1,3 @@
-/* Synced copy — the canonical file lives in the big12ology-home repo.
-   Edit there and re-copy to the other repos. */
 /* Big12ology shared chrome — served at big12ology.com/brand.css
  * Used by the hub, /tiebreaker/, and /attendance/. Topbar and footer only;
  * each project keeps its own body styles. Colors are fixed (not themed) in
@@ -31,9 +29,29 @@
   .b12-footer a { color: #7aa2ff; }
 }
 
+/* ---- tracker chrome: the one definition ----
+   Every tiebreaker page renders the same header bar, pill row, and
+   matchup card. Page-local stylesheets must not redefine these. */
+:root { --chrome-w: 1120px; }
+
+.b12-head { border-bottom: 4px solid #c8102e; padding: 24px 20px 16px;
+  background: #ffffff; }
+.b12-head .hwrap { display: flex; align-items: center; gap: 16px;
+  max-width: var(--chrome-w); margin: 0 auto; }
+.b12-head img { height: 54px; width: auto; }
+.b12-head h1 { margin: 0; font-size: 26px; letter-spacing: -.02em;
+  color: #1a1c20; }
+.b12-head h1 .yr { color: #6b7280; }
+.b12-head p { margin: 4px 0 0; color: #6b7280; font-size: 14px; }
+@media (prefers-color-scheme: dark) {
+  .b12-head { background: #1d2026; }
+  .b12-head h1 { color: #e8e6e1; }
+  .b12-head h1 .yr, .b12-head p { color: #9aa0aa; }
+}
+
 /* module tabs / page subnav — one look everywhere */
 .subnav {
-  max-width: 880px; margin: 0 auto; padding: 10px 20px 0;
+  max-width: var(--chrome-w); margin: 0 auto; padding: 12px 20px 0;
   display: flex; gap: 8px; flex-wrap: wrap;
 }
 .subnav a {

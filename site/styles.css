@@ -213,6 +213,8 @@ th .sortmode { color: var(--accent); font-weight: 700; }
   letter-spacing: 0.04em; color: var(--muted); }
 .records-table th:first-child, .records-table td:first-child { width: 26%; }
 .rw-dim { color: var(--muted); }
+.rw-good { color: var(--full); }
+.rw-bad { color: var(--bad); }
 .rw-sub { display: block; color: var(--muted); font-size: 0.72rem;
   line-height: 1.3; margin-top: 1px; }
 
