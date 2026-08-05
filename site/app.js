@@ -1,5 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=6";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=6";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=7";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=7";
+import { gameTooltipHTML } from "./gametip.js?v=7";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -246,52 +247,13 @@ function tooltipHTML(team, week) {
   const game = view.season.games.find((g) => g.team === team && g.week === week);
   if (!game) return null;
   const row = view.summary.rows.find((r) => r.team === team);
-  const wk = row.weeks.find((w) => w.week === week);
-  const cap = game.capacity ?? row.capacity;
-
-  const lines = [];
-  const when = [fmtDate(game.date), fmtTime(game.time)].filter(Boolean).join(" · ");
-  lines.push(`<div class="tip-head">${view.season.weekLabels[week]}${when ? " · " + when : ""}</div>`);
-  if (game.opponent) {
-    let result = "";
-    if (game.pointsFor != null) {
-      const won = game.pointsFor > game.pointsAgainst;
-      result = ` — <strong class="${won ? "win" : "loss"}">${won ? "W" : "L"} ${game.pointsFor}–${game.pointsAgainst}</strong>`;
-    }
-    const prep = game.role === "away" ? "at" : "vs";
-    lines.push(`<div class="tip-opp">${prep} ${game.opponent}${result}</div>`);
-  }
-  if (game.role) {
-    const where = [game.venue, game.city ? `${game.city}, ${game.state ?? ""}`.replace(/, $/, "") : null]
-      .filter(Boolean)
-      .join(" · ");
-    if (where) lines.push(`<div>${where}${game.role === "neutral" ? " (neutral site)" : ""}</div>`);
-    if (game.attendance != null) lines.push(`<div class="tip-wx">Attendance ${num(game.attendance)}</div>`);
-  } else if (wk) {
-    lines.push(
-      `<div>${num(wk.attendance)} · ${pct(wk.pct)}${cap ? ` of ${num(cap)}` : ""}${game.venue ? ` · ${game.venue}` : ""}</div>`
-    );
-  }
-  if (game.weather) {
-    const w = game.weather;
-    const parts = [`${w.tempF}°F`];
-    if (w.windMph != null) parts.push(`wind ${w.windMph} mph`);
-    if (w.precipIn > 0) parts.push(`${w.precipIn}" precip`);
-    lines.push(`<div class="tip-wx">${parts.join(" · ")}</div>`);
-  }
-  if (game.attendanceSource) {
-    lines.push(`<div class="tip-src">Attendance: ${game.attendanceSource}</div>`);
-  }
-  if (game.espnId) {
-    const played = game.attendance != null || game.pointsFor != null;
-    const link = played
-      ? `https://www.espn.com/college-football/boxscore/_/gameId/${game.espnId}`
-      : `https://www.espn.com/college-football/game/_/gameId/${game.espnId}`;
-    lines.push(
-      `<a href="${link}" target="_blank" rel="noopener">${played ? "Box score" : "Game preview"} ↗</a>`
-    );
-  }
-  return lines.join("");
+  const wk = row ? row.weeks.find((w) => w.week === week) : null;
+  return gameTooltipHTML({
+    game,
+    weekLabel: view.season.weekLabels[week],
+    wk,
+    cap: game.capacity ?? (row ? row.capacity : null),
+  });
 }
 
 let hideTimer = null;
