@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=19";
-import { gameTooltipHTML } from "./gametip.js?v=19";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=21";
+import { gameTooltipHTML } from "./gametip.js?v=21";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -620,9 +620,20 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
       const cap = g.capacity ?? team?.capacity;
       if (!cap) continue;
       const p = g.attendance / cap;
+      // Several programs changed buildings inside this archive (Baylor,
+      // Houston, Cincinnati, Kansas), so a record means little without the
+      // venue it was set in.
+      const venue = g.venue ?? team?.stadium ?? "";
+      const where = venue ? ` · ${venue}` : "";
       const b = best.get(g.team) ?? { crowd: 0, pct: 0 };
-      if (g.attendance > b.crowd) { b.crowd = g.attendance; b.crowdGame = `${g.opponent} ${year}`; }
-      if (p > b.pct) { b.pct = p; b.pctGame = `${g.opponent} ${year}`; }
+      if (g.attendance > b.crowd) {
+        b.crowd = g.attendance;
+        b.crowdGame = `${g.opponent} ${year}${where}`;
+      }
+      if (p > b.pct) {
+        b.pct = p;
+        b.pctGame = `${g.opponent} ${year}${where}`;
+      }
       best.set(g.team, b);
       const cur = streaks.get(g.team) ?? 0;
       if (p >= 1) {
@@ -645,8 +656,15 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
       let cell;
       if (s > 0) {
         const l = lastSellout.get(team);
-        cell = `<span class="rw-good">${s} game${s > 1 ? "s" : ""} active</span>` +
-          (l ? `<span class="rw-sub">Last ${l.opp} ${recDate(l)}</span>` : "");
+        // A team that has never missed inside the archive was almost
+        // certainly selling out before it began, so the count is a floor,
+        // not the streak.
+        const openEnded = !ended.has(team);
+        cell = `<span class="rw-good">${s}${openEnded ? "+" : ""} ` +
+          `game${s > 1 ? "s" : ""} active</span>` +
+          (openEnded
+            ? `<span class="rw-sub">every home game since ${first}</span>`
+            : (l ? `<span class="rw-sub">Last ${l.opp} ${recDate(l)}</span>` : ""));
       } else if (ended.has(team)) {
         // "Last" always means the most recent sellout — not the game that
         // ended the run, which is a different (and confusing) thing.
