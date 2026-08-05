@@ -8,11 +8,13 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
 
+// Prose dates carry no year — the season is already on screen (selector,
+// chart title, or the weekLabel the caller passes for multi-season views).
 export function fmtDate(iso) {
   if (!iso) return "";
   const [y, m, d] = iso.split("-").map(Number);
   const dt = new Date(y, m - 1, d);
-  return `${DAYS[dt.getDay()]}, ${MONTHS[m - 1]} ${d}, ${y}`;
+  return `${DAYS[dt.getDay()]}, ${MONTHS[m - 1]} ${d}`;
 }
 
 export function fmtTime(hhmm) {
