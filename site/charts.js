@@ -454,6 +454,110 @@ function legendRow(items, kind) {
 
 // ---- entry -----------------------------------------------------------------
 
+
+// ---- panel 6: weather vs fill --------------------------------------------
+
+function weatherScatter(cardEl, seasonsData, teamsData) {
+  const t = theme();
+  const pts = [];
+  for (const [year, season] of Object.entries(seasonsData)) {
+    const teams = teamsForSeason(teamsData, Number(year));
+    const capOf = new Map(teams.map((x) => [x.team, x]));
+    for (const g of season.games) {
+      if (g.role || g.attendance == null || !g.weather ||
+          g.weather.tempF == null) continue;
+      const team = capOf.get(g.team);
+      if (!team) continue;
+      const cap = g.capacity ?? team.capacity;
+      if (!cap) continue;
+      pts.push({ team: g.team, year, temp: g.weather.tempF,
+                 rain: (g.weather.precipIn ?? 0) > 0.05,
+                 pct: g.attendance / cap,
+                 color: team.color });
+    }
+  }
+  if (pts.length < 8) return emptyNote(cardEl, "Not enough weather data yet.");
+  const m = { t: 14, r: 12, b: 34, l: 46 };
+  const W = 640, H = 300, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const tmin = Math.min(...pts.map((p) => p.temp)) - 4;
+  const tmax = Math.max(...pts.map((p) => p.temp)) + 4;
+  const pmin = Math.min(0.6, ...pts.map((p) => p.pct)) - 0.03;
+  const pmax = Math.max(1.05, ...pts.map((p) => p.pct)) + 0.03;
+  const x = (v) => m.l + ((v - tmin) / (tmax - tmin)) * iw;
+  const y = (v) => m.t + (1 - (v - pmin) / (pmax - pmin)) * ih;
+  let marks = "";
+  for (const gp of [0.7, 0.85, 1.0]) {
+    marks += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(gp)}" y2="${y(gp)}" class="grid"/>` +
+      `<text x="${m.l - 6}" y="${y(gp) + 4}" text-anchor="end" class="tick">${Math.round(gp * 100)}%</text>`;
+  }
+  for (const gt of [30, 50, 70, 90]) {
+    if (gt < tmin || gt > tmax) continue;
+    marks += `<text x="${x(gt)}" y="${H - 12}" text-anchor="middle" class="tick">${gt}°F</text>`;
+  }
+  pts.forEach((p, i) => {
+    marks += `<circle cx="${x(p.temp)}" cy="${y(p.pct)}" r="${p.rain ? 5 : 3.5}"
+      fill="${p.color ?? t.series[0]}" fill-opacity="${p.rain ? 0.9 : 0.55}"
+      ${p.rain ? 'stroke="' + (isDark() ? "#7aa2ff" : "#003087") + '" stroke-width="1.5"' : ""}
+      data-i="${i}" class="hit"/>`;
+  });
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = marks;
+  svg.addEventListener("pointermove", (e) => {
+    const el = e.target.closest(".hit");
+    if (!el) return hideTip();
+    const p = pts[Number(el.dataset.i)];
+    showTip(e.clientX, e.clientY, [
+      { head: `${p.team} · ${p.year}` },
+      { value: pct(p.pct), label: "full" },
+      { value: `${p.temp}°F${p.rain ? ", rain" : ""}`, label: "kickoff" },
+    ]);
+  });
+  svg.addEventListener("pointerleave", hideTip);
+  cardEl.appendChild(svg);
+}
+
+// ---- panel 7: records watch ------------------------------------------------
+
+function recordsWatch(cardEl, seasonsData, teamsData) {
+  const best = new Map();   // team -> {crowd, pct, game}
+  const streaks = new Map(); // team -> current consecutive sellouts
+  const years = Object.keys(seasonsData).sort();
+  for (const year of years) {
+    const season = seasonsData[year];
+    const teams = teamsForSeason(teamsData, Number(year));
+    const capOf = new Map(teams.map((x) => [x.team, x]));
+    const home = season.games
+      .filter((g) => !g.role && g.attendance != null)
+      .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+    for (const g of home) {
+      const team = capOf.get(g.team);
+      const cap = g.capacity ?? team?.capacity;
+      if (!cap) continue;
+      const p = g.attendance / cap;
+      const b = best.get(g.team) ?? { crowd: 0, pct: 0 };
+      if (g.attendance > b.crowd) { b.crowd = g.attendance; b.crowdGame = `${g.opponent} ${year}`; }
+      if (p > b.pct) { b.pct = p; b.pctGame = `${g.opponent} ${year}`; }
+      best.set(g.team, b);
+      streaks.set(g.team, p >= 1 ? (streaks.get(g.team) ?? 0) + 1 : 0);
+    }
+  }
+  const rows = [...best.entries()]
+    .sort((a, b) => b[1].pct - a[1].pct)
+    .map(([team, b]) => {
+      const s = streaks.get(team) ?? 0;
+      return `<tr><td>${team}</td>` +
+        `<td>${num(b.crowd)} <span class="rw-dim">vs ${b.crowdGame}</span></td>` +
+        `<td>${pct(b.pct)} <span class="rw-dim">vs ${b.pctGame}</span></td>` +
+        `<td>${s > 0 ? s + " game" + (s > 1 ? "s" : "") : "—"}</td></tr>`;
+    }).join("");
+  const wrap = document.createElement("div");
+  wrap.className = "records-table";
+  wrap.innerHTML = `<table><thead><tr><th>Team</th><th>Biggest crowd (tracked era)</th>` +
+    `<th>Best fill</th><th>Active sellout streak</th></tr></thead><tbody>${rows}</tbody></table>`;
+  cardEl.appendChild(wrap);
+}
+
 export function renderCharts(root, teamsData, seasonsData, currentYear) {
   root.textContent = "";
   const season = seasonsData[currentYear];
@@ -475,5 +579,11 @@ export function renderCharts(root, teamsData, seasonsData, currentYear) {
   const c5 = card("Season percent full by team, year over year", "One dot per season; the connector spans a team's range");
   yoyTeams(c5, seasonsData, teamsData);
 
-  root.append(c1, c2, c3, c4, c5);
+  const c6 = card("Kickoff weather vs fill", "Every tracked home game; ringed dots = rain; hover for details");
+  weatherScatter(c6, seasonsData, teamsData);
+
+  const c7 = card("Records watch", "High-water marks across the tracked era, and who's on a sellout streak");
+  recordsWatch(c7, seasonsData, teamsData);
+
+  root.append(c1, c2, c3, c4, c5, c6, c7);
 }

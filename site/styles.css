@@ -198,3 +198,11 @@ td.bye {
 }
 
 th .sortmode { color: var(--accent); font-weight: 700; }
+
+/* records watch + weather panels */
+.records-table table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+.records-table th, .records-table td { text-align: left; padding: 0.3rem 0.6rem;
+  border-bottom: 1px solid var(--border); }
+.records-table th { font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--muted); }
+.rw-dim { color: var(--muted); font-size: 0.75rem; }
