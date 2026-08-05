@@ -1,6 +1,6 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=3";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=4";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -494,6 +494,28 @@ function weatherScatter(cardEl, seasonsData, teamsData) {
     if (gt < tmin || gt > tmax) continue;
     marks += `<text x="${x(gt)}" y="${H - 12}" text-anchor="middle" class="tick">${gt}°F</text>`;
   }
+  // least-squares trend of fill on temperature
+  const n = pts.length;
+  const mx = pts.reduce((s, p) => s + p.temp, 0) / n;
+  const my = pts.reduce((s, p) => s + p.pct, 0) / n;
+  let sxx = 0, sxy = 0, syy = 0;
+  for (const p of pts) {
+    sxx += (p.temp - mx) ** 2;
+    sxy += (p.temp - mx) * (p.pct - my);
+    syy += (p.pct - my) ** 2;
+  }
+  const slope = sxy / sxx;
+  const icept = my - slope * mx;
+  const r2 = sxx && syy ? (sxy * sxy) / (sxx * syy) : 0;
+  const tl = tmin + 3, tr2 = tmax - 3;
+  const clampY = (v) => Math.max(pmin, Math.min(pmax, v));
+  marks += `<line x1="${x(tl)}" y1="${y(clampY(icept + slope * tl))}"
+    x2="${x(tr2)}" y2="${y(clampY(icept + slope * tr2))}"
+    stroke="${isDark() ? "#9aa0aa" : "#6b7280"}" stroke-width="1.5"
+    stroke-dasharray="6 4" opacity="0.8"/>`;
+  const per10 = slope * 10 * 100;
+  marks += `<text x="${W - m.r - 4}" y="${m.t + 12}" text-anchor="end"
+    class="tick">trend: ${per10 >= 0 ? "+" : ""}${per10.toFixed(1)} pts of fill per +10°F (R² ${r2.toFixed(2)})</text>`;
   pts.forEach((p, i) => {
     marks += `<circle cx="${x(p.temp)}" cy="${y(p.pct)}" r="${p.rain ? 5 : 3.5}"
       fill="${p.color ?? t.series[0]}" fill-opacity="${p.rain ? 0.9 : 0.55}"

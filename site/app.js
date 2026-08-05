@@ -1,5 +1,5 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=3";
-import { renderCharts } from "./charts.js?v=3";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=4";
+import { renderCharts } from "./charts.js?v=4";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
