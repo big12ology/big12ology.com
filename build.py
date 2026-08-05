@@ -890,7 +890,9 @@ def render(year, games):
     sorter = ("<div class=sorter>Sort: "
               "<button class='on' id=sort-pct>Win % (official)</button>"
               "<button id=sort-raw>Raw wins</button></div>")
-    table = (f"<div id=tablewrap{'' if rows else ' hidden'}>" + sorter +
+    # display_rows always carries all sixteen teams, so the table is never
+    # hidden — the preseason view is a legitimate 0-0 board.
+    table = ("<div id=tablewrap>" + sorter +
              "<table><thead><tr><th></th><th>Team</th><th>Conf</th>"
              "<th>Pct</th><th>Non-conf</th><th>Overall</th></tr></thead>"
              "<tbody id=stand>"
