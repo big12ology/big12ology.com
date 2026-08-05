@@ -39,6 +39,24 @@
       "pct": 1.053504174720523
     },
     {
+      "team": "BYU",
+      "stadium": "LaVell Edwards Stadium",
+      "capacity": 62073,
+      "color": "#003da5",
+      "logo": "assets/logos/byu.png",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 64494,
+          "pct": 1.0390024648397853
+        }
+      ],
+      "total": 64494,
+      "pct": 1.0390024648397853
+    },
+    {
       "team": "Kansas State",
       "stadium": "Bill Snyder Family Football Stadium",
       "capacity": 50000,
@@ -55,24 +73,6 @@
       ],
       "total": 51927,
       "pct": 1.03854
-    },
-    {
-      "team": "BYU",
-      "stadium": "LaVell Edwards Stadium",
-      "capacity": 63470,
-      "color": "#003da5",
-      "logo": "assets/logos/byu.png",
-      "multiVenue": false,
-      "games": 1,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 64494,
-          "pct": 1.0161336064282338
-        }
-      ],
-      "total": 64494,
-      "pct": 1.0161336064282338
     },
     {
       "team": "Baylor",
@@ -130,7 +130,7 @@
     },
     {
       "team": "UCF",
-      "stadium": "FBC Mortgage Stadium",
+      "stadium": "Acrisure Bounce House",
       "capacity": 44206,
       "color": "#ba9b37",
       "logo": "assets/logos/ucf.svg",
@@ -190,7 +190,7 @@
     {
       "team": "Oklahoma State",
       "stadium": "Boone Pickens Stadium",
-      "capacity": 52168,
+      "capacity": 52202,
       "color": "#ff7300",
       "logo": "assets/logos/okst.svg",
       "multiVenue": false,
@@ -199,11 +199,11 @@
         {
           "week": 1,
           "attendance": 44809,
-          "pct": 0.8589365128047846
+          "pct": 0.8583770736753381
         }
       ],
       "total": 44809,
-      "pct": 0.8589365128047846
+      "pct": 0.8583770736753381
     },
     {
       "team": "Arizona",
@@ -290,8 +290,8 @@
       "week": 1,
       "games": 13,
       "attendance": 647657,
-      "capacity": 672802,
-      "pct": 0.9626264487917694
+      "capacity": 671439,
+      "pct": 0.9645805501318809
     },
     {
       "week": 2,
@@ -395,7 +395,7 @@
   "totals": {
     "games": 14,
     "attendance": 689182,
-    "capacity": 714327,
-    "pct": 0.9647990346157992
+    "capacity": 712964,
+    "pct": 0.9666434770900073
   }
 }

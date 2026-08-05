@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=11";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=11";
-import { gameTooltipHTML } from "./gametip.js?v=11";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=12";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=12";
+import { gameTooltipHTML } from "./gametip.js?v=12";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");

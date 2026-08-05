@@ -59,7 +59,7 @@
     {
       "team": "BYU",
       "stadium": "LaVell Edwards Stadium",
-      "capacity": 63470,
+      "capacity": 62073,
       "color": "#003da5",
       "logo": "assets/logos/byu.png",
       "multiVenue": false,
@@ -131,7 +131,7 @@
     {
       "team": "Oklahoma State",
       "stadium": "Boone Pickens Stadium",
-      "capacity": 52168,
+      "capacity": 52202,
       "color": "#ff7300",
       "logo": "assets/logos/okst.svg",
       "multiVenue": false,
@@ -166,7 +166,7 @@
     },
     {
       "team": "UCF",
-      "stadium": "FBC Mortgage Stadium",
+      "stadium": "Acrisure Bounce House",
       "capacity": 44206,
       "color": "#ba9b37",
       "logo": "assets/logos/ucf.svg",

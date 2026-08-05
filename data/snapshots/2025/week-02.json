@@ -44,6 +44,29 @@
       "pct": 1.0465
     },
     {
+      "team": "BYU",
+      "stadium": "LaVell Edwards Stadium",
+      "capacity": 62073,
+      "color": "#003da5",
+      "logo": "assets/logos/byu.png",
+      "multiVenue": false,
+      "games": 2,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 64494,
+          "pct": 1.0390024648397853
+        },
+        {
+          "week": 2,
+          "attendance": 64692,
+          "pct": 1.0421922575032623
+        }
+      ],
+      "total": 129186,
+      "pct": 1.0405973611715238
+    },
+    {
       "team": "Colorado",
       "stadium": "Folsom Field",
       "capacity": 50183,
@@ -65,29 +88,6 @@
       ],
       "total": 103209,
       "pct": 1.0283263256481279
-    },
-    {
-      "team": "BYU",
-      "stadium": "LaVell Edwards Stadium",
-      "capacity": 63470,
-      "color": "#003da5",
-      "logo": "assets/logos/byu.png",
-      "multiVenue": false,
-      "games": 2,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 64494,
-          "pct": 1.0161336064282338
-        },
-        {
-          "week": 2,
-          "attendance": 64692,
-          "pct": 1.019253190483693
-        }
-      ],
-      "total": 129186,
-      "pct": 1.0176933984559635
     },
     {
       "team": "Baylor",
@@ -173,7 +173,7 @@
     },
     {
       "team": "UCF",
-      "stadium": "FBC Mortgage Stadium",
+      "stadium": "Acrisure Bounce House",
       "capacity": 44206,
       "color": "#ba9b37",
       "logo": "assets/logos/ucf.svg",
@@ -256,7 +256,7 @@
     {
       "team": "Oklahoma State",
       "stadium": "Boone Pickens Stadium",
-      "capacity": 52168,
+      "capacity": 52202,
       "color": "#ff7300",
       "logo": "assets/logos/okst.svg",
       "multiVenue": false,
@@ -265,11 +265,11 @@
         {
           "week": 1,
           "attendance": 44809,
-          "pct": 0.8589365128047846
+          "pct": 0.8583770736753381
         }
       ],
       "total": 44809,
-      "pct": 0.8589365128047846
+      "pct": 0.8583770736753381
     },
     {
       "team": "Arizona",
@@ -337,15 +337,15 @@
       "week": 1,
       "games": 13,
       "attendance": 647657,
-      "capacity": 672802,
-      "pct": 0.9626264487917694
+      "capacity": 671439,
+      "pct": 0.9645805501318809
     },
     {
       "week": 2,
       "games": 9,
       "attendance": 460416,
-      "capacity": 469902,
-      "pct": 0.9798128120331473
+      "capacity": 468505,
+      "pct": 0.9827344425352984
     },
     {
       "week": 3,
@@ -442,7 +442,7 @@
   "totals": {
     "games": 23,
     "attendance": 1149598,
-    "capacity": 1184229,
-    "pct": 0.9707565006430344
+    "capacity": 1181469,
+    "pct": 0.9730242604757298
   }
 }

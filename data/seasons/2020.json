@@ -1,0 +1,2093 @@
+{
+  "season": 2020,
+  "source": "CollegeFootballData API (collegefootballdata.com); weather via Open-Meteo",
+  "weekLabels": [
+    "Week 0",
+    "Week 1",
+    "Week 2",
+    "Week 3",
+    "Week 4",
+    "Week 5",
+    "Week 6",
+    "Week 7",
+    "Week 8",
+    "Week 9",
+    "Week 10",
+    "Week 11",
+    "Week 12",
+    "Week 13",
+    "Week 14",
+    "Week 15",
+    "Week 16"
+  ],
+  "games": [
+    {
+      "team": "BYU",
+      "week": 1,
+      "date": "2020-09-07",
+      "time": "20:00",
+      "espnId": 401234576,
+      "opponent": "Navy",
+      "attendance": 0,
+      "role": "away",
+      "venue": "Navy-Marine Corps Memorial Stadium",
+      "city": "Annapolis",
+      "state": "MD",
+      "pointsFor": 55,
+      "pointsAgainst": 3
+    },
+    {
+      "team": "Iowa State",
+      "week": 2,
+      "date": "2020-09-12",
+      "time": "11:00",
+      "espnId": 401236221,
+      "opponent": "Louisiana",
+      "attendance": 0,
+      "pointsFor": 14,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 63,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 2,
+      "date": "2020-09-12",
+      "time": "21:00",
+      "espnId": 401236658,
+      "opponent": "Coastal Carolina",
+      "attendance": 0,
+      "pointsFor": 23,
+      "pointsAgainst": 38,
+      "weather": {
+        "tempF": 68,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 2,
+      "date": "2020-09-12",
+      "time": "11:00",
+      "espnId": 401236053,
+      "opponent": "Arkansas State",
+      "attendance": 11041,
+      "pointsFor": 31,
+      "pointsAgainst": 35,
+      "weather": {
+        "tempF": 69,
+        "windMph": 11,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 2,
+      "date": "2020-09-12",
+      "time": "19:00",
+      "espnId": 401236039,
+      "opponent": "Houston Christian",
+      "attendance": 11157,
+      "pointsFor": 35,
+      "pointsAgainst": 33,
+      "weather": {
+        "tempF": 81,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 2,
+      "date": "2020-09-12",
+      "time": "12:00",
+      "espnId": 401236038,
+      "opponent": "Eastern Kentucky",
+      "attendance": 976,
+      "pointsFor": 56,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 80,
+        "windMph": 7,
+        "precipIn": 0.0
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 3,
+      "date": "2020-09-19",
+      "time": "12:00",
+      "espnId": 401212541,
+      "opponent": "Austin Peay",
+      "attendance": 0,
+      "pointsFor": 55,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 60,
+        "windMph": 9,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 3,
+      "date": "2020-09-19",
+      "time": "11:00",
+      "espnId": 401236041,
+      "opponent": "Tulsa",
+      "attendance": 14668,
+      "pointsFor": 16,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 71,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 3,
+      "date": "2020-09-19",
+      "time": "15:30",
+      "espnId": 401234568,
+      "opponent": "Georgia Tech",
+      "attendance": 11000,
+      "role": "away",
+      "venue": "Bobby Dodd Stadium",
+      "city": "Atlanta",
+      "state": "GA",
+      "pointsFor": 49,
+      "pointsAgainst": 21
+    },
+    {
+      "team": "BYU",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "20:15",
+      "espnId": 401236223,
+      "opponent": "Troy",
+      "attendance": 0,
+      "pointsFor": 48,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 65,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "18:30",
+      "espnId": 401235993,
+      "opponent": "Kansas",
+      "attendance": 11667,
+      "pointsFor": 47,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 85,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "15:30",
+      "espnId": 401240996,
+      "opponent": "Army",
+      "attendance": 0,
+      "pointsFor": 24,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 78,
+        "windMph": 9,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "12:30",
+      "espnId": 401235994,
+      "opponent": "TCU",
+      "attendance": 11852,
+      "role": "away",
+      "venue": "Amon G. Carter Stadium",
+      "city": "Fort Worth",
+      "state": "TX",
+      "pointsFor": 37,
+      "pointsAgainst": 34
+    },
+    {
+      "team": "Kansas",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "18:30",
+      "espnId": 401235993,
+      "opponent": "Baylor",
+      "attendance": 11667,
+      "role": "away",
+      "venue": "McLane Stadium",
+      "city": "Waco",
+      "state": "TX",
+      "pointsFor": 14,
+      "pointsAgainst": 47
+    },
+    {
+      "team": "Kansas State",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "11:00",
+      "espnId": 401235996,
+      "opponent": "Oklahoma",
+      "attendance": 22700,
+      "role": "away",
+      "venue": "Memorial Stadium (Norman, OK)",
+      "city": "Norman",
+      "state": "OK",
+      "pointsFor": 38,
+      "pointsAgainst": 35
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "14:30",
+      "espnId": 401235997,
+      "opponent": "West Virginia",
+      "attendance": 14672,
+      "pointsFor": 27,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 86,
+        "windMph": 12,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "12:30",
+      "espnId": 401235994,
+      "opponent": "Iowa State",
+      "attendance": 11852,
+      "pointsFor": 34,
+      "pointsAgainst": 37,
+      "weather": {
+        "tempF": 81,
+        "windMph": 12,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "14:30",
+      "espnId": 401235995,
+      "opponent": "Texas",
+      "attendance": 16615,
+      "pointsFor": 56,
+      "pointsAgainst": 63,
+      "weather": {
+        "tempF": 93,
+        "windMph": 12,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "12:00",
+      "espnId": 401212536,
+      "opponent": "East Carolina",
+      "attendance": 305,
+      "role": "away",
+      "venue": "Dowdy-Ficklen Stadium",
+      "city": "Greenville",
+      "state": "NC",
+      "pointsFor": 51,
+      "pointsAgainst": 28
+    },
+    {
+      "team": "West Virginia",
+      "week": 4,
+      "date": "2020-09-26",
+      "time": "14:30",
+      "espnId": 401235997,
+      "opponent": "Oklahoma State",
+      "attendance": 14672,
+      "role": "away",
+      "venue": "Boone Pickens Stadium",
+      "city": "Stillwater",
+      "state": "OK",
+      "pointsFor": 13,
+      "pointsAgainst": 27
+    },
+    {
+      "team": "BYU",
+      "week": 5,
+      "date": "2020-10-02",
+      "time": "19:00",
+      "espnId": 401246275,
+      "opponent": "Louisiana Tech",
+      "attendance": 0,
+      "pointsFor": 45,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 70,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 5,
+      "date": "2020-10-03",
+      "time": "12:00",
+      "espnId": 401235998,
+      "opponent": "West Virginia",
+      "attendance": 978,
+      "role": "away",
+      "venue": "Milan Puskar Stadium",
+      "city": "Morgantown",
+      "state": "WV",
+      "pointsFor": 21,
+      "pointsAgainst": 27
+    },
+    {
+      "team": "Cincinnati",
+      "week": 5,
+      "date": "2020-10-03",
+      "time": "15:30",
+      "espnId": 401212476,
+      "opponent": "South Florida",
+      "attendance": 0,
+      "pointsFor": 28,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 62,
+        "windMph": 7,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 5,
+      "date": "2020-10-03",
+      "time": "18:30",
+      "espnId": 401235999,
+      "opponent": "Oklahoma",
+      "attendance": 13724,
+      "pointsFor": 37,
+      "pointsAgainst": 30,
+      "weather": {
+        "tempF": 56,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 5,
+      "date": "2020-10-03",
+      "time": "14:30",
+      "espnId": 401236000,
+      "opponent": "Oklahoma State",
+      "attendance": 9480,
+      "pointsFor": 7,
+      "pointsAgainst": 47,
+      "weather": {
+        "tempF": 65,
+        "windMph": 12,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 5,
+      "date": "2020-10-03",
+      "time": "14:30",
+      "espnId": 401236001,
+      "opponent": "Texas Tech",
+      "attendance": 10932,
+      "pointsFor": 31,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 66,
+        "windMph": 14,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 5,
+      "date": "2020-10-03",
+      "time": "14:30",
+      "espnId": 401236000,
+      "opponent": "Kansas",
+      "attendance": 9480,
+      "role": "away",
+      "venue": "Memorial Stadium",
+      "city": "Lawrence",
+      "state": "KS",
+      "pointsFor": 47,
+      "pointsAgainst": 7
+    },
+    {
+      "team": "TCU",
+      "week": 5,
+      "date": "2020-10-03",
+      "time": "11:00",
+      "espnId": 401236002,
+      "opponent": "Texas",
+      "attendance": 17753,
+      "role": "away",
+      "venue": "DKR-Texas Memorial Stadium",
+      "city": "Austin",
+      "state": "TX",
+      "pointsFor": 33,
+      "pointsAgainst": 31
+    },
+    {
+      "team": "Texas Tech",
+      "week": 5,
+      "date": "2020-10-03",
+      "time": "14:30",
+      "espnId": 401236001,
+      "opponent": "Kansas State",
+      "attendance": 10932,
+      "role": "away",
+      "venue": "Bill Snyder Family Stadium",
+      "city": "Manhattan",
+      "state": "KS",
+      "pointsFor": 21,
+      "pointsAgainst": 31
+    },
+    {
+      "team": "UCF",
+      "week": 5,
+      "date": "2020-10-03",
+      "time": "19:30",
+      "espnId": 401212531,
+      "opponent": "Tulsa",
+      "attendance": 8874,
+      "pointsFor": 26,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 73,
+        "windMph": 7,
+        "precipIn": 0.03
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 5,
+      "date": "2020-10-03",
+      "time": "12:00",
+      "espnId": 401235998,
+      "opponent": "Baylor",
+      "attendance": 978,
+      "pointsFor": 27,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 58,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "BYU",
+      "week": 6,
+      "date": "2020-10-10",
+      "time": "13:30",
+      "espnId": 401240997,
+      "opponent": "UTSA",
+      "attendance": 0,
+      "pointsFor": 27,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 75,
+        "windMph": 7,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 6,
+      "date": "2020-10-08",
+      "time": "18:30",
+      "espnId": 401212523,
+      "opponent": "Tulane",
+      "attendance": 8164,
+      "pointsFor": 49,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 79,
+        "windMph": 10,
+        "precipIn": 0.0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 6,
+      "date": "2020-10-10",
+      "time": "14:30",
+      "espnId": 401236003,
+      "opponent": "Texas Tech",
+      "attendance": 13502,
+      "pointsFor": 31,
+      "pointsAgainst": 15,
+      "weather": {
+        "tempF": 74,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 6,
+      "date": "2020-10-10",
+      "time": "15:00",
+      "espnId": 401236004,
+      "opponent": "TCU",
+      "attendance": 12208,
+      "role": "away",
+      "venue": "Amon G. Carter Stadium",
+      "city": "Fort Worth",
+      "state": "TX",
+      "pointsFor": 21,
+      "pointsAgainst": 14
+    },
+    {
+      "team": "TCU",
+      "week": 6,
+      "date": "2020-10-10",
+      "time": "15:00",
+      "espnId": 401236004,
+      "opponent": "Kansas State",
+      "attendance": 12208,
+      "pointsFor": 14,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 87,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 6,
+      "date": "2020-10-10",
+      "time": "14:30",
+      "espnId": 401236003,
+      "opponent": "Iowa State",
+      "attendance": 13502,
+      "role": "away",
+      "venue": "Jack Trice Stadium",
+      "city": "Ames",
+      "state": "IA",
+      "pointsFor": 15,
+      "pointsAgainst": 31
+    },
+    {
+      "team": "BYU",
+      "week": 7,
+      "date": "2020-10-16",
+      "time": "19:30",
+      "espnId": 401212551,
+      "opponent": "Houston",
+      "attendance": 10092,
+      "role": "away",
+      "venue": "LaVell Edwards Stadium",
+      "city": "Provo",
+      "state": "UT",
+      "pointsFor": 43,
+      "pointsAgainst": 26
+    },
+    {
+      "team": "Houston",
+      "week": 7,
+      "date": "2020-10-16",
+      "time": "19:30",
+      "espnId": 401212551,
+      "opponent": "BYU",
+      "attendance": 10092,
+      "pointsFor": 26,
+      "pointsAgainst": 43,
+      "weather": {
+        "tempF": 59,
+        "windMph": 0,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 7,
+      "date": "2020-10-17",
+      "time": "12:00",
+      "espnId": 401236007,
+      "opponent": "West Virginia",
+      "attendance": 10759,
+      "role": "away",
+      "venue": "Milan Puskar Stadium",
+      "city": "Morgantown",
+      "state": "WV",
+      "pointsFor": 17,
+      "pointsAgainst": 38
+    },
+    {
+      "team": "UCF",
+      "week": 7,
+      "date": "2020-10-17",
+      "time": "14:30",
+      "espnId": 401212537,
+      "opponent": "Memphis",
+      "attendance": 10554,
+      "role": "away",
+      "venue": "Simmons Bank Liberty Stadium",
+      "city": "Memphis",
+      "state": "TN",
+      "pointsFor": 49,
+      "pointsAgainst": 50
+    },
+    {
+      "team": "West Virginia",
+      "week": 7,
+      "date": "2020-10-17",
+      "time": "12:00",
+      "espnId": 401236007,
+      "opponent": "Kansas",
+      "attendance": 10759,
+      "pointsFor": 38,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 54,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "BYU",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "20:15",
+      "espnId": 401240998,
+      "opponent": "Texas State",
+      "attendance": 6570,
+      "pointsFor": 52,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 53,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "14:30",
+      "espnId": 401236008,
+      "opponent": "Texas",
+      "attendance": 18202,
+      "role": "away",
+      "venue": "DKR-Texas Memorial Stadium",
+      "city": "Austin",
+      "state": "TX",
+      "pointsFor": 16,
+      "pointsAgainst": 27
+    },
+    {
+      "team": "Cincinnati",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "20:00",
+      "espnId": 401212488,
+      "opponent": "SMU",
+      "attendance": 7898,
+      "role": "away",
+      "venue": "Gerald J. Ford Stadium",
+      "city": "University Park",
+      "state": "TX",
+      "pointsFor": 42,
+      "pointsAgainst": 13
+    },
+    {
+      "team": "Houston",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "15:30",
+      "espnId": 401212552,
+      "opponent": "Navy",
+      "attendance": 3600,
+      "role": "away",
+      "venue": "Navy-Marine Corps Memorial Stadium",
+      "city": "Annapolis",
+      "state": "MD",
+      "pointsFor": 37,
+      "pointsAgainst": 21
+    },
+    {
+      "team": "Iowa State",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "14:30",
+      "espnId": 401236009,
+      "opponent": "Oklahoma State",
+      "attendance": 14671,
+      "role": "away",
+      "venue": "Boone Pickens Stadium",
+      "city": "Stillwater",
+      "state": "OK",
+      "pointsFor": 21,
+      "pointsAgainst": 24
+    },
+    {
+      "team": "Kansas",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "11:00",
+      "espnId": 401236010,
+      "opponent": "Kansas State",
+      "attendance": 10801,
+      "role": "away",
+      "venue": "Bill Snyder Family Stadium",
+      "city": "Manhattan",
+      "state": "KS",
+      "pointsFor": 14,
+      "pointsAgainst": 55
+    },
+    {
+      "team": "Kansas State",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "11:00",
+      "espnId": 401236010,
+      "opponent": "Kansas",
+      "attendance": 10801,
+      "pointsFor": 55,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 38,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "14:30",
+      "espnId": 401236009,
+      "opponent": "Iowa State",
+      "attendance": 14671,
+      "pointsFor": 24,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 51,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "11:00",
+      "espnId": 401236011,
+      "opponent": "Oklahoma",
+      "attendance": 12440,
+      "pointsFor": 14,
+      "pointsAgainst": 33,
+      "weather": {
+        "tempF": 51,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "16:30",
+      "espnId": 401236012,
+      "opponent": "West Virginia",
+      "attendance": 13532,
+      "pointsFor": 34,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 71,
+        "windMph": 16,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "14:00",
+      "espnId": 401212524,
+      "opponent": "Tulane",
+      "attendance": 9148,
+      "pointsFor": 51,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 82,
+        "windMph": 5,
+        "precipIn": 0.0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 8,
+      "date": "2020-10-24",
+      "time": "16:30",
+      "espnId": 401236012,
+      "opponent": "Texas Tech",
+      "attendance": 13532,
+      "role": "away",
+      "venue": "Jones AT&T Stadium",
+      "city": "Lubbock",
+      "state": "TX",
+      "pointsFor": 27,
+      "pointsAgainst": 34
+    },
+    {
+      "team": "BYU",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "20:15",
+      "espnId": 401239887,
+      "opponent": "Western Kentucky",
+      "attendance": 6843,
+      "pointsFor": 41,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 45,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "14:30",
+      "espnId": 401236013,
+      "opponent": "TCU",
+      "attendance": 11667,
+      "pointsFor": 23,
+      "pointsAgainst": 33,
+      "weather": {
+        "tempF": 68,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "12:00",
+      "espnId": 401212543,
+      "opponent": "Memphis",
+      "attendance": 0,
+      "pointsFor": 49,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 48,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "13:00",
+      "espnId": 401212538,
+      "opponent": "UCF",
+      "attendance": 8630,
+      "pointsFor": 21,
+      "pointsAgainst": 44,
+      "weather": {
+        "tempF": 68,
+        "windMph": 1,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "11:00",
+      "espnId": 401236014,
+      "opponent": "Kansas",
+      "attendance": 9652,
+      "role": "away",
+      "venue": "Memorial Stadium",
+      "city": "Lawrence",
+      "state": "KS",
+      "pointsFor": 52,
+      "pointsAgainst": 22
+    },
+    {
+      "team": "Kansas",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "11:00",
+      "espnId": 401236014,
+      "opponent": "Iowa State",
+      "attendance": 9652,
+      "pointsFor": 22,
+      "pointsAgainst": 52,
+      "weather": {
+        "tempF": 57,
+        "windMph": 16,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "12:00",
+      "espnId": 401236015,
+      "opponent": "West Virginia",
+      "attendance": 10441,
+      "role": "away",
+      "venue": "Milan Puskar Stadium",
+      "city": "Morgantown",
+      "state": "WV",
+      "pointsFor": 10,
+      "pointsAgainst": 37
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "15:00",
+      "espnId": 401236017,
+      "opponent": "Texas",
+      "attendance": 14672,
+      "pointsFor": 34,
+      "pointsAgainst": 41,
+      "weather": {
+        "tempF": 65,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "14:30",
+      "espnId": 401236013,
+      "opponent": "Baylor",
+      "attendance": 11667,
+      "role": "away",
+      "venue": "McLane Stadium",
+      "city": "Waco",
+      "state": "TX",
+      "pointsFor": 33,
+      "pointsAgainst": 23
+    },
+    {
+      "team": "Texas Tech",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "19:00",
+      "espnId": 401236016,
+      "opponent": "Oklahoma",
+      "attendance": 14431,
+      "pointsFor": 28,
+      "pointsAgainst": 62,
+      "weather": {
+        "tempF": 68,
+        "windMph": 9,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "13:00",
+      "espnId": 401212538,
+      "opponent": "Houston",
+      "attendance": 8630,
+      "role": "away",
+      "venue": "TDECU Stadium",
+      "city": "Houston",
+      "state": "TX",
+      "pointsFor": 44,
+      "pointsAgainst": 21
+    },
+    {
+      "team": "West Virginia",
+      "week": 9,
+      "date": "2020-10-31",
+      "time": "12:00",
+      "espnId": 401236015,
+      "opponent": "Kansas State",
+      "attendance": 10441,
+      "pointsFor": 37,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 47,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona State",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "09:00",
+      "espnId": 401249400,
+      "opponent": "USC",
+      "attendance": 0,
+      "role": "away",
+      "venue": "Los Angeles Memorial Coliseum",
+      "city": "Los Angeles",
+      "state": "CA",
+      "pointsFor": 27,
+      "pointsAgainst": 28
+    },
+    {
+      "team": "BYU",
+      "week": 10,
+      "date": "2020-11-06",
+      "time": "19:45",
+      "espnId": 401249005,
+      "opponent": "Boise State",
+      "attendance": 1100,
+      "role": "away",
+      "venue": "Albertsons Stadium",
+      "city": "Boise",
+      "state": "ID",
+      "pointsFor": 51,
+      "pointsAgainst": 17
+    },
+    {
+      "team": "Baylor",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "18:00",
+      "espnId": 401236018,
+      "opponent": "Iowa State",
+      "attendance": 13535,
+      "role": "away",
+      "venue": "Jack Trice Stadium",
+      "city": "Ames",
+      "state": "IA",
+      "pointsFor": 31,
+      "pointsAgainst": 38
+    },
+    {
+      "team": "Cincinnati",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "15:30",
+      "espnId": 401212544,
+      "opponent": "Houston",
+      "attendance": 0,
+      "pointsFor": 38,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 71,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "17:00",
+      "espnId": 401249402,
+      "opponent": "UCLA",
+      "attendance": 554,
+      "pointsFor": 48,
+      "pointsAgainst": 42,
+      "weather": {
+        "tempF": 61,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "15:30",
+      "espnId": 401212544,
+      "opponent": "Cincinnati",
+      "attendance": 0,
+      "role": "away",
+      "venue": "Nippert Stadium",
+      "city": "Cincinnati",
+      "state": "OH",
+      "pointsFor": 10,
+      "pointsAgainst": 38
+    },
+    {
+      "team": "Iowa State",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "18:00",
+      "espnId": 401236018,
+      "opponent": "Baylor",
+      "attendance": 13535,
+      "pointsFor": 38,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 64,
+        "windMph": 16,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "14:30",
+      "espnId": 401236019,
+      "opponent": "Oklahoma",
+      "attendance": 22700,
+      "role": "away",
+      "venue": "Memorial Stadium (Norman, OK)",
+      "city": "Norman",
+      "state": "OK",
+      "pointsFor": 9,
+      "pointsAgainst": 62
+    },
+    {
+      "team": "Kansas State",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "15:00",
+      "espnId": 401236020,
+      "opponent": "Oklahoma State",
+      "attendance": 11980,
+      "pointsFor": 18,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 74,
+        "windMph": 18,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "15:00",
+      "espnId": 401236020,
+      "opponent": "Kansas State",
+      "attendance": 11980,
+      "role": "away",
+      "venue": "Bill Snyder Family Stadium",
+      "city": "Manhattan",
+      "state": "KS",
+      "pointsFor": 20,
+      "pointsAgainst": 18
+    },
+    {
+      "team": "TCU",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "14:30",
+      "espnId": 401236021,
+      "opponent": "Texas Tech",
+      "attendance": 12356,
+      "pointsFor": 34,
+      "pointsAgainst": 18,
+      "weather": {
+        "tempF": 75,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "14:30",
+      "espnId": 401236021,
+      "opponent": "TCU",
+      "attendance": 12356,
+      "role": "away",
+      "venue": "Amon G. Carter Stadium",
+      "city": "Fort Worth",
+      "state": "TX",
+      "pointsFor": 18,
+      "pointsAgainst": 34
+    },
+    {
+      "team": "West Virginia",
+      "week": 10,
+      "date": "2020-11-07",
+      "time": "11:00",
+      "espnId": 401236022,
+      "opponent": "Texas",
+      "attendance": 17843,
+      "role": "away",
+      "venue": "DKR-Texas Memorial Stadium",
+      "city": "Austin",
+      "state": "TX",
+      "pointsFor": 13,
+      "pointsAgainst": 17
+    },
+    {
+      "team": "Arizona",
+      "week": 11,
+      "date": "2020-11-14",
+      "time": "13:30",
+      "espnId": 401249403,
+      "opponent": "USC",
+      "attendance": 0,
+      "pointsFor": 30,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 71,
+        "windMph": 7,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 11,
+      "date": "2020-11-14",
+      "time": "15:00",
+      "espnId": 401236023,
+      "opponent": "Texas Tech",
+      "attendance": 12914,
+      "role": "away",
+      "venue": "Jones AT&T Stadium",
+      "city": "Lubbock",
+      "state": "TX",
+      "pointsFor": 23,
+      "pointsAgainst": 24
+    },
+    {
+      "team": "Cincinnati",
+      "week": 11,
+      "date": "2020-11-13",
+      "time": "19:30",
+      "espnId": 401212545,
+      "opponent": "East Carolina",
+      "attendance": 0,
+      "pointsFor": 55,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 42,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 11,
+      "date": "2020-11-14",
+      "time": "12:30",
+      "espnId": 401249406,
+      "opponent": "Stanford",
+      "attendance": 0,
+      "role": "away",
+      "venue": "Stanford Stadium",
+      "city": "Stanford",
+      "state": "CA",
+      "pointsFor": 35,
+      "pointsAgainst": 32
+    },
+    {
+      "team": "Houston",
+      "week": 11,
+      "date": "2020-11-14",
+      "time": "14:30",
+      "espnId": 401212481,
+      "opponent": "South Florida",
+      "attendance": 8266,
+      "pointsFor": 56,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 81,
+        "windMph": 14,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 11,
+      "date": "2020-11-14",
+      "time": "12:00",
+      "espnId": 401236024,
+      "opponent": "West Virginia",
+      "attendance": 11111,
+      "role": "away",
+      "venue": "Milan Puskar Stadium",
+      "city": "Morgantown",
+      "state": "WV",
+      "pointsFor": 6,
+      "pointsAgainst": 24
+    },
+    {
+      "team": "Texas Tech",
+      "week": 11,
+      "date": "2020-11-14",
+      "time": "15:00",
+      "espnId": 401236023,
+      "opponent": "Baylor",
+      "attendance": 12914,
+      "pointsFor": 24,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 76,
+        "windMph": 26,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 11,
+      "date": "2020-11-14",
+      "time": "19:30",
+      "espnId": 401212518,
+      "opponent": "Temple",
+      "attendance": 8768,
+      "pointsFor": 38,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 72,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 11,
+      "date": "2020-11-14",
+      "time": "12:00",
+      "espnId": 401236024,
+      "opponent": "TCU",
+      "attendance": 11111,
+      "pointsFor": 24,
+      "pointsAgainst": 6,
+      "weather": {
+        "tempF": 48,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona",
+      "week": 12,
+      "date": "2020-11-21",
+      "time": "17:00",
+      "espnId": 401249413,
+      "opponent": "Washington",
+      "attendance": 253,
+      "role": "away",
+      "venue": "Husky Stadium",
+      "city": "Seattle",
+      "state": "WA",
+      "pointsFor": 27,
+      "pointsAgainst": 44
+    },
+    {
+      "team": "BYU",
+      "week": 12,
+      "date": "2020-11-21",
+      "time": "13:00",
+      "espnId": 401209818,
+      "opponent": "North Alabama",
+      "attendance": 936,
+      "pointsFor": 66,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 44,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 12,
+      "date": "2020-11-21",
+      "time": "15:30",
+      "espnId": 401212540,
+      "opponent": "UCF",
+      "attendance": 10668,
+      "role": "away",
+      "venue": "FBC Mortgage Stadium",
+      "city": "Orlando",
+      "state": "FL",
+      "pointsFor": 36,
+      "pointsAgainst": 33
+    },
+    {
+      "team": "Iowa State",
+      "week": 12,
+      "date": "2020-11-21",
+      "time": "15:00",
+      "espnId": 401236025,
+      "opponent": "Kansas State",
+      "attendance": null,
+      "pointsFor": 45,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 44,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 12,
+      "date": "2020-11-21",
+      "time": "15:00",
+      "espnId": 401236025,
+      "opponent": "Iowa State",
+      "attendance": null,
+      "role": "away",
+      "venue": "Jack Trice Stadium",
+      "city": "Ames",
+      "state": "IA",
+      "pointsFor": 0,
+      "pointsAgainst": 45
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 12,
+      "date": "2020-11-21",
+      "time": "18:30",
+      "espnId": 401236027,
+      "opponent": "Oklahoma",
+      "attendance": 22700,
+      "role": "away",
+      "venue": "Memorial Stadium (Norman, OK)",
+      "city": "Norman",
+      "state": "OK",
+      "pointsFor": 13,
+      "pointsAgainst": 41
+    },
+    {
+      "team": "UCF",
+      "week": 12,
+      "date": "2020-11-21",
+      "time": "15:30",
+      "espnId": 401212540,
+      "opponent": "Cincinnati",
+      "attendance": 10668,
+      "pointsFor": 33,
+      "pointsAgainst": 36,
+      "weather": {
+        "tempF": 76,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Utah",
+      "week": 12,
+      "date": "2020-11-21",
+      "time": "20:30",
+      "espnId": 401249410,
+      "opponent": "USC",
+      "attendance": 0,
+      "pointsFor": 17,
+      "pointsAgainst": 33,
+      "weather": {
+        "tempF": 28,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona",
+      "week": 13,
+      "date": "2020-11-28",
+      "time": "17:00",
+      "espnId": 401249421,
+      "opponent": "UCLA",
+      "attendance": 0,
+      "role": "away",
+      "venue": "Rose Bowl",
+      "city": "Pasadena",
+      "state": "CA",
+      "pointsFor": 10,
+      "pointsAgainst": 27
+    },
+    {
+      "team": "Baylor",
+      "week": 13,
+      "date": "2020-11-28",
+      "time": "18:00",
+      "espnId": 401236028,
+      "opponent": "Kansas State",
+      "attendance": 11667,
+      "pointsFor": 32,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 56,
+        "windMph": 6,
+        "precipIn": 0.02
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 13,
+      "date": "2020-11-28",
+      "time": "15:37",
+      "espnId": 401265734,
+      "opponent": "San Diego State",
+      "attendance": null,
+      "pointsFor": 20,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 46,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 13,
+      "date": "2020-11-27",
+      "time": "11:00",
+      "espnId": 401236029,
+      "opponent": "Texas",
+      "attendance": 16555,
+      "role": "away",
+      "venue": "DKR-Texas Memorial Stadium",
+      "city": "Austin",
+      "state": "TX",
+      "pointsFor": 23,
+      "pointsAgainst": 20
+    },
+    {
+      "team": "Kansas",
+      "week": 13,
+      "date": "2020-11-28",
+      "time": "19:00",
+      "espnId": 401236030,
+      "opponent": "TCU",
+      "attendance": 0,
+      "pointsFor": 23,
+      "pointsAgainst": 59,
+      "weather": {
+        "tempF": 45,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 13,
+      "date": "2020-11-28",
+      "time": "18:00",
+      "espnId": 401236028,
+      "opponent": "Baylor",
+      "attendance": 11667,
+      "role": "away",
+      "venue": "McLane Stadium",
+      "city": "Waco",
+      "state": "TX",
+      "pointsFor": 31,
+      "pointsAgainst": 32
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 13,
+      "date": "2020-11-28",
+      "time": "11:00",
+      "espnId": 401236032,
+      "opponent": "Texas Tech",
+      "attendance": 14645,
+      "pointsFor": 50,
+      "pointsAgainst": 44,
+      "weather": {
+        "tempF": 48,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 13,
+      "date": "2020-11-28",
+      "time": "19:00",
+      "espnId": 401236030,
+      "opponent": "Kansas",
+      "attendance": 0,
+      "role": "away",
+      "venue": "Memorial Stadium",
+      "city": "Lawrence",
+      "state": "KS",
+      "pointsFor": 59,
+      "pointsAgainst": 23
+    },
+    {
+      "team": "Texas Tech",
+      "week": 13,
+      "date": "2020-11-28",
+      "time": "11:00",
+      "espnId": 401236032,
+      "opponent": "Oklahoma State",
+      "attendance": 14645,
+      "role": "away",
+      "venue": "Boone Pickens Stadium",
+      "city": "Stillwater",
+      "state": "OK",
+      "pointsFor": 44,
+      "pointsAgainst": 50
+    },
+    {
+      "team": "UCF",
+      "week": 13,
+      "date": "2020-11-27",
+      "time": "15:30",
+      "espnId": 401212483,
+      "opponent": "South Florida",
+      "attendance": 8801,
+      "role": "away",
+      "venue": "Raymond James Stadium",
+      "city": "Tampa",
+      "state": "FL",
+      "pointsFor": 58,
+      "pointsAgainst": 46
+    },
+    {
+      "team": "Utah",
+      "week": 13,
+      "date": "2020-11-28",
+      "time": "16:30",
+      "espnId": 401265458,
+      "opponent": "Washington",
+      "attendance": 259,
+      "role": "away",
+      "venue": "Husky Stadium",
+      "city": "Seattle",
+      "state": "WA",
+      "pointsFor": 21,
+      "pointsAgainst": 24
+    },
+    {
+      "team": "Arizona",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "17:00",
+      "espnId": 401249426,
+      "opponent": "Colorado",
+      "attendance": 0,
+      "pointsFor": 13,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 62,
+        "windMph": 7,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona State",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "20:30",
+      "espnId": 401249425,
+      "opponent": "UCLA",
+      "attendance": 0,
+      "pointsFor": 18,
+      "pointsAgainst": 25,
+      "weather": {
+        "tempF": 57,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "BYU",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "17:30",
+      "espnId": 401237514,
+      "opponent": "Coastal Carolina",
+      "attendance": 5000,
+      "role": "away",
+      "venue": "Brooks Stadium (SC)",
+      "city": "Conway",
+      "state": "SC",
+      "pointsFor": 17,
+      "pointsAgainst": 22
+    },
+    {
+      "team": "Baylor",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "19:00",
+      "espnId": 401236033,
+      "opponent": "Oklahoma",
+      "attendance": 22700,
+      "role": "away",
+      "venue": "Memorial Stadium (Norman, OK)",
+      "city": "Norman",
+      "state": "OK",
+      "pointsFor": 14,
+      "pointsAgainst": 27
+    },
+    {
+      "team": "Colorado",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "17:00",
+      "espnId": 401249426,
+      "opponent": "Arizona",
+      "attendance": 0,
+      "role": "away",
+      "venue": "Arizona Stadium",
+      "city": "Tucson",
+      "state": "AZ",
+      "pointsFor": 24,
+      "pointsAgainst": 13
+    },
+    {
+      "team": "Iowa State",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "14:30",
+      "espnId": 401236034,
+      "opponent": "West Virginia",
+      "attendance": 14256,
+      "pointsFor": 42,
+      "pointsAgainst": 6,
+      "weather": {
+        "tempF": 45,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "11:00",
+      "espnId": 401236035,
+      "opponent": "Texas Tech",
+      "attendance": 9877,
+      "role": "away",
+      "venue": "Jones AT&T Stadium",
+      "city": "Lubbock",
+      "state": "TX",
+      "pointsFor": 13,
+      "pointsAgainst": 16
+    },
+    {
+      "team": "Kansas State",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "11:00",
+      "espnId": 401236036,
+      "opponent": "Texas",
+      "attendance": 9851,
+      "pointsFor": 31,
+      "pointsAgainst": 69,
+      "weather": {
+        "tempF": 44,
+        "windMph": 13,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "11:00",
+      "espnId": 401236037,
+      "opponent": "TCU",
+      "attendance": 12594,
+      "role": "away",
+      "venue": "Amon G. Carter Stadium",
+      "city": "Fort Worth",
+      "state": "TX",
+      "pointsFor": 22,
+      "pointsAgainst": 29
+    },
+    {
+      "team": "TCU",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "11:00",
+      "espnId": 401236037,
+      "opponent": "Oklahoma State",
+      "attendance": 12594,
+      "pointsFor": 29,
+      "pointsAgainst": 22,
+      "weather": {
+        "tempF": 53,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "11:00",
+      "espnId": 401236035,
+      "opponent": "Kansas",
+      "attendance": 9877,
+      "pointsFor": 16,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 48,
+        "windMph": 7,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Utah",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "20:30",
+      "espnId": 401249422,
+      "opponent": "Oregon State",
+      "attendance": 0,
+      "pointsFor": 30,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 29,
+        "windMph": 1,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 14,
+      "date": "2020-12-05",
+      "time": "14:30",
+      "espnId": 401236034,
+      "opponent": "Iowa State",
+      "attendance": 14256,
+      "role": "away",
+      "venue": "Jack Trice Stadium",
+      "city": "Ames",
+      "state": "IA",
+      "pointsFor": 6,
+      "pointsAgainst": 42
+    },
+    {
+      "team": "Arizona",
+      "week": 15,
+      "date": "2020-12-11",
+      "time": "17:00",
+      "espnId": 401249429,
+      "opponent": "Arizona State",
+      "attendance": 0,
+      "pointsFor": 7,
+      "pointsAgainst": 70,
+      "weather": {
+        "tempF": 59,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona State",
+      "week": 15,
+      "date": "2020-12-11",
+      "time": "17:00",
+      "espnId": 401249429,
+      "opponent": "Arizona",
+      "attendance": 0,
+      "role": "away",
+      "venue": "Arizona Stadium",
+      "city": "Tucson",
+      "state": "AZ",
+      "pointsFor": 70,
+      "pointsAgainst": 7
+    },
+    {
+      "team": "BYU",
+      "week": 15,
+      "date": "2020-12-12",
+      "time": "20:00",
+      "espnId": 401249435,
+      "opponent": "San Diego State",
+      "attendance": 1099,
+      "pointsFor": 28,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 23,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 15,
+      "date": "2020-12-12",
+      "time": "14:30",
+      "espnId": 401250713,
+      "opponent": "Oklahoma State",
+      "attendance": 11667,
+      "pointsFor": 3,
+      "pointsAgainst": 42,
+      "weather": {
+        "tempF": 58,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 15,
+      "date": "2020-12-12",
+      "time": "10:00",
+      "espnId": 401249428,
+      "opponent": "Utah",
+      "attendance": 0,
+      "pointsFor": 21,
+      "pointsAgainst": 38,
+      "weather": {
+        "tempF": 20,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 15,
+      "date": "2020-12-12",
+      "time": "14:30",
+      "espnId": 401264084,
+      "opponent": "Memphis",
+      "attendance": 9475,
+      "role": "away",
+      "venue": "Simmons Bank Liberty Stadium",
+      "city": "Memphis",
+      "state": "TN",
+      "pointsFor": 27,
+      "pointsAgainst": 30
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 15,
+      "date": "2020-12-12",
+      "time": "14:30",
+      "espnId": 401250713,
+      "opponent": "Baylor",
+      "attendance": 11667,
+      "role": "away",
+      "venue": "McLane Stadium",
+      "city": "Waco",
+      "state": "TX",
+      "pointsFor": 42,
+      "pointsAgainst": 3
+    },
+    {
+      "team": "TCU",
+      "week": 15,
+      "date": "2020-12-12",
+      "time": "18:00",
+      "espnId": 401266711,
+      "opponent": "Louisiana Tech",
+      "attendance": 10472,
+      "pointsFor": 52,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 48,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Utah",
+      "week": 15,
+      "date": "2020-12-12",
+      "time": "10:00",
+      "espnId": 401249428,
+      "opponent": "Colorado",
+      "attendance": 0,
+      "role": "away",
+      "venue": "Folsom Field",
+      "city": "Boulder",
+      "state": "CO",
+      "pointsFor": 38,
+      "pointsAgainst": 21
+    },
+    {
+      "team": "Arizona State",
+      "week": 16,
+      "date": "2020-12-19",
+      "time": "19:30",
+      "espnId": 401269378,
+      "opponent": "Oregon State",
+      "attendance": 0,
+      "role": "away",
+      "venue": "Reser Stadium",
+      "city": "Corvallis",
+      "state": "OR",
+      "pointsFor": 46,
+      "pointsAgainst": 33
+    },
+    {
+      "team": "Cincinnati",
+      "week": 16,
+      "date": "2020-12-19",
+      "time": "20:00",
+      "espnId": 401264085,
+      "opponent": "Tulsa",
+      "attendance": 5831,
+      "pointsFor": 27,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 40,
+        "windMph": 7,
+        "precipIn": 0.02
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 16,
+      "date": "2020-12-19",
+      "time": "11:00",
+      "espnId": 401262060,
+      "opponent": "Oklahoma",
+      "attendance": 18720,
+      "role": "neutral",
+      "venue": "AT&T Stadium",
+      "city": "Arlington",
+      "state": "TX",
+      "pointsFor": 21,
+      "pointsAgainst": 27
+    },
+    {
+      "team": "Utah",
+      "week": 16,
+      "date": "2020-12-19",
+      "time": "11:30",
+      "espnId": 401269375,
+      "opponent": "Washington State",
+      "attendance": 0,
+      "pointsFor": 45,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 32,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    }
+  ]
+}

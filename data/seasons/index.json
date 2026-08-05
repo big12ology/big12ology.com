@@ -1,8 +1,22 @@
 {
   "seasons": [
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2021,
+    2022,
+    2023,
     2024,
     2025,
     2026
   ],
-  "default": 2026
+  "default": 2026,
+  "excluded": {
+    "2020": "COVID year: most venues operated under government or campus attendance caps, and 29% of home games have no announced figure. The season is fetched and stored in data/seasons/2020.json for completeness but is deliberately kept out of this index so it never enters a chart, average, or record."
+  }
 }

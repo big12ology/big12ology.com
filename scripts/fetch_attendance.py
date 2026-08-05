@@ -198,7 +198,14 @@ def main(year: int) -> None:
     }
 
     out = ROOT / "data" / "seasons" / f"{year}.json"
-    raw = cfbd("/games", api_key, year=year, seasonType="regular", conference="B12")
+    # Conference-scoped fetch only finds today's members in the years they
+    # were already in the Big 12. For backfilled seasons the current sixteen
+    # were scattered across the Pac-12, AAC, Big East and independence, so
+    # pull the full slate and filter by team.
+    raw = cfbd("/games", api_key, year=year, seasonType="regular")
+    raw = [g for g in raw
+           if (g.get("homeTeam") or g.get("home_team")) in teams
+           or (g.get("awayTeam") or g.get("away_team")) in teams]
     venues = cfbd("/venues", api_key)
     venues_by_id = {v["id"]: v for v in venues}
     coords_by_id = {
@@ -225,6 +232,18 @@ def main(year: int) -> None:
         # game (counted for nobody, shown dimmed for the Big 12 side).
         alt = venue_overrides.get(home, {}).get("venues", {}) if home in teams else {}
         home_counts = home in teams and (not neutral or venue in alt)
+
+        # Seasons before ~2016 carry no venue in the CFBD feed, so a team
+        # that played home games in more than one building needs the venue
+        # named per game. venue-overrides.json supports a "games" map keyed
+        # by opponent for exactly that (Houston 2013, split between Reliant
+        # and BBVA Compass, is the case this exists for).
+        per_game = venue_overrides.get(home, {}).get("games", {}) if home in teams else {}
+        pg = per_game.get(away)
+        if pg:
+            venue = pg.get("venue") or venue
+            venue_info = dict(venue_info or {}, name=venue)
+            home_counts = home in teams
 
         # Kickoff in the venue's local time (falls back to a participant's
         # home timezone when CFBD lacks the venue record).
@@ -260,6 +279,10 @@ def main(year: int) -> None:
             if venue in alt:
                 game["venue"] = venue
                 game["capacity"] = alt[venue]
+            if pg:
+                game["venue"] = pg.get("venue")
+                if pg.get("capacity"):
+                    game["capacity"] = pg["capacity"]
             if game["attendance"] is None and (home, week) in manual:
                 m = manual[(home, week)]
                 game["attendance"] = m["attendance"]

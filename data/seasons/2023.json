@@ -1,0 +1,3025 @@
+{
+  "season": 2023,
+  "source": "CollegeFootballData API (collegefootballdata.com); weather via Open-Meteo",
+  "weekLabels": [
+    "Week 0",
+    "Week 1",
+    "Week 2",
+    "Week 3",
+    "Week 4",
+    "Week 5",
+    "Week 6",
+    "Week 7",
+    "Week 8",
+    "Week 9",
+    "Week 10",
+    "Week 11",
+    "Week 12",
+    "Week 13",
+    "Week 14"
+  ],
+  "games": [
+    {
+      "team": "Arizona",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "19:00",
+      "espnId": 401523989,
+      "opponent": "Northern Arizona",
+      "attendance": 48159,
+      "pointsFor": 38,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 85,
+        "windMph": 9,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona State",
+      "week": 1,
+      "date": "2023-08-31",
+      "time": "19:00",
+      "espnId": 401523987,
+      "opponent": "Southern Utah",
+      "attendance": 47773,
+      "pointsFor": 24,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 100,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "BYU",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "20:15",
+      "espnId": 401520152,
+      "opponent": "Sam Houston",
+      "attendance": 59006,
+      "pointsFor": 14,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 70,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "18:00",
+      "espnId": 401525817,
+      "opponent": "Texas State",
+      "attendance": 44945,
+      "pointsFor": 31,
+      "pointsAgainst": 42,
+      "weather": {
+        "tempF": 99,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "15:30",
+      "espnId": 401525818,
+      "opponent": "Eastern Kentucky",
+      "attendance": 38193,
+      "pointsFor": 66,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 88,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "11:00",
+      "espnId": 401523994,
+      "opponent": "TCU",
+      "attendance": 53294,
+      "role": "away",
+      "venue": "Amon G. Carter Stadium",
+      "city": "Fort Worth",
+      "state": "TX",
+      "pointsFor": 45,
+      "pointsAgainst": 42
+    },
+    {
+      "team": "Houston",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "18:00",
+      "espnId": 401525819,
+      "opponent": "UTSA",
+      "attendance": 37862,
+      "pointsFor": 17,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 94,
+        "windMph": 7,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "13:00",
+      "espnId": 401525820,
+      "opponent": "Northern Iowa",
+      "attendance": 58248,
+      "pointsFor": 30,
+      "pointsAgainst": 9,
+      "weather": {
+        "tempF": 89,
+        "windMph": 11,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 1,
+      "date": "2023-09-01",
+      "time": "19:00",
+      "espnId": 401525815,
+      "opponent": "Missouri State",
+      "attendance": 41091,
+      "pointsFor": 48,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 88,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "18:00",
+      "espnId": 401525821,
+      "opponent": "Southeast Missouri State",
+      "attendance": 52066,
+      "pointsFor": 45,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 97,
+        "windMph": 12,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "18:00",
+      "espnId": 401525823,
+      "opponent": "Central Arkansas",
+      "attendance": 53855,
+      "pointsFor": 27,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 90,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "11:00",
+      "espnId": 401523994,
+      "opponent": "Colorado",
+      "attendance": 53294,
+      "pointsFor": 42,
+      "pointsAgainst": 45,
+      "weather": {
+        "tempF": 89,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "17:30",
+      "espnId": 401525825,
+      "opponent": "Wyoming",
+      "attendance": 26450,
+      "role": "away",
+      "venue": "War Memorial Stadium",
+      "city": "Laramie",
+      "state": "WY",
+      "pointsFor": 33,
+      "pointsAgainst": 35
+    },
+    {
+      "team": "UCF",
+      "week": 1,
+      "date": "2023-08-31",
+      "time": "19:00",
+      "espnId": 401525816,
+      "opponent": "Kent State",
+      "attendance": 44088,
+      "pointsFor": 56,
+      "pointsAgainst": 6,
+      "weather": {
+        "tempF": 80,
+        "windMph": 3,
+        "precipIn": 0.01
+      }
+    },
+    {
+      "team": "Utah",
+      "week": 1,
+      "date": "2023-08-31",
+      "time": "18:00",
+      "espnId": 401520176,
+      "opponent": "Florida",
+      "attendance": 53644,
+      "pointsFor": 24,
+      "pointsAgainst": 11,
+      "weather": {
+        "tempF": 89,
+        "windMph": 12,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 1,
+      "date": "2023-09-02",
+      "time": "19:30",
+      "espnId": 401520169,
+      "opponent": "Penn State",
+      "attendance": 110747,
+      "role": "away",
+      "venue": "Beaver Stadium",
+      "city": "University Park",
+      "state": "PA",
+      "pointsFor": 15,
+      "pointsAgainst": 38
+    },
+    {
+      "team": "Arizona",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "18:30",
+      "espnId": 401520205,
+      "opponent": "Mississippi State",
+      "attendance": 51648,
+      "role": "away",
+      "venue": "Davis Wade Stadium",
+      "city": "Starkville",
+      "state": "MS",
+      "pointsFor": 24,
+      "pointsAgainst": 31
+    },
+    {
+      "team": "Arizona State",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "19:30",
+      "espnId": 401523998,
+      "opponent": "Oklahoma State",
+      "attendance": 42569,
+      "pointsFor": 15,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 108,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "BYU",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "13:00",
+      "espnId": 401525828,
+      "opponent": "Southern Utah",
+      "attendance": 60834,
+      "pointsFor": 41,
+      "pointsAgainst": 16,
+      "weather": {
+        "tempF": 82,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "11:00",
+      "espnId": 401523999,
+      "opponent": "Utah",
+      "attendance": 43732,
+      "pointsFor": 13,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 89,
+        "windMph": 11,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "18:30",
+      "espnId": 401525496,
+      "opponent": "Pittsburgh",
+      "attendance": 49398,
+      "role": "away",
+      "venue": "Acrisure Stadium",
+      "city": "Pittsburgh",
+      "state": "PA",
+      "pointsFor": 27,
+      "pointsAgainst": 21
+    },
+    {
+      "team": "Colorado",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "10:00",
+      "espnId": 401520188,
+      "opponent": "Nebraska",
+      "attendance": 53241,
+      "pointsFor": 36,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 69,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "18:00",
+      "espnId": 401525831,
+      "opponent": "Rice",
+      "attendance": 23425,
+      "role": "away",
+      "venue": "Rice Stadium",
+      "city": "Houston",
+      "state": "TX",
+      "pointsFor": 41,
+      "pointsAgainst": 43
+    },
+    {
+      "team": "Iowa State",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "14:30",
+      "espnId": 401520194,
+      "opponent": "Iowa",
+      "attendance": 61500,
+      "pointsFor": 13,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 81,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 2,
+      "date": "2023-09-08",
+      "time": "18:30",
+      "espnId": 401520195,
+      "opponent": "Illinois",
+      "attendance": 45809,
+      "pointsFor": 34,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 84,
+        "windMph": 9,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "11:00",
+      "espnId": 401525829,
+      "opponent": "Troy",
+      "attendance": 51940,
+      "pointsFor": 42,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 80,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "19:30",
+      "espnId": 401523998,
+      "opponent": "Arizona State",
+      "attendance": 42569,
+      "role": "away",
+      "venue": "Mountain America Stadium",
+      "city": "Tempe",
+      "state": "AZ",
+      "pointsFor": 27,
+      "pointsAgainst": 15
+    },
+    {
+      "team": "TCU",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "19:00",
+      "espnId": 401525832,
+      "opponent": "Nicholls",
+      "attendance": 45010,
+      "pointsFor": 41,
+      "pointsAgainst": 6,
+      "weather": {
+        "tempF": 94,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "18:00",
+      "espnId": 401524002,
+      "opponent": "Oregon",
+      "attendance": 56200,
+      "pointsFor": 30,
+      "pointsAgainst": 38,
+      "weather": {
+        "tempF": 93,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "17:00",
+      "espnId": 401525827,
+      "opponent": "Boise State",
+      "attendance": 36447,
+      "role": "away",
+      "venue": "Albertsons Stadium",
+      "city": "Boise",
+      "state": "ID",
+      "pointsFor": 18,
+      "pointsAgainst": 16
+    },
+    {
+      "team": "Utah",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "11:00",
+      "espnId": 401523999,
+      "opponent": "Baylor",
+      "attendance": 43732,
+      "role": "away",
+      "venue": "McLane Stadium",
+      "city": "Waco",
+      "state": "TX",
+      "pointsFor": 20,
+      "pointsAgainst": 13
+    },
+    {
+      "team": "West Virginia",
+      "week": 2,
+      "date": "2023-09-09",
+      "time": "18:00",
+      "espnId": 401525833,
+      "opponent": "Duquesne",
+      "attendance": 50037,
+      "pointsFor": 56,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 69,
+        "windMph": 1,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "20:00",
+      "espnId": 401520219,
+      "opponent": "UTEP",
+      "attendance": 44182,
+      "pointsFor": 31,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 92,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona State",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "19:30",
+      "espnId": 401524005,
+      "opponent": "Fresno State",
+      "attendance": 46723,
+      "pointsFor": 0,
+      "pointsAgainst": 29,
+      "weather": {
+        "tempF": 97,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "BYU",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "18:30",
+      "espnId": 401520220,
+      "opponent": "Arkansas",
+      "attendance": 74821,
+      "role": "away",
+      "venue": "Razorback Stadium",
+      "city": "Fayetteville",
+      "state": "AR",
+      "pointsFor": 38,
+      "pointsAgainst": 31
+    },
+    {
+      "team": "Baylor",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "11:00",
+      "espnId": 401525834,
+      "opponent": "Long Island University",
+      "attendance": 43732,
+      "pointsFor": 30,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 74,
+        "windMph": 6,
+        "precipIn": 0.0
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "19:00",
+      "espnId": 401525835,
+      "opponent": "Miami (OH)",
+      "attendance": 38193,
+      "pointsFor": 24,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 73,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "20:00",
+      "espnId": 401524007,
+      "opponent": "Colorado State",
+      "attendance": 53141,
+      "pointsFor": 43,
+      "pointsAgainst": 35,
+      "weather": {
+        "tempF": 58,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "19:00",
+      "espnId": 401525836,
+      "opponent": "TCU",
+      "attendance": 36049,
+      "pointsFor": 13,
+      "pointsAgainst": 36,
+      "weather": {
+        "tempF": 81,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "12:00",
+      "espnId": 401525838,
+      "opponent": "Ohio",
+      "attendance": 21991,
+      "role": "away",
+      "venue": "Peden Stadium",
+      "city": "Athens",
+      "state": "OH",
+      "pointsFor": 7,
+      "pointsAgainst": 10
+    },
+    {
+      "team": "Kansas",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "19:30",
+      "espnId": 401525837,
+      "opponent": "Nevada",
+      "attendance": 44182,
+      "role": "away",
+      "venue": "Mackay Stadium",
+      "city": "Reno",
+      "state": "NV",
+      "pointsFor": 31,
+      "pointsAgainst": 24
+    },
+    {
+      "team": "Kansas State",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "11:00",
+      "espnId": 401520236,
+      "opponent": "Missouri",
+      "attendance": 62621,
+      "role": "away",
+      "venue": "Memorial Stadium",
+      "city": "Columbia",
+      "state": "MO",
+      "pointsFor": 27,
+      "pointsAgainst": 30
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "18:00",
+      "espnId": 401525839,
+      "opponent": "South Alabama",
+      "attendance": 53855,
+      "pointsFor": 7,
+      "pointsAgainst": 33,
+      "weather": {
+        "tempF": 77,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "19:00",
+      "espnId": 401525836,
+      "opponent": "Houston",
+      "attendance": 36049,
+      "role": "away",
+      "venue": "TDECU Stadium",
+      "city": "Houston",
+      "state": "TX",
+      "pointsFor": 36,
+      "pointsAgainst": 13
+    },
+    {
+      "team": "Texas Tech",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "18:00",
+      "espnId": 401525841,
+      "opponent": "Tarleton State",
+      "attendance": 56200,
+      "pointsFor": 41,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 75,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "18:30",
+      "espnId": 401525843,
+      "opponent": "Villanova",
+      "attendance": 44206,
+      "pointsFor": 48,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 82,
+        "windMph": 8,
+        "precipIn": 0.01
+      }
+    },
+    {
+      "team": "Utah",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "12:00",
+      "espnId": 401524012,
+      "opponent": "Weber State",
+      "attendance": 51532,
+      "pointsFor": 31,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 76,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 3,
+      "date": "2023-09-16",
+      "time": "19:30",
+      "espnId": 401525503,
+      "opponent": "Pittsburgh",
+      "attendance": 61106,
+      "pointsFor": 17,
+      "pointsAgainst": 6,
+      "weather": {
+        "tempF": 66,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "16:00",
+      "espnId": 401524016,
+      "opponent": "Stanford",
+      "attendance": 38046,
+      "role": "away",
+      "venue": "Stanford Stadium",
+      "city": "Stanford",
+      "state": "CA",
+      "pointsFor": 21,
+      "pointsAgainst": 20
+    },
+    {
+      "team": "Arizona State",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "19:30",
+      "espnId": 401524014,
+      "opponent": "USC",
+      "attendance": 54166,
+      "pointsFor": 28,
+      "pointsAgainst": 42,
+      "weather": {
+        "tempF": 89,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "BYU",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "14:30",
+      "espnId": 401525847,
+      "opponent": "Kansas",
+      "attendance": 47233,
+      "role": "away",
+      "venue": "Memorial Stadium",
+      "city": "Lawrence",
+      "state": "KS",
+      "pointsFor": 27,
+      "pointsAgainst": 38
+    },
+    {
+      "team": "Baylor",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "18:30",
+      "espnId": 401525844,
+      "opponent": "Texas",
+      "attendance": 49165,
+      "pointsFor": 6,
+      "pointsAgainst": 38,
+      "weather": {
+        "tempF": 95,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "12:00",
+      "espnId": 401525845,
+      "opponent": "Oklahoma",
+      "attendance": 38193,
+      "pointsFor": 6,
+      "pointsAgainst": 20,
+      "weather": {
+        "tempF": 70,
+        "windMph": 9,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "12:30",
+      "espnId": 401524015,
+      "opponent": "Oregon",
+      "attendance": 59889,
+      "role": "away",
+      "venue": "Autzen Stadium",
+      "city": "Eugene",
+      "state": "OR",
+      "pointsFor": 6,
+      "pointsAgainst": 42
+    },
+    {
+      "team": "Houston",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "18:00",
+      "espnId": 401520254,
+      "opponent": "Sam Houston",
+      "attendance": 35044,
+      "pointsFor": 38,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 90,
+        "windMph": 9,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "15:00",
+      "espnId": 401525846,
+      "opponent": "Oklahoma State",
+      "attendance": 59022,
+      "pointsFor": 34,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 81,
+        "windMph": 21,
+        "precipIn": 0.01
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "14:30",
+      "espnId": 401525847,
+      "opponent": "BYU",
+      "attendance": 47233,
+      "pointsFor": 38,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 85,
+        "windMph": 12,
+        "precipIn": 0.01
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "19:00",
+      "espnId": 401525848,
+      "opponent": "UCF",
+      "attendance": 51912,
+      "pointsFor": 44,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 79,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "15:00",
+      "espnId": 401525846,
+      "opponent": "Iowa State",
+      "attendance": 59022,
+      "role": "away",
+      "venue": "Jack Trice Stadium",
+      "city": "Ames",
+      "state": "IA",
+      "pointsFor": 27,
+      "pointsAgainst": 34
+    },
+    {
+      "team": "TCU",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "11:00",
+      "espnId": 401525849,
+      "opponent": "SMU",
+      "attendance": 51243,
+      "pointsFor": 34,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 91,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "15:30",
+      "espnId": 401525850,
+      "opponent": "West Virginia",
+      "attendance": 50071,
+      "role": "away",
+      "venue": "Milan Puskar Stadium",
+      "city": "Morgantown",
+      "state": "WV",
+      "pointsFor": 13,
+      "pointsAgainst": 20
+    },
+    {
+      "team": "UCF",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "19:00",
+      "espnId": 401525848,
+      "opponent": "Kansas State",
+      "attendance": 51912,
+      "role": "away",
+      "venue": "Bill Snyder Family Stadium",
+      "city": "Manhattan",
+      "state": "KS",
+      "pointsFor": 31,
+      "pointsAgainst": 44
+    },
+    {
+      "team": "Utah",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "13:30",
+      "espnId": 401524017,
+      "opponent": "UCLA",
+      "attendance": 52919,
+      "pointsFor": 14,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 66,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 4,
+      "date": "2023-09-23",
+      "time": "15:30",
+      "espnId": 401525850,
+      "opponent": "Texas Tech",
+      "attendance": 50071,
+      "pointsFor": 20,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 57,
+        "windMph": 11,
+        "precipIn": 0.01
+      }
+    },
+    {
+      "team": "Arizona",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "19:00",
+      "espnId": 401524021,
+      "opponent": "Washington",
+      "attendance": 50800,
+      "pointsFor": 24,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 86,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona State",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "12:00",
+      "espnId": 401524022,
+      "opponent": "California",
+      "attendance": 34353,
+      "role": "away",
+      "venue": "California Memorial Stadium",
+      "city": "Berkeley",
+      "state": "CA",
+      "pointsFor": 21,
+      "pointsAgainst": 24
+    },
+    {
+      "team": "BYU",
+      "week": 5,
+      "date": "2023-09-29",
+      "time": "20:15",
+      "espnId": 401525851,
+      "opponent": "Cincinnati",
+      "attendance": 63834,
+      "pointsFor": 35,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 64,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "15:30",
+      "espnId": 401525856,
+      "opponent": "UCF",
+      "attendance": 44005,
+      "role": "away",
+      "venue": "FBC Mortgage Stadium",
+      "city": "Orlando",
+      "state": "FL",
+      "pointsFor": 36,
+      "pointsAgainst": 35
+    },
+    {
+      "team": "Cincinnati",
+      "week": 5,
+      "date": "2023-09-29",
+      "time": "20:15",
+      "espnId": 401525851,
+      "opponent": "BYU",
+      "attendance": 63834,
+      "role": "away",
+      "venue": "LaVell Edwards Stadium",
+      "city": "Provo",
+      "state": "UT",
+      "pointsFor": 27,
+      "pointsAgainst": 35
+    },
+    {
+      "team": "Colorado",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "10:00",
+      "espnId": 401524023,
+      "opponent": "USC",
+      "attendance": 54032,
+      "pointsFor": 41,
+      "pointsAgainst": 48,
+      "weather": {
+        "tempF": 63,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "14:30",
+      "espnId": 401525855,
+      "opponent": "Texas Tech",
+      "attendance": 53308,
+      "role": "away",
+      "venue": "Jones AT&T Stadium",
+      "city": "Lubbock",
+      "state": "TX",
+      "pointsFor": 28,
+      "pointsAgainst": 49
+    },
+    {
+      "team": "Iowa State",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "18:00",
+      "espnId": 401525852,
+      "opponent": "Oklahoma",
+      "attendance": 84371,
+      "role": "away",
+      "venue": "Memorial Stadium (Norman, OK)",
+      "city": "Norman",
+      "state": "OK",
+      "pointsFor": 20,
+      "pointsAgainst": 50
+    },
+    {
+      "team": "Kansas",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "14:30",
+      "espnId": 401525854,
+      "opponent": "Texas",
+      "attendance": 102986,
+      "role": "away",
+      "venue": "DKR-Texas Memorial Stadium",
+      "city": "Austin",
+      "state": "TX",
+      "pointsFor": 14,
+      "pointsAgainst": 40
+    },
+    {
+      "team": "TCU",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "19:00",
+      "espnId": 401525853,
+      "opponent": "West Virginia",
+      "attendance": 43736,
+      "pointsFor": 21,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 90,
+        "windMph": 9,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "14:30",
+      "espnId": 401525855,
+      "opponent": "Houston",
+      "attendance": 53308,
+      "pointsFor": 49,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 86,
+        "windMph": 14,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "15:30",
+      "espnId": 401525856,
+      "opponent": "Baylor",
+      "attendance": 44005,
+      "pointsFor": 35,
+      "pointsAgainst": 36,
+      "weather": {
+        "tempF": 79,
+        "windMph": 6,
+        "precipIn": 0.0
+      }
+    },
+    {
+      "team": "Utah",
+      "week": 5,
+      "date": "2023-09-29",
+      "time": "18:00",
+      "espnId": 401524020,
+      "opponent": "Oregon State",
+      "attendance": 37372,
+      "role": "away",
+      "venue": "Reser Stadium",
+      "city": "Corvallis",
+      "state": "OR",
+      "pointsFor": 7,
+      "pointsAgainst": 21
+    },
+    {
+      "team": "West Virginia",
+      "week": 5,
+      "date": "2023-09-30",
+      "time": "19:00",
+      "espnId": 401525853,
+      "opponent": "TCU",
+      "attendance": 43736,
+      "role": "away",
+      "venue": "Amon G. Carter Stadium",
+      "city": "Fort Worth",
+      "state": "TX",
+      "pointsFor": 24,
+      "pointsAgainst": 21
+    },
+    {
+      "team": "Arizona",
+      "week": 6,
+      "date": "2023-10-07",
+      "time": "19:30",
+      "espnId": 401524025,
+      "opponent": "USC",
+      "attendance": 62916,
+      "role": "away",
+      "venue": "Los Angeles Memorial Coliseum",
+      "city": "Los Angeles",
+      "state": "CA",
+      "pointsFor": 41,
+      "pointsAgainst": 43
+    },
+    {
+      "team": "Arizona State",
+      "week": 6,
+      "date": "2023-10-07",
+      "time": "15:30",
+      "espnId": 401524026,
+      "opponent": "Colorado",
+      "attendance": 54086,
+      "pointsFor": 24,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 102,
+        "windMph": 14,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 6,
+      "date": "2023-10-07",
+      "time": "19:00",
+      "espnId": 401525858,
+      "opponent": "Texas Tech",
+      "attendance": 44620,
+      "pointsFor": 14,
+      "pointsAgainst": 39,
+      "weather": {
+        "tempF": 67,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 6,
+      "date": "2023-10-07",
+      "time": "15:30",
+      "espnId": 401524026,
+      "opponent": "Arizona State",
+      "attendance": 54086,
+      "role": "away",
+      "venue": "Mountain America Stadium",
+      "city": "Tempe",
+      "state": "AZ",
+      "pointsFor": 27,
+      "pointsAgainst": 24
+    },
+    {
+      "team": "Iowa State",
+      "week": 6,
+      "date": "2023-10-07",
+      "time": "19:00",
+      "espnId": 401525859,
+      "opponent": "TCU",
+      "attendance": 60535,
+      "pointsFor": 27,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 52,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 6,
+      "date": "2023-10-07",
+      "time": "15:00",
+      "espnId": 401525860,
+      "opponent": "UCF",
+      "attendance": 46107,
+      "pointsFor": 51,
+      "pointsAgainst": 22,
+      "weather": {
+        "tempF": 60,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 6,
+      "date": "2023-10-06",
+      "time": "18:30",
+      "espnId": 401525857,
+      "opponent": "Oklahoma State",
+      "attendance": 53855,
+      "role": "away",
+      "venue": "Boone Pickens Stadium",
+      "city": "Stillwater",
+      "state": "OK",
+      "pointsFor": 21,
+      "pointsAgainst": 29
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 6,
+      "date": "2023-10-06",
+      "time": "18:30",
+      "espnId": 401525857,
+      "opponent": "Kansas State",
+      "attendance": 53855,
+      "pointsFor": 29,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 61,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 6,
+      "date": "2023-10-07",
+      "time": "19:00",
+      "espnId": 401525859,
+      "opponent": "Iowa State",
+      "attendance": 60535,
+      "role": "away",
+      "venue": "Jack Trice Stadium",
+      "city": "Ames",
+      "state": "IA",
+      "pointsFor": 14,
+      "pointsAgainst": 27
+    },
+    {
+      "team": "Texas Tech",
+      "week": 6,
+      "date": "2023-10-07",
+      "time": "19:00",
+      "espnId": 401525858,
+      "opponent": "Baylor",
+      "attendance": 44620,
+      "role": "away",
+      "venue": "McLane Stadium",
+      "city": "Waco",
+      "state": "TX",
+      "pointsFor": 39,
+      "pointsAgainst": 14
+    },
+    {
+      "team": "UCF",
+      "week": 6,
+      "date": "2023-10-07",
+      "time": "15:00",
+      "espnId": 401525860,
+      "opponent": "Kansas",
+      "attendance": 46107,
+      "role": "away",
+      "venue": "Memorial Stadium",
+      "city": "Lawrence",
+      "state": "KS",
+      "pointsFor": 22,
+      "pointsAgainst": 51
+    },
+    {
+      "team": "Arizona",
+      "week": 7,
+      "date": "2023-10-14",
+      "time": "16:00",
+      "espnId": 401524030,
+      "opponent": "Washington State",
+      "attendance": 26155,
+      "role": "away",
+      "venue": "Gesa Field",
+      "city": "Pullman",
+      "state": "WA",
+      "pointsFor": 44,
+      "pointsAgainst": 6
+    },
+    {
+      "team": "BYU",
+      "week": 7,
+      "date": "2023-10-14",
+      "time": "14:30",
+      "espnId": 401525865,
+      "opponent": "TCU",
+      "attendance": 44599,
+      "role": "away",
+      "venue": "Amon G. Carter Stadium",
+      "city": "Fort Worth",
+      "state": "TX",
+      "pointsFor": 11,
+      "pointsAgainst": 44
+    },
+    {
+      "team": "Cincinnati",
+      "week": 7,
+      "date": "2023-10-14",
+      "time": "12:00",
+      "espnId": 401525863,
+      "opponent": "Iowa State",
+      "attendance": 38193,
+      "pointsFor": 10,
+      "pointsAgainst": 30,
+      "weather": {
+        "tempF": 61,
+        "windMph": 12,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 7,
+      "date": "2023-10-13",
+      "time": "20:00",
+      "espnId": 401524029,
+      "opponent": "Stanford",
+      "attendance": 53154,
+      "pointsFor": 43,
+      "pointsAgainst": 46,
+      "weather": {
+        "tempF": 42,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 7,
+      "date": "2023-10-12",
+      "time": "18:00",
+      "espnId": 401525862,
+      "opponent": "West Virginia",
+      "attendance": 32152,
+      "pointsFor": 41,
+      "pointsAgainst": 39,
+      "weather": {
+        "tempF": 75,
+        "windMph": 11,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 7,
+      "date": "2023-10-14",
+      "time": "12:00",
+      "espnId": 401525863,
+      "opponent": "Cincinnati",
+      "attendance": 38193,
+      "role": "away",
+      "venue": "Nippert Stadium",
+      "city": "Cincinnati",
+      "state": "OH",
+      "pointsFor": 30,
+      "pointsAgainst": 10
+    },
+    {
+      "team": "Kansas",
+      "week": 7,
+      "date": "2023-10-14",
+      "time": "14:30",
+      "espnId": 401525864,
+      "opponent": "Oklahoma State",
+      "attendance": 53855,
+      "role": "away",
+      "venue": "Boone Pickens Stadium",
+      "city": "Stillwater",
+      "state": "OK",
+      "pointsFor": 32,
+      "pointsAgainst": 39
+    },
+    {
+      "team": "Kansas State",
+      "week": 7,
+      "date": "2023-10-14",
+      "time": "18:00",
+      "espnId": 401525866,
+      "opponent": "Texas Tech",
+      "attendance": 56200,
+      "role": "away",
+      "venue": "Jones AT&T Stadium",
+      "city": "Lubbock",
+      "state": "TX",
+      "pointsFor": 38,
+      "pointsAgainst": 21
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 7,
+      "date": "2023-10-14",
+      "time": "14:30",
+      "espnId": 401525864,
+      "opponent": "Kansas",
+      "attendance": 53855,
+      "pointsFor": 39,
+      "pointsAgainst": 32,
+      "weather": {
+        "tempF": 65,
+        "windMph": 14,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 7,
+      "date": "2023-10-14",
+      "time": "14:30",
+      "espnId": 401525865,
+      "opponent": "BYU",
+      "attendance": 44599,
+      "pointsFor": 44,
+      "pointsAgainst": 11,
+      "weather": {
+        "tempF": 70,
+        "windMph": 12,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 7,
+      "date": "2023-10-14",
+      "time": "18:00",
+      "espnId": 401525866,
+      "opponent": "Kansas State",
+      "attendance": 56200,
+      "pointsFor": 21,
+      "pointsAgainst": 38,
+      "weather": {
+        "tempF": 66,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Utah",
+      "week": 7,
+      "date": "2023-10-14",
+      "time": "13:00",
+      "espnId": 401524033,
+      "opponent": "California",
+      "attendance": 52115,
+      "pointsFor": 34,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 63,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 7,
+      "date": "2023-10-12",
+      "time": "18:00",
+      "espnId": 401525862,
+      "opponent": "Houston",
+      "attendance": 32152,
+      "role": "away",
+      "venue": "TDECU Stadium",
+      "city": "Houston",
+      "state": "TX",
+      "pointsFor": 39,
+      "pointsAgainst": 41
+    },
+    {
+      "team": "Arizona State",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "19:30",
+      "espnId": 401524038,
+      "opponent": "Washington",
+      "attendance": 68379,
+      "role": "away",
+      "venue": "Husky Stadium",
+      "city": "Seattle",
+      "state": "WA",
+      "pointsFor": 7,
+      "pointsAgainst": 15
+    },
+    {
+      "team": "BYU",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "17:00",
+      "espnId": 401525867,
+      "opponent": "Texas Tech",
+      "attendance": 63523,
+      "pointsFor": 27,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 71,
+        "windMph": 1,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "12:00",
+      "espnId": 401525868,
+      "opponent": "Cincinnati",
+      "attendance": 38193,
+      "role": "away",
+      "venue": "Nippert Stadium",
+      "city": "Cincinnati",
+      "state": "OH",
+      "pointsFor": 32,
+      "pointsAgainst": 29
+    },
+    {
+      "team": "Cincinnati",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "12:00",
+      "espnId": 401525868,
+      "opponent": "Baylor",
+      "attendance": 38193,
+      "pointsFor": 29,
+      "pointsAgainst": 32,
+      "weather": {
+        "tempF": 59,
+        "windMph": 7,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "15:00",
+      "espnId": 401525869,
+      "opponent": "Texas",
+      "attendance": 42812,
+      "pointsFor": 24,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 90,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "18:00",
+      "espnId": 401525870,
+      "opponent": "TCU",
+      "attendance": 52580,
+      "pointsFor": 41,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 72,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "15:30",
+      "espnId": 401525872,
+      "opponent": "West Virginia",
+      "attendance": 51870,
+      "role": "away",
+      "venue": "Milan Puskar Stadium",
+      "city": "Morgantown",
+      "state": "WV",
+      "pointsFor": 48,
+      "pointsAgainst": 34
+    },
+    {
+      "team": "TCU",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "18:00",
+      "espnId": 401525870,
+      "opponent": "Kansas State",
+      "attendance": 52580,
+      "role": "away",
+      "venue": "Bill Snyder Family Stadium",
+      "city": "Manhattan",
+      "state": "KS",
+      "pointsFor": 3,
+      "pointsAgainst": 41
+    },
+    {
+      "team": "Texas Tech",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "17:00",
+      "espnId": 401525867,
+      "opponent": "BYU",
+      "attendance": 63523,
+      "role": "away",
+      "venue": "LaVell Edwards Stadium",
+      "city": "Provo",
+      "state": "UT",
+      "pointsFor": 14,
+      "pointsAgainst": 27
+    },
+    {
+      "team": "UCF",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "11:00",
+      "espnId": 401525871,
+      "opponent": "Oklahoma",
+      "attendance": 83476,
+      "role": "away",
+      "venue": "Memorial Stadium (Norman, OK)",
+      "city": "Norman",
+      "state": "OK",
+      "pointsFor": 29,
+      "pointsAgainst": 31
+    },
+    {
+      "team": "Utah",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "17:00",
+      "espnId": 401524037,
+      "opponent": "USC",
+      "attendance": 61551,
+      "role": "away",
+      "venue": "Los Angeles Memorial Coliseum",
+      "city": "Los Angeles",
+      "state": "CA",
+      "pointsFor": 34,
+      "pointsAgainst": 32
+    },
+    {
+      "team": "West Virginia",
+      "week": 8,
+      "date": "2023-10-21",
+      "time": "15:30",
+      "espnId": 401525872,
+      "opponent": "Oklahoma State",
+      "attendance": 51870,
+      "pointsFor": 34,
+      "pointsAgainst": 48,
+      "weather": {
+        "tempF": 58,
+        "windMph": 12,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "19:30",
+      "espnId": 401524039,
+      "opponent": "Oregon State",
+      "attendance": 45023,
+      "pointsFor": 27,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 76,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona State",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "17:00",
+      "espnId": 401524040,
+      "opponent": "Washington State",
+      "attendance": 47284,
+      "pointsFor": 38,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 83,
+        "windMph": 13,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "BYU",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "14:30",
+      "espnId": 401525877,
+      "opponent": "Texas",
+      "attendance": 101670,
+      "role": "away",
+      "venue": "DKR-Texas Memorial Stadium",
+      "city": "Austin",
+      "state": "TX",
+      "pointsFor": 6,
+      "pointsAgainst": 35
+    },
+    {
+      "team": "Baylor",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "14:30",
+      "espnId": 401525873,
+      "opponent": "Iowa State",
+      "attendance": 43528,
+      "pointsFor": 18,
+      "pointsAgainst": 30,
+      "weather": {
+        "tempF": 79,
+        "windMph": 8,
+        "precipIn": 0.01
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "19:00",
+      "espnId": 401525876,
+      "opponent": "Oklahoma State",
+      "attendance": 53855,
+      "role": "away",
+      "venue": "Boone Pickens Stadium",
+      "city": "Stillwater",
+      "state": "OK",
+      "pointsFor": 13,
+      "pointsAgainst": 45
+    },
+    {
+      "team": "Colorado",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "16:30",
+      "espnId": 401524043,
+      "opponent": "UCLA",
+      "attendance": 71343,
+      "role": "away",
+      "venue": "Rose Bowl",
+      "city": "Pasadena",
+      "state": "CA",
+      "pointsFor": 16,
+      "pointsAgainst": 28
+    },
+    {
+      "team": "Houston",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "11:00",
+      "espnId": 401525875,
+      "opponent": "Kansas State",
+      "attendance": 51928,
+      "role": "away",
+      "venue": "Bill Snyder Family Stadium",
+      "city": "Manhattan",
+      "state": "KS",
+      "pointsFor": 0,
+      "pointsAgainst": 41
+    },
+    {
+      "team": "Iowa State",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "14:30",
+      "espnId": 401525873,
+      "opponent": "Baylor",
+      "attendance": 43528,
+      "role": "away",
+      "venue": "McLane Stadium",
+      "city": "Waco",
+      "state": "TX",
+      "pointsFor": 30,
+      "pointsAgainst": 18
+    },
+    {
+      "team": "Kansas",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "11:00",
+      "espnId": 401525874,
+      "opponent": "Oklahoma",
+      "attendance": 47233,
+      "pointsFor": 38,
+      "pointsAgainst": 33,
+      "weather": {
+        "tempF": 39,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "11:00",
+      "espnId": 401525875,
+      "opponent": "Houston",
+      "attendance": 51928,
+      "pointsFor": 41,
+      "pointsAgainst": 0,
+      "weather": {
+        "tempF": 36,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "19:00",
+      "espnId": 401525876,
+      "opponent": "Cincinnati",
+      "attendance": 53855,
+      "pointsFor": 45,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 49,
+        "windMph": 9,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "12:00",
+      "espnId": 401525878,
+      "opponent": "West Virginia",
+      "attendance": 44136,
+      "pointsFor": 28,
+      "pointsAgainst": 41,
+      "weather": {
+        "tempF": 83,
+        "windMph": 11,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Utah",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "13:30",
+      "espnId": 401524044,
+      "opponent": "Oregon",
+      "attendance": 53586,
+      "pointsFor": 6,
+      "pointsAgainst": 35,
+      "weather": {
+        "tempF": 42,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 9,
+      "date": "2023-10-28",
+      "time": "12:00",
+      "espnId": 401525878,
+      "opponent": "UCF",
+      "attendance": 44136,
+      "role": "away",
+      "venue": "FBC Mortgage Stadium",
+      "city": "Orlando",
+      "state": "FL",
+      "pointsFor": 41,
+      "pointsAgainst": 28
+    },
+    {
+      "team": "Arizona",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "19:30",
+      "espnId": 401524045,
+      "opponent": "UCLA",
+      "attendance": 44956,
+      "pointsFor": 27,
+      "pointsAgainst": 10,
+      "weather": {
+        "tempF": 74,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona State",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "12:00",
+      "espnId": 401524049,
+      "opponent": "Utah",
+      "attendance": 52104,
+      "role": "away",
+      "venue": "Rice-Eccles Stadium",
+      "city": "Salt Lake City",
+      "state": "UT",
+      "pointsFor": 3,
+      "pointsAgainst": 55
+    },
+    {
+      "team": "BYU",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "19:00",
+      "espnId": 401525885,
+      "opponent": "West Virginia",
+      "attendance": 50266,
+      "role": "away",
+      "venue": "Milan Puskar Stadium",
+      "city": "Morgantown",
+      "state": "WV",
+      "pointsFor": 7,
+      "pointsAgainst": 37
+    },
+    {
+      "team": "Baylor",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "14:30",
+      "espnId": 401525880,
+      "opponent": "Houston",
+      "attendance": 41180,
+      "pointsFor": 24,
+      "pointsAgainst": 25,
+      "weather": {
+        "tempF": 75,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "15:30",
+      "espnId": 401525881,
+      "opponent": "UCF",
+      "attendance": 38193,
+      "pointsFor": 26,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 64,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "20:00",
+      "espnId": 401524046,
+      "opponent": "Oregon State",
+      "attendance": 52725,
+      "pointsFor": 19,
+      "pointsAgainst": 26,
+      "weather": {
+        "tempF": 41,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "14:30",
+      "espnId": 401525880,
+      "opponent": "Baylor",
+      "attendance": 41180,
+      "role": "away",
+      "venue": "McLane Stadium",
+      "city": "Waco",
+      "state": "TX",
+      "pointsFor": 25,
+      "pointsAgainst": 24
+    },
+    {
+      "team": "Iowa State",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "18:00",
+      "espnId": 401525882,
+      "opponent": "Kansas",
+      "attendance": 61500,
+      "pointsFor": 21,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 51,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "18:00",
+      "espnId": 401525882,
+      "opponent": "Iowa State",
+      "attendance": 61500,
+      "role": "away",
+      "venue": "Jack Trice Stadium",
+      "city": "Ames",
+      "state": "IA",
+      "pointsFor": 28,
+      "pointsAgainst": 21
+    },
+    {
+      "team": "Kansas State",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "11:00",
+      "espnId": 401525884,
+      "opponent": "Texas",
+      "attendance": 102846,
+      "role": "away",
+      "venue": "DKR-Texas Memorial Stadium",
+      "city": "Austin",
+      "state": "TX",
+      "pointsFor": 30,
+      "pointsAgainst": 33
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "14:30",
+      "espnId": 401525883,
+      "opponent": "Oklahoma",
+      "attendance": 54105,
+      "pointsFor": 27,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 69,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 10,
+      "date": "2023-11-02",
+      "time": "18:00",
+      "espnId": 401525879,
+      "opponent": "Texas Tech",
+      "attendance": 51185,
+      "role": "away",
+      "venue": "Jones AT&T Stadium",
+      "city": "Lubbock",
+      "state": "TX",
+      "pointsFor": 28,
+      "pointsAgainst": 35
+    },
+    {
+      "team": "Texas Tech",
+      "week": 10,
+      "date": "2023-11-02",
+      "time": "18:00",
+      "espnId": 401525879,
+      "opponent": "TCU",
+      "attendance": 51185,
+      "pointsFor": 35,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 63,
+        "windMph": 10,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "15:30",
+      "espnId": 401525881,
+      "opponent": "Cincinnati",
+      "attendance": 38193,
+      "role": "away",
+      "venue": "Nippert Stadium",
+      "city": "Cincinnati",
+      "state": "OH",
+      "pointsFor": 28,
+      "pointsAgainst": 26
+    },
+    {
+      "team": "Utah",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "12:00",
+      "espnId": 401524049,
+      "opponent": "Arizona State",
+      "attendance": 52104,
+      "pointsFor": 55,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 62,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 10,
+      "date": "2023-11-04",
+      "time": "19:00",
+      "espnId": 401525885,
+      "opponent": "BYU",
+      "attendance": 50266,
+      "pointsFor": 37,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 51,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "12:00",
+      "espnId": 401524052,
+      "opponent": "Colorado",
+      "attendance": 52788,
+      "role": "away",
+      "venue": "Folsom Field",
+      "city": "Boulder",
+      "state": "CO",
+      "pointsFor": 34,
+      "pointsAgainst": 31
+    },
+    {
+      "team": "Arizona State",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "18:00",
+      "espnId": 401524055,
+      "opponent": "UCLA",
+      "attendance": 56436,
+      "role": "away",
+      "venue": "Rose Bowl",
+      "city": "Pasadena",
+      "state": "CA",
+      "pointsFor": 17,
+      "pointsAgainst": 7
+    },
+    {
+      "team": "BYU",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "20:15",
+      "espnId": 401525886,
+      "opponent": "Iowa State",
+      "attendance": 60754,
+      "pointsFor": 13,
+      "pointsAgainst": 45,
+      "weather": {
+        "tempF": 42,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "14:00",
+      "espnId": 401525889,
+      "opponent": "Kansas State",
+      "attendance": 51790,
+      "role": "away",
+      "venue": "Bill Snyder Family Stadium",
+      "city": "Manhattan",
+      "state": "KS",
+      "pointsFor": 25,
+      "pointsAgainst": 59
+    },
+    {
+      "team": "Cincinnati",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "18:00",
+      "espnId": 401525887,
+      "opponent": "Houston",
+      "attendance": 34312,
+      "role": "away",
+      "venue": "TDECU Stadium",
+      "city": "Houston",
+      "state": "TX",
+      "pointsFor": 24,
+      "pointsAgainst": 14
+    },
+    {
+      "team": "Colorado",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "12:00",
+      "espnId": 401524052,
+      "opponent": "Arizona",
+      "attendance": 52788,
+      "pointsFor": 31,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 53,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Houston",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "18:00",
+      "espnId": 401525887,
+      "opponent": "Cincinnati",
+      "attendance": 34312,
+      "pointsFor": 14,
+      "pointsAgainst": 24,
+      "weather": {
+        "tempF": 63,
+        "windMph": 8,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "20:15",
+      "espnId": 401525886,
+      "opponent": "BYU",
+      "attendance": 60754,
+      "role": "away",
+      "venue": "LaVell Edwards Stadium",
+      "city": "Provo",
+      "state": "UT",
+      "pointsFor": 45,
+      "pointsAgainst": 13
+    },
+    {
+      "team": "Kansas",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "11:00",
+      "espnId": 401525888,
+      "opponent": "Texas Tech",
+      "attendance": 47233,
+      "pointsFor": 13,
+      "pointsAgainst": 16,
+      "weather": {
+        "tempF": 48,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "14:00",
+      "espnId": 401525889,
+      "opponent": "Baylor",
+      "attendance": 51790,
+      "pointsFor": 59,
+      "pointsAgainst": 25,
+      "weather": {
+        "tempF": 48,
+        "windMph": 7,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "15:30",
+      "espnId": 401525892,
+      "opponent": "UCF",
+      "attendance": 44046,
+      "role": "away",
+      "venue": "FBC Mortgage Stadium",
+      "city": "Orlando",
+      "state": "FL",
+      "pointsFor": 3,
+      "pointsAgainst": 45
+    },
+    {
+      "team": "TCU",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "18:30",
+      "espnId": 401525891,
+      "opponent": "Texas",
+      "attendance": 50812,
+      "pointsFor": 26,
+      "pointsAgainst": 29,
+      "weather": {
+        "tempF": 56,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "11:00",
+      "espnId": 401525888,
+      "opponent": "Kansas",
+      "attendance": 47233,
+      "role": "away",
+      "venue": "Memorial Stadium",
+      "city": "Lawrence",
+      "state": "KS",
+      "pointsFor": 16,
+      "pointsAgainst": 13
+    },
+    {
+      "team": "UCF",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "15:30",
+      "espnId": 401525892,
+      "opponent": "Oklahoma State",
+      "attendance": 44046,
+      "pointsFor": 45,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 82,
+        "windMph": 4,
+        "precipIn": 0.03
+      }
+    },
+    {
+      "team": "Utah",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "12:30",
+      "espnId": 401524056,
+      "opponent": "Washington",
+      "attendance": 70976,
+      "role": "away",
+      "venue": "Husky Stadium",
+      "city": "Seattle",
+      "state": "WA",
+      "pointsFor": 28,
+      "pointsAgainst": 35
+    },
+    {
+      "team": "West Virginia",
+      "week": 11,
+      "date": "2023-11-11",
+      "time": "18:00",
+      "espnId": 401525890,
+      "opponent": "Oklahoma",
+      "attendance": 83525,
+      "role": "away",
+      "venue": "Memorial Stadium (Norman, OK)",
+      "city": "Norman",
+      "state": "OK",
+      "pointsFor": 20,
+      "pointsAgainst": 59
+    },
+    {
+      "team": "Arizona",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "12:30",
+      "espnId": 401524058,
+      "opponent": "Utah",
+      "attendance": 50800,
+      "pointsFor": 42,
+      "pointsAgainst": 18,
+      "weather": {
+        "tempF": 75,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona State",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "14:00",
+      "espnId": 401524059,
+      "opponent": "Oregon",
+      "attendance": 44741,
+      "pointsFor": 13,
+      "pointsAgainst": 49,
+      "weather": {
+        "tempF": 72,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "BYU",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "10:00",
+      "espnId": 401525893,
+      "opponent": "Oklahoma",
+      "attendance": 63714,
+      "pointsFor": 24,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 48,
+        "windMph": 4,
+        "precipIn": 0.0
+      }
+    },
+    {
+      "team": "Baylor",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "14:30",
+      "espnId": 401525897,
+      "opponent": "TCU",
+      "attendance": 42621,
+      "role": "away",
+      "venue": "Amon G. Carter Stadium",
+      "city": "Fort Worth",
+      "state": "TX",
+      "pointsFor": 17,
+      "pointsAgainst": 42
+    },
+    {
+      "team": "Cincinnati",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "14:30",
+      "espnId": 401525899,
+      "opponent": "West Virginia",
+      "attendance": 43588,
+      "role": "away",
+      "venue": "Milan Puskar Stadium",
+      "city": "Morgantown",
+      "state": "WV",
+      "pointsFor": 21,
+      "pointsAgainst": 42
+    },
+    {
+      "team": "Colorado",
+      "week": 12,
+      "date": "2023-11-17",
+      "time": "19:30",
+      "espnId": 401524057,
+      "opponent": "Washington State",
+      "attendance": 27869,
+      "role": "away",
+      "venue": "Gesa Field",
+      "city": "Pullman",
+      "state": "WA",
+      "pointsFor": 14,
+      "pointsAgainst": 56
+    },
+    {
+      "team": "Houston",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "15:00",
+      "espnId": 401525894,
+      "opponent": "Oklahoma State",
+      "attendance": 33906,
+      "pointsFor": 30,
+      "pointsAgainst": 43,
+      "weather": {
+        "tempF": 74,
+        "windMph": 6,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Iowa State",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "19:00",
+      "espnId": 401525895,
+      "opponent": "Texas",
+      "attendance": 61500,
+      "pointsFor": 16,
+      "pointsAgainst": 26,
+      "weather": {
+        "tempF": 51,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "18:00",
+      "espnId": 401525896,
+      "opponent": "Kansas State",
+      "attendance": 47233,
+      "pointsFor": 27,
+      "pointsAgainst": 31,
+      "weather": {
+        "tempF": 51,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Kansas State",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "18:00",
+      "espnId": 401525896,
+      "opponent": "Kansas",
+      "attendance": 47233,
+      "role": "away",
+      "venue": "Memorial Stadium",
+      "city": "Lawrence",
+      "state": "KS",
+      "pointsFor": 31,
+      "pointsAgainst": 27
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "15:00",
+      "espnId": 401525894,
+      "opponent": "Houston",
+      "attendance": 33906,
+      "role": "away",
+      "venue": "TDECU Stadium",
+      "city": "Houston",
+      "state": "TX",
+      "pointsFor": 43,
+      "pointsAgainst": 30
+    },
+    {
+      "team": "TCU",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "14:30",
+      "espnId": 401525897,
+      "opponent": "Baylor",
+      "attendance": 42621,
+      "pointsFor": 42,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 68,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Texas Tech",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "16:00",
+      "espnId": 401525898,
+      "opponent": "UCF",
+      "attendance": 53851,
+      "pointsFor": 24,
+      "pointsAgainst": 23,
+      "weather": {
+        "tempF": 63,
+        "windMph": 12,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "UCF",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "16:00",
+      "espnId": 401525898,
+      "opponent": "Texas Tech",
+      "attendance": 53851,
+      "role": "away",
+      "venue": "Jones AT&T Stadium",
+      "city": "Lubbock",
+      "state": "TX",
+      "pointsFor": 23,
+      "pointsAgainst": 24
+    },
+    {
+      "team": "Utah",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "12:30",
+      "espnId": 401524058,
+      "opponent": "Arizona",
+      "attendance": 50800,
+      "role": "away",
+      "venue": "Arizona Stadium",
+      "city": "Tucson",
+      "state": "AZ",
+      "pointsFor": 18,
+      "pointsAgainst": 42
+    },
+    {
+      "team": "West Virginia",
+      "week": 12,
+      "date": "2023-11-18",
+      "time": "14:30",
+      "espnId": 401525899,
+      "opponent": "Cincinnati",
+      "attendance": 43588,
+      "pointsFor": 42,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 48,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Arizona",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "13:30",
+      "espnId": 401524064,
+      "opponent": "Arizona State",
+      "attendance": 53414,
+      "role": "away",
+      "venue": "Mountain America Stadium",
+      "city": "Tempe",
+      "state": "AZ",
+      "pointsFor": 59,
+      "pointsAgainst": 23
+    },
+    {
+      "team": "Arizona State",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "13:30",
+      "espnId": 401524064,
+      "opponent": "Arizona",
+      "attendance": 53414,
+      "pointsFor": 23,
+      "pointsAgainst": 59,
+      "weather": {
+        "tempF": 66,
+        "windMph": 4,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "BYU",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "14:30",
+      "espnId": 401525905,
+      "opponent": "Oklahoma State",
+      "attendance": 53855,
+      "role": "away",
+      "venue": "Boone Pickens Stadium",
+      "city": "Stillwater",
+      "state": "OK",
+      "pointsFor": 34,
+      "pointsAgainst": 40
+    },
+    {
+      "team": "Baylor",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "18:00",
+      "espnId": 401525902,
+      "opponent": "West Virginia",
+      "attendance": 36200,
+      "pointsFor": 31,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 56,
+        "windMph": 3,
+        "precipIn": 0.05
+      }
+    },
+    {
+      "team": "Cincinnati",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "19:30",
+      "espnId": 401525903,
+      "opponent": "Kansas",
+      "attendance": 38193,
+      "pointsFor": 16,
+      "pointsAgainst": 49,
+      "weather": {
+        "tempF": 38,
+        "windMph": 5,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Colorado",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "13:00",
+      "espnId": 401524067,
+      "opponent": "Utah",
+      "attendance": 51595,
+      "role": "away",
+      "venue": "Rice-Eccles Stadium",
+      "city": "Salt Lake City",
+      "state": "UT",
+      "pointsFor": 17,
+      "pointsAgainst": 23
+    },
+    {
+      "team": "Houston",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "12:00",
+      "espnId": 401525906,
+      "opponent": "UCF",
+      "attendance": 43610,
+      "role": "away",
+      "venue": "FBC Mortgage Stadium",
+      "city": "Orlando",
+      "state": "FL",
+      "pointsFor": 13,
+      "pointsAgainst": 27
+    },
+    {
+      "team": "Iowa State",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "19:00",
+      "espnId": 401525904,
+      "opponent": "Kansas State",
+      "attendance": 51481,
+      "role": "away",
+      "venue": "Bill Snyder Family Stadium",
+      "city": "Manhattan",
+      "state": "KS",
+      "pointsFor": 42,
+      "pointsAgainst": 35
+    },
+    {
+      "team": "Kansas",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "19:30",
+      "espnId": 401525903,
+      "opponent": "Cincinnati",
+      "attendance": 38193,
+      "role": "away",
+      "venue": "Nippert Stadium",
+      "city": "Cincinnati",
+      "state": "OH",
+      "pointsFor": 49,
+      "pointsAgainst": 16
+    },
+    {
+      "team": "Kansas State",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "19:00",
+      "espnId": 401525904,
+      "opponent": "Iowa State",
+      "attendance": 51481,
+      "pointsFor": 35,
+      "pointsAgainst": 42,
+      "weather": {
+        "tempF": 28,
+        "windMph": 5,
+        "precipIn": 0.04
+      }
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "14:30",
+      "espnId": 401525905,
+      "opponent": "BYU",
+      "attendance": 53855,
+      "pointsFor": 40,
+      "pointsAgainst": 34,
+      "weather": {
+        "tempF": 43,
+        "windMph": 2,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "TCU",
+      "week": 13,
+      "date": "2023-11-24",
+      "time": "11:00",
+      "espnId": 401525900,
+      "opponent": "Oklahoma",
+      "attendance": 83669,
+      "role": "away",
+      "venue": "Memorial Stadium (Norman, OK)",
+      "city": "Norman",
+      "state": "OK",
+      "pointsFor": 45,
+      "pointsAgainst": 69
+    },
+    {
+      "team": "Texas Tech",
+      "week": 13,
+      "date": "2023-11-24",
+      "time": "18:30",
+      "espnId": 401525901,
+      "opponent": "Texas",
+      "attendance": 102452,
+      "role": "away",
+      "venue": "DKR-Texas Memorial Stadium",
+      "city": "Austin",
+      "state": "TX",
+      "pointsFor": 7,
+      "pointsAgainst": 57
+    },
+    {
+      "team": "UCF",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "12:00",
+      "espnId": 401525906,
+      "opponent": "Houston",
+      "attendance": 43610,
+      "pointsFor": 27,
+      "pointsAgainst": 13,
+      "weather": {
+        "tempF": 72,
+        "windMph": 7,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "Utah",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "13:00",
+      "espnId": 401524067,
+      "opponent": "Colorado",
+      "attendance": 51595,
+      "pointsFor": 23,
+      "pointsAgainst": 17,
+      "weather": {
+        "tempF": 30,
+        "windMph": 3,
+        "precipIn": 0
+      }
+    },
+    {
+      "team": "West Virginia",
+      "week": 13,
+      "date": "2023-11-25",
+      "time": "18:00",
+      "espnId": 401525902,
+      "opponent": "Baylor",
+      "attendance": 36200,
+      "role": "away",
+      "venue": "McLane Stadium",
+      "city": "Waco",
+      "state": "TX",
+      "pointsFor": 34,
+      "pointsAgainst": 31
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 14,
+      "date": "2023-12-02",
+      "time": "11:00",
+      "espnId": 401539479,
+      "opponent": "Texas",
+      "attendance": 84523,
+      "role": "neutral",
+      "venue": "AT&T Stadium",
+      "city": "Arlington",
+      "state": "TX",
+      "pointsFor": 21,
+      "pointsAgainst": 49
+    }
+  ]
+}
