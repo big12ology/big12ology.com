@@ -342,6 +342,38 @@ def h2h_card(games, teams, stand_rows):
             "tiebreakers exist.</p></div>")
 
 
+def pad_standings(rows, games):
+    """Show all sixteen teams from the first visit, not only the ones with a
+    conference result. The engine deliberately ranks only teams it has
+    evidence for, so padding happens here, in the display: unplayed teams
+    follow the ranked ones in alphabetical order with a dash for rank and
+    percentage, carrying whatever non-conference games they have played."""
+    listed = {r["team"] for r in rows}
+    missing = sorted(t for t in clinch_mod.conf_teams(games) if t not in listed)
+    if not missing:
+        return rows
+    tally = {t: {"nw": 0, "nl": 0, "ow": 0, "ol": 0} for t in missing}
+    for g in games:
+        if not g["completed"] or g.get("ccg") or g["home_points"] is None:
+            continue
+        w = tb.winner(g)
+        if not w:
+            continue
+        loser = g["away"] if w == g["home"] else g["home"]
+        for t, won in ((w, True), (loser, False)):
+            if t not in tally:
+                continue
+            tally[t]["ow" if won else "ol"] += 1
+            if not g["conference_game"]:
+                tally[t]["nw" if won else "nl"] += 1
+    return rows + [{
+        "rank": None, "team": t, "conf_w": 0, "conf_l": 0,
+        "nonconf_w": tally[t]["nw"], "nonconf_l": tally[t]["nl"],
+        "overall_w": tally[t]["ow"], "overall_l": tally[t]["ol"],
+        "tie_group": None, "log": None, "events": None, "resolved": True,
+    } for t in missing]
+
+
 def clinch_card(games, overrides, systems, stand_rows, sims):
     """The Championship race card: proof-grade clinch/elimination statuses,
     Monte Carlo odds, and the Chaos Index. Computed at build time from real
@@ -802,6 +834,7 @@ def render(year, games):
     models = [{"name": n, "year": systems[n].get("year")}
               for n in MODEL_ORDER if n in favorites]
     rows = tb.standings(games, overrides)
+    display_rows = pad_standings(rows, games)
     ccg = tb.championship(games, overrides)
     reg = [g for g in games if g["conference_game"] and not g.get("ccg")]
     played = [g for g in games if g["completed"] and g["home_points"] is not None]
@@ -835,7 +868,7 @@ def render(year, games):
     # -- standings table --------------------------------------------------
     body = []
     tie_colors = {}
-    for r in rows:
+    for r in display_rows:
         tg = r["tie_group"]
         if tg and tg not in tie_colors:
             tie_colors[tg] = len(tie_colors) % 4
@@ -844,9 +877,9 @@ def render(year, games):
         p = tb.pct(r["conf_w"], r["conf_l"])
         c = team_color(teams, r["team"])
         body.append(
-            f"<tr class='{cls}' data-rank={r['rank']} data-w={r['conf_w']} "
-            f"data-l={r['conf_l']}>"
-            f"<td>{r['rank']}</td>"
+            f"<tr class='{cls}' data-rank={r['rank'] or 99} "
+            f"data-w={r['conf_w']} data-l={r['conf_l']}>"
+            f"<td>{r['rank'] or '—'}</td>"
             f"<td class=teamcell><span class=cbar style='background:{c}'>"
             f"</span>{logo_img(r['team'])}{esc(r['team'])}{mark}</td>"
             f"<td>{r['conf_w']}–{r['conf_l']}</td>"
@@ -1599,6 +1632,7 @@ def main():
     sims = (odds_mod.simulate(games, systems, overrides, track=track)
             if systems else {})
     rows = tb.standings(games, overrides)
+    display_rows = pad_standings(rows, games)
     ccg = tb.championship(games, overrides)
     cl = clinch_mod.analyze(games, overrides)
     data = {

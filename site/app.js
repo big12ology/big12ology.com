@@ -164,7 +164,39 @@
     return html;
   }
 
-  function renderRows(rows) {
+  // Mirror of pad_standings in build.py: every team appears from the first
+  // visit, with the unplayed ones alphabetical at the bottom.
+  function padRows(rows) {
+    var listed = {};
+    rows.forEach(function (r) { listed[r.team] = true; });
+    var missing = Object.keys(teams).filter(function (t) { return !listed[t]; })
+      .sort();
+    if (!missing.length) return rows;
+    var tally = {};
+    missing.forEach(function (t) { tally[t] = { nw: 0, nl: 0, ow: 0, ol: 0 }; });
+    payload.games.forEach(function (g) {
+      if (!g.completed || g.ccg || g.home_points === null) return;
+      var w = g.home_points > g.away_points ? g.home
+        : g.away_points > g.home_points ? g.away : null;
+      if (!w) return;
+      var l = w === g.home ? g.away : g.home;
+      [[w, true], [l, false]].forEach(function (pair) {
+        var t = pair[0];
+        if (!tally[t]) return;
+        tally[t][pair[1] ? "ow" : "ol"] += 1;
+        if (!g.conference_game) tally[t][pair[1] ? "nw" : "nl"] += 1;
+      });
+    });
+    return rows.concat(missing.map(function (t) {
+      return { rank: null, team: t, conf_w: 0, conf_l: 0,
+               nonconf_w: tally[t].nw, nonconf_l: tally[t].nl,
+               overall_w: tally[t].ow, overall_l: tally[t].ol,
+               tie_group: null, log: null, events: null, resolved: true };
+    }));
+  }
+
+  function renderRows(allRows) {
+    var rows = padRows(allRows);
     var tieColors = {};
     var html = rows.map(function (r) {
       var cls = "";
@@ -177,9 +209,9 @@
         mk = "<sup>" + (tieColors[r.tie_group] + 1) + "</sup>";
       }
       var p = (r.conf_w + r.conf_l) ? r.conf_w / (r.conf_w + r.conf_l) : null;
-      return "<tr class='" + cls + "' data-rank=" + r.rank +
+      return "<tr class='" + cls + "' data-rank=" + (r.rank || 99) +
         " data-w=" + r.conf_w + " data-l=" + r.conf_l + ">" +
-        "<td>" + r.rank + "</td>" +
+        "<td>" + (r.rank || "—") + "</td>" +
         "<td class=teamcell><span class=cbar style='background:" +
         color(r.team) + "'></span>" + mark(r.team, 20) + esc(r.team) + mk +
         "</td><td>" + r.conf_w + "–" + r.conf_l + "</td>" +
@@ -228,7 +260,7 @@
       if (stand) stand.innerHTML = orig.stand;
       if (stories) stories.innerHTML = orig.stories;
       if (chip) chip.hidden = true;
-      if (tablewrap) tablewrap.hidden = origWrapHidden;
+      if (tablewrap) tablewrap.hidden = false;
       lastRows = actualRows;
       lastCcg = actualCcg;
       renderTeamWhy();
@@ -243,7 +275,8 @@
     if (stand) stand.innerHTML = renderRows(rows);
     if (stories) stories.innerHTML = renderStories(rows);
     if (chip) chip.hidden = false;
-    if (tablewrap) tablewrap.hidden = rows.length === 0;
+    // the table always lists all sixteen teams now, so it never hides
+    if (tablewrap) tablewrap.hidden = false;
     lastRows = rows;
     lastCcg = ccg;
     renderTeamWhy();
