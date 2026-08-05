@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=10";
-import { gameTooltipHTML } from "./gametip.js?v=10";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=11";
+import { gameTooltipHTML } from "./gametip.js?v=11";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -673,9 +673,8 @@ function roadDraw(cardEl, seasonsData, teamsData) {
   let marks = `<line x1="${x0}" x2="${x0}" y1="${m.t}" y2="${H - m.b}" class="grid"/>`;
   show.forEach((r, i) => {
     const y = m.t + i * (rowH + gap);
-    const fill = r.avg >= 0
-      ? (isDark() ? "#4ade80" : "#0d7a3f")
-      : (isDark() ? "#f87171" : "#c0392b");
+    // position in the full spread, so the shade carries the magnitude
+    const fill = divergeHSL((r.avg + maxAbs) / (2 * maxAbs));
     const w = Math.abs(x(r.avg) - x0);
     marks += `<rect x="${r.avg >= 0 ? x0 : x0 - w}" y="${y}" width="${w}"
       height="${rowH}" rx="3" fill="${fill}" fill-opacity="0.95"

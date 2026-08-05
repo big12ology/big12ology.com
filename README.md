@@ -78,3 +78,21 @@ are separate fields and a reported game always counts, whatever its value.
 python3 -m http.server 8080   # from the repo root, then open localhost:8080
 node --test tests/parity.test.mjs
 ```
+
+## Visual rules
+
+These hold across both trackers; break them only deliberately.
+
+1. **Good-to-bad is always a gradient.** Any display that runs from good to
+   bad in green/red uses a continuous shade, never two flat colors — the
+   shade carries the magnitude. Attendance fill uses `pctHSL`, diverging
+   comparisons use `divergeHSL`, and the tiebreaker's win-percentage column
+   uses `winpct_color`/`winPctColor`. All three walk the same hue path:
+   saturated red → amber → green.
+2. **Hue carries meaning, lightness does not.** Never encode a value in
+   lightness alone; it inverts between light and dark themes.
+3. **Resolution goes where the data lives.** The scales are anchor curves,
+   not linear ramps, so the crowded top of a range stays legible.
+4. **One game card.** Every hover that describes a game renders
+   `gametip.js` — opponent, result, attendance, fill, weather, box score.
+5. **Dates in prose carry no year.** The season is already on screen.

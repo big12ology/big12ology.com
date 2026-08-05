@@ -240,4 +240,13 @@ th .sortmode { color: var(--accent); font-weight: 700; }
 
 .charts .span-all { grid-column: 1 / -1; }
 
-svg .val-in { fill: #fff; font-weight: 600; }
+/* value printed inside a bar: legible on any shade of the gradient */
+svg text.val-in {
+  fill: #fff;
+  font-weight: 700;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.3);
+  stroke-width: 2px;
+}
