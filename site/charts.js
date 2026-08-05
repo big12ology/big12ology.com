@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=17";
-import { gameTooltipHTML } from "./gametip.js?v=17";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=19";
+import { gameTooltipHTML } from "./gametip.js?v=19";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -648,9 +648,12 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
         cell = `<span class="rw-good">${s} game${s > 1 ? "s" : ""} active</span>` +
           (l ? `<span class="rw-sub">Last ${l.opp} ${recDate(l)}</span>` : "");
       } else if (ended.has(team)) {
+        // "Last" always means the most recent sellout — not the game that
+        // ended the run, which is a different (and confusing) thing.
         const e = ended.get(team);
+        const l = lastSellout.get(team);
         cell = `<span class="rw-bad">ended after ${e.count}</span>` +
-          `<span class="rw-sub">Last ${e.opp} ${recDate(e)}</span>`;
+          (l ? `<span class="rw-sub">Last ${l.opp} ${recDate(l)}</span>` : "");
       } else {
         cell = `<span class="rw-dim">none</span>` +
           `<span class="rw-sub">no sellout since ${first}</span>`;
@@ -1139,7 +1142,7 @@ function kickoffWindows(cardEl, summary, season) {
     const b = live[Number(el.dataset.i)];
     const best = [...b.games].sort((x2, y2) => y2.pct - x2.pct)[0];
     showTip(e.clientX, e.clientY, [
-      { head: `${b.label} kickoffs` },
+      { head: `${b.label} kickoffs (venue local time)` },
       { value: pct(b.pct), label: `full across ${b.games.length} games` },
       { value: num(b.att), label: "total attendance" },
       { value: `${best.team} ${pct(best.pct)}`, label: "fullest of the window" },
@@ -1165,8 +1168,8 @@ export function renderSeasonCharts(root, teamsData, seasonsData, currentYear) {
   heatmap(c3, summary, season);
 
   const c4 = card(`Kickoff time vs fill — ${currentYear}`,
-    "Every home game grouped by when it started; the shade tracks which " +
-    "window drew best");
+    "Every home game grouped by when it started, in the stadium's local " +
+    "time; the shade tracks which window drew best");
   kickoffWindows(c4, summary, season);
 
   root.append(c1, c2, c3, c4);

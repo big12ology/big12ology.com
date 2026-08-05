@@ -55,3 +55,20 @@ test("team charts render for a selection", () => {
   charts.renderTeamCharts(root, teams, seasons, latestPlayed, sel);
   assert.ok(root.children.length >= 3, "expected team comparison cards");
 });
+
+// Kickoff times are stored in the venue's local timezone, and the kickoff
+// window chart buckets on the raw hour. If a fetch ever stored UTC instead,
+// eastern night games would land at 00:00-03:00 and the buckets would lie.
+test("kickoff times look venue-local, not UTC", () => {
+  let checked = 0;
+  for (const y of idx.seasons) {
+    for (const g of seasons[y].games) {
+      if (g.role || !g.time) continue;
+      const h = Number(g.time.split(":")[0]);
+      assert.ok(h >= 9 && h <= 23,
+        `${g.team} ${g.date} kickoff ${g.time} is outside 09:00-23:59 local`);
+      checked += 1;
+    }
+  }
+  assert.ok(checked > 500, `expected a full archive, saw ${checked} games`);
+});
