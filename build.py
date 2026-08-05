@@ -2041,10 +2041,15 @@ def build_season(year, games, outdir, base, feed=True):
                       "produced, and where a different reading of the rules "
                       "would have sent a different team to the title game.",
                       ""))
+    evergreen = {"history.html", "how.html"}
     for fname, title, active, body, desc, head in pages:
+        # Seasons share the tie archive and the rules explainer verbatim, so
+        # the archived copies point their canonical at the live one rather
+        # than competing with it as duplicates.
+        cu = (site_url + fname if fname in evergreen else canon + fname)
         with open(os.path.join(outdir, fname), "w") as f:
             f.write(build_subpage(title, active, body, year,
-                                  ctx["matchcard"], canon=canon + fname,
+                                  ctx["matchcard"], canon=cu,
                                   desc=desc, head=head))
 
     build_explainer(year, ctx["matchcard"], outdir)
@@ -2098,13 +2103,14 @@ def write_discovery(years):
     the archived seasons exist at all — nothing links to 2024 except the
     year pills, and the pages carry no dated signal of their own."""
     site = "https://big12ology.com/tiebreaker/"
-    subs = ["", "lab.html", "race.html", "standings.html", "schedule.html",
-            "how.html", "history.html"]
+    subs = ["", "lab.html", "race.html", "standings.html", "schedule.html"]
+    # Listed once, under the live season — every year serves the same bytes.
+    evergreen = ["how.html", "history.html"]
     today = datetime.date.today().isoformat()
     urls = []
     for y in years:
         base = site if y == LIVE_YEAR else f"{site}{y}/"
-        for p in subs:
+        for p in subs + (evergreen if y == LIVE_YEAR else []):
             # A finished season never changes again; the live one changes
             # after every game.
             freq = "weekly" if y == LIVE_YEAR else "yearly"
