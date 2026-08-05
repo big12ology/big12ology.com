@@ -6,6 +6,28 @@
 <link rel=stylesheet href=brand.css>
 <link rel=alternate type=application/rss+xml href=feed.xml>
 <style>
+header { border-bottom:4px solid var(--accent); padding:24px 20px 16px;
+  background:var(--panel) }
+.hwrap { display:flex; align-items:center; gap:16px; max-width:880px;
+  margin:0 auto }
+.hwrap img { height:54px; width:auto }
+header h1 { margin:0; font-size:26px; letter-spacing:-.02em }
+header p { margin:4px 0 0; color:var(--dim); font-size:14px }
+header p a { color:var(--accent2); text-decoration:none }
+.matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
+  flex-wrap:wrap }
+.side { display:flex; align-items:center; gap:12px; font-size:24px;
+  font-weight:700; border-bottom:4px solid var(--line);
+  padding:6px 10px 10px 2px }
+.tname { letter-spacing:-.01em }
+.vs { color:var(--dim); font-weight:400; font-size:18px; padding:0 6px }
+.seed { display:inline-block; background:var(--accent); color:#fff;
+  border-radius:6px; font-size:14px; width:22px; height:22px;
+  line-height:22px; text-align:center; vertical-align:3px; margin-right:4px }
+.badge { font-size:11px; border-radius:20px; padding:2px 9px;
+  vertical-align:1px; font-weight:600; letter-spacing:.03em }
+.badge.ok { background:#15803d26; color:#15803d }
+.badge.warn { background:#b4530926; color:var(--warn) }
 :root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#6b7280;
   --line:#e2ddd2; --accent:#c8102e; --accent2:#003087; --warn:#b45309;
   --pctl:32%; }
@@ -75,9 +97,20 @@ table.h2h { width:auto }
 <nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
 <a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a>
 <a class=b12-right href=/privacy>Privacy</a></nav>
-<header><h1>The Race</h1><p>Proofs, odds, chaos, and the games that move them.</p></header>
+<header>
+  <div class=hwrap>
+    <img src=logos/big12.svg alt="">
+    <div>
+      <h1>Big 12 Tiebreaker Tracker <span class=dim>· 2026</span></h1>
+      <p>Unofficial fan tool. Applies the official Big 12 tiebreaking
+      procedures to live results after every game.
+      <a href=how.html>How it works &rarr;</a></p>
+    </div>
+  </div>
+</header>
 <nav class=subnav><a href=./ class=off>Tracker</a><a href=race.html class=on>The Race</a><a href=schedule.html class=off>Schedule</a><a href=brief.html class=off>The Brief</a><a href=history.html class=off>Tie history</a><a href=how.html class=off>How it works</a></nav>
 <main>
+<div class=card id=matchcard><h2>Season not started</h2><p>No conference results yet. The projected championship matchup will appear after the first Big 12 game.</p></div>
 <div class=card id=clinchcard>
   <h2>Championship race</h2>
   <div class=chaosband><span class=cnum style='color:var(--accent)'>67</span><div><b>Chaos Index: Chaotic</b><br><span class=dim>race entropy 0.44 · tie tangle 1.00 · still alive 1.00 — 0 is a decided race, 100 is a sixteen-way pileup</span></div></div><div class=clrow><img class=mark src='logos/ttu.svg' alt='' width=18 height=18 loading=lazy><b>Texas Tech</b> <span class=obar><i style='width:88.4%;background:hsl(137 65% var(--pctl))'></i></span><b class=opct style='color:hsl(137 65% var(--pctl))'>88.4%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 8.3 exp conf wins</span></div><div class=clrow><img class=mark src='logos/utah.svg' alt='' width=18 height=18 loading=lazy><b>Utah</b> <span class=obar><i style='width:51.3%;background:hsl(58 65% var(--pctl))'></i></span><b class=opct style='color:hsl(58 65% var(--pctl))'>51.3%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 7.1 exp conf wins</span></div><div class=clrow><img class=mark src='logos/byu.png' alt='' width=18 height=18 loading=lazy><b>BYU</b> <span class=obar><i style='width:28.1%;background:hsl(19 85% var(--pctl))'></i></span><b class=opct style='color:hsl(19 85% var(--pctl))'>28.1%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 6.4 exp conf wins</span></div><div class=clrow><img class=mark src='logos/ariz.svg' alt='' width=18 height=18 loading=lazy><b>Arizona</b> <span class=obar><i style='width:7.8%;background:hsl(5 96% var(--pctl))'></i></span><b class=opct style='color:hsl(5 96% var(--pctl))'>7.8%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 4.9 exp conf wins</span></div><div class=clrow><img class=mark src='logos/ksu.svg' alt='' width=18 height=18 loading=lazy><b>Kansas State</b> <span class=obar><i style='width:6.7%;background:hsl(4 97% var(--pctl))'></i></span><b class=opct style='color:hsl(4 97% var(--pctl))'>6.7%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 5.2 exp conf wins</span></div><div class=clrow><img class=mark src='logos/tcu.svg' alt='' width=18 height=18 loading=lazy><b>TCU</b> <span class=obar><i style='width:4.4%;background:hsl(3 98% var(--pctl))'></i></span><b class=opct style='color:hsl(3 98% var(--pctl))'>4.4%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 4.5 exp conf wins</span></div><div class=clrow><img class=mark src='logos/isu.svg' alt='' width=18 height=18 loading=lazy><b>Iowa State</b> <span class=obar><i style='width:4.3%;background:hsl(3 98% var(--pctl))'></i></span><b class=opct style='color:hsl(3 98% var(--pctl))'>4.3%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 4.8 exp conf wins</span></div><div class=clrow><img class=mark src='logos/hou.svg' alt='' width=18 height=18 loading=lazy><b>Houston</b> <span class=obar><i style='width:3.5%;background:hsl(2 98% var(--pctl))'></i></span><b class=opct style='color:hsl(2 98% var(--pctl))'>3.5%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 4.9 exp conf wins</span></div><div class=clrow><img class=mark src='logos/asu.svg' alt='' width=18 height=18 loading=lazy><b>Arizona State</b> <span class=obar><i style='width:2.3%;background:hsl(2 99% var(--pctl))'></i></span><b class=opct style='color:hsl(2 99% var(--pctl))'>2.3%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 4.4 exp conf wins</span></div><div class=clrow><img class=mark src='logos/ku.svg' alt='' width=18 height=18 loading=lazy><b>Kansas</b> <span class=obar><i style='width:1.6%;background:hsl(1 99% var(--pctl))'></i></span><b class=opct style='color:hsl(1 99% var(--pctl))'>1.6%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 4.1 exp conf wins</span></div><div class=clrow><img class=mark src='logos/ucf.svg' alt='' width=18 height=18 loading=lazy><b>UCF</b> <span class=obar><i style='width:0.7%;background:hsl(0 100% var(--pctl))'></i></span><b class=opct style='color:hsl(0 100% var(--pctl))'>0.7%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 3.6 exp conf wins</span></div><div class=clrow><img class=mark src='logos/bay.svg' alt='' width=18 height=18 loading=lazy><b>Baylor</b> <span class=obar><i style='width:0.6%;background:hsl(0 100% var(--pctl))'></i></span><b class=opct style='color:hsl(0 100% var(--pctl))'>0.6%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 3.5 exp conf wins</span></div><div class=clrow><img class=mark src='logos/cin.svg' alt='' width=18 height=18 loading=lazy><b>Cincinnati</b> <span class=obar><i style='width:0.5%;background:hsl(0 100% var(--pctl))'></i></span><b class=opct style='color:hsl(0 100% var(--pctl))'>0.5%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 3.2 exp conf wins</span></div><div class=clrow><img class=mark src='logos/cu.svg' alt='' width=18 height=18 loading=lazy><b>Colorado</b> <span class=obar><i style='width:0.2%;background:hsl(0 100% var(--pctl))'></i></span><b class=opct style='color:hsl(0 100% var(--pctl))'>0.2%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 2.8 exp conf wins</span></div><div class=clrow><img class=mark src='logos/wvu.svg' alt='' width=18 height=18 loading=lazy><b>West Virginia</b> <span class=obar><i style='width:0.1%;background:hsl(0 100% var(--pctl))'></i></span><b class=opct style='color:hsl(0 100% var(--pctl))'>&lt;0.1%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 2.4 exp conf wins</span></div><div class=clrow><img class=mark src='logos/okst.svg' alt='' width=18 height=18 loading=lazy><b>Oklahoma State</b> <span class=obar><i style='width:0.0%;background:hsl(0 100% var(--pctl))'></i></span><b class=opct style='color:hsl(0 100% var(--pctl))'>0%</b> <span class=dim> 0–0, 9 left</span> <span class=dim>· 1.9 exp conf wins</span></div>

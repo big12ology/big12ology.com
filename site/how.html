@@ -59,6 +59,28 @@ table.models th, table.models td { text-align: left; padding: 8px 10px;
 table.models th { font-size: 12px; text-transform: uppercase;
   letter-spacing: .05em; color: var(--dim); }
 .backlink { display: inline-block; margin-top: 8px; }
+.card { background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 16px 20px; margin: 0 0 18px; }
+.card h2 { margin: 0 0 8px; font-size: 14px; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--dim); }
+.matchup { display: flex; align-items: center; gap: 18px;
+  margin: 10px 0 4px; flex-wrap: wrap; }
+.side { display: flex; align-items: center; gap: 12px; font-size: 24px;
+  font-weight: 700; border-bottom: 4px solid var(--line);
+  padding: 6px 10px 10px 2px; }
+.tname { letter-spacing: -.01em; }
+.vs { color: var(--dim); font-weight: 400; font-size: 18px; padding: 0 6px; }
+.seed { display: inline-block; background: var(--accent); color: #fff;
+  border-radius: 6px; font-size: 14px; width: 22px; height: 22px;
+  line-height: 22px; text-align: center; vertical-align: 3px;
+  margin-right: 4px; }
+.badge { font-size: 11px; border-radius: 20px; padding: 2px 9px;
+  vertical-align: 1px; font-weight: 600; letter-spacing: .03em; }
+.badge.ok { background: #15803d26; color: #15803d; }
+.badge.warn { background: #b4530926; color: #b45309; }
+.mark { vertical-align: -3px; margin-right: 7px; object-fit: contain; }
+.dim { color: var(--dim); }
+.note { color: var(--dim); font-size: 13px; }
 
 .subnav { max-width:780px; margin:0 auto; padding:10px 20px 0;
   display:flex; gap:8px; flex-wrap:wrap }
@@ -81,13 +103,16 @@ table.models th { font-size: 12px; text-transform: uppercase;
   <div class=hwrap>
     <img src=logos/big12.svg alt="">
     <div>
-      <h1><a href="./">Big 12 Tiebreaker Tracker</a> · How it works</h1>
-      <p>The official procedure, in plain English, with a real worked example.</p>
+      <h1>Big 12 Tiebreaker Tracker <span class=dim>· 2026</span></h1>
+      <p>Unofficial fan tool. Applies the official Big 12 tiebreaking
+      procedures to live results after every game.
+      <a href="./">Back to the tracker &rarr;</a></p>
     </div>
   </div>
 </header>
 <nav class=subnav><a href=./ class=off>Tracker</a><a href=race.html class=off>The Race</a><a href=schedule.html class=off>Schedule</a><a href=brief.html class=off>The Brief</a><a href=history.html class=off>Tie history</a><a href=how.html class=on>How it works</a></nav>
 <main>
+<div class=card id=matchcard><h2>Season not started</h2><p>No conference results yet. The projected championship matchup will appear after the first Big 12 game.</p></div>
 
 <p class=lead>Sixteen teams, nine conference games each, no round robin —
 which means two teams can finish with identical records having played

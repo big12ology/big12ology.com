@@ -131,6 +131,20 @@ def fmt_prob(p):
 
 
 
+def tracker_header(year):
+    return f"""<header>
+  <div class=hwrap>
+    <img src=logos/big12.svg alt="">
+    <div>
+      <h1>Big 12 Tiebreaker Tracker <span class=dim>· {year}</span></h1>
+      <p>Unofficial fan tool. Applies the official Big 12 tiebreaking
+      procedures to live results after every game.
+      <a href=how.html>How it works &rarr;</a></p>
+    </div>
+  </div>
+</header>"""
+
+
 SUBNAV_LINKS = [("tracker", "./", "Tracker"), ("race", "race.html", "The Race"),
                 ("schedule", "schedule.html", "Schedule"),
                 ("brief", "brief.html", "The Brief"),
@@ -419,6 +433,28 @@ CLINCH_CARD = """<div class=card id=clinchcard>
 
 
 BRIEF_CSS = """
+header { border-bottom:4px solid var(--accent); padding:24px 20px 16px;
+  background:var(--panel) }
+.hwrap { display:flex; align-items:center; gap:16px; max-width:880px;
+  margin:0 auto }
+.hwrap img { height:54px; width:auto }
+header h1 { margin:0; font-size:26px; letter-spacing:-.02em }
+header p { margin:4px 0 0; color:var(--dim); font-size:14px }
+header p a { color:var(--accent2); text-decoration:none }
+.matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
+  flex-wrap:wrap }
+.side { display:flex; align-items:center; gap:12px; font-size:24px;
+  font-weight:700; border-bottom:4px solid var(--line);
+  padding:6px 10px 10px 2px }
+.tname { letter-spacing:-.01em }
+.vs { color:var(--dim); font-weight:400; font-size:18px; padding:0 6px }
+.seed { display:inline-block; background:var(--accent); color:#fff;
+  border-radius:6px; font-size:14px; width:22px; height:22px;
+  line-height:22px; text-align:center; vertical-align:3px; margin-right:4px }
+.badge { font-size:11px; border-radius:20px; padding:2px 9px;
+  vertical-align:1px; font-weight:600; letter-spacing:.03em }
+.badge.ok { background:#15803d26; color:#15803d }
+.badge.warn { background:#b4530926; color:var(--warn) }
 :root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#6b7280;
   --line:#e2ddd2; --accent:#c8102e; --accent2:#003087; --warn:#b45309;
   --pctl:32%; }
@@ -464,9 +500,8 @@ ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
 """
 
 
-def build_brief(year, games, overrides, systems, sims):
-    """site/brief.html — the auto-written weekly summary: chaos + race,
-    leverage board, and the last week of finals."""
+def build_brief(year, games, overrides, systems, sims, matchcard):
+    """The Brief: auto-written weekly summary on the standard tracker top."""
     stand_rows = tb.standings(games, overrides)
     race = clinch_card(games, overrides, systems, stand_rows, sims)
     lev = leverage_card(games, sims) if sims else ""
@@ -484,34 +519,15 @@ def build_brief(year, games, overrides, systems, sims):
                   + "".join(game_row(g) for g in recent[::-1][:20])
                   + "</ul></div>")
     stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%B %d, %Y")
-    return f"""<!doctype html>
-<html lang=en><head><meta charset=utf-8>
-<meta name=viewport content="width=device-width, initial-scale=1">
-<title>The Brief — Big 12 Tiebreaker Tracker</title>
-<link rel=icon type=image/svg+xml href=favicon.svg>
-<link rel=stylesheet href=brand.css>
-<link rel=alternate type=application/rss+xml href=feed.xml>
-<style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style></head><body>
-<nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
-<a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a>
-<a class=b12-right href=/privacy>Privacy</a></nav>
-<header><h1>The Brief <span class=dim>· {esc(stamp)}</span></h1>
-<p>The Big 12 title race, auto-written after every game.
-<a href="./">Full tracker &rarr;</a></p></header>
-{subnav("brief")}
-<main>
-{race}
-{lev}
-{finals}
-<div class=card><h2>Take it with you</h2>
-<p style="font-size:14px"><a href=feed.xml>RSS feed</a> ·
-<a href=data.json>data.json</a> · <a href=standings.csv>standings.csv</a> ·
-<a href=how.html>how the tiebreakers work</a></p></div>
-</main>
-<footer class=b12-footer>A Big12ology project · not affiliated with the
-Big 12 Conference. <a href="https://big12ology.com/privacy">Privacy</a></footer>
-<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
-</body></html>"""
+    body = (f"<p style='color:var(--dim);font-size:13px;text-align:center;"
+            f"margin:-4px 0 0'>The Brief · auto-written {esc(stamp)}</p>"
+            + race + lev + finals
+            + "<div class=card><h2>Take it with you</h2>"
+              "<p style='font-size:14px'><a href=feed.xml>RSS feed</a> · "
+              "<a href=data.json>data.json</a> · "
+              "<a href=standings.csv>standings.csv</a> · "
+              "<a href=how.html>how the tiebreakers work</a></p></div>")
+    return build_subpage("The Brief", "brief", body, year, matchcard)
 
 
 SUBPAGE_EXTRA_CSS = """
@@ -540,7 +556,7 @@ table.h2h { width:auto }
 """
 
 
-def build_subpage(title, tagline, active, body):
+def build_subpage(title, active, body, year, matchcard):
     return f"""<!doctype html>
 <html lang=en><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
@@ -552,9 +568,10 @@ def build_subpage(title, tagline, active, body):
 <nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
 <a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a>
 <a class=b12-right href=/privacy>Privacy</a></nav>
-<header><h1>{esc(title)}</h1><p>{tagline}</p></header>
+{tracker_header(year)}
 {subnav(active)}
 <main>
+{matchcard}
 {body}
 </main>
 <footer class=b12-footer>A Big12ology project · not affiliated with the
@@ -759,6 +776,7 @@ def render(year, games):
         "soscard": sos_card(games, systems),
         "modelcard": scorecard_card(games, systems, closing_lines),
         "h2hcard": h2h_card(games, teams, rows),
+        "matchcard": card,
         "sims": sims,
     }
     return page, ctx
@@ -1172,6 +1190,28 @@ table.models th, table.models td {{ text-align: left; padding: 8px 10px;
 table.models th {{ font-size: 12px; text-transform: uppercase;
   letter-spacing: .05em; color: var(--dim); }}
 .backlink {{ display: inline-block; margin-top: 8px; }}
+.card {{ background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 16px 20px; margin: 0 0 18px; }}
+.card h2 {{ margin: 0 0 8px; font-size: 14px; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--dim); }}
+.matchup {{ display: flex; align-items: center; gap: 18px;
+  margin: 10px 0 4px; flex-wrap: wrap; }}
+.side {{ display: flex; align-items: center; gap: 12px; font-size: 24px;
+  font-weight: 700; border-bottom: 4px solid var(--line);
+  padding: 6px 10px 10px 2px; }}
+.tname {{ letter-spacing: -.01em; }}
+.vs {{ color: var(--dim); font-weight: 400; font-size: 18px; padding: 0 6px; }}
+.seed {{ display: inline-block; background: var(--accent); color: #fff;
+  border-radius: 6px; font-size: 14px; width: 22px; height: 22px;
+  line-height: 22px; text-align: center; vertical-align: 3px;
+  margin-right: 4px; }}
+.badge {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
+  vertical-align: 1px; font-weight: 600; letter-spacing: .03em; }}
+.badge.ok {{ background: #15803d26; color: #15803d; }}
+.badge.warn {{ background: #b4530926; color: #b45309; }}
+.mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain; }}
+.dim {{ color: var(--dim); }}
+.note {{ color: var(--dim); font-size: 13px; }}
 
 .subnav {{ max-width:780px; margin:0 auto; padding:10px 20px 0;
   display:flex; gap:8px; flex-wrap:wrap }}
@@ -1194,13 +1234,16 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
   <div class=hwrap>
     <img src=logos/big12.svg alt="">
     <div>
-      <h1><a href="./">Big 12 Tiebreaker Tracker</a> · How it works</h1>
-      <p>The official procedure, in plain English, with a real worked example.</p>
+      <h1>Big 12 Tiebreaker Tracker <span class=dim>· {year}</span></h1>
+      <p>Unofficial fan tool. Applies the official Big 12 tiebreaking
+      procedures to live results after every game.
+      <a href="./">Back to the tracker &rarr;</a></p>
     </div>
   </div>
 </header>
 {subnav_html}
 <main>
+{matchcard}
 
 <p class=lead>Sixteen teams, nine conference games each, no round robin —
 which means two teams can finish with identical records having played
@@ -1337,7 +1380,7 @@ href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
 """
 
 
-def build_explainer():
+def build_explainer(year, matchcard):
     """Render site/how.html. The 2024 worked example is generated live by the
     rules engine from the frozen season data in history/."""
     games = json.load(open(os.path.join(HERE, "history", "games_2024.json")))
@@ -1348,7 +1391,9 @@ def build_explainer():
     worked = "".join(f"    <li>{esc(line)}</li>\n" for line in log)
     out = os.path.join(SITE, "how.html")
     with open(out, "w") as f:
-        f.write(EXPLAINER.format(worked_2024=worked, subnav_html=subnav("how")))
+        f.write(EXPLAINER.format(worked_2024=worked,
+                                 subnav_html=subnav("how"),
+                                 year=year, matchcard=matchcard))
     print(f"built {out}")
 
 
@@ -1374,16 +1419,21 @@ def main():
         f.write(page)
     print(f"built {out} for {year}")
     with open(os.path.join(SITE, "race.html"), "w") as f:
-        f.write(build_subpage(
-            "The Race", "Proofs, odds, chaos, and the games that move them.",
-            "race", build_race_page(ctx)))
+        f.write(build_subpage("The Race", "race", build_race_page(ctx),
+                              year, ctx["matchcard"]))
     with open(os.path.join(SITE, "schedule.html"), "w") as f:
-        f.write(build_subpage(
-            "Schedule", "Every remaining game, every result, and the road "
-            "each team still has to travel.", "schedule",
-            build_schedule_page(games, ctx)))
-    print("built race.html, schedule.html")
-    build_explainer()
+        f.write(build_subpage("Schedule", "schedule",
+                              build_schedule_page(games, ctx),
+                              year, ctx["matchcard"]))
+    # the Brief and Tie history share the same standard top
+    hist_frag = os.path.join(HERE, "history", "history_body.html")
+    if os.path.exists(hist_frag):
+        with open(os.path.join(SITE, "history.html"), "w") as f:
+            f.write(build_subpage("Tie history", "history",
+                                  open(hist_frag).read(),
+                                  year, ctx["matchcard"]))
+    print("built race.html, schedule.html, history.html")
+    build_explainer(year, ctx["matchcard"])
     overrides = tb.load_overrides()
     systems = load_ratings(year).get("systems", {})
     fp = os.path.join(SITE, "feed.xml")
@@ -1421,7 +1471,8 @@ def main():
                     f"{r['nonconf_w']},{r['nonconf_l']},{r['overall_w']},"
                     f"{r['overall_l']},{p}\n")
     with open(os.path.join(SITE, "brief.html"), "w") as f:
-        f.write(build_brief(year, games, overrides, systems, sims))
+        f.write(build_brief(year, games, overrides, systems, sims,
+                            ctx["matchcard"]))
     print("built data.json, standings.csv, brief.html")
 
 

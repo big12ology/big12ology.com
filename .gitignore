@@ -3,3 +3,4 @@ data/
 __pycache__/
 site/index.html
 !history/
+site/history.html
