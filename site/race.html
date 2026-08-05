@@ -90,8 +90,11 @@ table.h2h { width:100%; table-layout:auto }
 .h2h thead th { font-size:12px; letter-spacing:.02em }
 .hatag { display:inline-block; min-width:11px; margin-right:4px;
   font-size:10px; font-weight:700; color:var(--dim); vertical-align:1px }
-.selfcell { color:var(--line) }
-.nomeet { color:var(--line); text-align:center }
+/* The empty cells carry meaning — a third of this grid is pairs the
+   schedule never makes — so they need to be visible, not ghosts. */
+.selfcell { color:var(--dim); opacity:.55;
+  background:color-mix(in srgb, var(--dim) 12%, transparent) }
+.nomeet { color:var(--dim); opacity:.75; font-size:15px; line-height:1 }
 </style></head><body>
 <nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
 <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a></nav>

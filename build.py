@@ -301,11 +301,11 @@ def h2h_card(games, teams, stand_rows):
         cells = []
         for b in order:
             if a == b:
-                cells.append("<td class=selfcell>—</td>")
+                cells.append("<td class=selfcell>&#9587;</td>")
                 continue
             g = meet.get(frozenset((a, b)))
             if g is None:
-                cells.append("<td class=nomeet>·</td>")
+                cells.append("<td class=nomeet>&bull;</td>")
                 continue
             date = pretty_date(g["start"])
             if g["completed"] and g["home_points"] is not None:
@@ -336,7 +336,7 @@ def h2h_card(games, teams, stand_rows):
             + "</tbody></table></div>"
             "<p class=note>Every conference meeting this season, read "
             "across: H marks a home game and A an away game, then the row "
-            "team's result or the scheduled week. A dot "
+            "team's result or the scheduled week. A bullet "
             "means the schedule never pairs them — in a nine-game draw "
             "that's more than a third of the grid, which is why the "
             "tiebreakers exist.</p></div>")
@@ -676,8 +676,11 @@ table.h2h { width:100%; table-layout:auto }
 .h2h thead th { font-size:12px; letter-spacing:.02em }
 .hatag { display:inline-block; min-width:11px; margin-right:4px;
   font-size:10px; font-weight:700; color:var(--dim); vertical-align:1px }
-.selfcell { color:var(--line) }
-.nomeet { color:var(--line); text-align:center }
+/* The empty cells carry meaning — a third of this grid is pairs the
+   schedule never makes — so they need to be visible, not ghosts. */
+.selfcell { color:var(--dim); opacity:.55;
+  background:color-mix(in srgb, var(--dim) 12%, transparent) }
+.nomeet { color:var(--dim); opacity:.75; font-size:15px; line-height:1 }
 """
 
 
