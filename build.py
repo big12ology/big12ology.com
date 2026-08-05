@@ -653,6 +653,13 @@ thead tr th { border-bottom:2px solid var(--line) }
 .briefstamp { color:var(--dim); font-size:13px; text-align:center; margin:-4px 0 2px }
 h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
+.duo { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+  gap:18px; align-items:start }
+.duo > .stack { display:grid; gap:18px; align-content:start; min-width:0 }
+@media (max-width: 900px) {
+  .duo { grid-template-columns:1fr }
+  .duo > .stack { display:contents }
+}
 .tablescroll { overflow-x:auto }
 table.h2h { width:auto }
 .h2h th, .h2h td { padding:3px 6px; font-size:11.5px; white-space:nowrap }
@@ -708,7 +715,12 @@ def build_schedule_page(games, ctx):
 
 
 def build_race_page(ctx):
-    return ctx["clinchcard"] + ctx["levcard"] + ctx["modelcard"]
+    """Two columns on wide screens: the full race board on the left, the
+    week's leverage and the model scorecard on the right where they're
+    seen without scrolling past sixteen teams."""
+    return (f"<div class=duo><div class=stack>{ctx['clinchcard']}</div>"
+            f"<div class=stack>{ctx['levcard']}{ctx['modelcard']}</div>"
+            f"</div>")
 
 
 def default_season(today=None):
