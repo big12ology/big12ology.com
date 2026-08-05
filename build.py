@@ -491,7 +491,7 @@ def build_brief(year, games, overrides, systems, sims):
 <link rel=icon type=image/svg+xml href=favicon.svg>
 <link rel=stylesheet href=/brand.css>
 <link rel=alternate type=application/rss+xml href=feed.xml>
-<style>{BRIEF_CSS}</style></head><body>
+<style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style></head><body>
 <nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
 <a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a>
 <a class=b12-right href=/privacy>Privacy</a></nav>
