@@ -1286,7 +1286,7 @@ def render(year, games):
               "<button id=sort-raw>Raw wins</button></div>")
     # display_rows always carries all sixteen teams, so the table is never
     # hidden — the preseason view is a legitimate 0-0 board.
-    table = ("<div id=tablewrap>" + sorter +
+    table = ("<div id=tablewrap class=tablescroll>" + sorter +
              "<table><thead><tr><th></th><th>Team</th><th>Conf</th>"
              "<th>Pct</th><th>Non-conf</th><th>Overall</th></tr></thead>"
              "<tbody id=stand>"
@@ -1497,7 +1497,7 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
 .duo > .stack {{ display: grid; gap: 20px; align-content: start;
   min-width: 0; }}
 @media (max-width: 1023px) {{
-  .duo {{ grid-template-columns: 1fr; }}
+  .duo {{ grid-template-columns: minmax(0, 1fr); }}
   /* flatten the columns so cards can interleave in reading order */
   .duo > .stack {{ display: contents; }}
   #whatif {{ order: 1; }}
@@ -1573,8 +1573,11 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 .wbtn:hover {{ border-color: var(--accent); }}
 #wgames details {{ padding: 8px 12px; }}
 #wgames summary {{ font-size: 14px; }}
+main > *, .duo > *, .cols > * {{ min-width: 0; }}
+.tablescroll {{ overflow-x: auto; }}
 .wgame {{ display: flex; align-items: center; gap: 8px; padding: 5px 0;
   border-bottom: 1px solid var(--line); flex-wrap: wrap; }}
+.wgame .pick {{ flex: 1 1 auto; min-width: 0; }}
 .wgame:last-child {{ border-bottom: none; }}
 .wgame .at {{ color: var(--dim); font-size: 12px; }}
 .wgame .wdate {{ color: var(--dim); font-size: 12px; margin-left: auto; }}
@@ -1622,7 +1625,10 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 /* the result that actually happened, until you overrule it */
 .pick.stands {{ border-color: var(--dim); border-style: dashed;
   color: var(--ink); }}
-@media (max-width: 700px) {{ .pick {{ min-width: 120px; }} }}
+@media (max-width: 700px) {{
+  .pick {{ flex: 1 1 40%; min-width: 0; }}
+  .wgame .wdate {{ margin-left: 0; }}
+}}
 </style>
 </head>
 <body>
