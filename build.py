@@ -149,12 +149,16 @@ def tracker_top(year, active, matchcard=""):
 {matchcard}"""
 
 
-SUBNAV_LINKS = [("tracker", "./", "Scenarios"), ("race", "race.html", "The Race"),
-                ("standings", "standings.html", "Standings"),
-                ("schedule", "schedule.html", "Schedule"),
-                ("brief", "brief.html", "The Brief"),
-                ("history", "history.html", "Tie history"),
-                ("how", "how.html", "How it works")]
+# Ordered the way someone actually reads the season: the summary, then the
+# race, then where everyone stands, then the toys. Every label takes "The" —
+# a name that only works without it is a sign the page needs a better name.
+SUBNAV_LINKS = [("brief", "brief.html", "The Brief"),
+                ("race", "race.html", "The Race"),
+                ("standings", "standings.html", "The Standings"),
+                ("tracker", "./", "The Lab"),
+                ("schedule", "schedule.html", "The Schedule"),
+                ("how", "how.html", "The Rules"),
+                ("history", "history.html", "The Archive")]
 
 
 def subnav(active):
@@ -463,7 +467,7 @@ def standings_page(games, overrides, display_rows, teams):
   position. The conference never publishes this and it decides nothing — it
   is what the rules produce if you ask them to sort the whole league, and it
   is the order the rest of this site uses so every team has a place to
-  stand. <a href=how.html>How it works</a> walks the steps.</p>
+  stand. <a href=how.html>The Rules</a> walks the steps.</p>
 </div>
 </div>
 </div>"""
@@ -1081,7 +1085,7 @@ STAND_CARD = """<div class="card standcard">
   <p class=note>The conference breaks ties only to name the two
   championship-game participants; positions below that stay tied in its
   official standings. This table sorts every tie for readability — see
-  <a href=standings.html>Standings</a> for both boards side by side.</p>
+  <a href=standings.html>The Standings</a> for both boards side by side.</p>
 </div>"""
 
 
@@ -1339,7 +1343,7 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   <div id=team-out class=whyout></div>
   <p class=note>Follows your what-if picks when they're active. Full
   walkthrough of the procedure:
-  <a href=how.html>how the tiebreakers work</a>.</p>
+  <a href=how.html>The Rules</a>.</p>
 </div>
 </div>
 </div>
@@ -1358,7 +1362,7 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   <a href="https://github.com/big12ology">GitHub</a> ·
   <a href=feed.xml>RSS</a> ·
   <a href=brief.html>The Brief</a> ·
-  <a href=history.html>Tie history</a> ·
+  <a href=history.html>The Archive</a> ·
   <a href=data.json>Data</a> ·
   <a href="https://big12ology.com/privacy">Privacy</a> ·
   <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
@@ -1635,7 +1639,7 @@ href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
   <a href="https://github.com/big12ology">GitHub</a> ·
   <a href=feed.xml>RSS</a> ·
   <a href=brief.html>The Brief</a> ·
-  <a href=history.html>Tie history</a> ·
+  <a href=history.html>The Archive</a> ·
   <a href=data.json>Data</a> ·
   <a href="https://big12ology.com/privacy">Privacy</a> ·
   <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
@@ -1689,17 +1693,17 @@ def main():
         f.write(build_subpage("The Race", "race", build_race_page(ctx),
                               year, ctx["matchcard"]))
     with open(os.path.join(SITE, "standings.html"), "w") as f:
-        f.write(build_subpage("Standings", "standings", ctx["standingspage"],
+        f.write(build_subpage("The Standings", "standings", ctx["standingspage"],
                               year, ctx["matchcard"]))
     with open(os.path.join(SITE, "schedule.html"), "w") as f:
-        f.write(build_subpage("Schedule", "schedule",
+        f.write(build_subpage("The Schedule", "schedule",
                               build_schedule_page(games, ctx),
                               year, ctx["matchcard"]))
     # the Brief and Tie history share the same standard top
     hist_frag = os.path.join(HERE, "history", "history_body.html")
     if os.path.exists(hist_frag):
         with open(os.path.join(SITE, "history.html"), "w") as f:
-            f.write(build_subpage("Tie history", "history",
+            f.write(build_subpage("The Archive", "history",
                                   open(hist_frag).read(),
                                   year, ctx["matchcard"]))
     print("built race.html, standings.html, schedule.html, history.html")
