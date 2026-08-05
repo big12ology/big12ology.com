@@ -13,6 +13,7 @@ import json
 import os
 import sys
 
+import chaos as chaos_mod
 import clinch as clinch_mod
 import fetch as fetcher
 import odds as odds_mod
@@ -122,14 +123,30 @@ def fmt_prob(p):
     return f"{p * 100:.1f}%".replace(".0%", "%")
 
 
-def clinch_card(games, overrides, systems):
-    """The Championship race card: proof-grade clinch/elimination statuses
-    plus Monte Carlo odds. Computed at build time from real results only —
-    what-if picks in the browser don't touch it."""
+def clinch_card(games, overrides, systems, stand_rows):
+    """The Championship race card: proof-grade clinch/elimination statuses,
+    Monte Carlo odds, and the Chaos Index. Computed at build time from real
+    results only — what-if picks in the browser don't touch it."""
     res = clinch_mod.analyze(games, overrides)
     teams = res["teams"]
     sims = odds_mod.simulate(games, systems, overrides) if systems else {}
     n_sims = sims.get("_n", 0)
+
+    chaos_html = ""
+    if sims:
+        cx = chaos_mod.index(stand_rows, res, sims)
+        ccolor = ("var(--accent)" if cx["score"] >= 55
+                  else "var(--warn)" if cx["score"] >= 35 else "var(--dim)")
+        comps = cx["components"]
+        chaos_html = (
+            f"<div class=chaosband>"
+            f"<span class=cnum style='color:{ccolor}'>{cx['score']}</span>"
+            f"<div><b>Chaos Index: {cx['label']}</b><br>"
+            f"<span class=dim>race entropy {comps['entropy']:.2f} · "
+            f"tie tangle {comps['tangle']:.2f} · "
+            f"still alive {comps['breadth']:.2f} — "
+            f"0 is a decided race, 100 is a sixteen-way pileup</span>"
+            f"</div></div>")
 
     def prob(t):
         # proofs override estimates
@@ -173,7 +190,7 @@ def clinch_card(games, overrides, systems):
             f"{' '.join(b for b in bits if b)}"
             f"<span class=dim> {i['w']}–{9 - i['r'] - i['w']}, {i['r']} left"
             f"</span>{exptxt}{scen}</div>")
-    body = "".join(rows)
+    body = chaos_html + "".join(rows)
     if eliminated:
         body += (f"<p class='dim elim'>Eliminated: "
                  f"{', '.join(esc(t) for t in eliminated)}</p>")
@@ -357,7 +374,7 @@ def render(year, games):
         year=year,
         card=card,
         whatif=whatif,
-        clinchcard=clinch_card(games, overrides, systems),
+        clinchcard=clinch_card(games, overrides, systems, rows),
         standcard=standcard,
         results=results,
         upcoming=upcoming,
@@ -585,6 +602,11 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 .obar {{ display: inline-block; width: 110px; height: 8px;
   background: var(--line); border-radius: 4px; overflow: hidden;
   vertical-align: 1px; margin: 0 6px 0 8px; }}
+.chaosband {{ display: flex; align-items: center; gap: 14px;
+  border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;
+  margin-bottom: 12px; font-size: 14px; }}
+.cnum {{ font-size: 38px; font-weight: 800; line-height: 1;
+  font-variant-numeric: tabular-nums; }}
 .obar i {{ display: block; height: 100%; border-radius: 4px; }}
 .opct {{ font-variant-numeric: tabular-nums; font-size: 14px; }}
 .clrow:last-of-type {{ border-bottom: none; }}
@@ -878,6 +900,20 @@ projected margin (home field included) in the hover text:</p>
 <div class=aside>Preseason, the models carry last season's ratings until the
 new year's numbers publish — each is labeled with the year it comes
 from.</div>
+
+<h2>The Championship race card</h2>
+<p>Three layers, in order of certainty. <b>Clinch and elimination
+statuses are proofs</b>: early in the season, strict win-count arithmetic
+that no tiebreaker can undo; from mid-November, exhaustive enumeration of
+every remaining outcome through the full procedure — which is also where the
+"clinches with a win + a Utah loss" scenario lines come from.
+<b>Percentages are Monte Carlo odds</b>: ten thousand simulations of the
+rest of the season, win probabilities from an ensemble of the public rating
+models, every simulated season scored with the real tiebreakers. Proofs
+always override odds. And the <b>Chaos Index</b> compresses the whole race
+into one number from 0 (decided) to 100 (sixteen-way pileup): 60% the
+entropy of the championship odds, 25% how many living teams are tangled in
+ties, 15% how many teams are still mathematically alive.</p>
 
 <h2>Where the data comes from</h2>
 <p>Scores arrive from

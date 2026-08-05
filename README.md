@@ -47,6 +47,10 @@ game.
   odds in the card. `tests/test_odds.py` holds the invariants (sum ≈ two
   berths, agreement with clinch proofs, determinism, finished-season
   exactness).
+- `chaos.py` — the Chaos Index, 0 (decided) to 100 (sixteen-way pileup):
+  60% odds entropy, 25% tie tangle among living teams, 15% alive breadth.
+  Shown atop the race card; formula documented on the explainer page;
+  invariants in `tests/test_chaos.py`.
 
 ## What-if simulator
 
