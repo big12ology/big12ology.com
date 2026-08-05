@@ -49,6 +49,21 @@
   .b12-head h1 .yr, .b12-head p { color: #9aa0aa; }
 }
 
+/* season switcher — the live year plus the archived ones, in the header */
+.b12-head h1 .yrpills { display: inline-flex; gap: 6px; margin-left: 8px;
+  vertical-align: middle; font-size: 14px; font-weight: 600; }
+.b12-head h1 .yrpills a, .b12-head h1 .yrpills .yron {
+  padding: 2px 9px; border-radius: 999px; line-height: 1.6;
+  border: 1px solid #e2ddd2; }
+.b12-head h1 .yrpills a { color: #6b7280; text-decoration: none; }
+.b12-head h1 .yrpills a:hover { color: #1a1c20; border-color: #c8c2b4; }
+.b12-head h1 .yrpills .yron { background: #c8102e; border-color: #c8102e;
+  color: #fff; }
+@media (prefers-color-scheme: dark) {
+  .b12-head h1 .yrpills a { color: #9aa0aa; border-color: #2f343c; }
+  .b12-head h1 .yrpills a:hover { color: #e8e6e1; border-color: #4a515c; }
+}
+
 /* module tabs / page subnav — one look everywhere */
 .subnav {
   max-width: var(--chrome-w); margin: 0 auto; padding: 12px 20px 0;
