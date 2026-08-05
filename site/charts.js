@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=7";
-import { gameTooltipHTML } from "./gametip.js?v=7";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=8";
+import { gameTooltipHTML } from "./gametip.js?v=8";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -651,16 +651,16 @@ function roadDraw(cardEl, seasonsData, teamsData) {
       byVisitor.set(g.opponent, cur);
     }
   }
+  // Conference members only — outside visitors appear once or twice and
+  // their averages are noise.
   const rows = [...byVisitor.entries()]
-    .filter(([, v]) => v.n >= 2)
+    .filter(([team, v]) => colorOf.has(team) && v.n >= 2)
     .map(([team, v]) => ({ team, avg: v.sum / v.n, n: v.n, hosts: v.hosts }))
     .sort((a, b) => b.avg - a.avg);
   if (rows.length < 4) {
-    return emptyNote(cardEl, "Not enough road games yet to compare.");
+    return emptyNote(cardEl, "Not enough conference road games yet to compare.");
   }
-  const top = rows.slice(0, 10);
-  const bottom = rows.slice(-6).filter((r) => !top.includes(r));
-  const show = [...top, ...bottom];
+  const show = rows;
 
   const rowH = 22, gap = 4;
   const m = { t: 10, r: 60, b: 26, l: 132 };
@@ -673,13 +673,12 @@ function roadDraw(cardEl, seasonsData, teamsData) {
   let marks = `<line x1="${x0}" x2="${x0}" y1="${m.t}" y2="${H - m.b}" class="grid"/>`;
   show.forEach((r, i) => {
     const y = m.t + i * (rowH + gap);
-    const isBig12 = colorOf.has(r.team);
     const fill = r.avg >= 0
       ? (isDark() ? "#4ade80" : "#0d7a3f")
       : (isDark() ? "#f87171" : "#c0392b");
     const w = Math.abs(x(r.avg) - x0);
     marks += `<rect x="${r.avg >= 0 ? x0 : x0 - w}" y="${y}" width="${w}"
-      height="${rowH}" rx="3" fill="${fill}" fill-opacity="${isBig12 ? 0.95 : 0.5}"
+      height="${rowH}" rx="3" fill="${fill}" fill-opacity="0.95"
       data-i="${i}" class="hit"/>`;
     marks += `<text x="${m.l - 8}" y="${y + rowH / 2 + 4}" text-anchor="end"
       class="lbl">${r.team.length > 15 ? r.team.slice(0, 14) + "…" : r.team}` +
@@ -757,6 +756,106 @@ function multiLine(cardEl, seriesList, xLabels, yFmt, yMinPad, yMaxPad) {
     if (p.html) return showTipHTML(e.clientX, e.clientY, p.html);
     showTip(e.clientX, e.clientY, [{ head: `${s.name} · ${p.head}` },
                                    ...p.rows]);
+  });
+  svg.addEventListener("pointerleave", hideTip);
+  cardEl.appendChild(svg);
+}
+
+
+function teamWeather(cardEl, seasonsData, teamsData, sel) {
+  const pts = [];
+  const colorOf = new Map();
+  for (const [year, season] of Object.entries(seasonsData)) {
+    const teams = teamsForSeason(teamsData, Number(year));
+    teams.forEach((x) => colorOf.set(x.team, x.color));
+    const capOf = new Map(teams.map((x) => [x.team, x]));
+    for (const g of season.games) {
+      if (g.role || g.attendance == null || !g.weather ||
+          g.weather.tempF == null || !sel.has(g.team)) continue;
+      const cap = g.capacity ?? capOf.get(g.team)?.capacity;
+      if (!cap) continue;
+      pts.push({ team: g.team, year, temp: g.weather.tempF,
+                 pct: g.attendance / cap, g, cap,
+                 rain: (g.weather.precipIn ?? 0) > 0.05 });
+    }
+  }
+  if (pts.length < 3) {
+    return emptyNote(cardEl, "Not enough games with weather for these teams.");
+  }
+  const m = { t: 30, r: 14, b: 34, l: 46 };
+  const W = 640, H = 300, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const tmin = Math.min(...pts.map((p) => p.temp)) - 4;
+  const tmax = Math.max(...pts.map((p) => p.temp)) + 4;
+  const pmin = Math.min(0.6, ...pts.map((p) => p.pct)) - 0.03;
+  const pmax = Math.max(1.05, ...pts.map((p) => p.pct)) + 0.03;
+  const x = (v) => m.l + ((v - tmin) / (tmax - tmin)) * iw;
+  const y = (v) => m.t + (1 - (v - pmin) / (pmax - pmin)) * ih;
+  let marks = "";
+  for (const gp of [0.7, 0.85, 1.0]) {
+    marks += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(gp)}" y2="${y(gp)}" class="grid"/>` +
+      `<text x="${m.l - 6}" y="${y(gp) + 4}" text-anchor="end" class="tick">${Math.round(gp * 100)}%</text>`;
+  }
+  for (const gt of [30, 50, 70, 90]) {
+    if (gt < tmin || gt > tmax) continue;
+    marks += `<text x="${x(gt)}" y="${H - 12}" text-anchor="middle" class="tick">${gt}°F</text>`;
+  }
+  let legendX = m.l;
+  [...sel].sort().forEach((team) => {
+    const mine = pts.filter((p) => p.team === team);
+    const color = colorOf.get(team) ?? "#888";
+    if (mine.length >= 3) {
+      const n = mine.length;
+      const mx = mine.reduce((s, p) => s + p.temp, 0) / n;
+      const my = mine.reduce((s, p) => s + p.pct, 0) / n;
+      let sxx = 0, sxy = 0, syy = 0;
+      for (const p of mine) {
+        sxx += (p.temp - mx) ** 2;
+        sxy += (p.temp - mx) * (p.pct - my);
+        syy += (p.pct - my) ** 2;
+      }
+      if (sxx > 0) {
+        const slope = sxy / sxx, icept = my - slope * mx;
+        const r2 = syy ? (sxy * sxy) / (sxx * syy) : 0;
+        const cl = (v) => Math.max(pmin, Math.min(pmax, v));
+        marks += `<line x1="${x(tmin + 3)}" y1="${y(cl(icept + slope * (tmin + 3)))}"
+          x2="${x(tmax - 3)}" y2="${y(cl(icept + slope * (tmax - 3)))}"
+          stroke="${color}" stroke-width="2" stroke-dasharray="6 4" opacity="0.85"/>`;
+        const per10 = slope * 10 * 100;
+        const hot = mine.filter((p) => p.temp >= 85);
+        const cold = mine.filter((p) => p.temp <= 50);
+        const avg = (a) => a.reduce((s, p) => s + p.pct, 0) / a.length;
+        let extra = "";
+        if (hot.length) {
+          extra += ` · ${(avg(hot) * 100).toFixed(0)}% when 85°F+`;
+        }
+        if (cold.length) {
+          extra += ` · ${(avg(cold) * 100).toFixed(0)}% when ≤50°F`;
+        }
+        marks += `<text x="${legendX}" y="${m.t - 12}" class="tick"
+          fill="${color}">${team}: ${per10 >= 0 ? "+" : ""}${per10.toFixed(1)}/10°F${extra}</text>`;
+        legendX += 250;
+      }
+    }
+    mine.forEach((p) => {
+      const i = pts.indexOf(p);
+      marks += `<circle cx="${x(p.temp)}" cy="${y(p.pct)}" r="${p.rain ? 5.5 : 4}"
+        fill="${color}" fill-opacity="${p.rain ? 0.95 : 0.6}"
+        ${p.rain ? `stroke="${color}" stroke-width="1.5"` : ""}
+        data-i="${i}" class="hit"/>`;
+    });
+  });
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = marks;
+  svg.addEventListener("pointermove", (e) => {
+    const el = e.target.closest(".hit");
+    if (!el) return hideTip();
+    const p = pts[Number(el.dataset.i)];
+    showTipHTML(e.clientX, e.clientY, gameTooltipHTML({
+      game: p.g, weekLabel: `Week ${p.g.week} · ${p.year}`,
+      wk: { attendance: p.g.attendance, pct: p.pct }, cap: p.cap,
+      prefix: p.team,
+    }));
   });
   svg.addEventListener("pointerleave", hideTip);
   cardEl.appendChild(svg);
@@ -843,7 +942,14 @@ export function renderTeamCharts(root, teamsData, seasonsData, currentYear, sele
       (v) => Math.round(v / 1000) + "k", 3000, 2000);
   }
 
-  root.append(c1, c2, c3);
+  const c4 = card("Weather sensitivity",
+    "Every home game with weather, per selected team; the dashed line is " +
+    "that team's own trend. A downward slope means crowds thin as it heats " +
+    "up (September in Tempe, Tucson, Lubbock); upward means the cold is " +
+    "what keeps them home");
+  teamWeather(c4, seasonsData, teamsData, selected);
+
+  root.append(c1, c2, c3, c4);
 }
 
 export function renderSeasonCharts(root, teamsData, seasonsData, currentYear) {
@@ -864,6 +970,7 @@ export function renderSeasonCharts(root, teamsData, seasonsData, currentYear) {
   root.append(c1, c2, c3);
 }
 
+
 export function renderAllTimeCharts(root, teamsData, seasonsData) {
   root.textContent = "";
   const years = Object.keys(seasonsData).sort();
@@ -879,8 +986,8 @@ export function renderAllTimeCharts(root, teamsData, seasonsData) {
   weatherScatter(c2, seasonsData, teamsData);
 
   const cRoad = card(`Road draw (${span})`,
-    "How much each visiting team lifts — or dents — the host's usual crowd. " +
-    "Big 12 members solid, outside visitors faded; two-trip samples are noisy");
+    "How much each Big 12 visitor lifts — or dents — the host's usual crowd; " +
+    "the small number is road trips in the sample");
   roadDraw(cRoad, seasonsData, teamsData);
 
   const c3 = card(`Weekly percent full, year over year (${span})`, "Each line is a season; conference-wide");
