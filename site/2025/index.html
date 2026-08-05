@@ -125,12 +125,27 @@ table.h2h { width:100%; table-layout:auto }
 .mv { font-size:11px; margin-left:5px; font-weight:600 }
 .mv.up { color:hsl(140 60% var(--pctl)) }
 .mv.down { color:hsl(6 70% var(--pctl)) }
-tr.moved td { animation:flashrow 900ms ease-out }
-@keyframes flashrow { from { background:rgba(200,16,46,.10) }
-                      to { background:transparent } }
+tr.moved.up td { animation:flashup 900ms ease-out }
+tr.moved.down td { animation:flashdown 900ms ease-out }
+@keyframes flashup { from { background:rgba(22,140,80,.16) }
+                     to { background:transparent } }
+@keyframes flashdown { from { background:rgba(200,16,46,.13) }
+                       to { background:transparent } }
 @media (prefers-reduced-motion:reduce) {
-  tr.moved td { animation:none }
+  tr.moved.up td, tr.moved.down td { animation:none }
 }
+
+/* where a team stands in the championship race, at this point in the year */
+.st-out, .teamcell.st-out { text-decoration:line-through;
+  text-decoration-color:var(--dim); opacity:.62 }
+.teamcell.st-in { font-weight:700 }
+.teamcell.st-top { font-style:italic }
+
+/* the replay's own controls, same chrome as the Lab's */
+.wbtn { font:inherit; font-size:14px; border:1px solid var(--line);
+  background:var(--panel); color:var(--ink); border-radius:8px;
+  padding:6px 14px; cursor:pointer }
+.wbtn:hover { border-color:var(--accent) }
 
 /* ---- how the season moved ---- */
 .bumpwrap { overflow-x:auto }

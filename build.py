@@ -460,7 +460,18 @@ def season_frames(games, overrides):
     everyone = sorted(clinch_mod.conf_teams(games))
     out = []
     for w in weeks:
-        sub = [g for g in games if g["week"] <= w]
+        # Weeks that had not happened yet are unplayed, not missing. Dropping
+        # them outright would tell the clinch analysis the season was over.
+        sub = []
+        for g in games:
+            if g["week"] <= w:
+                sub.append(g)
+                continue
+            later = dict(g)
+            later["completed"] = False
+            later["home_points"] = None
+            later["away_points"] = None
+            sub.append(later)
         rows = tb.standings(sub, overrides)
         display = pad_standings(rows, sub)
         seen = {r["team"] for r in display}
@@ -471,20 +482,23 @@ def season_frames(games, overrides):
         } for t in everyone if t not in seen]
         last = max((g["start"] or "" for g in sub
                     if g["week"] == w and g["completed"]), default="")
+        cl = clinch_mod.analyze(sub, overrides)["teams"]
+        status = {t: cl.get(t, {}).get("status", "alive") for t in everyone}
         left = []
         for b in official_board(sub, overrides, display):
             for i, t in enumerate(b["teams"]):
                 r = next(x for x in display if x["team"] == t)
                 left.append({"t": t, "p": b["pos"], "w": r["conf_w"],
                              "l": r["conf_l"], "n": len(b["teams"]),
-                             "i": i})
+                             "i": i, "s": status[t]})
         out.append({
             "w": w,
             "label": f"Week {w}",
             "date": pretty_date(last, "short") if last else "",
             "left": left,
             "right": [{"t": r["team"], "p": str(r["rank"] or "—"),
-                       "w": r["conf_w"], "l": r["conf_l"]} for r in display],
+                       "w": r["conf_w"], "l": r["conf_l"],
+                       "s": status[r["team"]]} for r in display],
         })
     return out
 
@@ -553,6 +567,17 @@ def bump_svg(frames, teams):
             f"calendar date.</p></div>")
 
 
+def status_class(state, pos):
+    """How a team's championship standing reads in the board: a team that
+    can no longer reach the title game is struck through, one that has
+    clinched a berth is bold, and the top seed among them is italic too."""
+    if state == "eliminated":
+        return " st-out"
+    if state == "clinched":
+        return " st-in st-top" if pos == "1" else " st-in"
+    return ""
+
+
 def standings_page(games, overrides, display_rows, teams):
     """Two boards side by side, drawn with the same chrome as the main
     standings table so the only difference a reader sees is the ordering.
@@ -561,11 +586,15 @@ def standings_page(games, overrides, display_rows, teams):
     head = ("<thead><tr><th></th><th>Team</th><th>Conf</th><th>Pct</th>"
             "</tr></thead>")
     by_team = {r["team"]: r for r in display_rows}
+    frames = season_frames(games, overrides)
+    state = ({r["t"]: r["s"] for r in frames[-1]["right"]} if frames else {})
 
-    def cells(r):
+    def cells(r, pos=None):
         p = tb.pct(r["conf_w"], r["conf_l"])
         c = team_color(teams, r["team"])
-        return (f"<td class=teamcell><span class=cbar style='background:{c}'>"
+        st = status_class(state.get(r["team"]), pos)
+        return (f"<td class='teamcell{st}'><span class=cbar "
+                f"style='background:{c}'>"
                 f"</span>{logo_img(r['team'])}{esc(r['team'])}</td>"
                 f"<td>{r['conf_w']}–{r['conf_l']}</td>"
                 + ("<td>—</td>" if p is None else
@@ -579,12 +608,12 @@ def standings_page(games, overrides, display_rows, teams):
             pos = (f"<td class=posc{span}>{esc(b['pos'])}</td>"
                    if i == 0 else "")
             cls = " class=grpend" if i == n - 1 and n > 1 else ""
-            left.append(f"<tr{cls}>{pos}{cells(by_team[t])}</tr>")
+            left.append(f"<tr{cls}>{pos}{cells(by_team[t], b['pos'])}</tr>")
 
-    right = "".join(f"<tr><td class=posc>{r['rank'] or '—'}</td>{cells(r)}</tr>"
-                    for r in display_rows)
+    right = "".join(
+        f"<tr><td class=posc>{r['rank'] or '—'}</td>"
+        f"{cells(r, str(r['rank'] or '—'))}</tr>" for r in display_rows)
 
-    frames = season_frames(games, overrides)
     replay = ""
     if len(frames) > 1:
         marks = {t: {"color": team_color(teams, t),
@@ -599,7 +628,13 @@ def standings_page(games, overrides, display_rows, teams):
                   "morning after the week you pick. Every frame is the real "
                   "rules engine run against the results that existed at the "
                   "time, so what you see is what the standings actually "
-                  "were — not a reconstruction.</p></div>"
+                  "were — not a reconstruction. A team that could still "
+                  "reach the championship game that week is plain, "
+                  "<b>bold</b> once its berth was clinched and "
+                  "<b><i>bold italic</i></b> for the top seed; "
+                  "<span class=st-out>struck through</span> means "
+                  "eliminated. Rows flash green when a team climbed and red "
+                  "when it fell.</p></div>"
                   "<script id=replay-data type=application/json>"
                   + json.dumps({"frames": frames, "teams": marks})
                   + "</script>")
@@ -997,12 +1032,27 @@ table.h2h { width:100%; table-layout:auto }
 .mv { font-size:11px; margin-left:5px; font-weight:600 }
 .mv.up { color:hsl(140 60% var(--pctl)) }
 .mv.down { color:hsl(6 70% var(--pctl)) }
-tr.moved td { animation:flashrow 900ms ease-out }
-@keyframes flashrow { from { background:rgba(200,16,46,.10) }
-                      to { background:transparent } }
+tr.moved.up td { animation:flashup 900ms ease-out }
+tr.moved.down td { animation:flashdown 900ms ease-out }
+@keyframes flashup { from { background:rgba(22,140,80,.16) }
+                     to { background:transparent } }
+@keyframes flashdown { from { background:rgba(200,16,46,.13) }
+                       to { background:transparent } }
 @media (prefers-reduced-motion:reduce) {
-  tr.moved td { animation:none }
+  tr.moved.up td, tr.moved.down td { animation:none }
 }
+
+/* where a team stands in the championship race, at this point in the year */
+.st-out, .teamcell.st-out { text-decoration:line-through;
+  text-decoration-color:var(--dim); opacity:.62 }
+.teamcell.st-in { font-weight:700 }
+.teamcell.st-top { font-style:italic }
+
+/* the replay's own controls, same chrome as the Lab's */
+.wbtn { font:inherit; font-size:14px; border:1px solid var(--line);
+  background:var(--panel); color:var(--ink); border-radius:8px;
+  padding:6px 14px; cursor:pointer }
+.wbtn:hover { border-color:var(--accent) }
 
 /* ---- how the season moved ---- */
 .bumpwrap { overflow-x:auto }

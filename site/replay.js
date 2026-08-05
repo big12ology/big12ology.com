@@ -37,9 +37,19 @@
       : "";
   }
 
-  function teamCell(t) {
-    return "<td class=teamcell><span class=cbar style='background:" +
-      color(t) + "'></span>" + mark(t) + esc(t) + "</td>";
+  // Struck through once a team can no longer reach the title game, bold
+  // once it has clinched a berth, bold italic for the top seed.
+  function statusClass(state, pos) {
+    if (state === "eliminated") return " st-out";
+    if (state === "clinched") return pos === "1" ? " st-in st-top" : " st-in";
+    return "";
+  }
+
+  function teamCell(r, pos) {
+    var t = r.t;
+    return "<td class='teamcell" + statusClass(r.s, pos) +
+      "'><span class=cbar style='background:" + color(t) + "'></span>" +
+      mark(t) + esc(t) + "</td>";
   }
 
   function recCells(r) {
@@ -67,7 +77,8 @@
           esc(r.p) + "</td>"
         : "";
       var cls = (r.n > 1 && r.i === r.n - 1) ? " class=grpend" : "";
-      return "<tr" + cls + ">" + pos + teamCell(r.t) + recCells(r) + "</tr>";
+      return "<tr" + cls + ">" + pos + teamCell(r, r.p) + recCells(r) +
+        "</tr>";
     }).join("");
   }
 
@@ -78,8 +89,9 @@
       var mv = d === 0 ? "" :
         "<span class='mv " + (d > 0 ? "up" : "down") + "'>" +
         (d > 0 ? "▲" : "▼") + Math.abs(d) + "</span>";
-      return "<tr" + (d ? " class=moved" : "") + "><td class=posc>" +
-        esc(r.p) + mv + "</td>" + teamCell(r.t) + recCells(r) + "</tr>";
+      var cls = d === 0 ? "" : " class='moved " + (d > 0 ? "up" : "down") + "'";
+      return "<tr" + cls + "><td class=posc>" + esc(r.p) + mv + "</td>" +
+        teamCell(r, r.p) + recCells(r) + "</tr>";
     }).join("");
   }
 
