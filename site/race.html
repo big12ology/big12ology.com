@@ -82,8 +82,14 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   .duo > .stack { display:contents }
 }
 .tablescroll { overflow-x:auto }
-table.h2h { width:auto }
-.h2h th, .h2h td { padding:3px 6px; font-size:11.5px; white-space:nowrap }
+table.h2h { width:100%; table-layout:auto }
+.h2h th, .h2h td { padding:6px 4px; font-size:13px; white-space:nowrap;
+  text-align:center }
+.h2h td.teamcell, .h2h thead th:first-child { text-align:left;
+  padding-left:2px }
+.h2h thead th { font-size:12px; letter-spacing:.02em }
+.hatag { display:inline-block; min-width:11px; margin-right:4px;
+  font-size:10px; font-weight:700; color:var(--dim); vertical-align:1px }
 .selfcell { color:var(--line) }
 .nomeet { color:var(--line); text-align:center }
 </style></head><body>

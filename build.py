@@ -313,16 +313,21 @@ def h2h_card(games, teams, stand_rows):
                 theirs = g["away_points"] if g["home"] == a else g["home_points"]
                 won = mine > theirs
                 color = winpct_color(1.0 if won else 0.0)
+                home_game = g["home"] == a
                 cells.append(
                     f"<td style='color:{color}' title='{esc(a)} "
                     f"{'def.' if won else 'lost to'} {esc(b)} "
-                    f"{mine}–{theirs} ({date})'>"
+                    f"{mine}–{theirs} ({date}, "
+                    f"{'home' if home_game else 'away'})'>"
+                    f"<span class=hatag>{'H' if home_game else 'A'}</span>"
                     f"{'W' if won else 'L'} {mine}–{theirs}</td>")
             else:
-                at = "vs" if g["home"] == a else "at"
+                home_game = g["home"] == a
+                at = "vs" if home_game else "at"
                 cells.append(
                     f"<td class=dim title='{esc(a)} {at} {esc(b)}, "
-                    f"{date}'>wk {g['week']}</td>")
+                    f"{date}'><span class=hatag>{'H' if home_game else 'A'}"
+                    f"</span>wk {g['week']}</td>")
         body.append(f"<tr><td class=teamcell>{logo_img(a, 14)}"
                     f"{esc(a)}</td>{''.join(cells)}</tr>")
     return ("<div class=card id=h2hcard><h2>Head-to-head grid</h2>"
@@ -330,7 +335,8 @@ def h2h_card(games, teams, stand_rows):
             + head + "</tr></thead><tbody>" + "".join(body)
             + "</tbody></table></div>"
             "<p class=note>Every conference meeting this season, read "
-            "across: the row team's result or the scheduled week. A dot "
+            "across: H marks a home game and A an away game, then the row "
+            "team's result or the scheduled week. A dot "
             "means the schedule never pairs them — in a nine-game draw "
             "that's more than a third of the grid, which is why the "
             "tiebreakers exist.</p></div>")
@@ -662,8 +668,14 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   .duo > .stack { display:contents }
 }
 .tablescroll { overflow-x:auto }
-table.h2h { width:auto }
-.h2h th, .h2h td { padding:3px 6px; font-size:11.5px; white-space:nowrap }
+table.h2h { width:100%; table-layout:auto }
+.h2h th, .h2h td { padding:6px 4px; font-size:13px; white-space:nowrap;
+  text-align:center }
+.h2h td.teamcell, .h2h thead th:first-child { text-align:left;
+  padding-left:2px }
+.h2h thead th { font-size:12px; letter-spacing:.02em }
+.hatag { display:inline-block; min-width:11px; margin-right:4px;
+  font-size:10px; font-weight:700; color:var(--dim); vertical-align:1px }
 .selfcell { color:var(--line) }
 .nomeet { color:var(--line); text-align:center }
 """
