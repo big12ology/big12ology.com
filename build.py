@@ -103,6 +103,18 @@ def asset_v(name):
     return f"{name}?v={h}"
 
 
+def rebase(html):
+    """Point a prebuilt fragment's assets at the shared copies. The tie
+    archive is generated once by gen_history.py with paths relative to the
+    site root, so an archived season would look for them inside its own
+    directory and find nothing."""
+    if not BASE:
+        return html
+    return (html.replace("src='logos/", f"src='{BASE}logos/")
+                .replace('src="logos/', f'src="{BASE}logos/')
+                .replace("src=logos/", f"src={BASE}logos/"))
+
+
 def year_href(y):
     """Link from wherever we are now to another season's front page."""
     return BASE if y == LIVE_YEAR else f"{BASE}{y}/"
@@ -1003,10 +1015,17 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   gap:18px; align-items:start }
 .duo > .stack { display:grid; gap:18px; align-content:start; min-width:0 }
 @media (max-width: 900px) {
-  .duo { grid-template-columns:1fr }
-  .duo > .stack { display:contents }
+  /* .duo.even is more specific than .duo, so it has to be named here too or
+     the two boards stay side by side at 166px each on a phone. */
+  .duo, .duo.even { grid-template-columns:1fr }
+  .duo > .stack, .duo.even > .stack { display:contents }
+  .duo.even .card { height:auto }
 }
-.tablescroll { overflow-x:auto }
+.tablescroll, .tablewrap { overflow-x:auto }
+/* Grid items default to min-width:auto, so a wide child — the
+   movement chart, a table — pushes the whole page sideways on a
+   phone instead of scrolling inside its own box. */
+main > * { min-width:0 }
 table.h2h { width:100%; table-layout:auto }
 .h2h th, .h2h td { padding:6px 4px; font-size:13px; white-space:nowrap;
   text-align:center }
@@ -1024,8 +1043,12 @@ table.h2h { width:100%; table-layout:auto }
 /* ---- season replay ---- */
 #replaybar .rpline { display:flex; align-items:center; gap:10px;
   flex-wrap:wrap }
-#replaybar input[type=range] { flex:1 1 220px; min-width:180px;
+#replaybar input[type=range] { flex:1 1 200px; min-width:140px;
   accent-color:var(--accent) }
+@media (max-width:640px) {
+  #replaybar #rp-label { flex:1 0 100%; min-width:0 !important; order:9 }
+  #replaybar #rp-now { order:8 }
+}
 #replaybar #rp-label { font-size:14px; color:var(--dim) }
 #replaybar #rp-prev, #replaybar #rp-next { padding:6px 10px }
 #replaycard.scrubbed { border-color:var(--accent) }
@@ -1993,23 +2016,36 @@ def build_season(year, games, outdir, base, feed=True):
     rows = tb.standings(games, overrides)
     display_rows = pad_standings(rows, games)
 
+    yr = f"the {year} Big 12 season"
     pages = [
-        ("race.html", "The Race", "race", build_race_page(ctx)),
+        ("race.html", "The Race", "race", build_race_page(ctx),
+         f"Who is in, who is out and who controls their own fate in {yr} — "
+         "clinch and elimination proofs, championship-game odds, and the "
+         "Chaos Index.", ""),
         ("standings.html", "The Standings", "standings", ctx["standingspage"],
+         "The Big 12 standings as the conference keeps them, with ties left "
+         f"standing, next to the same {year} board with every tie broken — "
+         "plus a week-by-week replay of how the season moved.",
          f'<script defer src="{base}{asset_v("pct.js")}"></script>'
          f'<script defer src="{base}{asset_v("replay.js")}"></script>'),
         ("schedule.html", "The Schedule", "schedule",
-         build_schedule_page(games, ctx)),
+         build_schedule_page(games, ctx),
+         f"Every remaining game in {yr} and every result so far, by week.",
+         ""),
     ]
     hist_frag = os.path.join(HERE, "history", "history_body.html")
     if os.path.exists(hist_frag):
         pages.append(("history.html", "The Archive", "history",
-                      open(hist_frag).read()))
-    for fname, title, active, body, *extra in pages:
+                      rebase(open(hist_frag).read()),
+                      "Every Big 12 tie since 2017, what the tiebreakers "
+                      "produced, and where a different reading of the rules "
+                      "would have sent a different team to the title game.",
+                      ""))
+    for fname, title, active, body, desc, head in pages:
         with open(os.path.join(outdir, fname), "w") as f:
             f.write(build_subpage(title, active, body, year,
-                                  ctx["matchcard"],
-                                  head=extra[0] if extra else ""))
+                                  ctx["matchcard"], canon=canon + fname,
+                                  desc=desc, head=head))
 
     build_explainer(year, ctx["matchcard"], outdir)
 
@@ -2057,6 +2093,37 @@ def build_season(year, games, outdir, base, feed=True):
     print(f"built {year} -> {outdir}")
 
 
+def write_discovery(years):
+    """A sitemap. Without one a crawler has to guess that
+    the archived seasons exist at all — nothing links to 2024 except the
+    year pills, and the pages carry no dated signal of their own."""
+    site = "https://big12ology.com/tiebreaker/"
+    subs = ["", "lab.html", "race.html", "standings.html", "schedule.html",
+            "how.html", "history.html"]
+    today = datetime.date.today().isoformat()
+    urls = []
+    for y in years:
+        base = site if y == LIVE_YEAR else f"{site}{y}/"
+        for p in subs:
+            # A finished season never changes again; the live one changes
+            # after every game.
+            freq = "weekly" if y == LIVE_YEAR else "yearly"
+            pri = "1.0" if (y == LIVE_YEAR and not p) else (
+                "0.8" if y == LIVE_YEAR else "0.5")
+            urls.append(f"  <url><loc>{base}{p}</loc>"
+                        f"<lastmod>{today}</lastmod>"
+                        f"<changefreq>{freq}</changefreq>"
+                        f"<priority>{pri}</priority></url>")
+    with open(os.path.join(SITE, "sitemap.xml"), "w") as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                + "\n".join(urls) + "\n</urlset>\n")
+    # No robots.txt here on purpose: crawlers only read it at the origin
+    # root, and this is a project site under /tiebreaker/. The real one
+    # lives in the big12ology.github.io repo and points at this sitemap.
+    print(f"built sitemap.xml ({len(urls)} urls)")
+
+
 def main():
     global LIVE_YEAR
     argv = [a for a in sys.argv[1:] if not a.startswith("--")]
@@ -2073,6 +2140,7 @@ def main():
                 continue
             build_season(y, load_games(y), os.path.join(SITE, str(y)), "../",
                          feed=False)
+    write_discovery([year] + [y for y in ARCHIVE_YEARS if y != year])
 
 
 if __name__ == "__main__":
