@@ -110,3 +110,12 @@ Shared with the attendance tracker; break them only deliberately.
    RSS keeps RFC 822 because parsers require it.
 5. **One chrome.** Header, pill nav, and matchup card come from
    `tracker_top()` and `brand.css`; no page redefines them.
+6. **The same quantity is presented the same way everywhere it appears.**
+   Two tables of the same thing must encode it identically — same symbol,
+   same colour, same position in the row. Movement between weeks is a
+   `▲`/`▼` with the places gained, trailing the team name, on *both*
+   standings boards; a rise is green and a fall is red in the arrow and in
+   the row flash alike. When the structure of one view makes the shared
+   placement awkward, change the placement in both, not in one. A reader
+   comparing two boards should be spending their attention on the numbers,
+   not relearning the legend.

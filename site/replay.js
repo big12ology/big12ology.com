@@ -86,7 +86,9 @@
     return null;
   }
 
-  // Places gained since the previous frame; positive is a climb.
+  // Places gained since the previous frame; positive is a climb. Both
+  // boards render this identically, in the same place — see the
+  // presentation rules in README.md.
   function arrow(d) {
     return d === 0 ? "" :
       "<span class='mv " + (d > 0 ? "up" : "down") + "'>" +
@@ -119,9 +121,11 @@
       var was = priorRank(k, r.t);
       var d = was === null ? 0 : was - (i + 1);
       var cls = movedClass(d);
+      // Same placement as the official board: movement trails the team
+      // name on both, so the eye finds it in one place.
       return "<tr" + (cls ? " class='" + cls.trim() + "'" : "") +
-        "><td class=posc>" + esc(r.p) + arrow(d) + "</td>" +
-        teamCell(r, r.p) + recCells(r) + "</tr>";
+        "><td class=posc>" + esc(r.p) + "</td>" +
+        teamCell(r, r.p, arrow(d)) + recCells(r) + "</tr>";
     }).join("");
   }
 
