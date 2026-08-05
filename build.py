@@ -1423,7 +1423,7 @@ TEMPLATE = """<!doctype html>
 <meta property=og:type content=website>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="The Lab · Big 12 what-if simulator — {year}">
-<meta property=og:description content="The official Big 12 tiebreaking procedures applied to live results after every game — plus a what-if simulator with five rating models.">
+<meta property=og:description content="The official Big 12 tiebreaking procedures applied to live results after every game — plus a what-if simulator you can run on this season or replay against a finished one.">
 <meta property=og:url content="{canon}">
 <meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
 <meta property=og:image:width content=1200>
