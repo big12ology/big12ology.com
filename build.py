@@ -44,6 +44,11 @@ def load_ratings(year):
     return json.load(open(p)) if os.path.exists(p) else {"systems": {}}
 
 
+def load_lines(year):
+    p = os.path.join(HERE, "data", f"lines_{year}.json")
+    return json.load(open(p)) if os.path.exists(p) else {}
+
+
 MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS"]
 
 
@@ -223,8 +228,8 @@ def sos_card(games, systems):
             "</div>")
 
 
-def scorecard_card(games, systems):
-    tal = scorecard_mod.tally(games, systems)
+def scorecard_card(games, systems, lines=None):
+    tal = scorecard_mod.tally(games, systems, lines)
     played = any(v["w"] + v["l"] > 0 for v in tal.values())
     if not played:
         return ("<div class=card id=modelcard><h2>Model scorecard</h2>"
@@ -237,16 +242,20 @@ def scorecard_card(games, systems):
         v = tal[name]
         tot = v["w"] + v["l"]
         pct = v["w"] / tot if tot else 0
+        label = ("<b>Vegas</b> <span class=dim>(closing line)</span>"
+                 if name == "Vegas" else esc(name))
         rows.append(
-            f"<tr><td>{esc(name)}</td><td>{v['w']}–{v['l']}</td>"
+            f"<tr><td>{label}</td><td>{v['w']}–{v['l']}</td>"
             f"<td style='color:{winpct_color(pct)}'>{pct:.3f}</td></tr>")
     return ("<div class=card id=modelcard><h2>Model scorecard</h2>"
             "<table><thead><tr><th>Model</th><th>Favorites</th><th>Pct</th>"
             "</tr></thead><tbody>" + "".join(rows) + "</tbody></table>"
             "<p class=note>Each system's favorites in completed games "
             "involving Big 12 teams (both sides rated; FCS games skipped). "
-            "Favorites are judged with the ratings as currently published, "
-            "which drift slightly from what they were at kickoff.</p></div>")
+            "Judged against the market's closing-line favorites. One "
+            "honesty note: the models pick with their currently published "
+            "ratings, which have seen the games they're grading — Vegas's "
+            "number was locked at kickoff. Respect the house.</p></div>")
 
 
 def clinch_card(games, overrides, systems, stand_rows, sims):
@@ -553,6 +562,7 @@ def render(year, games):
     overrides = tb.load_overrides()
     teams = load_teams()
     systems = load_ratings(year).get("systems", {})
+    lines = load_lines(year)
     track, _wk = next_conf_week_ids(games)
     sims = (odds_mod.simulate(games, systems, overrides, track=track)
             if systems else {})
@@ -682,7 +692,7 @@ def render(year, games):
         "clinchcard": clinch_card(games, overrides, systems, rows, sims),
         "levcard": leverage_card(games, sims) if sims else "",
         "soscard": sos_card(games, systems),
-        "modelcard": scorecard_card(games, systems),
+        "modelcard": scorecard_card(games, systems, lines),
         "sims": sims,
     }
     return page, ctx
@@ -1282,6 +1292,7 @@ def main():
     if "--fetch" in sys.argv:
         games = fetcher.fetch_season(year)
         fetcher.fetch_ratings(year)
+        fetcher.fetch_lines(year)
         if not os.path.exists(os.path.join(HERE, "data", "teams.json")):
             fetcher.fetch_teams()
     else:

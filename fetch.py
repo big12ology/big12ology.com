@@ -131,6 +131,28 @@ def fetch_ratings(year):
     return {"systems": systems}
 
 
+def fetch_lines(year):
+    """Closing spreads for games involving Big 12 teams. Averaged across
+    providers; CFBD convention is the home-team spread (negative = home
+    favored). Writes data/lines_<year>.json = {game_id: spread}."""
+    os.makedirs(DATA, exist_ok=True)
+    raw = get(f"lines?year={year}", key())
+    out = {}
+    for g in raw if isinstance(raw, list) else []:
+        if g.get("homeConference") != "Big 12" \
+                and g.get("awayConference") != "Big 12":
+            continue
+        spreads = [l.get("spread") for l in g.get("lines", [])
+                   if l.get("spread") is not None]
+        if spreads:
+            out[str(g["id"])] = round(sum(spreads) / len(spreads), 1)
+    p = os.path.join(DATA, f"lines_{year}.json")
+    with open(p, "w") as f:
+        json.dump(out, f, indent=1)
+    print(f"{year}: closing lines for {len(out)} games -> {p}")
+    return out
+
+
 def fetch_teams():
     """Team colors/abbreviations -> data/teams.json (one call, rarely changes)."""
     os.makedirs(DATA, exist_ok=True)
@@ -149,5 +171,6 @@ if __name__ == "__main__":
     year = int(sys.argv[1]) if len(sys.argv) > 1 else 2026
     fetch_season(year, force="--force" in sys.argv)
     fetch_ratings(year)
+    fetch_lines(year)
     if not os.path.exists(os.path.join(DATA, "teams.json")):
         fetch_teams()

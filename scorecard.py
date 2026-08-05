@@ -11,11 +11,31 @@ stateless builds don't keep.
 import tiebreaker as tb
 
 
-def tally(games, systems):
+def tally(games, systems, lines=None):
     """{system: {"w": int, "l": int, "push": int}} over completed,
     non-championship games where both sides are rated (FCS floor games are
-    skipped — every model picks those, nobody gets credit)."""
+    skipped — every model picks those, nobody gets credit). When closing
+    lines are supplied, a "Vegas" entry scores the market's favorites the
+    same way (home spread, negative = home favored)."""
     out = {}
+    if lines:
+        w = l = push = 0
+        for g in games:
+            if not g["completed"] or g.get("ccg"):
+                continue
+            win = tb.winner(g)
+            spread = lines.get(str(g["id"]))
+            if win is None or spread is None:
+                continue
+            if spread == 0:
+                push += 1
+                continue
+            fav = g["home"] if spread < 0 else g["away"]
+            if fav == win:
+                w += 1
+            else:
+                l += 1
+        out["Vegas"] = {"w": w, "l": l, "push": push}
     for name, s in systems.items():
         r, hfa = s["ratings"], s["hfa"]
         w = l = push = 0
