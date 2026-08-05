@@ -102,7 +102,14 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   .duo > .stack, .duo.even > .stack { display:contents }
   .duo.even .card { height:auto }
 }
-.tablescroll, .tablewrap { overflow-x:auto }
+.tablescroll, .tablewrap { overflow-x:auto; position:relative }
+/* Same cue as the attendance tracker's season grid: a fade at the live edge
+   so a table that runs past the card does not look like it stops there. */
+.scrollbox { position:relative }
+.scrollbox::after { content:""; position:absolute; top:0; right:0; bottom:0;
+  width:38px; pointer-events:none; opacity:1; transition:opacity .18s ease;
+  background:linear-gradient(to right, transparent, var(--panel)) }
+.scrollbox.at-end::after { opacity:0 }
 /* Grid items default to min-width:auto, so a wide child — the
    movement chart, a table — pushes the whole page sideways on a
    phone instead of scrolling inside its own box. */
@@ -172,7 +179,8 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .bumpwrap:hover .bteam { opacity:.22 }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
-</style></head><body>
+</style>
+<script defer src="../scrollcue.js?v=5fef00f1"></script></head><body>
 <nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
 <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a></nav>
 <header class=b12-head>

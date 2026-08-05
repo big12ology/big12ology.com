@@ -389,7 +389,8 @@ def h2h_card(games, teams, stand_rows):
         body.append(f"<tr><td class=teamcell>{logo_img(a, 14)}"
                     f"{esc(a)}</td>{''.join(cells)}</tr>")
     return ("<div class=card id=h2hcard><h2>Head-to-head grid</h2>"
-            "<div class=tablescroll><table class=h2h><thead><tr><th></th>"
+            '<div class="tablescroll scrollbox"><table class=h2h>'
+            '<thead><tr><th></th>'
             + head + "</tr></thead><tbody>" + "".join(body)
             + "</tbody></table></div>"
             "<p class=note>Every conference meeting this season, read "
@@ -1029,7 +1030,14 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   .duo > .stack, .duo.even > .stack { display:contents }
   .duo.even .card { height:auto }
 }
-.tablescroll, .tablewrap { overflow-x:auto }
+.tablescroll, .tablewrap { overflow-x:auto; position:relative }
+/* Same cue as the attendance tracker's season grid: a fade at the live edge
+   so a table that runs past the card does not look like it stops there. */
+.scrollbox { position:relative }
+.scrollbox::after { content:""; position:absolute; top:0; right:0; bottom:0;
+  width:38px; pointer-events:none; opacity:1; transition:opacity .18s ease;
+  background:linear-gradient(to right, transparent, var(--panel)) }
+.scrollbox.at-end::after { opacity:0 }
 /* Grid items default to min-width:auto, so a wide child — the
    movement chart, a table — pushes the whole page sideways on a
    phone instead of scrolling inside its own box. */
@@ -1125,7 +1133,8 @@ def build_subpage(title, active, body, year, matchcard,
 <link rel=icon type=image/svg+xml href={BASE}favicon.svg>
 <link rel=stylesheet href={BASE}brand.css>
 <link rel=alternate type=application/rss+xml href={BASE}feed.xml>
-<style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>{head}</head><body>
+<style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
+<script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
 <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a></nav>
 {tracker_top(year, active, matchcard)}
@@ -1294,7 +1303,7 @@ def render(year, games):
               "<button id=sort-raw>Raw wins</button></div>")
     # display_rows always carries all sixteen teams, so the table is never
     # hidden — the preseason view is a legitimate 0-0 board.
-    table = ("<div id=tablewrap class=tablescroll>" + sorter +
+    table = ("<div id=tablewrap class='tablescroll scrollbox'>" + sorter +
              "<table><thead><tr><th></th><th>Team</th><th>Conf</th>"
              "<th>Pct</th><th>Non-conf</th><th>Overall</th></tr></thead>"
              "<tbody id=stand>"
@@ -1371,6 +1380,7 @@ def render(year, games):
         base=BASE,
         v_engine=asset_v("engine.js"),
         v_pct=asset_v("pct.js"),
+        v_scroll=asset_v("scrollcue.js"),
         v_app=asset_v("app.js"),
         canon=(f"{site_url}lab.html" if year == LIVE_YEAR
                else f"{site_url}{year}/lab.html"),
@@ -1582,7 +1592,13 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 #wgames details {{ padding: 8px 12px; }}
 #wgames summary {{ font-size: 14px; }}
 main > *, .duo > *, .cols > * {{ min-width: 0; }}
-.tablescroll {{ overflow-x: auto; }}
+.tablescroll {{ overflow-x: auto; position: relative; }}
+.scrollbox {{ position: relative; }}
+.scrollbox::after {{ content: ""; position: absolute; top: 0; right: 0;
+  bottom: 0; width: 38px; pointer-events: none; opacity: 1;
+  transition: opacity .18s ease;
+  background: linear-gradient(to right, transparent, var(--panel)); }}
+.scrollbox.at-end::after {{ opacity: 0; }}
 .wgame {{ display: flex; align-items: center; gap: 8px; padding: 5px 0;
   border-bottom: 1px solid var(--line); flex-wrap: wrap; }}
 .wgame .pick {{ flex: 1 1 auto; min-width: 0; }}
@@ -1674,6 +1690,7 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 </main>
 <script id=payload type=application/json>{payload}</script>
 <script src={base}{v_engine}></script>
+<script defer src={base}{v_scroll}></script>
 <script src={base}{v_pct}></script>
 <script src={base}{v_app}></script>
 <footer class=b12-footer>
