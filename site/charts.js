@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=14";
-import { gameTooltipHTML } from "./gametip.js?v=14";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=15";
+import { gameTooltipHTML } from "./gametip.js?v=15";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -592,10 +592,21 @@ function weatherScatter(cardEl, seasonsData, teamsData) {
 
 // ---- panel 7: records watch ------------------------------------------------
 
+// Records span every tracked season, so these dates keep their year.
+const REC_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+                 "Sep", "Oct", "Nov", "Dec"];
+
+function recDate(e) {
+  if (!e.date) return e.year;
+  const [y, m, d] = e.date.split("-").map(Number);
+  return `${REC_MON[m - 1]} ${d}, ${y}`;
+}
+
 function recordsWatch(cardEl, seasonsData, teamsData) {
   const best = new Map();   // team -> {crowd, pct, game}
   const streaks = new Map(); // team -> current consecutive sellouts
   const ended = new Map();  // team -> how the last streak died
+  const lastSellout = new Map(); // team -> most recent sellout
   const years = Object.keys(seasonsData).sort();
   for (const year of years) {
     const season = seasonsData[year];
@@ -616,9 +627,10 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
       const cur = streaks.get(g.team) ?? 0;
       if (p >= 1) {
         streaks.set(g.team, cur + 1);
+        lastSellout.set(g.team, { opp: g.opponent, year, date: g.date });
       } else {
         if (cur > 0) {
-          ended.set(g.team, { count: cur, opp: g.opponent, year,
+          ended.set(g.team, { count: cur, opp: g.opponent, year, date: g.date,
                               pct: p, short: cap - g.attendance });
         }
         streaks.set(g.team, 0);
@@ -632,11 +644,13 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
       const s = streaks.get(team) ?? 0;
       let cell;
       if (s > 0) {
-        cell = `<span class="rw-good">${s} game${s > 1 ? "s" : ""} active</span>`;
+        const l = lastSellout.get(team);
+        cell = `<span class="rw-good">${s} game${s > 1 ? "s" : ""} active</span>` +
+          (l ? `<span class="rw-sub">Last ${l.opp} ${recDate(l)}</span>` : "");
       } else if (ended.has(team)) {
         const e = ended.get(team);
-        cell = `<span class="rw-bad">ended</span><span class="rw-sub">` +
-          `after ${e.count} · ${e.opp} ${e.year}, ${num(e.short)} short</span>`;
+        cell = `<span class="rw-bad">ended after ${e.count}</span>` +
+          `<span class="rw-sub">Last ${e.opp} ${recDate(e)}</span>`;
       } else {
         cell = `<span class="rw-dim">none</span>` +
           `<span class="rw-sub">no sellout since ${first}</span>`;
