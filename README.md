@@ -37,6 +37,10 @@ game.
   (~18 games, mid-November), exhaustive enumeration through the real engine
   yields exact statuses and this-week clinch scenarios. Computed at build
   time only — the what-if simulator doesn't touch it.
+- `tests/test_ccg_history.py` — the strongest ground truth available: the
+  engine's top two must equal the championship-game pairing the conference
+  actually made, for all nine seasons of the CCG era (2017–2025). Published
+  standings can't be used — they list tied teams as an unordered block.
 - `tests/test_clinch.py` — replays 2025 truncated at seven dates and checks
   the invariants: statuses only move forward, the final clinched pair is
   exactly the CCG pair, and exact-mode calls match full-season reality.

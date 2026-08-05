@@ -226,6 +226,17 @@ into one number from 0 (decided) to 100 (sixteen-way pileup): 60% the
 entropy of the championship odds, 25% how many living teams are tangled in
 ties, 15% how many teams are still mathematically alive.</p>
 
+<h2>How we know the engine is right</h2>
+<p>The conference publishes final standings every year, but they list tied
+teams as a block without applying the procedure — 2024's four 7-2 teams are
+printed BYU, Arizona State, Iowa State, Colorado, while the teams actually
+sent to the championship game were Arizona State and Iowa State. The pairing
+itself is the only published artifact that encodes the tiebreakers' result,
+so that is what we test against: <b>this engine reproduces all nine
+championship-game pairings of the championship era, 2017 through 2025</b>,
+from the game results alone. It also reproduces the 2024 four-way tie exactly,
+which is the case that pins down the rule discussed above.</p>
+
 <h2>Where the data comes from</h2>
 <p>Scores arrive from
 <a href="https://collegefootballdata.com">collegefootballdata.com</a>; the
