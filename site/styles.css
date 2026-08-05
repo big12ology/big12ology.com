@@ -136,7 +136,9 @@ footer { padding-bottom: 1.5rem; }
 .chart-card .lbl { font-size: 11px; fill: var(--text); }
 .chart-card .val { font-size: 10px; fill: var(--muted); font-variant-numeric: tabular-nums; }
 .chart-empty { color: var(--muted); font-size: 0.82rem; }
-.chart-legend { display: flex; gap: 1rem; font-size: 0.76rem; color: var(--muted); margin-bottom: 0.4rem; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem;
+  align-items: center; margin: 0.1rem 0 0.4rem; font-size: 0.75rem;
+  color: var(--muted); max-width: 100%; }
 .chart-legend > span { display: inline-flex; align-items: center; gap: 0.35rem; }
 .key-line { display: inline-block; width: 14px; height: 2px; border-radius: 1px; }
 .key-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
@@ -259,3 +261,9 @@ svg text.val-in {
 .card.era-note { flex: 1 1 100%; }
 .era-note .era-text { font-size: 0.85rem; color: var(--muted); line-height: 1.5;
   margin-top: 0.15rem; }
+
+/* tooltip keys that mirror the chart's own glyphs */
+#tooltip .tip-key-dot { width: 9px; height: 9px; border-radius: 50%; }
+#tooltip .tip-key-bar { width: 3px; height: 12px; border-radius: 1px; }
+#tooltip .tip-key-ring { width: 9px; height: 9px; border-radius: 50%;
+  background: transparent !important; border: 2px solid currentColor; }
