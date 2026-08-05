@@ -25,7 +25,7 @@ def check(cond, msg):
 
 
 def teams_of(res):
-    return {k: v for k, v in res.items() if k != "_n"}
+    return {k: v for k, v in res.items() if not k.startswith("_")}
 
 
 def main():

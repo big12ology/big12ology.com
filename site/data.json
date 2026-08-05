@@ -1,0 +1,104 @@
+{
+ "generated": "2026-08-05T04:06:56+00:00",
+ "season": 2026,
+ "standings": [],
+ "championship": null,
+ "race": {
+  "Arizona": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.07775,
+   "exp_conf_wins": 4.8822
+  },
+  "Arizona State": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.0232,
+   "exp_conf_wins": 4.4118
+  },
+  "BYU": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.28095,
+   "exp_conf_wins": 6.3668
+  },
+  "Baylor": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.00595,
+   "exp_conf_wins": 3.486
+  },
+  "Cincinnati": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.00545,
+   "exp_conf_wins": 3.2426
+  },
+  "Colorado": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.0018,
+   "exp_conf_wins": 2.822
+  },
+  "Houston": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.03485,
+   "exp_conf_wins": 4.9043
+  },
+  "Iowa State": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.04295,
+   "exp_conf_wins": 4.8034
+  },
+  "Kansas": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.016,
+   "exp_conf_wins": 4.1177
+  },
+  "Kansas State": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.0673,
+   "exp_conf_wins": 5.1711
+  },
+  "Oklahoma State": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.0,
+   "exp_conf_wins": 1.864
+  },
+  "TCU": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.0437,
+   "exp_conf_wins": 4.5226
+  },
+  "Texas Tech": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.88435,
+   "exp_conf_wins": 8.295
+  },
+  "UCF": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.00695,
+   "exp_conf_wins": 3.6434
+  },
+  "Utah": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.5135,
+   "exp_conf_wins": 7.0694
+  },
+  "West Virginia": {
+   "status": "alive",
+   "destiny": false,
+   "p_ccg": 0.00055,
+   "exp_conf_wins": 2.3977
+  }
+ }
+}

@@ -51,11 +51,16 @@ def win_probs(games, systems):
     return out
 
 
-def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED):
+def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED, track=None):
     """Returns {team: {"p_ccg": float, "exp_w": float}} plus {"_n": n}.
 
     p_ccg counts sure top-2 membership as 1 and ambiguous membership
     (unresolved tie steps) as 0.5.
+
+    track: optional iterable of game ids. For each, the result gains
+    "_cond": {gid: {"n_home": int, "in": {team: [sum_if_home_won,
+    sum_if_home_lost]}}} — enough to condition every team's CCG
+    probability on that game's outcome (leverage).
     """
     teams = clinch.conf_teams(games)
     probs = win_probs(games, systems)
@@ -64,26 +69,35 @@ def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED):
     base = [dict(g) for g in games]
     rem = [g for g in base if not g["completed"] and not g.get("ccg")
            and g["id"] in probs]
-    rem_conf = [g for g in rem if g["conference_game"]]
     rng = random.Random(seed)
+
+    track_ids = [g["id"] for g in rem if track and g["id"] in set(track)]
+    cond = {gid: {"n_home": 0, "in": {t: [0.0, 0.0] for t in teams}}
+            for gid in track_ids}
 
     in_count = {t: 0.0 for t in teams}
     win_sum = {t: 0 for t in teams}
     for _ in range(n):
+        outcomes = {}
         for g in rem:
             g["completed"] = True
-            if rng.random() < probs[g["id"]]:
+            hw = rng.random() < probs[g["id"]]
+            outcomes[g["id"]] = hw
+            if hw:
                 g["home_points"], g["away_points"] = 28, 17
             else:
                 g["home_points"], g["away_points"] = 17, 28
         sure, maybe = clinch.cut_membership(base, overrides, ncf)
         rec = tb.conf_records(base)
         for t in teams:
-            if t in sure:
-                in_count[t] += 1.0
-            elif t in maybe:
-                in_count[t] += 0.5
+            v = 1.0 if t in sure else (0.5 if t in maybe else 0.0)
+            in_count[t] += v
             win_sum[t] += rec.get(t, [0, 0])[0]
+            for gid in track_ids:
+                cond[gid]["in"][t][0 if outcomes[gid] else 1] += v
+        for gid in track_ids:
+            if outcomes[gid]:
+                cond[gid]["n_home"] += 1
         for g in rem:
             g["completed"] = False
             g["home_points"] = g["away_points"] = None
@@ -91,4 +105,34 @@ def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED):
     out = {t: {"p_ccg": in_count[t] / n, "exp_w": win_sum[t] / n}
            for t in teams}
     out["_n"] = n
+    if track_ids:
+        out["_cond"] = cond
+    return out
+
+
+def leverage(sims, games):
+    """Per tracked game: each team's P(CCG | home wins) - P(| home loses),
+    plus the total absolute swing. Returns [{game, home, away, total,
+    movers: [(team, delta), ...]}], biggest total first."""
+    cond = sims.get("_cond", {})
+    n = sims.get("_n", 0)
+    by_id = {g["id"]: g for g in games}
+    out = []
+    for gid, c in cond.items():
+        nh = c["n_home"]
+        nl = n - nh
+        if nh == 0 or nl == 0:
+            continue
+        movers = []
+        total = 0.0
+        for t, (sw, sl) in c["in"].items():
+            d = sw / nh - sl / nl
+            total += abs(d)
+            if abs(d) >= 0.005:
+                movers.append((t, d))
+        movers.sort(key=lambda x: -abs(x[1]))
+        g = by_id[gid]
+        out.append({"game": g, "home": g["home"], "away": g["away"],
+                    "total": total, "movers": movers})
+    out.sort(key=lambda x: -x["total"])
     return out

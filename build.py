@@ -18,6 +18,7 @@ import clinch as clinch_mod
 import feed as feed_mod
 import fetch as fetcher
 import odds as odds_mod
+import scorecard as scorecard_mod
 import tiebreaker as tb
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -124,13 +125,121 @@ def fmt_prob(p):
     return f"{p * 100:.1f}%".replace(".0%", "%")
 
 
-def clinch_card(games, overrides, systems, stand_rows):
+def next_conf_week_ids(games):
+    """Game ids for the next week that still has unplayed conference games."""
+    rem = [g for g in games if g["conference_game"] and not g.get("ccg")
+           and not g["completed"]]
+    if not rem:
+        return [], None
+    wk = min(g["week"] for g in rem)
+    return [g["id"] for g in rem if g["week"] == wk], wk
+
+
+def leverage_card(games, sims):
+    lev = odds_mod.leverage(sims, games)
+    if not lev:
+        return ""
+    wk = lev[0]["game"]["week"]
+    rows = []
+    for e in lev[:8]:
+        g = e["game"]
+        date = (g["start"] or "")[5:10].replace("-", "/")
+        mover_txt = ""
+        if e["movers"]:
+            t, d = e["movers"][0]
+            gain = "+" if d > 0 else ""
+            side = g["home"] if d > 0 else g["away"]
+            mover_txt = (f"<span class=dim> — biggest swing: {esc(t)} "
+                         f"{gain}{d * 100:.0f}% if {esc(side)} wins</span>")
+        pct = min(e["total"] * 100, 100)
+        rows.append(
+            f"<div class=clrow>{logo_img(g['away'], 16)}{esc(g['away'])} "
+            f"<span class=dim>at</span> {logo_img(g['home'], 16)}"
+            f"{esc(g['home'])} <span class=dim>({date})</span> "
+            f"<span class=obar><i style='width:{pct:.0f}%;"
+            f"background:{winpct_color(min(e['total'], 1.0))}'></i></span>"
+            f"<b class=opct>{e['total'] * 100:.0f}</b>{mover_txt}</div>")
+    return (f"<div class=card id=levcard><h2>Games that matter · week {wk}"
+            f"</h2>{''.join(rows)}"
+            "<p class=note>Title-race leverage: the total swing in "
+            "championship-game probability across all sixteen teams between "
+            "the two outcomes of each game, from the same simulations as "
+            "the race card. 100 = a full berth's worth of probability "
+            "moves on this game.</p></div>")
+
+
+def sos_card(games, systems):
+    rem = [g for g in games if g["conference_game"] and not g.get("ccg")
+           and not g["completed"]]
+    if not rem or not systems:
+        return ""
+    # ensemble rating per team, normalized to points about the league mean
+    teams = sorted({g["home"] for g in rem} | {g["away"] for g in rem})
+    ens = {}
+    for t in teams:
+        vals = []
+        for s in systems.values():
+            r = s["ratings"].get(t)
+            if r is None:
+                continue
+            per = s.get("per_pt", 1.0) or 1.0
+            league = [s["ratings"][x] for x in teams if x in s["ratings"]]
+            vals.append((r - sum(league) / len(league)) / per)
+        ens[t] = sum(vals) / len(vals) if vals else 0.0
+    sched = {t: [] for t in teams}
+    for g in rem:
+        sched[g["home"]].append(ens[g["away"]])
+        sched[g["away"]].append(ens[g["home"]])
+    rows = []
+    ranked = sorted(teams, key=lambda t: -(sum(sched[t]) / len(sched[t])))
+    for i, t in enumerate(ranked):
+        avg = sum(sched[t]) / len(sched[t])
+        rows.append(
+            f"<tr><td>{i + 1}</td><td class=teamcell>{logo_img(t, 16)}"
+            f"{esc(t)}</td><td>{len(sched[t])}</td>"
+            f"<td>{avg:+.1f}</td></tr>")
+    return ("<div class=card id=soscard><h2>Remaining schedule difficulty"
+            "</h2><table><thead><tr><th></th><th>Team</th><th>Left</th>"
+            "<th>Avg opp vs league</th></tr></thead><tbody>"
+            + "".join(rows) + "</tbody></table>"
+            "<p class=note>Average remaining conference opponent strength, "
+            "in points above or below the league-average team, from the "
+            "same rating ensemble as the odds. Positive = harder road.</p>"
+            "</div>")
+
+
+def scorecard_card(games, systems):
+    tal = scorecard_mod.tally(games, systems)
+    played = any(v["w"] + v["l"] > 0 for v in tal.values())
+    if not played:
+        return ("<div class=card id=modelcard><h2>Model scorecard</h2>"
+                "<p class=dim>Which rating system picks Big 12 games best? "
+                "The scorecard starts counting with the first kickoff.</p>"
+                "</div>")
+    rows = []
+    for name in sorted(tal, key=lambda n: -(tal[n]["w"] /
+                                            max(tal[n]["w"] + tal[n]["l"], 1))):
+        v = tal[name]
+        tot = v["w"] + v["l"]
+        pct = v["w"] / tot if tot else 0
+        rows.append(
+            f"<tr><td>{esc(name)}</td><td>{v['w']}–{v['l']}</td>"
+            f"<td style='color:{winpct_color(pct)}'>{pct:.3f}</td></tr>")
+    return ("<div class=card id=modelcard><h2>Model scorecard</h2>"
+            "<table><thead><tr><th>Model</th><th>Favorites</th><th>Pct</th>"
+            "</tr></thead><tbody>" + "".join(rows) + "</tbody></table>"
+            "<p class=note>Each system's favorites in completed games "
+            "involving Big 12 teams (both sides rated; FCS games skipped). "
+            "Favorites are judged with the ratings as currently published, "
+            "which drift slightly from what they were at kickoff.</p></div>")
+
+
+def clinch_card(games, overrides, systems, stand_rows, sims):
     """The Championship race card: proof-grade clinch/elimination statuses,
     Monte Carlo odds, and the Chaos Index. Computed at build time from real
     results only — what-if picks in the browser don't touch it."""
     res = clinch_mod.analyze(games, overrides)
     teams = res["teams"]
-    sims = odds_mod.simulate(games, systems, overrides) if systems else {}
     n_sims = sims.get("_n", 0)
 
     chaos_html = ""
@@ -224,6 +333,102 @@ CLINCH_CARD = """<div class=card id=clinchcard>
 </div>"""
 
 
+
+BRIEF_CSS = """
+:root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#6b7280;
+  --line:#e2ddd2; --accent:#c8102e; --accent2:#003087; --warn:#b45309;
+  --pctl:32%; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1; --dim:#9aa0aa;
+    --line:#2e323a; --accent:#ff5a6e; --accent2:#7aa2ff; --warn:#fbbf24;
+    --pctl:63%; } }
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif }
+header { border-bottom:4px solid var(--accent); padding:22px 20px;
+  background:var(--panel) }
+header h1 { margin:0; font-size:22px } header p { margin:3px 0 0;
+  color:var(--dim); font-size:14px } header a { color:var(--accent2);
+  text-decoration:none }
+main { max-width:760px; margin:0 auto; padding:20px; display:grid; gap:18px }
+.card { background:var(--panel); border:1px solid var(--line);
+  border-radius:10px; padding:16px 18px }
+.card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--dim) }
+.dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
+.mark { vertical-align:-3px; margin-right:6px }
+.clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:14.5px }
+.clrow:last-of-type { border-bottom:none }
+.obar { display:inline-block; width:100px; height:8px; background:var(--line);
+  border-radius:4px; overflow:hidden; vertical-align:1px; margin:0 6px 0 8px }
+.obar i { display:block; height:100%; border-radius:4px }
+.opct { font-variant-numeric:tabular-nums; font-size:13.5px }
+.chaosband { display:flex; align-items:center; gap:14px; border:1px solid
+  var(--line); border-radius:8px; padding:10px 14px; margin-bottom:10px;
+  font-size:13.5px }
+.cnum { font-size:36px; font-weight:800; line-height:1 }
+.tag { font-size:10.5px; border-radius:20px; padding:2px 8px; font-weight:700 }
+.tag.live { background:#15803d26; color:#15803d }
+.tag.destiny { background:#b4530926; color:var(--warn) }
+.scen { margin:5px 0 2px; padding-left:20px; font-size:13px; color:var(--dim) }
+.elim { font-size:13px } ul.games { list-style:none; padding:0; margin:0 }
+ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
+  font-size:14px } .ccgtag { color:var(--accent); font-weight:700;
+  font-size:11px; text-transform:uppercase }
+@media (prefers-color-scheme: dark) { .tag.live { color:#4ade80;
+  background:#4ade8024 } }
+"""
+
+
+def build_brief(year, games, overrides, systems, sims):
+    """site/brief.html — the auto-written weekly summary: chaos + race,
+    leverage board, and the last week of finals."""
+    stand_rows = tb.standings(games, overrides)
+    race = clinch_card(games, overrides, systems, stand_rows, sims)
+    lev = leverage_card(games, sims) if sims else ""
+    done = sorted((g for g in games if g["completed"]
+                   and g["home_points"] is not None),
+                  key=lambda g: g["start"] or "")
+    finals = ""
+    if done:
+        latest = done[-1]["start"][:10]
+        cutoff = (datetime.date.fromisoformat(latest)
+                  - datetime.timedelta(days=7)).isoformat()
+        recent = [g for g in done if (g["start"] or "")[:10] > cutoff]
+        finals = ("<div class=card><h2>Finals, last seven days</h2>"
+                  "<ul class=games>"
+                  + "".join(game_row(g) for g in recent[::-1][:20])
+                  + "</ul></div>")
+    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%B %d, %Y")
+    return f"""<!doctype html>
+<html lang=en><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>The Brief — Big 12 Tiebreaker Tracker</title>
+<link rel=icon type=image/svg+xml href=favicon.svg>
+<link rel=stylesheet href=/brand.css>
+<link rel=alternate type=application/rss+xml href=feed.xml>
+<style>{BRIEF_CSS}</style></head><body>
+<nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
+<a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a>
+<a class=b12-right href=/privacy>Privacy</a></nav>
+<header><h1>The Brief <span class=dim>· {esc(stamp)}</span></h1>
+<p>The Big 12 title race, auto-written after every game.
+<a href="./">Full tracker &rarr;</a></p></header>
+<main>
+{race}
+{lev}
+{finals}
+<div class=card><h2>Take it with you</h2>
+<p style="font-size:14px"><a href=feed.xml>RSS feed</a> ·
+<a href=data.json>data.json</a> · <a href=standings.csv>standings.csv</a> ·
+<a href=how.html>how the tiebreakers work</a></p></div>
+</main>
+<footer class=b12-footer>A Big12ology project · not affiliated with the
+Big 12 Conference. <a href="https://big12ology.com/privacy">Privacy</a></footer>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
+</body></html>"""
+
+
 def default_season(today=None):
     today = today or datetime.date.today()
     return today.year if today.month >= 6 else today.year - 1
@@ -258,6 +463,9 @@ def render(year, games):
     overrides = tb.load_overrides()
     teams = load_teams()
     systems = load_ratings(year).get("systems", {})
+    track, _wk = next_conf_week_ids(games)
+    sims = (odds_mod.simulate(games, systems, overrides, track=track)
+            if systems else {})
     favorites = favorites_for(games, systems)
     models = [{"name": n, "year": systems[n].get("year")}
               for n in MODEL_ORDER if n in favorites]
@@ -375,7 +583,10 @@ def render(year, games):
         year=year,
         card=card,
         whatif=whatif,
-        clinchcard=clinch_card(games, overrides, systems, rows),
+        clinchcard=clinch_card(games, overrides, systems, rows, sims),
+        levcard=leverage_card(games, sims) if sims else "",
+        soscard=sos_card(games, systems),
+        modelcard=scorecard_card(games, systems),
         standcard=standcard,
         results=results,
         upcoming=upcoming,
@@ -504,10 +715,13 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   #whatif {{ order: 1; }}
   .standcard {{ order: 2; }}
   #clinchcard {{ order: 3; }}
-  #teamwhy {{ order: 4; }}
-  #resultscard {{ order: 5; }}
-  #upnextcard {{ order: 6; }}
-  .rules {{ order: 7; }}
+  #levcard {{ order: 4; }}
+  #teamwhy {{ order: 5; }}
+  #resultscard {{ order: 6; }}
+  #soscard {{ order: 7; }}
+  #modelcard {{ order: 8; }}
+  #upnextcard {{ order: 9; }}
+  .rules {{ order: 10; }}
 }}
 .card {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 18px 20px; }}
@@ -670,12 +884,18 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   <ul class=games>{results}</ul>
 </div>
 
+{soscard}
+
+{modelcard}
+
 </div>
 <div class=stack>
 
 {standcard}
 
 {clinchcard}
+
+{levcard}
 
 <div class=card id=upnextcard>
   <h2>Up next</h2>
@@ -724,6 +944,10 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   A Big12ology project · not affiliated with the Big 12 Conference; conference
   and team marks belong to their owners and appear for identification only.<br>
   <a href="https://github.com/big12ology">GitHub</a> ·
+  <a href=feed.xml>RSS</a> ·
+  <a href=brief.html>The Brief</a> ·
+  <a href=history.html>Tie history</a> ·
+  <a href=data.json>Data</a> ·
   <a href="https://big12ology.com/privacy">Privacy</a> ·
   <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
 </footer>
@@ -936,6 +1160,10 @@ href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
   A Big12ology project · not affiliated with the Big 12 Conference; conference
   and team marks belong to their owners and appear for identification only.<br>
   <a href="https://github.com/big12ology">GitHub</a> ·
+  <a href=feed.xml>RSS</a> ·
+  <a href=brief.html>The Brief</a> ·
+  <a href=history.html>Tie history</a> ·
+  <a href=data.json>Data</a> ·
   <a href="https://big12ology.com/privacy">Privacy</a> ·
   <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
 </footer>
@@ -986,6 +1214,39 @@ def main():
     with open(fp, "w") as f:
         f.write(feed_mod.build_feed(games, year, systems, overrides))
     print(f"built {fp}")
+
+    # downloads + the Brief (same deterministic sims as the page)
+    track, _wk = next_conf_week_ids(games)
+    sims = (odds_mod.simulate(games, systems, overrides, track=track)
+            if systems else {})
+    rows = tb.standings(games, overrides)
+    ccg = tb.championship(games, overrides)
+    cl = clinch_mod.analyze(games, overrides)
+    data = {
+        "generated": datetime.datetime.now(datetime.timezone.utc)
+            .isoformat(timespec="seconds"),
+        "season": year,
+        "standings": [{k: v for k, v in r.items() if k != "log"}
+                      for r in rows],
+        "championship": ccg,
+        "race": {t: {"status": i["status"], "destiny": i["destiny"],
+                     "p_ccg": (sims.get(t, {}) or {}).get("p_ccg"),
+                     "exp_conf_wins": (sims.get(t, {}) or {}).get("exp_w")}
+                 for t, i in cl["teams"].items()},
+    }
+    with open(os.path.join(SITE, "data.json"), "w") as f:
+        json.dump(data, f, indent=1)
+    with open(os.path.join(SITE, "standings.csv"), "w") as f:
+        f.write("rank,team,conf_w,conf_l,nonconf_w,nonconf_l,"
+                "overall_w,overall_l,p_ccg\n")
+        for r in rows:
+            p = (sims.get(r["team"], {}) or {}).get("p_ccg", "")
+            f.write(f"{r['rank']},{r['team']},{r['conf_w']},{r['conf_l']},"
+                    f"{r['nonconf_w']},{r['nonconf_l']},{r['overall_w']},"
+                    f"{r['overall_l']},{p}\n")
+    with open(os.path.join(SITE, "brief.html"), "w") as f:
+        f.write(build_brief(year, games, overrides, systems, sims))
+    print("built data.json, standings.csv, brief.html")
 
 
 if __name__ == "__main__":

@@ -139,7 +139,8 @@ def weekly_wraps(games, year, systems, overrides):
         od = odds_mod.simulate(snap, systems, overrides, n=WRAP_SIMS)
         cx = chaos_mod.index(rows, cl, od)
         leaders = sorted(
-            ((v["p_ccg"], t) for t, v in od.items() if t != "_n"),
+            ((v["p_ccg"], t) for t, v in od.items()
+             if not t.startswith("_")),
             reverse=True)[:3]
         lead_txt = ", ".join(f"{t} {p:.0%}" for p, t in leaders)
         items.append({

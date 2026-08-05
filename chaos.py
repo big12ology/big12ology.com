@@ -61,7 +61,8 @@ def breadth_component(statuses):
 def index(rows, clinch_result, odds_result):
     """Returns {"score": int, "label": str, "components": {...}}."""
     statuses = {t: i["status"] for t, i in clinch_result["teams"].items()}
-    p_ccg = {t: v["p_ccg"] for t, v in odds_result.items() if t != "_n"}
+    p_ccg = {t: v["p_ccg"] for t, v in odds_result.items()
+             if not t.startswith("_")}
     # proofs pin the distribution exactly like the display does
     for t, s in statuses.items():
         if s == "clinched":

@@ -56,6 +56,12 @@ game.
   derived from season data with stable guids and game-clock pubDates, so
   the stateless builds never duplicate items. `tests/test_feed.py`.
 
+Additional modules: `odds.leverage` (per-game title-race swing, the
+"Games that matter" card), `scorecard.py` (each model's favorites record),
+`gen_history.py` (the static tie-archaeology page — run locally and commit
+`site/history.html`), plus build-time outputs `brief.html` (the
+auto-written weekly Brief), `data.json`, and `standings.csv`.
+
 ## What-if simulator
 
 Every unplayed conference game gets a pair of pick buttons; picks re-run the
