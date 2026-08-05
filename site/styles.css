@@ -239,3 +239,5 @@ th .sortmode { color: var(--accent); font-weight: 700; }
 .chips button.on { color: #fff; font-weight: 700; }
 
 .charts .span-all { grid-column: 1 / -1; }
+
+svg .val-in { fill: #fff; font-weight: 600; }

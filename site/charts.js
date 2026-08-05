@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=9";
-import { gameTooltipHTML } from "./gametip.js?v=9";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=10";
+import { gameTooltipHTML } from "./gametip.js?v=10";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -683,9 +683,21 @@ function roadDraw(cardEl, seasonsData, teamsData) {
     marks += `<text x="${m.l - 8}" y="${y + rowH / 2 + 4}" text-anchor="end"
       class="lbl">${r.team.length > 15 ? r.team.slice(0, 14) + "…" : r.team}` +
       `<tspan class="tick"> ${r.n}</tspan></text>`;
-    marks += `<text x="${r.avg >= 0 ? x0 + w + 6 : x0 - w - 6}"
-      y="${y + rowH / 2 + 4}" text-anchor="${r.avg >= 0 ? "start" : "end"}"
-      class="val">${r.avg >= 0 ? "+" : ""}${(r.avg * 100).toFixed(1)}</text>`;
+    // Long bars carry their value inside; short ones sit just outside, and
+    // the outside placement is clamped so it never reaches back into the
+    // team-label column.
+    const label = `${r.avg >= 0 ? "+" : ""}${(r.avg * 100).toFixed(1)}`;
+    const inside = w > 42;
+    let vx, anchor;
+    if (r.avg >= 0) {
+      vx = inside ? x0 + w - 6 : x0 + w + 6;
+      anchor = inside ? "end" : "start";
+    } else {
+      vx = inside ? x0 - w + 6 : Math.max(m.l + 4, x0 - w - 6);
+      anchor = inside ? "start" : "end";
+    }
+    marks += `<text x="${vx}" y="${y + rowH / 2 + 4}" text-anchor="${anchor}"
+      class="${inside ? "val val-in" : "val"}">${label}</text>`;
   });
   marks += `<text x="${x0}" y="${H - 8}" text-anchor="middle" class="tick">
     points of fill vs the host's season average · small number = road trips</text>`;
