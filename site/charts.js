@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=15";
-import { gameTooltipHTML } from "./gametip.js?v=15";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=16";
+import { gameTooltipHTML } from "./gametip.js?v=16";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -823,6 +823,72 @@ function multiLine(cardEl, seriesList, xLabels, yFmt, yMinPad, yMaxPad) {
 }
 
 
+// Least-squares fit of fill on kickoff temperature, per team, across every
+// tracked season — used to name the clearest hot-weather and cold-weather
+// fanbases in the caption instead of guessing at them.
+function weatherFits(seasonsData, teamsData) {
+  const byTeam = new Map();
+  for (const [year, season] of Object.entries(seasonsData)) {
+    const teams = teamsForSeason(teamsData, Number(year));
+    const capOf = new Map(teams.map((x) => [x.team, x]));
+    for (const g of season.games) {
+      if (g.role || g.attendance == null || !g.weather ||
+          g.weather.tempF == null) continue;
+      const cap = g.capacity ?? capOf.get(g.team)?.capacity;
+      if (!cap) continue;
+      if (!byTeam.has(g.team)) byTeam.set(g.team, []);
+      byTeam.get(g.team).push([g.weather.tempF, g.attendance / cap]);
+    }
+  }
+  const out = [];
+  for (const [team, pts] of byTeam) {
+    if (pts.length < 8) continue;
+    const n = pts.length;
+    const mx = pts.reduce((s, p) => s + p[0], 0) / n;
+    const my = pts.reduce((s, p) => s + p[1], 0) / n;
+    let sxx = 0, sxy = 0, syy = 0;
+    for (const [px, py] of pts) {
+      sxx += (px - mx) ** 2;
+      sxy += (px - mx) * (py - my);
+      syy += (py - my) ** 2;
+    }
+    if (!sxx || !syy) continue;
+    out.push({ team, slope: sxy / sxx, r2: (sxy * sxy) / (sxx * syy), n });
+  }
+  return out;
+}
+
+function weatherCaption(seasonsData, teamsData) {
+  const fits = weatherFits(seasonsData, teamsData);
+  const neg = fits.filter((f) => f.slope < 0).sort((a, b) => b.r2 - a.r2)[0];
+  const pos = fits.filter((f) => f.slope > 0).sort((a, b) => b.r2 - a.r2)[0];
+  // R² below ~0.1 is a line through noise; name a team only when the fit
+  // is worth naming, and say so plainly when nothing is.
+  const STRONG = 0.1;
+  const say = (f, dir) => f && f.r2 >= STRONG
+    ? `${f.team} is the clearest ${dir} case (${f.slope > 0 ? "+" : ""}` +
+      `${(f.slope * 1000).toFixed(1)} points of fill per 10°F, R² ` +
+      `${f.r2.toFixed(2)}, ${f.n} games)`
+    : null;
+  const bits = [say(pos, "cold-weather"), say(neg, "hot-weather")]
+    .filter(Boolean);
+  let tail = ".";
+  if (bits.length === 2) {
+    tail = ` — across the whole archive, ${bits.join(", and ")}.`;
+  } else if (bits.length === 1) {
+    const missing = say(pos, "x") ? "heat" : "cold";
+    tail = ` — across the whole archive, ${bits[0]}. No team's ${missing} ` +
+      `relationship is strong enough to call a pattern.`;
+  } else {
+    tail = " — across the whole archive, no team shows a strong relationship " +
+      "in either direction.";
+  }
+  return "Every home game with weather for the selected teams; the dashed " +
+    "line is that team's own trend and the larger ringed dots are games " +
+    "played in rain. A downward slope means crowds thin as it heats up, " +
+    "upward means the cold keeps them home" + tail;
+}
+
 function teamWeather(cardEl, seasonsData, teamsData, sel) {
   const pts = [];
   const colorOf = new Map();
@@ -1004,10 +1070,7 @@ export function renderTeamCharts(root, teamsData, seasonsData, currentYear, sele
   }
 
   const c4 = card("Weather sensitivity",
-    "Every home game with weather, per selected team; the dashed line is " +
-    "that team's own trend. A downward slope means crowds thin as it heats " +
-    "up (September in Tempe, Tucson, Lubbock); upward means the cold is " +
-    "what keeps them home");
+    weatherCaption(seasonsData, teamsData));
   teamWeather(c4, seasonsData, teamsData, selected);
 
   root.append(c1, c2, c3, c4);
