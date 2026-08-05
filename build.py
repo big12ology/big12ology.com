@@ -149,7 +149,8 @@ def tracker_top(year, active, matchcard=""):
 {matchcard}"""
 
 
-SUBNAV_LINKS = [("tracker", "./", "Tracker"), ("race", "race.html", "The Race"),
+SUBNAV_LINKS = [("tracker", "./", "Scenarios"), ("race", "race.html", "The Race"),
+                ("standings", "standings.html", "Standings"),
                 ("schedule", "schedule.html", "Schedule"),
                 ("brief", "brief.html", "The Brief"),
                 ("history", "history.html", "Tie history"),
@@ -372,6 +373,100 @@ def pad_standings(rows, games):
         "overall_w": tally[t]["ow"], "overall_l": tally[t]["ol"],
         "tie_group": None, "log": None, "events": None, "resolved": True,
     } for t in missing]
+
+
+def official_board(games, overrides, display_rows):
+    """Positions the way the conference actually keeps them: the tiebreakers
+    run only far enough to name the two championship-game participants, and
+    every tie below that is simply a tie. Teams sharing a record share a
+    position (T3, T3, T3, then 6th)."""
+    played = [r for r in display_rows if r["conf_w"] + r["conf_l"] > 0]
+    if not played:
+        return [{"pos": "—", "teams": [r["team"] for r in display_rows],
+                 "rec": "0–0", "tied": True}]
+    ccg = tb.championship(games, overrides)
+    seeds = [ccg["seed1"], ccg["seed2"]] if ccg else []
+    by_team = {r["team"]: r for r in display_rows}
+    out = []
+    for i, t in enumerate(seeds):
+        r = by_team[t]
+        out.append({"pos": str(i + 1), "teams": [t],
+                    "rec": f"{r['conf_w']}–{r['conf_l']}", "tied": False})
+    rest = [r for r in played if r["team"] not in seeds]
+    groups = {}
+    for r in rest:
+        groups.setdefault((r["conf_w"], r["conf_l"]), []).append(r["team"])
+    pos = len(seeds) + 1
+    for key in sorted(groups, key=lambda k: (-(k[0] / max(k[0] + k[1], 1)),
+                                             -k[0])):
+        teams = sorted(groups[key])
+        out.append({"pos": (f"T{pos}" if len(teams) > 1 else str(pos)),
+                    "teams": teams, "rec": f"{key[0]}–{key[1]}",
+                    "tied": len(teams) > 1})
+        pos += len(teams)
+    unplayed = sorted(r["team"] for r in display_rows
+                      if r["conf_w"] + r["conf_l"] == 0)
+    if unplayed:
+        out.append({"pos": "—", "teams": unplayed, "rec": "0–0",
+                    "tied": len(unplayed) > 1})
+    return out
+
+
+def standings_page(games, overrides, display_rows, teams):
+    """Two boards side by side, drawn with the same chrome as the main
+    standings table so the only difference a reader sees is the ordering.
+    Non-conference and overall records are left to the Scenarios board —
+    at this width the conference record and percentage are the comparison."""
+    head = ("<thead><tr><th></th><th>Team</th><th>Conf</th><th>Pct</th>"
+            "</tr></thead>")
+    by_team = {r["team"]: r for r in display_rows}
+
+    def cells(r):
+        p = tb.pct(r["conf_w"], r["conf_l"])
+        c = team_color(teams, r["team"])
+        return (f"<td class=teamcell><span class=cbar style='background:{c}'>"
+                f"</span>{logo_img(r['team'])}{esc(r['team'])}</td>"
+                f"<td>{r['conf_w']}–{r['conf_l']}</td>"
+                + ("<td>—</td>" if p is None else
+                   f"<td style='color:{winpct_color(p)}'>{p:.3f}</td>"))
+
+    left = []
+    for b in official_board(games, overrides, display_rows):
+        n = len(b["teams"])
+        for i, t in enumerate(b["teams"]):
+            span = f" rowspan={n}" if n > 1 else ""
+            pos = (f"<td class=posc{span}>{esc(b['pos'])}</td>"
+                   if i == 0 else "")
+            cls = " class=grpend" if i == n - 1 and n > 1 else ""
+            left.append(f"<tr{cls}>{pos}{cells(by_team[t])}</tr>")
+
+    right = "".join(f"<tr><td class=posc>{r['rank'] or '—'}</td>{cells(r)}</tr>"
+                    for r in display_rows)
+
+    return f"""<div class="duo even">
+<div class=stack>
+<div class=card><h2>As the conference keeps it</h2>
+  <div class=tablewrap><table class=stbl>{head}
+  <tbody>{"".join(left)}</tbody></table></div>
+  <p class=note>The Big 12 runs its tiebreaking procedure for one purpose:
+  naming the two teams that play in the championship game. Every other tie
+  in the standings is left standing, so third place can be shared by four
+  programs and the conference simply lists them together. That is why its
+  published standings show co-positions instead of an order.</p>
+</div>
+</div>
+<div class=stack>
+<div class=card><h2>If every tie were broken</h2>
+  <div class=tablewrap><table class=stbl>{head}
+  <tbody>{right}</tbody></table></div>
+  <p class=note>The same procedure carried all the way down, one team per
+  position. The conference never publishes this and it decides nothing — it
+  is what the rules produce if you ask them to sort the whole league, and it
+  is the order the rest of this site uses so every team has a place to
+  stand. <a href=how.html>How it works</a> walks the steps.</p>
+</div>
+</div>
+</div>"""
 
 
 def clinch_card(games, overrides, systems, stand_rows, sims):
@@ -690,6 +785,13 @@ th { font-size:11px; text-transform:uppercase; letter-spacing:.05em;
 thead tr th { border-bottom:2px solid var(--line) }
 .teamcell { white-space:nowrap }
 .briefstamp { color:var(--dim); font-size:13px; text-align:center; margin:-4px 0 2px }
+tr.grpend td { border-bottom:2px solid var(--line) }
+.stbl td:last-child, .stbl th:last-child { text-align:right }
+.stbl td { height:38px }
+.duo.even { grid-template-columns:minmax(0,1fr) minmax(0,1fr) }
+.duo.even > .stack { align-content:stretch }
+.duo.even .card { height:100% }
+.posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
 h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
 .duo { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
@@ -964,6 +1066,7 @@ def render(year, games):
         "modelcard": scorecard_card(games, systems, closing_lines),
         "h2hcard": h2h_card(games, teams, rows),
         "matchcard": card,
+        "standingspage": standings_page(games, overrides, display_rows, teams),
         "sims": sims,
     }
     return page, ctx
@@ -975,6 +1078,10 @@ STAND_CARD = """<div class="card standcard">
   <progress max={total} value={played}></progress>
   {table}
   <div style="margin-top:14px" id=stories>{stories}</div>
+  <p class=note>The conference breaks ties only to name the two
+  championship-game participants; positions below that stay tied in its
+  official standings. This table sorts every tie for readability — see
+  <a href=standings.html>Standings</a> for both boards side by side.</p>
 </div>"""
 
 
@@ -1234,34 +1341,6 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   walkthrough of the procedure:
   <a href=how.html>how the tiebreakers work</a>.</p>
 </div>
-
-<div class="card rules">
-  <h2>The official tiebreaking procedure</h2>
-  <p style="font-size:14px">Two teams tied for first who met during the season
-  both make the championship game — the head-to-head winner is the #1 seed.
-  Otherwise ties for the two berths break in order:</p>
-  <ol>
-    <li><b>Head-to-head</b> among the tied teams (for 3+ teams: win percentage
-    in games among the tied group; a team that beat every other tied team is
-    seeded even if the group didn't all play each other).</li>
-    <li><b>Common opponents:</b> win percentage against all conference
-    opponents common to the tied teams.</li>
-    <li><b>Next highest placed common opponent</b>, proceeding down the
-    standings — tied placement groups are compared as a collective group.</li>
-    <li><b>Strength of conference schedule:</b> combined conference win
-    percentage of each team's conference opponents.</li>
-    <li><b>Total wins</b> in a 12-game season (at most one win over an FCS or
-    lower-division team counts; NCAA-exempt extra games excluded).</li>
-    <li><b>SportSource Analytics team Rating Score</b> after the final weekend
-    of the regular season.</li>
-    <li><b>Coin toss.</b></li>
-  </ol>
-  <p style="font-size:14px">In multi-team ties, once one team is seeded the
-  remaining teams restart the procedure from the top; at two teams the
-  two-team rules apply. Steps 6–7 use non-public inputs, so when a projection
-  reaches them it is flagged until the conference's values are known.</p>
-</div>
-
 </div>
 </div>
 </main>
@@ -1609,6 +1688,9 @@ def main():
     with open(os.path.join(SITE, "race.html"), "w") as f:
         f.write(build_subpage("The Race", "race", build_race_page(ctx),
                               year, ctx["matchcard"]))
+    with open(os.path.join(SITE, "standings.html"), "w") as f:
+        f.write(build_subpage("Standings", "standings", ctx["standingspage"],
+                              year, ctx["matchcard"]))
     with open(os.path.join(SITE, "schedule.html"), "w") as f:
         f.write(build_subpage("Schedule", "schedule",
                               build_schedule_page(games, ctx),
@@ -1620,7 +1702,7 @@ def main():
             f.write(build_subpage("Tie history", "history",
                                   open(hist_frag).read(),
                                   year, ctx["matchcard"]))
-    print("built race.html, schedule.html, history.html")
+    print("built race.html, standings.html, schedule.html, history.html")
     build_explainer(year, ctx["matchcard"])
     overrides = tb.load_overrides()
     systems = load_ratings(year).get("systems", {})

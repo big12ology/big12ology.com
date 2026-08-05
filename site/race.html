@@ -72,6 +72,13 @@ th { font-size:11px; text-transform:uppercase; letter-spacing:.05em;
 thead tr th { border-bottom:2px solid var(--line) }
 .teamcell { white-space:nowrap }
 .briefstamp { color:var(--dim); font-size:13px; text-align:center; margin:-4px 0 2px }
+tr.grpend td { border-bottom:2px solid var(--line) }
+.stbl td:last-child, .stbl th:last-child { text-align:right }
+.stbl td { height:38px }
+.duo.even { grid-template-columns:minmax(0,1fr) minmax(0,1fr) }
+.duo.even > .stack { align-content:stretch }
+.duo.even .card { height:100% }
+.posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
 h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
 .duo { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
@@ -108,7 +115,7 @@ table.h2h { width:100%; table-layout:auto }
     </div>
   </div>
 </header>
-<nav class=subnav><a href=./ class=off>Tracker</a><a href=race.html class=on>The Race</a><a href=schedule.html class=off>Schedule</a><a href=brief.html class=off>The Brief</a><a href=history.html class=off>Tie history</a><a href=how.html class=off>How it works</a></nav>
+<nav class=subnav><a href=./ class=off>Scenarios</a><a href=race.html class=on>The Race</a><a href=standings.html class=off>Standings</a><a href=schedule.html class=off>Schedule</a><a href=brief.html class=off>The Brief</a><a href=history.html class=off>Tie history</a><a href=how.html class=off>How it works</a></nav>
 <main>
 <div class=card id=matchcard><h2>Season not started</h2><p>No conference results yet. The projected championship matchup will appear after the first Big 12 game.</p></div>
 <div class=duo><div class=stack><div class=card id=clinchcard>
