@@ -31,6 +31,15 @@ game.
 - `tests/test_parity.py` — proves the two engines match: real seasons plus
   random and partially-played simulated seasons through both, diffing
   standings, tie groups, logs, and the projected matchup (needs `node`).
+- `clinch.py` — proof-grade clinch/elimination analysis for the
+  Championship race card. Win-count bounds (strict, tiebreaker-proof) all
+  season; once the remaining conference schedule fits the compute budget
+  (~18 games, mid-November), exhaustive enumeration through the real engine
+  yields exact statuses and this-week clinch scenarios. Computed at build
+  time only — the what-if simulator doesn't touch it.
+- `tests/test_clinch.py` — replays 2025 truncated at seven dates and checks
+  the invariants: statuses only move forward, the final clinched pair is
+  exactly the CCG pair, and exact-mode calls match full-season reality.
 
 ## What-if simulator
 

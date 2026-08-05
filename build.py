@@ -13,6 +13,7 @@ import json
 import os
 import sys
 
+import clinch as clinch_mod
 import fetch as fetcher
 import tiebreaker as tb
 
@@ -108,6 +109,69 @@ def winpct_color(p):
                 break
     s = 100 - (h / 45) * 35 if h < 45 else 65
     return f"hsl({round(h)} {round(s)}% var(--pctl))"
+
+
+def clinch_card(games, overrides):
+    """The Championship race card: proof-grade clinch/elimination statuses.
+    Computed at build time from real results only — what-if picks in the
+    browser don't touch it."""
+    res = clinch_mod.analyze(games, overrides)
+    teams = res["teams"]
+    if all(i["r"] > 0 and i["w"] == 0 and i["status"] == "alive"
+           and not i["destiny"] for i in teams.values()):
+        body = ("<p class=dim>All sixteen teams are alive — nobody has "
+                "played a conference game yet. Statuses appear as results "
+                "arrive; proof-grade clinch scenarios unlock in November "
+                "when every remaining outcome can be enumerated.</p>")
+        return CLINCH_CARD.format(body=body, note="")
+
+    chips = {
+        "clinched": "<span class='tag live'>clinched</span>",
+        "eliminated": "<span class='tag out'>eliminated</span>",
+        "alive": "<span class='tag alive'>alive</span>",
+    }
+    rows, eliminated = [], []
+    order = sorted(teams, key=lambda t: (
+        {"clinched": 0, "alive": 1, "eliminated": 2}[teams[t]["status"]],
+        -teams[t]["w"], t))
+    for t in order:
+        i = teams[t]
+        if i["status"] == "eliminated":
+            eliminated.append(t)
+            continue
+        bits = [chips[i["status"]]]
+        if i["destiny"] and i["status"] == "alive":
+            bits.append("<span class='tag destiny'>controls own destiny</span>")
+        scen = ""
+        if i["scenarios"]:
+            scen = ("<ul class=scen>" + "".join(
+                f"<li>{esc(s)}</li>" for s in i["scenarios"][:4]) + "</ul>")
+        rows.append(
+            f"<div class=clrow>{logo_img(t, 18)}<b>{esc(t)}</b> "
+            f"<span class=dim>({i['w']} conf wins, {i['r']} left)</span> "
+            f"{' '.join(bits)}{scen}</div>")
+    body = "".join(rows)
+    if eliminated:
+        body += (f"<p class='dim elim'>Eliminated: "
+                 f"{', '.join(esc(t) for t in eliminated)}</p>")
+    if res["mode"] == "exact":
+        note = (f"Every status above is proven across all "
+                f"{res['n_outcomes']:,} remaining outcomes with the full "
+                f"official tiebreaker procedure. Scenario lines are for the "
+                f"upcoming week's games.")
+    else:
+        note = ("Statuses proven by win-count arithmetic (strict — no "
+                "tiebreaker can undo them). Exhaustive scenario math "
+                "unlocks when the remaining schedule becomes enumerable.")
+    return CLINCH_CARD.format(body=body, note=note)
+
+
+CLINCH_CARD = """<div class=card id=clinchcard>
+  <h2>Championship race</h2>
+  {body}
+  <p class=note>{note} Reflects real results only — what-if picks don't
+  change it.</p>
+</div>"""
 
 
 def default_season(today=None):
@@ -261,6 +325,7 @@ def render(year, games):
         year=year,
         card=card,
         whatif=whatif,
+        clinchcard=clinch_card(games, overrides),
         standcard=standcard,
         results=results,
         upcoming=upcoming,
@@ -387,10 +452,11 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   .duo > .stack {{ display: contents; }}
   #whatif {{ order: 1; }}
   .standcard {{ order: 2; }}
-  #teamwhy {{ order: 3; }}
-  #resultscard {{ order: 4; }}
-  #upnextcard {{ order: 5; }}
-  .rules {{ order: 6; }}
+  #clinchcard {{ order: 3; }}
+  #teamwhy {{ order: 4; }}
+  #resultscard {{ order: 5; }}
+  #upnextcard {{ order: 6; }}
+  .rules {{ order: 7; }}
 }}
 .card {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 18px 20px; }}
@@ -468,6 +534,27 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 .nctag {{ color: var(--dim); font-size: 10.5px; border: 1px solid var(--line);
   border-radius: 20px; padding: 1px 7px; text-transform: uppercase;
   letter-spacing: .04em; }}
+.tag {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
+  font-weight: 700; letter-spacing: .03em; white-space: nowrap; }}
+.tag.live {{ background: color-mix(in srgb, var(--ok, #15803d) 15%,
+  transparent); color: #15803d; }}
+.tag.out {{ background: color-mix(in srgb, var(--dim) 14%, transparent);
+  color: var(--dim); }}
+.tag.alive {{ background: color-mix(in srgb, var(--accent2) 14%,
+  transparent); color: var(--accent2); }}
+.tag.destiny {{ background: color-mix(in srgb, var(--warn) 15%, transparent);
+  color: var(--warn); }}
+@media (prefers-color-scheme: dark) {{
+  .tag.live {{ color: #4ade80; background: color-mix(in srgb, #4ade80 14%,
+    transparent); }}
+}}
+.clrow {{ padding: 8px 0; border-bottom: 1px solid var(--line);
+  font-size: 15px; }}
+.clrow:last-of-type {{ border-bottom: none; }}
+.scen {{ margin: 6px 0 2px; padding-left: 22px; font-size: 13.5px;
+  color: var(--dim); }}
+.scen li {{ margin: 3px 0; }}
+.elim {{ font-size: 13.5px; margin: 10px 0 0; }}
 .pick {{ font: inherit; font-size: 13.5px; display: inline-flex;
   align-items: center; gap: 6px; border: 1px solid var(--line);
   background: var(--panel); color: var(--ink); border-radius: 8px;
@@ -526,6 +613,8 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 <div class=stack>
 
 {standcard}
+
+{clinchcard}
 
 <div class=card id=upnextcard>
   <h2>Up next</h2>
