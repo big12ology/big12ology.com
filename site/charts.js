@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=16";
-import { gameTooltipHTML } from "./gametip.js?v=16";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=17";
+import { gameTooltipHTML } from "./gametip.js?v=17";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -1076,6 +1076,79 @@ export function renderTeamCharts(root, teamsData, seasonsData, currentYear, sele
   root.append(c1, c2, c3, c4);
 }
 
+
+// ---- panel 4 (season): does kickoff time move the gate? ------------------
+
+function kickoffWindows(cardEl, summary, season) {
+  const t = theme();
+  const info = new Map(
+    season.games.filter((g) => !g.role).map((g) => [`${g.team}|${g.week}`, g]));
+  const buckets = [
+    { key: "early", label: "Before 1pm", games: [] },
+    { key: "afternoon", label: "1–5pm", games: [] },
+    { key: "night", label: "After 5pm", games: [] },
+  ];
+  for (const r of summary.rows) {
+    for (const w of r.weeks) {
+      const g = info.get(`${r.team}|${w.week}`);
+      if (!g || !g.time) continue;
+      const h = Number(g.time.split(":")[0]);
+      const b = h < 13 ? buckets[0] : h < 17 ? buckets[1] : buckets[2];
+      b.games.push({ ...w, team: r.team, game: g,
+                     cap: w.attendance / (w.pct || 1) });
+    }
+  }
+  const live = buckets.filter((b) => b.games.length);
+  if (!live.length) return emptyNote(cardEl, "No kickoff times yet.");
+  live.forEach((b) => {
+    b.att = b.games.reduce((s, g) => s + g.attendance, 0);
+    b.cap = b.games.reduce((s, g) => s + g.cap, 0);
+    b.pct = b.cap ? b.att / b.cap : 0;
+  });
+
+  const m = { t: 14, r: 16, b: 42, l: 52 };
+  const W = 640, H = 260, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const max = Math.max(1.02, ...live.map((b) => b.pct)) * 1.04;
+  const bw = Math.min(120, (iw / live.length) * 0.55);
+  const x = (i) => m.l + (iw / live.length) * (i + 0.5);
+  const y = (v) => m.t + (1 - v / max) * ih;
+  let marks = "";
+  for (const gv of [0.5, 0.75, 1.0]) {
+    if (gv > max) continue;
+    marks += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(gv)}" y2="${y(gv)}" class="grid"/>` +
+      `<text x="${m.l - 6}" y="${y(gv) + 4}" text-anchor="end" class="tick">${Math.round(gv * 100)}%</text>`;
+  }
+  const lo = Math.min(...live.map((b) => b.pct));
+  const hi = Math.max(...live.map((b) => b.pct));
+  live.forEach((b, i) => {
+    const h = y(b.pct);
+    // shade by where this window sits between the day's worst and best
+    const t01 = hi > lo ? (b.pct - lo) / (hi - lo) : 1;
+    marks += `<path d="${roundedTopBar(x(i) - bw / 2, h, bw, m.t + ih - h)}"
+      fill="${divergeHSL(0.15 + 0.8 * t01)}" data-i="${i}" class="hit"/>`;
+    marks += `<text x="${x(i)}" y="${h - 7}" text-anchor="middle" class="val">${pct(b.pct)}</text>`;
+    marks += `<text x="${x(i)}" y="${H - 22}" text-anchor="middle" class="lbl">${b.label}</text>`;
+    marks += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle" class="tick">${b.games.length} games</text>`;
+  });
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = marks;
+  svg.addEventListener("pointermove", (e) => {
+    const el = e.target.closest(".hit");
+    if (!el) return hideTip();
+    const b = live[Number(el.dataset.i)];
+    const best = [...b.games].sort((x2, y2) => y2.pct - x2.pct)[0];
+    showTip(e.clientX, e.clientY, [
+      { head: `${b.label} kickoffs` },
+      { value: pct(b.pct), label: `full across ${b.games.length} games` },
+      { value: num(b.att), label: "total attendance" },
+      { value: `${best.team} ${pct(best.pct)}`, label: "fullest of the window" },
+    ]);
+  });
+  svg.addEventListener("pointerleave", hideTip);
+  cardEl.appendChild(svg);
+}
+
 export function renderSeasonCharts(root, teamsData, seasonsData, currentYear) {
   root.textContent = "";
   const season = seasonsData[currentYear];
@@ -1091,7 +1164,12 @@ export function renderSeasonCharts(root, teamsData, seasonsData, currentYear) {
   const c3 = card(`Percent full, team × week — ${currentYear}`, "Same scale as the table: green is full, red is empty seats");
   heatmap(c3, summary, season);
 
-  root.append(c1, c2, c3);
+  const c4 = card(`Kickoff time vs fill — ${currentYear}`,
+    "Every home game grouped by when it started; the shade tracks which " +
+    "window drew best");
+  kickoffWindows(c4, summary, season);
+
+  root.append(c1, c2, c3, c4);
 }
 
 
