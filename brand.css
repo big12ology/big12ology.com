@@ -18,11 +18,31 @@
 .b12-topbar .b12-right { margin-left: auto; }
 
 .b12-footer {
-  max-width: 880px; margin: 0 auto; padding: 10px 20px 44px;
-  color: #6b7280; font-size: 13.5px; line-height: 1.7; text-align: center;
+  max-width: 880px; margin: 0 auto; padding: 14px 20px 44px;
+  color: #6b7280; font-size: 13px; line-height: 1.65; text-align: center;
 }
 .b12-footer a { color: #003087; }
+.b12-footer p { margin: 0 0 8px; }
+.b12-footer .srcnote { font-size: 12px; }
 @media (prefers-color-scheme: dark) {
   .b12-footer { color: #9aa0aa; }
   .b12-footer a { color: #7aa2ff; }
+}
+
+/* module tabs / page subnav — one look everywhere */
+.subnav {
+  max-width: 880px; margin: 0 auto; padding: 10px 20px 0;
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.subnav a {
+  font-size: 13px; text-decoration: none; color: #6b7280;
+  border: 1px solid rgba(128,128,128,.35); border-radius: 20px;
+  padding: 4px 13px; background: transparent;
+}
+.subnav a:hover { color: inherit; border-color: #c8102e; }
+.subnav a.on { background: #c8102e; border-color: #c8102e; color: #fff; }
+@media (prefers-color-scheme: dark) {
+  .subnav a { color: #9aa0aa; }
+  .subnav a:hover { border-color: #ff5a6e; }
+  .subnav a.on { background: #c8102e; }
 }
