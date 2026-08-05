@@ -94,3 +94,19 @@ Thu/Fri windows, and daily otherwise. Setup after pushing to GitHub:
 Team and conference marks are from Wikimedia Commons (provenance in
 `site/logos/SOURCES.json`); they belong to their institutions and are used
 for identification only. Not affiliated with the Big 12 Conference.
+
+## Visual rules
+
+Shared with the attendance tracker; break them only deliberately.
+
+1. **Good-to-bad is always a gradient.** Green/red displays shade
+   continuously so the color carries magnitude — `winpct_color` (Python) and
+   `winPctColor` (JS) here, `pctHSL`/`divergeHSL` in the attendance repo. All
+   walk the same hue path: saturated red → amber → green.
+2. **Hue carries meaning, lightness does not** — lightness inverts between
+   light and dark themes.
+3. **Resolution goes where the data lives** — anchor curves, not linear ramps.
+4. **Dates in prose carry no year** (`pretty_date`); the season is on screen.
+   RSS keeps RFC 822 because parsers require it.
+5. **One chrome.** Header, pill nav, and matchup card come from
+   `tracker_top()` and `brand.css`; no page redefines them.
