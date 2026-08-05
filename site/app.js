@@ -1,5 +1,5 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=5";
-import { renderSeasonCharts, renderAllTimeCharts } from "./charts.js?v=5";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=6";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=6";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -394,14 +394,38 @@ async function main() {
     .map((y) => `<option value="${y}" ${y === index.default ? "selected" : ""}>${y}</option>`)
     .join("");
 
+  const selectedTeams = new Set();
+  const drawTeamCharts = () =>
+    renderTeamCharts($("#charts-teams"), teamsData, seasonsData,
+                     select.value, selectedTeams);
+  const renderChips = () => {
+    const box = $("#team-chips");
+    const teams = teamsForSeason(teamsData, Number(select.value));
+    box.innerHTML = teams.map((t) =>
+      `<button data-team="${t.team}" class="${selectedTeams.has(t.team) ? "on" : ""}"
+        style="${selectedTeams.has(t.team) ? `background:${t.color};border-color:${t.color}` : ""}">
+        ${t.logo ? `<img src="${t.logo}" alt="">` : ""}${t.team}</button>`).join("");
+    box.querySelectorAll("button").forEach((b) => {
+      b.onclick = () => {
+        const team = b.dataset.team;
+        selectedTeams.has(team) ? selectedTeams.delete(team)
+                                : selectedTeams.add(team);
+        renderChips();
+        drawTeamCharts();
+      };
+    });
+  };
+
   const show = (year) => {
     render(teamsData, seasonsData[year]);
     renderSeasonCharts($("#charts-season"), teamsData, seasonsData, year);
     renderAllTimeCharts($("#charts-alltime"), teamsData, seasonsData);
+    renderChips();
+    drawTeamCharts();
   };
 
   // module tabs (hash-routed)
-  const TABS = ["season", "charts", "alltime"];
+  const TABS = ["season", "charts", "alltime", "teams"];
   const setTab = (tab) => {
     if (!TABS.includes(tab)) tab = "season";
     for (const t of TABS) {

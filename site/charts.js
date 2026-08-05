@@ -1,6 +1,6 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=5";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=6";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -277,15 +277,19 @@ function heatmap(cardEl, summary, season) {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.innerHTML = marks;
+  const homeInfo = new Map(
+    season.games.filter((g) => !g.role).map((g) => [`${g.team}|${g.week}`, g]));
   svg.addEventListener("pointermove", (e) => {
     const el = e.target.closest(".hit");
     if (!el) return hideTip();
     const r = rows[Number(el.dataset.i)];
-    const g = r.weeks.find((x) => x.week === Number(el.dataset.w));
+    const w = r.weeks.find((x) => x.week === Number(el.dataset.w));
+    const info = homeInfo.get(`${r.team}|${w.week}`) ?? {};
+    const merged = { ...info, week: w.week, attendance: w.attendance };
+    const cap = w.attendance / (w.pct || 1);
     showTip(e.clientX, e.clientY, [
-      { head: `${r.team} · ${season.weekLabels[g.week]}` },
-      { value: pct(g.pct), label: "full" },
-      { value: num(g.attendance), label: "attendance" },
+      { head: `${r.team} · ${gameHead(merged, null)}` },
+      ...gameTipRows(merged, cap),
     ]);
   });
   svg.addEventListener("pointerleave", hideTip);
@@ -472,7 +476,7 @@ function weatherScatter(cardEl, seasonsData, teamsData) {
       if (!cap) continue;
       pts.push({ team: g.team, year, temp: g.weather.tempF,
                  rain: (g.weather.precipIn ?? 0) > 0.05,
-                 pct: g.attendance / cap,
+                 pct: g.attendance / cap, g, cap,
                  color: team.color });
     }
   }
@@ -530,9 +534,8 @@ function weatherScatter(cardEl, seasonsData, teamsData) {
     if (!el) return hideTip();
     const p = pts[Number(el.dataset.i)];
     showTip(e.clientX, e.clientY, [
-      { head: `${p.team} · ${p.year}` },
-      { value: pct(p.pct), label: "full" },
-      { value: `${p.temp}°F${p.rain ? ", rain" : ""}`, label: "kickoff" },
+      { head: `${p.team} · ${gameHead(p.g, p.year)}` },
+      ...gameTipRows(p.g, p.cap),
     ]);
   });
   svg.addEventListener("pointerleave", hideTip);
@@ -544,6 +547,7 @@ function weatherScatter(cardEl, seasonsData, teamsData) {
 function recordsWatch(cardEl, seasonsData, teamsData) {
   const best = new Map();   // team -> {crowd, pct, game}
   const streaks = new Map(); // team -> current consecutive sellouts
+  const ended = new Map();  // team -> how the last streak died
   const years = Object.keys(seasonsData).sort();
   for (const year of years) {
     const season = seasonsData[year];
@@ -561,23 +565,205 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
       if (g.attendance > b.crowd) { b.crowd = g.attendance; b.crowdGame = `${g.opponent} ${year}`; }
       if (p > b.pct) { b.pct = p; b.pctGame = `${g.opponent} ${year}`; }
       best.set(g.team, b);
-      streaks.set(g.team, p >= 1 ? (streaks.get(g.team) ?? 0) + 1 : 0);
+      const cur = streaks.get(g.team) ?? 0;
+      if (p >= 1) {
+        streaks.set(g.team, cur + 1);
+      } else {
+        if (cur > 0) {
+          ended.set(g.team, { count: cur, opp: g.opponent, year,
+                              pct: p, short: cap - g.attendance });
+        }
+        streaks.set(g.team, 0);
+      }
     }
   }
   const rows = [...best.entries()]
     .sort((a, b) => b[1].pct - a[1].pct)
     .map(([team, b]) => {
       const s = streaks.get(team) ?? 0;
+      let cell = "—";
+      if (s > 0) {
+        cell = s + " game" + (s > 1 ? "s" : "");
+      } else if (ended.has(team)) {
+        const e = ended.get(team);
+        cell = `<span class="rw-dim">${e.count}-game streak ended vs ` +
+          `${e.opp} ${e.year} (${pct(e.pct)}, ${num(e.short)} seats short)</span>`;
+      }
       return `<tr><td>${team}</td>` +
         `<td>${num(b.crowd)} <span class="rw-dim">vs ${b.crowdGame}</span></td>` +
         `<td>${pct(b.pct)} <span class="rw-dim">vs ${b.pctGame}</span></td>` +
-        `<td>${s > 0 ? s + " game" + (s > 1 ? "s" : "") : "—"}</td></tr>`;
+        `<td>${cell}</td></tr>`;
     }).join("");
   const wrap = document.createElement("div");
   wrap.className = "records-table";
   wrap.innerHTML = `<table><thead><tr><th>Team</th><th>Biggest crowd (tracked era)</th>` +
     `<th>Best fill</th><th>Active sellout streak</th></tr></thead><tbody>${rows}</tbody></table>`;
   cardEl.appendChild(wrap);
+}
+
+
+
+// One tooltip card for any single-game point, used by every chart that
+// hovers a game: attendance, fill, result, and kickoff weather.
+function gameTipRows(g, cap) {
+  const rows = [];
+  if (g.pointsFor != null && g.pointsAgainst != null) {
+    rows.push({ value: `${g.pointsFor > g.pointsAgainst ? "W" : "L"} ${g.pointsFor}–${g.pointsAgainst}`,
+                label: `vs ${g.opponent ?? "?"}` });
+  } else if (g.opponent) {
+    rows.push({ value: g.opponent, label: "opponent" });
+  }
+  rows.push({ value: num(g.attendance), label: "attendance" });
+  if (cap) rows.push({ value: pct(g.attendance / cap), label: "full" });
+  if (g.weather && g.weather.tempF != null) {
+    const w = g.weather;
+    const parts = [`${w.tempF}°F`];
+    if (w.windMph != null) parts.push(`${w.windMph} mph`);
+    if (w.precipIn > 0) parts.push(`${w.precipIn}" precip`);
+    rows.push({ value: parts.join(" · "), label: "kickoff" });
+  }
+  return rows;
+}
+
+function gameHead(g, year) {
+  return `week ${g.week}` + (year ? ` · ${year}` : "");
+}
+
+// ---- team comparison ------------------------------------------------------
+
+function multiLine(cardEl, seriesList, xLabels, yFmt, yMinPad, yMaxPad) {
+  const t = theme();
+  if (!seriesList.some((s) => s.pts.length)) {
+    return emptyNote(cardEl, "No data yet for the selected teams.");
+  }
+  const m = { t: 16, r: 14, b: 30, l: 50 };
+  const W = 640, H = 300, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const xs = xLabels.map((_, i) => i);
+  const allY = seriesList.flatMap((s) => s.pts.map((p) => p.y));
+  const ymin = Math.min(...allY) - yMinPad;
+  const ymax = Math.max(...allY) + yMaxPad;
+  const x = (i) => m.l + (xs.length > 1 ? (i / (xs.length - 1)) * iw : iw / 2);
+  const y = (v) => m.t + (1 - (v - ymin) / Math.max(ymax - ymin, 1e-9)) * ih;
+  let marks = "";
+  const step = Math.max(1, Math.ceil(xLabels.length / 12));
+  xLabels.forEach((lb, i) => {
+    if (i % step) return;
+    marks += `<text x="${x(i)}" y="${H - 10}" text-anchor="middle" class="tick">${lb}</text>`;
+  });
+  for (const gv of [ymin + (ymax - ymin) * 0.25, ymin + (ymax - ymin) * 0.6,
+                    ymax - (ymax - ymin) * 0.05]) {
+    marks += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(gv)}" y2="${y(gv)}" class="grid"/>` +
+      `<text x="${m.l - 6}" y="${y(gv) + 4}" text-anchor="end" class="tick">${yFmt(gv)}</text>`;
+  }
+  const hits = [];
+  seriesList.forEach((s) => {
+    if (!s.pts.length) return;
+    const d = s.pts.map((p, j) => `${j ? "L" : "M"}${x(p.i)},${y(p.y)}`).join(" ");
+    marks += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.5" opacity="0.9"/>`;
+    s.pts.forEach((p) => {
+      hits.push({ s, p });
+      marks += `<circle cx="${x(p.i)}" cy="${y(p.y)}" r="4" fill="${s.color}"
+        data-i="${hits.length - 1}" class="hit"/>`;
+    });
+  });
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = marks;
+  svg.addEventListener("pointermove", (e) => {
+    const el = e.target.closest(".hit");
+    if (!el) return hideTip();
+    const { s, p } = hits[Number(el.dataset.i)];
+    showTip(e.clientX, e.clientY, [
+      { head: `${s.name} · ${p.head}` },
+      ...p.rows,
+    ]);
+  });
+  svg.addEventListener("pointerleave", hideTip);
+  cardEl.appendChild(svg);
+}
+
+export function renderTeamCharts(root, teamsData, seasonsData, currentYear, selected) {
+  root.textContent = "";
+  if (!selected.size) {
+    const note = document.createElement("p");
+    note.className = "note";
+    note.style.padding = "1rem 1.5rem";
+    note.textContent = "Pick one or more teams above to chart them — " +
+      "add a second team to compare.";
+    root.appendChild(note);
+    return;
+  }
+  const season = seasonsData[currentYear];
+  const teams = teamsForSeason(teamsData, Number(currentYear));
+  const summary = seasonSummary(teams, season.games, season.weekLabels.length);
+  const colorOf = new Map(teams.map((x) => [x.team, x.color]));
+  const sel = [...selected].sort();
+
+  // 1. weekly fill, selected season
+  const weeks = summary.weeks.filter((w) => w.games > 0).map((w) => w.week);
+  const c1 = card(`Percent full by week — ${currentYear}`,
+    "Home games only; hover any point for the crowd");
+  const homeInfo = new Map(
+    season.games.filter((g) => !g.role).map((g) => [`${g.team}|${g.week}`, g]));
+  const gamePoint = (team, w, yval) => {
+    const info = homeInfo.get(`${team}|${w.week}`) ?? {};
+    const merged = { ...info, week: w.week, attendance: w.attendance };
+    return { i: weeks.indexOf(w.week), y: yval,
+             head: gameHead(merged, null),
+             rows: gameTipRows(merged, w.attendance / (w.pct || 1)) };
+  };
+  if (!weeks.length) {
+    emptyNote(c1, "No home games played yet this season.");
+  } else {
+    const series = sel.map((team) => {
+      const row = summary.rows.find((r) => r.team === team);
+      const pts = (row ? row.weeks : [])
+        .filter((w) => weeks.includes(w.week))
+        .map((w) => gamePoint(team, w, w.pct));
+      return { name: team, color: colorOf.get(team) ?? "#888", pts };
+    });
+    multiLine(c1, series, weeks.map((w) => "wk " + w), (v) => pct(v), 0.04, 0.03);
+  }
+
+  // 2. season fill, year over year
+  const years = Object.keys(seasonsData).sort();
+  const c2 = card(`Season percent full, year over year (${years[0]}–${years[years.length - 1]})`,
+    "One point per season per team");
+  const series2 = sel.map((team) => {
+    const pts = [];
+    years.forEach((yr, i) => {
+      const ts = teamsForSeason(teamsData, Number(yr));
+      const sm = seasonSummary(ts, seasonsData[yr].games,
+                               seasonsData[yr].weekLabels.length);
+      const row = sm.rows.find((r) => r.team === team);
+      if (row && row.games > 0) {
+        pts.push({ i, y: row.pct, head: yr,
+                   rows: [{ value: pct(row.pct), label: "season" },
+                          { value: num(row.total), label: "total attendance" }] });
+      }
+    });
+    return { name: team, color: colorOf.get(team) ?? "#888", pts };
+  });
+  multiLine(c2, series2, years, (v) => pct(v), 0.04, 0.03);
+
+  // 3. weekly attendance (raw), selected season
+  const c3 = card(`Attendance by week — ${currentYear}`,
+    "Raw crowds; capacity differences show here");
+  if (!weeks.length) {
+    emptyNote(c3, "No home games played yet this season.");
+  } else {
+    const series3 = sel.map((team) => {
+      const row = summary.rows.find((r) => r.team === team);
+      const pts = (row ? row.weeks : [])
+        .filter((w) => weeks.includes(w.week))
+        .map((w) => gamePoint(team, w, w.attendance));
+      return { name: team, color: colorOf.get(team) ?? "#888", pts };
+    });
+    multiLine(c3, series3, weeks.map((w) => "wk " + w),
+      (v) => Math.round(v / 1000) + "k", 3000, 2000);
+  }
+
+  root.append(c1, c2, c3);
 }
 
 export function renderSeasonCharts(root, teamsData, seasonsData, currentYear) {

@@ -16,14 +16,14 @@
     <a class="b12-right" href="/privacy">Privacy</a>
   </nav>
   <header>
-    <div>
-      <h1><img src="assets/logos/big12.svg" alt="Big 12" class="brand" />Attendance Tracker</h1>
-      <p class="tagline">Unofficial fan tool. Weekly home-game attendance for
-      all sixteen Big 12 teams.</p>
-    </div>
-    <div class="controls">
-      <label for="season">Season</label>
-      <select id="season"></select>
+    <div class="hwrap">
+      <img src="assets/logos/big12.svg" alt="" class="brandmark" />
+      <div>
+        <h1>Big 12 Attendance Tracker
+          <span class="dimyear" id="season-wrap">· <select id="season"></select></span></h1>
+        <p class="tagline">Unofficial fan tool. Weekly home-game attendance
+        for all sixteen Big 12 teams.</p>
+      </div>
     </div>
   </header>
 
@@ -31,6 +31,7 @@
     <a href="#season" data-tab="season" class="on">Season</a>
     <a href="#charts" data-tab="charts">Season charts</a>
     <a href="#alltime" data-tab="alltime">All-time &amp; records</a>
+    <a href="#teams" data-tab="teams">Teams</a>
   </nav>
 
   <div id="view-season">
@@ -48,6 +49,12 @@
   <div id="view-alltime" hidden>
     <main><section id="charts-alltime" class="charts"></section></main>
   </div>
+  <div id="view-teams" hidden>
+    <main>
+      <div id="team-chips" class="chips"></div>
+      <section id="charts-teams" class="charts"></section>
+    </main>
+  </div>
 
   <footer class="b12-footer">
     <p id="source-note" class="srcnote"></p>
@@ -59,7 +66,7 @@
     <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
   </footer>
 
-  <script type="module" src="site/app.js?v=5"></script>
+  <script type="module" src="site/app.js?v=6"></script>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
 </body>
 </html>

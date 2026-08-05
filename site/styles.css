@@ -36,17 +36,20 @@ body {
 }
 
 header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  padding: 1.1rem 1.5rem;
+  padding: 24px 20px 16px;
   background: var(--surface);
   border-bottom: 4px solid var(--accent);
   margin-bottom: 0.5rem;
 }
-.tagline { margin: 2px 0 0; color: var(--muted); font-size: 0.9rem; }
+.hwrap { display: flex; align-items: center; gap: 16px;
+  max-width: 880px; margin: 0 auto; }
+.brandmark { height: 54px; width: auto; }
+header h1 { font-size: 26px; margin: 0; letter-spacing: -0.02em; }
+.dimyear { color: var(--muted); }
+.dimyear select { font: inherit; font-weight: 700; color: var(--muted);
+  border: none; background: transparent; cursor: pointer; }
+.tagline { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+body.tab-alltime #season-wrap { visibility: hidden; }
 h1 { font-size: 1.35rem; margin: 0; letter-spacing: -0.01em; }
 .controls { display: flex; align-items: center; gap: 0.5rem; color: var(--muted); }
 select {
@@ -216,4 +219,13 @@ th .sortmode { color: var(--accent); font-weight: 700; }
 .subnav a:hover { border-color: var(--accent); color: var(--text); }
 .subnav a.on { background: var(--accent); border-color: var(--accent);
   color: #fff; }
-body.tab-alltime .controls { visibility: hidden; }
+
+
+/* team comparison chips */
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.25rem 1.5rem 0; }
+.chips button { font: inherit; font-size: 0.8rem; display: inline-flex;
+  align-items: center; gap: 0.35rem; border: 1px solid var(--border);
+  border-radius: 20px; padding: 0.25rem 0.7rem; background: var(--surface);
+  color: var(--text); cursor: pointer; }
+.chips button img { height: 14px; width: 14px; object-fit: contain; }
+.chips button.on { color: #fff; font-weight: 700; }
