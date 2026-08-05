@@ -17,7 +17,7 @@ import os
 
 import fetch as fetcher
 import tiebreaker as tb
-from build import esc, logo_img
+from build import esc, load_teams, logo_img, team_abbr
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HIST = os.path.join(HERE, "history")
@@ -211,7 +211,10 @@ def h2h_grid(all_games):
             if w in wl and l in wl:
                 wl[w][l][0] += 1
                 wl[l][w][1] += 1
-    head = "".join(f"<th title='{esc(t)}'>{esc(t[:3].upper())}</th>"
+    # Same source as every other grid on the site: t[:3] made Arizona and
+    # Arizona State both ARI.
+    teams = load_teams()
+    head = "".join(f"<th title='{esc(t)}'>{esc(team_abbr(teams, t))}</th>"
                    for t in current)
     rows = []
     for a in current:
@@ -228,8 +231,10 @@ def h2h_grid(all_games):
                 cells.append(f"<td style='color:hsl({round(p * 130)} 60% "
                              f"var(--pctl))' title='{esc(a)} {w}–{l} vs "
                              f"{esc(b)}'>{w}–{l}</td>")
+        # Full name, like the schedule's grid — a[:12] was cutting Arizona
+        # State, Oklahoma State and West Virginia off mid-word.
         rows.append(f"<tr><td class=teamcell>{logo_img(a, 14)}"
-                    f"{esc(a[:12])}</td>{''.join(cells)}</tr>")
+                    f"{esc(a)}</td>{''.join(cells)}</tr>")
     return ("<div class='table-scroll'><table class='mini h2h'><thead>"
             f"<tr><th></th>{head}</tr></thead><tbody>"
             + "".join(rows) + "</tbody></table></div>")

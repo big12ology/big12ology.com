@@ -326,6 +326,17 @@ def scorecard_card(games, systems, lines=None):
             "number was locked at kickoff. Respect the house.</p></div>")
 
 
+def team_abbr(teams, t):
+    """The short label for a team, from teams.json.
+
+    Never truncate as a fallback — Arizona and Arizona State collide at three
+    letters (both ARI) and at four (both ARIZ), which is the bug this
+    replaces. A team missing an abbreviation shows its full name, so the gap
+    is visible instead of silently ambiguous.
+    """
+    return (teams.get(t) or {}).get("abbr") or t
+
+
 def h2h_card(games, teams, stand_rows):
     """Current-season head-to-head grid: every conference meeting, played or
     scheduled, from the row team's perspective. Ordered by current standings
@@ -341,11 +352,8 @@ def h2h_card(games, teams, stand_rows):
     for g in conf:
         meet[frozenset((g["home"], g["away"]))] = g
 
-    def abbr(t):
-        return (teams.get(t) or {}).get("abbr") or t[:4].upper()
-
     head = "".join(
-        f"<th title='{esc(t)}'>{esc(abbr(t))}</th>" for t in order)
+        f"<th title='{esc(t)}'>{esc(team_abbr(teams, t))}</th>" for t in order)
     body = []
     for a in order:
         cells = []
