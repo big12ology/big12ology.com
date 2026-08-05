@@ -1,6 +1,6 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=3";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -573,17 +573,17 @@ export function renderCharts(root, teamsData, seasonsData, currentYear) {
   const c3 = card(`Percent full, team × week — ${currentYear}`, "Same scale as the table: green is full, red is empty seats");
   heatmap(c3, summary, season);
 
-  const c4 = card("Weekly percent full, year over year", "Each line is a season; conference-wide");
-  yoyLines(c4, seasonsData, teamsData);
+  const c4 = card("Records watch", "High-water marks across the tracked era, and who's on a sellout streak");
+  recordsWatch(c4, seasonsData, teamsData);
 
-  const c5 = card("Season percent full by team, year over year", "One dot per season; the connector spans a team's range");
-  yoyTeams(c5, seasonsData, teamsData);
+  const c5 = card("Kickoff weather vs fill", "Every tracked home game; ringed dots = rain; hover for details");
+  weatherScatter(c5, seasonsData, teamsData);
 
-  const c6 = card("Kickoff weather vs fill", "Every tracked home game; ringed dots = rain; hover for details");
-  weatherScatter(c6, seasonsData, teamsData);
+  const c6 = card("Weekly percent full, year over year", "Each line is a season; conference-wide");
+  yoyLines(c6, seasonsData, teamsData);
 
-  const c7 = card("Records watch", "High-water marks across the tracked era, and who's on a sellout streak");
-  recordsWatch(c7, seasonsData, teamsData);
+  const c7 = card("Season percent full by team, year over year", "One dot per season; the connector spans a team's range");
+  yoyTeams(c7, seasonsData, teamsData);
 
   root.append(c1, c2, c3, c4, c5, c6, c7);
 }
