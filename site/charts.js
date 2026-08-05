@@ -225,6 +225,25 @@ function teamBars(cardEl, summary) {
 // Same fill semantics as the table's percent colors (see app.js — keep in
 // sync). Hue carries the meaning; the anchor curve is log-like so the top
 // of the scale (where most games land) gets most of the resolution.
+// PROJECT RULE: any good-to-bad display in green/red is a gradient, never
+// two flat colors. Feed a 0..1 position (0 = worst, 1 = best); this walks
+// the same hue path the fill scale uses — saturated red, through amber, to
+// green — so every chart on the site speaks one visual language.
+function divergeHSL(t) {
+  const u = Math.max(0, Math.min(1, t));
+  const A = [[0, 0], [0.25, 18], [0.5, 45], [0.75, 95], [1, 140]];
+  let h = A[A.length - 1][1];
+  for (let i = 1; i < A.length; i++) {
+    if (u <= A[i][0]) {
+      const f = (u - A[i - 1][0]) / (A[i][0] - A[i - 1][0]);
+      h = A[i - 1][1] + f * (A[i][1] - A[i - 1][1]);
+      break;
+    }
+  }
+  const s = h < 45 ? 100 - (h / 45) * 30 : 68;
+  return `hsl(${Math.round(h)} ${Math.round(s)}% ${isDark() ? 55 : 38}%)`;
+}
+
 function pctHSLC(p) {
   // Two regimes with a hard break at sold out. Below 100% the hue tops out
   // at 110 (yellow-green) — a not-quite-full house never reads truly green.
