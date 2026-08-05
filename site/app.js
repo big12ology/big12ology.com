@@ -250,7 +250,7 @@
   var lastCcg = actualCcg;
 
   function refresh() {
-    renderPickList();
+    syncPicks();
     if (!active()) {
       if (matchcard) matchcard.innerHTML = orig.match;
       if (stand) stand.innerHTML = orig.stand;
@@ -543,6 +543,14 @@
       if (!byWeek[k]) { byWeek[k] = []; weeks.push(k); }
       byWeek[k].push(g);
     });
+    // Keep whatever the reader had open. Rebuilding the list used to snap
+    // them back to Week 1 on every pick.
+    var wasOpen = {};
+    box.querySelectorAll("details").forEach(function (d) {
+      var s = d.querySelector("summary");
+      if (s && d.open) wasOpen[s.textContent.split(" (")[0].trim()] = true;
+    });
+    var anyOpen = Object.keys(wasOpen).length > 0;
     var openWeek = weeks.length ? weeks[0] : null;
     var html = weeks.map(function (wk) {
       var inner = byWeek[wk].map(function (g) {
@@ -560,20 +568,14 @@
       var picked = byWeek[wk].filter(function (g) {
         return picks[String(g.id)];
       }).length;
-      return "<details" + (wk === openWeek ? " open" : "") + "><summary>" +
+      var open = anyOpen ? wasOpen[wk] : wk === openWeek;
+      return "<details" + (open ? " open" : "") + "><summary>" +
         wk + " <span class=dim>(" + picked + "/" + byWeek[wk].length +
         (unlocked ? " changed" : " picked") + ")</span></summary>" +
         inner + "</details>";
     }).join("");
     box.innerHTML = html;
-    var count = document.getElementById("w-count");
-    if (count) {
-      var n = Object.keys(picks).length;
-      count.textContent = unlocked
-        ? (n === 0 ? "Nothing changed — this is the season as it happened"
-                   : n + (n === 1 ? " game" : " games") + " changed")
-        : n + " of " + games.length + " games picked";
-    }
+    updateCount(games.length);
     box.querySelectorAll(".pick").forEach(function (btn) {
       btn.onclick = function () {
         var id = btn.dataset.id, team = btn.dataset.team;
@@ -585,6 +587,41 @@
         refresh();
       };
     });
+  }
+
+  function updateCount(total) {
+    var count = document.getElementById("w-count");
+    if (!count) return;
+    var n = Object.keys(picks).length;
+    count.textContent = unlocked
+      ? (n === 0 ? "Nothing changed — this is the season as it happened"
+                 : n + (n === 1 ? " game" : " games") + " changed")
+      : n + " of " + total + " games picked";
+  }
+
+  // A pick changes two buttons and two counters, nothing else. Repainting
+  // those in place leaves the open week open and the page where it was.
+  function syncPicks() {
+    var box = document.getElementById("wgames");
+    if (!box) return;
+    box.querySelectorAll(".pick").forEach(function (btn) {
+      var id = btn.dataset.id, team = btn.dataset.team;
+      var sel = picks[id] === team;
+      var stands = !picks[id] && actualWinner(byId[id]) === team;
+      btn.classList.toggle("sel", sel);
+      btn.classList.toggle("stands", stands);
+      btn.style.background = sel ? color(team) : "";
+      btn.style.borderColor = sel ? color(team) : "";
+      btn.style.color = sel ? textOn(color(team)) : "";
+    });
+    box.querySelectorAll("details").forEach(function (d) {
+      var tag = d.querySelector("summary .dim");
+      if (!tag) return;
+      tag.textContent = "(" + d.querySelectorAll(".pick.sel").length + "/" +
+        d.querySelectorAll(".wgame").length +
+        (unlocked ? " changed" : " picked") + ")";
+    });
+    updateCount(pickable().length);
   }
 
   function pickBtn(id, team, fav, was) {
