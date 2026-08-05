@@ -17,6 +17,8 @@
   var chip = document.getElementById("w-chip");
   var sortRaw = false;
   var picks = {}; // gameId -> winning team
+  var byId = {};
+  payload.games.forEach(function (g) { byId[String(g.id)] = g; });
   var models = payload.models || [];
   var model = models.length ? models[0].name : null;
 
@@ -91,10 +93,21 @@
 
   // ------------------------------------------------------------- simulation
 
+  // In a finished season every game is a lever; in a live one only the
+  // games that have not been played yet.
+  var unlocked = !!payload.unlocked;
+
   function pickable() {
     return payload.games.filter(function (g) {
-      return !g.ccg && !g.completed;
+      return !g.ccg && (unlocked || !g.completed);
     });
+  }
+
+  // What actually happened, for the games the user is allowed to rewrite.
+  function actualWinner(g) {
+    if (!g.completed || g.home_points === null) return null;
+    if (g.home_points === g.away_points) return null;
+    return g.home_points > g.away_points ? g.home : g.away;
   }
 
   function simGames() {
@@ -116,31 +129,11 @@
 
   // -------------------------------------------------------------- rendering
 
-  function fmtPct(p) {
-    return p === null ? "—" : p.toFixed(3);
-  }
+  // Win-percentage colour curve and formatting live in pct.js, so this file
+  // and the server render the same standings row.
+  var fmtPct = window.B12PCT.fmt;
+  var winPctColor = window.B12PCT.color;
 
-  // Win-percentage color curve — anchors kept in sync with winpct_color in
-  // build.py; same visual language as the attendance tracker.
-  var WINPCT_ANCHORS = [[0.0, 0], [0.30, 20], [0.45, 45], [0.60, 75],
-                        [0.70, 95], [0.80, 118], [0.90, 140], [1.0, 168]];
-
-  function winPctColor(p) {
-    var a = WINPCT_ANCHORS;
-    var h = a[a.length - 1][1];
-    if (p <= a[0][0]) h = a[0][1];
-    else {
-      for (var i = 1; i < a.length; i++) {
-        if (p <= a[i][0]) {
-          var t = (p - a[i - 1][0]) / (a[i][0] - a[i - 1][0]);
-          h = a[i - 1][1] + t * (a[i][1] - a[i - 1][1]);
-          break;
-        }
-      }
-    }
-    var s = h < 45 ? 100 - (h / 45) * 35 : 65;
-    return "hsl(" + Math.round(h) + " " + Math.round(s) + "% var(--pctl))";
-  }
 
   function renderMatch(ccg, nLeft) {
     if (!ccg) {
@@ -150,7 +143,10 @@
     var badge = ccg.resolved
       ? "<span class='badge ok'>resolved</span>"
       : "<span class='badge warn'>needs SportSource rating or coin toss</span>";
-    var status = nLeft === 0 ? "What-if championship matchup"
+    var n = Object.keys(picks).length;
+    var status = unlocked
+      ? "Rewritten season (" + n + (n === 1 ? " game" : " games") + " changed)"
+      : nLeft === 0 ? "What-if championship matchup"
       : "What-if projection (" + nLeft + " games still unpicked)";
     var html = "<h2>" + status + " " + badge + "</h2><div class=matchup>";
     [ccg.seed1, ccg.seed2].forEach(function (t, i) {
@@ -553,10 +549,11 @@
         var id = String(g.id);
         var fav = favs()[id];
         var date = (g.start || "").slice(5, 10).replace("-", "/");
+        var was = actualWinner(g);
         return "<div class=wgame>" +
-          pickBtn(id, g.away, fav) +
+          pickBtn(id, g.away, fav, was) +
           "<span class=at>at</span>" +
-          pickBtn(id, g.home, fav) +
+          pickBtn(id, g.home, fav, was) +
           (g.conference_game ? "" : "<span class=nctag>non-conf</span>") +
           "<span class=wdate>" + date + "</span></div>";
       }).join("");
@@ -565,32 +562,42 @@
       }).length;
       return "<details" + (wk === openWeek ? " open" : "") + "><summary>" +
         wk + " <span class=dim>(" + picked + "/" + byWeek[wk].length +
-        " picked)</span></summary>" + inner + "</details>";
+        (unlocked ? " changed" : " picked") + ")</span></summary>" +
+        inner + "</details>";
     }).join("");
     box.innerHTML = html;
     var count = document.getElementById("w-count");
     if (count) {
-      count.textContent = Object.keys(picks).length + " of " + games.length +
-        " games picked";
+      var n = Object.keys(picks).length;
+      count.textContent = unlocked
+        ? (n === 0 ? "Nothing changed — this is the season as it happened"
+                   : n + (n === 1 ? " game" : " games") + " changed")
+        : n + " of " + games.length + " games picked";
     }
     box.querySelectorAll(".pick").forEach(function (btn) {
       btn.onclick = function () {
         var id = btn.dataset.id, team = btn.dataset.team;
         if (picks[id] === team) delete picks[id];
         else picks[id] = team;
+        // A pick that agrees with the real result is not a what-if.
+        var g = byId[id];
+        if (g && picks[id] === actualWinner(g)) delete picks[id];
         refresh();
       };
     });
   }
 
-  function pickBtn(id, team, fav) {
+  function pickBtn(id, team, fav, was) {
     var sel = picks[id] === team;
+    // No pick yet on a played game: show the result that stands.
+    var stands = !picks[id] && was === team;
     var isFav = fav && fav.team === team;
     var style = sel
       ? " style='background:" + color(team) + ";border-color:" + color(team) +
         ";color:" + textOn(color(team)) + "'"
       : "";
-    return "<button class='pick" + (sel ? " sel" : "") + "' data-id='" + id +
+    return "<button class='pick" + (sel ? " sel" : "") +
+      (stands ? " stands" : "") + "' data-id='" + id +
       "' data-team='" + esc(team) + "'" + style + ">" + mark(team, 18) +
       esc(team) +
       (isFav ? "<span class=star title='" + esc(model) + " favorite by ~" +
@@ -601,6 +608,13 @@
   function updateNote() {
     var note = document.getElementById("w-note");
     if (!note) return;
+    if (unlocked) {
+      note.textContent = "This season is finished, so every game is editable. " +
+        "The result that actually happened is outlined; click the other team " +
+        "to overrule it and the full official procedure re-runs against the " +
+        "season you just wrote. Reset to what happened puts it all back.";
+      return;
+    }
     if (!model) {
       note.textContent = "No rating models available — pick every game by hand.";
       return;

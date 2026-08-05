@@ -9,6 +9,7 @@ Writes site/index.html — fully self-contained, no external requests.
 """
 import datetime
 import html
+import hashlib
 import json
 import os
 import sys
@@ -83,12 +84,36 @@ def favorites_for(games, systems):
     return out
 
 
+# Seasons kept online. The live season sits at the root; finished ones get
+# their own directory so their URLs never change once the year is over.
+ARCHIVE_YEARS = [2025, 2024]
+BASE = ""      # "../" while writing an archived season, so assets resolve
+LIVE_YEAR = None
+
+
+def asset_v(name):
+    """Cache-bust by content. A browser that has app.js in cache will not ask
+    the server whether it changed, so a deploy can silently keep running the
+    old file — this makes the URL change whenever the bytes do."""
+    p = os.path.join(SITE, name)
+    try:
+        h = hashlib.sha1(open(p, "rb").read()).hexdigest()[:8]
+    except OSError:
+        return name
+    return f"{name}?v={h}"
+
+
+def year_href(y):
+    """Link from wherever we are now to another season's front page."""
+    return BASE if y == LIVE_YEAR else f"{BASE}{y}/"
+
+
 def logo_img(team, size=20):
     k = TEAM_KEY.get(team)
     if not k:
         return ""
     ext = "png" if k == "byu" else "svg"
-    return (f"<img class=mark src='logos/{k}.{ext}' alt='' "
+    return (f"<img class=mark src='{BASE}logos/{k}.{ext}' alt='' "
             f"width={size} height={size} loading=lazy>")
 
 
@@ -134,13 +159,21 @@ def fmt_prob(p):
 def tracker_top(year, active, matchcard=""):
     """The one top: header bar, pill row, matchup card. Styled entirely by
     brand.css (.b12-head/.subnav) — no page may restyle these."""
+    years = "".join(
+        (f"<span class=yron>{y}</span>" if y == year else
+         f"<a href='{year_href(y)}'>{y}</a>")
+        for y in [LIVE_YEAR] + ARCHIVE_YEARS)
+    blurb = ("Unofficial fan tool. Applies the official Big 12 tiebreaking "
+             "procedures to live results after every game."
+             if year == LIVE_YEAR else
+             f"The {year} season as it finished, with the official "
+             "tiebreaking procedures applied to the final results.")
     return f"""<header class=b12-head>
   <div class=hwrap>
-    <img src=logos/big12.svg alt="">
+    <img src={BASE}logos/big12.svg alt="">
     <div>
-      <h1>Big 12 Tiebreaker Tracker <span class=yr>· {year}</span></h1>
-      <p>Unofficial fan tool. Applies the official Big 12 tiebreaking
-      procedures to live results after every game.</p>
+      <h1>Big 12 Tiebreaker Tracker <span class=yrpills>{years}</span></h1>
+      <p>{blurb}</p>
     </div>
   </div>
 </header>
@@ -152,10 +185,10 @@ def tracker_top(year, active, matchcard=""):
 # Ordered the way someone actually reads the season: the summary, then the
 # race, then where everyone stands, then the toys. Every label takes "The" —
 # a name that only works without it is a sign the page needs a better name.
-SUBNAV_LINKS = [("brief", "brief.html", "The Brief"),
+SUBNAV_LINKS = [("brief", "./", "The Brief"),
                 ("race", "race.html", "The Race"),
                 ("standings", "standings.html", "The Standings"),
-                ("tracker", "./", "The Lab"),
+                ("tracker", "lab.html", "The Lab"),
                 ("schedule", "schedule.html", "The Schedule"),
                 ("how", "how.html", "The Rules"),
                 ("history", "history.html", "The Archive")]
@@ -416,6 +449,110 @@ def official_board(games, overrides, display_rows):
     return out
 
 
+def season_frames(games, overrides):
+    """One snapshot per conference week: both boards exactly as the engine
+    would have drawn them that Sunday morning. Computed here, in Python, so
+    the replay can never drift from the rules engine the way a second
+    client-side implementation would."""
+    weeks = sorted({g["week"] for g in games
+                    if g["completed"] and g["conference_game"]
+                    and not g.get("ccg") and g["home_points"] is not None})
+    everyone = sorted(clinch_mod.conf_teams(games))
+    out = []
+    for w in weeks:
+        sub = [g for g in games if g["week"] <= w]
+        rows = tb.standings(sub, overrides)
+        display = pad_standings(rows, sub)
+        seen = {r["team"] for r in display}
+        display = display + [{
+            "rank": None, "team": t, "conf_w": 0, "conf_l": 0,
+            "nonconf_w": 0, "nonconf_l": 0, "overall_w": 0, "overall_l": 0,
+            "tie_group": None, "log": None, "events": None, "resolved": True,
+        } for t in everyone if t not in seen]
+        last = max((g["start"] or "" for g in sub
+                    if g["week"] == w and g["completed"]), default="")
+        left = []
+        for b in official_board(sub, overrides, display):
+            for i, t in enumerate(b["teams"]):
+                r = next(x for x in display if x["team"] == t)
+                left.append({"t": t, "p": b["pos"], "w": r["conf_w"],
+                             "l": r["conf_l"], "n": len(b["teams"]),
+                             "i": i})
+        out.append({
+            "w": w,
+            "label": f"Week {w}",
+            "date": pretty_date(last, "short") if last else "",
+            "left": left,
+            "right": [{"t": r["team"], "p": str(r["rank"] or "—"),
+                       "w": r["conf_w"], "l": r["conf_l"]} for r in display],
+        })
+    return out
+
+
+def bump_svg(frames, teams):
+    """How the season moved: every team's position, week by week. Positions
+    come from the fully-broken board, the only one that gives each team a
+    place of its own — the official board would stack four lines on one row."""
+    if len(frames) < 2:
+        return ""
+    n = len(frames)
+    W, H = 940, 470
+    m = {"l": 46, "r": 116, "t": 26, "b": 34}
+    x = lambda i: m["l"] + (i / (n - 1)) * (W - m["l"] - m["r"])
+    y = lambda rank: m["t"] + ((rank - 1) / 15) * (H - m["t"] - m["b"])
+
+    grid = "".join(
+        f'<line x1="{m["l"]}" y1="{y(r):.1f}" x2="{W - m["r"]}" '
+        f'y2="{y(r):.1f}" class="bgrid"/>' for r in range(1, 17))
+    grid += "".join(
+        f'<text x="{m["l"] - 12}" y="{y(r) + 4:.1f}" class="btick bnum">{r}</text>'
+        for r in range(1, 17))
+    grid += "".join(
+        f'<text x="{x(i):.1f}" y="{H - 10}" class="btick bwk">{f["w"]}</text>'
+        for i, f in enumerate(frames))
+    grid += (f'<text x="{m["l"] - 12}" y="{m["t"] - 10}" class="btick bnum">'
+             f'Pos</text>')
+
+    order = {r["t"]: i for i, r in enumerate(frames[-1]["right"])}
+    lines = []
+    for team in sorted(order, key=lambda t: order[t]):
+        pts = []
+        for i, f in enumerate(frames):
+            rank = next((j + 1 for j, r in enumerate(f["right"])
+                         if r["t"] == team), None)
+            if rank:
+                pts.append((x(i), y(rank)))
+        if not pts:
+            continue
+        c = team_color(teams, team)
+        path = " ".join(f"{px:.1f},{py:.1f}" for px, py in pts)
+        dots = "".join(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="2.6" '
+                       f'fill="{c}"/>' for px, py in pts)
+        ex, ey = pts[-1]
+        k = TEAM_KEY.get(team, "")
+        ext = "png" if k == "byu" else "svg"
+        lines.append(
+            f'<g class="bteam"><title>{esc(team)}</title>'
+            f'<polyline points="{path}" fill="none" stroke="{c}" '
+            f'stroke-width="2.4" stroke-linejoin="round" '
+            f'stroke-linecap="round"/>'
+            f"{dots}"
+            f'<image href="{BASE}logos/{k}.{ext}" x="{ex + 8:.1f}" '
+            f'y="{ey - 8:.1f}" width="16" height="16"/>'
+            f'<text x="{ex + 28:.1f}" y="{ey + 4:.1f}" class="blabel" '
+            f'fill="{c}">{esc(team)}</text></g>')
+
+    return (f"<div class=card><h2>How the season moved</h2>"
+            f'<div class="bumpwrap"><svg class="bump" viewBox="0 0 {W} {H}" '
+            f'role="img" aria-label="Conference position by week">'
+            f"{grid}{''.join(lines)}</svg></div>"
+            f"<p class=note>Position after each week, from the fully-broken "
+            f"board — the only one that gives every team a place of its own. "
+            f"Hover a line to follow one program. Weeks with no Big 12 games "
+            f"are skipped, so the spacing is by conference week, not by "
+            f"calendar date.</p></div>")
+
+
 def standings_page(games, overrides, display_rows, teams):
     """Two boards side by side, drawn with the same chrome as the main
     standings table so the only difference a reader sees is the ordering.
@@ -447,11 +584,31 @@ def standings_page(games, overrides, display_rows, teams):
     right = "".join(f"<tr><td class=posc>{r['rank'] or '—'}</td>{cells(r)}</tr>"
                     for r in display_rows)
 
-    return f"""<div class="duo even">
+    frames = season_frames(games, overrides)
+    replay = ""
+    if len(frames) > 1:
+        marks = {t: {"color": team_color(teams, t),
+                     "logo": f"{BASE}logos/{TEAM_KEY[t]}."
+                             f"{'png' if TEAM_KEY[t] == 'byu' else 'svg'}"}
+                 for t in sorted(TEAM_KEY) if t in
+                 {r["t"] for r in frames[-1]["right"]}}
+        replay = ("<div class=card id=replaycard>"
+                  "<h2>Replay the season</h2>"
+                  "<div id=replaybar></div>"
+                  "<p class=note>Both boards below redraw to the Sunday "
+                  "morning after the week you pick. Every frame is the real "
+                  "rules engine run against the results that existed at the "
+                  "time, so what you see is what the standings actually "
+                  "were — not a reconstruction.</p></div>"
+                  "<script id=replay-data type=application/json>"
+                  + json.dumps({"frames": frames, "teams": marks})
+                  + "</script>")
+
+    return f"""{replay}<div class="duo even">
 <div class=stack>
 <div class=card><h2>As the conference keeps it</h2>
   <div class=tablewrap><table class=stbl>{head}
-  <tbody>{"".join(left)}</tbody></table></div>
+  <tbody id=board-left>{"".join(left)}</tbody></table></div>
   <p class=note>The Big 12 runs its tiebreaking procedure for one purpose:
   naming the two teams that play in the championship game. Every other tie
   in the standings is left standing, so third place can be shared by four
@@ -462,7 +619,7 @@ def standings_page(games, overrides, display_rows, teams):
 <div class=stack>
 <div class=card><h2>If every tie were broken</h2>
   <div class=tablewrap><table class=stbl>{head}
-  <tbody>{right}</tbody></table></div>
+  <tbody id=board-right>{right}</tbody></table></div>
   <p class=note>The same procedure carried all the way down, one team per
   position. The conference never publishes this and it decides nothing — it
   is what the rules produce if you ask them to sort the whole league, and it
@@ -470,7 +627,8 @@ def standings_page(games, overrides, display_rows, teams):
   stand. <a href=how.html>The Rules</a> walks the steps.</p>
 </div>
 </div>
-</div>"""
+</div>
+{bump_svg(frames, teams)}"""
 
 
 def clinch_card(games, overrides, systems, stand_rows, sims):
@@ -650,7 +808,8 @@ def _prev_week_state(games, systems, overrides, last_week):
     return {"sims": sims, "rows": rows, "chaos": cx, "clinch": cl["teams"]}
 
 
-def build_brief(year, games, overrides, systems, sims, matchcard):
+def build_brief(year, games, overrides, systems, sims, matchcard,
+                canon=None):
     """The Brief: what changed this week. Deliberately not a second copy of
     The Race — this page is movement, not reference."""
     done = [g for g in games if g["completed"] and not g.get("ccg")
@@ -687,7 +846,10 @@ def build_brief(year, games, overrides, systems, sims, matchcard):
                          + "".join(game_row(g) for g in upcoming)
                          + "</ul></div>")
         body = f"<p class=briefstamp>The Brief &middot; {esc(stamp)}</p>" + "".join(parts)
-        return build_subpage("The Brief", "brief", body, year, matchcard)
+        return build_subpage(
+            "The Brief", "brief", body, year, matchcard, canon=canon,
+            desc=("The Big 12 championship race with the official "
+                  "tiebreaking procedures applied to live results."))
 
     last_week = max(g["week"] for g in done)
     prev = _prev_week_state(games, systems, overrides, last_week)
@@ -777,7 +939,11 @@ def build_brief(year, games, overrides, systems, sims, matchcard):
                      f"<a href=race.html>The Race</a>.</p></div>")
 
     body = f"<p class=briefstamp>The Brief &middot; {esc(stamp)}</p>" + "".join(parts)
-    return build_subpage("The Brief", "brief", body, year, matchcard)
+    return build_subpage(
+        "The Brief", "brief", body, year, matchcard, canon=canon,
+        desc=("What changed in the Big 12 race this week: who rose, who fell, "
+              "what clinched, and what the next slate decides — the official "
+              "tiebreaking procedures applied to live results."))
 
 
 SUBPAGE_EXTRA_CSS = """
@@ -819,18 +985,64 @@ table.h2h { width:100%; table-layout:auto }
 .selfcell { color:var(--dim); opacity:.55;
   background:color-mix(in srgb, var(--dim) 12%, transparent) }
 .nomeet { color:var(--dim); opacity:.75; font-size:15px; line-height:1 }
+
+/* ---- season replay ---- */
+#replaybar .rpline { display:flex; align-items:center; gap:10px;
+  flex-wrap:wrap }
+#replaybar input[type=range] { flex:1 1 220px; min-width:180px;
+  accent-color:var(--accent) }
+#replaybar #rp-label { font-size:14px; color:var(--dim) }
+#replaybar #rp-prev, #replaybar #rp-next { padding:6px 10px }
+#replaycard.scrubbed { border-color:var(--accent) }
+.mv { font-size:11px; margin-left:5px; font-weight:600 }
+.mv.up { color:hsl(140 60% var(--pctl)) }
+.mv.down { color:hsl(6 70% var(--pctl)) }
+tr.moved td { animation:flashrow 900ms ease-out }
+@keyframes flashrow { from { background:rgba(200,16,46,.10) }
+                      to { background:transparent } }
+@media (prefers-reduced-motion:reduce) {
+  tr.moved td { animation:none }
+}
+
+/* ---- how the season moved ---- */
+.bumpwrap { overflow-x:auto }
+.bump { width:100%; min-width:660px; height:auto; display:block }
+.bump .bgrid { stroke:var(--line); stroke-width:1 }
+.bump .btick { fill:var(--dim); font-size:11px }
+.bump .bnum { text-anchor:end }
+.bump .bwk { text-anchor:middle }
+.bump .blabel { font-size:11px; font-weight:600 }
+.bump .bteam { transition:opacity .12s ease }
+.bumpwrap:hover .bteam { opacity:.22 }
+.bumpwrap .bteam:hover { opacity:1 }
+.bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 """
 
 
-def build_subpage(title, active, body, year, matchcard):
+def build_subpage(title, active, body, year, matchcard,
+                  canon=None, desc=None, head=""):
+    social = ""
+    if canon:
+        social = f"""<link rel=canonical href="{canon}">
+<meta name=description content="{esc(desc or '')}">
+<meta property=og:type content=website>
+<meta property=og:site_name content=Big12ology>
+<meta property=og:title content="{esc(title)} — Big 12 Tiebreaker Tracker">
+<meta property=og:description content="{esc(desc or '')}">
+<meta property=og:url content="{canon}">
+<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta property=og:image:width content=1200>
+<meta property=og:image:height content=630>
+<meta name=twitter:card content=summary_large_image>"""
     return f"""<!doctype html>
 <html lang=en><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>{esc(title)} — Big 12 Tiebreaker Tracker</title>
-<link rel=icon type=image/svg+xml href=favicon.svg>
-<link rel=stylesheet href=brand.css>
-<link rel=alternate type=application/rss+xml href=feed.xml>
-<style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style></head><body>
+{social}
+<link rel=icon type=image/svg+xml href={BASE}favicon.svg>
+<link rel=stylesheet href={BASE}brand.css>
+<link rel=alternate type=application/rss+xml href={BASE}feed.xml>
+<style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>{head}</head><body>
 <nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
 <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a></nav>
 {tracker_top(year, active, matchcard)}
@@ -839,6 +1051,7 @@ def build_subpage(title, active, body, year, matchcard):
 <footer class=b12-footer>A Big12ology project · not affiliated with the
 Big 12 Conference · <a href=data.json>data.json</a> ·
 <a href=standings.csv>standings.csv</a> ·
+<a href={BASE}feed.xml>RSS</a> ·
 <a href="https://big12ology.com/privacy">Privacy</a></footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
 </body></html>"""
@@ -1030,7 +1243,7 @@ def render(year, games):
     team_meta = {}
     for t, k in TEAM_KEY.items():
         team_meta[t] = {
-            "logo": f"logos/{k}.{'png' if k == 'byu' else 'svg'}",
+            "logo": f"{BASE}logos/{k}.{'png' if k == 'byu' else 'svg'}",
             "color": team_color(teams, t),
             "abbr": (teams.get(t) or {}).get("abbr") or t,
         }
@@ -1041,21 +1254,43 @@ def render(year, games):
         "favorites": favorites,
         "models": models,
         "overrides": overrides,
+        # A finished season is safe to rewrite: nothing on the page claims to
+        # be live, so every game becomes a lever. The season in progress
+        # stays locked to what actually happened.
+        "unlocked": year != LIVE_YEAR,
     }).replace("</", "<\\/")
 
+    unlocked = year != LIVE_YEAR
     n_remaining = len([g for g in games
-                       if not g["completed"] and not g.get("ccg")])
+                       if not g.get("ccg")
+                       and (unlocked or not g["completed"])])
     model_opts = "".join(
         f"<option value='{esc(m['name'])}'>{esc(m['name'])}"
         f" ({esc(m['year'])})</option>" for m in models)
     whatif = "" if not n_remaining else WHATIF_CARD.format(
-        n=n_remaining, model_opts=model_opts)
+        n=n_remaining, model_opts=model_opts,
+        blurb=("rewrite any of the {n} games this season and watch the "
+               "tiebreakers answer" if unlocked else
+               "pick winners for the {n} remaining games, conference and "
+               "non-conference").format(n=n_remaining),
+        modelrow=("" if not models else
+                  '<label class=dim for=w-model>Model</label>'
+                  f'<select id=w-model class=wbtn>{model_opts}</select>'
+                  '<button id=w-fav class=wbtn>Use favorites for all</button>'),
+        clearlabel=("Reset to what happened" if unlocked else "Clear picks"))
 
     standcard = STAND_CARD.format(
         played=len(reg_played), total=len(reg), table=table, stories=stories)
 
+    site_url = "https://big12ology.com/tiebreaker/"
     page = TEMPLATE.format(
         year=year,
+        base=BASE,
+        v_engine=asset_v("engine.js"),
+        v_pct=asset_v("pct.js"),
+        v_app=asset_v("app.js"),
+        canon=(f"{site_url}lab.html" if year == LIVE_YEAR
+               else f"{site_url}{year}/lab.html"),
         top=tracker_top(year, "tracker", card),
         whatif=whatif,
         standcard=standcard,
@@ -1090,13 +1325,10 @@ STAND_CARD = """<div class="card standcard">
 
 
 WHATIF_CARD = """<div class=card id=whatif>
-  <h2>What if&hellip; <span class=dim style="text-transform:none">pick winners
-  for the {n} remaining games, conference and non-conference</span></h2>
+  <h2>What if&hellip; <span class=dim style="text-transform:none">{blurb}</span></h2>
   <div class=wcontrols>
-    <label class=dim for=w-model>Model</label>
-    <select id=w-model class=wbtn>{model_opts}</select>
-    <button id=w-fav class=wbtn>Use favorites for all</button>
-    <button id=w-clear class=wbtn>Clear picks</button>
+    {modelrow}
+    <button id=w-clear class=wbtn>{clearlabel}</button>
     <span id=w-count class=dim></span>
   </div>
   <div id=wgames></div>
@@ -1109,21 +1341,21 @@ TEMPLATE = """<!doctype html>
 <head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
-<title>Big 12 Tiebreaker Tracker — {year}</title>
+<title>The Lab · what-if simulator — Big 12 Tiebreaker Tracker</title>
 <meta name=description content="The official Big 12 tiebreaking procedures applied to live results after every game — projected championship matchup, tie narratives, and a what-if simulator.">
-<link rel=canonical href="https://big12ology.com/tiebreaker/">
-<link rel=icon type=image/svg+xml href=favicon.svg>
+<link rel=canonical href="{canon}">
+<link rel=icon type=image/svg+xml href={base}favicon.svg>
 <meta property=og:type content=website>
 <meta property=og:site_name content=Big12ology>
-<meta property=og:title content="Big 12 Tiebreaker Tracker — {year}">
+<meta property=og:title content="The Lab · Big 12 what-if simulator — {year}">
 <meta property=og:description content="The official Big 12 tiebreaking procedures applied to live results after every game — plus a what-if simulator with five rating models.">
-<meta property=og:url content="https://big12ology.com/tiebreaker/">
+<meta property=og:url content="{canon}">
 <meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
-<link rel=stylesheet href=brand.css>
-<link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href=feed.xml>
+<link rel=stylesheet href={base}brand.css>
+<link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href={base}feed.xml>
 <style>
 :root {{
   --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #6b7280;
@@ -1312,6 +1544,9 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 .pick img {{ margin: 0; }}
 .pick .star {{ color: var(--warn); font-size: 12px; margin-left: auto; }}
 .pick.sel {{ font-weight: 700; }}
+/* the result that actually happened, until you overrule it */
+.pick.stands {{ border-color: var(--dim); border-style: dashed;
+  color: var(--ink); }}
 @media (max-width: 700px) {{ .pick {{ min-width: 120px; }} }}
 </style>
 </head>
@@ -1349,19 +1584,20 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 </div>
 </main>
 <script id=payload type=application/json>{payload}</script>
-<script src=engine.js></script>
-<script src=app.js></script>
+<script src={base}{v_engine}></script>
+<script src={base}{v_pct}></script>
+<script src={base}{v_app}></script>
 <footer class=b12-footer>
   Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> ·
   procedure per the <a
   href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official
   Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (provenance in
-  <a href="logos/SOURCES.json">SOURCES.json</a>) · last updated {updated}.<br>
+  <a href="{base}logos/SOURCES.json">SOURCES.json</a>) · last updated {updated}.<br>
   A Big12ology project · not affiliated with the Big 12 Conference; conference
   and team marks belong to their owners and appear for identification only.<br>
   <a href="https://github.com/big12ology">GitHub</a> ·
-  <a href=feed.xml>RSS</a> ·
-  <a href=brief.html>The Brief</a> ·
+  <a href={base}feed.xml>RSS</a> ·
+  <a href=./>The Brief</a> ·
   <a href=history.html>The Archive</a> ·
   <a href=data.json>Data</a> ·
   <a href="https://big12ology.com/privacy">Privacy</a> ·
@@ -1381,8 +1617,8 @@ EXPLAINER = """<!doctype html>
 <title>How the Big 12 tiebreakers work — Big12ology</title>
 <meta name=description content="A plain-English walkthrough of the official Big 12 football tiebreaking procedures, with the 2024 four-way tie worked step by step.">
 <link rel=canonical href="https://big12ology.com/tiebreaker/how.html">
-<link rel=icon type=image/svg+xml href=favicon.svg>
-<link rel=stylesheet href=brand.css>
+<link rel=icon type=image/svg+xml href={base}favicon.svg>
+<link rel=stylesheet href={base}brand.css>
 <meta property=og:type content=article>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="How the Big 12 tiebreakers actually work">
@@ -1637,8 +1873,8 @@ href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
   A Big12ology project · not affiliated with the Big 12 Conference; conference
   and team marks belong to their owners and appear for identification only.<br>
   <a href="https://github.com/big12ology">GitHub</a> ·
-  <a href=feed.xml>RSS</a> ·
-  <a href=brief.html>The Brief</a> ·
+  <a href={base}feed.xml>RSS</a> ·
+  <a href=./>The Brief</a> ·
   <a href=history.html>The Archive</a> ·
   <a href=data.json>Data</a> ·
   <a href="https://big12ology.com/privacy">Privacy</a> ·
@@ -1650,7 +1886,7 @@ href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
 """
 
 
-def build_explainer(year, matchcard):
+def build_explainer(year, matchcard, outdir=None):
     """Render site/how.html. The 2024 worked example is generated live by the
     rules engine from the frozen season data in history/."""
     games = json.load(open(os.path.join(HERE, "history", "games_2024.json")))
@@ -1661,66 +1897,74 @@ def build_explainer(year, matchcard):
     worked = "".join(
         f'    <li class=seeded>{esc(line)}</li>\n' if "seeded." in line
         else f"    <li>{esc(line)}</li>\n" for line in log)
-    out = os.path.join(SITE, "how.html")
+    out = os.path.join(outdir or SITE, "how.html")
     with open(out, "w") as f:
-        f.write(EXPLAINER.format(worked_2024=worked,
-                                 top=tracker_top(year, "how", matchcard)))
+        f.write(EXPLAINER.format(
+            worked_2024=worked, base=BASE,
+            top=tracker_top(year, "how", matchcard)))
     print(f"built {out}")
 
 
-def main():
-    argv = [a for a in sys.argv[1:] if not a.startswith("--")]
-    year = int(argv[0]) if argv else default_season()
-    if "--fetch" in sys.argv:
+def load_games(year, refetch=False):
+    path = os.path.join(HERE, "data", f"games_{year}.json")
+    if refetch:
         games = fetcher.fetch_season(year)
         fetcher.fetch_ratings(year)
         fetcher.fetch_lines(year)
         if not os.path.exists(os.path.join(HERE, "data", "teams.json")):
             fetcher.fetch_teams()
-    else:
-        path = os.path.join(HERE, "data", f"games_{year}.json")
-        if not os.path.exists(path):
-            games = fetcher.fetch_season(year)
-        else:
-            games = json.load(open(path))
-    os.makedirs(SITE, exist_ok=True)
-    out = os.path.join(SITE, "index.html")
+        return games
+    if not os.path.exists(path):
+        return fetcher.fetch_season(year)
+    return json.load(open(path))
+
+
+def build_season(year, games, outdir, base, feed=True):
+    """Write one season's whole page set. `base` is the relative path back to
+    the shared assets — empty at the root, "../" inside an archived year."""
+    global BASE
+    BASE = base
+    os.makedirs(outdir, exist_ok=True)
+    site_url = "https://big12ology.com/tiebreaker/"
+    canon = site_url if year == LIVE_YEAR else f"{site_url}{year}/"
+    base = BASE
+
     page, ctx = render(year, games)
-    with open(out, "w") as f:
+    with open(os.path.join(outdir, "lab.html"), "w") as f:
         f.write(page)
-    print(f"built {out} for {year}")
-    with open(os.path.join(SITE, "race.html"), "w") as f:
-        f.write(build_subpage("The Race", "race", build_race_page(ctx),
-                              year, ctx["matchcard"]))
-    with open(os.path.join(SITE, "standings.html"), "w") as f:
-        f.write(build_subpage("The Standings", "standings", ctx["standingspage"],
-                              year, ctx["matchcard"]))
-    with open(os.path.join(SITE, "schedule.html"), "w") as f:
-        f.write(build_subpage("The Schedule", "schedule",
-                              build_schedule_page(games, ctx),
-                              year, ctx["matchcard"]))
-    # the Brief and Tie history share the same standard top
-    hist_frag = os.path.join(HERE, "history", "history_body.html")
-    if os.path.exists(hist_frag):
-        with open(os.path.join(SITE, "history.html"), "w") as f:
-            f.write(build_subpage("The Archive", "history",
-                                  open(hist_frag).read(),
-                                  year, ctx["matchcard"]))
-    print("built race.html, standings.html, schedule.html, history.html")
-    build_explainer(year, ctx["matchcard"])
+
     overrides = tb.load_overrides()
     systems = load_ratings(year).get("systems", {})
-    fp = os.path.join(SITE, "feed.xml")
-    with open(fp, "w") as f:
-        f.write(feed_mod.build_feed(games, year, systems, overrides))
-    print(f"built {fp}")
-
-    # downloads + the Brief (same deterministic sims as the page)
     track, _wk = next_conf_week_ids(games)
     sims = (odds_mod.simulate(games, systems, overrides, track=track)
             if systems else {})
     rows = tb.standings(games, overrides)
     display_rows = pad_standings(rows, games)
+
+    pages = [
+        ("race.html", "The Race", "race", build_race_page(ctx)),
+        ("standings.html", "The Standings", "standings", ctx["standingspage"],
+         f'<script defer src="{base}{asset_v("pct.js")}"></script>'
+         f'<script defer src="{base}{asset_v("replay.js")}"></script>'),
+        ("schedule.html", "The Schedule", "schedule",
+         build_schedule_page(games, ctx)),
+    ]
+    hist_frag = os.path.join(HERE, "history", "history_body.html")
+    if os.path.exists(hist_frag):
+        pages.append(("history.html", "The Archive", "history",
+                      open(hist_frag).read()))
+    for fname, title, active, body, *extra in pages:
+        with open(os.path.join(outdir, fname), "w") as f:
+            f.write(build_subpage(title, active, body, year,
+                                  ctx["matchcard"],
+                                  head=extra[0] if extra else ""))
+
+    build_explainer(year, ctx["matchcard"], outdir)
+
+    if feed:
+        with open(os.path.join(outdir, "feed.xml"), "w") as f:
+            f.write(feed_mod.build_feed(games, year, systems, overrides))
+
     ccg = tb.championship(games, overrides)
     cl = clinch_mod.analyze(games, overrides)
     data = {
@@ -1735,9 +1979,9 @@ def main():
                      "exp_conf_wins": (sims.get(t, {}) or {}).get("exp_w")}
                  for t, i in cl["teams"].items()},
     }
-    with open(os.path.join(SITE, "data.json"), "w") as f:
+    with open(os.path.join(outdir, "data.json"), "w") as f:
         json.dump(data, f, indent=1)
-    with open(os.path.join(SITE, "standings.csv"), "w") as f:
+    with open(os.path.join(outdir, "standings.csv"), "w") as f:
         f.write("rank,team,conf_w,conf_l,nonconf_w,nonconf_l,"
                 "overall_w,overall_l,p_ccg\n")
         for r in rows:
@@ -1745,10 +1989,38 @@ def main():
             f.write(f"{r['rank']},{r['team']},{r['conf_w']},{r['conf_l']},"
                     f"{r['nonconf_w']},{r['nonconf_l']},{r['overall_w']},"
                     f"{r['overall_l']},{p}\n")
-    with open(os.path.join(SITE, "brief.html"), "w") as f:
-        f.write(build_brief(year, games, overrides, systems, sims,
-                            ctx["matchcard"]))
-    print("built data.json, standings.csv, brief.html")
+
+    # The Brief is the front door of every season.
+    brief = build_brief(year, games, overrides, systems, sims,
+                        ctx["matchcard"], canon=canon)
+    with open(os.path.join(outdir, "index.html"), "w") as f:
+        f.write(brief)
+    # brief.html was the Brief's address before it moved to the front door
+    with open(os.path.join(outdir, "brief.html"), "w") as f:
+        f.write('<!doctype html><meta charset=utf-8>'
+                '<meta http-equiv=refresh content="0; url=./">'
+                f'<link rel=canonical href="{canon}">'
+                '<title>The Brief</title><a href="./">The Brief</a>')
+    BASE = ""
+    print(f"built {year} -> {outdir}")
+
+
+def main():
+    global LIVE_YEAR
+    argv = [a for a in sys.argv[1:] if not a.startswith("--")]
+    year = int(argv[0]) if argv else default_season()
+    LIVE_YEAR = year
+    games = load_games(year, refetch="--fetch" in sys.argv)
+    build_season(year, games, SITE, "")
+    # Finished seasons are rebuilt from cached results — no API calls, and
+    # their output is deterministic, so a rebuild is a no-op unless the
+    # engine itself changed.
+    if "--no-archive" not in sys.argv:
+        for y in ARCHIVE_YEARS:
+            if y == year:
+                continue
+            build_season(y, load_games(y), os.path.join(SITE, str(y)), "../",
+                         feed=False)
 
 
 if __name__ == "__main__":

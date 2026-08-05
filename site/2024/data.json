@@ -1,0 +1,368 @@
+{
+ "generated": "2026-08-05T21:28:49+00:00",
+ "season": 2024,
+ "standings": [
+  {
+   "rank": 1,
+   "team": "Arizona State",
+   "conf_w": 7,
+   "conf_l": 2,
+   "nonconf_w": 3,
+   "nonconf_l": 0,
+   "overall_w": 11,
+   "overall_l": 2,
+   "tie_group": "Arizona State+BYU+Colorado+Iowa State",
+   "events": [
+    {
+     "team": "Arizona State",
+     "step": "b",
+     "line": "(b) vs common opponents (Kansas, Kansas State, UCF, Utah): Arizona State 1.000, BYU 0.750, Colorado 0.500, Iowa State 0.750 \u2014 Arizona State seeded."
+    },
+    {
+     "team": "Iowa State",
+     "step": "d",
+     "line": "(d) Opponents' combined conference record: BYU 31-50 (0.383), Colorado 30-51 (0.370), Iowa State 36-45 (0.444) \u2014 Iowa State seeded."
+    },
+    {
+     "team": "BYU",
+     "step": "b",
+     "line": "(b) vs common opponents (Arizona, Baylor, Kansas, Kansas State, Oklahoma State, UCF, Utah): BYU 0.857, Colorado 0.714 \u2014 BYU seeded."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "rank": 2,
+   "team": "Iowa State",
+   "conf_w": 7,
+   "conf_l": 2,
+   "nonconf_w": 3,
+   "nonconf_l": 0,
+   "overall_w": 10,
+   "overall_l": 3,
+   "tie_group": "Arizona State+BYU+Colorado+Iowa State",
+   "events": null,
+   "resolved": true
+  },
+  {
+   "rank": 3,
+   "team": "BYU",
+   "conf_w": 7,
+   "conf_l": 2,
+   "nonconf_w": 3,
+   "nonconf_l": 0,
+   "overall_w": 10,
+   "overall_l": 2,
+   "tie_group": "Arizona State+BYU+Colorado+Iowa State",
+   "events": null,
+   "resolved": true
+  },
+  {
+   "rank": 4,
+   "team": "Colorado",
+   "conf_w": 7,
+   "conf_l": 2,
+   "nonconf_w": 2,
+   "nonconf_l": 1,
+   "overall_w": 9,
+   "overall_l": 3,
+   "tie_group": "Arizona State+BYU+Colorado+Iowa State",
+   "events": null,
+   "resolved": true
+  },
+  {
+   "rank": 5,
+   "team": "Baylor",
+   "conf_w": 6,
+   "conf_l": 3,
+   "nonconf_w": 2,
+   "nonconf_l": 1,
+   "overall_w": 8,
+   "overall_l": 4,
+   "tie_group": "Baylor+TCU+Texas Tech",
+   "events": [
+    {
+     "team": "Baylor",
+     "step": "a",
+     "line": "(a) Record among tied teams: Baylor 1.000, TCU 0.500, Texas Tech 0.000 \u2014 Baylor seeded."
+    },
+    {
+     "team": "TCU",
+     "step": "a",
+     "line": "(a) Head-to-head: TCU defeated Texas Tech."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "rank": 6,
+   "team": "TCU",
+   "conf_w": 6,
+   "conf_l": 3,
+   "nonconf_w": 2,
+   "nonconf_l": 1,
+   "overall_w": 8,
+   "overall_l": 4,
+   "tie_group": "Baylor+TCU+Texas Tech",
+   "events": null,
+   "resolved": true
+  },
+  {
+   "rank": 7,
+   "team": "Texas Tech",
+   "conf_w": 6,
+   "conf_l": 3,
+   "nonconf_w": 2,
+   "nonconf_l": 1,
+   "overall_w": 8,
+   "overall_l": 4,
+   "tie_group": "Baylor+TCU+Texas Tech",
+   "events": null,
+   "resolved": true
+  },
+  {
+   "rank": 8,
+   "team": "Kansas State",
+   "conf_w": 5,
+   "conf_l": 4,
+   "nonconf_w": 3,
+   "nonconf_l": 0,
+   "overall_w": 8,
+   "overall_l": 4,
+   "tie_group": "Kansas State+West Virginia",
+   "events": [
+    {
+     "team": "Kansas State",
+     "step": "a",
+     "line": "(a) Head-to-head: Kansas State defeated West Virginia."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "rank": 9,
+   "team": "West Virginia",
+   "conf_w": 5,
+   "conf_l": 4,
+   "nonconf_w": 1,
+   "nonconf_l": 2,
+   "overall_w": 6,
+   "overall_l": 6,
+   "tie_group": "Kansas State+West Virginia",
+   "events": null,
+   "resolved": true
+  },
+  {
+   "rank": 10,
+   "team": "Kansas",
+   "conf_w": 4,
+   "conf_l": 5,
+   "nonconf_w": 1,
+   "nonconf_l": 2,
+   "overall_w": 5,
+   "overall_l": 7,
+   "tie_group": null,
+   "events": null,
+   "resolved": true
+  },
+  {
+   "rank": 11,
+   "team": "Cincinnati",
+   "conf_w": 3,
+   "conf_l": 6,
+   "nonconf_w": 2,
+   "nonconf_l": 1,
+   "overall_w": 5,
+   "overall_l": 7,
+   "tie_group": "Cincinnati+Houston",
+   "events": [
+    {
+     "team": "Cincinnati",
+     "step": "a",
+     "line": "(a) Head-to-head: Cincinnati defeated Houston."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "rank": 12,
+   "team": "Houston",
+   "conf_w": 3,
+   "conf_l": 6,
+   "nonconf_w": 1,
+   "nonconf_l": 2,
+   "overall_w": 4,
+   "overall_l": 8,
+   "tie_group": "Cincinnati+Houston",
+   "events": null,
+   "resolved": true
+  },
+  {
+   "rank": 13,
+   "team": "UCF",
+   "conf_w": 2,
+   "conf_l": 7,
+   "nonconf_w": 2,
+   "nonconf_l": 1,
+   "overall_w": 4,
+   "overall_l": 8,
+   "tie_group": "Arizona+UCF+Utah",
+   "events": [
+    {
+     "team": "UCF",
+     "step": "b",
+     "line": "(b) vs common opponents (Arizona State, BYU, Colorado, TCU): Arizona 0.000, UCF 0.250, Utah 0.000 \u2014 UCF seeded."
+    },
+    {
+     "team": "Arizona",
+     "step": "a",
+     "line": "(a) Head-to-head: Arizona defeated Utah."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "rank": 14,
+   "team": "Arizona",
+   "conf_w": 2,
+   "conf_l": 7,
+   "nonconf_w": 2,
+   "nonconf_l": 1,
+   "overall_w": 4,
+   "overall_l": 8,
+   "tie_group": "Arizona+UCF+Utah",
+   "events": null,
+   "resolved": true
+  },
+  {
+   "rank": 15,
+   "team": "Utah",
+   "conf_w": 2,
+   "conf_l": 7,
+   "nonconf_w": 3,
+   "nonconf_l": 0,
+   "overall_w": 5,
+   "overall_l": 7,
+   "tie_group": "Arizona+UCF+Utah",
+   "events": null,
+   "resolved": true
+  },
+  {
+   "rank": 16,
+   "team": "Oklahoma State",
+   "conf_w": 0,
+   "conf_l": 9,
+   "nonconf_w": 3,
+   "nonconf_l": 0,
+   "overall_w": 3,
+   "overall_l": 9,
+   "tie_group": null,
+   "events": null,
+   "resolved": true
+  }
+ ],
+ "championship": {
+  "seed1": "Arizona State",
+  "seed2": "Iowa State",
+  "note": null,
+  "resolved": true
+ },
+ "race": {
+  "Arizona": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Arizona State": {
+   "status": "clinched",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "BYU": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Baylor": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Cincinnati": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Colorado": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Houston": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Iowa State": {
+   "status": "clinched",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Kansas": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Kansas State": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Oklahoma State": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "TCU": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Texas Tech": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "UCF": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "Utah": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  },
+  "West Virginia": {
+   "status": "eliminated",
+   "destiny": false,
+   "p_ccg": null,
+   "exp_conf_wins": null
+  }
+ }
+}
