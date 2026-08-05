@@ -258,6 +258,66 @@ def scorecard_card(games, systems, lines=None):
             "number was locked at kickoff. Respect the house.</p></div>")
 
 
+def h2h_card(games, teams, stand_rows):
+    """Current-season head-to-head grid: every conference meeting, played or
+    scheduled, from the row team's perspective. Ordered by current standings
+    (alphabetical before any results)."""
+    conf = [g for g in games if g["conference_game"] and not g.get("ccg")]
+    if not conf:
+        return ""
+    if stand_rows:
+        order = [r["team"] for r in stand_rows]
+    else:
+        order = sorted({g["home"] for g in conf} | {g["away"] for g in conf})
+    meet = {}
+    for g in conf:
+        meet[frozenset((g["home"], g["away"]))] = g
+
+    def abbr(t):
+        return (teams.get(t) or {}).get("abbr") or t[:4].upper()
+
+    head = "".join(
+        f"<th title='{esc(t)}'>{esc(abbr(t))}</th>" for t in order)
+    body = []
+    for a in order:
+        cells = []
+        for b in order:
+            if a == b:
+                cells.append("<td class=selfcell>—</td>")
+                continue
+            g = meet.get(frozenset((a, b)))
+            if g is None:
+                cells.append("<td class=nomeet>·</td>")
+                continue
+            date = (g["start"] or "")[5:10].replace("-", "/")
+            if g["completed"] and g["home_points"] is not None:
+                mine = g["home_points"] if g["home"] == a else g["away_points"]
+                theirs = g["away_points"] if g["home"] == a else g["home_points"]
+                won = mine > theirs
+                color = winpct_color(1.0 if won else 0.0)
+                cells.append(
+                    f"<td style='color:{color}' title='{esc(a)} "
+                    f"{'def.' if won else 'lost to'} {esc(b)} "
+                    f"{mine}–{theirs} ({date})'>"
+                    f"{'W' if won else 'L'} {mine}–{theirs}</td>")
+            else:
+                at = "vs" if g["home"] == a else "at"
+                cells.append(
+                    f"<td class=dim title='{esc(a)} {at} {esc(b)}, "
+                    f"{date}'>wk {g['week']}</td>")
+        body.append(f"<tr><td class=teamcell>{logo_img(a, 14)}"
+                    f"{esc(a)}</td>{''.join(cells)}</tr>")
+    return ("<div class=card id=h2hcard><h2>Head-to-head grid</h2>"
+            "<div class=tablescroll><table class=h2h><thead><tr><th></th>"
+            + head + "</tr></thead><tbody>" + "".join(body)
+            + "</tbody></table></div>"
+            "<p class=note>Every conference meeting this season, read "
+            "across: the row team's result or the scheduled week. A dot "
+            "means the schedule never pairs them — in a nine-game draw "
+            "that's more than a third of the grid, which is why the "
+            "tiebreakers exist.</p></div>")
+
+
 def clinch_card(games, overrides, systems, stand_rows, sims):
     """The Championship race card: proof-grade clinch/elimination statuses,
     Monte Carlo odds, and the Chaos Index. Computed at build time from real
@@ -472,6 +532,11 @@ thead tr th { border-bottom:2px solid var(--line) }
   color:#fff }
 h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
+.tablescroll { overflow-x:auto }
+table.h2h { width:auto }
+.h2h th, .h2h td { padding:3px 6px; font-size:11.5px; white-space:nowrap }
+.selfcell { color:var(--line) }
+.nomeet { color:var(--line); text-align:center }
 """
 
 
@@ -521,7 +586,7 @@ def build_schedule_page(games, ctx):
                    "<ul class=games>"
                    + "".join(game_row(g) for g in done[:40])
                    + "</ul></div>")
-    return ctx["soscard"] + upcard + rescard
+    return ctx["h2hcard"] + ctx["soscard"] + upcard + rescard
 
 
 def build_race_page(ctx):
@@ -562,7 +627,7 @@ def render(year, games):
     overrides = tb.load_overrides()
     teams = load_teams()
     systems = load_ratings(year).get("systems", {})
-    lines = load_lines(year)
+    closing_lines = load_lines(year)
     track, _wk = next_conf_week_ids(games)
     sims = (odds_mod.simulate(games, systems, overrides, track=track)
             if systems else {})
@@ -692,7 +757,8 @@ def render(year, games):
         "clinchcard": clinch_card(games, overrides, systems, rows, sims),
         "levcard": leverage_card(games, sims) if sims else "",
         "soscard": sos_card(games, systems),
-        "modelcard": scorecard_card(games, systems, lines),
+        "modelcard": scorecard_card(games, systems, closing_lines),
+        "h2hcard": h2h_card(games, teams, rows),
         "sims": sims,
     }
     return page, ctx
