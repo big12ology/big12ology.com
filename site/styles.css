@@ -273,8 +273,25 @@ svg text.val-in {
   padding: 0.5rem 1.5rem 0.25rem; font-size: 0.8rem; color: var(--muted); }
 .erabar .era-label { min-width: 9.5rem; }
 .erabar .era-label b { color: var(--text); font-variant-numeric: tabular-nums; }
-.erabar input[type=range] { flex: 1 1 9rem; max-width: 15rem;
-  accent-color: var(--accent); }
+.era-slider { position: relative; flex: 1 1 16rem; max-width: 26rem;
+  height: 22px; }
+.era-track, .era-fill { position: absolute; top: 9px; height: 4px;
+  border-radius: 2px; }
+.era-track { left: 0; right: 0; background: var(--border); }
+.era-fill { background: var(--accent); }
+.era-slider input[type=range] { position: absolute; inset: 0; width: 100%;
+  margin: 0; background: none; pointer-events: none; -webkit-appearance: none;
+  appearance: none; }
+.era-slider input[type=range]::-webkit-slider-thumb { pointer-events: auto;
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--surface); border: 3px solid var(--accent);
+  cursor: grab; }
+.era-slider input[type=range]::-moz-range-thumb { pointer-events: auto;
+  width: 16px; height: 16px; border-radius: 50%; background: var(--surface);
+  border: 3px solid var(--accent); cursor: grab; }
+.era-skip { font-size: 0.72rem; color: var(--bad); }
+.chart-gap { font-size: 0.72rem; color: var(--muted); margin: 0.35rem 0 0;
+  padding: 0 0.15rem; }
 .erabar button { font: inherit; font-size: 0.75rem; border: 1px solid var(--border);
   background: var(--surface); color: var(--muted); border-radius: 20px;
   padding: 0.15rem 0.7rem; cursor: pointer; }

@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=24";
-import { gameTooltipHTML } from "./gametip.js?v=24";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=25";
+import { gameTooltipHTML } from "./gametip.js?v=25";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -1031,7 +1031,7 @@ function teamWeather(cardEl, seasonsData, teamsData, sel) {
 }
 
 export function renderTeamCharts(root, teamsData, seasonsData, currentYear,
-                                 selected, archive) {
+                                 selected, archive, gaps) {
   // `archive` is the era-scoped slice used by the cumulative panels; the
   // weekly panels stay on the selected season.
   const era = archive ?? seasonsData;
@@ -1120,6 +1120,7 @@ export function renderTeamCharts(root, teamsData, seasonsData, currentYear,
   teamWeather(c4, era, teamsData, selected);
 
   root.append(c1, c2, c3, c4);
+  noteGaps(root, gaps);
 }
 
 
@@ -1219,7 +1220,7 @@ export function renderSeasonCharts(root, teamsData, seasonsData, currentYear) {
 }
 
 
-export function renderAllTimeCharts(root, teamsData, seasonsData) {
+export function renderAllTimeCharts(root, teamsData, seasonsData, gaps) {
   root.textContent = "";
   const years = Object.keys(seasonsData).sort();
   const span = years.length > 1
@@ -1247,4 +1248,19 @@ export function renderAllTimeCharts(root, teamsData, seasonsData) {
   yoyTeams(c4, seasonsData, teamsData);
 
   root.append(c1, c2, cRoad, c3, c4);
+  noteGaps(root, gaps);
+}
+
+// A season the archive deliberately omits (2020) sitting inside the chosen
+// span would otherwise read as continuous history. Say so on every card.
+function noteGaps(root, gaps) {
+  if (!gaps || !gaps.length) return;
+  for (const card of root.children) {
+    const p = document.createElement("p");
+    p.className = "chart-gap";
+    p.textContent = `${gaps.join(", ")} excluded from these figures — ` +
+      `COVID capacity caps and missing announcements make the season ` +
+      `unusable.`;
+    card.appendChild(p);
+  }
 }

@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=24";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=24";
-import { gameTooltipHTML } from "./gametip.js?v=24";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=25";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=25";
+import { gameTooltipHTML } from "./gametip.js?v=25";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -383,19 +383,41 @@ async function main() {
     Object.entries(seasonsData)
       .filter(([y]) => Number(y) >= era.from && Number(y) <= era.to));
 
+  const EXCLUDED = { 2020: "COVID capacity caps and missing announcements" };
+
   function buildEraBar(el) {
+    // One track, two thumbs. Values are indexes into the seasons we actually
+    // have, so an excluded year can never be selected — the range simply
+    // steps over it.
+    const n = allYears.length - 1;
+    const iFrom = allYears.indexOf(era.from);
+    const iTo = allYears.indexOf(era.to);
+    const pctOf = (i) => (n ? (i / n) * 100 : 0);
+    const skipped = Object.keys(EXCLUDED)
+      .map(Number)
+      .filter((y) => y > era.from && y < era.to);
     el.innerHTML =
       `<span class="era-label">Seasons <b>${era.from}</b>–<b>${era.to}</b></span>` +
-      `<input type="range" class="era-from" min="${allYears[0]}" ` +
-      `max="${allYears[allYears.length - 1]}" step="1" value="${era.from}">` +
-      `<input type="range" class="era-to" min="${allYears[0]}" ` +
-      `max="${allYears[allYears.length - 1]}" step="1" value="${era.to}">` +
-      `<button class="era-reset">All seasons</button>`;
+      `<span class="era-slider">` +
+        `<span class="era-track"></span>` +
+        `<span class="era-fill" style="left:${pctOf(iFrom)}%;` +
+          `right:${100 - pctOf(iTo)}%"></span>` +
+        `<input type="range" class="era-from" min="0" max="${n}" step="1" ` +
+          `value="${iFrom}" aria-label="First season">` +
+        `<input type="range" class="era-to" min="0" max="${n}" step="1" ` +
+          `value="${iTo}" aria-label="Last season">` +
+      `</span>` +
+      `<button class="era-reset">All seasons</button>` +
+      (skipped.length
+        ? `<span class="era-skip">${skipped.join(", ")} excluded</span>`
+        : "");
     const from = el.querySelector(".era-from");
     const to = el.querySelector(".era-to");
     const apply = () => {
-      era.from = Math.min(Number(from.value), Number(to.value));
-      era.to = Math.max(Number(from.value), Number(to.value));
+      const a2 = Math.min(Number(from.value), Number(to.value));
+      const b2 = Math.max(Number(from.value), Number(to.value));
+      era.from = allYears[a2];
+      era.to = allYears[b2];
       redrawEra();
     };
     from.oninput = apply;
@@ -407,18 +429,23 @@ async function main() {
     };
   }
 
+  // Years missing from the archive that fall inside the chosen span — the
+  // charts say so rather than letting a gap pass as continuity.
+  const eraGaps = () => Object.keys(EXCLUDED).map(Number)
+    .filter((y) => y > era.from && y < era.to);
+
   function redrawEra() {
     document.querySelectorAll(".erabar").forEach(buildEraBar);
     const scoped = inEra();
-    renderAllTimeCharts($("#charts-alltime"), teamsData, scoped);
+    renderAllTimeCharts($("#charts-alltime"), teamsData, scoped, eraGaps());
     renderTeamCharts($("#charts-teams"), teamsData, seasonsData,
-                     select.value, selectedTeams, scoped);
+                     select.value, selectedTeams, scoped, eraGaps());
   }
 
   const selectedTeams = new Set();
   const drawTeamCharts = () =>
     renderTeamCharts($("#charts-teams"), teamsData, seasonsData,
-                     select.value, selectedTeams, inEra());
+                     select.value, selectedTeams, inEra(), eraGaps());
   const renderChips = () => {
     const box = $("#team-chips");
     const teams = teamsForSeason(teamsData, Number(select.value));
@@ -440,7 +467,7 @@ async function main() {
   const show = (year) => {
     render(teamsData, seasonsData[year]);
     renderSeasonCharts($("#charts-season"), teamsData, seasonsData, year);
-    renderAllTimeCharts($("#charts-alltime"), teamsData, inEra());
+    renderAllTimeCharts($("#charts-alltime"), teamsData, inEra(), eraGaps());
     document.querySelectorAll(".erabar").forEach(buildEraBar);
     renderChips();
     drawTeamCharts();
