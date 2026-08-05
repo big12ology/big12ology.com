@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=25";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=25";
-import { gameTooltipHTML } from "./gametip.js?v=25";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=27";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=27";
+import { gameTooltipHTML } from "./gametip.js?v=27";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -385,57 +385,129 @@ async function main() {
 
   const EXCLUDED = { 2020: "COVID capacity caps and missing announcements" };
 
-  function buildEraBar(el) {
-    // One track, two thumbs. Values are indexes into the seasons we actually
-    // have, so an excluded year can never be selected — the range simply
-    // steps over it.
-    const n = allYears.length - 1;
-    const iFrom = allYears.indexOf(era.from);
-    const iTo = allYears.indexOf(era.to);
-    const pctOf = (i) => (n ? (i / n) * 100 : 0);
-    const skipped = Object.keys(EXCLUDED)
-      .map(Number)
-      .filter((y) => y > era.from && y < era.to);
-    el.innerHTML =
-      `<span class="era-label">Seasons <b>${era.from}</b>–<b>${era.to}</b></span>` +
-      `<span class="era-slider">` +
-        `<span class="era-track"></span>` +
-        `<span class="era-fill" style="left:${pctOf(iFrom)}%;` +
-          `right:${100 - pctOf(iTo)}%"></span>` +
-        `<input type="range" class="era-from" min="0" max="${n}" step="1" ` +
-          `value="${iFrom}" aria-label="First season">` +
-        `<input type="range" class="era-to" min="0" max="${n}" step="1" ` +
-          `value="${iTo}" aria-label="Last season">` +
-      `</span>` +
-      `<button class="era-reset">All seasons</button>` +
-      (skipped.length
-        ? `<span class="era-skip">${skipped.join(", ")} excluded</span>`
-        : "");
-    const from = el.querySelector(".era-from");
-    const to = el.querySelector(".era-to");
-    const apply = () => {
-      const a2 = Math.min(Number(from.value), Number(to.value));
-      const b2 = Math.max(Number(from.value), Number(to.value));
-      era.from = allYears[a2];
-      era.to = allYears[b2];
-      redrawEra();
-    };
-    from.oninput = apply;
-    to.oninput = apply;
-    el.querySelector(".era-reset").onclick = () => {
-      era.from = allYears[0];
-      era.to = allYears[allYears.length - 1];
-      redrawEra();
-    };
-  }
-
   // Years missing from the archive that fall inside the chosen span — the
   // charts say so rather than letting a gap pass as continuity.
   const eraGaps = () => Object.keys(EXCLUDED).map(Number)
     .filter((y) => y > era.from && y < era.to);
 
-  function redrawEra() {
-    document.querySelectorAll(".erabar").forEach(buildEraBar);
+  const pctOf = (i) => (allYears.length > 1
+    ? (i / (allYears.length - 1)) * 100 : 0);
+
+  // Repaint a bar's own chrome from the current era. Deliberately does NOT
+  // touch innerHTML: rebuilding the input mid-drag is what limited dragging
+  // to one step per press.
+  function paintEraBar(el, opts) {
+    const from = el.querySelector(".era-from");
+    const to = el.querySelector(".era-to");
+    const a2 = allYears.indexOf(era.from);
+    const b2 = allYears.indexOf(era.to);
+    if (opts && opts.syncInputs) {
+      from.value = a2;
+      to.value = b2;
+    }
+    el.querySelector(".era-label").innerHTML =
+      `Seasons <b>${era.from}</b>–<b>${era.to}</b>`;
+    const fill = el.querySelector(".era-fill");
+    fill.style.left = `${pctOf(a2)}%`;
+    fill.style.right = `${100 - pctOf(b2)}%`;
+    const skip = el.querySelector(".era-skip");
+    const gaps = eraGaps();
+    skip.textContent = gaps.length ? `${gaps.join(", ")} excluded` : "";
+  }
+
+  function buildEraBar(el) {
+    const n = allYears.length - 1;
+    const iFrom = allYears.indexOf(era.from);
+    const iTo = allYears.indexOf(era.to);
+    el.innerHTML =
+      `<span class="era-label"></span>` +
+      `<span class="era-slider">` +
+        `<span class="era-track"></span>` +
+        `<span class="era-fill"></span>` +
+        `<input type="range" class="era-from" min="0" max="${n}" step="1" ` +
+          `value="${iFrom}" aria-label="First season">` +
+        `<input type="range" class="era-to" min="0" max="${n}" step="1" ` +
+          `value="${iTo}" aria-label="Last season">` +
+      `</span>` +
+      `<span class="era-quick">` +
+        `<button class="era-last" data-n="5">Last 5</button>` +
+        `<button class="era-last" data-n="10">Last 10</button>` +
+        `<button class="era-reset">All</button>` +
+      `</span>` +
+      `<span class="era-skip"></span>`;
+    const from = el.querySelector(".era-from");
+    const to = el.querySelector(".era-to");
+
+    // While dragging: update the label and fill only, so the pointer keeps
+    // its grip and the year follows the thumb continuously.
+    const drag = () => {
+      const lo = Math.min(Number(from.value), Number(to.value));
+      const hi = Math.max(Number(from.value), Number(to.value));
+      era.from = allYears[lo];
+      era.to = allYears[hi];
+      document.querySelectorAll(".erabar").forEach((bar) =>
+        paintEraBar(bar, { syncInputs: bar !== el }));
+    };
+    // On release: redraw the charts once, not on every step.
+    const commit = () => redrawEraCharts();
+    from.addEventListener("input", drag);
+    to.addEventListener("input", drag);
+    from.addEventListener("change", commit);
+    to.addEventListener("change", commit);
+    const setSpan = (fromYear, toYear) => {
+      era.from = fromYear;
+      era.to = toYear;
+      document.querySelectorAll(".erabar").forEach((bar) =>
+        paintEraBar(bar, { syncInputs: true }));
+      redrawEraCharts();
+    };
+    el.querySelector(".era-reset").onclick = () =>
+      setSpan(allYears[0], allYears[allYears.length - 1]);
+    el.querySelectorAll(".era-last").forEach((btn) => {
+      btn.onclick = () => {
+        const n2 = Math.min(Number(btn.dataset.n), allYears.length);
+        setSpan(allYears[allYears.length - n2],
+                allYears[allYears.length - 1]);
+      };
+    });
+
+    // Grab the filled segment to slide the whole window, keeping its length
+    // — pick a five-season span, shift it two years earlier, still five.
+    const fill = el.querySelector(".era-fill");
+    const slider = el.querySelector(".era-slider");
+    fill.addEventListener("pointerdown", (e) => {
+      const n3 = allYears.length - 1;
+      if (!n3) return;
+      const startX = e.clientX;
+      const startFrom = allYears.indexOf(era.from);
+      const startTo = allYears.indexOf(era.to);
+      const span = startTo - startFrom;
+      const stepPx = slider.getBoundingClientRect().width / n3;
+      fill.setPointerCapture(e.pointerId);
+      fill.classList.add("dragging");
+      const move = (ev) => {
+        let delta = Math.round((ev.clientX - startX) / stepPx);
+        delta = Math.max(-startFrom, Math.min(delta, n3 - startTo));
+        era.from = allYears[startFrom + delta];
+        era.to = allYears[startFrom + delta + span];
+        document.querySelectorAll(".erabar").forEach((bar) =>
+          paintEraBar(bar, { syncInputs: true }));
+      };
+      const up = () => {
+        fill.classList.remove("dragging");
+        fill.removeEventListener("pointermove", move);
+        fill.removeEventListener("pointerup", up);
+        redrawEraCharts();
+      };
+      fill.addEventListener("pointermove", move);
+      fill.addEventListener("pointerup", up);
+      e.preventDefault();
+    });
+
+    paintEraBar(el, { syncInputs: true });
+  }
+
+  function redrawEraCharts() {
     const scoped = inEra();
     renderAllTimeCharts($("#charts-alltime"), teamsData, scoped, eraGaps());
     renderTeamCharts($("#charts-teams"), teamsData, seasonsData,

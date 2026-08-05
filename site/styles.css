@@ -278,7 +278,10 @@ svg text.val-in {
 .era-track, .era-fill { position: absolute; top: 9px; height: 4px;
   border-radius: 2px; }
 .era-track { left: 0; right: 0; background: var(--border); }
-.era-fill { background: var(--accent); }
+.era-fill { background: var(--accent); pointer-events: auto; cursor: grab;
+  /* a little taller than the track so it is grabbable */
+  top: 7px; height: 8px; }
+.era-fill.dragging { cursor: grabbing; }
 .era-slider input[type=range] { position: absolute; inset: 0; width: 100%;
   margin: 0; background: none; pointer-events: none; -webkit-appearance: none;
   appearance: none; }
@@ -292,6 +295,7 @@ svg text.val-in {
 .era-skip { font-size: 0.72rem; color: var(--bad); }
 .chart-gap { font-size: 0.72rem; color: var(--muted); margin: 0.35rem 0 0;
   padding: 0 0.15rem; }
+.era-quick { display: inline-flex; gap: 0.3rem; }
 .erabar button { font: inherit; font-size: 0.75rem; border: 1px solid var(--border);
   background: var(--surface); color: var(--muted); border-radius: 20px;
   padding: 0.15rem 0.7rem; cursor: pointer; }
