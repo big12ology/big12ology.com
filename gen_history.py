@@ -178,7 +178,8 @@ def season_section(year, games):
         parts.append(f"<details><summary>How the {esc(names)} tie breaks"
                      f"</summary><ol class=steps>")
         for line in first["log"]:
-            parts.append(f"<li>{esc(line)}</li>")
+            cls = " class=seeded" if "seeded." in line else ""
+            parts.append(f"<li{cls}>{esc(line)}</li>")
         parts.append("</ol></details>")
     parts.append("</details>")
     stats = [{"year": year, "group": tg,
@@ -269,6 +270,7 @@ details details {{ border:1px solid var(--line); border-radius:8px;
 details details summary {{ cursor:pointer; font-size:14px; font-weight:600 }}
 .steps {{ margin:8px 0 4px; padding-left:20px }}
 .steps li {{ margin:5px 0; font-size:13.5px }}
+.steps li.seeded {{ font-weight:700 }}
 table.mini {{ border-collapse:collapse; margin:10px 0; font-size:13.5px;
   width:auto }}
 table.mini th, table.mini td {{ padding:4px 8px; border-bottom:1px solid

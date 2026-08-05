@@ -201,7 +201,11 @@
       html += "<details" + (n === 1 ? " open" : "") + "><summary><sup>" + n +
         "</sup> How the " + esc(names) + " tie breaks</summary>" +
         "<ol class=steps>" +
-        r.log.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") +
+        r.log.map(function (x) {
+          return x.indexOf("seeded.") >= 0
+            ? "<li class=seeded>" + esc(x) + "</li>"
+            : "<li>" + esc(x) + "</li>";
+        }).join("") +
         "</ol></details>";
     });
     return html || "<p class=dim>No ties in the standings.</p>";
@@ -473,7 +477,9 @@
     html += "<details><summary>Raw engine narrative for this tie group" +
       "</summary><ol class=steps>" +
       (first.log || []).map(function (x) {
-        return "<li>" + esc(x) + "</li>";
+        return x.indexOf("seeded.") >= 0
+          ? "<li class=seeded>" + esc(x) + "</li>"
+          : "<li>" + esc(x) + "</li>";
       }).join("") + "</ol></details>";
     return html;
   }

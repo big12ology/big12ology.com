@@ -705,7 +705,9 @@ def render(year, games):
         if r["log"] is not None:
             n += 1
             tie_names = r["tie_group"].replace("+", ", ")
-            lines = "".join(f"<li>{esc(x)}</li>" for x in r["log"])
+            lines = "".join(
+                f"<li class=seeded>{esc(x)}</li>" if "seeded." in x
+                else f"<li>{esc(x)}</li>" for x in r["log"])
             stories.append(
                 f"<details {'open' if n == 1 else ''}><summary><sup>{n}</sup> "
                 f"How the {esc(tie_names)} tie breaks</summary>"
@@ -924,6 +926,8 @@ details {{ border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px
 summary {{ cursor: pointer; font-weight: 600; }}
 .steps {{ margin: 10px 0 4px; padding-left: 22px; }}
 .steps li {{ margin: 6px 0; font-size: 14px; }}
+.steps li.seeded {{ font-weight: 700; }}
+.steps li.seeded::marker {{ font-weight: 700; }}
 .cols {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
 @media (max-width: 700px) {{ .cols {{ grid-template-columns: 1fr; }} }}
 ul.games {{ list-style: none; padding: 0; margin: 0; }}
@@ -1135,6 +1139,7 @@ ol.rules b {{ color: var(--ink); }}
   border-radius: 10px; padding: 18px 22px; margin: 16px 0; }}
 .worked ol {{ padding-left: 20px; }}
 .worked li {{ margin: 8px 0; font-size: 15px; }}
+.worked li.seeded {{ font-weight: 700; }}
 .worked .meta {{ color: var(--dim); font-size: 14px; margin: 0 0 10px; }}
 table.models {{ border-collapse: collapse; width: 100%; margin: 12px 0; }}
 table.models th, table.models td {{ text-align: left; padding: 8px 10px;
@@ -1369,7 +1374,9 @@ def build_explainer(year, matchcard):
     order, log, resolved, _events = tb.break_tie(groups[0], games)
     assert resolved and order[0] == "Arizona State" and order[1] == "Iowa State", \
         "2024 worked example no longer matches the historical outcome"
-    worked = "".join(f"    <li>{esc(line)}</li>\n" for line in log)
+    worked = "".join(
+        f'    <li class=seeded>{esc(line)}</li>\n' if "seeded." in line
+        else f"    <li>{esc(line)}</li>\n" for line in log)
     out = os.path.join(SITE, "how.html")
     with open(out, "w") as f:
         f.write(EXPLAINER.format(worked_2024=worked,
