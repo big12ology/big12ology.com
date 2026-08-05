@@ -131,18 +131,22 @@ def fmt_prob(p):
 
 
 
-def tracker_header(year):
-    return f"""<header>
+def tracker_top(year, active, matchcard=""):
+    """The one top: header bar, pill row, matchup card. Styled entirely by
+    brand.css (.b12-head/.subnav) — no page may restyle these."""
+    return f"""<header class=b12-head>
   <div class=hwrap>
     <img src=logos/big12.svg alt="">
     <div>
-      <h1>Big 12 Tiebreaker Tracker <span class=dim>· {year}</span></h1>
+      <h1>Big 12 Tiebreaker Tracker <span class=yr>· {year}</span></h1>
       <p>Unofficial fan tool. Applies the official Big 12 tiebreaking
-      procedures to live results after every game.
-      <a href=how.html>How it works &rarr;</a></p>
+      procedures to live results after every game.</p>
     </div>
   </div>
-</header>"""
+</header>
+{subnav(active)}
+<main>
+{matchcard}"""
 
 
 SUBNAV_LINKS = [("tracker", "./", "Tracker"), ("race", "race.html", "The Race"),
@@ -433,14 +437,6 @@ CLINCH_CARD = """<div class=card id=clinchcard>
 
 
 BRIEF_CSS = """
-header { border-bottom:4px solid var(--accent); padding:24px 20px 16px;
-  background:var(--panel) }
-.hwrap { display:flex; align-items:center; gap:16px; max-width:880px;
-  margin:0 auto }
-.hwrap img { height:54px; width:auto }
-header h1 { margin:0; font-size:26px; letter-spacing:-.02em }
-header p { margin:4px 0 0; color:var(--dim); font-size:14px }
-header p a { color:var(--accent2); text-decoration:none }
 .matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
   flex-wrap:wrap }
 .side { display:flex; align-items:center; gap:12px; font-size:24px;
@@ -470,7 +466,8 @@ header { border-bottom:4px solid var(--accent); padding:22px 20px;
 header h1 { margin:0; font-size:22px } header p { margin:3px 0 0;
   color:var(--dim); font-size:14px } header a { color:var(--accent2);
   text-decoration:none }
-main { max-width:760px; margin:0 auto; padding:20px; display:grid; gap:18px }
+main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
+  display:grid; gap:18px }
 .card { background:var(--panel); border:1px solid var(--line);
   border-radius:10px; padding:16px 18px }
 .card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
@@ -538,14 +535,6 @@ th { font-size:11px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim) }
 thead tr th { border-bottom:2px solid var(--line) }
 .teamcell { white-space:nowrap }
-.subnav { max-width:760px; margin:0 auto; padding:10px 20px 0;
-  display:flex; gap:8px; flex-wrap:wrap }
-.subnav a { font-size:13px; text-decoration:none; color:var(--dim);
-  border:1px solid var(--line); border-radius:20px; padding:4px 13px;
-  background:var(--panel) }
-.subnav a:hover { border-color:var(--accent); color:var(--ink) }
-.subnav a.on { background:var(--accent); border-color:var(--accent);
-  color:#fff }
 h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
 .tablescroll { overflow-x:auto }
@@ -566,12 +555,8 @@ def build_subpage(title, active, body, year, matchcard):
 <link rel=alternate type=application/rss+xml href=feed.xml>
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style></head><body>
 <nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
-<a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a>
-<a class=b12-right href=/privacy>Privacy</a></nav>
-{tracker_header(year)}
-{subnav(active)}
-<main>
-{matchcard}
+<a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a></nav>
+{tracker_top(year, active, matchcard)}
 {body}
 </main>
 <footer class=b12-footer>A Big12ology project · not affiliated with the
@@ -763,9 +748,8 @@ def render(year, games):
 
     page = TEMPLATE.format(
         year=year,
-        card=card,
+        top=tracker_top(year, "tracker", card),
         whatif=whatif,
-        subnav=subnav("tracker"),
         standcard=standcard,
         payload=payload,
         updated=now.strftime("%Y-%m-%d %H:%M UTC"),
@@ -847,11 +831,7 @@ TEMPLATE = """<!doctype html>
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--bg); color: var(--ink);
   font: 16px/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
-header {{ border-bottom: 4px solid var(--accent); padding: 28px 20px 18px;
-  background: var(--panel); }}
-header h1 {{ margin: 0; font-size: 26px; letter-spacing: -.02em; }}
-header p {{ margin: 4px 0 0; color: var(--dim); font-size: 14px; }}
-header p a {{ color: var(--accent2); text-decoration: none; }}
+
 .whyout {{ margin-top: 6px; }}
 .whyout p {{ font-size: 15px; margin: 8px 0; }}
 .whyhead {{ display: flex; align-items: center; gap: 4px; font-weight: 700;
@@ -887,8 +867,8 @@ header p a {{ color: var(--accent2); text-decoration: none; }}
     transparent); }}
 }}
 .lstep .evline {{ margin: 5px 0 0; }}
-main {{ max-width: 1240px; margin: 0 auto; padding: 20px; display: grid;
-  gap: 20px; }}
+main {{ max-width: var(--chrome-w); margin: 0 auto; padding: 20px;
+  display: grid; gap: 20px; }}
 main > .card, main > .cols {{ max-width: 880px; width: 100%;
   margin: 0 auto; }}
 .duo {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -908,9 +888,7 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   border-radius: 10px; padding: 18px 20px; }}
 .card h2 {{ margin: 0 0 10px; font-size: 15px; text-transform: uppercase;
   letter-spacing: .06em; color: var(--dim); font-weight: 600; }}
-.hwrap {{ display: flex; align-items: center; gap: 16px; max-width: 880px;
-  margin: 0 auto; }}
-.conflogo {{ height: 54px; width: auto; }}
+
 .matchup {{ display: flex; align-items: center; gap: 18px; margin: 10px 0 4px;
   flex-wrap: wrap; }}
 .side {{ display: flex; align-items: center; gap: 12px; font-size: 24px;
@@ -955,14 +933,6 @@ ul.games li {{ padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 
   text-transform: uppercase; }}
 .rules ol {{ padding-left: 22px; }} .rules li {{ margin: 7px 0; font-size: 14px; }}
 progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
-.subnav {{ max-width: 1240px; margin: 0 auto; padding: 10px 20px 0;
-  display: flex; gap: 8px; flex-wrap: wrap; }}
-.subnav a {{ font-size: 13px; text-decoration: none; color: var(--dim);
-  border: 1px solid var(--line); border-radius: 20px; padding: 4px 13px;
-  background: var(--panel); }}
-.subnav a:hover {{ border-color: var(--accent); color: var(--ink); }}
-.subnav a.on {{ background: var(--accent); border-color: var(--accent);
-  color: #fff; }}
 .sorter {{ font-size: 13px; color: var(--dim); margin: 10px 0 6px; }}
 .sorter button {{ font: inherit; border: 1px solid var(--line); background: none;
   color: var(--dim); border-radius: 20px; padding: 3px 12px; margin-left: 6px;
@@ -1034,22 +1004,8 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   <a class=b12-brand href=/>Big12<span>ology</span></a>
   <a class=on href=/tiebreaker/>Tiebreaker</a>
   <a href=/attendance/>Attendance</a>
-  <a class=b12-right href=/privacy>Privacy</a>
 </nav>
-<header>
-  <div class=hwrap>
-    <img src=logos/big12.svg alt="Big 12" class=conflogo>
-    <div>
-      <h1>Big 12 Tiebreaker Tracker <span class=dim>· {year}</span></h1>
-      <p>Unofficial fan tool. Applies the official Big 12 tiebreaking
-      procedures to live results after every game.
-      <a href=how.html>How it works &rarr;</a></p>
-    </div>
-  </div>
-</header>
-{subnav}
-<main>
-{card}
+{top}
 
 <div class=duo>
 <div class=stack>
@@ -1160,15 +1116,11 @@ EXPLAINER = """<!doctype html>
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--bg); color: var(--ink);
   font: 17px/1.65 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
-header {{ border-bottom: 4px solid var(--accent); padding: 24px 20px 16px;
-  background: var(--panel); }}
-.hwrap {{ display: flex; align-items: center; gap: 16px; max-width: 780px;
-  margin: 0 auto; }}
-.hwrap img {{ height: 46px; width: auto; }}
-header h1 {{ margin: 0; font-size: 23px; letter-spacing: -.02em; }}
-header p {{ margin: 3px 0 0; color: var(--dim); font-size: 14px; }}
-header a {{ color: inherit; text-decoration: none; }}
-main {{ max-width: 780px; margin: 0 auto; padding: 26px 20px 48px; }}
+
+main {{ max-width: var(--chrome-w); margin: 0 auto;
+  padding: 26px 20px 48px; }}
+main > p, main > ol, main > ul, main > h2, main > h3, main > table,
+main > .aside, main > .worked, main > .backlink {{ max-width: 840px; }}
 h2 {{ font-size: 21px; margin: 34px 0 10px; }}
 h3 {{ font-size: 17px; margin: 22px 0 8px; }}
 p, li {{ font-size: 16.5px; }}
@@ -1213,13 +1165,6 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
 .dim {{ color: var(--dim); }}
 .note {{ color: var(--dim); font-size: 13px; }}
 
-.subnav {{ max-width:780px; margin:0 auto; padding:10px 20px 0;
-  display:flex; gap:8px; flex-wrap:wrap }}
-.subnav a {{ font-size:13px; text-decoration:none; color:var(--dim);
-  border:1px solid var(--line); border-radius:20px; padding:4px 13px;
-  background:var(--panel) }}
-.subnav a:hover {{ border-color:var(--accent); color:var(--ink) }}
-.subnav a.on {{ background:var(--accent); border-color:var(--accent); color:#fff }}
 
 </style>
 </head>
@@ -1228,22 +1173,8 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
   <a class=b12-brand href=/>Big12<span>ology</span></a>
   <a class=on href=/tiebreaker/>Tiebreaker</a>
   <a href=/attendance/>Attendance</a>
-  <a class=b12-right href=/privacy>Privacy</a>
 </nav>
-<header>
-  <div class=hwrap>
-    <img src=logos/big12.svg alt="">
-    <div>
-      <h1>Big 12 Tiebreaker Tracker <span class=dim>· {year}</span></h1>
-      <p>Unofficial fan tool. Applies the official Big 12 tiebreaking
-      procedures to live results after every game.
-      <a href="./">Back to the tracker &rarr;</a></p>
-    </div>
-  </div>
-</header>
-{subnav_html}
-<main>
-{matchcard}
+{top}
 
 <p class=lead>Sixteen teams, nine conference games each, no round robin —
 which means two teams can finish with identical records having played
@@ -1392,8 +1323,7 @@ def build_explainer(year, matchcard):
     out = os.path.join(SITE, "how.html")
     with open(out, "w") as f:
         f.write(EXPLAINER.format(worked_2024=worked,
-                                 subnav_html=subnav("how"),
-                                 year=year, matchcard=matchcard))
+                                 top=tracker_top(year, "how", matchcard)))
     print(f"built {out}")
 
 

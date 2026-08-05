@@ -6,14 +6,6 @@
 <link rel=stylesheet href=brand.css>
 <link rel=alternate type=application/rss+xml href=feed.xml>
 <style>
-header { border-bottom:4px solid var(--accent); padding:24px 20px 16px;
-  background:var(--panel) }
-.hwrap { display:flex; align-items:center; gap:16px; max-width:880px;
-  margin:0 auto }
-.hwrap img { height:54px; width:auto }
-header h1 { margin:0; font-size:26px; letter-spacing:-.02em }
-header p { margin:4px 0 0; color:var(--dim); font-size:14px }
-header p a { color:var(--accent2); text-decoration:none }
 .matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
   flex-wrap:wrap }
 .side { display:flex; align-items:center; gap:12px; font-size:24px;
@@ -43,7 +35,8 @@ header { border-bottom:4px solid var(--accent); padding:22px 20px;
 header h1 { margin:0; font-size:22px } header p { margin:3px 0 0;
   color:var(--dim); font-size:14px } header a { color:var(--accent2);
   text-decoration:none }
-main { max-width:760px; margin:0 auto; padding:20px; display:grid; gap:18px }
+main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
+  display:grid; gap:18px }
 .card { background:var(--panel); border:1px solid var(--line);
   border-radius:10px; padding:16px 18px }
 .card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
@@ -78,14 +71,6 @@ th { font-size:11px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim) }
 thead tr th { border-bottom:2px solid var(--line) }
 .teamcell { white-space:nowrap }
-.subnav { max-width:760px; margin:0 auto; padding:10px 20px 0;
-  display:flex; gap:8px; flex-wrap:wrap }
-.subnav a { font-size:13px; text-decoration:none; color:var(--dim);
-  border:1px solid var(--line); border-radius:20px; padding:4px 13px;
-  background:var(--panel) }
-.subnav a:hover { border-color:var(--accent); color:var(--ink) }
-.subnav a.on { background:var(--accent); border-color:var(--accent);
-  color:#fff }
 h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
 .tablescroll { overflow-x:auto }
@@ -95,16 +80,14 @@ table.h2h { width:auto }
 .nomeet { color:var(--line); text-align:center }
 </style></head><body>
 <nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
-<a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a>
-<a class=b12-right href=/privacy>Privacy</a></nav>
-<header>
+<a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a></nav>
+<header class=b12-head>
   <div class=hwrap>
     <img src=logos/big12.svg alt="">
     <div>
-      <h1>Big 12 Tiebreaker Tracker <span class=dim>· 2026</span></h1>
+      <h1>Big 12 Tiebreaker Tracker <span class=yr>· 2026</span></h1>
       <p>Unofficial fan tool. Applies the official Big 12 tiebreaking
-      procedures to live results after every game.
-      <a href=how.html>How it works &rarr;</a></p>
+      procedures to live results after every game.</p>
     </div>
   </div>
 </header>
