@@ -15,6 +15,7 @@ import sys
 
 import clinch as clinch_mod
 import fetch as fetcher
+import odds as odds_mod
 import tiebreaker as tb
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -111,59 +112,90 @@ def winpct_color(p):
     return f"hsl({round(h)} {round(s)}% var(--pctl))"
 
 
-def clinch_card(games, overrides):
-    """The Championship race card: proof-grade clinch/elimination statuses.
-    Computed at build time from real results only — what-if picks in the
-    browser don't touch it."""
+def fmt_prob(p):
+    if p >= 0.9995:
+        return "100%"
+    if p <= 0 :
+        return "0%"
+    if p < 0.001:
+        return "&lt;0.1%"
+    return f"{p * 100:.1f}%".replace(".0%", "%")
+
+
+def clinch_card(games, overrides, systems):
+    """The Championship race card: proof-grade clinch/elimination statuses
+    plus Monte Carlo odds. Computed at build time from real results only —
+    what-if picks in the browser don't touch it."""
     res = clinch_mod.analyze(games, overrides)
     teams = res["teams"]
-    if all(i["r"] > 0 and i["w"] == 0 and i["status"] == "alive"
-           and not i["destiny"] for i in teams.values()):
-        body = ("<p class=dim>All sixteen teams are alive — nobody has "
-                "played a conference game yet. Statuses appear as results "
-                "arrive; proof-grade clinch scenarios unlock in November "
-                "when every remaining outcome can be enumerated.</p>")
-        return CLINCH_CARD.format(body=body, note="")
+    sims = odds_mod.simulate(games, systems, overrides) if systems else {}
+    n_sims = sims.get("_n", 0)
+
+    def prob(t):
+        # proofs override estimates
+        if teams[t]["status"] == "clinched":
+            return 1.0
+        if teams[t]["status"] == "eliminated":
+            return 0.0
+        return sims.get(t, {}).get("p_ccg", 0.0) if sims else None
 
     chips = {
         "clinched": "<span class='tag live'>clinched</span>",
-        "eliminated": "<span class='tag out'>eliminated</span>",
-        "alive": "<span class='tag alive'>alive</span>",
+        "alive": "",
     }
     rows, eliminated = [], []
     order = sorted(teams, key=lambda t: (
-        {"clinched": 0, "alive": 1, "eliminated": 2}[teams[t]["status"]],
-        -teams[t]["w"], t))
+        -(prob(t) or 0), -teams[t]["w"], t))
     for t in order:
         i = teams[t]
         if i["status"] == "eliminated":
             eliminated.append(t)
             continue
+        p = prob(t)
+        bar = ""
+        if p is not None:
+            bar = (f"<span class=obar><i style='width:{p * 100:.1f}%;"
+                   f"background:{winpct_color(p)}'></i></span>"
+                   f"<b class=opct style='color:{winpct_color(p)}'>"
+                   f"{fmt_prob(p)}</b>")
         bits = [chips[i["status"]]]
         if i["destiny"] and i["status"] == "alive":
             bits.append("<span class='tag destiny'>controls own destiny</span>")
+        exp = sims.get(t, {}).get("exp_w")
+        exptxt = (f" <span class=dim>· {exp:.1f} exp conf wins</span>"
+                  if exp is not None and i["r"] > 0 else "")
         scen = ""
         if i["scenarios"]:
             scen = ("<ul class=scen>" + "".join(
                 f"<li>{esc(s)}</li>" for s in i["scenarios"][:4]) + "</ul>")
         rows.append(
-            f"<div class=clrow>{logo_img(t, 18)}<b>{esc(t)}</b> "
-            f"<span class=dim>({i['w']} conf wins, {i['r']} left)</span> "
-            f"{' '.join(bits)}{scen}</div>")
+            f"<div class=clrow>{logo_img(t, 18)}<b>{esc(t)}</b> {bar} "
+            f"{' '.join(b for b in bits if b)}"
+            f"<span class=dim> {i['w']}–{9 - i['r'] - i['w']}, {i['r']} left"
+            f"</span>{exptxt}{scen}</div>")
     body = "".join(rows)
     if eliminated:
         body += (f"<p class='dim elim'>Eliminated: "
                  f"{', '.join(esc(t) for t in eliminated)}</p>")
+
+    notes = []
     if res["mode"] == "exact":
-        note = (f"Every status above is proven across all "
-                f"{res['n_outcomes']:,} remaining outcomes with the full "
-                f"official tiebreaker procedure. Scenario lines are for the "
-                f"upcoming week's games.")
+        notes.append(
+            f"Clinch/elimination statuses are proven across all "
+            f"{res['n_outcomes']:,} remaining outcomes with the full "
+            f"official tiebreaker procedure; scenario lines are for the "
+            f"upcoming week's games.")
     else:
-        note = ("Statuses proven by win-count arithmetic (strict — no "
-                "tiebreaker can undo them). Exhaustive scenario math "
-                "unlocks when the remaining schedule becomes enumerable.")
-    return CLINCH_CARD.format(body=body, note=note)
+        notes.append(
+            "Clinch/elimination statuses are proven by strict win-count "
+            "arithmetic — no tiebreaker can undo them. Exhaustive scenario "
+            "math unlocks when the remaining schedule becomes enumerable.")
+    if n_sims:
+        notes.append(
+            f"Percentages are championship-game odds from {n_sims:,} season "
+            f"simulations (win probabilities from an ensemble of "
+            f"{', '.join(sorted(systems))}); proofs override odds.")
+    return CLINCH_CARD.format(body=body, note=" ".join(notes))
 
 
 CLINCH_CARD = """<div class=card id=clinchcard>
@@ -325,7 +357,7 @@ def render(year, games):
         year=year,
         card=card,
         whatif=whatif,
-        clinchcard=clinch_card(games, overrides),
+        clinchcard=clinch_card(games, overrides, systems),
         standcard=standcard,
         results=results,
         upcoming=upcoming,
@@ -550,6 +582,11 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 }}
 .clrow {{ padding: 8px 0; border-bottom: 1px solid var(--line);
   font-size: 15px; }}
+.obar {{ display: inline-block; width: 110px; height: 8px;
+  background: var(--line); border-radius: 4px; overflow: hidden;
+  vertical-align: 1px; margin: 0 6px 0 8px; }}
+.obar i {{ display: block; height: 100%; border-radius: 4px; }}
+.opct {{ font-variant-numeric: tabular-nums; font-size: 14px; }}
 .clrow:last-of-type {{ border-bottom: none; }}
 .scen {{ margin: 6px 0 2px; padding-left: 22px; font-size: 13.5px;
   color: var(--dim); }}

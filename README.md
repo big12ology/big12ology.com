@@ -40,6 +40,13 @@ game.
 - `tests/test_clinch.py` — replays 2025 truncated at seven dates and checks
   the invariants: statuses only move forward, the final clinched pair is
   exactly the CCG pair, and exact-mode calls match full-season reality.
+- `odds.py` — Monte Carlo championship-game odds: 10,000 season simulations
+  per build, win probabilities from an ensemble of the fetched rating
+  systems (normal model on the projected margin), scored with the clinch
+  module's top-2 evaluator. Deterministic seed; proofs always override
+  odds in the card. `tests/test_odds.py` holds the invariants (sum ≈ two
+  berths, agreement with clinch proofs, determinism, finished-season
+  exactness).
 
 ## What-if simulator
 
