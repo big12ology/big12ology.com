@@ -489,7 +489,7 @@ def build_brief(year, games, overrides, systems, sims):
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>The Brief — Big 12 Tiebreaker Tracker</title>
 <link rel=icon type=image/svg+xml href=favicon.svg>
-<link rel=stylesheet href=/brand.css>
+<link rel=stylesheet href=brand.css>
 <link rel=alternate type=application/rss+xml href=feed.xml>
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style></head><body>
 <nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
@@ -546,7 +546,7 @@ def build_subpage(title, tagline, active, body):
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>{esc(title)} — Big 12 Tiebreaker Tracker</title>
 <link rel=icon type=image/svg+xml href=favicon.svg>
-<link rel=stylesheet href=/brand.css>
+<link rel=stylesheet href=brand.css>
 <link rel=alternate type=application/rss+xml href=feed.xml>
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style></head><body>
 <nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
@@ -806,7 +806,7 @@ TEMPLATE = """<!doctype html>
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
-<link rel=stylesheet href=/brand.css>
+<link rel=stylesheet href=brand.css>
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href=feed.xml>
 <style>
 :root {{
@@ -1120,7 +1120,7 @@ EXPLAINER = """<!doctype html>
 <meta name=description content="A plain-English walkthrough of the official Big 12 football tiebreaking procedures, with the 2024 four-way tie worked step by step.">
 <link rel=canonical href="https://big12ology.com/tiebreaker/how.html">
 <link rel=icon type=image/svg+xml href=favicon.svg>
-<link rel=stylesheet href=/brand.css>
+<link rel=stylesheet href=brand.css>
 <meta property=og:type content=article>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="How the Big 12 tiebreakers actually work">
