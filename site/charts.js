@@ -1,6 +1,6 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=4";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=5";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -580,7 +580,7 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
   cardEl.appendChild(wrap);
 }
 
-export function renderCharts(root, teamsData, seasonsData, currentYear) {
+export function renderSeasonCharts(root, teamsData, seasonsData, currentYear) {
   root.textContent = "";
   const season = seasonsData[currentYear];
   const teams = teamsForSeason(teamsData, Number(currentYear));
@@ -595,17 +595,28 @@ export function renderCharts(root, teamsData, seasonsData, currentYear) {
   const c3 = card(`Percent full, team × week — ${currentYear}`, "Same scale as the table: green is full, red is empty seats");
   heatmap(c3, summary, season);
 
-  const c4 = card("Records watch", "High-water marks across the tracked era, and who's on a sellout streak");
-  recordsWatch(c4, seasonsData, teamsData);
+  root.append(c1, c2, c3);
+}
 
-  const c5 = card("Kickoff weather vs fill", "Every tracked home game; ringed dots = rain; hover for details");
-  weatherScatter(c5, seasonsData, teamsData);
+export function renderAllTimeCharts(root, teamsData, seasonsData) {
+  root.textContent = "";
+  const years = Object.keys(seasonsData).sort();
+  const span = years.length > 1
+    ? `${years[0]}–${years[years.length - 1]}` : years[0];
 
-  const c6 = card("Weekly percent full, year over year", "Each line is a season; conference-wide");
-  yoyLines(c6, seasonsData, teamsData);
+  const c1 = card(`Records watch (${span})`,
+    `High-water marks across every tracked season, and active sellout streaks`);
+  recordsWatch(c1, seasonsData, teamsData);
 
-  const c7 = card("Season percent full by team, year over year", "One dot per season; the connector spans a team's range");
-  yoyTeams(c7, seasonsData, teamsData);
+  const c2 = card(`Kickoff weather vs fill, all seasons (${span})`,
+    `Cumulative: every tracked home game ${span}; ringed dots = rain; dashed line = least-squares trend`);
+  weatherScatter(c2, seasonsData, teamsData);
 
-  root.append(c1, c2, c3, c4, c5, c6, c7);
+  const c3 = card(`Weekly percent full, year over year (${span})`, "Each line is a season; conference-wide");
+  yoyLines(c3, seasonsData, teamsData);
+
+  const c4 = card(`Season percent full by team, year over year (${span})`, "One dot per season; the connector spans a team's range");
+  yoyTeams(c4, seasonsData, teamsData);
+
+  root.append(c1, c2, c3, c4);
 }

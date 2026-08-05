@@ -27,15 +27,27 @@
     </div>
   </header>
 
-  <section id="summary" class="cards"></section>
+  <nav class="subnav" id="tabs">
+    <a href="#season" data-tab="season" class="on">Season</a>
+    <a href="#charts" data-tab="charts">Season charts</a>
+    <a href="#alltime" data-tab="alltime">All-time &amp; records</a>
+  </nav>
 
-  <main>
-    <div class="table-wrap">
-      <table id="attendance-table"></table>
-    </div>
-    <p id="empty-note" class="note" hidden></p>
-    <section id="charts"></section>
-  </main>
+  <div id="view-season">
+    <section id="summary" class="cards"></section>
+    <main>
+      <div class="table-wrap">
+        <table id="attendance-table"></table>
+      </div>
+      <p id="empty-note" class="note" hidden></p>
+    </main>
+  </div>
+  <div id="view-charts" hidden>
+    <main><section id="charts-season" class="charts"></section></main>
+  </div>
+  <div id="view-alltime" hidden>
+    <main><section id="charts-alltime" class="charts"></section></main>
+  </div>
 
   <footer class="b12-footer">
     <p id="source-note"></p>
@@ -47,7 +59,7 @@
     <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
   </footer>
 
-  <script type="module" src="site/app.js?v=4"></script>
+  <script type="module" src="site/app.js?v=5"></script>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
 </body>
 </html>

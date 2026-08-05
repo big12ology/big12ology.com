@@ -1,5 +1,5 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=4";
-import { renderCharts } from "./charts.js?v=4";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=5";
+import { renderSeasonCharts, renderAllTimeCharts } from "./charts.js?v=5";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -396,8 +396,24 @@ async function main() {
 
   const show = (year) => {
     render(teamsData, seasonsData[year]);
-    renderCharts($("#charts"), teamsData, seasonsData, year);
+    renderSeasonCharts($("#charts-season"), teamsData, seasonsData, year);
+    renderAllTimeCharts($("#charts-alltime"), teamsData, seasonsData);
   };
+
+  // module tabs (hash-routed)
+  const TABS = ["season", "charts", "alltime"];
+  const setTab = (tab) => {
+    if (!TABS.includes(tab)) tab = "season";
+    for (const t of TABS) {
+      document.querySelector(`#view-${t}`).hidden = t !== tab;
+    }
+    document.querySelectorAll("#tabs a").forEach((a) =>
+      a.classList.toggle("on", a.dataset.tab === tab));
+    document.body.classList.toggle("tab-alltime", tab === "alltime");
+  };
+  window.addEventListener("hashchange", () =>
+    setTab(location.hash.slice(1)));
+  setTab(location.hash.slice(1));
   select.addEventListener("change", () => show(select.value));
   window
     .matchMedia("(prefers-color-scheme: dark)")
