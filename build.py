@@ -125,6 +125,21 @@ def fmt_prob(p):
     return f"{p * 100:.1f}%".replace(".0%", "%")
 
 
+
+SUBNAV_LINKS = [("tracker", "./", "Tracker"), ("race", "race.html", "The Race"),
+                ("schedule", "schedule.html", "Schedule"),
+                ("brief", "brief.html", "The Brief"),
+                ("history", "history.html", "Tie history"),
+                ("how", "how.html", "How it works")]
+
+
+def subnav(active):
+    links = "".join(
+        f"<a href={href} class={'on' if key == active else 'off'}>{label}</a>"
+        for key, href, label in SUBNAV_LINKS)
+    return f"<nav class=subnav>{links}</nav>"
+
+
 def next_conf_week_ids(games):
     """Game ids for the next week that still has unplayed conference games."""
     rem = [g for g in games if g["conference_game"] and not g.get("ccg")
@@ -414,6 +429,7 @@ def build_brief(year, games, overrides, systems, sims):
 <header><h1>The Brief <span class=dim>· {esc(stamp)}</span></h1>
 <p>The Big 12 title race, auto-written after every game.
 <a href="./">Full tracker &rarr;</a></p></header>
+{subnav("brief")}
 <main>
 {race}
 {lev}
@@ -427,6 +443,80 @@ def build_brief(year, games, overrides, systems, sims):
 Big 12 Conference. <a href="https://big12ology.com/privacy">Privacy</a></footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
 </body></html>"""
+
+
+SUBPAGE_EXTRA_CSS = """
+table { border-collapse:collapse; width:100%; font-size:14px }
+th, td { text-align:left; padding:6px 9px; border-bottom:1px solid
+  var(--line); font-variant-numeric:tabular-nums }
+th { font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--dim) }
+thead tr th { border-bottom:2px solid var(--line) }
+.teamcell { white-space:nowrap }
+.subnav { max-width:760px; margin:0 auto; padding:10px 20px 0;
+  display:flex; gap:8px; flex-wrap:wrap }
+.subnav a { font-size:13px; text-decoration:none; color:var(--dim);
+  border:1px solid var(--line); border-radius:20px; padding:4px 13px;
+  background:var(--panel) }
+.subnav a:hover { border-color:var(--accent); color:var(--ink) }
+.subnav a.on { background:var(--accent); border-color:var(--accent);
+  color:#fff }
+h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--dim); margin:16px 0 4px }
+"""
+
+
+def build_subpage(title, tagline, active, body):
+    return f"""<!doctype html>
+<html lang=en><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>{esc(title)} — Big 12 Tiebreaker Tracker</title>
+<link rel=icon type=image/svg+xml href=favicon.svg>
+<link rel=stylesheet href=/brand.css>
+<link rel=alternate type=application/rss+xml href=feed.xml>
+<style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style></head><body>
+<nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
+<a class=on href=/tiebreaker/>Tiebreaker</a><a href=/attendance/>Attendance</a>
+<a class=b12-right href=/privacy>Privacy</a></nav>
+<header><h1>{esc(title)}</h1><p>{tagline}</p></header>
+{subnav(active)}
+<main>
+{body}
+</main>
+<footer class=b12-footer>A Big12ology project · not affiliated with the
+Big 12 Conference · <a href=data.json>data.json</a> ·
+<a href=standings.csv>standings.csv</a> ·
+<a href="https://big12ology.com/privacy">Privacy</a></footer>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
+</body></html>"""
+
+
+def build_schedule_page(games, ctx):
+    rem = sorted((g for g in games if not g["completed"]),
+                 key=lambda g: (g["week"], g["start"] or ""))
+    by_week = {}
+    for g in rem:
+        by_week.setdefault(g["week"], []).append(g)
+    up = ""
+    for wk in sorted(by_week):
+        up += (f"<h3 class=wkhead>Week {wk}</h3><ul class=games>"
+               + "".join(game_row(g) for g in by_week[wk]) + "</ul>")
+    upcard = (f"<div class=card><h2>Every remaining game</h2>{up}</div>"
+              if up else "")
+    done = [g for g in games if g["completed"]
+            and g["home_points"] is not None]
+    done.sort(key=lambda g: g["start"] or "", reverse=True)
+    rescard = ""
+    if done:
+        rescard = ("<div class=card><h2>Results, newest first</h2>"
+                   "<ul class=games>"
+                   + "".join(game_row(g) for g in done[:40])
+                   + "</ul></div>")
+    return ctx["soscard"] + upcard + rescard
+
+
+def build_race_page(ctx):
+    return ctx["clinchcard"] + ctx["levcard"] + ctx["modelcard"]
 
 
 def default_season(today=None):
@@ -579,20 +669,23 @@ def render(year, games):
     standcard = STAND_CARD.format(
         played=len(reg_played), total=len(reg), table=table, stories=stories)
 
-    return TEMPLATE.format(
+    page = TEMPLATE.format(
         year=year,
         card=card,
         whatif=whatif,
-        clinchcard=clinch_card(games, overrides, systems, rows, sims),
-        levcard=leverage_card(games, sims) if sims else "",
-        soscard=sos_card(games, systems),
-        modelcard=scorecard_card(games, systems),
+        subnav=subnav("tracker"),
         standcard=standcard,
-        results=results,
-        upcoming=upcoming,
         payload=payload,
         updated=now.strftime("%Y-%m-%d %H:%M UTC"),
     )
+    ctx = {
+        "clinchcard": clinch_card(games, overrides, systems, rows, sims),
+        "levcard": leverage_card(games, sims) if sims else "",
+        "soscard": sos_card(games, systems),
+        "modelcard": scorecard_card(games, systems),
+        "sims": sims,
+    }
+    return page, ctx
 
 
 STAND_CARD = """<div class="card standcard">
@@ -714,14 +807,8 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   .duo > .stack {{ display: contents; }}
   #whatif {{ order: 1; }}
   .standcard {{ order: 2; }}
-  #clinchcard {{ order: 3; }}
-  #levcard {{ order: 4; }}
-  #teamwhy {{ order: 5; }}
-  #resultscard {{ order: 6; }}
-  #soscard {{ order: 7; }}
-  #modelcard {{ order: 8; }}
-  #upnextcard {{ order: 9; }}
-  .rules {{ order: 10; }}
+  #teamwhy {{ order: 3; }}
+  .rules {{ order: 4; }}
 }}
 .card {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 18px 20px; }}
@@ -774,6 +861,14 @@ ul.games li {{ padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 
   text-transform: uppercase; }}
 .rules ol {{ padding-left: 22px; }} .rules li {{ margin: 7px 0; font-size: 14px; }}
 progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
+.subnav {{ max-width: 1240px; margin: 0 auto; padding: 10px 20px 0;
+  display: flex; gap: 8px; flex-wrap: wrap; }}
+.subnav a {{ font-size: 13px; text-decoration: none; color: var(--dim);
+  border: 1px solid var(--line); border-radius: 20px; padding: 4px 13px;
+  background: var(--panel); }}
+.subnav a:hover {{ border-color: var(--accent); color: var(--ink); }}
+.subnav a.on {{ background: var(--accent); border-color: var(--accent);
+  color: #fff; }}
 .sorter {{ font-size: 13px; color: var(--dim); margin: 10px 0 6px; }}
 .sorter button {{ font: inherit; border: 1px solid var(--line); background: none;
   color: var(--dim); border-radius: 20px; padding: 3px 12px; margin-left: 6px;
@@ -858,6 +953,7 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
     </div>
   </div>
 </header>
+{subnav}
 <main>
 {card}
 
@@ -865,6 +961,11 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 <div class=stack>
 
 {whatif}
+
+</div>
+<div class=stack>
+
+{standcard}
 
 <div class=card id=teamwhy>
   <h2>Why is my team where they are?
@@ -877,29 +978,6 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
   <p class=note>Follows your what-if picks when they're active. Full
   walkthrough of the procedure:
   <a href=how.html>how the tiebreakers work</a>.</p>
-</div>
-
-<div class=card id=resultscard>
-  <h2>Latest results</h2>
-  <ul class=games>{results}</ul>
-</div>
-
-{soscard}
-
-{modelcard}
-
-</div>
-<div class=stack>
-
-{standcard}
-
-{clinchcard}
-
-{levcard}
-
-<div class=card id=upnextcard>
-  <h2>Up next</h2>
-  <ul class=games>{upcoming}</ul>
 </div>
 
 <div class="card rules">
@@ -1018,6 +1096,15 @@ table.models th, table.models td {{ text-align: left; padding: 8px 10px;
 table.models th {{ font-size: 12px; text-transform: uppercase;
   letter-spacing: .05em; color: var(--dim); }}
 .backlink {{ display: inline-block; margin-top: 8px; }}
+
+.subnav {{ max-width:780px; margin:0 auto; padding:10px 20px 0;
+  display:flex; gap:8px; flex-wrap:wrap }}
+.subnav a {{ font-size:13px; text-decoration:none; color:var(--dim);
+  border:1px solid var(--line); border-radius:20px; padding:4px 13px;
+  background:var(--panel) }}
+.subnav a:hover {{ border-color:var(--accent); color:var(--ink) }}
+.subnav a.on {{ background:var(--accent); border-color:var(--accent); color:#fff }}
+
 </style>
 </head>
 <body>
@@ -1036,6 +1123,7 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
     </div>
   </div>
 </header>
+{subnav_html}
 <main>
 
 <p class=lead>Sixteen teams, nine conference games each, no round robin —
@@ -1184,7 +1272,7 @@ def build_explainer():
     worked = "".join(f"    <li>{esc(line)}</li>\n" for line in log)
     out = os.path.join(SITE, "how.html")
     with open(out, "w") as f:
-        f.write(EXPLAINER.format(worked_2024=worked))
+        f.write(EXPLAINER.format(worked_2024=worked, subnav_html=subnav("how")))
     print(f"built {out}")
 
 
@@ -1204,9 +1292,20 @@ def main():
             games = json.load(open(path))
     os.makedirs(SITE, exist_ok=True)
     out = os.path.join(SITE, "index.html")
+    page, ctx = render(year, games)
     with open(out, "w") as f:
-        f.write(render(year, games))
+        f.write(page)
     print(f"built {out} for {year}")
+    with open(os.path.join(SITE, "race.html"), "w") as f:
+        f.write(build_subpage(
+            "The Race", "Proofs, odds, chaos, and the games that move them.",
+            "race", build_race_page(ctx)))
+    with open(os.path.join(SITE, "schedule.html"), "w") as f:
+        f.write(build_subpage(
+            "Schedule", "Every remaining game, every result, and the road "
+            "each team still has to travel.", "schedule",
+            build_schedule_page(games, ctx)))
+    print("built race.html, schedule.html")
     build_explainer()
     overrides = tb.load_overrides()
     systems = load_ratings(year).get("systems", {})

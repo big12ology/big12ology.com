@@ -59,6 +59,15 @@ table.models th, table.models td { text-align: left; padding: 8px 10px;
 table.models th { font-size: 12px; text-transform: uppercase;
   letter-spacing: .05em; color: var(--dim); }
 .backlink { display: inline-block; margin-top: 8px; }
+
+.subnav { max-width:780px; margin:0 auto; padding:10px 20px 0;
+  display:flex; gap:8px; flex-wrap:wrap }
+.subnav a { font-size:13px; text-decoration:none; color:var(--dim);
+  border:1px solid var(--line); border-radius:20px; padding:4px 13px;
+  background:var(--panel) }
+.subnav a:hover { border-color:var(--accent); color:var(--ink) }
+.subnav a.on { background:var(--accent); border-color:var(--accent); color:#fff }
+
 </style>
 </head>
 <body>
@@ -77,6 +86,7 @@ table.models th { font-size: 12px; text-transform: uppercase;
     </div>
   </div>
 </header>
+<nav class=subnav><a href=./ class=off>Tracker</a><a href=race.html class=off>The Race</a><a href=schedule.html class=off>Schedule</a><a href=brief.html class=off>The Brief</a><a href=history.html class=off>Tie history</a><a href=how.html class=on>How it works</a></nav>
 <main>
 
 <p class=lead>Sixteen teams, nine conference games each, no round robin —

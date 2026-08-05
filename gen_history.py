@@ -17,39 +17,153 @@ import os
 
 import fetch as fetcher
 import tiebreaker as tb
-from build import esc, logo_img
+from build import esc, logo_img, subnav
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HIST = os.path.join(HERE, "history")
 FIRST, LAST = 2011, 2025
 
+# What actually happened. 2011-2016: no championship game — the conference
+# awarded shared titles on record alone (tiebreakers only picked BCS/CFP
+# representatives). Declared champions per Big 12 records / contemporaneous
+# reporting. 2017+: the championship-game pairing comes straight from the
+# season data (the CCG row), so nothing is hand-typed for those years.
+DECLARED_CHAMPS = {
+    2011: ["Oklahoma State"],
+    2012: ["Kansas State", "Oklahoma"],
+    2013: ["Baylor"],
+    2014: ["Baylor", "TCU"],
+    2015: ["Oklahoma"],
+    2016: ["Oklahoma"],
+}
+
+
+def fetch_history_season(year):
+    """Fetch by conference, not by current membership — historical seasons
+    must include departed members (Oklahoma, Texas, and 2011's Texas A&M
+    and Missouri) and every game between them."""
+    raw = fetcher.get(f"games?year={year}&seasonType=regular",
+                      fetcher.key())
+    games = []
+    for g in raw:
+        hc, ac = g.get("homeConference"), g.get("awayConference")
+        if hc != "Big 12" and ac != "Big 12":
+            continue
+        notes = g.get("notes") or ""
+        games.append({
+            "id": g.get("id"), "week": g.get("week"),
+            "start": g.get("startDate"), "notes": notes,
+            "ccg": "championship" in notes.lower(),
+            "completed": bool(g.get("completed")),
+            "conference_game": bool(g.get("conferenceGame"))
+            and hc == "Big 12" and ac == "Big 12",
+            "home": g.get("homeTeam"), "away": g.get("awayTeam"),
+            "home_conf": hc, "away_conf": ac,
+            "home_class": g.get("homeClassification"),
+            "away_class": g.get("awayClassification"),
+            "home_points": g.get("homePoints"),
+            "away_points": g.get("awayPoints"),
+        })
+    games.sort(key=lambda x: (x["week"], x["start"] or ""))
+    return games
+
 
 def season_games(year):
     p = os.path.join(HIST, f"games_{year}.json")
     if not os.path.exists(p):
-        cached = os.path.join(HERE, "data", f"games_{year}.json")
-        if os.path.exists(cached):
-            games = json.load(open(cached))
-        else:
-            games = fetcher.fetch_season(year)
+        games = fetch_history_season(year)
         json.dump(games, open(p, "w"), indent=1)
-    return json.load(open(p))
+    return mark_ccg(json.load(open(p)))
+
+
+def mark_ccg(games):
+    """Repair championship-game flags for historical seasons.
+
+    1. A 'championship' note only counts as THE Big 12 CCG when both sides
+       are Big 12 — future Big 12 members drag their old conferences' title
+       games (Pac-12, AAC) into the data.
+    2. CFBD's 2017-2021 feeds don't tag the Big 12 CCG at all. In a strict
+       round-robin, no pair meets twice — so the season's rematch, by date,
+       is the championship game.
+    """
+    for g in games:
+        if g.get("ccg") and not (g.get("home_conf") == "Big 12"
+                                 and g.get("away_conf") == "Big 12"):
+            g["ccg"] = False
+    if not any(g.get("ccg") for g in games):
+        seen = {}
+        conf = sorted((g for g in games if g["conference_game"]
+                       and g["completed"]),
+                      key=lambda g: g["start"] or "")
+        for g in conf:
+            pair = frozenset((g["home"], g["away"]))
+            if pair in seen:
+                g["ccg"] = True  # the rematch — round robins have none
+            else:
+                seen[pair] = g
+    return games
+
+
+def actual_outcome(year, games):
+    """(description_html, engine_agrees, diff_note) for the season."""
+    ccg = next((g for g in games if g.get("ccg") and g["completed"]), None)
+    rows = tb.standings(games)
+    eng_top2 = [r["team"] for r in rows if r["rank"] <= 2]
+    if ccg:
+        pair = {ccg["home"], ccg["away"]}
+        w = tb.winner(ccg)
+        desc = (f"Actual championship game: {esc(ccg['away'])} at "
+                f"{esc(ccg['home'])} — {esc(w)} won the title.")
+        if set(eng_top2) == pair:
+            return desc, True, None
+        note = (f"The conference sent <b>{esc(ccg['away'])}</b> and "
+                f"<b>{esc(ccg['home'])}</b>; today's policy applied to the "
+                f"same results selects <b>{esc(eng_top2[0])}</b> and "
+                f"<b>{esc(eng_top2[1])}</b>.")
+        return desc, False, note
+    champs = DECLARED_CHAMPS.get(year, [])
+    desc = ("Actual outcome: " +
+            (" and ".join(esc(c) for c in champs)
+             + (" declared co-champions" if len(champs) > 1
+                else " won the title outright")) +
+            " — no championship game existed; shared titles were awarded "
+            "on record alone.")
+    if len(champs) == 1 and champs[0] == eng_top2[0]:
+        return desc, True, None
+    if len(champs) > 1:
+        note = (f"The conference hung {len(champs)} banners; today's "
+                f"one-true-champion procedure picks "
+                f"<b>{esc(eng_top2[0])}</b> alone.")
+        agrees = eng_top2[0] in champs
+        return desc, agrees and False, note
+    if not champs:
+        raise ValueError(f"{year}: no championship game found in the data "
+                         f"and no declared champion on record")
+    note = (f"Declared champion {esc(champs[0])}; today's policy says "
+            f"<b>{esc(eng_top2[0])}</b>.")
+    return desc, False, note
 
 
 def season_section(year, games):
     rows = tb.standings(games)
     if not rows:
-        return "", []
+        return "", [], None
     groups = {}
     for r in rows:
         if r["tie_group"]:
             groups.setdefault(r["tie_group"], []).append(r)
     n_ties = len(groups)
     top2 = [r["team"] for r in rows if r["rank"] <= 2]
+    desc, agrees, diff_note = actual_outcome(year, games)
+    flag = "" if agrees else " <span class=diffflag>≠</span>"
     parts = [f"<details class=season><summary><b>{year}</b> "
-             f"<span class=dim>· top two: {esc(top2[0])}, {esc(top2[1])} · "
-             f"{n_ties} tie group{'s' if n_ties != 1 else ''}</span>"
-             f"</summary>"]
+             f"<span class=dim>· engine top two: {esc(top2[0])}, "
+             f"{esc(top2[1])} · {n_ties} tie group"
+             f"{'s' if n_ties != 1 else ''}</span>{flag}</summary>"]
+    parts.append(f"<p class=actual>{desc}</p>")
+    if diff_note:
+        parts.append(f"<p class=diffbox><b>Where history and the current "
+                     f"policy part ways:</b> {diff_note}</p>")
     parts.append("<table class=mini><thead><tr><th></th><th>Team</th>"
                  "<th>Conf</th></tr></thead><tbody>")
     for r in rows:
@@ -73,7 +187,8 @@ def season_section(year, games):
                                for e in (r["events"] or [])
                                if r["events"]})}
              for tg in groups]
-    return "".join(parts), stats
+    return "".join(parts), stats, (None if agrees else
+                                   {"year": year, "note": diff_note})
 
 
 def h2h_grid(all_games):
@@ -125,11 +240,14 @@ def main():
     sections = []
     tie_count = 0
     step_hist = {}
+    diffs = []
     for year in range(LAST, FIRST - 1, -1):
         games = season_games(year)
         all_games[year] = games
-        html, stats = season_section(year, games)
+        html, stats, diff = season_section(year, games)
         sections.append(html)
+        if diff:
+            diffs.append(diff)
         for s in stats:
             tie_count += 1
             for st in s["steps"]:
@@ -142,6 +260,7 @@ def main():
         f"<tr><td>({k})</td><td>{esc(step_names[k])}</td><td>{v}</td></tr>"
         for k, v in sorted(step_hist.items()))
 
+    subnav_html = subnav("history")
     page = f"""<!doctype html>
 <html lang=en><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
@@ -184,6 +303,19 @@ table.mini th {{ font-size:11px; text-transform:uppercase;
 .h2h td, .h2h th {{ padding:3px 5px; font-size:11.5px }}
 .selfcell {{ color:var(--line) }}
 .note {{ color:var(--dim); font-size:13.5px }}
+
+.subnav {{ max-width:780px; margin:0 auto; padding:10px 20px 0;
+  display:flex; gap:8px; flex-wrap:wrap }}
+.subnav a {{ font-size:13px; text-decoration:none; color:var(--dim);
+  border:1px solid var(--line); border-radius:20px; padding:4px 13px;
+  background:var(--panel) }}
+.subnav a:hover {{ border-color:var(--accent); color:var(--ink) }}
+.subnav a.on {{ background:var(--accent); border-color:var(--accent); color:#fff }}
+
+.actual {{ font-size:14px; margin:10px 0 6px }}
+.diffbox {{ font-size:13.5px; background:var(--bg); border-left:3px solid
+  var(--accent); border-radius:4px; padding:8px 12px; margin:8px 0 }}
+.diffflag {{ color:var(--accent); font-weight:800 }}
 h2 {{ font-size:20px; margin:30px 0 8px }}
 </style></head><body>
 <nav class=b12-topbar><a class=b12-brand href=/>Big12<span>ology</span></a>
@@ -192,6 +324,7 @@ h2 {{ font-size:20px; margin:30px 0 8px }}
 <header><h1>Tie archaeology <span class=dim>· {FIRST}–{LAST}</span></h1>
 <p>Every final-standings tie in the modern Big 12, broken step by step.
 <a href="./">Back to the tracker</a></p></header>
+{subnav_html}
 <main>
 <p>The Big 12 has played round-robin-or-close schedules without divisions
 since {FIRST}. Across those {LAST - FIRST + 1} seasons the engine finds
@@ -203,6 +336,10 @@ policies (and 2011–2023 had true round robins, where common-opponent logic
 degenerates gracefully); this page shows what today's rules would have
 said, which occasionally differs from what the conference ruled at the
 time.</p>
+
+<h2>Where today's rules would have changed history</h2>
+{"".join(f"<p class=diffbox><b>{d['year']}:</b> {d['note']}</p>" for d in diffs)
+ if diffs else "<p class=note>None — every actual outcome matches what the current policy produces.</p>"}
 
 <h2>Which step settles ties?</h2>
 <table class=mini><thead><tr><th>Step</th><th>Name</th>
