@@ -129,17 +129,37 @@
     }).join("");
   }
 
+  function labelHTML(f) {
+    return "Through <b>" + esc(f.label) + "</b>" +
+      (f.date ? " <span class=dim>· " + esc(f.date) + "</span>" : "");
+  }
+
+  // The label is the only part of the bar whose text length varies, and the
+  // slider is what absorbs the difference — so pin the label to the widest
+  // week it will ever show and the bar stops breathing as you scrub.
+  function pinLabelWidth() {
+    var el = document.getElementById("rp-label");
+    var widest = 0;
+    frames.forEach(function (f) {
+      el.innerHTML = labelHTML(f);
+      widest = Math.max(widest, el.offsetWidth);
+    });
+    el.style.minWidth = widest + "px";
+  }
+
   function paint() {
     var f = frames[at];
     leftBody.innerHTML = renderLeft(at);
     rightBody.innerHTML = renderRight(at);
-    document.getElementById("rp-label").innerHTML =
-      "Through <b>" + esc(f.label) + "</b>" +
-      (f.date ? " <span class=dim>· " + esc(f.date) + "</span>" : "");
+    document.getElementById("rp-label").innerHTML = labelHTML(f);
     document.getElementById("rp-range").value = String(at);
     var live = at === frames.length - 1;
     bar.classList.toggle("scrubbed", !live);
-    document.getElementById("rp-now").hidden = live;
+    // Hidden but still occupying its space: `hidden` would collapse the
+    // button and resize the slider every time you reach the last week.
+    var back = document.getElementById("rp-now");
+    back.classList.toggle("invis", live);
+    back.disabled = live;
   }
 
   function go(k) {
@@ -172,7 +192,8 @@
       "<input id=rp-range type=range min=0 max='" + (frames.length - 1) +
         "' step=1 value='" + at + "' aria-label='Week'>" +
       "<span id=rp-label></span>" +
-      "<button id=rp-now class=wbtn hidden>Back to final</button>" +
+      "<button id=rp-now class='wbtn invis' disabled>Back to final" +
+      "</button>" +
     "</div>";
 
   document.getElementById("rp-play").onclick = play;
@@ -186,5 +207,6 @@
     stop();
     go(Number(this.value));
   };
+  pinLabelWidth();
   paint();
 })();
