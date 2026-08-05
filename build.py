@@ -181,7 +181,7 @@ def leverage_card(games, sims):
     rows = []
     for e in lev[:8]:
         g = e["game"]
-        date = (g["start"] or "")[5:10].replace("-", "/")
+        date = pretty_date(g["start"])
         mover_txt = ""
         if e["movers"]:
             t, d = e["movers"][0]
@@ -307,7 +307,7 @@ def h2h_card(games, teams, stand_rows):
             if g is None:
                 cells.append("<td class=nomeet>·</td>")
                 continue
-            date = (g["start"] or "")[5:10].replace("-", "/")
+            date = pretty_date(g["start"])
             if g["completed"] and g["home_points"] is not None:
                 mine = g["home_points"] if g["home"] == a else g["away_points"]
                 theirs = g["away_points"] if g["home"] == a else g["home_points"]
@@ -521,7 +521,8 @@ def build_brief(year, games, overrides, systems, sims, matchcard):
     stand_rows = tb.standings(games, overrides)
     cl = clinch_mod.analyze(games, overrides)
     cx = chaos_mod.index(stand_rows, cl, sims) if sims else None
-    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%B %d, %Y")
+    _now = datetime.datetime.now(datetime.timezone.utc)
+    stamp = f"{_MON[_now.month - 1]} {_now.day}"
     parts = []
 
     if not done:
@@ -531,8 +532,8 @@ def build_brief(year, games, overrides, systems, sims, matchcard):
                      key=lambda g: g["start"], default=None)
         lede = "The season has not kicked off yet. "
         if opener:
-            lede += (f"It opens {esc((opener['start'] or '')[:10])} with "
-                     f"{esc(opener['away'])} at {esc(opener['home'])}. ")
+            lede += (f"It opens {esc(pretty_date(opener['start'], 'long'))} "
+                     f"with {esc(opener['away'])} at {esc(opener['home'])}. ")
         if board:
             lede += ("The models make "
                      + ", ".join(f"<b>{esc(t)}</b> {p:.0%}" for p, t in board)
@@ -732,6 +733,27 @@ def esc(s):
     return html.escape(str(s))
 
 
+_MON = ["January", "February", "March", "April", "May", "June", "July",
+        "August", "September", "October", "November", "December"]
+_DOW = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+        "Sunday"]
+
+
+def pretty_date(iso, style="short"):
+    """Dates for prose. The year is omitted — readers know what season they
+    are looking at. style: 'short' (Sat, Sep 12) or 'long' (Saturday,
+    August 29)."""
+    if not iso:
+        return ""
+    try:
+        d = datetime.date.fromisoformat(iso[:10])
+    except ValueError:
+        return iso[:10]
+    if style == "long":
+        return f"{_DOW[d.weekday()]}, {_MON[d.month - 1]} {d.day}"
+    return f"{_DOW[d.weekday()][:3]}, {_MON[d.month - 1][:3]} {d.day}"
+
+
 def game_row(g):
     hm, am = logo_img(g["home"], 16), logo_img(g["away"], 16)
     if g["completed"] and g["home_points"] is not None:
@@ -743,7 +765,7 @@ def game_row(g):
         score = f"{am}{away} <span class=dim>at</span> {hm}{home}"
         cls = "done"
     else:
-        when = (g["start"] or "")[:10]
+        when = pretty_date(g["start"])
         score = (f"{am}{esc(g['away'])} <span class=dim>at</span> "
                  f"{hm}{esc(g['home'])} <span class=dim>({when})</span>")
         cls = "upcoming"
@@ -882,7 +904,8 @@ def render(year, games):
         whatif=whatif,
         standcard=standcard,
         payload=payload,
-        updated=now.strftime("%Y-%m-%d %H:%M UTC"),
+        updated=f"{_MON[now.month - 1]} {now.day} at "
+                f"{now.strftime('%H:%M')} UTC",
     )
     ctx = {
         "clinchcard": clinch_card(games, overrides, systems, rows, sims),
