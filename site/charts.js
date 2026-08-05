@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=23";
-import { gameTooltipHTML } from "./gametip.js?v=23";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=24";
+import { gameTooltipHTML } from "./gametip.js?v=24";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -440,7 +440,7 @@ function yoyTeams(cardEl, seasonsData, teamsData) {
     rows.push({ team, color, lo, hi, latest, median: mid, n: pts.length });
   }
   if (!rows.length) return emptyNote(cardEl, "Not enough seasons yet.");
-  rows.sort((a, b) => b.hi.pct - a.hi.pct);
+  rows.sort((a, b) => b.median - a.median);
 
   const rowH = 24, gap = 4;
   const m = { t: 16, r: 54, b: 30, l: 124 };
@@ -477,7 +477,7 @@ function yoyTeams(cardEl, seasonsData, teamsData) {
     marks += `<rect x="${m.l}" y="${y - rowH / 2}" width="${W - m.l - m.r + 46}"
       height="${rowH}" fill="transparent" data-i="${i}" class="hit"/>`;
     marks += `<text x="${m.l - 8}" y="${y + 4}" text-anchor="end" class="lbl">${r.team}</text>`;
-    marks += `<text x="${x(r.hi.pct) + 10}" y="${y + 4}" class="val">${pct(r.hi.pct)}</text>`;
+    marks += `<text x="${x(r.hi.pct) + 10}" y="${y + 4}" class="val">${pct(r.median)}</text>`;
   });
   // the newest season with games played, not merely the newest in the index
   const latestPlayed = String(Math.max(...rows.map((r) => Number(r.latest.year))));
@@ -1030,7 +1030,11 @@ function teamWeather(cardEl, seasonsData, teamsData, sel) {
   cardEl.appendChild(svg);
 }
 
-export function renderTeamCharts(root, teamsData, seasonsData, currentYear, selected) {
+export function renderTeamCharts(root, teamsData, seasonsData, currentYear,
+                                 selected, archive) {
+  // `archive` is the era-scoped slice used by the cumulative panels; the
+  // weekly panels stay on the selected season.
+  const era = archive ?? seasonsData;
   root.textContent = "";
   if (!selected.size) {
     const note = document.createElement("p");
@@ -1074,15 +1078,15 @@ export function renderTeamCharts(root, teamsData, seasonsData, currentYear, sele
   }
 
   // 2. season fill, year over year
-  const years = Object.keys(seasonsData).sort();
+  const years = Object.keys(era).sort();
   const c2 = card(`Season percent full, year over year (${years[0]}–${years[years.length - 1]})`,
     "One point per season per team");
   const series2 = sel.map((team) => {
     const pts = [];
     years.forEach((yr, i) => {
       const ts = teamsForSeason(teamsData, Number(yr));
-      const sm = seasonSummary(ts, seasonsData[yr].games,
-                               seasonsData[yr].weekLabels.length);
+      const sm = seasonSummary(ts, era[yr].games,
+                               era[yr].weekLabels.length);
       const row = sm.rows.find((r) => r.team === team);
       if (row && row.games > 0) {
         pts.push({ i, y: row.pct, head: yr,
@@ -1112,8 +1116,8 @@ export function renderTeamCharts(root, teamsData, seasonsData, currentYear, sele
   }
 
   const c4 = card("Weather sensitivity",
-    weatherCaption(seasonsData, teamsData));
-  teamWeather(c4, seasonsData, teamsData, selected);
+    weatherCaption(era, teamsData));
+  teamWeather(c4, era, teamsData, selected);
 
   root.append(c1, c2, c3, c4);
 }
@@ -1238,7 +1242,8 @@ export function renderAllTimeCharts(root, teamsData, seasonsData) {
   yoyLines(c3, seasonsData, teamsData);
 
   const c4 = card(`Best and worst season by team (${span})`,
-    "Each line spans a program's range across the archive; the bar is its median season and the ring is the newest");
+    "Ordered by median season, the value printed at right. Each line spans " +
+    "the program's range; the bar is the median and the ring is its newest season");
   yoyTeams(c4, seasonsData, teamsData);
 
   root.append(c1, c2, cRoad, c3, c4);

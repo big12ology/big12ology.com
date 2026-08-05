@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=23";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=23";
-import { gameTooltipHTML } from "./gametip.js?v=23";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=24";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=24";
+import { gameTooltipHTML } from "./gametip.js?v=24";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -373,10 +373,52 @@ async function main() {
     .map((y) => `<option value="${y}" ${y === index.default ? "selected" : ""}>${y}</option>`)
     .join("");
 
+  // --- era scrubber -------------------------------------------------------
+  // The archive spans fourteen seasons; these let a reader narrow the
+  // cumulative charts to a stretch that interests them (a coach's tenure,
+  // the pre-realignment years) without touching the per-season views.
+  const allYears = index.seasons.map(Number).sort((a2, b2) => a2 - b2);
+  const era = { from: allYears[0], to: allYears[allYears.length - 1] };
+  const inEra = () => Object.fromEntries(
+    Object.entries(seasonsData)
+      .filter(([y]) => Number(y) >= era.from && Number(y) <= era.to));
+
+  function buildEraBar(el) {
+    el.innerHTML =
+      `<span class="era-label">Seasons <b>${era.from}</b>–<b>${era.to}</b></span>` +
+      `<input type="range" class="era-from" min="${allYears[0]}" ` +
+      `max="${allYears[allYears.length - 1]}" step="1" value="${era.from}">` +
+      `<input type="range" class="era-to" min="${allYears[0]}" ` +
+      `max="${allYears[allYears.length - 1]}" step="1" value="${era.to}">` +
+      `<button class="era-reset">All seasons</button>`;
+    const from = el.querySelector(".era-from");
+    const to = el.querySelector(".era-to");
+    const apply = () => {
+      era.from = Math.min(Number(from.value), Number(to.value));
+      era.to = Math.max(Number(from.value), Number(to.value));
+      redrawEra();
+    };
+    from.oninput = apply;
+    to.oninput = apply;
+    el.querySelector(".era-reset").onclick = () => {
+      era.from = allYears[0];
+      era.to = allYears[allYears.length - 1];
+      redrawEra();
+    };
+  }
+
+  function redrawEra() {
+    document.querySelectorAll(".erabar").forEach(buildEraBar);
+    const scoped = inEra();
+    renderAllTimeCharts($("#charts-alltime"), teamsData, scoped);
+    renderTeamCharts($("#charts-teams"), teamsData, seasonsData,
+                     select.value, selectedTeams, scoped);
+  }
+
   const selectedTeams = new Set();
   const drawTeamCharts = () =>
     renderTeamCharts($("#charts-teams"), teamsData, seasonsData,
-                     select.value, selectedTeams);
+                     select.value, selectedTeams, inEra());
   const renderChips = () => {
     const box = $("#team-chips");
     const teams = teamsForSeason(teamsData, Number(select.value));
@@ -398,7 +440,8 @@ async function main() {
   const show = (year) => {
     render(teamsData, seasonsData[year]);
     renderSeasonCharts($("#charts-season"), teamsData, seasonsData, year);
-    renderAllTimeCharts($("#charts-alltime"), teamsData, seasonsData);
+    renderAllTimeCharts($("#charts-alltime"), teamsData, inEra());
+    document.querySelectorAll(".erabar").forEach(buildEraBar);
     renderChips();
     drawTeamCharts();
   };

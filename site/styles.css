@@ -267,3 +267,15 @@ svg text.val-in {
 #tooltip .tip-key-bar { width: 3px; height: 12px; border-radius: 1px; }
 #tooltip .tip-key-ring { width: 9px; height: 9px; border-radius: 50%;
   background: transparent !important; border: 2px solid currentColor; }
+
+/* era scrubber: narrow the archive to a span of seasons */
+.erabar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+  padding: 0.5rem 1.5rem 0.25rem; font-size: 0.8rem; color: var(--muted); }
+.erabar .era-label { min-width: 9.5rem; }
+.erabar .era-label b { color: var(--text); font-variant-numeric: tabular-nums; }
+.erabar input[type=range] { flex: 1 1 9rem; max-width: 15rem;
+  accent-color: var(--accent); }
+.erabar button { font: inherit; font-size: 0.75rem; border: 1px solid var(--border);
+  background: var(--surface); color: var(--muted); border-radius: 20px;
+  padding: 0.15rem 0.7rem; cursor: pointer; }
+.erabar button:hover { border-color: var(--accent); color: var(--text); }
