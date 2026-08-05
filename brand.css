@@ -1,0 +1,50 @@
+/* Synced copy — the canonical file lives in the big12ology-home repo.
+   Edit there and re-copy to the other repos. */
+/* Big12ology shared chrome — served at big12ology.com/brand.css
+ * Used by the hub, /tiebreaker/, and /attendance/. Topbar and footer only;
+ * each project keeps its own body styles. Colors are fixed (not themed) in
+ * the topbar so the family chrome is identical on every page. */
+
+.b12-topbar {
+  display: flex; align-items: center; gap: 16px; padding: 8px 20px;
+  background: #14161a;
+  font: 13.5px/1.4 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.b12-topbar .b12-brand {
+  font-weight: 800; font-size: 14.5px; color: #fff; text-decoration: none;
+  letter-spacing: -.01em;
+}
+.b12-topbar .b12-brand span { color: #ff5a6e; }
+.b12-topbar a { color: #9aa0aa; text-decoration: none; }
+.b12-topbar a:hover, .b12-topbar a.on { color: #fff; }
+.b12-topbar .b12-right { margin-left: auto; }
+
+.b12-footer {
+  max-width: 880px; margin: 0 auto; padding: 14px 20px 44px;
+  color: #6b7280; font-size: 13px; line-height: 1.65; text-align: center;
+}
+.b12-footer a { color: #003087; }
+.b12-footer p { margin: 0 0 8px; }
+.b12-footer .srcnote { font-size: 12px; }
+@media (prefers-color-scheme: dark) {
+  .b12-footer { color: #9aa0aa; }
+  .b12-footer a { color: #7aa2ff; }
+}
+
+/* module tabs / page subnav — one look everywhere */
+.subnav {
+  max-width: 880px; margin: 0 auto; padding: 10px 20px 0;
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.subnav a {
+  font-size: 13px; text-decoration: none; color: #6b7280;
+  border: 1px solid rgba(128,128,128,.35); border-radius: 20px;
+  padding: 4px 13px; background: transparent;
+}
+.subnav a:hover { color: inherit; border-color: #c8102e; }
+.subnav a.on { background: #c8102e; border-color: #c8102e; color: #fff; }
+@media (prefers-color-scheme: dark) {
+  .subnav a { color: #9aa0aa; }
+  .subnav a:hover { border-color: #ff5a6e; }
+  .subnav a.on { background: #c8102e; }
+}
