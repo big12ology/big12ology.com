@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=30";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=30";
-import { gameTooltipHTML } from "./gametip.js?v=30";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=31";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=31";
+import { gameTooltipHTML } from "./gametip.js?v=31";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -179,13 +179,14 @@ function renderTable() {
                 info.pointsFor != null
                   ? ` · <span class="${info.pointsFor > info.pointsAgainst ? "win" : "loss"}">${info.pointsFor > info.pointsAgainst ? "W" : "L"} ${info.pointsFor}–${info.pointsAgainst}</span>`
                   : "";
-              sub = `<span class="sub">${info.opponent}${result}</span>`;
+              sub = `<span class="sub" title="${esc(info.opponent)}">` +
+                `${info.opponent}${result}</span>`;
             }
             return `<td class="game" data-team="${row.team}" data-week="${w}">${num(g.attendance)}${pctSpan(g.pct)}${sub}</td>`;
           }
           const s = scheduled.get(`${row.team}|${w}`);
           if (s)
-            return `<td class="game sched" data-team="${row.team}" data-week="${w}"><span class="opp">${s.opponent ?? "TBD"}</span><span class="pct">${fmtDateShort(s.date)}</span></td>`;
+            return `<td class="game sched" data-team="${row.team}" data-week="${w}"><span class="opp" title="${esc(s.opponent ?? "TBD")}">${s.opponent ?? "TBD"}</span><span class="pct">${fmtDateShort(s.date)}</span></td>`;
           const r = roadGames.get(`${row.team}|${w}`);
           if (r) {
             const at = r.role === "neutral" ? "vs" : "@";
@@ -193,7 +194,7 @@ function renderTable() {
               r.pointsFor != null
                 ? `${r.pointsFor > r.pointsAgainst ? "W" : "L"} ${r.pointsFor}–${r.pointsAgainst}`
                 : fmtDateShort(r.date);
-            return `<td class="game away" data-team="${row.team}" data-week="${w}"><span class="opp">${at} ${r.opponent ?? "TBD"}</span><span class="pct">${sub}</span></td>`;
+            return `<td class="game away" data-team="${row.team}" data-week="${w}"><span class="opp" title="${esc(at + " " + (r.opponent ?? "TBD"))}">${at} ${r.opponent ?? "TBD"}</span><span class="pct">${sub}</span></td>`;
           }
           const tr = range[row.team];
           if (tr && w > tr.min && w < tr.max)

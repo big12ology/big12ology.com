@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=30";
-import { gameTooltipHTML } from "./gametip.js?v=30";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=31";
+import { gameTooltipHTML } from "./gametip.js?v=31";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -771,8 +771,10 @@ function roadDraw(cardEl, seasonsData, teamsData) {
     marks += `<rect x="${r.avg >= 0 ? x0 : x0 - w}" y="${y}" width="${w}"
       height="${rowH}" rx="3" fill="${fill}" fill-opacity="0.95"
       data-i="${i}" class="hit"/>`;
+    // No truncation: the margin is sized for the longest Big 12 name, and a
+    // cut label in an SVG has no tooltip to recover it from.
     marks += `<text x="${m.l - 8}" y="${y + rowH / 2 + 4}" text-anchor="end"
-      class="lbl">${r.team.length > 15 ? r.team.slice(0, 14) + "…" : r.team}` +
+      class="lbl">${r.team}` +
       `<tspan class="tick"> ${r.n}</tspan></text>`;
     // Long bars carry their value inside; short ones sit just outside, and
     // the outside placement is clamped so it never reaches back into the
