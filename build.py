@@ -497,33 +497,148 @@ ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
 """
 
 
+def _prev_week_state(games, systems, overrides, last_week):
+    """Re-run the season as it stood before `last_week` so the Brief can say
+    what actually changed. Same truncated-replay trick the RSS wraps use."""
+    prev = [dict(g) for g in games]
+    for g in prev:
+        if g["week"] >= last_week and not g.get("ccg"):
+            g["completed"] = False
+            g["home_points"] = g["away_points"] = None
+    sims = (odds_mod.simulate(prev, systems, overrides, n=4000)
+            if systems else {})
+    rows = tb.standings(prev, overrides)
+    cl = clinch_mod.analyze(prev, overrides, budget=2)
+    cx = chaos_mod.index(rows, cl, sims) if sims else None
+    return {"sims": sims, "rows": rows, "chaos": cx, "clinch": cl["teams"]}
+
+
 def build_brief(year, games, overrides, systems, sims, matchcard):
-    """The Brief: auto-written weekly summary on the standard tracker top."""
+    """The Brief: what changed this week. Deliberately not a second copy of
+    The Race — this page is movement, not reference."""
+    done = [g for g in games if g["completed"] and not g.get("ccg")
+            and g["home_points"] is not None]
     stand_rows = tb.standings(games, overrides)
-    race = clinch_card(games, overrides, systems, stand_rows, sims)
-    lev = leverage_card(games, sims) if sims else ""
-    done = sorted((g for g in games if g["completed"]
-                   and g["home_points"] is not None),
-                  key=lambda g: g["start"] or "")
-    finals = ""
-    if done:
-        latest = done[-1]["start"][:10]
-        cutoff = (datetime.date.fromisoformat(latest)
-                  - datetime.timedelta(days=7)).isoformat()
-        recent = [g for g in done if (g["start"] or "")[:10] > cutoff]
-        finals = ("<div class=card><h2>Finals, last seven days</h2>"
-                  "<ul class=games>"
-                  + "".join(game_row(g) for g in recent[::-1][:20])
-                  + "</ul></div>")
+    cl = clinch_mod.analyze(games, overrides)
+    cx = chaos_mod.index(stand_rows, cl, sims) if sims else None
     stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%B %d, %Y")
-    body = (f"<p style='color:var(--dim);font-size:13px;text-align:center;"
-            f"margin:-4px 0 0'>The Brief · auto-written {esc(stamp)}</p>"
-            + race + lev + finals
-            + "<div class=card><h2>Take it with you</h2>"
-              "<p style='font-size:14px'><a href=feed.xml>RSS feed</a> · "
-              "<a href=data.json>data.json</a> · "
-              "<a href=standings.csv>standings.csv</a> · "
-              "<a href=how.html>how the tiebreakers work</a></p></div>")
+    parts = []
+
+    if not done:
+        board = sorted(((v["p_ccg"], t) for t, v in sims.items()
+                        if not t.startswith("_")), reverse=True)[:3] if sims else []
+        opener = min((g for g in games if g["start"]),
+                     key=lambda g: g["start"], default=None)
+        lede = "The season has not kicked off yet. "
+        if opener:
+            lede += (f"It opens {esc((opener['start'] or '')[:10])} with "
+                     f"{esc(opener['away'])} at {esc(opener['home'])}. ")
+        if board:
+            lede += ("The models make "
+                     + ", ".join(f"<b>{esc(t)}</b> {p:.0%}" for p, t in board)
+                     + " the likeliest championship-game participants.")
+        parts.append(
+            f"<div class=card><h2>Preseason</h2><p>{lede}</p>"
+            f"<p class=note>This page fills with movement — who rose, who "
+            f"fell, and what it cost them — once games are played. For the "
+            f"full board any time, see <a href=race.html>The Race</a>.</p>"
+            f"</div>")
+        upcoming = [g for g in games if not g["completed"]][:8]
+        if upcoming:
+            parts.append("<div class=card><h2>First up</h2><ul class=games>"
+                         + "".join(game_row(g) for g in upcoming)
+                         + "</ul></div>")
+        body = f"<p class=briefstamp>The Brief &middot; {esc(stamp)}</p>" + "".join(parts)
+        return build_subpage("The Brief", "brief", body, year, matchcard)
+
+    last_week = max(g["week"] for g in done)
+    prev = _prev_week_state(games, systems, overrides, last_week)
+    week_games = [g for g in done if g["week"] == last_week]
+
+    lede_bits = [f"<b>Week {last_week}</b> is in the books"]
+    if week_games:
+        lede_bits[0] += f" &mdash; {len(week_games)} games involving Big 12 teams"
+    if cx and prev["chaos"]:
+        d = cx["score"] - prev["chaos"]["score"]
+        if abs(d) >= 2:
+            lede_bits.append(
+                f"the Chaos Index {'rose' if d > 0 else 'fell'} {abs(d)} to "
+                f"<b>{cx['score']}</b> ({esc(cx['label'].lower())})")
+        else:
+            lede_bits.append(f"the Chaos Index held at <b>{cx['score']}</b> "
+                             f"({esc(cx['label'].lower())})")
+    lead = [r for r in stand_rows if r["rank"] == 1]
+    if lead:
+        r = lead[0]
+        lede_bits.append(f"<b>{esc(r['team'])}</b> leads the standings at "
+                         f"{r['conf_w']}&ndash;{r['conf_l']}")
+    parts.append(f"<div class=card><h2>Week {last_week}</h2>"
+                 f"<p>{'; '.join(lede_bits)}.</p></div>")
+
+    if sims and prev["sims"]:
+        moves = []
+        for t, v in sims.items():
+            if t.startswith("_"):
+                continue
+            was = prev["sims"].get(t, {}).get("p_ccg")
+            if was is None:
+                continue
+            moves.append((v["p_ccg"] - was, t, was, v["p_ccg"]))
+        moves.sort(reverse=True)
+        up = [m for m in moves if m[0] > 0.005][:5]
+        down = [m for m in moves if m[0] < -0.005][-5:][::-1]
+
+        def movement_rows(items):
+            out = []
+            for d, t, was, now in items:
+                col = winpct_color(1.0 if d > 0 else 0.0)
+                out.append(
+                    f"<div class=clrow>{logo_img(t, 16)}<b>{esc(t)}</b> "
+                    f"<span style='color:{col}'>{'+' if d > 0 else ''}"
+                    f"{d * 100:.0f} pts</span> <span class=dim>"
+                    f"{fmt_prob(was)} &rarr; {fmt_prob(now)} to reach the "
+                    f"title game</span></div>")
+            return "".join(out)
+
+        if up or down:
+            parts.append(
+                "<div class=card><h2>What the week cost and bought</h2>"
+                + (("<p class=note>Risers</p>" + movement_rows(up)) if up else "")
+                + (("<p class=note>Fallers</p>" + movement_rows(down)) if down else "")
+                + "<p class=note>Change in championship-game probability "
+                  "against the same simulation run on last week's results."
+                  "</p></div>")
+
+    news = []
+    for t, info in cl["teams"].items():
+        before = prev["clinch"].get(t, {}).get("status")
+        if info["status"] != before and info["status"] != "alive":
+            verb = ("clinched a championship-game berth"
+                    if info["status"] == "clinched"
+                    else "was eliminated from contention")
+            news.append(f"<li><b>{esc(t)}</b> {verb}.</li>")
+    if news:
+        parts.append("<div class=card><h2>Status changes</h2><ul>"
+                     + "".join(news) + "</ul></div>")
+
+    if week_games:
+        parts.append(f"<div class=card><h2>Week {last_week} finals</h2>"
+                     "<ul class=games>"
+                     + "".join(game_row(g) for g in week_games[::-1])
+                     + "</ul></div>")
+
+    lev = odds_mod.leverage(sims, games) if sims else []
+    if lev:
+        items = "".join(
+            f"<li>{logo_img(e['away'], 14)}{esc(e['away'])} at "
+            f"{logo_img(e['home'], 14)}{esc(e['home'])} <span class=dim>"
+            f"&mdash; {e['total'] * 100:.0f} points of championship "
+            f"probability in play</span></li>" for e in lev[:3])
+        parts.append(f"<div class=card><h2>What to watch next</h2>"
+                     f"<ul>{items}</ul><p class=note>Full board on "
+                     f"<a href=race.html>The Race</a>.</p></div>")
+
+    body = f"<p class=briefstamp>The Brief &middot; {esc(stamp)}</p>" + "".join(parts)
     return build_subpage("The Brief", "brief", body, year, matchcard)
 
 
@@ -535,6 +650,7 @@ th { font-size:11px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim) }
 thead tr th { border-bottom:2px solid var(--line) }
 .teamcell { white-space:nowrap }
+.briefstamp { color:var(--dim); font-size:13px; text-align:center; margin:-4px 0 2px }
 h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
 .tablescroll { overflow-x:auto }
