@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=12";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=12";
-import { gameTooltipHTML } from "./gametip.js?v=12";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=14";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=14";
+import { gameTooltipHTML } from "./gametip.js?v=14";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -118,6 +118,8 @@ function fmtDateShort(iso) {
 
 function renderTable() {
   const { summary, season } = view;
+  const big12Era = season.big12Era !== false;
+  const confOf = season.conferences ?? {};
   // A week is shown if it has any game — played, scheduled, or road/neutral.
   const scheduled = new Map(
     season.games
@@ -200,16 +202,21 @@ function renderTable() {
         ? [...new Set(row.weeks.map((w) => w.venue).filter(Boolean))].join(" / ")
         : row.stadium;
       const logo = row.logo ? `<img class="team-logo" src="${row.logo}" alt="" loading="lazy" />` : "";
+      const confTag = big12Era ? "" :
+        `<span class="conf">${confOf[row.team] ?? "—"}</span>`;
       return `<tr>
-        <td class="team" style="--tc:${row.color ?? "transparent"}">${logo}<span class="team-name">${row.team}<span class="stadium">${stadiumLabel}</span></span></td>
+        <td class="team" style="--tc:${row.color ?? "transparent"}">${logo}<span class="team-name">${row.team}${confTag}<span class="stadium">${stadiumLabel}</span></span></td>
         <td>${row.games}</td><td>${row.capacity != null ? num(row.capacity) : "varies"}</td>${cells}
         <td class="season-total">${num(row.total)}${pctSpan(row.pct)}</td>
       </tr>`;
     })
     .join("");
 
+  // Before 2024 these sixteen programs were spread across as many as five
+  // conferences, so league-wide totals are meaningless; the table shows each
+  // team's conference of the day instead and drops the aggregate rows.
   const wk = (w) => summary.weeks[w];
-  const foot = `<tfoot>
+  const foot = !big12Era ? "" : `<tfoot>
       <tr><td class="team">Big 12 total</td><td>${summary.totals.games}</td>
         <td>${num(summary.rows.reduce((s, r) => s + r.capacity, 0))}</td>
         ${activeWeeks.map((w) => (wk(w).games ? `<td>${num(wk(w).attendance)}${pctSpan(wk(w).pct)}</td>` : "<td>—</td>")).join("")}
@@ -309,6 +316,15 @@ function render(teamsData, season) {
   }
 
   const scheduledCount = season.games.filter((g) => !g.role && g.attendance == null).length;
+  if (season.big12Era === false) {
+    const leagues = [...new Set(Object.values(season.conferences ?? {}))].sort();
+    $("#summary").innerHTML =
+      `<div class="card era-note"><div class="label">Before the Big 12 era</div>` +
+      `<div class="era-text">In ${season.season} these sixteen programs played in ` +
+      `${leagues.length} different conferences (${leagues.join(", ")}). ` +
+      `Per-team figures below are accurate; conference totals and league-wide ` +
+      `rankings don't apply to this season, so they aren't shown.</div></div>`;
+  } else {
   $("#summary").innerHTML = [
     ["Total attendance", num(summary.totals.attendance)],
     ["Percent full", pct(summary.totals.pct)],
@@ -325,6 +341,7 @@ function render(teamsData, season) {
         `<div class="card"><div class="label">${label}</div><div class="value">${value}</div></div>`
     )
     .join("");
+  }
 
   renderTable();
 

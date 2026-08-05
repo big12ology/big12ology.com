@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=12";
-import { gameTooltipHTML } from "./gametip.js?v=12";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=14";
+import { gameTooltipHTML } from "./gametip.js?v=14";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -410,66 +410,83 @@ function yoyLines(cardEl, seasonsData, teamsData) {
 
 function yoyTeams(cardEl, seasonsData, teamsData) {
   const t = theme();
-  const byTeam = {};
-  const years = [];
-  for (const [yearStr, season] of Object.entries(seasonsData)) {
-    const year = Number(yearStr);
-    const teams = teamsForSeason(teamsData, year);
-    const s = seasonSummary(teams, season.games, season.weekLabels.length);
-    let any = false;
-    for (const r of s.rows) {
-      if (!r.games) continue;
-      (byTeam[r.team] ??= []).push({ year, pct: r.pct, total: r.total, games: r.games });
-      any = true;
+  // A dot per season became unreadable once the archive reached thirteen
+  // years. What matters is each program's range: its worst season, its best,
+  // and where it sits now.
+  const years = Object.keys(seasonsData).sort();
+  const rows = [];
+  for (const [team, color] of teamColors(teamsData, years)) {
+    const pts = [];
+    for (const y of years) {
+      const ts = teamsForSeason(teamsData, Number(y));
+      const sm = seasonSummary(ts, seasonsData[y].games,
+                               seasonsData[y].weekLabels.length);
+      const r = sm.rows.find((x) => x.team === team);
+      if (r && r.games > 0) pts.push({ year: y, pct: r.pct });
     }
-    if (any) years.push(year);
+    if (pts.length < 2) continue;
+    const lo = pts.reduce((a, b) => (b.pct < a.pct ? b : a));
+    const hi = pts.reduce((a, b) => (b.pct > a.pct ? b : a));
+    const latest = pts[pts.length - 1];
+    rows.push({ team, color, lo, hi, latest, n: pts.length });
   }
-  const teams = Object.keys(byTeam);
-  if (!teams.length) return emptyNote(cardEl, "No data yet.");
-  teams.sort((a, b) => {
-    const la = byTeam[a][byTeam[a].length - 1].pct;
-    const lb = byTeam[b][byTeam[b].length - 1].pct;
-    return lb - la;
-  });
+  if (!rows.length) return emptyNote(cardEl, "Not enough seasons yet.");
+  rows.sort((a, b) => b.hi.pct - a.hi.pct);
 
-  const rowH = 26, W = 720, m = { t: 8, r: 24, b: 24, l: 128 };
-  const H = m.t + m.b + teams.length * rowH;
+  const rowH = 24, gap = 4;
+  const m = { t: 16, r: 54, b: 30, l: 124 };
+  const W = 660;
+  const H = m.t + rows.length * (rowH + gap) + m.b;
   const iw = W - m.l - m.r;
-  const all = Object.values(byTeam).flat();
-  const lo = Math.min(...all.map((d) => d.pct)) - 0.03;
-  const hi = Math.max(1.02, ...all.map((d) => d.pct)) + 0.03;
-  const x = (v) => m.l + ((v - lo) / (hi - lo)) * iw;
-
-  let marks = `<line x1="${x(1)}" x2="${x(1)}" y1="${m.t}" y2="${H - m.b}" stroke="${t.baseline}" stroke-width="1"/>` +
-    `<text x="${x(1)}" y="${H - 8}" text-anchor="middle" class="tick">100%</text>`;
-  teams.forEach((team, i) => {
-    const cy = m.t + i * rowH + rowH / 2;
-    marks += `<text x="${m.l - 8}" y="${cy + 4}" text-anchor="end" class="lbl">${team}</text>` +
-      `<line x1="${m.l}" x2="${W - m.r}" y1="${cy}" y2="${cy}" stroke="${t.grid}" stroke-width="1"/>`;
-    const pts = byTeam[team];
-    if (pts.length > 1) {
-      const xs = pts.map((d) => x(d.pct));
-      marks += `<line x1="${Math.min(...xs)}" x2="${Math.max(...xs)}" y1="${cy}" y2="${cy}" stroke="${t.muted}" stroke-width="1.5"/>`;
-    }
-    for (const d of pts)
-      marks += `<circle cx="${x(d.pct)}" cy="${cy}" r="5" fill="${seasonColor(d.year)}" stroke="${t.surface}" stroke-width="2" data-team="${team}" data-year="${d.year}" class="hit"/>`;
+  const min = Math.min(...rows.map((r) => r.lo.pct)) - 0.03;
+  const max = Math.max(...rows.map((r) => r.hi.pct)) + 0.03;
+  const x = (v) => m.l + ((v - min) / (max - min)) * iw;
+  let marks = "";
+  for (const gv of [0.7, 0.85, 1.0]) {
+    if (gv < min || gv > max) continue;
+    marks += `<line x1="${x(gv)}" x2="${x(gv)}" y1="${m.t}" y2="${H - m.b}" class="grid"/>` +
+      `<text x="${x(gv)}" y="${H - 12}" text-anchor="middle" class="tick">${Math.round(gv * 100)}%</text>`;
+  }
+  rows.forEach((r, i) => {
+    const y = m.t + i * (rowH + gap) + rowH / 2;
+    marks += `<line x1="${x(r.lo.pct)}" x2="${x(r.hi.pct)}" y1="${y}" y2="${y}"
+      stroke="${r.color ?? t.series[0]}" stroke-width="5" stroke-linecap="round"
+      opacity="0.42"/>`;
+    marks += `<circle cx="${x(r.lo.pct)}" cy="${y}" r="5.5"
+      fill="${divergeHSL(0.08)}" data-i="${i}" data-end="lo" class="hit"/>`;
+    marks += `<circle cx="${x(r.hi.pct)}" cy="${y}" r="5.5"
+      fill="${divergeHSL(0.95)}" data-i="${i}" data-end="hi" class="hit"/>`;
+    // where the newest season sits inside that range
+    marks += `<rect x="${x(r.latest.pct) - 1.25}" y="${y - 9}" width="2.5"
+      height="18" rx="1" fill="${isDark() ? "#e8e6e1" : "#1a1c20"}"
+      opacity="0.75" data-i="${i}" data-end="now" class="hit"/>`;
+    marks += `<text x="${m.l - 8}" y="${y + 4}" text-anchor="end" class="lbl">${r.team}</text>`;
+    marks += `<text x="${x(r.hi.pct) + 10}" y="${y + 4}" class="val">${pct(r.hi.pct)}</text>`;
   });
+  // the newest season with games played, not merely the newest in the index
+  const latestPlayed = String(Math.max(...rows.map((r) => Number(r.latest.year))));
+  marks += `<text x="${m.l}" y="${H - 12}" class="tick">worst season ● — ● best season · bar = ${latestPlayed}</text>`;
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.innerHTML = marks;
   svg.addEventListener("pointermove", (e) => {
     const el = e.target.closest(".hit");
     if (!el) return hideTip();
-    const d = byTeam[el.dataset.team].find((q) => q.year === Number(el.dataset.year));
+    const r = rows[Number(el.dataset.i)];
     showTip(e.clientX, e.clientY, [
-      { head: `${el.dataset.team} · ${el.dataset.year}` },
-      { value: pct(d.pct), label: "season" },
-      { value: num(d.total), label: `total · ${d.games} games` },
+      { head: `${r.team} · ${r.n} seasons` },
+      { value: pct(r.hi.pct), label: `best, ${r.hi.year}` },
+      { value: pct(r.lo.pct), label: `worst, ${r.lo.year}` },
+      { value: pct(r.latest.pct), label: `latest, ${r.latest.year}` },
     ]);
   });
   svg.addEventListener("pointerleave", hideTip);
-  cardEl.appendChild(legendRow(years.map((y) => ({ label: String(y), color: seasonColor(y) })), "dot"));
   cardEl.appendChild(svg);
+}
+
+function teamColors(teamsData, years) {
+  const last = Number(years[years.length - 1]);
+  return teamsForSeason(teamsData, last).map((t) => [t.team, t.color]);
 }
 
 function legendRow(items, kind) {
@@ -1023,7 +1040,8 @@ export function renderAllTimeCharts(root, teamsData, seasonsData) {
   const c3 = card(`Weekly percent full, year over year (${span})`, "Each line is a season; conference-wide");
   yoyLines(c3, seasonsData, teamsData);
 
-  const c4 = card(`Season percent full by team, year over year (${span})`, "One dot per season; the connector spans a team's range");
+  const c4 = card(`Best and worst season by team (${span})`,
+    "Each line spans a program's range across the archive; the bar marks the newest season");
   yoyTeams(c4, seasonsData, teamsData);
 
   root.append(c1, c2, cRoad, c3, c4);

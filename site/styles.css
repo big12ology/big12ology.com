@@ -250,3 +250,12 @@ svg text.val-in {
   stroke: rgba(0, 0, 0, 0.3);
   stroke-width: 2px;
 }
+
+/* pre-2024 seasons: conference tag beside the team name, era note card */
+.team-name .conf { display: inline-block; margin-left: 0.4rem; font-size: 0.62rem;
+  text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 20px; padding: 0 0.4rem;
+  vertical-align: 1px; font-weight: 500; }
+.card.era-note { flex: 1 1 100%; }
+.era-note .era-text { font-size: 0.85rem; color: var(--muted); line-height: 1.5;
+  margin-top: 0.15rem; }
