@@ -121,12 +121,34 @@ def year_href(y):
     return BASE if y == LIVE_YEAR else f"{BASE}{y}/"
 
 
+def load_marks():
+    """team -> its entry in logos/SOURCES.json, which is both the registry
+    and the provenance record. Conference and non-conference alike: a
+    matchup row shows two teams and should not present them two ways."""
+    p = os.path.join(SITE, "logos", "SOURCES.json")
+    if not os.path.exists(p):
+        return {}
+    return {e["team"]: e for e in json.load(open(p)) if e.get("team")}
+
+
+MARKS = load_marks()
+
+
 def logo_img(team, size=20):
-    k = TEAM_KEY.get(team)
-    if not k:
+    e = MARKS.get(team)
+    if not e:
         return ""
-    ext = "png" if k == "byu" else "svg"
-    return (f"<img class=mark src='{BASE}logos/{k}.{ext}' alt='' "
+    if e.get("usable") is False:
+        # A mark we deliberately do not have. Saying so beats a silent gap,
+        # which reads as an oversight, and beats showing something that is
+        # not the team's mark. The label carries the reason for screen
+        # readers; title carries it for everyone else.
+        why = e.get("note") or "no freely-licensed mark is available"
+        label = f"No logo for {team} — {why}."
+        return (f"<span class='mark nomark' role=img aria-label=\"{esc(label)}\" "
+                f"title=\"{esc(label)}\">!</span>")
+    ext = (e.get("ext") or ".svg").lstrip(".")
+    return (f"<img class=mark src='{BASE}logos/{e['key']}.{ext}' alt='' "
             f"width={size} height={size} loading=lazy>")
 
 
@@ -1556,6 +1578,10 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
 .tname {{ letter-spacing: -.01em; }}
 .vs {{ color: var(--dim); font-weight: 400; font-size: 18px; padding: 0 6px; }}
 .mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain; }}
+.nomark {{ display: inline-block; width: 16px; height: 16px;
+  line-height: 16px; text-align: center; border-radius: 4px;
+  background: color-mix(in srgb, var(--dim) 18%, transparent);
+  color: var(--dim); font-weight: 700; font-size: 12px; cursor: help; }}
 .teamcell {{ white-space: nowrap; }}
 .cbar {{ display: inline-block; width: 4px; height: 16px; border-radius: 2px;
   margin-right: 8px; vertical-align: -2px; }}
@@ -1825,6 +1851,10 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
 .badge.ok {{ background: #13653626; color: #136536; }}
 .badge.warn {{ background: #b4530926; color: #b45309; }}
 .mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain; }}
+.nomark {{ display: inline-block; width: 16px; height: 16px;
+  line-height: 16px; text-align: center; border-radius: 4px;
+  background: color-mix(in srgb, var(--dim) 18%, transparent);
+  color: var(--dim); font-weight: 700; font-size: 12px; cursor: help; }}
 .dim {{ color: var(--dim); }}
 .note {{ color: var(--dim); font-size: 13px; }}
 
