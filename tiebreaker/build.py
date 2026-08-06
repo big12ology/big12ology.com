@@ -357,10 +357,46 @@ def scorecard_card(games, systems, lines=None):
             "</tr></thead><tbody>" + "".join(rows) + "</tbody></table>"
             "<p class=note>Each system's favorites in completed games "
             "involving Big 12 teams (both sides rated; FCS games skipped). "
-            "Judged against the market's closing-line favorites. One "
-            "honesty note: the models pick with their currently published "
-            "ratings, which have seen the games they're grading — Vegas's "
-            "number was locked at kickoff. Respect the house.</p></div>")
+            "Judged against the market's closing-line favorites.</p>"
+            + scorecard_caveat(games, systems, tal) + "</div>")
+
+
+def scorecard_caveat(games, systems, tal):
+    """Say how badly the comparison is rigged, and in which direction.
+
+    A rating system grading games it was fitted on is not competing with a
+    line that was locked before kickoff. On a finished season that is not a
+    caveat, it is the whole result — so when a model 'beats' Vegas here, the
+    page has to say why before a reader concludes anything."""
+    done = [g for g in games if g["completed"] and not g.get("ccg")]
+    remaining = [g for g in games if not g["completed"] and not g.get("ccg")]
+    beat = [n for n, v in tal.items()
+            if n != "Vegas" and "Vegas" in tal and (v["w"] + v["l"])
+            and v["w"] / (v["w"] + v["l"])
+            > tal["Vegas"]["w"] / max(tal["Vegas"]["w"] + tal["Vegas"]["l"], 1)]
+    finished = done and not remaining
+    lead = ("<b>These models are not beating the market.</b> " if beat and finished
+            else "<b>Read this before comparing the numbers.</b> ")
+    if finished:
+        body = ("Every rating here is that season's <em>final</em> published "
+                "number, fitted on the games it is being graded against — it "
+                "knows how they ended. Vegas's number was locked at kickoff, "
+                "before any of them were played. A model finishing above the "
+                "closing line in this table is measuring hindsight, not skill."
+                + (f" ({', '.join(esc(b) for b in sorted(beat))} "
+                   f"{'does' if len(beat) == 1 else 'do'} exactly that here.)"
+                   if beat else ""))
+    else:
+        body = ("The models pick with their currently published ratings, "
+                "which have already seen the earlier games they are being "
+                "graded on; Vegas's number was locked at each kickoff. The "
+                "gap flatters the models and grows the further back the "
+                "season runs. Respect the house.")
+    missing = sorted({"SP+", "FPI", "Elo", "SRS"} - set(systems))
+    gap = (f" {', '.join(esc(m) for m in missing)} "
+           f"{'is' if len(missing) == 1 else 'are'} absent: no ratings were "
+           f"kept for this season." if missing else "")
+    return f"<p class=note>{lead}{body}{gap}</p>"
 
 
 def team_abbr(teams, t):
@@ -769,12 +805,12 @@ def clinch_card(games, overrides, systems, stand_rows, sims):
             eliminated.append(t)
             continue
         p = prob(t)
-        bar = ""
+        bar = pctcell = ""
         if p is not None:
             bar = (f"<span class=obar><i style='width:{p * 100:.1f}%;"
-                   f"background:{winpct_color(p)}'></i></span>"
-                   f"<b class=opct style='color:{winpct_color(p)}'>"
-                   f"{fmt_prob(p)}</b>")
+                   f"background:{winpct_color(p)}'></i></span>")
+            pctcell = (f"<b class=opct style='color:{winpct_color(p)}'>"
+                       f"{fmt_prob(p)}</b>")
         bits = [chips[i["status"]]]
         if i["destiny"] and i["status"] == "alive":
             bits.append("<span class='tag destiny'>controls own destiny</span>")
@@ -785,11 +821,20 @@ def clinch_card(games, overrides, systems, stand_rows, sims):
         if i["scenarios"]:
             scen = ("<ul class=scen>" + "".join(
                 f"<li>{esc(s)}</li>" for s in i["scenarios"][:4]) + "</ul>")
+        # Every cell gets its own grid column, including the empty ones —
+        # a row with no odds still reserves the bar and percent columns, so
+        # "clinched" sits under "clinched" all the way down instead of
+        # wherever the team name happened to end.
         rows.append(
-            f"<div class=clrow>{logo_img(t, 18)}<b>{esc(t)}</b> {bar} "
-            f"{' '.join(b for b in bits if b)}"
-            f"<span class=dim> {i['w']}–{9 - i['r'] - i['w']}, {i['r']} left"
-            f"</span>{exptxt}{scen}</div>")
+            f"<div class=clrow><div class=clmain>"
+            f"{logo_img(t, 18)}"
+            f"<b class=clteam>{esc(t)}</b>"
+            f"<span class=clbar>{bar}</span>"
+            f"<span class=clpct>{pctcell}</span>"
+            f"<span class=cltags>{' '.join(b for b in bits if b)}</span>"
+            f"<span class='dim clrec'>{i['w']}–{9 - i['r'] - i['w']}, "
+            f"{i['r']} left{exptxt}</span>"
+            f"</div>{scen}</div>")
     body = chaos_html + "".join(rows)
     if eliminated:
         body += (f"<p class='dim elim'>Eliminated: "
@@ -881,6 +926,17 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
 .mark { vertical-align:-3px; margin-right:6px }
 .clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:14.5px }
+.clmain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:22px minmax(110px,148px) 112px 46px auto 1fr }
+.clteam { min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap }
+.clpct { text-align:right }
+.cltags, .clrec { white-space:nowrap }
+@media (max-width:640px) {
+  .clmain { grid-template-columns:22px 1fr auto; row-gap:3px }
+  .clbar, .clpct { display:none }
+}
+
 .clrow:last-of-type { border-bottom:none }
 .obar { display:inline-block; width:100px; height:8px; background:var(--line);
   border-radius:4px; overflow:hidden; vertical-align:1px; margin:0 6px 0 8px }
@@ -1748,6 +1804,16 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 }}
 :root[data-theme="dark"] .tag.live {{ color: #4ade80;
   background: color-mix(in srgb, #4ade80 14%, transparent); }}
+.clmain {{ display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:22px minmax(110px,148px) 112px 46px auto 1fr }}
+.clteam {{ min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap }}
+.clpct {{ text-align:right }}
+.cltags, .clrec {{ white-space:nowrap }}
+@media (max-width:640px) {{
+  .clmain {{ grid-template-columns:22px 1fr auto; row-gap:3px }}
+  .clbar, .clpct {{ display:none }}
+}}
 .clrow {{ padding: 8px 0; border-bottom: 1px solid var(--line);
   font-size: 15px; }}
 .obar {{ display: inline-block; width: 110px; height: 8px;
