@@ -1,0 +1,100 @@
+/* ==========================================================================
+   Big12ology — brand tokens
+   Namespaced b12- so nothing collides with --pctl, --dim and the rest of the
+   existing token layer.
+
+   The two items the bundle marked BLOCKED are answered at the bottom of this
+   file, measured against the site's real values rather than assumed ones.
+   ========================================================================== */
+
+:root {
+  /* --- Neutrals ------------------------------------------------------- */
+  --b12-ink:        #16181A;  /* wordmark on light; primary text          */
+  --b12-graphite:   #252932;  /* secondary neutral, hue ~222              */
+  --b12-bone:       #F2F1EC;  /* wordmark on dark                          */
+
+  /* --- Brand accent --------------------------------------------------- */
+  --b12-teal:       #0B6E77;  /* tile fill + chain segment, light mode     */
+  --b12-teal-text:  #09565D;  /* teal as body copy, AAA on the cream       */
+  --b12-teal-tile-dark: #0E8A94; /* tile fill, dark mode                   */
+  --b12-teal-lit:   #3FC7CE;  /* chain segment + accents, dark mode        */
+
+  --b12-accent: var(--b12-teal);
+  --b12-fg:     var(--b12-ink);
+}
+
+/* An explicit choice in the theme toggle wins over the OS preference, so
+   every dark declaration is stated twice: once for "system + OS is dark",
+   once for "the reader picked dark". */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --b12-accent: var(--b12-teal-lit);
+    --b12-fg:     var(--b12-bone);
+  }
+}
+:root[data-theme="dark"] {
+  --b12-accent: var(--b12-teal-lit);
+  --b12-fg:     var(--b12-bone);
+}
+
+/* --------------------------------------------------------------------------
+   BLOCKED #1 — ANSWERED. Measured against this site's actual backgrounds,
+   not the assumed cream range. Page is #f6f4ef, card is #ffffff; dark page
+   is #14161a, dark card is #1d2026.
+
+   --b12-teal      on the card  #ffffff .... 5.98:1   AA body
+   --b12-teal      on the page  #f6f4ef .... 5.44:1   AA body
+   --b12-teal-text on the page  #f6f4ef .... 7.64:1   AAA body
+   --b12-graphite  on the page  #f6f4ef ... 13.25:1   AAA body
+   --b12-bone inside the teal tile ......... 5.29:1   AA body
+   --b12-teal-lit  on the dark page ........ 8.86:1   AAA body
+   --b12-teal-lit  on the dark card ........ 7.98:1   AAA body
+   --b12-bone inside the dark tile ......... 3.65:1   AA large only
+
+   That last row is the only value under 4.5:1. It is the numerals inside
+   the dark-mode tile, which is logotype and exempt from 1.4.3 — but it is
+   worth knowing the light tile has almost half a stop more room than the
+   dark one, so any future tightening should come off the dark tile first.
+
+   BLOCKED #2 — ANSWERED, and the §5 rule holds. The ramp is:
+
+     hue         piecewise-linear over 8 anchors, 0 (red) -> 168 (green)
+     saturation  100% at hue 0, falling linearly to 65% at hue 45,
+                 then CONSTANT at 65% for the rest of the ramp
+     lightness   fixed at var(--pctl): 27% light, 63% dark
+
+   So saturation is NOT constant — the bundle's assumption is wrong for the
+   red third of the ramp. It does not rescue anything, because the variance
+   sits where the separation is already widest (teal vs the red endpoint is
+   1.69:1) and the collision zone from amber to green is exactly where
+   saturation is pinned at 65%.
+
+   Re-derived with the real function, the tightest adjacency is worse than
+   the bundle estimated, not better:
+
+     light  teal      vs ramp .... 1.00:1 at pct 0.75 (hue 106)
+     dark   teal-lit  vs ramp .... 1.00:1 at pct 0.39 (hue  36)
+
+   Identical luminance, hue-separated only. §5 stands and should be treated
+   as firm in both themes.
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   SCOPING RULE — teal is CHROME ONLY.
+     Allowed   — logo, nav, links, focus rings, borders, buttons, rules
+     Forbidden — inside or visually adjacent to any percentile-coloured cell
+   Inside the data region, carry emphasis with weight, a rule, or the
+   mono/sans split. Never with hue.
+   -------------------------------------------------------------------------- */
+
+/* --- Logo sizing guards ------------------------------------------------ */
+.b12-logo          { display: block; height: auto; }
+.b12-logo--primary { min-width: 140px; }   /* below this, use --compact     */
+.b12-logo--compact { min-width: 96px;  }   /* below this, use the mark      */
+.b12-mark          { min-width: 48px;  }   /* mark WITH the rule            */
+.b12-mark--small   { min-width: 20px;  }   /* mark WITHOUT the rule         */
+.b12-logo-lockup   { padding: 0.41em; }    /* clear space = half tile height */
+
+@media (forced-colors: active) {
+  .b12-logo { forced-color-adjust: auto; }
+}

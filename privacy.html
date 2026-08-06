@@ -6,14 +6,18 @@
 <title>Privacy — Big12ology</title>
 <link rel=canonical href="https://big12ology.com/privacy">
 <link rel=icon type=image/svg+xml href=/favicon.svg>
-<link rel=stylesheet href="brand.css?v=3">
+<script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
+<link rel=stylesheet href="brand.css?v=4">
+<script defer src="theme.js?v=1"></script>
 <style>
 :root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#6b7280;
-  --line:#e2ddd2; --accent:#c8102e; --accent2:#003087; }
+  --line:#e2ddd2; --accent:#0B6E77; --accent2:#003087; }
 @media (prefers-color-scheme: dark) {
-  :root { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1; --dim:#9aa0aa;
+  :root:not([data-theme="light"]) { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1; --dim:#9aa0aa;
     --line:#2e323a; --accent:#ff5a6e; --accent2:#7aa2ff; }
 }
+:root[data-theme="dark"] { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1; --dim:#9aa0aa;
+    --line:#2e323a; --accent:#ff5a6e; --accent2:#7aa2ff; }
 * { box-sizing: border-box; }
 body { margin:0; background:var(--bg); color:var(--ink);
   font:17px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
@@ -33,9 +37,10 @@ a { color:var(--accent2); }
 <body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar>
-  <a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
+  <a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><img src="brand/big12ology-compact-dark.svg" alt="Big12ology"></a>
   <a href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
   <a href="https://big12ology.com/attendance/">Attendance</a>
+  <span class=b12-right><span class=b12-theme></span></span>
 </nav>
 <header><a href="/">Big12<span>ology</span></a></header>
 <main id=main tabindex="-1">

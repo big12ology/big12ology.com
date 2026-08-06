@@ -1,68 +1,154 @@
 /* Big12ology shared chrome — served at big12ology.com/brand.css
- * Used by the hub, /tiebreaker/, and /attendance/. Topbar and footer only;
- * each project keeps its own body styles. Colors are fixed (not themed) in
- * the topbar so the family chrome is identical on every page. */
+ * Used by the hub, /tiebreaker/, and /attendance/. Topbar, header, pill nav
+ * and footer; each project keeps its own body styles.
+ *
+ * Theme: an explicit choice in the toggle beats the OS preference, so every
+ * dark declaration appears twice — once under prefers-color-scheme for
+ * readers on "system", once under [data-theme="dark"] for readers who chose.
+ * The pairs are kept adjacent; change them together or they drift. */
 
+/* ==== brand tokens ======================================================= */
+:root {
+  --b12-ink:        #16181A;
+  --b12-graphite:   #252932;
+  --b12-bone:       #F2F1EC;
+  --b12-teal:       #0B6E77;   /* chrome accent, light                     */
+  --b12-teal-text:  #09565D;   /* teal as body copy, AAA on the cream      */
+  --b12-teal-tile-dark: #0E8A94;
+  --b12-teal-lit:   #3FC7CE;   /* chrome accent, dark                      */
+
+  --b12-accent: var(--b12-teal);
+  --b12-fg:     var(--b12-ink);
+  --chrome-w: 1120px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --b12-accent: var(--b12-teal-lit); --b12-fg: var(--b12-bone);
+  }
+}
+:root[data-theme="dark"] {
+  --b12-accent: var(--b12-teal-lit); --b12-fg: var(--b12-bone);
+}
+
+/* TEAL IS CHROME ONLY. It never appears inside or beside a percentile-
+   coloured cell: brand teal and the ramp's greens sit at the same lightness
+   and measure 1.00:1 against each other, separated by hue alone — a gap that
+   narrows further under deuteranopia. Inside the data region carry emphasis
+   with weight, a rule, or the mono/sans split. Never with hue. Full
+   derivation in tokens.css. */
+
+/* ==== display face ======================================================= */
+/* Archivo, the face the mark is set in. SIL Open Font License 1.1
+   (Copyright 2020 The Archivo Project Authors) — self-hosting is expressly
+   permitted; the licence ships alongside at fonts/OFL.txt. Subset to the
+   glyphs the sites actually render, both axes intact. */
+@font-face {
+  font-family: 'Archivo';
+  src: url('fonts/Archivo-var.woff2') format('woff2-variations'),
+       url('fonts/Archivo-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+:root { --b12-font-display: 'Archivo', system-ui, -apple-system, sans-serif; }
+
+/* ==== topbar ============================================================= */
 .b12-topbar {
-  display: flex; align-items: center; gap: 16px; padding: 8px 20px;
+  display: flex; align-items: center; gap: 18px; padding: 7px 20px;
   background: #14161a;
   font: 13.5px/1.4 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
-.b12-topbar .b12-brand {
-  font-weight: 800; font-size: 14.5px; color: #fff; text-decoration: none;
-  letter-spacing: -.01em;
-}
-.b12-topbar .b12-brand span { color: #ff5a6e; }
+.b12-topbar .b12-brand { display: flex; align-items: center; flex: 0 0 auto; }
+/* The lockup is the wordmark. No text alongside it — that would set the name
+   twice, once in outlines and once in the body face. */
+.b12-topbar .b12-brand img { display: block; height: 26px; width: auto; }
 .b12-topbar a { color: #9aa0aa; text-decoration: none; }
 .b12-topbar a:hover, .b12-topbar a.on { color: #fff; }
-.b12-topbar .b12-right { margin-left: auto; }
+.b12-topbar .b12-right { margin-left: auto; display: flex; align-items: center;
+  gap: 10px; }
 
+/* ==== theme toggle ======================================================= */
+.b12-theme {
+  display: inline-flex; align-items: center; gap: 1px; padding: 2px;
+  background: rgba(255,255,255,.07); border-radius: 999px;
+}
+.b12-theme button {
+  font: inherit; font-size: 12px; line-height: 1; cursor: pointer;
+  background: none; border: 0; color: #9aa0aa; border-radius: 999px;
+  padding: 5px 9px; display: inline-flex; align-items: center;
+}
+.b12-theme button:hover { color: #fff; }
+.b12-theme button[aria-pressed="true"] {
+  background: var(--b12-teal-lit); color: #06232b; font-weight: 700;
+}
+.b12-theme svg { width: 14px; height: 14px; display: block; }
+
+/* ==== footer ============================================================= */
 .b12-footer {
   max-width: 880px; margin: 0 auto; padding: 14px 20px 44px;
   color: #666d7b; font-size: 13px; line-height: 1.65; text-align: center;
 }
-.b12-footer a { color: #003087; }
+.b12-footer a { color: var(--b12-teal-text); }
 .b12-footer p { margin: 0 0 8px; }
 .b12-footer .srcnote { font-size: 12px; }
 @media (prefers-color-scheme: dark) {
-  .b12-footer { color: #9aa0aa; }
-  .b12-footer a { color: #7aa2ff; }
+  :root:not([data-theme="light"]) .b12-footer { color: #9aa0aa; }
+  :root:not([data-theme="light"]) .b12-footer a { color: var(--b12-teal-lit); }
 }
+:root[data-theme="dark"] .b12-footer { color: #9aa0aa; }
+:root[data-theme="dark"] .b12-footer a { color: var(--b12-teal-lit); }
 
-/* ---- tracker chrome: the one definition ----
-   Every tiebreaker page renders the same header bar, pill row, and
-   matchup card. Page-local stylesheets must not redefine these. */
-:root { --chrome-w: 1120px; }
-
-.b12-head { border-bottom: 4px solid #c8102e; padding: 24px 20px 16px;
+/* ==== tracker chrome: the one definition ================================= */
+.b12-head { border-bottom: 4px solid var(--b12-teal); padding: 24px 20px 16px;
   background: #ffffff; }
 .b12-head .hwrap { display: flex; align-items: center; gap: 16px;
   max-width: var(--chrome-w); margin: 0 auto; }
-.b12-head img { height: 54px; width: auto; }
-.b12-head h1 { margin: 0; font-size: 26px; letter-spacing: -.02em;
-  color: #1a1c20; }
+.b12-head h1 { margin: 0; font-size: 26px; letter-spacing: -.03em;
+  color: #1a1c20; font-family: var(--b12-font-display);
+  font-variation-settings: 'wdth' 85; font-weight: 800; }
 .b12-head h1 .yr { color: #666d7b; }
 .b12-head p { margin: 4px 0 0; color: #666d7b; font-size: 14px; }
 @media (prefers-color-scheme: dark) {
-  .b12-head { background: #1d2026; }
-  .b12-head h1 { color: #e8e6e1; }
-  .b12-head h1 .yr, .b12-head p { color: #9aa0aa; }
+  :root:not([data-theme="light"]) .b12-head { background: #1d2026;
+    border-bottom-color: var(--b12-teal-lit); }
+  :root:not([data-theme="light"]) .b12-head h1 { color: #e8e6e1; }
+  :root:not([data-theme="light"]) .b12-head h1 .yr,
+  :root:not([data-theme="light"]) .b12-head p { color: #9aa0aa; }
 }
+:root[data-theme="dark"] .b12-head { background: #1d2026;
+  border-bottom-color: var(--b12-teal-lit); }
+:root[data-theme="dark"] .b12-head h1 { color: #e8e6e1; }
+:root[data-theme="dark"] .b12-head h1 .yr,
+:root[data-theme="dark"] .b12-head p { color: #9aa0aa; }
 
 /* season switcher — the live year plus the archived ones, in the header */
 .b12-head h1 .yrpills { display: inline-flex; gap: 6px; margin-left: 8px;
-  vertical-align: middle; font-size: 14px; font-weight: 600; }
+  vertical-align: middle; font-size: 14px; font-weight: 600;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: 0; }
 .b12-head h1 .yrpills a, .b12-head h1 .yrpills .yron {
   padding: 2px 9px; border-radius: 999px; line-height: 1.6;
   border: 1px solid #e2ddd2; }
 .b12-head h1 .yrpills a { color: #666d7b; text-decoration: none; }
 .b12-head h1 .yrpills a:hover { color: #1a1c20; border-color: #c8c2b4; }
-.b12-head h1 .yrpills .yron { background: #c8102e; border-color: #c8102e;
-  color: #fff; }
+.b12-head h1 .yrpills .yron { background: var(--b12-teal);
+  border-color: var(--b12-teal); color: #fff; }
 @media (prefers-color-scheme: dark) {
-  .b12-head h1 .yrpills a { color: #9aa0aa; border-color: #2f343c; }
-  .b12-head h1 .yrpills a:hover { color: #e8e6e1; border-color: #4a515c; }
+  :root:not([data-theme="light"]) .b12-head h1 .yrpills a { color: #9aa0aa;
+    border-color: #2f343c; }
+  :root:not([data-theme="light"]) .b12-head h1 .yrpills a:hover {
+    color: #e8e6e1; border-color: #4a515c; }
+  :root:not([data-theme="light"]) .b12-head h1 .yrpills .yron {
+    background: var(--b12-teal-tile-dark); border-color: var(--b12-teal-tile-dark);
+    color: #06232b; }
 }
+:root[data-theme="dark"] .b12-head h1 .yrpills a { color: #9aa0aa;
+  border-color: #2f343c; }
+:root[data-theme="dark"] .b12-head h1 .yrpills a:hover { color: #e8e6e1;
+  border-color: #4a515c; }
+:root[data-theme="dark"] .b12-head h1 .yrpills .yron {
+  background: var(--b12-teal-tile-dark); border-color: var(--b12-teal-tile-dark);
+  color: #06232b; }
 
 /* module tabs / page subnav — one look everywhere */
 .subnav {
@@ -74,30 +160,42 @@
   border: 1px solid rgba(128,128,128,.35); border-radius: 20px;
   padding: 4px 13px; background: transparent;
 }
-.subnav a:hover { color: inherit; border-color: #c8102e; }
-.subnav a.on { background: #c8102e; border-color: #c8102e; color: #fff; }
+.subnav a:hover { color: inherit; border-color: var(--b12-teal); }
+.subnav a.on { background: var(--b12-teal); border-color: var(--b12-teal);
+  color: #fff; }
 @media (prefers-color-scheme: dark) {
-  .subnav a { color: #9aa0aa; }
-  .subnav a:hover { border-color: #ff5a6e; }
-  .subnav a.on { background: #c8102e; }
+  :root:not([data-theme="light"]) .subnav a { color: #9aa0aa; }
+  :root:not([data-theme="light"]) .subnav a:hover { border-color: var(--b12-teal-lit); }
+  :root:not([data-theme="light"]) .subnav a.on {
+    background: var(--b12-teal-tile-dark); border-color: var(--b12-teal-tile-dark);
+    color: #06232b; }
 }
+:root[data-theme="dark"] .subnav a { color: #9aa0aa; }
+:root[data-theme="dark"] .subnav a:hover { border-color: var(--b12-teal-lit); }
+:root[data-theme="dark"] .subnav a.on { background: var(--b12-teal-tile-dark);
+  border-color: var(--b12-teal-tile-dark); color: #06232b; }
 
+/* ==== accessibility ====================================================== */
 /* Bypass blocks (WCAG 2.4.1): every page repeats the topbar, the header and
-   the pill nav before its content. Keyboard and screen-reader users get one
-   key to jump past all of it. Off-screen until focused. */
+   the pill nav before its content. Off-screen until focused. */
 .skip-link {
   position: absolute; left: -9999px; top: 0; z-index: 100;
-  background: #c8102e; color: #fff; padding: 10px 16px;
+  background: var(--b12-teal); color: #fff; padding: 10px 16px;
   border-radius: 0 0 8px 0; font-size: 14px; font-weight: 600;
   text-decoration: none;
 }
 .skip-link:focus { left: 0; }
 
-/* Focus Visible (WCAG 2.4.7): the browser default ring disappears against
+/* Focus Visible (WCAG 2.4.7): the browser default ring washes out against
    the pill borders on some platforms, so state it explicitly. */
 :focus-visible {
-  outline: 3px solid #c8102e; outline-offset: 2px; border-radius: 4px;
+  outline: 3px solid var(--b12-teal); outline-offset: 2px; border-radius: 4px;
 }
 @media (prefers-color-scheme: dark) {
-  :focus-visible { outline-color: #ff6b81; }
+  :root:not([data-theme="light"]) :focus-visible { outline-color: var(--b12-teal-lit); }
+}
+:root[data-theme="dark"] :focus-visible { outline-color: var(--b12-teal-lit); }
+
+@media (forced-colors: active) {
+  .b12-logo, .b12-topbar .b12-brand img { forced-color-adjust: auto; }
 }

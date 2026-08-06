@@ -1,0 +1,33 @@
+<!doctype html>
+<!-- Source for the 1200x630 social cards. Load with ?t=<title>&d=<desc> and
+     screenshot at exactly 1200x630. Kept in the repo so the cards can be
+     regenerated rather than hand-edited when the brand moves again. -->
+<html lang="en"><head><meta charset="utf-8"><title>card</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1200px;height:630px}
+  body{font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,
+       Helvetica,Arial,sans-serif;background:#fff;color:#16181A;
+       display:flex;flex-direction:column}
+  .top{padding:40px 76px 0}
+  .top img{height:52px;width:auto;display:block}
+  .rule{height:9px;background:#0B6E77;margin-top:34px}
+  .body{flex:1;background:#F2F1EC;padding:52px 76px;display:flex;
+        flex-direction:column;justify-content:center}
+  h1{font-size:88px;line-height:1.02;letter-spacing:-3px;font-weight:800;
+     margin-bottom:30px}
+  p{font-size:36px;line-height:1.36;color:#3d444f;max-width:22ch;
+    letter-spacing:-.4px}
+  .foot{height:9px;background:#0B6E77}
+</style></head>
+<body>
+  <div class="top"><img src="big12ology-primary.svg" alt="Big12ology"></div>
+  <div class="rule"></div>
+  <div class="body"><h1 id="t"></h1><p id="d"></p></div>
+  <div class="foot"></div>
+<script>
+  var q = new URLSearchParams(location.search);
+  document.getElementById("t").textContent = q.get("t") || "Big12ology";
+  document.getElementById("d").textContent = q.get("d") || "";
+</script>
+</body></html>
