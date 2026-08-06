@@ -64,17 +64,7 @@ done
 # shared, mutable assets must carry a query string.
 BUSTED='brand\.css|tokens\.css|theme\.js|app\.js|engine\.js|pct\.js|replay\.js|scrollcue\.js|styles\.css|charts\.js|gametip\.js|stats\.js'
 
-# One exception, and it is a dead file rather than a licence to skip the
-# rule: Pages serves exactly one 404, the one at the site root. Once the
-# domain is a single Pages site, /tiebreaker/404.html is only reachable by
-# typing it, and the root 404.html handles every real miss. That page is
-# also pre-teal throughout — old accent colours, text wordmark, no theme
-# switch — so versioning its stylesheet would fix the smallest thing wrong
-# with it. See HANDOFF.md.
-EXEMPT="tiebreaker/404.html"
-
 while IFS= read -r page; do
-  if [ "${page#"$DIST"/}" = "$EXEMPT" ]; then continue; fi
   # Both quoting styles: the hub writes href="…", build.py emits some
   # attributes bare.
   refs=$(grep -oE "(src|href)=\"[^\"]*(${BUSTED})\"|(src|href)=[^\"' >]*(${BUSTED})[ >]" \

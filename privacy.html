@@ -14,18 +14,13 @@
   --line:#e2ddd2; --accent:#0B6E77; --accent2:#003087; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1; --dim:#9aa0aa;
-    --line:#2e323a; --accent:#ff5a6e; --accent2:#7aa2ff; }
+    --line:#2e323a; --accent:#3FC7CE; --accent2:#7aa2ff; }
 }
 :root[data-theme="dark"] { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1; --dim:#9aa0aa;
-    --line:#2e323a; --accent:#ff5a6e; --accent2:#7aa2ff; }
+    --line:#2e323a; --accent:#3FC7CE; --accent2:#7aa2ff; }
 * { box-sizing: border-box; }
 body { margin:0; background:var(--bg); color:var(--ink);
   font:17px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
-header { border-bottom:4px solid var(--accent); padding:28px 20px;
-  background:var(--panel); }
-header a { color:var(--ink); text-decoration:none; font-weight:700;
-  font-size:20px; }
-header a span { color:var(--accent); }
 main { max-width:720px; margin:0 auto; padding:28px 20px 56px; }
 h1 { font-size:30px; margin:0 0 4px; }
 .updated { color:var(--dim); font-size:14px; margin-bottom:24px; }
@@ -42,7 +37,6 @@ a { color:var(--accent2); }
   <a href="https://big12ology.com/attendance/">Attendance</a>
   <span class=b12-right><span class=b12-theme></span></span>
 </nav>
-<header><a href="/">Big12<span>ology</span></a></header>
 <main id=main tabindex="-1">
 <h1>Privacy</h1>
 <p class=updated>Last updated: August 2, 2026</p>
