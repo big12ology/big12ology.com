@@ -57,8 +57,14 @@ jobs:
       - name: Rebuild the flat CSV
         run: node scripts/build_csv.mjs
 
-      - name: Run tests (parity + chart render smoke)
-        run: node --test tests/parity.test.mjs tests/render.test.mjs
+      # The Python half covers the fetch's CFBD-less path, which by
+      # definition never runs on a healthy day — so nothing else here would
+      # notice it breaking until the outage it exists for. Fully stubbed: it
+      # calls neither ESPN nor CFBD, and spends nothing from the quota.
+      - name: Run tests (parity + chart render smoke + fetch fallback)
+        run: |
+          node --test tests/parity.test.mjs tests/render.test.mjs
+          python3 -m unittest discover -s tests
 
       - name: Cross-check attendance vs ESPN
         id: verify

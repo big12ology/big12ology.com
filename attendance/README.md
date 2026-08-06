@@ -37,6 +37,11 @@ the repo as-is, and a scheduled GitHub Action updates the data files weekly.
   outputs. Production 2025 data now comes from the CFBD API (values verified
   identical to the sheet, game for game) with date-derived weeks and corrected
   capacities, so it intentionally differs from the fixture.
+- `tests/test_fetch_fallback.py` — the fetch with CFBD taken away: payload
+  parsing, which side of an ESPN box score a row belongs to, and that a 429
+  routes to ESPN instead of ending the run. Fully stubbed — it calls neither
+  API and spends nothing from the quota. Run with
+  `python3 -m unittest discover -s tests`.
 
 ## Differences from the spreadsheet (deliberate)
 
@@ -88,7 +93,8 @@ are separate fields and a reported game always counts, whatever its value.
 
 ```bash
 python3 -m http.server 8080   # from the repo root, then open localhost:8080
-node --test tests/parity.test.mjs
+node --test tests/parity.test.mjs tests/render.test.mjs
+python3 -m unittest discover -s tests
 ```
 
 Two scripts backfill per-season context the weekly fetch does not carry on its
