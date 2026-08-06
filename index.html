@@ -4,13 +4,13 @@
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>Big12ology — the study of the Big 12</title>
-<meta name=description content="Unofficial fan-built tools and data projects about Big 12 football: tiebreaker tracking and attendance history.">
+<meta name=description content="Unofficial fan-built tools and data projects about Big 12 football: tiebreaker tracking, schedule structure, and attendance history.">
 <link rel=canonical href="https://big12ology.com/">
 <link rel=icon type=image/svg+xml href=/favicon.svg>
 <meta property=og:type content=website>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="Big12ology — the study of the Big 12">
-<meta property=og:description content="Unofficial fan-built tools and data projects about Big 12 football: tiebreaker tracking and attendance history.">
+<meta property=og:description content="Unofficial fan-built tools and data projects about Big 12 football: tiebreaker tracking, schedule structure, and attendance history.">
 <meta property=og:url content="https://big12ology.com/">
 <meta property=og:image content="https://big12ology.com/og.png">
 <meta property=og:image:width content=1200>
@@ -59,6 +59,11 @@ a.card:hover { border-color: var(--accent); }
 :root[data-theme="dark"] .tag.live { background: color-mix(in srgb, #4ade80 15%, transparent); color: #4ade80; }
 .tag.soon { background: color-mix(in srgb, var(--dim) 15%, transparent);
   color: var(--dim); }
+.tag.new { background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent); }
+.deeper { margin: 2px 4px 0; color: var(--dim); font-size: 14px;
+  line-height: 1.7; }
+.deeper a { color: var(--accent2); }
 </style>
 </head>
 <body>
@@ -80,8 +85,8 @@ a.card:hover { border-color: var(--accent); }
     </picture>
   </h1>
   <p>The study of the Big 12. Unofficial fan-built tools and data projects
-  about the sixteen-team league — its standings math, its stadiums, and its
-  chaos.</p>
+  about the sixteen-team league — its standings math, its unbalanced
+  schedule, its stadiums, and its chaos.</p>
 </header>
 <main id=main tabindex="-1">
   <a class=card href="/tiebreaker/">
@@ -89,23 +94,35 @@ a.card:hover { border-color: var(--accent); }
     <p>The official Big 12 tiebreaking procedures applied to live results
     after every game — projected championship matchup, step-by-step tie
     narratives, clinch and elimination proofs, and a what-if simulator with
-    four public rating models. The 2024 and 2025 seasons are kept alongside
-    the live one: replay a year week by week, or rewrite a result and watch
-    the rules answer.</p>
+    four public rating models. Also <b>the cut line</b>, what a conference
+    record has actually been worth in nine title games, and <b>the ladder</b>,
+    how far down the seven steps a tie has ever walked. The 2024 and 2025
+    seasons are kept alongside the live one: replay a year week by week, or
+    rewrite a result and watch the rules answer.</p>
+  </a>
+  <a class=card href="/schedule/">
+    <h2>Schedule <span class="tag new">new</span></h2>
+    <p>Sixteen teams play nine conference games out of a possible fifteen, so
+    nobody plays everybody and two teams on the same record did not attempt
+    the same thing. The head-to-head grid for the season, <b>the draw</b> —
+    every team's expected wins on every other team's slate — and <b>the
+    rotation</b>: who you miss this year, and how long since you last met
+    them as conference opponents.</p>
   </a>
   <a class=card href="/attendance/">
     <h2>Attendance Tracker <span class="tag live">live</span></h2>
     <p>Weekly home-game attendance for all sixteen teams, back to 2012 —
     capacity-sourced stadium data, fill rates, sellout streaks, kickoff-window
     and weather effects, and hand-verified box scores where the feeds fall
-    short.</p>
+    short. Plus which crowds actually follow the record, and a flat CSV of
+    every home game if you would rather do your own arithmetic.</p>
   </a>
-  <a class=card href="/tiebreaker/history.html">
-    <h2>Tie Archaeology <span class="tag live">evergreen</span></h2>
-    <p>Every final-standings tie in the modern Big 12, 2011–2025, broken
-    step by step by the tiebreaker engine — plus the all-time head-to-head
-    grid for the current sixteen.</p>
-  </a>
+  <p class=deeper>Straight to the evergreen bits:
+    <a href="/tiebreaker/history.html">tie archaeology</a>, every
+    final-standings tie 2011–2025 broken step by step ·
+    <a href="/tiebreaker/how.html">the rules</a>, the seven steps in plain
+    English · <a href="/attendance/data/attendance.csv">the attendance
+    data</a> as CSV.</p>
 </main>
 <footer class=b12-footer>
   A Big12ology project · not affiliated with the Big 12 Conference; conference
