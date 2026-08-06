@@ -18,6 +18,15 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
+  <!-- The page renders client-side, so a fetcher that does not run JS sees
+       a shell. These are the data, flat and static, and they are the same
+       files the page itself reads. -->
+  <link rel="alternate" type="text/csv" href="data/attendance.csv"
+        title="Every Big 12 home game with attendance, 2012 to today (CSV)" />
+  <link rel="alternate" type="application/json" href="data/seasons/index.json"
+        title="Season index (JSON)" />
+  <link rel="alternate" type="application/json" href="data/teams.json"
+        title="Teams, stadiums and capacities by year (JSON)" />
   <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
   <link rel="stylesheet" href="brand.css?v=34" />
   <script defer src="theme.js?v=1"></script>
@@ -84,6 +93,8 @@
     A Big12ology project · not affiliated with the Big 12 Conference;
     conference and team marks belong to their owners and appear for
     identification only.<br>
+    <a href="data/attendance.csv">Data (CSV)</a> ·
+    <a href="data/seasons/index.json">JSON</a> ·
     <a href="https://github.com/big12ology">GitHub</a> ·
     <a href="https://big12ology.com/privacy">Privacy</a> ·
     <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>

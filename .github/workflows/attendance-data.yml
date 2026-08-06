@@ -51,6 +51,12 @@ jobs:
       - name: Rebuild snapshots
         run: node scripts/build_snapshots.mjs "${{ inputs.year || '2026' }}"
 
+      # The flat CSV is what non-JS consumers read. It has to be rebuilt
+      # whenever the data moves, or it silently becomes a different dataset
+      # from the one the page shows.
+      - name: Rebuild the flat CSV
+        run: node scripts/build_csv.mjs
+
       - name: Run tests (parity + chart render smoke)
         run: node --test tests/parity.test.mjs tests/render.test.mjs
 
