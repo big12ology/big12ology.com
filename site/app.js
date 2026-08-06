@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=33";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=33";
-import { gameTooltipHTML } from "./gametip.js?v=33";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=34";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=34";
+import { gameTooltipHTML } from "./gametip.js?v=34";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -323,8 +323,10 @@ function render(teamsData, season) {
   if (season.big12Era === false) {
     const leagues = [...new Set(Object.values(season.conferences ?? {}))].sort();
     $("#summary").innerHTML =
-      `<div class="card era-note"><div class="label">Before the Big 12 era</div>` +
-      `<div class="era-text">In ${season.season} these sixteen programs played in ` +
+      `<div class="card era-note">` +
+      `<div class="label">Before the current Big 12 composition</div>` +
+      `<div class="era-text">The Big 12 existed in ${season.season}, with a ` +
+      `different membership. These sixteen programs played in ` +
       `${leagues.length} different conferences (${leagues.join(", ")}). ` +
       `Per-team figures below are accurate; conference totals and league-wide ` +
       `rankings don't apply to this season, so they aren't shown.</div></div>`;

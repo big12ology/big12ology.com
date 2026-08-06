@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=33";
-import { gameTooltipHTML } from "./gametip.js?v=33";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=34";
+import { gameTooltipHTML } from "./gametip.js?v=34";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -669,6 +669,10 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
       }
     }
   }
+  // Logos come from the most recent season's team list, which is where the
+  // current sixteen and their marks live.
+  const logoOf = new Map(teamsForSeason(teamsData, Number(years[years.length - 1]))
+    .map((t) => [t.team, t.logo]));
   const first = years[0];
   const rows = [...best.entries()]
     .sort((a, b) => b[1].pct - a[1].pct)
@@ -697,7 +701,12 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
         cell = `<span class="rw-dim">none</span>` +
           `<span class="rw-sub">no sellout since ${first}</span>`;
       }
-      return `<tr><td>${team}</td>` +
+      // Same treatment as every other team cell on the site: mark then
+      // name. It was the only table showing a bare name.
+      const lg = logoOf.get(team);
+      return `<tr><td class="rw-team">` +
+        (lg ? `<img class="team-logo" src="${lg}" alt="" width="20" height="20">` : "") +
+        `${team}</td>` +
         `<td>${num(b.crowd)}<span class="rw-sub">vs ${b.crowdGame}</span></td>` +
         `<td>${pct(b.pct)}<span class="rw-sub">vs ${b.pctGame}</span></td>` +
         `<td>${cell}</td></tr>`;
