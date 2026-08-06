@@ -42,8 +42,17 @@ def load_teams():
 
 
 def load_ratings(year):
+    """Ratings, regressed here rather than at the point of use.
+
+    In August most systems have not published for the new season yet and
+    fetch falls back to last year's finals — three of four did in 2026.
+    Regressing once, at load, is what keeps the odds, the what-if
+    favourites and the strength-of-schedule card describing the same teams:
+    Rule 6, the same quantity presented the same way everywhere."""
     p = os.path.join(HERE, "data", f"ratings_{year}.json")
-    return json.load(open(p)) if os.path.exists(p) else {"systems": {}}
+    raw = json.load(open(p)) if os.path.exists(p) else {"systems": {}}
+    raw["systems"] = odds_mod.regress_stale(raw.get("systems", {}), year)
+    return raw
 
 
 def load_lines(year):
@@ -797,6 +806,19 @@ def clinch_card(games, overrides, systems, stand_rows, sims):
             f"Percentages are championship-game odds from {n_sims:,} season "
             f"simulations (win probabilities from an ensemble of "
             f"{', '.join(sorted(systems))}); proofs override odds.")
+        # Say it when most of the ensemble is running last season's numbers.
+        # A reader is entitled to know that August odds rest on how teams
+        # finished in December, and how much that has been discounted.
+        stale = sorted(n for n, s in systems.items() if s.get("regressed"))
+        if stale:
+            notes.append(
+                f"{', '.join(stale)} "
+                f"{'has' if len(stale) == 1 else 'have'} not published for "
+                f"this season yet, so {'its' if len(stale) == 1 else 'those'} "
+                f"ratings are last season's finals, regressed toward the mean. "
+                f"Simulations also draw each team's true strength rather than "
+                f"trusting its rating exactly, which is why early-season odds "
+                f"sit closer to even than the ratings alone would suggest.")
     return CLINCH_CARD.format(body=body, note=" ".join(notes))
 
 
@@ -919,6 +941,12 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
             lede += ("The models make "
                      + ", ".join(f"<b>{esc(t)}</b> {p:.0%}" for p, t in board)
                      + " the likeliest championship-game participants.")
+            # The caveat belongs where the numbers are, not only on the full
+            # board. In August these rest on December's ratings.
+            if any(s.get("regressed") for s in systems.values()):
+                lede += (" Preseason odds lean on last season's ratings, "
+                         "regressed toward the mean, and allow for how much "
+                         "a rating can be wrong about a team this early. ")
         parts.append(
             f"<div class=card><h2>Preseason</h2><p>{lede}</p>"
             f"<p class=note>This page fills with movement — who rose, who "

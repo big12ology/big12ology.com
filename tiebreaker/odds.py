@@ -22,6 +22,93 @@ N_SIMS = 10000
 SEED = 1996          # the year of the first Big 12 season
 MARGIN_SIGMA = 13.5  # std dev of scoring margin vs the spread
 
+# A published rating is an estimate of a team's strength, not a measurement
+# of it, and simulating as though it were exact is what produced a 92%
+# per-game favourite nine times over in August 2026 — Texas Tech at 88% to
+# reach the championship game with a 47% chance of running the table.
+# Each simulated season now draws one strength offset per team, held across
+# all of that team's games: if a team is really worse than its rating, it
+# loses more of them together, which is exactly the correlation that moves
+# a season-long distribution. Independent per-game noise would wash out.
+RATING_SIGMA = 7.0   # preseason sd of true strength around a rating, points
+SIGMA_SHRINK = 4.0   # games played at which that uncertainty is ~halved
+
+# A system whose ratings are last season's finals is describing a roster
+# that has since turned over. Year-over-year strength regresses toward the
+# mean; a champion's closing rating is a peak, and carrying it forward
+# unmodified overstates the gap to the field. Applied only when a system's
+# own recorded year is not the season being simulated.
+STALE_KEEP = 0.65
+
+
+def regress_stale(systems, season):
+    """Pull any system still on last season's numbers toward its own mean.
+
+    Call this once, at load, so odds, favourites and strength of schedule
+    all describe the same teams — Rule 6 in the README. Returns a new dict;
+    the caller's copy is untouched."""
+    out = {}
+    for name, s in systems.items():
+        r = s.get("ratings") or {}
+        if s.get("year") == season or not r:
+            out[name] = s
+            continue
+        mean = sum(r.values()) / len(r)
+        out[name] = dict(s, regressed=STALE_KEEP, ratings={
+            t: mean + STALE_KEEP * (v - mean) for t, v in r.items()})
+    return out
+
+
+def rating_sigma(games):
+    """How unsure we are of a team's strength, in points, given how much of
+    the season has been played. Full preseason uncertainty with nothing
+    played; roughly half of it once every team has four games in."""
+    conf = clinch.conf_teams(games)
+    # Team-games, not games: a non-conference game informs one conference
+    # team, not two, and September is mostly non-conference. Counting both
+    # sides would shrink the uncertainty fastest in the weeks it is largest.
+    team_games = sum((g["home"] in conf) + (g["away"] in conf)
+                     for g in games if g["completed"] and not g.get("ccg"))
+    gp = team_games / max(len(conf), 1)
+    return RATING_SIGMA * math.sqrt(SIGMA_SHRINK / (SIGMA_SHRINK + gp))
+
+
+def ensemble_margin(games, systems):
+    """{game_id: expected home margin in points}, averaged across systems.
+
+    Margins rather than probabilities, because a simulated season shifts a
+    team's strength and the shift has to happen before the curve, not after
+    it. Unrated opponents (FCS and lower) get a floor well below the worst
+    rated team."""
+    per_system = []
+    for s in systems.values():
+        r, hfa, per = s["ratings"], s["hfa"], s.get("per_pt", 1.0) or 1.0
+        if not r:
+            continue
+        floor = min(r.values()) - 10 * per
+        m = {}
+        for g in games:
+            if g["completed"] or g.get("ccg"):
+                continue
+            hr, ar = r.get(g["home"]), r.get(g["away"])
+            if hr is None and ar is None:
+                continue
+            m[g["id"]] = ((hr if hr is not None else floor)
+                          - (ar if ar is not None else floor) + hfa) / per
+        per_system.append(m)
+    out = {}
+    for g in games:
+        if g["completed"] or g.get("ccg"):
+            continue
+        ms = [m[g["id"]] for m in per_system if g["id"] in m]
+        if ms:
+            out[g["id"]] = sum(ms) / len(ms)
+    return out
+
+
+def p_from_margin(m):
+    return 0.5 * (1 + math.erf(m / (MARGIN_SIGMA * math.sqrt(2))))
+
 
 def win_probs(games, systems):
     """{game_id: p_home} ensemble across rating systems. Unrated opponents
@@ -63,13 +150,18 @@ def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED, track=None):
     probability on that game's outcome (leverage).
     """
     teams = clinch.conf_teams(games)
-    probs = win_probs(games, systems)
+    margins = ensemble_margin(games, systems)
     ncf = clinch.unplayed_nonconf_teams(games)
 
     base = [dict(g) for g in games]
     rem = [g for g in base if not g["completed"] and not g.get("ccg")
-           and g["id"] in probs]
+           and g["id"] in margins]
     rng = random.Random(seed)
+    sigma_r = rating_sigma(games)
+    # Every side of a remaining game, conference or not — a non-conference
+    # opponent's strength is just as uncertain, and total wins is a tiebreak
+    # step.
+    sides = {t for g in rem for t in (g["home"], g["away"])}
 
     track_ids = [g["id"] for g in rem if track and g["id"] in set(track)]
     cond = {gid: {"n_home": 0, "in": {t: [0.0, 0.0] for t in teams}}
@@ -78,10 +170,16 @@ def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED, track=None):
     in_count = {t: 0.0 for t in teams}
     win_sum = {t: 0 for t in teams}
     for _ in range(n):
+        # One draw per team per season, not per game: a team that is really
+        # a touchdown worse than its rating is worse in all nine of them.
+        off = {t: rng.gauss(0, sigma_r) for t in sides} if sigma_r else {}
         outcomes = {}
         for g in rem:
             g["completed"] = True
-            hw = rng.random() < probs[g["id"]]
+            p = p_from_margin(margins[g["id"]]
+                              + off.get(g["home"], 0.0)
+                              - off.get(g["away"], 0.0))
+            hw = rng.random() < p
             outcomes[g["id"]] = hw
             if hw:
                 g["home_points"], g["away_points"] = 28, 17
