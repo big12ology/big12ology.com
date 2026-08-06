@@ -1,6 +1,9 @@
 .env
-data/
 __pycache__/
+# data/ is committed on purpose. The CFBD key allows 1,000 calls a month;
+# an empty data/ made every CI build refetch twelve of them, including two
+# finished seasons that can never change again. Pull once, save, commit.
+data/*.tmp
 site/index.html
 !history/
 site/history.html

@@ -47,7 +47,13 @@ def get(path, k):
         capture_output=True, text=True)
     if r.returncode != 0:
         raise RuntimeError(f"curl failed on {path}: {r.stderr[:150]}")
-    return json.loads(r.stdout)
+    data = json.loads(r.stdout)
+    # Quota and auth failures come back as an object, not the expected list.
+    # Say so here — left alone, a caller iterates the error dict, gets its
+    # keys, and dies with an AttributeError three frames from the cause.
+    if isinstance(data, dict) and "message" in data:
+        raise RuntimeError(f"CFBD refused {path}: {data['message']}")
+    return data
 
 
 def fetch_season(year, force=False):

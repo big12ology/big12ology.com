@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Build the Big 12 tiebreaker site.
 
-    python3 build.py            # current season, uses cached data
+    python3 build.py            # current season, uses committed data
     python3 build.py 2024       # specific season
-    python3 build.py --fetch    # refetch results first (one API call)
+    python3 build.py --fetch    # refetch this season's results (one call)
+    python3 build.py --fetch --refresh   # ratings and lines too (+9 calls)
 
 Writes site/index.html — fully self-contained, no external requests.
 """
@@ -2046,15 +2047,36 @@ def build_explainer(year, matchcard, outdir=None):
     print(f"built {out}")
 
 
-def load_games(year, refetch=False):
+def load_games(year, refetch=False, refresh=False):
+    """data/ is committed, so a build normally reads it and calls nothing.
+
+    The CFBD key allows 1,000 calls a month. Only one thing changes on the
+    hour — the live season's scores — so --fetch buys exactly that, one
+    call. Ratings are published weekly and lines drift daily; --refresh
+    picks those up and is worth nine more calls on a weekly cron, not every
+    hour. Finished seasons and the team list are never refetched at all:
+    they cannot change, and they are in the repo."""
     path = os.path.join(HERE, "data", f"games_{year}.json")
     if refetch:
-        games = fetcher.fetch_season(year)
-        fetcher.fetch_ratings(year)
-        fetcher.fetch_lines(year)
-        if not os.path.exists(os.path.join(HERE, "data", "teams.json")):
-            fetcher.fetch_teams()
-        return games
+        try:
+            games = fetcher.fetch_season(year)
+            if refresh:
+                fetcher.fetch_ratings(year)
+                fetcher.fetch_lines(year)
+            if not os.path.exists(os.path.join(HERE, "data", "teams.json")):
+                fetcher.fetch_teams()
+            return games
+        except Exception as e:
+            # A spent quota or an API outage must not take the whole domain
+            # down with it — this build deploys the hub and the attendance
+            # tracker too. data/ is committed, so fall back to it and say so
+            # loudly. Stale scores beat no site.
+            warn = f"live fetch failed ({e}) — building from committed data/"
+            if os.environ.get("GITHUB_ACTIONS"):
+                print(f"::warning::{warn}")
+            print(f"WARNING: {warn}")
+            if not os.path.exists(path):
+                raise
     if not os.path.exists(path):
         return fetcher.fetch_season(year)
     return json.load(open(path))
@@ -2201,7 +2223,8 @@ def main():
     argv = [a for a in sys.argv[1:] if not a.startswith("--")]
     year = int(argv[0]) if argv else default_season()
     LIVE_YEAR = year
-    games = load_games(year, refetch="--fetch" in sys.argv)
+    games = load_games(year, refetch="--fetch" in sys.argv,
+                       refresh="--refresh" in sys.argv)
     build_season(year, games, SITE, "")
     # Finished seasons are rebuilt from cached results — no API calls, and
     # their output is deterministic, so a rebuild is a no-op unless the

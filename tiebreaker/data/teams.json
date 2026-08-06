@@ -1,0 +1,82 @@
+{
+ "Arizona": {
+  "color": "#cc0033",
+  "alt": "#ab0520",
+  "abbr": "ARIZ"
+ },
+ "Arizona State": {
+  "color": "#ffc627",
+  "alt": "#ffc72c",
+  "abbr": "ASU"
+ },
+ "Baylor": {
+  "color": "#154734",
+  "alt": "#ffb81c",
+  "abbr": "BAY"
+ },
+ "BYU": {
+  "color": "#003da5",
+  "alt": "#ffffff",
+  "abbr": "BYU"
+ },
+ "Cincinnati": {
+  "color": "#000000",
+  "alt": "#000000",
+  "abbr": "CIN"
+ },
+ "Colorado": {
+  "color": "#cfb87c",
+  "alt": "#000000",
+  "abbr": "COLO"
+ },
+ "Houston": {
+  "color": "#c8102e",
+  "alt": "#ffffff",
+  "abbr": "HOU"
+ },
+ "Iowa State": {
+  "color": "#c8102e",
+  "alt": "#fdca2f",
+  "abbr": "ISU"
+ },
+ "Kansas": {
+  "color": "#0051ba",
+  "alt": "#e8000d",
+  "abbr": "KU"
+ },
+ "Kansas State": {
+  "color": "#512888",
+  "alt": "#e2e3e4",
+  "abbr": "KSU"
+ },
+ "Oklahoma State": {
+  "color": "#fe5c00",
+  "alt": "#000000",
+  "abbr": "OKST"
+ },
+ "TCU": {
+  "color": "#4d1979",
+  "alt": "#f1f2f3",
+  "abbr": "TCU"
+ },
+ "Texas Tech": {
+  "color": "#c30020",
+  "alt": "#000000",
+  "abbr": "TTU"
+ },
+ "UCF": {
+  "color": "#000000",
+  "alt": "#000000",
+  "abbr": "UCF"
+ },
+ "Utah": {
+  "color": "#be0000",
+  "alt": "#ffffff",
+  "abbr": "UTAH"
+ },
+ "West Virginia": {
+  "color": "#eaaa00",
+  "alt": "#eaaa00",
+  "abbr": "WVU"
+ }
+}
