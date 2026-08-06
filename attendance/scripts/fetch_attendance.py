@@ -338,13 +338,15 @@ def main(year: int) -> None:
         g.pop("_completed", None)
     games.sort(key=lambda x: (x["week"], x["team"]))
 
+    prior_season = json.loads(out.read_text()) if out.exists() else {}
+
     # Never let a flaky upstream erase enrichment we already have: if the
     # previous season file had weather for a game and this fetch didn't get
     # it, carry the old value forward.
-    if out.exists():
+    if prior_season:
         prior = {
             (p["team"], p["week"], p.get("role")): p
-            for p in json.loads(out.read_text())["games"]
+            for p in prior_season["games"]
         }
         for g in games:
             old = prior.get((g["team"], g["week"], g.get("role")))
@@ -353,18 +355,21 @@ def main(year: int) -> None:
 
     num_weeks = max((g["week"] for g in games), default=14) + 1
     source = "CollegeFootballData API (collegefootballdata.com); weather via Open-Meteo"
-    out.write_text(
-        json.dumps(
-            {
-                "season": year,
-                "source": source,
-                "weekLabels": [f"Week {w}" for w in range(num_weeks)],
-                "games": games,
-            },
-            indent=2,
-        )
-        + "\n"
-    )
+    season_file = {
+        "season": year,
+        "source": source,
+        "weekLabels": [f"Week {w}" for w in range(num_weeks)],
+        "games": games,
+    }
+    # Same reasoning one level up: other scripts add top-level keys to this
+    # file after the fetch (add_conferences.py writes conferences/big12Era,
+    # which the site needs to label pre-2024 teams and suppress league-wide
+    # totals). Carry forward anything this fetch doesn't produce itself, or
+    # the weekly run would silently drop it.
+    for k, v in prior_season.items():
+        season_file.setdefault(k, v)
+
+    out.write_text(json.dumps(season_file, indent=2) + "\n")
     update_seasons_index(year)
     home_games = [g for g in games if "role" not in g]
     reported = sum(1 for g in home_games if g["attendance"] is not None)
