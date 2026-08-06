@@ -1389,8 +1389,8 @@ def build_subpage(title, active, body, year, matchcard,
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <a class=skip-link href="#main">Skip to content</a>
-<nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="{BASE}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{BASE}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
-<a class="{ 'on' if section == 'tiebreaker' else '' }" href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a class="{ 'on' if section == 'schedule' else '' }" href="https://big12ology.com/schedule/">Schedule</a><a href="https://big12ology.com/attendance/">Attendance</a><span class=b12-right><span class=b12-theme></span></span></nav>
+<nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="{BASE}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{BASE}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
+<a class="{ 'on' if section == 'tiebreaker' else '' }" href="/tiebreaker/">Tiebreaker</a><a class="{ 'on' if section == 'schedule' else '' }" href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><span class=b12-right><span class=b12-theme></span></span></nav>
 {tracker_top(year, active, matchcard, section)}
 {body}
 </main>
@@ -1398,7 +1398,7 @@ def build_subpage(title, active, body, year, matchcard,
 Big 12 Conference · <a href=data.json>data.json</a> ·
 <a href=standings.csv>standings.csv</a> ·
 <a href={BASE}feed.xml>RSS</a> ·
-<a href="https://big12ology.com/privacy">Privacy</a></footer>
+<a href="/privacy">Privacy</a></footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
 </body></html>"""
 
@@ -1954,10 +1954,10 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 <body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar>
-  <a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="{base}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{base}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
-  <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
-  <a href="https://big12ology.com/schedule/">Schedule</a>
-  <a href="https://big12ology.com/attendance/">Attendance</a>
+  <a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="{base}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{base}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
+  <a class=on href="/tiebreaker/">Tiebreaker</a>
+  <a href="/schedule/">Schedule</a>
+  <a href="/attendance/">Attendance</a>
   <span class=b12-right><span class=b12-theme></span></span>
 </nav>
 {top}
@@ -2005,7 +2005,7 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
   <a href=./>The Brief</a> ·
   <a href=history.html>The Archive</a> ·
   <a href=data.json>Data</a> ·
-  <a href="https://big12ology.com/privacy">Privacy</a> ·
+  <a href="/privacy">Privacy</a> ·
   <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
 </footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
@@ -2113,10 +2113,10 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
 <body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar>
-  <a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="{base}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{base}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
-  <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
-  <a href="https://big12ology.com/schedule/">Schedule</a>
-  <a href="https://big12ology.com/attendance/">Attendance</a>
+  <a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="{base}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{base}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
+  <a class=on href="/tiebreaker/">Tiebreaker</a>
+  <a href="/schedule/">Schedule</a>
+  <a href="/attendance/">Attendance</a>
   <span class=b12-right><span class=b12-theme></span></span>
 </nav>
 {top}
@@ -2297,7 +2297,7 @@ href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
   <a href=./>The Brief</a> ·
   <a href=history.html>The Archive</a> ·
   <a href=data.json>Data</a> ·
-  <a href="https://big12ology.com/privacy">Privacy</a> ·
+  <a href="/privacy">Privacy</a> ·
   <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
 </footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
