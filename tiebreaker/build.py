@@ -1066,6 +1066,48 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
 
 
 SUBPAGE_EXTRA_CSS = """
+.drawwrap { overflow-x:auto }
+.drawchart { width:100%; min-width:660px; height:auto; display:block;
+  margin:12px 0 2px }
+.drawchart .dgrid { stroke:var(--line); stroke-width:1 }
+.drawchart .dlabel { font-size:11px; font-weight:600; fill:var(--ink) }
+.drawchart .dval { font-size:11px; font-weight:600;
+  font-variant-numeric:tabular-nums }
+.drawchart .dtick { fill:var(--dim); font-size:11px }
+.drawchart .dteam { transition:opacity .12s ease }
+.drawwrap:hover .dteam { opacity:.35 }
+.drawwrap .dteam:hover { opacity:1 }
+.drawkey { margin: 6px 0 12px; padding-left: 20px; }
+.drawkey li { margin: 6px 0; }
+.drawgridtable td.dcell { text-align: right;
+  font-variant-numeric: tabular-nums; }
+.drawgridtable td.dcell.own { outline: 2px solid var(--ink);
+  outline-offset: -2px; font-weight: 700; }
+.laddertable td, .cuttable td { vertical-align: middle; }
+.samerec { color: var(--warn); font-weight: 600; font-size: 12px; }
+.misslist { list-style:none; margin:0; padding:0; display:flex;
+  flex-wrap:wrap; gap:3px 0 }
+/* Each entry is its own little grid too, so the marks, the abbreviations
+   and the years each line up in a column rather than sitting wherever the
+   previous word ended. */
+.misslist li { display:grid; grid-template-columns:19px 44px auto;
+  align-items:center; white-space:nowrap; width:144px;
+  padding-right:12px; box-sizing:border-box }
+.misslist li .mabbr { font-weight:600 }
+/* Left, not right: pushed to the far edge of its own cell the year lands
+   against the NEXT team's mark, and the row reads "UCF 2024BAY". */
+.misslist li .myr { color:var(--dim); font-variant-numeric:tabular-nums;
+  padding-left:5px }
+
+.firstlist { list-style: none; margin: 8px 0; padding: 0; font-size: 18px; }
+.rotationtable { width:100% }
+.rotationtable td { vertical-align:middle }
+.rotationtable td:first-child { white-space:nowrap }
+.warnpill { color: var(--warn); font-weight: 600; font-size: 12px; }
+.drawsum td.num, .drawgridtable td {{ text-align: right;
+  font-variant-numeric: tabular-nums; }}
+.drawsum td.dim, .drawgridtable td.dim {{ color: var(--dim); }}
+.drawgridtable th {{ font-weight: 600; font-size: 12px; }}
 table { border-collapse:collapse; width:100%; font-size:14px }
 th, td { text-align:left; padding:6px 9px; border-bottom:1px solid
   var(--line); font-variant-numeric:tabular-nums }
@@ -1619,20 +1661,6 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   background: color-mix(in srgb, var(--dim) 18%, transparent);
   color: var(--dim); font-weight: 700; font-size: 12px; cursor: help; }}
 .teamcell {{ white-space: nowrap; }}
-.laddertable td, .cuttable td {{ vertical-align: middle; }}
-.samerec {{ color: var(--warn); font-weight: 600; font-size: 12px; }}
-.misslist {{ list-style: none; margin: 0; padding: 0; display: flex;
-  flex-wrap: wrap; gap: 4px 14px; }}
-.misslist li {{ white-space: nowrap; }}
-.firstlist {{ list-style: none; margin: 8px 0; padding: 0; font-size: 18px; }}
-.rotationtable td {{ vertical-align: middle; }}
-.warnpill {{ color: var(--warn); font-weight: 600; font-size: 12px; }}
-.drawsum td.num, .drawgridtable td {{ text-align: right;
-  font-variant-numeric: tabular-nums; }}
-.drawsum td.dim, .drawgridtable td.dim {{ color: var(--dim); }}
-.drawgridtable td.own {{ background: color-mix(in srgb, var(--accent) 12%,
-  transparent); font-weight: 600; }}
-.drawgridtable th {{ font-weight: 600; font-size: 12px; }}
 .cbar {{ display: inline-block; width: 4px; height: 16px; border-radius: 2px;
   margin-right: 8px; vertical-align: -2px; }}
 .seed {{ display: inline-block; background: var(--accent); color: #fff;
@@ -2333,9 +2361,10 @@ def build_rotation_page(year, games, teams):
     body = []
     for r in rows:
         cells = "".join(
-            f"<li>{logo_img(m['opponent'], 16)}{esc(team_abbr(teams, m['opponent']))}"
-            + (f" <span class=dim>{m['last']}</span>" if m["last"]
-               else " <span class=warnpill>never</span>")
+            f"<li>{logo_img(m['opponent'], 16)}"
+            f"<span class=mabbr>{esc(team_abbr(teams, m['opponent']))}</span>"
+            + (f"<span class=myr>{m['last']}</span>" if m["last"]
+               else "<span class='myr warnpill'>never</span>")
             + "</li>"
             for m in r["missing"])
         body.append(f"<tr><td class=teamcell>{logo_img(r['team'], 16)}"
@@ -2359,12 +2388,83 @@ in the Pac-12.</p>
 </div>"""
 
 
+def draw_color(d, span):
+    """The site's win-percentage ramp, re-centred on zero.
+
+    Same red-to-green anchors every other number here uses, so the page does
+    not introduce a second colour language — but mapped so that 0 sits at the
+    neutral middle, negative runs red and positive runs green. Green means an
+    easier road than the same team would average, not a better team."""
+    if not span:
+        return winpct_color(0.5)
+    return winpct_color(max(0.0, min(1.0, 0.5 + d / (2 * span))))
+
+
+def svg_logo(team, x, y, size=16):
+    """A team mark inside an SVG, the way the bump chart does it."""
+    e = MARKS.get(team)
+    if not e or e.get("usable") is False:
+        return ""
+    ext = (e.get("ext") or ".svg").lstrip(".")
+    return (f'<image href="{BASE}logos/{e["key"]}.{ext}" x="{x:.1f}" '
+            f'y="{y:.1f}" width="{size}" height="{size}"/>')
+
+
+def draw_bars(rows, teams, span):
+    """Diverging bars: the schedule column, and only the schedule column.
+
+    Built to the same pattern as the bump chart — fixed geometry inside a
+    scrolling wrapper rather than a scaling viewBox, marks via <image>, the
+    same 11px type. A chart that sets its own type size is a second visual
+    language on a site that has one."""
+    W, rowH, gap = 660, 20, 6
+    m = {"t": 10, "r": 22, "b": 26, "l": 158}
+    H = m["t"] + len(rows) * (rowH + gap) + m["b"]
+    iw = W - m["l"] - m["r"]
+    mid = m["l"] + iw / 2
+    # Leave room past the longest bar for its value, so the number sits with
+    # the bar instead of in a column of its own.
+    scale = ((iw / 2) - 34) / span if span else 0
+    out = [f'<line x1="{mid:.1f}" x2="{mid:.1f}" y1="{m["t"] - 2}" '
+           f'y2="{H - m["b"] + 2}" class=dgrid />']
+    for i, r in enumerate(rows):
+        y = m["t"] + i * (rowH + gap)
+        cy = y + rowH / 2
+        v = r["vs_average"]
+        w = max(abs(v) * scale, 1.5)
+        x = mid - w if v < 0 else mid
+        col = draw_color(v, span)
+        out.append(f'<g class=dteam><title>{esc(r["team"])}: {v:+.2f} '
+                   f'expected wins vs its own average across all sixteen '
+                   f'schedules</title>')
+        out.append(svg_logo(r["team"], 8, cy - 8))
+        out.append(f'<text x="30" y="{cy + 4:.1f}" class=dlabel>'
+                   f'{esc(r["team"])}</text>')
+        out.append(f'<rect x="{x:.1f}" y="{y + 3:.1f}" width="{w:.1f}" '
+                   f'height="{rowH - 6}" rx="3" fill="{col}"/>')
+        vx = (x - 6) if v < 0 else (x + w + 6)
+        anchor = "end" if v < 0 else "start"
+        out.append(f'<text x="{vx:.1f}" y="{cy + 4:.1f}" class=dval '
+                   f'text-anchor="{anchor}" fill="{col}">{v:+.2f}</text>')
+        out.append("</g>")
+    out.append(f'<text x="{m["l"]}" y="{H - 8}" class=dtick>'
+               f'&#8592; harder than this team\'s own average</text>')
+    out.append(f'<text x="{W - m["r"]}" y="{H - 8}" text-anchor="end" '
+               f'class=dtick>easier &#8594;</text>')
+    return (f'<div class=drawwrap><svg class=drawchart viewBox="0 0 {W} {H}" '
+            f'role="img" aria-label="Schedule difficulty by team, in expected '
+            f'wins above or below what each team would average across all '
+            f'sixteen schedules">{"".join(out)}</svg></div>')
+
+
 def build_draw_page(year, games, systems, teams):
     """What the unbalanced schedule was worth, in wins.
 
-    Nine games out of fifteen possible opponents means two teams on the same
-    record did not attempt the same thing. The standings cannot say that;
-    this can."""
+    The page has one job that it originally failed at: making clear that two
+    different quantities live in the same table. How many games a team is
+    expected to win is mostly a fact about the team. How that compares to the
+    same team on every other schedule is the only part that is about the
+    schedule."""
     if not systems:
         return ("<div class=card><h2>The draw</h2><p class=note>This page "
                 "needs the rating systems, and ratings are only fetched for "
@@ -2376,43 +2476,83 @@ def build_draw_page(year, games, systems, teams):
         return ("<div class=card><h2>The draw</h2><p class=note>No conference "
                 "schedule yet.</p></div>")
 
+    span = max(abs(r["vs_average"]) for r in rows) or 1.0
     spread = rows[-1]["vs_average"] - rows[0]["vs_average"]
-    head = "".join(f"<th title='{esc(t)}'>{esc(team_abbr(teams, t))}</th>"
-                   for t in sorted(m))
-    body = []
-    for t in sorted(m):
-        cells = []
-        for owner in sorted(m):
-            v = m[t][owner]
-            cls = " class=own" if owner == t else ""
-            cells.append(f"<td{cls}>{v:.1f}</td>" if v is not None
-                         else "<td class=dim>·</td>")
-        body.append(f"<tr><td class=teamcell>{logo_img(t, 16)}"
-                    f"{esc(team_abbr(teams, t))}</td>{''.join(cells)}</tr>")
+    hardest, easiest = rows[0], rows[-1]
 
     summary = "".join(
         f"<tr><td class=teamcell>{logo_img(r['team'], 16)}{esc(r['team'])}</td>"
+        f"<td class=num style='color:{draw_color(r['vs_average'], span)};"
+        f"font-weight:700'>{r['vs_average']:+.2f}</td>"
         f"<td class=num>{r['own']:.1f}</td>"
-        f"<td class=num>{r['vs_average']:+.2f}</td>"
         f"<td class=num>{r['hardest'][0]:.1f}</td>"
         f"<td class=dim>{esc(team_abbr(teams, r['hardest'][1]))}</td>"
         f"<td class=num>{r['easiest'][0]:.1f}</td>"
         f"<td class=dim>{esc(team_abbr(teams, r['easiest'][1]))}</td></tr>"
         for r in rows)
 
-    return f"""<div class=card id=drawcard>
+    head = "".join(f"<th title='{esc(t)}'>{esc(team_abbr(teams, t))}</th>"
+                   for t in sorted(m))
+    body = []
+    for t in sorted(m):
+        vals = [v for v in m[t].values() if v is not None]
+        avg = sum(vals) / len(vals) if vals else 0
+        # Colour each cell against that team's OWN average, not against the
+        # whole grid. Coloured on raw wins the grid would just restate which
+        # teams are good, in colour, and the schedule question would vanish.
+        cells = []
+        for owner in sorted(m):
+            v = m[t][owner]
+            if v is None:
+                cells.append("<td class=dim>&middot;</td>")
+                continue
+            own = " own" if owner == t else ""
+            cells.append(
+                f"<td class='dcell{own}' style='background:"
+                f"{draw_color(v - avg, span)}' "
+                f"title='{esc(t)} on {esc(owner)}&#39;s schedule: {v:.1f} "
+                f"wins, {v - avg:+.1f} vs its own average'>{v:.1f}</td>")
+        body.append(f"<tr><td class=teamcell>{logo_img(t, 16)}"
+                    f"{esc(team_abbr(teams, t))}</td>{''.join(cells)}</tr>")
+
+    return f"""<div class=card id=drawlede>
 <h2>What the draw was worth</h2>
-<p>Sixteen teams, nine conference games. Nobody plays everybody, so two
-teams finishing on the same record did not attempt the same thing. Every
-team's expected conference wins, on every team's schedule.</p>
+<p>Sixteen teams play nine conference games out of a possible fifteen.
+Nobody plays everybody, so two teams finishing 7&#8209;2 did not attempt the
+same thing — and the standings cannot tell you which of them had the harder
+road. This can.</p>
+<p><b>{esc(hardest['team'])} drew the hardest schedule in the league and
+{esc(easiest['team'])} drew the easiest.</b> Between them sits
+<b>{spread:.2f}</b> of an expected win — worth about one game every other
+season, which is roughly the margin that decides a championship-game seat.</p>
+{draw_bars(rows, teams, span)}
+<p class=note>Each bar is that team's own schedule measured against what the
+<em>same team</em> would average across all sixteen schedules. Same roster,
+same strength, sixteen different roads: only the schedule changes, so only
+the schedule is being measured.</p>
+</div>
+
+<div class=card id=drawsummary>
+<h2>How to read the numbers</h2>
+<p>Two different things live in the table below, and telling them apart is
+the whole trick.</p>
+<ul class=drawkey>
+<li><b>vs average</b> is the schedule. A team's own draw minus what it would
+average across all sixteen. Negative is a harder road than typical. <b>This
+is the only column about scheduling</b>, and the one the table is sorted
+by.</li>
+<li><b>Own draw</b> is mostly the team. Texas Tech expects 7.8 conference
+wins and Oklahoma State 2.3, and that gap is about how good they are, not
+about who they play. Comparing this column down the page tells you very
+little.</li>
+<li><b>Hardest</b> and <b>easiest slate</b> are the extremes behind the first
+column: the schedule that would cost this team the most wins, and the one
+that would cost it least, with whose schedule it is.</li>
+</ul>
 <div class="tablescroll scrollbox"><table class=drawsum>
-<thead><tr><th>Team</th><th>Own draw</th><th>vs average</th>
+<thead><tr><th>Team</th><th>vs average</th><th>Own draw</th>
 <th colspan=2>Hardest slate</th><th colspan=2>Easiest slate</th></tr></thead>
 <tbody>{summary}</tbody></table></div>
-<p class=note>Between the hardest draw and the easiest sits
-<b>{spread:.2f}</b> of an expected win. <b>vs average</b> is a team's own
-schedule minus what it would average across all sixteen — negative is a
-harder road than typical.</p>
 </div>
 
 <div class=card id=drawgrid>
@@ -2420,14 +2560,19 @@ harder road than typical.</p>
 <div class="tablescroll scrollbox"><table class=drawgridtable>
 <thead><tr><th></th>{head}</tr></thead>
 <tbody>{''.join(body)}</tbody></table></div>
-<p class=note>Read a row: that team's expected wins playing each column's
-schedule. The shaded diagonal is the schedule they actually drew.
-<b>A team cannot play itself</b> — where a borrowed schedule contains the
-borrower, it faces the team it borrowed from instead. Without that
-substitution, taking the best team's schedule would quietly delete the best
-team from your season and score it as an easier road; it inflated this
-spread by roughly half a win. Probabilities come from the same rating
-ensemble as the championship odds.</p>
+<p class=note>Read a row: that team's expected wins on each column's
+schedule. Colour is <em>within the row</em> — green where that schedule is
+easier than the row's own average, red where it is harder. Colouring by raw
+wins instead would have just restated which teams are good, in colour, and
+lost the question entirely. The outlined diagonal is the schedule each team
+actually drew.</p>
+<p class=note><b>A team cannot play itself.</b> Where a borrowed schedule
+contains the borrower, it faces the team it borrowed from instead — Houston
+on Texas Tech's slate still plays Texas Tech. Without that substitution,
+borrowing the best team's schedule would quietly delete the best team from
+your season and score it as an easier road; it inflated this spread by
+roughly half a win. Win probabilities come from the same rating ensemble as
+the championship odds.</p>
 </div>"""
 
 
