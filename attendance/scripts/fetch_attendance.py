@@ -11,7 +11,9 @@ the ESPN game id (CFBD reuses ESPN ids, so box-score links are free), and
 kickoff-hour weather from the Open-Meteo historical archive (free, keyless;
 skipped silently if unavailable).
 
-Requires CFBD_API_KEY (free key: https://collegefootballdata.com/key).
+Requires CFBD_API_KEY (free key: https://collegefootballdata.com/key). If CFBD
+cannot be reached — a spent monthly quota, an outage — the run falls back to
+refreshing the committed season file from ESPN alone and exits clean.
 
 Week numbers are derived from each game's venue-local date (see display_week)
 rather than trusting CFBD's week field.
@@ -90,17 +92,44 @@ def load_api_key() -> str:
     return key
 
 
-def espn_attendance(espn_id) -> int | None:
+def espn_game(espn_id) -> dict | None:
     """Second fetcher: ESPN's summary API, hit directly. Same upstream chain
     as CFBD but a different pipeline — on game night ESPN has attendance
-    before CFBD's ingest picks it up, so 'first source that has it' wins.
-    ESPN reports 0 when no attendance was recorded; treat that as missing."""
+    before CFBD's ingest picks it up, so 'first source that has it' wins,
+    and when the CFBD key is spent this is the only source that still
+    answers at all (see refresh_from_espn).
+
+    Returns attendance, whether the game is final, and each side's points
+    and team name keyed by home/away. ESPN reports 0 attendance when none
+    was recorded — treat that as missing. A game that has not kicked off
+    carries no score field at all, so points stay None rather than 0."""
     try:
         d = get_json(f"{ESPN_SUMMARY}?event={espn_id}", {"User-Agent": "Mozilla/5.0"})
-        att = d.get("gameInfo", {}).get("attendance")
-        return att if att else None
+        comp = d["header"]["competitions"][0]
     except Exception:
         return None
+    att = d.get("gameInfo", {}).get("attendance")
+    sides = {}
+    for c in comp.get("competitors", []):
+        score = c.get("score")
+        sides[c.get("homeAway")] = {
+            "points": int(score) if str(score or "").strip().isdigit() else None,
+            "team": (c.get("team") or {}).get("location"),
+        }
+    return {
+        "attendance": att if att else None,
+        "completed": bool(comp.get("status", {}).get("type", {}).get("completed")),
+        "home": sides.get("home", {}),
+        "away": sides.get("away", {}),
+    }
+
+
+def same_team(a: str, b: str) -> bool:
+    """Exact match on names stripped to alphanumerics, nothing looser.
+    Substring matching would read Arizona as Arizona State, and the cost of
+    a miss here is a score written against the wrong team."""
+    norm = lambda s: "".join(ch for ch in (s or "").lower() if ch.isalnum())
+    return bool(norm(a)) and norm(a) == norm(b)
 
 
 def update_seasons_index(year: int) -> None:
@@ -175,6 +204,79 @@ def fetch_weather(games: list, venues_by_id: dict) -> None:
             }
 
 
+def espn_side(entry: dict, summary: dict) -> str | None:
+    """Which side of the ESPN box score this entry's team is on.
+
+    A row with no role is a home game by construction, and a role of "away"
+    says so outright. Neutral-site rows exist for both teams, so neither
+    position tells us anything and the team name has to settle it — falling
+    back to None, which leaves the score alone."""
+    role = entry.get("role")
+    if role is None:
+        return "home"
+    if role == "away":
+        return "away"
+    for side in ("home", "away"):
+        if same_team(entry.get("team"), summary.get(side, {}).get("team")):
+            return side
+    return None
+
+
+def refresh_from_espn(out: Path, year: int) -> None:
+    """Update the committed season file from ESPN alone, without CFBD.
+
+    The key allows 1,000 calls a month and it does run out. A spent quota
+    used to take the whole fetch down at the first /games call — including
+    the ESPN fallback below it, which could have answered. Nothing about a
+    game day actually needs CFBD: the schedule is already committed and
+    every row carries the ESPN game id, so the two things that change once
+    a game is played, attendance and the score, can be read directly.
+
+    What this cannot do is discover a game the file does not have, or fill
+    weather (venue coordinates come from CFBD). A schedule change during a
+    quota wall waits for the quota."""
+    season = json.loads(out.read_text())
+    by_id = {}
+    today = date.today().isoformat()
+    for g in season["games"]:
+        # Unplayed games have nothing to report, and the season file is most
+        # of a year long — without this every quota-wall run would spend a
+        # few hundred ESPN calls to learn that August is still ahead.
+        if not g.get("espnId") or (g.get("date") or "") > today:
+            continue
+        if g.get("attendance") is None or g.get("pointsFor") is None:
+            by_id.setdefault(g["espnId"], []).append(g)
+
+    filled_att = filled_score = 0
+    for espn_id, entries in by_id.items():
+        summary = espn_game(espn_id)
+        time.sleep(0.5)
+        if not summary:
+            continue
+        for g in entries:
+            if summary["attendance"] and g.get("attendance") is None:
+                g["attendance"] = summary["attendance"]
+                g["attendanceSource"] = "ESPN summary API (CFBD unavailable)"
+                filled_att += 1
+            if not summary["completed"]:
+                continue
+            side = espn_side(g, summary)
+            if side is None:
+                continue
+            pf = summary[side].get("points")
+            pa = summary["away" if side == "home" else "home"].get("points")
+            if pf is None or pa is None or g.get("pointsFor") is not None:
+                continue
+            g["pointsFor"], g["pointsAgainst"] = pf, pa
+            filled_score += 1
+            print(f"  filled from ESPN: {g['team']} wk{g['week']} "
+                  f"vs {g.get('opponent')} — {pf}-{pa}")
+
+    out.write_text(json.dumps(season, indent=2) + "\n")
+    print(f"{year}: ESPN-only refresh of {len(by_id)} games — "
+          f"{filled_att} attendance, {filled_score} scores -> {out}")
+
+
 def main(year: int) -> None:
     api_key = load_api_key()
 
@@ -202,11 +304,27 @@ def main(year: int) -> None:
     # were already in the Big 12. For backfilled seasons the current sixteen
     # were scattered across the Pac-12, AAC, Big East and independence, so
     # pull the full slate and filter by team.
-    raw = cfbd("/games", api_key, year=year, seasonType="regular")
-    raw = [g for g in raw
-           if (g.get("homeTeam") or g.get("home_team")) in teams
-           or (g.get("awayTeam") or g.get("away_team")) in teams]
-    venues = cfbd("/venues", api_key)
+    try:
+        raw = cfbd("/games", api_key, year=year, seasonType="regular")
+        raw = [g for g in raw
+               if (g.get("homeTeam") or g.get("home_team")) in teams
+               or (g.get("awayTeam") or g.get("away_team")) in teams]
+        venues = cfbd("/venues", api_key)
+    except Exception as e:
+        # A spent quota or an API outage must not cost a game day. The same
+        # call the site is built on says so directly — CFBD answers a run
+        # over its monthly limit with 429 and {"message": "Monthly call
+        # quota exceeded."} — so fall back to ESPN, say so loudly, and let
+        # the run succeed. Stale beats absent; absent beats wrong.
+        warn = f"CFBD unavailable ({e}) — refreshing {year} from ESPN alone"
+        if os.environ.get("GITHUB_ACTIONS"):
+            print(f"::warning::{warn}")
+        print(f"WARNING: {warn}")
+        if not out.exists():
+            raise  # no committed schedule to refresh: nothing to fall back to
+        refresh_from_espn(out, year)
+        return
+
     venues_by_id = {v["id"]: v for v in venues}
     coords_by_id = {
         v["id"]: (v["latitude"], v["longitude"])
@@ -334,7 +452,8 @@ def main(year: int) -> None:
             and g.get("_completed")
             and g.get("espnId")
         ):
-            att = espn_attendance(g["espnId"])
+            summary = espn_game(g["espnId"])
+            att = summary["attendance"] if summary else None
             if att:
                 g["attendance"] = att
                 g["attendanceSource"] = "ESPN summary API (not yet in CFBD)"

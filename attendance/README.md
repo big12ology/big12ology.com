@@ -61,6 +61,14 @@ are separate fields and a reported game always counts, whatever its value.
   before CFBD's ingest, so the first source that has a number wins
   (`attendanceSource` marks ESPN-filled games; the next CFBD ingest
   normally converges to the same value).
+- **When CFBD is gone entirely** — a spent monthly quota (the key allows
+  1,000 calls; see HANDOFF.md) or an outage — the fetch does not fail the
+  run. It refreshes the committed season file from ESPN alone, keyed on the
+  ESPN game id every row already carries, and fills the two things a game
+  day changes: attendance and the final score. It prints a `::warning::` and
+  exits clean. What it cannot do without CFBD is add a game the file does
+  not already have, or fetch weather (venue coordinates come from CFBD), so
+  a schedule change during a quota wall waits for the quota.
 - **Cross-check:** `scripts/verify_attendance.py` compares every completed
   home game against ESPN and writes `data/verification/<year>.json`; the
   workflow turns red on any true mismatch. As of the 2024–2025 backfill:
