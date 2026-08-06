@@ -5,6 +5,7 @@ identical results, odds align with clinch proofs on truncated 2025, and a
 finished season yields exactly the CCG pair at 1.0.
 """
 import json
+import subprocess
 import os
 import sys
 
@@ -55,6 +56,32 @@ def main():
     res2 = teams_of(odds.simulate(truncate(games, "2025-11-24"), systems, n=N))
     res3 = teams_of(odds.simulate(truncate(games, "2025-11-24"), systems, n=N))
     ok &= check(res2 == res3, "same seed -> identical results")
+
+    # Same seed in a FRESH INTERPRETER. Repeating the call in one process
+    # cannot catch a draw pulled in set-iteration order: string hashing is
+    # randomised per process, so the order is stable within a run and varies
+    # between them. That shipped once — every rebuild produced different
+    # odds while this test stayed green.
+    probe = ("import json,os,sys;"
+             f"sys.path.insert(0, {ROOT!r});"
+             f"sys.path.insert(0, {HERE!r});"
+             "import odds, build;"
+             "from test_clinch import load, truncate;"
+             "g = truncate(load(), '2025-11-24');"
+             "s = build.load_ratings(2026)['systems'];"
+             "r = odds.simulate(g, s, n=%d);" % N +
+             "print(json.dumps({t: round(v['p_ccg'], 6) "
+             "for t, v in r.items() if isinstance(v, dict) and 'p_ccg' in v},"
+             " sort_keys=True))")
+    runs = [subprocess.run([sys.executable, "-c", probe], capture_output=True,
+                           text=True, env={**os.environ,
+                                           "PYTHONHASHSEED": str(seed)})
+            for seed in (0, 1, 2)]
+    outs = [r.stdout.strip() for r in runs]
+    ok &= check(all(o and o == outs[0] for o in outs),
+                "same seed -> identical across fresh processes")
+    if not all(o and o == outs[0] for o in outs):
+        print(f"    stderr: {runs[0].stderr[-200:]}")
 
     done = teams_of(odds.simulate(games, systems, n=50))
     at1 = {t for t, v in done.items() if v["p_ccg"] == 1.0}

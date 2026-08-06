@@ -183,8 +183,11 @@ def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED, track=None):
     sigma_r = rating_sigma(games)
     # Every side of a remaining game, conference or not — a non-conference
     # opponent's strength is just as uncertain, and total wins is a tiebreak
-    # step.
-    sides = {t for g in rem for t in (g["home"], g["away"])}
+    # step. Sorted, not a set: the draws below are pulled in iteration order,
+    # and set order for strings varies between processes, so leaving it a set
+    # hands each team a different offset on every run and quietly breaks the
+    # fixed-seed guarantee this module is built on.
+    sides = sorted({t for g in rem for t in (g["home"], g["away"])})
 
     track_ids = [g["id"] for g in rem if track and g["id"] in set(track)]
     cond = {gid: {"n_home": 0, "in": {t: [0.0, 0.0] for t in teams}}
