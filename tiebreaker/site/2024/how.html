@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>How the Big 12 tiebreakers work — Big12ology</title>
+<meta name=description content="A plain-English walkthrough of the official Big 12 football tiebreaking procedures, with the 2024 four-way tie worked step by step.">
+<link rel=canonical href="https://big12ology.com/tiebreaker/how.html">
+<link rel=icon type=image/svg+xml href="../favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="../favicon-32.png">
+<link rel=apple-touch-icon href="../favicon-180.png">
+<script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
+<link rel=stylesheet href="../brand.css?v=34ffdfb0">
+<script defer src="../theme.js?v=9a8f53fd"></script>
+<meta property=og:type content=article>
+<meta property=og:site_name content=Big12ology>
+<meta property=og:title content="How the Big 12 tiebreakers actually work">
+<meta property=og:description content="The official procedure in plain English, plus the 2024 four-way tie worked step by step by the tracker's rules engine.">
+<meta property=og:url content="https://big12ology.com/tiebreaker/how.html">
+<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta name=twitter:card content=summary_large_image>
+<style>
+:root {
+  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
+  --line: #e2ddd2; --accent: #0B6E77; --accent2: #003087;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
+    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
+  }
+}
+:root[data-theme="dark"] {
+    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
+    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 17px/1.65 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+main { max-width: var(--chrome-w); margin: 0 auto;
+  padding: 26px 20px 48px; }
+main > p, main > ol, main > ul, main > h2, main > h3, main > table,
+main > .aside, main > .worked, main > .backlink { max-width: 840px; }
+h2 { font-size: 21px; margin: 34px 0 10px; }
+h3 { font-size: 17px; margin: 22px 0 8px; }
+p, li { font-size: 16.5px; }
+a { color: var(--accent2); }
+.lead { font-size: 18px; }
+ol.rules > li { margin: 10px 0; }
+ol.rules b { color: var(--ink); }
+.aside { background: var(--panel); border: 1px solid var(--line);
+  border-left: 4px solid var(--accent); border-radius: 8px;
+  padding: 12px 16px; font-size: 15px; color: var(--dim); margin: 16px 0; }
+.worked { background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 18px 22px; margin: 16px 0; }
+.worked ol { padding-left: 20px; }
+.worked li { margin: 8px 0; font-size: 15px; }
+.worked li.seeded { font-weight: 700; }
+.worked .meta { color: var(--dim); font-size: 14px; margin: 0 0 10px; }
+table.models { border-collapse: collapse; width: 100%; margin: 12px 0; }
+table.models th, table.models td { text-align: left; padding: 8px 10px;
+  border-bottom: 1px solid var(--line); font-size: 15px; vertical-align: top; }
+table.models th { font-size: 12px; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--dim); }
+.backlink { display: inline-block; margin-top: 8px; }
+.card { background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 16px 20px; margin: 0 0 18px; }
+.card h2 { margin: 0 0 8px; font-size: 14px; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--dim); }
+.matchup { display: flex; align-items: center; gap: 18px;
+  margin: 10px 0 4px; flex-wrap: wrap; }
+.side { display: flex; align-items: center; gap: 12px; font-size: 24px;
+  font-weight: 700; border-bottom: 4px solid var(--line);
+  padding: 6px 10px 10px 2px; }
+.tname { letter-spacing: -.01em; }
+.vs { color: var(--dim); font-weight: 400; font-size: 18px; padding: 0 6px; }
+.seed { display: inline-block; background: var(--accent); color: #fff;
+  border-radius: 6px; font-size: 14px; width: 22px; height: 22px;
+  line-height: 22px; text-align: center; vertical-align: 3px;
+  margin-right: 4px; }
+.badge { font-size: 11px; border-radius: 20px; padding: 2px 9px;
+  vertical-align: 1px; font-weight: 600; letter-spacing: .03em; }
+.badge.ok { background: #13653626; color: #136536; }
+.badge.warn { background: #b4530926; color: #b45309; }
+.mark { vertical-align: -3px; margin-right: 7px; object-fit: contain; }
+.dim { color: var(--dim); }
+.note { color: var(--dim); font-size: 13px; }
+
+
+</style>
+</head>
+<body>
+<a class=skip-link href="#main">Skip to content</a>
+<nav class=b12-topbar>
+  <a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="../brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
+  <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
+  <a href="https://big12ology.com/attendance/">Attendance</a>
+  <span class=b12-right><span class=b12-theme></span></span>
+</nav>
+<header class=b12-head>
+  <div class=hwrap>
+    <div>
+      <h1>Big 12 Tiebreaker Tracker <span class=yrpills><a href='../'>2026</a><a href='../2025/'>2025</a><span class=yron>2024</span></span></h1>
+      <p>The 2024 season as it finished, with the official tiebreaking procedures applied to the final results.</p>
+    </div>
+  </div>
+</header>
+<nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=off>The Standings</a><a href=lab.html class=off>The Lab</a><a href=schedule.html class=off>The Schedule</a><a href=how.html class=on>The Rules</a><a href=history.html class=off>The Archive</a></nav>
+<main id=main tabindex="-1">
+<div class=card id=matchcard><h2>Final championship matchup <span class='badge ok'>resolved</span></h2><div class=matchup><div class=side style='border-bottom-color:#8e0c3a'><img class=mark src='../logos/asu.svg' alt='' width=56 height=56 loading=lazy><div><span class=seed>1</span> <span class=tname>Arizona State</span></div></div><span class=vs>vs</span><div class=side style='border-bottom-color:#822433'><img class=mark src='../logos/isu.svg' alt='' width=56 height=56 loading=lazy><div><span class=seed>2</span> <span class=tname>Iowa State</span></div></div></div></div>
+
+<p class=lead>Sixteen teams, nine conference games each, no round robin —
+which means two teams can finish with identical records having played
+completely different schedules. The Big 12 sends its two best conference
+winning percentages to the championship game, and when teams tie, a strict
+seven-step procedure decides who goes. This site runs that procedure,
+verbatim, after every game.</p>
+
+<h2>The two golden rules</h2>
+<p>Before any step-counting, two structural rules do a lot of work:</p>
+<ul>
+  <li><b>Win percentage, not raw wins.</b> The goal is the two best conference
+  <i>winning percentages</i> — mid-season, a 5–1 team outranks a 6–2 team.
+  (The standings table has a toggle if you want to see it both ways.)</li>
+  <li><b>A two-way tie for first between teams that met is no tie at all.</b>
+  Both are in the championship game; the head-to-head winner is the #1 seed.
+  The procedure below is for everything messier.</li>
+</ul>
+
+<h2>The seven steps</h2>
+<p>Applied in order; the first step that separates anyone wins. With three or
+more tied teams, the moment one team is seeded, the survivors go back to the
+top and start over (dropping to the two-team rules once only two remain).</p>
+<ol class=rules>
+  <li><b>Head-to-head.</b> For two teams: did you play, and who won? For
+  three-plus: winning percentage in games among the tied group — with one
+  twist: a team that beat every other team in the group is seeded even if the
+  group didn't all play each other.</li>
+  <li><b>Common opponents.</b> Win percentage against the conference opponents
+  every tied team played. Different schedules, same yardstick.</li>
+  <li><b>The standings walk.</b> Compare records against the best-placed team
+  everyone played, then the next, on down the standings. Tied placement groups
+  count as one collective opponent — you're compared against the group, not
+  its members individually.</li>
+  <li><b>Strength of schedule.</b> Combined conference record of each team's
+  nine conference opponents. The tiebreaker equivalent of "who had the harder
+  road."</li>
+  <li><b>Total wins</b> across the full 12-game season — with at most one win
+  over an FCS opponent counting, so a cupcake-heavy September can't decide a
+  title.</li>
+  <li><b>SportSource Analytics rating.</b> A proprietary metric the conference
+  buys; it is not public. When a projection reaches this step, the site flags
+  it rather than guessing.</li>
+  <li><b>Coin toss.</b> Yes, really. It has never come to this.</li>
+</ol>
+
+<h2>A real one: the 2024 four-way tie</h2>
+<p>The procedure's baptism by fire came immediately: in its first season at
+sixteen teams, Arizona State, BYU, Colorado, and Iowa State all finished
+7–2. Two championship-game spots, four teams, none of whom had all played
+each other. Here is the full resolution — generated by this site's rules
+engine from the 2024 results, matching the conference's official outcome
+(Arizona State #1, Iowa State #2):</p>
+<div class=worked>
+  <p class=meta>Engine output, 2024 season, tie group: Arizona State · BYU ·
+  Colorado · Iowa State</p>
+  <ol>
+    <li>(a) Not all tied teams played each other and no team defeated all others — proceed to next step.</li>
+    <li class=seeded>(b) vs common opponents (Kansas, Kansas State, UCF, Utah): Arizona State 1.000, BYU 0.750, Colorado 0.500, Iowa State 0.750 — Arizona State seeded.</li>
+    <li>Restarting procedure for remaining tied teams: BYU, Colorado, Iowa State.</li>
+    <li>(a) Not all tied teams played each other and no team defeated all others — proceed to next step.</li>
+    <li>(b) vs common opponents (Baylor, Kansas, Kansas State, UCF, Utah): BYU 0.800, Colorado 0.600, Iowa State 0.800 — still tied.</li>
+    <li>(c) vs [Baylor/TCU/Texas Tech]: BYU 1-0, Colorado 2-0, Iowa State 1-1 — separates some but no single leader; continuing down the standings.</li>
+    <li>(c) vs [Kansas State/West Virginia]: BYU 1-0, Colorado 0-1, Iowa State 2-0 — separates some but no single leader; continuing down the standings.</li>
+    <li>(c) Walked full standings without a single leader — proceed.</li>
+    <li class=seeded>(d) Opponents&#x27; combined conference record: BYU 31-50 (0.383), Colorado 30-51 (0.370), Iowa State 36-45 (0.444) — Iowa State seeded.</li>
+    <li>Restarting procedure for remaining tied teams: BYU, Colorado.</li>
+    <li>(a) Head-to-head: BYU and Colorado did not play.</li>
+    <li class=seeded>(b) vs common opponents (Arizona, Baylor, Kansas, Kansas State, Oklahoma State, UCF, Utah): BYU 0.857, Colorado 0.714 — BYU seeded.</li>
+
+  </ol>
+</div>
+<div class=aside><b>A question this example settles.</b> When a step
+separates the group but leaves two teams tied at the top — here BYU and Iowa
+State at .800 with Colorado at .600 — does Colorado get bounced, with the
+other two restarting as a two-team tie? Reasonable, and many conferences do
+work that way, but the Big 12 does not: its policy only removes a team from a
+multi-team tie by <i>seeding</i> it, and 2024 proves the point. Bouncing
+Colorado at step (b) would put <b>BYU</b> in the championship game on step
+(c). The conference sent <b>Iowa State</b> — exactly what carrying all three
+teams to step (d) produces.</div>
+
+<p>Worth noticing: head-to-head never fired (the four didn't all meet),
+Arizona State escaped on <b>common opponents</b>, the standings walk twice
+found information but never a <i>single</i> leader, and Iowa State's ticket
+was punched by <b>strength of schedule</b> — step four — while BYU and
+Colorado never trailed anyone by record. That's the procedure working as
+designed: it keeps asking narrower questions until exactly one team has the
+better answer.</p>
+
+<h2>The what-if simulator</h2>
+<p>Every unplayed conference game on the main page has two buttons. Pick
+winners — one game or all seventy-two — and the site replays the entire
+procedure on the simulated season instantly, in your browser. The matchup
+card, standings, and tie narratives all update; clear your picks and reality
+returns. Nothing is uploaded or saved.</p>
+<p>The ★ marks each game's favorite under the selected rating model, with the
+projected margin (home field included) in the hover text:</p>
+<table class=models>
+  <tr><th>Model</th><th>What it is</th></tr>
+  <tr><td><b>SP+</b></td><td>Bill Connelly's efficiency-based rating —
+  the industry-standard public power number.</td></tr>
+  <tr><td><b>FPI</b></td><td>ESPN's Football Power Index.</td></tr>
+  <tr><td><b>Elo</b></td><td>The chess rating applied to football: beat good
+  teams, number goes up.</td></tr>
+  <tr><td><b>SRS</b></td><td>Simple Rating System — margin of victory
+  adjusted for schedule. The classic.</td></tr>
+</table>
+<div class=aside>Preseason, the models carry last season's ratings until the
+new year's numbers publish — each is labeled with the year it comes
+from.</div>
+
+<h2>The Championship race card</h2>
+<p>Three layers, in order of certainty. <b>Clinch and elimination
+statuses are proofs</b>: early in the season, strict win-count arithmetic
+that no tiebreaker can undo; from mid-November, exhaustive enumeration of
+every remaining outcome through the full procedure — which is also where the
+"clinches with a win + a Utah loss" scenario lines come from.
+<b>Percentages are Monte Carlo odds</b>: ten thousand simulations of the
+rest of the season, win probabilities from an ensemble of the public rating
+models, every simulated season scored with the real tiebreakers. Proofs
+always override odds. And the <b>Chaos Index</b> compresses the whole race
+into one number from 0 (decided) to 100 (sixteen-way pileup): 60% the
+entropy of the championship odds, 25% how many living teams are tangled in
+ties, 15% how many teams are still mathematically alive.</p>
+
+<h2>How we know the engine is right</h2>
+<p>The conference publishes final standings every year, but they list tied
+teams as a block without applying the procedure — 2024's four 7-2 teams are
+printed BYU, Arizona State, Iowa State, Colorado, while the teams actually
+sent to the championship game were Arizona State and Iowa State. The pairing
+itself is the only published artifact that encodes the tiebreakers' result,
+so that is what we test against: <b>this engine reproduces all nine
+championship-game pairings of the championship era, 2017 through 2025</b>,
+from the game results alone. It also reproduces the 2024 four-way tie exactly,
+which is the case that pins down the rule discussed above.</p>
+
+<h2>Where the policy is silent, and what we chose</h2>
+<p>The published procedure is specific about the ladder and mostly specific
+about the mechanics, but a working implementation has to answer a few
+questions the text doesn't. In the interest of showing our work:</p>
+<ul>
+  <li><b>Teams that trail but don't lose outright.</b> The policy removes a
+  team from a multi-team tie only by <i>seeding</i> it ("after one team has an
+  advantage and is seeded, all remaining teams … repeat the tie-breaking
+  procedure"). It never says a team that merely trails at some step drops out.
+  We carry the whole group forward — and 2024 confirms it, since bouncing
+  Colorado at step (b) would have sent BYU rather than Iowa State.</li>
+  <li><b>Whether tied teams count as their own common opponents.</b> Step (b)
+  says "all common conference opponents played by all other teams involved in
+  the tie." We read the tied teams themselves out of that set, because games
+  among them are precisely what step (a) already weighed; counting them twice
+  would let step (a) decide step (b).</li>
+  <li><b>A standings group that separates without crowning anyone.</b> Step
+  (c) says to compare against the next highest placed common opponent
+  "proceeding through the standings." When a placement group splits the tied
+  teams but leaves two or more still level at the top, we keep walking down
+  the standings, and fall through to step (d) only after the whole ladder of
+  opponents is exhausted.</li>
+  <li><b>The championship game itself.</b> Step (e) counts wins "in a 12-game
+  season," so the title game — a thirteenth — is excluded from that count, and
+  from conference records everywhere on this site.</li>
+</ul>
+<p>Every one of these choices is testable, and the nine championship pairings
+above are the test.</p>
+
+<h2>Where the data comes from</h2>
+<p>Scores arrive from
+<a href="https://collegefootballdata.com">collegefootballdata.com</a>; the
+procedure text comes from the
+<a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official
+Big 12 tiebreaker policy</a>. During the season the site rebuilds itself
+hourly through weekend game windows (and daily otherwise), so the projection
+updates within about an hour of a final whistle. The rules engine is
+validated against the 2024 and 2025 seasons and every displayed conclusion
+comes with its step-by-step reasoning — if you think it's wrong, the receipts
+are right there. Found a bug anyway? <a
+href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
+
+<a class=backlink href="./">← Back to the tracker</a>
+</main>
+<footer class=b12-footer>
+  A Big12ology project · not affiliated with the Big 12 Conference; conference
+  and team marks belong to their owners and appear for identification only.<br>
+  <a href="https://github.com/big12ology">GitHub</a> ·
+  <a href=../feed.xml>RSS</a> ·
+  <a href=./>The Brief</a> ·
+  <a href=history.html>The Archive</a> ·
+  <a href=data.json>Data</a> ·
+  <a href="https://big12ology.com/privacy">Privacy</a> ·
+  <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
+</footer>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
+</body>
+</html>
