@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang=en><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>The Rotation — Big 12 Tiebreaker Tracker</title>
+<link rel=canonical href="https://big12ology.com/tiebreaker/2024/rotation.html">
+<meta name=description content="Who each Big 12 team misses in the 2024 Big 12 season, and the last time they met as conference opponents — 48 of the 120 pairings sit out a season.">
+<meta property=og:type content=website>
+<meta property=og:site_name content=Big12ology>
+<meta property=og:title content="The Rotation — Big 12 Tiebreaker Tracker">
+<meta property=og:description content="Who each Big 12 team misses in the 2024 Big 12 season, and the last time they met as conference opponents — 48 of the 120 pairings sit out a season.">
+<meta property=og:url content="https://big12ology.com/tiebreaker/2024/rotation.html">
+<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta property=og:image:width content=1200>
+<meta property=og:image:height content=630>
+<meta name=twitter:card content=summary_large_image>
+<link rel=icon type=image/svg+xml href="../favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="../favicon-32.png">
+<link rel=apple-touch-icon href="../favicon-180.png">
+<script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
+<link rel=stylesheet href="../brand.css?v=34ffdfb0">
+<script defer src="../theme.js?v=9a8f53fd"></script>
+<link rel=alternate type=application/rss+xml href=../feed.xml>
+<style>
+.matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
+  flex-wrap:wrap }
+.side { display:flex; align-items:center; gap:12px; font-size:24px;
+  font-weight:700; border-bottom:4px solid var(--line);
+  padding:6px 10px 10px 2px }
+.tname { letter-spacing:-.01em }
+.vs { color:var(--dim); font-weight:400; font-size:18px; padding:0 6px }
+.seed { display:inline-block; background:var(--accent); color:#fff;
+  border-radius:6px; font-size:14px; width:22px; height:22px;
+  line-height:22px; text-align:center; vertical-align:3px; margin-right:4px }
+.badge { font-size:11px; border-radius:20px; padding:2px 9px;
+  vertical-align:1px; font-weight:600; letter-spacing:.03em }
+.badge.ok { background:#13653626; color:#136536 }
+.badge.warn { background:#b4530926; color:var(--warn) }
+:root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#666d7b;
+  --line:#e2ddd2; --accent:#0B6E77; --accent2:#003087; --warn:#b45309;
+  --pctl:27%; }  /* lightness set by contrast, not taste: 32%
+  put the mid-scale ambers at 3.5:1, below the 4.5:1 WCAG AA
+  floor for body text. Hue still carries the meaning. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg:#14161a; --panel:#1d2026;
+    --ink:#e8e6e1; --dim:#9aa0aa; --line:#2e323a; --accent:#3FC7CE;
+    --accent2:#7aa2ff; --warn:#fbbf24; --pctl:63%; } }
+:root[data-theme="dark"] { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1;
+  --dim:#9aa0aa; --line:#2e323a; --accent:#3FC7CE; --accent2:#7aa2ff;
+  --warn:#fbbf24; --pctl:63%; }
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif }
+header { border-bottom:4px solid var(--accent); padding:22px 20px;
+  background:var(--panel) }
+header h1 { margin:0; font-size:22px } header p { margin:3px 0 0;
+  color:var(--dim); font-size:14px } header a { color:var(--accent2);
+  text-decoration:none }
+main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
+  display:grid; gap:18px }
+.card { background:var(--panel); border:1px solid var(--line);
+  border-radius:10px; padding:16px 18px }
+.card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--dim) }
+.dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
+.mark { vertical-align:-3px; margin-right:6px }
+.clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:14.5px }
+.clrow:last-of-type { border-bottom:none }
+.obar { display:inline-block; width:100px; height:8px; background:var(--line);
+  border-radius:4px; overflow:hidden; vertical-align:1px; margin:0 6px 0 8px }
+.obar i { display:block; height:100%; border-radius:4px }
+.opct { font-variant-numeric:tabular-nums; font-size:13.5px }
+.chaosband { display:flex; align-items:center; gap:14px; border:1px solid
+  var(--line); border-radius:8px; padding:10px 14px; margin-bottom:10px;
+  font-size:13.5px }
+.cnum { font-size:36px; font-weight:800; line-height:1 }
+.tag { font-size:10.5px; border-radius:20px; padding:2px 8px; font-weight:700 }
+.tag.live { background:#13653626; color:#136536 }
+.tag.destiny { background:#b4530926; color:var(--warn) }
+.scen { margin:5px 0 2px; padding-left:20px; font-size:13px; color:var(--dim) }
+.elim { font-size:13px } ul.games { list-style:none; padding:0; margin:0 }
+ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
+  font-size:14px } .ccgtag { color:var(--accent); font-weight:700;
+  font-size:11px; text-transform:uppercase }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tag.live { color:#4ade80;
+    background:#4ade8024 } }
+:root[data-theme="dark"] .tag.live { color:#4ade80; background:#4ade8024 }
+
+table { border-collapse:collapse; width:100%; font-size:14px }
+th, td { text-align:left; padding:6px 9px; border-bottom:1px solid
+  var(--line); font-variant-numeric:tabular-nums }
+th { font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--dim) }
+thead tr th { border-bottom:2px solid var(--line) }
+.teamcell { white-space:nowrap }
+.briefstamp { color:var(--dim); font-size:13px; text-align:center; margin:-4px 0 2px }
+tr.grpend td { border-bottom:2px solid var(--line) }
+.stbl td:last-child, .stbl th:last-child { text-align:right }
+.stbl td { height:38px }
+.duo.even { grid-template-columns:minmax(0,1fr) minmax(0,1fr) }
+.duo.even > .stack { align-content:stretch }
+.duo.even .card { height:100% }
+.posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
+h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--dim); margin:16px 0 4px }
+.duo { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+  gap:18px; align-items:start }
+.duo > .stack { display:grid; gap:18px; align-content:start; min-width:0 }
+@media (max-width: 900px) {
+  /* .duo.even is more specific than .duo, so it has to be named here too or
+     the two boards stay side by side at 166px each on a phone. */
+  .duo, .duo.even { grid-template-columns:1fr }
+  .duo > .stack, .duo.even > .stack { display:contents }
+  .duo.even .card { height:auto }
+}
+.tablescroll, .tablewrap { overflow-x:auto; position:relative }
+/* Same cue as the attendance tracker's season grid: a fade at the live edge
+   so a table that runs past the card does not look like it stops there. */
+.scrollbox { position:relative }
+.scrollbox::after { content:""; position:absolute; top:0; right:0; bottom:0;
+  width:38px; pointer-events:none; opacity:1; transition:opacity .18s ease;
+  background:linear-gradient(to right, transparent, var(--panel)) }
+.scrollbox.at-end::after { opacity:0 }
+/* Grid items default to min-width:auto, so a wide child — the
+   movement chart, a table — pushes the whole page sideways on a
+   phone instead of scrolling inside its own box. */
+main > * { min-width:0 }
+table.h2h { width:100%; table-layout:auto }
+.h2h th, .h2h td { padding:6px 4px; font-size:13px; white-space:nowrap;
+  text-align:center }
+.h2h td.teamcell, .h2h thead th:first-child { text-align:left;
+  padding-left:2px }
+.h2h thead th { font-size:12px; letter-spacing:.02em }
+.hatag { display:inline-block; min-width:11px; margin-right:4px;
+  font-size:10px; font-weight:700; color:var(--dim); vertical-align:1px }
+/* The empty cells carry meaning — a third of this grid is pairs the
+   schedule never makes — so they need to be visible, not ghosts. */
+.selfcell { color:var(--dim); opacity:.75;
+  background:color-mix(in srgb, var(--dim) 12%, transparent) }
+.nomeet { color:var(--dim); opacity:.75; font-size:15px; line-height:1 }
+
+/* ---- season replay ---- */
+#replaybar .rpline { display:flex; align-items:center; gap:10px;
+  flex-wrap:wrap }
+#replaybar input[type=range] { flex:1 1 200px; min-width:140px;
+  accent-color:var(--accent) }
+@media (max-width:640px) {
+  #replaybar #rp-label { flex:1 0 100%; min-width:0 !important; order:9 }
+  #replaybar #rp-now { order:8 }
+}
+#replaybar #rp-label { font-size:14px; color:var(--dim) }
+#replaybar #rp-prev, #replaybar #rp-next { padding:6px 10px }
+#replaycard.scrubbed { border-color:var(--accent) }
+/* keeps its space so the slider never changes width */
+#rp-now.invis { visibility:hidden }
+.mv { font-size:11px; margin-left:5px; font-weight:600 }
+.mv.up { color:hsl(140 60% var(--pctl)) }
+.mv.down { color:hsl(6 70% var(--pctl)) }
+tr.moved.up td { animation:flashup 900ms ease-out }
+tr.moved.down td { animation:flashdown 900ms ease-out }
+@keyframes flashup { from { background:rgba(22,140,80,.16) }
+                     to { background:transparent } }
+@keyframes flashdown { from { background:rgba(200,16,46,.13) }
+                       to { background:transparent } }
+@media (prefers-reduced-motion:reduce) {
+  tr.moved.up td, tr.moved.down td { animation:none }
+}
+
+/* where a team stands in the championship race, at this point in the year */
+.st-out, .teamcell.st-out { text-decoration:line-through;
+  text-decoration-color:var(--dim); opacity:.62 }
+.teamcell.st-in { font-weight:700 }
+.teamcell.st-top { font-style:italic }
+
+/* the replay's own controls, same chrome as the Lab's */
+.wbtn { font:inherit; font-size:14px; border:1px solid var(--line);
+  background:var(--panel); color:var(--ink); border-radius:8px;
+  padding:6px 14px; cursor:pointer }
+.wbtn:hover { border-color:var(--accent) }
+
+/* ---- how the season moved ---- */
+.bumpwrap { overflow-x:auto }
+.bump { width:100%; min-width:660px; height:auto; display:block }
+.bump .bgrid { stroke:var(--line); stroke-width:1 }
+.bump .btick { fill:var(--dim); font-size:11px }
+.bump .bnum { text-anchor:end }
+.bump .bwk { text-anchor:middle }
+.bump .blabel { font-size:11px; font-weight:600 }
+.bump .bteam { transition:opacity .12s ease }
+.bumpwrap:hover .bteam { opacity:.22 }
+.bumpwrap .bteam:hover { opacity:1 }
+.bumpwrap .bteam:hover polyline { stroke-width:3.6 }
+</style>
+<script defer src="../scrollcue.js?v=5fef00f1"></script></head><body>
+<a class=skip-link href="#main">Skip to content</a>
+<nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="../brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
+<a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a><span class=b12-right><span class=b12-theme></span></span></nav>
+<header class=b12-head>
+  <div class=hwrap>
+    <div>
+      <h1>Big 12 Tiebreaker Tracker <span class=yrpills><a href='../'>2026</a><a href='../2025/'>2025</a><span class=yron>2024</span></span></h1>
+      <p>The 2024 season as it finished, with the official tiebreaking procedures applied to the final results.</p>
+    </div>
+  </div>
+</header>
+<nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=off>The Standings</a><a href=lab.html class=off>The Lab</a><a href=schedule.html class=off>The Schedule</a><a href=draw.html class=off>The Draw</a><a href=rotation.html class=on>The Rotation</a><a href=cutline.html class=off>The Cut Line</a><a href=how.html class=off>The Rules</a><a href=history.html class=off>The Archive</a></nav>
+<main id=main tabindex="-1">
+<div class=card id=matchcard><h2>Final championship matchup <span class='badge ok'>resolved</span></h2><div class=matchup><div class=side style='border-bottom-color:#8e0c3a'><img class=mark src='../logos/asu.svg' alt='' width=56 height=56 loading=lazy><div><span class=seed>1</span> <span class=tname>Arizona State</span></div></div><span class=vs>vs</span><div class=side style='border-bottom-color:#822433'><img class=mark src='../logos/isu.svg' alt='' width=56 height=56 loading=lazy><div><span class=seed>2</span> <span class=tname>Iowa State</span></div></div></div></div>
+<div class=card id=firstmeet>
+<h2>Meeting for the first time</h2>
+<ul class=firstlist><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona <span class=dim>and</span> <img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State</li><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona <span class=dim>and</span> <img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</li><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona <span class=dim>and</span> <img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado</li><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona <span class=dim>and</span> <img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>Houston</li><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona <span class=dim>and</span> <img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU</li><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona <span class=dim>and</span> <img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>Texas Tech</li><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona <span class=dim>and</span> <img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF</li><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona <span class=dim>and</span> <img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>Utah</li><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona <span class=dim>and</span> <img class=mark src='../logos/wvu.svg' alt='' width=16 height=16 loading=lazy>West Virginia</li><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State <span class=dim>and</span> <img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</li><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State <span class=dim>and</span> <img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>Cincinnati</li><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State <span class=dim>and</span> <img class=mark src='../logos/ku.svg' alt='' width=16 height=16 loading=lazy>Kansas</li><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State <span class=dim>and</span> <img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>Kansas State</li><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State <span class=dim>and</span> <img class=mark src='../logos/okst.svg' alt='' width=16 height=16 loading=lazy>Oklahoma State</li><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State <span class=dim>and</span> <img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>Texas Tech</li><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State <span class=dim>and</span> <img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF</li><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State <span class=dim>and</span> <img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>Utah</li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=dim>and</span> <img class=mark src='../logos/bay.svg' alt='' width=16 height=16 loading=lazy>Baylor</li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=dim>and</span> <img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>Houston</li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=dim>and</span> <img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>Kansas State</li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=dim>and</span> <img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF</li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=dim>and</span> <img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>Utah</li><li><img class=mark src='../logos/bay.svg' alt='' width=16 height=16 loading=lazy>Baylor <span class=dim>and</span> <img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado</li><li><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>Cincinnati <span class=dim>and</span> <img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado</li><li><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>Cincinnati <span class=dim>and</span> <img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>Kansas State</li><li><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>Cincinnati <span class=dim>and</span> <img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU</li><li><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>Cincinnati <span class=dim>and</span> <img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>Texas Tech</li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado <span class=dim>and</span> <img class=mark src='../logos/ku.svg' alt='' width=16 height=16 loading=lazy>Kansas</li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado <span class=dim>and</span> <img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>Kansas State</li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado <span class=dim>and</span> <img class=mark src='../logos/okst.svg' alt='' width=16 height=16 loading=lazy>Oklahoma State</li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado <span class=dim>and</span> <img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>Texas Tech</li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado <span class=dim>and</span> <img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF</li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado <span class=dim>and</span> <img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>Utah</li><li><img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>Houston <span class=dim>and</span> <img class=mark src='../logos/isu.svg' alt='' width=16 height=16 loading=lazy>Iowa State</li><li><img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>Houston <span class=dim>and</span> <img class=mark src='../logos/ku.svg' alt='' width=16 height=16 loading=lazy>Kansas</li><li><img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>Houston <span class=dim>and</span> <img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>Utah</li><li><img class=mark src='../logos/isu.svg' alt='' width=16 height=16 loading=lazy>Iowa State <span class=dim>and</span> <img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF</li><li><img class=mark src='../logos/isu.svg' alt='' width=16 height=16 loading=lazy>Iowa State <span class=dim>and</span> <img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>Utah</li><li><img class=mark src='../logos/okst.svg' alt='' width=16 height=16 loading=lazy>Oklahoma State <span class=dim>and</span> <img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>Utah</li><li><img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU <span class=dim>and</span> <img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF</li><li><img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU <span class=dim>and</span> <img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>Utah</li><li><img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF <span class=dim>and</span> <img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>Utah</li></ul>
+<p class=note>Of the 120 pairings this conference contains,
+55 had already happened in conference play.
+23 pairings will still be waiting after 2024.</p>
+</div>
+<div class=card id=rotationcard>
+<h2>Who you miss</h2>
+<p>Nine conference games among sixteen teams. <b>48</b> of the
+120 possible pairings sit out 2024 entirely — more than a
+third of the league each team never sees. The year beside each name is the
+last season the two met <em>as conference opponents</em>.</p>
+<div class="tablescroll scrollbox"><table class=rotationtable>
+<tbody><tr><td class=teamcell><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona</td><td><ul class=misslist><li><img class=mark src='../logos/bay.svg' alt='' width=16 height=16 loading=lazy>BAY <span class=warnpill>never</span></li><li><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>CIN <span class=warnpill>never</span></li><li><img class=mark src='../logos/isu.svg' alt='' width=16 height=16 loading=lazy>ISU <span class=warnpill>never</span></li><li><img class=mark src='../logos/ku.svg' alt='' width=16 height=16 loading=lazy>KU <span class=warnpill>never</span></li><li><img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>KSU <span class=warnpill>never</span></li><li><img class=mark src='../logos/okst.svg' alt='' width=16 height=16 loading=lazy>OKST <span class=warnpill>never</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State</td><td><ul class=misslist><li><img class=mark src='../logos/bay.svg' alt='' width=16 height=16 loading=lazy>BAY <span class=warnpill>never</span></li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>COLO <span class=warnpill>never</span></li><li><img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>HOU <span class=warnpill>never</span></li><li><img class=mark src='../logos/isu.svg' alt='' width=16 height=16 loading=lazy>ISU <span class=warnpill>never</span></li><li><img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU <span class=warnpill>never</span></li><li><img class=mark src='../logos/wvu.svg' alt='' width=16 height=16 loading=lazy>WVU <span class=warnpill>never</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</td><td><ul class=misslist><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>COLO <span class=warnpill>never</span></li><li><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>CIN <span class=dim>2023</span></li><li><img class=mark src='../logos/isu.svg' alt='' width=16 height=16 loading=lazy>ISU <span class=dim>2023</span></li><li><img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU <span class=dim>2023</span></li><li><img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>TTU <span class=dim>2023</span></li><li><img class=mark src='../logos/wvu.svg' alt='' width=16 height=16 loading=lazy>WVU <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/bay.svg' alt='' width=16 height=16 loading=lazy>Baylor</td><td><ul class=misslist><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>ARIZ <span class=warnpill>never</span></li><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>ASU <span class=warnpill>never</span></li><li><img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>UTAH <span class=warnpill>never</span></li><li><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>CIN <span class=dim>2023</span></li><li><img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>KSU <span class=dim>2023</span></li><li><img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>Cincinnati</td><td><ul class=misslist><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>ARIZ <span class=warnpill>never</span></li><li><img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>UTAH <span class=warnpill>never</span></li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=dim>2023</span></li><li><img class=mark src='../logos/bay.svg' alt='' width=16 height=16 loading=lazy>BAY <span class=dim>2023</span></li><li><img class=mark src='../logos/ku.svg' alt='' width=16 height=16 loading=lazy>KU <span class=dim>2023</span></li><li><img class=mark src='../logos/okst.svg' alt='' width=16 height=16 loading=lazy>OKST <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado</td><td><ul class=misslist><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>ASU <span class=warnpill>never</span></li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=warnpill>never</span></li><li><img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>HOU <span class=warnpill>never</span></li><li><img class=mark src='../logos/isu.svg' alt='' width=16 height=16 loading=lazy>ISU <span class=warnpill>never</span></li><li><img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU <span class=warnpill>never</span></li><li><img class=mark src='../logos/wvu.svg' alt='' width=16 height=16 loading=lazy>WVU <span class=warnpill>never</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>Houston</td><td><ul class=misslist><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>ASU <span class=warnpill>never</span></li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>COLO <span class=warnpill>never</span></li><li><img class=mark src='../logos/okst.svg' alt='' width=16 height=16 loading=lazy>OKST <span class=dim>2023</span></li><li><img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>TTU <span class=dim>2023</span></li><li><img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF <span class=dim>2023</span></li><li><img class=mark src='../logos/wvu.svg' alt='' width=16 height=16 loading=lazy>WVU <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/isu.svg' alt='' width=16 height=16 loading=lazy>Iowa State</td><td><ul class=misslist><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>ARIZ <span class=warnpill>never</span></li><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>ASU <span class=warnpill>never</span></li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>COLO <span class=warnpill>never</span></li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=dim>2023</span></li><li><img class=mark src='../logos/okst.svg' alt='' width=16 height=16 loading=lazy>OKST <span class=dim>2023</span></li><li><img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/ku.svg' alt='' width=16 height=16 loading=lazy>Kansas</td><td><ul class=misslist><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>ARIZ <span class=warnpill>never</span></li><li><img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>UTAH <span class=warnpill>never</span></li><li><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>CIN <span class=dim>2023</span></li><li><img class=mark src='../logos/okst.svg' alt='' width=16 height=16 loading=lazy>OKST <span class=dim>2023</span></li><li><img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>TTU <span class=dim>2023</span></li><li><img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>Kansas State</td><td><ul class=misslist><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>ARIZ <span class=warnpill>never</span></li><li><img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>UTAH <span class=warnpill>never</span></li><li><img class=mark src='../logos/bay.svg' alt='' width=16 height=16 loading=lazy>BAY <span class=dim>2023</span></li><li><img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU <span class=dim>2023</span></li><li><img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>TTU <span class=dim>2023</span></li><li><img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/okst.svg' alt='' width=16 height=16 loading=lazy>Oklahoma State</td><td><ul class=misslist><li><img class=mark src='../logos/ariz.svg' alt='' width=16 height=16 loading=lazy>ARIZ <span class=warnpill>never</span></li><li><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>CIN <span class=dim>2023</span></li><li><img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>HOU <span class=dim>2023</span></li><li><img class=mark src='../logos/isu.svg' alt='' width=16 height=16 loading=lazy>ISU <span class=dim>2023</span></li><li><img class=mark src='../logos/ku.svg' alt='' width=16 height=16 loading=lazy>KU <span class=dim>2023</span></li><li><img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU</td><td><ul class=misslist><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>ASU <span class=warnpill>never</span></li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>COLO <span class=warnpill>never</span></li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=dim>2023</span></li><li><img class=mark src='../logos/isu.svg' alt='' width=16 height=16 loading=lazy>ISU <span class=dim>2023</span></li><li><img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>KSU <span class=dim>2023</span></li><li><img class=mark src='../logos/wvu.svg' alt='' width=16 height=16 loading=lazy>WVU <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>Texas Tech</td><td><ul class=misslist><li><img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>UTAH <span class=warnpill>never</span></li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=dim>2023</span></li><li><img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>HOU <span class=dim>2023</span></li><li><img class=mark src='../logos/ku.svg' alt='' width=16 height=16 loading=lazy>KU <span class=dim>2023</span></li><li><img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>KSU <span class=dim>2023</span></li><li><img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF</td><td><ul class=misslist><li><img class=mark src='../logos/bay.svg' alt='' width=16 height=16 loading=lazy>BAY <span class=dim>2023</span></li><li><img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>HOU <span class=dim>2023</span></li><li><img class=mark src='../logos/ku.svg' alt='' width=16 height=16 loading=lazy>KU <span class=dim>2023</span></li><li><img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>KSU <span class=dim>2023</span></li><li><img class=mark src='../logos/okst.svg' alt='' width=16 height=16 loading=lazy>OKST <span class=dim>2023</span></li><li><img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>TTU <span class=dim>2023</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>Utah</td><td><ul class=misslist><li><img class=mark src='../logos/bay.svg' alt='' width=16 height=16 loading=lazy>BAY <span class=warnpill>never</span></li><li><img class=mark src='../logos/cin.svg' alt='' width=16 height=16 loading=lazy>CIN <span class=warnpill>never</span></li><li><img class=mark src='../logos/ku.svg' alt='' width=16 height=16 loading=lazy>KU <span class=warnpill>never</span></li><li><img class=mark src='../logos/ksu.svg' alt='' width=16 height=16 loading=lazy>KSU <span class=warnpill>never</span></li><li><img class=mark src='../logos/ttu.svg' alt='' width=16 height=16 loading=lazy>TTU <span class=warnpill>never</span></li><li><img class=mark src='../logos/wvu.svg' alt='' width=16 height=16 loading=lazy>WVU <span class=warnpill>never</span></li></ul></td></tr><tr><td class=teamcell><img class=mark src='../logos/wvu.svg' alt='' width=16 height=16 loading=lazy>West Virginia</td><td><ul class=misslist><li><img class=mark src='../logos/asu.svg' alt='' width=16 height=16 loading=lazy>ASU <span class=warnpill>never</span></li><li><img class=mark src='../logos/cu.svg' alt='' width=16 height=16 loading=lazy>COLO <span class=warnpill>never</span></li><li><img class=mark src='../logos/utah.svg' alt='' width=16 height=16 loading=lazy>UTAH <span class=warnpill>never</span></li><li><img class=mark src='../logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU <span class=dim>2023</span></li><li><img class=mark src='../logos/hou.svg' alt='' width=16 height=16 loading=lazy>HOU <span class=dim>2023</span></li><li><img class=mark src='../logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU <span class=dim>2023</span></li></ul></td></tr></tbody></table></div>
+<p class=note>Conference meetings only, and membership as it was at the
+time: these programs have played each other in non-conference games and
+bowls for decades, so "never" here is a fact about the league, not about the
+two schools. A Utah–Baylor game in 2015 was not a Big 12 meeting — Utah was
+in the Pac-12.</p>
+</div>
+</main>
+<footer class=b12-footer>A Big12ology project · not affiliated with the
+Big 12 Conference · <a href=data.json>data.json</a> ·
+<a href=standings.csv>standings.csv</a> ·
+<a href=../feed.xml>RSS</a> ·
+<a href="https://big12ology.com/privacy">Privacy</a></footer>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
+</body></html>

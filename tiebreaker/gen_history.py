@@ -214,6 +214,69 @@ def h2h_grid(all_games):
             + "".join(rows) + "</tbody></table></div>")
 
 
+def cutline_section(all_games):
+    """What it actually took to reach the title game.
+
+    "Is 8-1 safe?" is the wrong question, and the record shows why: three
+    times a team has finished on the same conference record as a
+    championship-game participant and stayed home. The cut is not a line
+    across the standings, it is the tiebreak ladder.
+    """
+    rows, same_record = [], 0
+    for year in sorted(all_games):
+        games = all_games[year]
+        ccg = next((g for g in games if g.get("ccg") and g["completed"]), None)
+        if not ccg:
+            continue                      # 2011-2016 had no championship game
+        # conf_records hands back lists; normalise, or a tuple-to-list
+        # comparison below is false for every season and the whole point of
+        # the page silently disappears.
+        rec = {t: tuple(v) for t, v in tb.conf_records(games).items()}
+        part = [ccg["away"], ccg["home"]]
+        floor = min(rec[t] for t in part)   # the weaker record that got in
+        missed = sorted(((w, -l, t) for t, (w, l) in rec.items()
+                         if t not in part),
+                        reverse=True)
+        best = missed[0] if missed else None
+        tied = bool(best) and (best[0], -best[1]) == floor
+        if tied:
+            same_record += 1
+        at_floor = [t for t, r in rec.items() if r == floor]
+        rows.append(
+            f"<tr><td>{year}</td>"
+            + "".join(f"<td class=teamcell>{esc(t)} "
+                      f"<b>{rec[t][0]}&#8209;{rec[t][1]}</b></td>"
+                      for t in part)
+            + (f"<td class=teamcell>{esc(best[2])} "
+               f"<b>{best[0]}&#8209;{-best[1]}</b></td>"
+               f"<td>{'<span class=samerec>same record</span>' if tied else ''}"
+               f"{f' — {len(at_floor)} tied there' if len(at_floor) > 2 else ''}"
+               "</td>" if best else "<td></td><td></td>")
+            + "</tr>")
+
+    return f"""<div class=card id=cutline>
+<h2>What it took to get in</h2>
+<p>Nine conference games decide two championship-game seats. The obvious
+question is what record is enough, and the honest answer is that a record is
+not what decides it.</p>
+<div class="tablescroll scrollbox"><table class=cuttable>
+<thead><tr><th>Season</th><th colspan=2>Championship game</th>
+<th>Best team that missed</th><th></th></tr></thead>
+<tbody>{''.join(rows)}</tbody></table></div>
+<p class=note><b>{same_record}</b> of these seasons sent a team to the title
+game while another team on the <em>identical</em> conference record stayed
+home. In 2024 four teams finished 7&#8209;2 and the ladder chose two of
+them. That is the whole reason the seven steps exist: by the time the
+records are level, the standings have stopped being the answer.</p>
+<p class=note>Two formats sit in this table. Through 2016 this was a
+ten&#8209;team round robin — nine games meant everyone played everyone, and
+the record was a complete account. From 2024 it is sixteen teams playing
+nine of a possible fifteen, so the same 9&#8209;game denominator now
+describes two teams who did not face the same league. 2020 is shortened and
+uneven; COVID left teams on different game counts.</p>
+</div>"""
+
+
 def main():
     os.makedirs(HIST, exist_ok=True)
     all_games = {}
@@ -299,6 +362,10 @@ realignment for you.</p>
     out = os.path.join(HIST, "history_body.html")
     with open(out, "w") as f:
         f.write(body)
+    cut = os.path.join(HIST, "cutline_body.html")
+    with open(cut, "w") as f:
+        f.write(cutline_section(all_games))
+    print(f"built fragment {cut}")
     print(f"built fragment {out}: {tie_count} tie groups across "
           f"{LAST - FIRST + 1} seasons — run build.py to wrap it")
 
