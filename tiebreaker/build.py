@@ -27,6 +27,9 @@ import tiebreaker as tb
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(HERE, "site")
+# The schedule section is a sibling of /tiebreaker/ on the
+# domain, so its pages reach shared assets through ../tiebreaker/.
+SCHEDULE_SITE = os.path.join(HERE, "site_schedule")
 
 # team -> logo file key (assets in site/logos/, sourced from Wikimedia; BYU is png)
 TEAM_KEY = {
@@ -134,6 +137,23 @@ def rebase(html):
                 .replace("src=logos/", f"src={BASE}logos/"))
 
 
+def rebase_from(html, old, new):
+    """Repoint asset paths in an already-rendered body from one base to
+    another.
+
+    The bodies are built once, with the season's own base, and the schedule
+    section then serves the same HTML from a sibling path — so its marks have
+    to be walked from `old` to `new` rather than left pointing at a directory
+    that does not exist under /schedule/."""
+    if old == new:
+        return html
+    for attr in ("src", "href"):
+        for q in ("'", '"', ""):
+            html = html.replace(f"{attr}={q}{old}logos/",
+                                f"{attr}={q}{new}logos/")
+    return html
+
+
 def year_href(y):
     """Link from wherever we are now to another season's front page."""
     return BASE if y == LIVE_YEAR else f"{BASE}{y}/"
@@ -209,27 +229,25 @@ def fmt_prob(p):
 
 
 
-def tracker_top(year, active, matchcard=""):
+def tracker_top(year, active, matchcard="", section="tiebreaker"):
     """The one top: header bar, pill row, matchup card. Styled entirely by
     brand.css (.b12-head/.subnav) — no page may restyle these."""
+    meta = SECTIONS[section]
     years = "".join(
         (f"<span class=yron>{y}</span>" if y == year else
          f"<a href='{year_href(y)}'>{y}</a>")
         for y in [LIVE_YEAR] + ARCHIVE_YEARS)
-    blurb = ("Unofficial fan tool. Applies the official Big 12 tiebreaking "
-             "procedures to live results after every game."
-             if year == LIVE_YEAR else
-             f"The {year} season as it finished, with the official "
-             "tiebreaking procedures applied to the final results.")
+    blurb = (meta["live"] if year == LIVE_YEAR
+             else meta["past"].format(year=year))
     return f"""<header class=b12-head>
   <div class=hwrap>
     <div>
-      <h1>Big 12 Tiebreaker Tracker <span class=yrpills>{years}</span></h1>
+      <h1>{meta["title"]} <span class=yrpills>{years}</span></h1>
       <p>{blurb}</p>
     </div>
   </div>
 </header>
-{subnav(active)}
+{subnav(active, section)}
 <main id=main tabindex="-1">
 {matchcard}"""
 
@@ -237,23 +255,54 @@ def tracker_top(year, active, matchcard=""):
 # Ordered the way someone actually reads the season: the summary, then the
 # race, then where everyone stands, then the toys. Every label takes "The" —
 # a name that only works without it is a sign the page needs a better name.
+# Two sections now, because three of these pages were never about breaking
+# ties: the schedule, the draw and the rotation are about the shape of an
+# unbalanced sixteen-team season. They live at /schedule/ and reach back to
+# ../tiebreaker/ for the shared marks and stylesheet rather than carrying a
+# second copy of them.
+SECTIONS = {
+    "tiebreaker": {
+        "title": "Big 12 Tiebreaker Tracker",
+        "live": ("Unofficial fan tool. Applies the official Big 12 "
+                 "tiebreaking procedures to live results after every game."),
+        "past": ("The {year} season as it finished, with the official "
+                 "tiebreaking procedures applied to the final results."),
+    },
+    "schedule": {
+        "title": "Big 12 Schedule",
+        "live": ("Who plays whom, who misses whom, and what the unbalanced "
+                 "draw is worth. Nine conference games out of a possible "
+                 "fifteen."),
+        "past": ("The {year} conference schedule: every result by week, who "
+                 "never met, and what the draw was worth."),
+    },
+}
+
+SCHEDULE_PAGES = {"schedule.html", "draw.html", "rotation.html"}
+
 SUBNAV_LINKS = [("brief", "./", "The Brief"),
                 ("race", "race.html", "The Race"),
                 ("standings", "standings.html", "The Standings"),
                 ("tracker", "lab.html", "The Lab"),
-                ("schedule", "schedule.html", "The Schedule"),
-                ("draw", "draw.html", "The Draw"),
-                ("rotation", "rotation.html", "The Rotation"),
+
                 ("cutline", "cutline.html", "The Cut Line"),
                 ("ladder", "ladder.html", "The Ladder"),
                 ("how", "how.html", "The Rules"),
                 ("history", "history.html", "The Archive")]
 
+SCHEDULE_NAV = [("schedule", "./", "The Schedule"),
+                ("draw", "draw.html", "The Draw"),
+                ("rotation", "rotation.html", "The Rotation")]
 
-def subnav(active):
+
+def nav_for(section):
+    return SCHEDULE_NAV if section == "schedule" else SUBNAV_LINKS
+
+
+def subnav(active, section="tiebreaker"):
     links = "".join(
         f"<a href={href} class={'on' if key == active else 'off'}>{label}</a>"
-        for key, href, label in SUBNAV_LINKS)
+        for key, href, label in nav_for(section))
     return f"<nav class=subnav>{links}</nav>"
 
 
@@ -1308,14 +1357,17 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 
 
 def build_subpage(title, active, body, year, matchcard,
-                  canon=None, desc=None, head=""):
+                  canon=None, desc=None, head="", section="tiebreaker"):
+    sect_title = SECTIONS[section]["title"]
+    head_title = (sect_title if title == sect_title
+                  else f"{title} — {sect_title}")
     social = ""
     if canon:
         social = f"""<link rel=canonical href="{canon}">
 <meta name=description content="{esc(desc or '')}">
 <meta property=og:type content=website>
 <meta property=og:site_name content=Big12ology>
-<meta property=og:title content="{esc(title)} — Big 12 Tiebreaker Tracker">
+<meta property=og:title content="{esc(head_title)}">
 <meta property=og:description content="{esc(desc or '')}">
 <meta property=og:url content="{canon}">
 <meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
@@ -1325,7 +1377,7 @@ def build_subpage(title, active, body, year, matchcard,
     return f"""<!doctype html>
 <html lang=en><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
-<title>{esc(title)} — Big 12 Tiebreaker Tracker</title>
+<title>{esc(head_title)}</title>
 {social}
 <link rel=icon type=image/svg+xml href="{BASE}favicon.svg">
 <link rel=icon type=image/png sizes=32x32 href="{BASE}favicon-32.png">
@@ -1338,8 +1390,8 @@ def build_subpage(title, active, body, year, matchcard,
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="{BASE}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{BASE}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
-<a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a><span class=b12-right><span class=b12-theme></span></span></nav>
-{tracker_top(year, active, matchcard)}
+<a class="{ 'on' if section == 'tiebreaker' else '' }" href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a class="{ 'on' if section == 'schedule' else '' }" href="https://big12ology.com/schedule/">Schedule</a><a href="https://big12ology.com/attendance/">Attendance</a><span class=b12-right><span class=b12-theme></span></span></nav>
+{tracker_top(year, active, matchcard, section)}
 {body}
 </main>
 <footer class=b12-footer>A Big12ology project · not affiliated with the
@@ -1904,6 +1956,7 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 <nav class=b12-topbar>
   <a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="{base}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{base}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
   <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
+  <a href="https://big12ology.com/schedule/">Schedule</a>
   <a href="https://big12ology.com/attendance/">Attendance</a>
   <span class=b12-right><span class=b12-theme></span></span>
 </nav>
@@ -2062,6 +2115,7 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
 <nav class=b12-topbar>
   <a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="{base}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{base}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
   <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
+  <a href="https://big12ology.com/schedule/">Schedule</a>
   <a href="https://big12ology.com/attendance/">Attendance</a>
   <span class=b12-right><span class=b12-theme></span></span>
 </nav>
@@ -2310,7 +2364,8 @@ def load_games(year, refetch=False, refresh=False):
     return fetcher.mark_ccg(json.load(open(path)))
 
 
-def build_season(year, games, outdir, base, feed=True):
+def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
+                 sched_base=None):
     """Write one season's whole page set. `base` is the relative path back to
     the shared assets — empty at the root, "../" inside an archived year."""
     global BASE
@@ -2389,15 +2444,50 @@ def build_season(year, games, outdir, base, feed=True):
     # the sitemap. Updating one and not the other is the standing trap.
     evergreen = {"history.html", "how.html", "cutline.html",
                  "ladder.html"}
+    sched_url = "https://big12ology.com/schedule/"
+    sched_canon = sched_url if year == LIVE_YEAR else f"{sched_url}{year}/"
+    if sched_outdir:
+        os.makedirs(sched_outdir, exist_ok=True)
+
     for fname, title, active, body, desc, head in pages:
+        schedule_page = fname in SCHEDULE_PAGES
+        if schedule_page and not sched_outdir:
+            continue
         # Seasons share the tie archive and the rules explainer verbatim, so
         # the archived copies point their canonical at the live one rather
         # than competing with it as duplicates.
-        cu = (site_url + fname if fname in evergreen else canon + fname)
-        with open(os.path.join(outdir, fname), "w") as f:
-            f.write(build_subpage(title, active, body, year,
-                                  ctx["matchcard"], canon=cu,
-                                  desc=desc, head=head))
+        if schedule_page:
+            # The schedule itself is the section's front page, so it is
+            # written as index.html and its canonical carries no filename.
+            index = fname == "schedule.html"
+            out_name = "index.html" if index else fname
+            if index:
+                title = SECTIONS["schedule"]["title"]
+            body = rebase_from(body, base, sched_base)
+            target = sched_outdir
+            cu = sched_canon if index else sched_canon + fname
+            sect = "schedule"
+            BASE_was, globals()["BASE"] = BASE, sched_base
+        else:
+            target = outdir
+            cu = (site_url + fname if fname in evergreen else canon + fname)
+            sect = "tiebreaker"
+        try:
+            with open(os.path.join(target,
+                                   out_name if schedule_page else fname),
+                      "w") as f:
+                f.write(build_subpage(title, active, body, year,
+                                      ctx["matchcard"] if not schedule_page
+                                      else "", canon=cu, desc=desc,
+                                      head=head, section=sect))
+        finally:
+            if schedule_page:
+                globals()["BASE"] = BASE_was
+        if schedule_page:
+            # The old address keeps working. These pages were linked from
+            # the tiebreaker nav for a day and are in the sitemap already.
+            with open(os.path.join(outdir, fname), "w") as f:
+                f.write(redirect_stub(cu, title))
 
     build_explainer(year, ctx["matchcard"], outdir)
 
@@ -2698,6 +2788,17 @@ the championship odds.</p>
 </div>"""
 
 
+def redirect_stub(to, title):
+    """A page that moved. Meta-refresh plus a canonical, and a real link for
+    anything that honours neither."""
+    return ('<!doctype html><meta charset=utf-8>'
+            f'<meta http-equiv=refresh content="0; url={to}">'
+            f'<link rel=canonical href="{to}">'
+            '<meta name=robots content="noindex, follow">'
+            f'<title>{esc(title)} — moved</title>'
+            f'<p><a href="{to}">{esc(title)} has moved to {to}</a></p>')
+
+
 def write_forecast(year, games, systems, sims):
     """Keep what we predicted, so it can be graded later.
 
@@ -2769,8 +2870,9 @@ def write_discovery(years):
     the archived seasons exist at all — nothing links to 2024 except the
     year pills, and the pages carry no dated signal of their own."""
     site = "https://big12ology.com/tiebreaker/"
-    subs = ["", "lab.html", "race.html", "standings.html",
-            "schedule.html", "draw.html", "rotation.html"]
+    sched = "https://big12ology.com/schedule/"
+    subs = ["", "lab.html", "race.html", "standings.html"]
+    sched_subs = ["", "draw.html", "rotation.html"]
     # Listed once, under the live season — every year serves the same bytes.
     evergreen = ["how.html", "history.html", "cutline.html",
                  "ladder.html"]
@@ -2788,14 +2890,33 @@ def write_discovery(years):
                         f"<lastmod>{today}</lastmod>"
                         f"<changefreq>{freq}</changefreq>"
                         f"<priority>{pri}</priority></url>")
-    with open(os.path.join(SITE, "sitemap.xml"), "w") as f:
-        f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
-                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-                + "\n".join(urls) + "\n</urlset>\n")
+    # The schedule section gets its own sitemap at its own root, because a
+    # sitemap only speaks for the path it is served from.
+    sched_urls = []
+    for y in years:
+        base = sched if y == LIVE_YEAR else f"{sched}{y}/"
+        for p in sched_subs:
+            freq = "weekly" if y == LIVE_YEAR else "yearly"
+            pri = "0.9" if (y == LIVE_YEAR and not p) else (
+                "0.7" if y == LIVE_YEAR else "0.4")
+            sched_urls.append(f"  <url><loc>{base}{p}</loc>"
+                              f"<lastmod>{today}</lastmod>"
+                              f"<changefreq>{freq}</changefreq>"
+                              f"<priority>{pri}</priority></url>")
+
+    def write_map(path, entries):
+        with open(path, "w") as f:
+            f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
+                    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                    + "\n".join(entries) + "\n</urlset>\n")
+
+    write_map(os.path.join(SITE, "sitemap.xml"), urls)
+    os.makedirs(SCHEDULE_SITE, exist_ok=True)
+    write_map(os.path.join(SCHEDULE_SITE, "sitemap.xml"), sched_urls)
     # No robots.txt here on purpose: crawlers only read it at the origin
     # root, and this is a project site under /tiebreaker/. The real one
     # lives in the big12ology.github.io repo and points at this sitemap.
-    print(f"built sitemap.xml ({len(urls)} urls)")
+    print(f"built sitemap.xml ({len(urls)} tiebreaker, {len(sched_urls)} schedule)")
 
 
 def main():
@@ -2805,7 +2926,8 @@ def main():
     LIVE_YEAR = year
     games = load_games(year, refetch="--fetch" in sys.argv,
                        refresh="--refresh" in sys.argv)
-    build_season(year, games, SITE, "")
+    build_season(year, games, SITE, "", sched_outdir=SCHEDULE_SITE,
+                 sched_base="../tiebreaker/")
     # Finished seasons are rebuilt from cached results — no API calls, and
     # their output is deterministic, so a rebuild is a no-op unless the
     # engine itself changed.
@@ -2814,7 +2936,9 @@ def main():
             if y == year:
                 continue
             build_season(y, load_games(y), os.path.join(SITE, str(y)), "../",
-                         feed=False)
+                         feed=False,
+                         sched_outdir=os.path.join(SCHEDULE_SITE, str(y)),
+                         sched_base="../../tiebreaker/")
     write_discovery([year] + [y for y in ARCHIVE_YEARS if y != year])
 
 

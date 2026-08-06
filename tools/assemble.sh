@@ -36,6 +36,11 @@ rsync -a "${COMMON[@]}" \
 
 rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site/" "$DIST/tiebreaker/"
 
+# The schedule section is generated beside the tiebreaker and served as a
+# sibling path; its pages reach back to ../tiebreaker/ for the shared marks
+# and stylesheet rather than carrying a second copy of them.
+rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_schedule/" "$DIST/schedule/"
+
 # The attendance repo is served as-is by Pages today, README and scripts and
 # all. Copying it wholesale is what makes the output comparable byte for byte
 # against what is live; see tools/compare-live.sh.
@@ -53,6 +58,8 @@ for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          tiebreaker/index.html tiebreaker/how.html tiebreaker/history.html \
          tiebreaker/draw.html tiebreaker/rotation.html tiebreaker/cutline.html tiebreaker/ladder.html \
          tiebreaker/app.js tiebreaker/engine.js tiebreaker/feed.xml \
+         schedule/index.html schedule/draw.html schedule/rotation.html \
+         schedule/sitemap.xml \
          attendance/index.html attendance/site/app.js \
          attendance/data/teams.json attendance/data/seasons/index.json; do
   [ -e "$DIST/$f" ] || note "$f"

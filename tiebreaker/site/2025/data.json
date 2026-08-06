@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-06T16:37:30+00:00",
+ "generated": "2026-08-06T18:28:51+00:00",
  "season": 2025,
  "standings": [
   {
@@ -266,98 +266,98 @@
   "Arizona": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 6.0
   },
   "Arizona State": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 6.0
   },
   "BYU": {
    "status": "clinched",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 1.0,
+   "exp_conf_wins": 8.0
   },
   "Baylor": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 3.0
   },
   "Cincinnati": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 5.0
   },
   "Colorado": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 1.0
   },
   "Houston": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 6.0
   },
   "Iowa State": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 5.0
   },
   "Kansas": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 3.0
   },
   "Kansas State": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 5.0
   },
   "Oklahoma State": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 0.0
   },
   "TCU": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 5.0
   },
   "Texas Tech": {
    "status": "clinched",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 1.0,
+   "exp_conf_wins": 8.0
   },
   "UCF": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 2.0
   },
   "Utah": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 7.0
   },
   "West Virginia": {
    "status": "eliminated",
    "destiny": false,
-   "p_ccg": null,
-   "exp_conf_wins": null
+   "p_ccg": 0.0,
+   "exp_conf_wins": 2.0
   }
  }
 }

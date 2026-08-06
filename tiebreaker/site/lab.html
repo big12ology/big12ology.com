@@ -116,20 +116,6 @@ main > .card, main > .cols { max-width: 880px; width: 100%;
   background: color-mix(in srgb, var(--dim) 18%, transparent);
   color: var(--dim); font-weight: 700; font-size: 12px; cursor: help; }
 .teamcell { white-space: nowrap; }
-.laddertable td, .cuttable td { vertical-align: middle; }
-.samerec { color: var(--warn); font-weight: 600; font-size: 12px; }
-.misslist { list-style: none; margin: 0; padding: 0; display: flex;
-  flex-wrap: wrap; gap: 4px 14px; }
-.misslist li { white-space: nowrap; }
-.firstlist { list-style: none; margin: 8px 0; padding: 0; font-size: 18px; }
-.rotationtable td { vertical-align: middle; }
-.warnpill { color: var(--warn); font-weight: 600; font-size: 12px; }
-.drawsum td.num, .drawgridtable td { text-align: right;
-  font-variant-numeric: tabular-nums; }
-.drawsum td.dim, .drawgridtable td.dim { color: var(--dim); }
-.drawgridtable td.own { background: color-mix(in srgb, var(--accent) 12%,
-  transparent); font-weight: 600; }
-.drawgridtable th { font-weight: 600; font-size: 12px; }
 .cbar { display: inline-block; width: 4px; height: 16px; border-radius: 2px;
   margin-right: 8px; vertical-align: -2px; }
 .seed { display: inline-block; background: var(--accent); color: #fff;
@@ -217,6 +203,32 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 }
 :root[data-theme="dark"] .tag.live { color: #4ade80;
   background: color-mix(in srgb, #4ade80 14%, transparent); }
+.movemain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:22px minmax(110px,148px) 62px auto }
+.movepts { text-align:right; font-variant-numeric:tabular-nums }
+@media (max-width:640px) {
+  .movemain { grid-template-columns:22px 1fr auto; row-gap:2px }
+}
+.levmain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:minmax(0,1fr) auto 112px 34px }
+.levgame { min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap }
+.levdate { color:var(--dim); white-space:nowrap }
+.levswing { font-size:13px; margin-top:2px }
+@media (max-width:640px) {
+  .levmain { grid-template-columns:minmax(0,1fr) auto; row-gap:3px }
+  .levbar { display:none }
+}
+.clmain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:22px minmax(110px,148px) 112px 46px auto 1fr }
+.clteam { min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap }
+.clpct { text-align:right }
+.cltags, .clrec { white-space:nowrap }
+@media (max-width:640px) {
+  .clmain { grid-template-columns:22px 1fr auto; row-gap:3px }
+  .clbar, .clpct { display:none }
+}
 .clrow { padding: 8px 0; border-bottom: 1px solid var(--line);
   font-size: 15px; }
 .obar { display: inline-block; width: 110px; height: 8px;
@@ -255,6 +267,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 <nav class=b12-topbar>
   <a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
   <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
+  <a href="https://big12ology.com/schedule/">Schedule</a>
   <a href="https://big12ology.com/attendance/">Attendance</a>
   <span class=b12-right><span class=b12-theme></span></span>
 </nav>
@@ -266,7 +279,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
     </div>
   </div>
 </header>
-<nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=off>The Standings</a><a href=lab.html class=on>The Lab</a><a href=schedule.html class=off>The Schedule</a><a href=draw.html class=off>The Draw</a><a href=rotation.html class=off>The Rotation</a><a href=cutline.html class=off>The Cut Line</a><a href=ladder.html class=off>The Ladder</a><a href=how.html class=off>The Rules</a><a href=history.html class=off>The Archive</a></nav>
+<nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=off>The Standings</a><a href=lab.html class=on>The Lab</a><a href=cutline.html class=off>The Cut Line</a><a href=ladder.html class=off>The Ladder</a><a href=how.html class=off>The Rules</a><a href=history.html class=off>The Archive</a></nav>
 <main id=main tabindex="-1">
 <div class=card id=matchcard><h2>Season not started</h2><p>No conference results yet. The projected championship matchup will appear after the first Big 12 game.</p></div>
 
@@ -324,7 +337,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
   procedure per the <a
   href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official
   Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (provenance in
-  <a href="logos/SOURCES.json">SOURCES.json</a>) · last updated August 6 at 16:37 UTC.<br>
+  <a href="logos/SOURCES.json">SOURCES.json</a>) · last updated August 6 at 18:28 UTC.<br>
   A Big12ology project · not affiliated with the Big 12 Conference; conference
   and team marks belong to their owners and appear for identification only.<br>
   <a href="https://github.com/big12ology">GitHub</a> ·

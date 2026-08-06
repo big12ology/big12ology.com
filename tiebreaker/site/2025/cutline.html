@@ -64,6 +64,33 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
 .mark { vertical-align:-3px; margin-right:6px }
 .clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:14.5px }
+.movemain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:22px minmax(110px,148px) 62px auto }
+.movepts { text-align:right; font-variant-numeric:tabular-nums }
+@media (max-width:640px) {
+  .movemain { grid-template-columns:22px 1fr auto; row-gap:2px }
+}
+.levmain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:minmax(0,1fr) auto 112px 34px }
+.levgame { min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap }
+.levdate { color:var(--dim); white-space:nowrap }
+.levswing { font-size:13px; margin-top:2px }
+@media (max-width:640px) {
+  .levmain { grid-template-columns:minmax(0,1fr) auto; row-gap:3px }
+  .levbar { display:none }
+}
+.clmain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:22px minmax(110px,148px) 112px 46px auto 1fr }
+.clteam { min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap }
+.clpct { text-align:right }
+.cltags, .clrec { white-space:nowrap }
+@media (max-width:640px) {
+  .clmain { grid-template-columns:22px 1fr auto; row-gap:3px }
+  .clbar, .clpct { display:none }
+}
+
 .clrow:last-of-type { border-bottom:none }
 .obar { display:inline-block; width:100px; height:8px; background:var(--line);
   border-radius:4px; overflow:hidden; vertical-align:1px; margin:0 6px 0 8px }
@@ -86,6 +113,48 @@ ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
     background:#4ade8024 } }
 :root[data-theme="dark"] .tag.live { color:#4ade80; background:#4ade8024 }
 
+.drawwrap { overflow-x:auto }
+.drawchart { width:100%; min-width:660px; height:auto; display:block;
+  margin:12px 0 2px }
+.drawchart .dgrid { stroke:var(--line); stroke-width:1 }
+.drawchart .dlabel { font-size:11px; font-weight:600; fill:var(--ink) }
+.drawchart .dval { font-size:11px; font-weight:600;
+  font-variant-numeric:tabular-nums }
+.drawchart .dtick { fill:var(--dim); font-size:11px }
+/* No hover-dim here. The bump chart fades its other lines because sixteen
+   of them overlap and you need to follow one; sixteen separate bars do not
+   overlap, so the same rule just greys out the chart you are reading. */
+.drawkey { margin: 6px 0 12px; padding-left: 20px; }
+.drawkey li { margin: 6px 0; }
+.drawgridtable td.dcell { text-align: right;
+  font-variant-numeric: tabular-nums; }
+.drawgridtable td.dcell.own { outline: 2px solid var(--ink);
+  outline-offset: -2px; font-weight: 700; }
+.laddertable td, .cuttable td { vertical-align: middle; }
+.samerec { color: var(--warn); font-weight: 600; font-size: 12px; }
+.misslist { list-style:none; margin:0; padding:0; display:flex;
+  flex-wrap:wrap; gap:3px 0 }
+/* Each entry is its own little grid too, so the marks, the abbreviations
+   and the years each line up in a column rather than sitting wherever the
+   previous word ended. */
+.misslist li { display:grid; grid-template-columns:19px 44px auto;
+  align-items:center; white-space:nowrap; width:144px;
+  padding-right:12px; box-sizing:border-box }
+.misslist li .mabbr { font-weight:600 }
+/* Left, not right: pushed to the far edge of its own cell the year lands
+   against the NEXT team's mark, and the row reads "UCF 2024BAY". */
+.misslist li .myr { color:var(--dim); font-variant-numeric:tabular-nums;
+  padding-left:5px }
+
+.firstlist { list-style: none; margin: 8px 0; padding: 0; font-size: 18px; }
+.rotationtable { width:100% }
+.rotationtable td { vertical-align:middle }
+.rotationtable td:first-child { white-space:nowrap }
+.warnpill { color: var(--warn); font-weight: 600; font-size: 12px; }
+.drawsum td.num, .drawgridtable td {{ text-align: right;
+  font-variant-numeric: tabular-nums; }}
+.drawsum td.dim, .drawgridtable td.dim {{ color: var(--dim); }}
+.drawgridtable th {{ font-weight: 600; font-size: 12px; }}
 table { border-collapse:collapse; width:100%; font-size:14px }
 th, td { text-align:left; padding:6px 9px; border-bottom:1px solid
   var(--line); font-variant-numeric:tabular-nums }
@@ -194,7 +263,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 <script defer src="../scrollcue.js?v=5fef00f1"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="../brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
-<a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a><span class=b12-right><span class=b12-theme></span></span></nav>
+<a class="on" href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a class="" href="https://big12ology.com/schedule/">Schedule</a><a href="https://big12ology.com/attendance/">Attendance</a><span class=b12-right><span class=b12-theme></span></span></nav>
 <header class=b12-head>
   <div class=hwrap>
     <div>
@@ -203,7 +272,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
     </div>
   </div>
 </header>
-<nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=off>The Standings</a><a href=lab.html class=off>The Lab</a><a href=schedule.html class=off>The Schedule</a><a href=draw.html class=off>The Draw</a><a href=rotation.html class=off>The Rotation</a><a href=cutline.html class=on>The Cut Line</a><a href=ladder.html class=off>The Ladder</a><a href=how.html class=off>The Rules</a><a href=history.html class=off>The Archive</a></nav>
+<nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=off>The Standings</a><a href=lab.html class=off>The Lab</a><a href=cutline.html class=on>The Cut Line</a><a href=ladder.html class=off>The Ladder</a><a href=how.html class=off>The Rules</a><a href=history.html class=off>The Archive</a></nav>
 <main id=main tabindex="-1">
 <div class=card id=matchcard><h2>Final championship matchup <span class='badge ok'>resolved</span></h2><div class=matchup><div class=side style='border-bottom-color:#cc0000'><img class=mark src='../logos/ttu.svg' alt='' width=56 height=56 loading=lazy><div><span class=seed>1</span> <span class=tname>Texas Tech</span></div></div><span class=vs>vs</span><div class=side style='border-bottom-color:#003da5'><img class=mark src='../logos/byu.png' alt='' width=56 height=56 loading=lazy><div><span class=seed>2</span> <span class=tname>BYU</span></div></div></div><p class=note>Two teams tied for first: both play in the championship game; Texas Tech is the #1 seed by head-to-head win.</p></div>
 <div class=card id=cutline>

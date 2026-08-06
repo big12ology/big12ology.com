@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang=en><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>Big 12 Schedule</title>
+<link rel=canonical href="https://big12ology.com/schedule/2025/">
+<meta name=description content="Every remaining game in the 2025 Big 12 season and every result so far, by week.">
+<meta property=og:type content=website>
+<meta property=og:site_name content=Big12ology>
+<meta property=og:title content="Big 12 Schedule">
+<meta property=og:description content="Every remaining game in the 2025 Big 12 season and every result so far, by week.">
+<meta property=og:url content="https://big12ology.com/schedule/2025/">
+<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta property=og:image:width content=1200>
+<meta property=og:image:height content=630>
+<meta name=twitter:card content=summary_large_image>
+<link rel=icon type=image/svg+xml href="../../tiebreaker/favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="../../tiebreaker/favicon-32.png">
+<link rel=apple-touch-icon href="../../tiebreaker/favicon-180.png">
+<script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
+<link rel=stylesheet href="../../tiebreaker/brand.css?v=34ffdfb0">
+<script defer src="../../tiebreaker/theme.js?v=9a8f53fd"></script>
+<link rel=alternate type=application/rss+xml href=../../tiebreaker/feed.xml>
+<style>
+.matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
+  flex-wrap:wrap }
+.side { display:flex; align-items:center; gap:12px; font-size:24px;
+  font-weight:700; border-bottom:4px solid var(--line);
+  padding:6px 10px 10px 2px }
+.tname { letter-spacing:-.01em }
+.vs { color:var(--dim); font-weight:400; font-size:18px; padding:0 6px }
+.seed { display:inline-block; background:var(--accent); color:#fff;
+  border-radius:6px; font-size:14px; width:22px; height:22px;
+  line-height:22px; text-align:center; vertical-align:3px; margin-right:4px }
+.badge { font-size:11px; border-radius:20px; padding:2px 9px;
+  vertical-align:1px; font-weight:600; letter-spacing:.03em }
+.badge.ok { background:#13653626; color:#136536 }
+.badge.warn { background:#b4530926; color:var(--warn) }
+:root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#666d7b;
+  --line:#e2ddd2; --accent:#0B6E77; --accent2:#003087; --warn:#b45309;
+  --pctl:27%; }  /* lightness set by contrast, not taste: 32%
+  put the mid-scale ambers at 3.5:1, below the 4.5:1 WCAG AA
+  floor for body text. Hue still carries the meaning. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg:#14161a; --panel:#1d2026;
+    --ink:#e8e6e1; --dim:#9aa0aa; --line:#2e323a; --accent:#3FC7CE;
+    --accent2:#7aa2ff; --warn:#fbbf24; --pctl:63%; } }
+:root[data-theme="dark"] { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1;
+  --dim:#9aa0aa; --line:#2e323a; --accent:#3FC7CE; --accent2:#7aa2ff;
+  --warn:#fbbf24; --pctl:63%; }
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif }
+header { border-bottom:4px solid var(--accent); padding:22px 20px;
+  background:var(--panel) }
+header h1 { margin:0; font-size:22px } header p { margin:3px 0 0;
+  color:var(--dim); font-size:14px } header a { color:var(--accent2);
+  text-decoration:none }
+main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
+  display:grid; gap:18px }
+.card { background:var(--panel); border:1px solid var(--line);
+  border-radius:10px; padding:16px 18px }
+.card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--dim) }
+.dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
+.mark { vertical-align:-3px; margin-right:6px }
+.clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:14.5px }
+.movemain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:22px minmax(110px,148px) 62px auto }
+.movepts { text-align:right; font-variant-numeric:tabular-nums }
+@media (max-width:640px) {
+  .movemain { grid-template-columns:22px 1fr auto; row-gap:2px }
+}
+.levmain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:minmax(0,1fr) auto 112px 34px }
+.levgame { min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap }
+.levdate { color:var(--dim); white-space:nowrap }
+.levswing { font-size:13px; margin-top:2px }
+@media (max-width:640px) {
+  .levmain { grid-template-columns:minmax(0,1fr) auto; row-gap:3px }
+  .levbar { display:none }
+}
+.clmain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:22px minmax(110px,148px) 112px 46px auto 1fr }
+.clteam { min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap }
+.clpct { text-align:right }
+.cltags, .clrec { white-space:nowrap }
+@media (max-width:640px) {
+  .clmain { grid-template-columns:22px 1fr auto; row-gap:3px }
+  .clbar, .clpct { display:none }
+}
+
+.clrow:last-of-type { border-bottom:none }
+.obar { display:inline-block; width:100px; height:8px; background:var(--line);
+  border-radius:4px; overflow:hidden; vertical-align:1px; margin:0 6px 0 8px }
+.obar i { display:block; height:100%; border-radius:4px }
+.opct { font-variant-numeric:tabular-nums; font-size:13.5px }
+.chaosband { display:flex; align-items:center; gap:14px; border:1px solid
+  var(--line); border-radius:8px; padding:10px 14px; margin-bottom:10px;
+  font-size:13.5px }
+.cnum { font-size:36px; font-weight:800; line-height:1 }
+.tag { font-size:10.5px; border-radius:20px; padding:2px 8px; font-weight:700 }
+.tag.live { background:#13653626; color:#136536 }
+.tag.destiny { background:#b4530926; color:var(--warn) }
+.scen { margin:5px 0 2px; padding-left:20px; font-size:13px; color:var(--dim) }
+.elim { font-size:13px } ul.games { list-style:none; padding:0; margin:0 }
+ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
+  font-size:14px } .ccgtag { color:var(--accent); font-weight:700;
+  font-size:11px; text-transform:uppercase }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tag.live { color:#4ade80;
+    background:#4ade8024 } }
+:root[data-theme="dark"] .tag.live { color:#4ade80; background:#4ade8024 }
+
+.drawwrap { overflow-x:auto }
+.drawchart { width:100%; min-width:660px; height:auto; display:block;
+  margin:12px 0 2px }
+.drawchart .dgrid { stroke:var(--line); stroke-width:1 }
+.drawchart .dlabel { font-size:11px; font-weight:600; fill:var(--ink) }
+.drawchart .dval { font-size:11px; font-weight:600;
+  font-variant-numeric:tabular-nums }
+.drawchart .dtick { fill:var(--dim); font-size:11px }
+/* No hover-dim here. The bump chart fades its other lines because sixteen
+   of them overlap and you need to follow one; sixteen separate bars do not
+   overlap, so the same rule just greys out the chart you are reading. */
+.drawkey { margin: 6px 0 12px; padding-left: 20px; }
+.drawkey li { margin: 6px 0; }
+.drawgridtable td.dcell { text-align: right;
+  font-variant-numeric: tabular-nums; }
+.drawgridtable td.dcell.own { outline: 2px solid var(--ink);
+  outline-offset: -2px; font-weight: 700; }
+.laddertable td, .cuttable td { vertical-align: middle; }
+.samerec { color: var(--warn); font-weight: 600; font-size: 12px; }
+.misslist { list-style:none; margin:0; padding:0; display:flex;
+  flex-wrap:wrap; gap:3px 0 }
+/* Each entry is its own little grid too, so the marks, the abbreviations
+   and the years each line up in a column rather than sitting wherever the
+   previous word ended. */
+.misslist li { display:grid; grid-template-columns:19px 44px auto;
+  align-items:center; white-space:nowrap; width:144px;
+  padding-right:12px; box-sizing:border-box }
+.misslist li .mabbr { font-weight:600 }
+/* Left, not right: pushed to the far edge of its own cell the year lands
+   against the NEXT team's mark, and the row reads "UCF 2024BAY". */
+.misslist li .myr { color:var(--dim); font-variant-numeric:tabular-nums;
+  padding-left:5px }
+
+.firstlist { list-style: none; margin: 8px 0; padding: 0; font-size: 18px; }
+.rotationtable { width:100% }
+.rotationtable td { vertical-align:middle }
+.rotationtable td:first-child { white-space:nowrap }
+.warnpill { color: var(--warn); font-weight: 600; font-size: 12px; }
+.drawsum td.num, .drawgridtable td {{ text-align: right;
+  font-variant-numeric: tabular-nums; }}
+.drawsum td.dim, .drawgridtable td.dim {{ color: var(--dim); }}
+.drawgridtable th {{ font-weight: 600; font-size: 12px; }}
+table { border-collapse:collapse; width:100%; font-size:14px }
+th, td { text-align:left; padding:6px 9px; border-bottom:1px solid
+  var(--line); font-variant-numeric:tabular-nums }
+th { font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--dim) }
+thead tr th { border-bottom:2px solid var(--line) }
+.teamcell { white-space:nowrap }
+.briefstamp { color:var(--dim); font-size:13px; text-align:center; margin:-4px 0 2px }
+tr.grpend td { border-bottom:2px solid var(--line) }
+.stbl td:last-child, .stbl th:last-child { text-align:right }
+.stbl td { height:38px }
+.duo.even { grid-template-columns:minmax(0,1fr) minmax(0,1fr) }
+.duo.even > .stack { align-content:stretch }
+.duo.even .card { height:100% }
+.posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
+h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--dim); margin:16px 0 4px }
+.duo { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+  gap:18px; align-items:start }
+.duo > .stack { display:grid; gap:18px; align-content:start; min-width:0 }
+@media (max-width: 900px) {
+  /* .duo.even is more specific than .duo, so it has to be named here too or
+     the two boards stay side by side at 166px each on a phone. */
+  .duo, .duo.even { grid-template-columns:1fr }
+  .duo > .stack, .duo.even > .stack { display:contents }
+  .duo.even .card { height:auto }
+}
+.tablescroll, .tablewrap { overflow-x:auto; position:relative }
+/* Same cue as the attendance tracker's season grid: a fade at the live edge
+   so a table that runs past the card does not look like it stops there. */
+.scrollbox { position:relative }
+.scrollbox::after { content:""; position:absolute; top:0; right:0; bottom:0;
+  width:38px; pointer-events:none; opacity:1; transition:opacity .18s ease;
+  background:linear-gradient(to right, transparent, var(--panel)) }
+.scrollbox.at-end::after { opacity:0 }
+/* Grid items default to min-width:auto, so a wide child — the
+   movement chart, a table — pushes the whole page sideways on a
+   phone instead of scrolling inside its own box. */
+main > * { min-width:0 }
+table.h2h { width:100%; table-layout:auto }
+.h2h th, .h2h td { padding:6px 4px; font-size:13px; white-space:nowrap;
+  text-align:center }
+.h2h td.teamcell, .h2h thead th:first-child { text-align:left;
+  padding-left:2px }
+.h2h thead th { font-size:12px; letter-spacing:.02em }
+.hatag { display:inline-block; min-width:11px; margin-right:4px;
+  font-size:10px; font-weight:700; color:var(--dim); vertical-align:1px }
+/* The empty cells carry meaning — a third of this grid is pairs the
+   schedule never makes — so they need to be visible, not ghosts. */
+.selfcell { color:var(--dim); opacity:.75;
+  background:color-mix(in srgb, var(--dim) 12%, transparent) }
+.nomeet { color:var(--dim); opacity:.75; font-size:15px; line-height:1 }
+
+/* ---- season replay ---- */
+#replaybar .rpline { display:flex; align-items:center; gap:10px;
+  flex-wrap:wrap }
+#replaybar input[type=range] { flex:1 1 200px; min-width:140px;
+  accent-color:var(--accent) }
+@media (max-width:640px) {
+  #replaybar #rp-label { flex:1 0 100%; min-width:0 !important; order:9 }
+  #replaybar #rp-now { order:8 }
+}
+#replaybar #rp-label { font-size:14px; color:var(--dim) }
+#replaybar #rp-prev, #replaybar #rp-next { padding:6px 10px }
+#replaycard.scrubbed { border-color:var(--accent) }
+/* keeps its space so the slider never changes width */
+#rp-now.invis { visibility:hidden }
+.mv { font-size:11px; margin-left:5px; font-weight:600 }
+.mv.up { color:hsl(140 60% var(--pctl)) }
+.mv.down { color:hsl(6 70% var(--pctl)) }
+tr.moved.up td { animation:flashup 900ms ease-out }
+tr.moved.down td { animation:flashdown 900ms ease-out }
+@keyframes flashup { from { background:rgba(22,140,80,.16) }
+                     to { background:transparent } }
+@keyframes flashdown { from { background:rgba(200,16,46,.13) }
+                       to { background:transparent } }
+@media (prefers-reduced-motion:reduce) {
+  tr.moved.up td, tr.moved.down td { animation:none }
+}
+
+/* where a team stands in the championship race, at this point in the year */
+.st-out, .teamcell.st-out { text-decoration:line-through;
+  text-decoration-color:var(--dim); opacity:.62 }
+.teamcell.st-in { font-weight:700 }
+.teamcell.st-top { font-style:italic }
+
+/* the replay's own controls, same chrome as the Lab's */
+.wbtn { font:inherit; font-size:14px; border:1px solid var(--line);
+  background:var(--panel); color:var(--ink); border-radius:8px;
+  padding:6px 14px; cursor:pointer }
+.wbtn:hover { border-color:var(--accent) }
+
+/* ---- how the season moved ---- */
+.bumpwrap { overflow-x:auto }
+.bump { width:100%; min-width:660px; height:auto; display:block }
+.bump .bgrid { stroke:var(--line); stroke-width:1 }
+.bump .btick { fill:var(--dim); font-size:11px }
+.bump .bnum { text-anchor:end }
+.bump .bwk { text-anchor:middle }
+.bump .blabel { font-size:11px; font-weight:600 }
+.bump .bteam { transition:opacity .12s ease }
+.bumpwrap:hover .bteam { opacity:.22 }
+.bumpwrap .bteam:hover { opacity:1 }
+.bumpwrap .bteam:hover polyline { stroke-width:3.6 }
+</style>
+<script defer src="../../tiebreaker/scrollcue.js?v=5fef00f1"></script></head><body>
+<a class=skip-link href="#main">Skip to content</a>
+<nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="../../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
+<a class="" href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a class="on" href="https://big12ology.com/schedule/">Schedule</a><a href="https://big12ology.com/attendance/">Attendance</a><span class=b12-right><span class=b12-theme></span></span></nav>
+<header class=b12-head>
+  <div class=hwrap>
+    <div>
+      <h1>Big 12 Schedule <span class=yrpills><a href='../../tiebreaker/'>2026</a><span class=yron>2025</span><a href='../../tiebreaker/2024/'>2024</a></span></h1>
+      <p>The 2025 conference schedule: every result by week, who never met, and what the draw was worth.</p>
+    </div>
+  </div>
+</header>
+<nav class=subnav><a href=./ class=on>The Schedule</a><a href=draw.html class=off>The Draw</a><a href=rotation.html class=off>The Rotation</a></nav>
+<main id=main tabindex="-1">
+
+<div class=card id=h2hcard><h2>Head-to-head grid</h2><div class="tablescroll scrollbox"><table class=h2h><thead><tr><th></th><th title='Texas Tech'>TTU</th><th title='BYU'>BYU</th><th title='Utah'>UTAH</th><th title='Houston'>HOU</th><th title='Arizona'>ARIZ</th><th title='Arizona State'>ASU</th><th title='TCU'>TCU</th><th title='Iowa State'>ISU</th><th title='Cincinnati'>CIN</th><th title='Kansas State'>KSU</th><th title='Baylor'>BAY</th><th title='Kansas'>KU</th><th title='UCF'>UCF</th><th title='West Virginia'>WVU</th><th title='Colorado'>COLO</th><th title='Oklahoma State'>OKST</th></tr></thead><tbody><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/ttu.svg' alt='' width=14 height=14 loading=lazy>Texas Tech</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(168 65% var(--pctl))' title='Texas Tech def. BYU 29–7 (Sat, Nov 8, home)'><span class=hatag>H</span>W 29–7</td><td style='color:hsl(168 65% var(--pctl))' title='Texas Tech def. Utah 34–10 (Sat, Sep 20, away)'><span class=hatag>A</span>W 34–10</td><td style='color:hsl(168 65% var(--pctl))' title='Texas Tech def. Houston 35–11 (Sat, Oct 4, away)'><span class=hatag>A</span>W 35–11</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Texas Tech lost to Arizona State 22–26 (Sat, Oct 18, away)'><span class=hatag>A</span>L 22–26</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Texas Tech def. Kansas State 43–20 (Sat, Nov 1, away)'><span class=hatag>A</span>W 43–20</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Texas Tech def. Kansas 42–17 (Sat, Oct 11, home)'><span class=hatag>H</span>W 42–17</td><td style='color:hsl(168 65% var(--pctl))' title='Texas Tech def. UCF 48–9 (Sat, Nov 15, home)'><span class=hatag>H</span>W 48–9</td><td style='color:hsl(168 65% var(--pctl))' title='Texas Tech def. West Virginia 49–0 (Sat, Nov 29, away)'><span class=hatag>A</span>W 49–0</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Texas Tech def. Oklahoma State 42–0 (Sat, Oct 25, home)'><span class=hatag>H</span>W 42–0</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/byu.png' alt='' width=14 height=14 loading=lazy>BYU</td><td style='color:hsl(0 100% var(--pctl))' title='BYU lost to Texas Tech 7–29 (Sat, Nov 8, away)'><span class=hatag>A</span>L 7–29</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(168 65% var(--pctl))' title='BYU def. Utah 24–21 (Sun, Oct 19, home)'><span class=hatag>H</span>W 24–21</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='BYU def. Arizona 33–27 (Sun, Oct 12, away)'><span class=hatag>A</span>W 33–27</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='BYU def. TCU 44–13 (Sun, Nov 16, home)'><span class=hatag>H</span>W 44–13</td><td style='color:hsl(168 65% var(--pctl))' title='BYU def. Iowa State 41–27 (Sat, Oct 25, away)'><span class=hatag>A</span>W 41–27</td><td style='color:hsl(168 65% var(--pctl))' title='BYU def. Cincinnati 26–14 (Sun, Nov 23, away)'><span class=hatag>A</span>W 26–14</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='BYU def. UCF 41–21 (Sat, Nov 29, home)'><span class=hatag>H</span>W 41–21</td><td style='color:hsl(168 65% var(--pctl))' title='BYU def. West Virginia 38–24 (Sat, Oct 4, home)'><span class=hatag>H</span>W 38–24</td><td style='color:hsl(168 65% var(--pctl))' title='BYU def. Colorado 24–21 (Sun, Sep 28, away)'><span class=hatag>A</span>W 24–21</td><td class=nomeet>&bull;</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/utah.svg' alt='' width=14 height=14 loading=lazy>Utah</td><td style='color:hsl(0 100% var(--pctl))' title='Utah lost to Texas Tech 10–34 (Sat, Sep 20, home)'><span class=hatag>H</span>L 10–34</td><td style='color:hsl(0 100% var(--pctl))' title='Utah lost to BYU 21–24 (Sun, Oct 19, away)'><span class=hatag>A</span>L 21–24</td><td class=selfcell aria-hidden=true>&#9587;</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Utah def. Arizona State 42–10 (Sun, Oct 12, home)'><span class=hatag>H</span>W 42–10</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Utah def. Cincinnati 45–14 (Sun, Nov 2, home)'><span class=hatag>H</span>W 45–14</td><td style='color:hsl(168 65% var(--pctl))' title='Utah def. Kansas State 51–47 (Sat, Nov 22, home)'><span class=hatag>H</span>W 51–47</td><td style='color:hsl(168 65% var(--pctl))' title='Utah def. Baylor 55–28 (Sun, Nov 16, away)'><span class=hatag>A</span>W 55–28</td><td style='color:hsl(168 65% var(--pctl))' title='Utah def. Kansas 31–21 (Fri, Nov 28, away)'><span class=hatag>A</span>W 31–21</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Utah def. West Virginia 48–14 (Sat, Sep 27, away)'><span class=hatag>A</span>W 48–14</td><td style='color:hsl(168 65% var(--pctl))' title='Utah def. Colorado 53–7 (Sun, Oct 26, home)'><span class=hatag>H</span>W 53–7</td><td class=nomeet>&bull;</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/hou.svg' alt='' width=14 height=14 loading=lazy>Houston</td><td style='color:hsl(0 100% var(--pctl))' title='Houston lost to Texas Tech 11–35 (Sat, Oct 4, home)'><span class=hatag>H</span>L 11–35</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(168 65% var(--pctl))' title='Houston def. Arizona 31–28 (Sat, Oct 18, home)'><span class=hatag>H</span>W 31–28</td><td style='color:hsl(168 65% var(--pctl))' title='Houston def. Arizona State 24–16 (Sun, Oct 26, away)'><span class=hatag>A</span>W 24–16</td><td style='color:hsl(0 100% var(--pctl))' title='Houston lost to TCU 14–17 (Sat, Nov 22, home)'><span class=hatag>H</span>L 14–17</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Houston def. Baylor 31–24 (Sat, Nov 29, away)'><span class=hatag>A</span>W 31–24</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Houston def. UCF 30–27 (Sat, Nov 8, away)'><span class=hatag>A</span>W 30–27</td><td style='color:hsl(0 100% var(--pctl))' title='Houston lost to West Virginia 35–45 (Sat, Nov 1, home)'><span class=hatag>H</span>L 35–45</td><td style='color:hsl(168 65% var(--pctl))' title='Houston def. Colorado 36–20 (Fri, Sep 12, home)'><span class=hatag>H</span>W 36–20</td><td style='color:hsl(168 65% var(--pctl))' title='Houston def. Oklahoma State 39–17 (Sat, Oct 11, away)'><span class=hatag>A</span>W 39–17</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/ariz.svg' alt='' width=14 height=14 loading=lazy>Arizona</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Arizona lost to BYU 27–33 (Sun, Oct 12, home)'><span class=hatag>H</span>L 27–33</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Arizona lost to Houston 28–31 (Sat, Oct 18, away)'><span class=hatag>A</span>L 28–31</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona def. Arizona State 23–7 (Sat, Nov 29, away)'><span class=hatag>A</span>W 23–7</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Arizona lost to Iowa State 14–39 (Sat, Sep 27, away)'><span class=hatag>A</span>L 14–39</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona def. Cincinnati 30–24 (Sat, Nov 15, away)'><span class=hatag>A</span>W 30–24</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona def. Baylor 41–17 (Sat, Nov 22, home)'><span class=hatag>H</span>W 41–17</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona def. Kansas 24–20 (Sat, Nov 8, home)'><span class=hatag>H</span>W 24–20</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona def. Colorado 52–17 (Sat, Nov 1, away)'><span class=hatag>A</span>W 52–17</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona def. Oklahoma State 41–13 (Sat, Oct 4, home)'><span class=hatag>H</span>W 41–13</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/asu.svg' alt='' width=14 height=14 loading=lazy>Arizona State</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona State def. Texas Tech 26–22 (Sat, Oct 18, home)'><span class=hatag>H</span>W 26–22</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Arizona State lost to Utah 10–42 (Sun, Oct 12, away)'><span class=hatag>A</span>L 10–42</td><td style='color:hsl(0 100% var(--pctl))' title='Arizona State lost to Houston 16–24 (Sun, Oct 26, home)'><span class=hatag>H</span>L 16–24</td><td style='color:hsl(0 100% var(--pctl))' title='Arizona State lost to Arizona 7–23 (Sat, Nov 29, home)'><span class=hatag>H</span>L 7–23</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona State def. TCU 27–24 (Sat, Sep 27, home)'><span class=hatag>H</span>W 27–24</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona State def. Iowa State 24–19 (Sat, Nov 1, away)'><span class=hatag>A</span>W 24–19</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona State def. Baylor 27–24 (Sat, Sep 20, away)'><span class=hatag>A</span>W 27–24</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona State def. West Virginia 25–23 (Sat, Nov 15, home)'><span class=hatag>H</span>W 25–23</td><td style='color:hsl(168 65% var(--pctl))' title='Arizona State def. Colorado 42–17 (Sun, Nov 23, away)'><span class=hatag>A</span>W 42–17</td><td class=nomeet>&bull;</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/tcu.svg' alt='' width=14 height=14 loading=lazy>TCU</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='TCU lost to BYU 13–44 (Sun, Nov 16, away)'><span class=hatag>A</span>L 13–44</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='TCU def. Houston 17–14 (Sat, Nov 22, away)'><span class=hatag>A</span>W 17–14</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='TCU lost to Arizona State 24–27 (Sat, Sep 27, away)'><span class=hatag>A</span>L 24–27</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(0 100% var(--pctl))' title='TCU lost to Iowa State 17–20 (Sat, Nov 8, home)'><span class=hatag>H</span>L 17–20</td><td style='color:hsl(168 65% var(--pctl))' title='TCU def. Cincinnati 45–23 (Sat, Nov 29, home)'><span class=hatag>H</span>W 45–23</td><td style='color:hsl(0 100% var(--pctl))' title='TCU lost to Kansas State 28–41 (Sat, Oct 11, away)'><span class=hatag>A</span>L 28–41</td><td style='color:hsl(168 65% var(--pctl))' title='TCU def. Baylor 42–36 (Sat, Oct 18, home)'><span class=hatag>H</span>W 42–36</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='TCU def. West Virginia 23–17 (Sat, Oct 25, away)'><span class=hatag>A</span>W 23–17</td><td style='color:hsl(168 65% var(--pctl))' title='TCU def. Colorado 35–21 (Sat, Oct 4, home)'><span class=hatag>H</span>W 35–21</td><td class=nomeet>&bull;</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/isu.svg' alt='' width=14 height=14 loading=lazy>Iowa State</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Iowa State lost to BYU 27–41 (Sat, Oct 25, home)'><span class=hatag>H</span>L 27–41</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Iowa State def. Arizona 39–14 (Sat, Sep 27, home)'><span class=hatag>H</span>W 39–14</td><td style='color:hsl(0 100% var(--pctl))' title='Iowa State lost to Arizona State 19–24 (Sat, Nov 1, home)'><span class=hatag>H</span>L 19–24</td><td style='color:hsl(168 65% var(--pctl))' title='Iowa State def. TCU 20–17 (Sat, Nov 8, away)'><span class=hatag>A</span>W 20–17</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(0 100% var(--pctl))' title='Iowa State lost to Cincinnati 30–38 (Sat, Oct 4, away)'><span class=hatag>A</span>L 30–38</td><td style='color:hsl(168 65% var(--pctl))' title='Iowa State def. Kansas State 24–21 (Sat, Aug 23, away)'><span class=hatag>A</span>W 24–21</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Iowa State def. Kansas 38–14 (Sat, Nov 22, home)'><span class=hatag>H</span>W 38–14</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Iowa State lost to Colorado 17–24 (Sat, Oct 11, away)'><span class=hatag>A</span>L 17–24</td><td style='color:hsl(168 65% var(--pctl))' title='Iowa State def. Oklahoma State 20–13 (Sat, Nov 29, away)'><span class=hatag>A</span>W 20–13</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/cin.svg' alt='' width=14 height=14 loading=lazy>Cincinnati</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Cincinnati lost to BYU 14–26 (Sun, Nov 23, home)'><span class=hatag>H</span>L 14–26</td><td style='color:hsl(0 100% var(--pctl))' title='Cincinnati lost to Utah 14–45 (Sun, Nov 2, away)'><span class=hatag>A</span>L 14–45</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Cincinnati lost to Arizona 24–30 (Sat, Nov 15, home)'><span class=hatag>H</span>L 24–30</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Cincinnati lost to TCU 23–45 (Sat, Nov 29, away)'><span class=hatag>A</span>L 23–45</td><td style='color:hsl(168 65% var(--pctl))' title='Cincinnati def. Iowa State 38–30 (Sat, Oct 4, home)'><span class=hatag>H</span>W 38–30</td><td class=selfcell aria-hidden=true>&#9587;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Cincinnati def. Baylor 41–20 (Sat, Oct 25, home)'><span class=hatag>H</span>W 41–20</td><td style='color:hsl(168 65% var(--pctl))' title='Cincinnati def. Kansas 37–34 (Sat, Sep 27, away)'><span class=hatag>A</span>W 37–34</td><td style='color:hsl(168 65% var(--pctl))' title='Cincinnati def. UCF 20–11 (Sat, Oct 11, home)'><span class=hatag>H</span>W 20–11</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Cincinnati def. Oklahoma State 49–17 (Sun, Oct 19, away)'><span class=hatag>A</span>W 49–17</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/ksu.svg' alt='' width=14 height=14 loading=lazy>Kansas State</td><td style='color:hsl(0 100% var(--pctl))' title='Kansas State lost to Texas Tech 20–43 (Sat, Nov 1, home)'><span class=hatag>H</span>L 20–43</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Kansas State lost to Utah 47–51 (Sat, Nov 22, away)'><span class=hatag>A</span>L 47–51</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Kansas State def. TCU 41–28 (Sat, Oct 11, home)'><span class=hatag>H</span>W 41–28</td><td style='color:hsl(0 100% var(--pctl))' title='Kansas State lost to Iowa State 21–24 (Sat, Aug 23, home)'><span class=hatag>H</span>L 21–24</td><td class=nomeet>&bull;</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(0 100% var(--pctl))' title='Kansas State lost to Baylor 34–35 (Sat, Oct 4, away)'><span class=hatag>A</span>L 34–35</td><td style='color:hsl(168 65% var(--pctl))' title='Kansas State def. Kansas 42–17 (Sat, Oct 25, away)'><span class=hatag>A</span>W 42–17</td><td style='color:hsl(168 65% var(--pctl))' title='Kansas State def. UCF 34–20 (Sat, Sep 27, home)'><span class=hatag>H</span>W 34–20</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Kansas State def. Colorado 24–14 (Sat, Nov 29, home)'><span class=hatag>H</span>W 24–14</td><td style='color:hsl(168 65% var(--pctl))' title='Kansas State def. Oklahoma State 14–6 (Sat, Nov 15, away)'><span class=hatag>A</span>W 14–6</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/bay.svg' alt='' width=14 height=14 loading=lazy>Baylor</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Baylor lost to Utah 28–55 (Sun, Nov 16, home)'><span class=hatag>H</span>L 28–55</td><td style='color:hsl(0 100% var(--pctl))' title='Baylor lost to Houston 24–31 (Sat, Nov 29, home)'><span class=hatag>H</span>L 24–31</td><td style='color:hsl(0 100% var(--pctl))' title='Baylor lost to Arizona 17–41 (Sat, Nov 22, away)'><span class=hatag>A</span>L 17–41</td><td style='color:hsl(0 100% var(--pctl))' title='Baylor lost to Arizona State 24–27 (Sat, Sep 20, home)'><span class=hatag>H</span>L 24–27</td><td style='color:hsl(0 100% var(--pctl))' title='Baylor lost to TCU 36–42 (Sat, Oct 18, away)'><span class=hatag>A</span>L 36–42</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Baylor lost to Cincinnati 20–41 (Sat, Oct 25, away)'><span class=hatag>A</span>L 20–41</td><td style='color:hsl(168 65% var(--pctl))' title='Baylor def. Kansas State 35–34 (Sat, Oct 4, home)'><span class=hatag>H</span>W 35–34</td><td class=selfcell aria-hidden=true>&#9587;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Baylor def. UCF 30–3 (Sat, Nov 1, home)'><span class=hatag>H</span>W 30–3</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Baylor def. Oklahoma State 45–27 (Sat, Sep 27, away)'><span class=hatag>A</span>W 45–27</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/ku.svg' alt='' width=14 height=14 loading=lazy>Kansas</td><td style='color:hsl(0 100% var(--pctl))' title='Kansas lost to Texas Tech 17–42 (Sat, Oct 11, away)'><span class=hatag>A</span>L 17–42</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Kansas lost to Utah 21–31 (Fri, Nov 28, home)'><span class=hatag>H</span>L 21–31</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Kansas lost to Arizona 20–24 (Sat, Nov 8, away)'><span class=hatag>A</span>L 20–24</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Kansas lost to Iowa State 14–38 (Sat, Nov 22, away)'><span class=hatag>A</span>L 14–38</td><td style='color:hsl(0 100% var(--pctl))' title='Kansas lost to Cincinnati 34–37 (Sat, Sep 27, home)'><span class=hatag>H</span>L 34–37</td><td style='color:hsl(0 100% var(--pctl))' title='Kansas lost to Kansas State 17–42 (Sat, Oct 25, home)'><span class=hatag>H</span>L 17–42</td><td class=nomeet>&bull;</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(168 65% var(--pctl))' title='Kansas def. UCF 27–20 (Sat, Oct 4, away)'><span class=hatag>A</span>W 27–20</td><td style='color:hsl(168 65% var(--pctl))' title='Kansas def. West Virginia 41–10 (Sat, Sep 20, home)'><span class=hatag>H</span>W 41–10</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='Kansas def. Oklahoma State 38–21 (Sat, Nov 1, home)'><span class=hatag>H</span>W 38–21</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/ucf.svg' alt='' width=14 height=14 loading=lazy>UCF</td><td style='color:hsl(0 100% var(--pctl))' title='UCF lost to Texas Tech 9–48 (Sat, Nov 15, away)'><span class=hatag>A</span>L 9–48</td><td style='color:hsl(0 100% var(--pctl))' title='UCF lost to BYU 21–41 (Sat, Nov 29, away)'><span class=hatag>A</span>L 21–41</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='UCF lost to Houston 27–30 (Sat, Nov 8, home)'><span class=hatag>H</span>L 27–30</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='UCF lost to Cincinnati 11–20 (Sat, Oct 11, away)'><span class=hatag>A</span>L 11–20</td><td style='color:hsl(0 100% var(--pctl))' title='UCF lost to Kansas State 20–34 (Sat, Sep 27, away)'><span class=hatag>A</span>L 20–34</td><td style='color:hsl(0 100% var(--pctl))' title='UCF lost to Baylor 3–30 (Sat, Nov 1, away)'><span class=hatag>A</span>L 3–30</td><td style='color:hsl(0 100% var(--pctl))' title='UCF lost to Kansas 20–27 (Sat, Oct 4, home)'><span class=hatag>H</span>L 20–27</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(168 65% var(--pctl))' title='UCF def. West Virginia 45–13 (Sat, Oct 18, home)'><span class=hatag>H</span>W 45–13</td><td class=nomeet>&bull;</td><td style='color:hsl(168 65% var(--pctl))' title='UCF def. Oklahoma State 17–14 (Sat, Nov 22, home)'><span class=hatag>H</span>W 17–14</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/wvu.svg' alt='' width=14 height=14 loading=lazy>West Virginia</td><td style='color:hsl(0 100% var(--pctl))' title='West Virginia lost to Texas Tech 0–49 (Sat, Nov 29, home)'><span class=hatag>H</span>L 0–49</td><td style='color:hsl(0 100% var(--pctl))' title='West Virginia lost to BYU 24–38 (Sat, Oct 4, away)'><span class=hatag>A</span>L 24–38</td><td style='color:hsl(0 100% var(--pctl))' title='West Virginia lost to Utah 14–48 (Sat, Sep 27, home)'><span class=hatag>H</span>L 14–48</td><td style='color:hsl(168 65% var(--pctl))' title='West Virginia def. Houston 45–35 (Sat, Nov 1, away)'><span class=hatag>A</span>W 45–35</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='West Virginia lost to Arizona State 23–25 (Sat, Nov 15, away)'><span class=hatag>A</span>L 23–25</td><td style='color:hsl(0 100% var(--pctl))' title='West Virginia lost to TCU 17–23 (Sat, Oct 25, home)'><span class=hatag>H</span>L 17–23</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='West Virginia lost to Kansas 10–41 (Sat, Sep 20, away)'><span class=hatag>A</span>L 10–41</td><td style='color:hsl(0 100% var(--pctl))' title='West Virginia lost to UCF 13–45 (Sat, Oct 18, away)'><span class=hatag>A</span>L 13–45</td><td class=selfcell aria-hidden=true>&#9587;</td><td style='color:hsl(168 65% var(--pctl))' title='West Virginia def. Colorado 29–22 (Sat, Nov 8, home)'><span class=hatag>H</span>W 29–22</td><td class=nomeet>&bull;</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/cu.svg' alt='' width=14 height=14 loading=lazy>Colorado</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Colorado lost to BYU 21–24 (Sun, Sep 28, home)'><span class=hatag>H</span>L 21–24</td><td style='color:hsl(0 100% var(--pctl))' title='Colorado lost to Utah 7–53 (Sun, Oct 26, away)'><span class=hatag>A</span>L 7–53</td><td style='color:hsl(0 100% var(--pctl))' title='Colorado lost to Houston 20–36 (Fri, Sep 12, away)'><span class=hatag>A</span>L 20–36</td><td style='color:hsl(0 100% var(--pctl))' title='Colorado lost to Arizona 17–52 (Sat, Nov 1, home)'><span class=hatag>H</span>L 17–52</td><td style='color:hsl(0 100% var(--pctl))' title='Colorado lost to Arizona State 17–42 (Sun, Nov 23, home)'><span class=hatag>H</span>L 17–42</td><td style='color:hsl(0 100% var(--pctl))' title='Colorado lost to TCU 21–35 (Sat, Oct 4, away)'><span class=hatag>A</span>L 21–35</td><td style='color:hsl(168 65% var(--pctl))' title='Colorado def. Iowa State 24–17 (Sat, Oct 11, home)'><span class=hatag>H</span>W 24–17</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Colorado lost to Kansas State 14–24 (Sat, Nov 29, away)'><span class=hatag>A</span>L 14–24</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Colorado lost to West Virginia 22–29 (Sat, Nov 8, away)'><span class=hatag>A</span>L 22–29</td><td class=selfcell aria-hidden=true>&#9587;</td><td class=nomeet>&bull;</td></tr><tr><td class=teamcell><img class=mark src='../../tiebreaker/logos/okst.svg' alt='' width=14 height=14 loading=lazy>Oklahoma State</td><td style='color:hsl(0 100% var(--pctl))' title='Oklahoma State lost to Texas Tech 0–42 (Sat, Oct 25, away)'><span class=hatag>A</span>L 0–42</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Oklahoma State lost to Houston 17–39 (Sat, Oct 11, home)'><span class=hatag>H</span>L 17–39</td><td style='color:hsl(0 100% var(--pctl))' title='Oklahoma State lost to Arizona 13–41 (Sat, Oct 4, away)'><span class=hatag>A</span>L 13–41</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td style='color:hsl(0 100% var(--pctl))' title='Oklahoma State lost to Iowa State 13–20 (Sat, Nov 29, home)'><span class=hatag>H</span>L 13–20</td><td style='color:hsl(0 100% var(--pctl))' title='Oklahoma State lost to Cincinnati 17–49 (Sun, Oct 19, home)'><span class=hatag>H</span>L 17–49</td><td style='color:hsl(0 100% var(--pctl))' title='Oklahoma State lost to Kansas State 6–14 (Sat, Nov 15, home)'><span class=hatag>H</span>L 6–14</td><td style='color:hsl(0 100% var(--pctl))' title='Oklahoma State lost to Baylor 27–45 (Sat, Sep 27, home)'><span class=hatag>H</span>L 27–45</td><td style='color:hsl(0 100% var(--pctl))' title='Oklahoma State lost to Kansas 21–38 (Sat, Nov 1, away)'><span class=hatag>A</span>L 21–38</td><td style='color:hsl(0 100% var(--pctl))' title='Oklahoma State lost to UCF 14–17 (Sat, Nov 22, away)'><span class=hatag>A</span>L 14–17</td><td class=nomeet>&bull;</td><td class=nomeet>&bull;</td><td class=selfcell aria-hidden=true>&#9587;</td></tr></tbody></table></div><p class=note>Every conference meeting this season, read across: H marks a home game and A an away game, then the row team's result or the scheduled week. A bullet means the schedule never pairs them — in a nine-game draw that's more than a third of the grid, which is why the tiebreakers exist.</p></div><div class=card><h2>Results, newest first</h2><ul class=games><li class=done><img class=mark src='../../tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU 7 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ttu.svg' alt='' width=16 height=16 loading=lazy><b>Texas Tech 34</b> <span class=ccgtag>Championship</span></li><li class=done><img class=mark src='../../tiebreaker/logos/cin.svg' alt='' width=16 height=16 loading=lazy>Cincinnati 23 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/tcu.svg' alt='' width=16 height=16 loading=lazy><b>TCU 45</b></li><li class=done><img class=mark src='../../tiebreaker/logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF 21 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy><b>BYU 41</b></li><li class=done><img class=mark src='../../tiebreaker/logos/hou.svg' alt='' width=16 height=16 loading=lazy><b>Houston 31</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/bay.svg' alt='' width=16 height=16 loading=lazy>Baylor 24</li><li class=done><img class=mark src='../../tiebreaker/logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado 14 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ksu.svg' alt='' width=16 height=16 loading=lazy><b>Kansas State 24</b></li><li class=done><img class=mark src='../../tiebreaker/logos/isu.svg' alt='' width=16 height=16 loading=lazy><b>Iowa State 20</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/okst.svg' alt='' width=16 height=16 loading=lazy>Oklahoma State 13</li><li class=done><img class=mark src='../../tiebreaker/logos/ttu.svg' alt='' width=16 height=16 loading=lazy><b>Texas Tech 49</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/wvu.svg' alt='' width=16 height=16 loading=lazy>West Virginia 0</li><li class=done><img class=mark src='../../tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy><b>Arizona 23</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State 7</li><li class=done><img class=mark src='../../tiebreaker/logos/utah.svg' alt='' width=16 height=16 loading=lazy><b>Utah 31</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ku.svg' alt='' width=16 height=16 loading=lazy>Kansas 21</li><li class=done><img class=mark src='../../tiebreaker/logos/asu.svg' alt='' width=16 height=16 loading=lazy><b>Arizona State 42</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado 17</li><li class=done><img class=mark src='../../tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy><b>BYU 26</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/cin.svg' alt='' width=16 height=16 loading=lazy>Cincinnati 14</li><li class=done><img class=mark src='../../tiebreaker/logos/okst.svg' alt='' width=16 height=16 loading=lazy>Oklahoma State 14 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ucf.svg' alt='' width=16 height=16 loading=lazy><b>UCF 17</b></li><li class=done><img class=mark src='../../tiebreaker/logos/tcu.svg' alt='' width=16 height=16 loading=lazy><b>TCU 17</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/hou.svg' alt='' width=16 height=16 loading=lazy>Houston 14</li><li class=done><img class=mark src='../../tiebreaker/logos/ksu.svg' alt='' width=16 height=16 loading=lazy>Kansas State 47 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/utah.svg' alt='' width=16 height=16 loading=lazy><b>Utah 51</b></li><li class=done><img class=mark src='../../tiebreaker/logos/bay.svg' alt='' width=16 height=16 loading=lazy>Baylor 17 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy><b>Arizona 41</b></li><li class=done><img class=mark src='../../tiebreaker/logos/ku.svg' alt='' width=16 height=16 loading=lazy>Kansas 14 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/isu.svg' alt='' width=16 height=16 loading=lazy><b>Iowa State 38</b></li><li class=done><img class=mark src='../../tiebreaker/logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU 13 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy><b>BYU 44</b></li><li class=done><img class=mark src='../../tiebreaker/logos/utah.svg' alt='' width=16 height=16 loading=lazy><b>Utah 55</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/bay.svg' alt='' width=16 height=16 loading=lazy>Baylor 28</li><li class=done><img class=mark src='../../tiebreaker/logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF 9 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ttu.svg' alt='' width=16 height=16 loading=lazy><b>Texas Tech 48</b></li><li class=done><img class=mark src='../../tiebreaker/logos/wvu.svg' alt='' width=16 height=16 loading=lazy>West Virginia 23 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/asu.svg' alt='' width=16 height=16 loading=lazy><b>Arizona State 25</b></li><li class=done><img class=mark src='../../tiebreaker/logos/ksu.svg' alt='' width=16 height=16 loading=lazy><b>Kansas State 14</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/okst.svg' alt='' width=16 height=16 loading=lazy>Oklahoma State 6</li><li class=done><img class=mark src='../../tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy><b>Arizona 30</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/cin.svg' alt='' width=16 height=16 loading=lazy>Cincinnati 24</li><li class=done><img class=mark src='../../tiebreaker/logos/isu.svg' alt='' width=16 height=16 loading=lazy><b>Iowa State 20</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/tcu.svg' alt='' width=16 height=16 loading=lazy>TCU 17</li><li class=done><img class=mark src='../../tiebreaker/logos/ku.svg' alt='' width=16 height=16 loading=lazy>Kansas 20 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy><b>Arizona 24</b></li><li class=done><img class=mark src='../../tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU 7 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ttu.svg' alt='' width=16 height=16 loading=lazy><b>Texas Tech 29</b></li><li class=done><img class=mark src='../../tiebreaker/logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado 22 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/wvu.svg' alt='' width=16 height=16 loading=lazy><b>West Virginia 29</b></li><li class=done><img class=mark src='../../tiebreaker/logos/hou.svg' alt='' width=16 height=16 loading=lazy><b>Houston 30</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF 27</li><li class=done><img class=mark src='../../tiebreaker/logos/cin.svg' alt='' width=16 height=16 loading=lazy>Cincinnati 14 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/utah.svg' alt='' width=16 height=16 loading=lazy><b>Utah 45</b></li><li class=done><img class=mark src='../../tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy><b>Arizona 52</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado 17</li><li class=done><img class=mark src='../../tiebreaker/logos/okst.svg' alt='' width=16 height=16 loading=lazy>Oklahoma State 21 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ku.svg' alt='' width=16 height=16 loading=lazy><b>Kansas 38</b></li><li class=done><img class=mark src='../../tiebreaker/logos/ttu.svg' alt='' width=16 height=16 loading=lazy><b>Texas Tech 43</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ksu.svg' alt='' width=16 height=16 loading=lazy>Kansas State 20</li><li class=done><img class=mark src='../../tiebreaker/logos/asu.svg' alt='' width=16 height=16 loading=lazy><b>Arizona State 24</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/isu.svg' alt='' width=16 height=16 loading=lazy>Iowa State 19</li><li class=done><img class=mark src='../../tiebreaker/logos/wvu.svg' alt='' width=16 height=16 loading=lazy><b>West Virginia 45</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/hou.svg' alt='' width=16 height=16 loading=lazy>Houston 35</li><li class=done><img class=mark src='../../tiebreaker/logos/ucf.svg' alt='' width=16 height=16 loading=lazy>UCF 3 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/bay.svg' alt='' width=16 height=16 loading=lazy><b>Baylor 30</b></li><li class=done><img class=mark src='../../tiebreaker/logos/cu.svg' alt='' width=16 height=16 loading=lazy>Colorado 7 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/utah.svg' alt='' width=16 height=16 loading=lazy><b>Utah 53</b></li><li class=done><img class=mark src='../../tiebreaker/logos/hou.svg' alt='' width=16 height=16 loading=lazy><b>Houston 24</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/asu.svg' alt='' width=16 height=16 loading=lazy>Arizona State 16</li><li class=done><img class=mark src='../../tiebreaker/logos/tcu.svg' alt='' width=16 height=16 loading=lazy><b>TCU 23</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/wvu.svg' alt='' width=16 height=16 loading=lazy>West Virginia 17</li><li class=done><img class=mark src='../../tiebreaker/logos/okst.svg' alt='' width=16 height=16 loading=lazy>Oklahoma State 0 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ttu.svg' alt='' width=16 height=16 loading=lazy><b>Texas Tech 42</b></li><li class=done><img class=mark src='../../tiebreaker/logos/bay.svg' alt='' width=16 height=16 loading=lazy>Baylor 20 <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/cin.svg' alt='' width=16 height=16 loading=lazy><b>Cincinnati 41</b></li><li class=done><img class=mark src='../../tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy><b>BYU 41</b> <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/isu.svg' alt='' width=16 height=16 loading=lazy>Iowa State 27</li></ul></div>
+</main>
+<footer class=b12-footer>A Big12ology project · not affiliated with the
+Big 12 Conference · <a href=data.json>data.json</a> ·
+<a href=standings.csv>standings.csv</a> ·
+<a href=../../tiebreaker/feed.xml>RSS</a> ·
+<a href="https://big12ology.com/privacy">Privacy</a></footer>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
+</body></html>
