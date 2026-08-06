@@ -361,3 +361,23 @@ svg text.val-in {
 .records-table td.rw-team { white-space: nowrap; }
 .records-table td.rw-team .team-logo { margin-right: 0.45rem;
   vertical-align: -4px; }
+
+/* Weather effects and the membership ledger — both are tables rather than
+   charts, because seven rows and fifteen rows of text are not a shape. */
+.weather-effects, .ledger { border-collapse: collapse; width: 100%;
+  font-size: 14px; margin-top: 4px; }
+.weather-effects th, .weather-effects td, .ledger td { padding: 6px 8px;
+  border-bottom: 1px solid var(--line); text-align: left; }
+.weather-effects th { font-weight: 600; font-size: 12px; color: var(--dim); }
+.weather-effects td.num, .weather-effects th:not(:first-child) {
+  text-align: right; font-variant-numeric: tabular-nums; }
+.weather-effects td.dim { color: var(--dim); }
+.weather-effects td.notable { font-weight: 700; }
+.weather-effects tfoot td { font-weight: 600; border-bottom: none; }
+.ledger td.lgyear { font-variant-numeric: tabular-nums; font-weight: 700;
+  vertical-align: top; white-space: nowrap; width: 1%; }
+.ledger .lg { margin: 2px 0; }
+.ledger .lgname { font-weight: 600; }
+.ledger .lg.b12 .lgname { color: var(--accent); }
+.ledger .lgn { color: var(--dim); font-variant-numeric: tabular-nums; }
+.ledger .lgteams { color: var(--dim); font-size: 13px; }

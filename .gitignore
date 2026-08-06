@@ -1,0 +1,3 @@
+
+# Local preview output — assemble.sh rebuilds it on demand.
+dist/

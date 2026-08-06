@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=34";
-import { gameTooltipHTML } from "./gametip.js?v=34";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=35";
+import { gameTooltipHTML } from "./gametip.js?v=35";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -499,6 +499,246 @@ function yoyTeams(cardEl, seasonsData, teamsData) {
         color: divergeHSL(0.08), mark: "dot" },
       { value: pct(r.latest.pct), label: `latest, ${r.latest.year}`,
         color: isDark() ? "#e8e6e1" : "#1a1c20", mark: "ring" },
+    ]);
+  });
+  svg.addEventListener("pointerleave", hideTip);
+  cardEl.appendChild(svg);
+}
+
+// ---- panel: who was in the Big 12 when ------------------------------------
+
+// Each season file carries a conferences map written by add_conferences.py.
+// app.js already uses it for a per-season tag; nothing has ever shown the
+// whole span at once, which is the only way the churn reads as churn.
+//
+// Starts at 2012 because that is where the data starts. The conference is
+// older than that and this is not its full history.
+function membershipLedger(cardEl, seasonsData) {
+  const years = Object.keys(seasonsData).sort();
+  const rows = years
+    .map((y) => [y, seasonsData[y].conferences])
+    .filter(([, c]) => c && Object.keys(c).length);
+  if (!rows.length) return emptyNote(cardEl, "No membership data.");
+
+  const table = document.createElement("table");
+  table.className = "ledger";
+  const body = rows.map(([y, conf]) => {
+    const byLeague = new Map();
+    for (const [team, league] of Object.entries(conf)) {
+      if (!byLeague.has(league)) byLeague.set(league, []);
+      byLeague.get(league).push(team);
+    }
+    // Big 12 first, then the rest by how many of today's sixteen they held.
+    const leagues = [...byLeague.entries()].sort((a, b) =>
+      (a[0] === "Big 12" ? -1 : b[0] === "Big 12" ? 1 : 0)
+      || b[1].length - a[1].length);
+    const cells = leagues.map(([league, teams]) =>
+      `<div class="lg${league === "Big 12" ? " b12" : ""}">` +
+      `<span class="lgname">${league}</span> ` +
+      `<span class="lgn">${teams.length}</span> ` +
+      `<span class="lgteams">${teams.sort().join(", ")}</span></div>`).join("");
+    return `<tr><td class="lgyear">${y}</td><td>${cells}</td></tr>`;
+  }).join("");
+  table.innerHTML = `<tbody>${body}</tbody>`;
+  cardEl.appendChild(table);
+
+  const p = document.createElement("p");
+  p.className = "chart-note";
+  p.textContent =
+    `Where today's sixteen programs actually played, ${rows[0][0]}–` +
+    `${rows[rows.length - 1][0]}. Counts are of the current sixteen only, ` +
+    `not of each league's full membership — in 2013 the Big 12 also had ` +
+    `Oklahoma and Texas, who are not tracked here. The conference predates ` +
+    `this data by sixteen years; this is where the record starts, not where ` +
+    `the league does.`;
+  cardEl.appendChild(p);
+}
+
+// ---- panel: what weather actually does ------------------------------------
+
+// The scatter above plots temperature and rings the rainy games. This asks
+// the blunter question of all three stored fields at once, and the answer is
+// mostly "nothing" — which is the finding, not a failure to find one.
+//
+// Announced attendance is largely tickets distributed, not turnstile counts.
+// It measures demand at the moment of purchase, days or months before anyone
+// could know the forecast. A null result here is what that measurement
+// should produce; it would be more surprising if weather moved it.
+function weatherEffects(cardEl, seasonsData, teamsData) {
+  const games = [];
+  for (const [year, season] of Object.entries(seasonsData)) {
+    const caps = new Map(
+      teamsForSeason(teamsData, Number(year)).map((t) => [t.team, t.capacity]));
+    for (const g of season.games) {
+      if (g.role || g.attendance == null || !g.weather) continue;
+      const cap = g.capacity ?? caps.get(g.team);
+      if (!cap || g.weather.tempF == null) continue;
+      games.push({ pct: g.attendance / cap, temp: g.weather.tempF,
+                   wind: g.weather.windMph, rain: g.weather.precipIn ?? 0 });
+    }
+  }
+  if (games.length < 50) return emptyNote(cardEl, "Not enough weather data yet.");
+
+  const mean = (a) => a.reduce((s, v) => s + v.pct, 0) / a.length;
+  const all = mean(games);
+  const bands = [
+    ["Below 40°F", games.filter((g) => g.temp < 40)],
+    ["40–80°F", games.filter((g) => g.temp >= 40 && g.temp <= 80)],
+    ["Above 85°F", games.filter((g) => g.temp > 85)],
+    ["Dry", games.filter((g) => g.rain <= 0.05)],
+    ["Rain over 0.05in", games.filter((g) => g.rain > 0.05)],
+    ["Wind under 10mph", games.filter((g) => g.wind != null && g.wind < 10)],
+    ["Wind 15mph or more", games.filter((g) => g.wind != null && g.wind >= 15)],
+  ].filter(([, a]) => a.length);
+
+  const table = document.createElement("table");
+  table.className = "weather-effects";
+  table.innerHTML =
+    "<thead><tr><th>Conditions</th><th>Percent full</th>" +
+    "<th>vs average</th><th>Games</th></tr></thead><tbody>" +
+    bands.map(([label, a]) => {
+      const d = mean(a) - all;
+      // Under about thirty games a four-point swing is noise, and the table
+      // should not invite a reader to believe otherwise.
+      const thin = a.length < 30;
+      // Round before choosing the sign, or a delta of −0.04 points prints as
+      // "−0.0" and reads like a typo.
+      const shown = Math.round(d * 1000) / 10;
+      const sign = shown > 0 ? "+" : shown < 0 ? "−" : "";
+      return `<tr><td>${label}</td><td class="num">${pct(mean(a))}</td>` +
+        `<td class="num ${Math.abs(d) >= 0.03 && !thin ? "notable" : "dim"}">` +
+        `${sign}${Math.abs(shown).toFixed(1)}` +
+        `</td><td class="num ${thin ? "dim" : ""}">${a.length}${thin ? " *" : ""}</td></tr>`;
+    }).join("") +
+    `</tbody><tfoot><tr><td>All tracked home games</td>` +
+    `<td class="num">${pct(all)}</td><td class="num dim">—</td>` +
+    `<td class="num">${games.length}</td></tr></tfoot>`;
+  cardEl.appendChild(table);
+
+  const p = document.createElement("p");
+  p.className = "chart-note";
+  p.innerHTML =
+    "Only cold does anything, and rows marked <b>*</b> have too few games to " +
+    "read at all. That is the honest answer: announced attendance is mostly " +
+    "tickets distributed, not turnstile counts, so it measures demand at the " +
+    "moment of purchase — days or months before anyone could know the " +
+    "forecast. Weather moving it would be the surprise.";
+  cardEl.appendChild(p);
+}
+
+// ---- panel: does winning fill the stadium? --------------------------------
+
+// Every stored game carries pointsFor/pointsAgainst, including road and
+// neutral entries (recorded from the tracked team's own perspective), so a
+// team's record *entering* any home game is reconstructible. Nothing else on
+// this site uses that — stats.js filters road games out, because every other
+// question here is about the gate.
+//
+// A game at 0-0 is dropped: a season opener carries no information about how
+// the team was doing, and including it would score every program's first
+// home crowd as if the team were .500.
+function enteringRecords(season) {
+  const byTeam = new Map();
+  for (const g of season.games) {
+    if (!byTeam.has(g.team)) byTeam.set(g.team, []);
+    byTeam.get(g.team).push(g);
+  }
+  const out = [];
+  for (const [team, games] of byTeam) {
+    const played = games
+      .filter((g) => g.pointsFor != null && g.pointsAgainst != null)
+      .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+    for (const g of games) {
+      if (g.role || g.attendance == null || !g.date) continue;
+      let w = 0, l = 0;
+      for (const p of played) {
+        if ((p.date || "") >= g.date) break;
+        if (p.pointsFor > p.pointsAgainst) w++; else l++;
+      }
+      if (w + l === 0) continue;
+      out.push({ team, game: g, w, l, winPct: w / (w + l) });
+    }
+  }
+  return out;
+}
+
+function winElasticity(cardEl, seasonsData, teamsData) {
+  const t = theme();
+  const years = Object.keys(seasonsData).sort();
+  const acc = new Map();          // team -> {win:[pct...], lose:[pct...]}
+  for (const y of years) {
+    const season = seasonsData[y];
+    const ts = teamsForSeason(teamsData, Number(y));
+    const capOf = new Map(ts.map((x) => [x.team, x.capacity]));
+    for (const e of enteringRecords(season)) {
+      const cap = e.game.capacity ?? capOf.get(e.team);
+      if (!cap) continue;
+      const pctFull = e.game.attendance / cap;
+      if (!acc.has(e.team)) acc.set(e.team, { win: [], lose: [] });
+      acc.get(e.team)[e.winPct >= 0.5 ? "win" : "lose"].push(pctFull);
+    }
+  }
+  const mean = (a) => a.reduce((s, v) => s + v, 0) / a.length;
+  const rows = [];
+  const colors = new Map(teamColors(teamsData, years));
+  for (const [team, v] of acc) {
+    // Both buckets need enough games to mean anything. A program that has
+    // essentially never entered a home game under .500 has no answer here,
+    // and inventing one from two games would be the loudest number on the
+    // chart.
+    if (v.win.length < 5 || v.lose.length < 5) continue;
+    const win = mean(v.win), lose = mean(v.lose);
+    rows.push({ team, win, lose, gap: win - lose,
+                nw: v.win.length, nl: v.lose.length,
+                color: colors.get(team) ?? t.series[0] });
+  }
+  if (rows.length < 3) return emptyNote(cardEl, "Not enough games yet.");
+  rows.sort((a, b) => b.gap - a.gap);
+
+  const rowH = 24, gap = 4;
+  const m = { t: 16, r: 66, b: 34, l: 124 };
+  const W = 660;
+  const H = m.t + rows.length * (rowH + gap) + m.b;
+  const iw = W - m.l - m.r;
+  const min = Math.min(...rows.map((r) => Math.min(r.win, r.lose))) - 0.03;
+  const max = Math.max(...rows.map((r) => Math.max(r.win, r.lose))) + 0.03;
+  const x = (v) => m.l + ((v - min) / (max - min)) * iw;
+  let marks = "";
+  for (const gv of [0.7, 0.85, 1.0]) {
+    if (gv < min || gv > max) continue;
+    marks += `<line x1="${x(gv)}" x2="${x(gv)}" y1="${m.t}" y2="${H - m.b}" class="grid"/>` +
+      `<text x="${x(gv)}" y="${H - 20}" text-anchor="middle" class="tick">${Math.round(gv * 100)}%</text>`;
+  }
+  rows.forEach((r, i) => {
+    const y = m.t + i * (rowH + gap) + rowH / 2;
+    marks += `<line x1="${x(r.lose)}" x2="${x(r.win)}" y1="${y}" y2="${y}"
+      stroke="${r.color}" stroke-width="5" stroke-linecap="round" opacity="0.42"/>`;
+    marks += `<circle cx="${x(r.lose)}" cy="${y}" r="5.5" fill="${divergeHSL(0.08)}"/>`;
+    marks += `<circle cx="${x(r.win)}" cy="${y}" r="5.5" fill="${divergeHSL(0.95)}"/>`;
+    marks += `<rect x="${m.l}" y="${y - rowH / 2}" width="${W - m.l - m.r + 58}"
+      height="${rowH}" fill="transparent" data-i="${i}" class="hit"/>`;
+    marks += `<text x="${m.l - 8}" y="${y + 4}" text-anchor="end" class="lbl">${r.team}</text>`;
+    const sign = r.gap >= 0 ? "+" : "−";
+    marks += `<text x="${W - m.r + 12}" y="${y + 4}" class="val">${sign}${Math.abs(Math.round(r.gap * 100))}</text>`;
+  });
+  marks += `<text x="${m.l}" y="${H - 6}" class="tick">` +
+    `● entering under .500 — ● entering .500 or better · ` +
+    `right column = points of capacity between them</text>`;
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = marks;
+  svg.addEventListener("pointermove", (e) => {
+    const el = e.target.closest(".hit");
+    if (!el) return hideTip();
+    const r = rows[Number(el.dataset.i)];
+    showTip(e.clientX, e.clientY, [
+      { head: `${r.team}` },
+      { value: pct(r.win), label: `entering .500+ (${r.nw} games)`,
+        color: divergeHSL(0.95), mark: "dot" },
+      { value: pct(r.lose), label: `entering under .500 (${r.nl} games)`,
+        color: divergeHSL(0.08), mark: "dot" },
+      { value: `${r.gap >= 0 ? "+" : "−"}${Math.abs(Math.round(r.gap * 100))} pts`,
+        label: "difference", color: r.color, mark: "bar" },
     ]);
   });
   svg.addEventListener("pointerleave", hideTip);
@@ -1259,6 +1499,22 @@ export function renderAllTimeCharts(root, teamsData, seasonsData, gaps) {
     "small number is how many it has played");
   roadDraw(cRoad, seasonsData, teamsData);
 
+  const cWin = card(`Does winning fill it? (${span})`,
+    "Average percent full when the team arrived at a home game under .500, " +
+    "against .500 or better. Ordered by the gap — the top of this list is " +
+    "where the crowd follows the record, the bottom is where it does not");
+  winElasticity(cWin, seasonsData, teamsData);
+
+  const cWx = card(`What weather actually does (${span})`,
+    "Every tracked home game with a kickoff-hour observation, grouped by " +
+    "conditions. Rows marked * have too few games to read");
+  weatherEffects(cWx, seasonsData, teamsData);
+
+  const cLedger = card(`Who was where, and when (${span})`,
+    "The conference each of today's sixteen programs actually played in, " +
+    "season by season");
+  membershipLedger(cLedger, seasonsData);
+
   const c3 = card(`Weekly percent full, year over year (${span})`, "Each line is a season; conference-wide");
   yoyLines(c3, seasonsData, teamsData);
 
@@ -1267,7 +1523,7 @@ export function renderAllTimeCharts(root, teamsData, seasonsData, gaps) {
     "the program's range; the bar is the median and the ring is its newest season");
   yoyTeams(c4, seasonsData, teamsData);
 
-  root.append(c1, c2, cRoad, c3, c4);
+  root.append(c1, c2, cRoad, cWin, cWx, c3, c4, cLedger);
   noteGaps(root, gaps);
 }
 
