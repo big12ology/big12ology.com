@@ -13,7 +13,9 @@ field at all rather than a zero.
 
     python3 -m unittest discover -s tests
 """
+import contextlib
 import importlib.util
+import io
 import json
 import tempfile
 import unittest
@@ -27,6 +29,20 @@ SCRIPT = ROOT / "scripts" / "fetch_attendance.py"
 spec = importlib.util.spec_from_file_location("fetch_attendance", SCRIPT)
 fa = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fa)
+
+
+@contextlib.contextmanager
+def quiet():
+    """Capture what the fetch prints, and yield it for assertions.
+
+    Not only for a tidy log. Under Actions the fetch reports a dead CFBD as
+    `::warning::`, which the runner turns into an annotation on the run — so
+    a test exercising that path hangs a warning about season 1999 on a run
+    that fetched 2026, in the same list a real problem would appear in. The
+    output is worth asserting on and not worth publishing."""
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        yield buf
 
 
 FINAL = {  # event 401628582 — UCF 57, New Hampshire 3
@@ -174,7 +190,7 @@ class RefreshesFromEspnAlone(unittest.TestCase):
             return SUMMARIES[espn_id]
 
         with mock.patch.object(fa, "espn_game", fake_espn), \
-                mock.patch.object(fa.time, "sleep"):
+                mock.patch.object(fa.time, "sleep"), quiet():
             fa.refresh_from_espn(cls.path, 2026)
         cls.season = json.loads(cls.path.read_text())
         cls.rows = {(g["team"], g["espnId"]): g for g in cls.season["games"]}
@@ -246,7 +262,7 @@ class LeavesTheFileAloneWhenNothingMoved(unittest.TestCase):
         before = path.read_bytes()
 
         with mock.patch.object(fa, "espn_game") as espn, \
-                mock.patch.object(fa.time, "sleep"):
+                mock.patch.object(fa.time, "sleep"), quiet():
             fa.refresh_from_espn(path, 2026)
         espn.assert_not_called()
         self.assertEqual(path.read_bytes(), before)
@@ -268,12 +284,26 @@ class RoutesAroundCfbd(unittest.TestCase):
                 mock.patch.object(fa, "refresh_from_espn",
                                   side_effect=lambda out, y:
                                   self.refreshed.append((out.name, y))), \
-                mock.patch.dict("os.environ", {"CFBD_API_KEY": "test-key"}):
-            fa.main(year)
+                mock.patch.dict("os.environ", {"CFBD_API_KEY": "test-key",
+                                               "GITHUB_ACTIONS": "true"}), \
+                quiet() as out:
+            try:
+                fa.main(year)
+            finally:
+                self.printed = out.getvalue()
 
     def test_spent_quota_falls_through_to_espn(self):
         self.run_main(2026)
         self.assertEqual(self.refreshed, [("2026.json", 2026)])
+
+    def test_the_wall_is_announced_not_swallowed(self):
+        # GITHUB_ACTIONS is set above so this covers the annotation form too:
+        # falling back quietly would be its own bug, and captured output is
+        # the only place to check it without publishing a warning to the run.
+        self.run_main(2026)
+        self.assertIn("::warning::", self.printed)
+        self.assertIn("CFBD unavailable", self.printed)
+        self.assertIn("429", self.printed)
 
     def test_no_committed_season_re_raises(self):
         # Nothing to refresh: a silent success would write an empty season.
