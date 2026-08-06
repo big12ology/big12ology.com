@@ -7,6 +7,8 @@
   <meta name="description" content="Home attendance for all sixteen Big 12 teams, 2012 to today: percent of capacity by week and by program, sellout streaks, kickoff-window and weather effects, and season-over-season comparisons." />
   <link rel="canonical" href="https://big12ology.com/attendance/" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon-32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="favicon-180.png" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Big12ology" />
   <meta property="og:title" content="Big 12 Attendance Tracker" />
@@ -16,19 +18,21 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="brand.css?v=32" />
-  <link rel="stylesheet" href="site/styles.css?v=32" />
+  <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
+  <link rel="stylesheet" href="brand.css?v=33" />
+  <script defer src="theme.js?v=1"></script>
+  <link rel="stylesheet" href="site/styles.css?v=33" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <nav class="b12-topbar">
-    <a class="b12-brand" href="https://big12ology.com/">Big12<span>ology</span></a>
+    <a class="b12-brand" href="https://big12ology.com/" aria-label="Big12ology home"><img src="brand/big12ology-compact-dark.svg" alt="Big12ology"></a>
     <a href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
     <a class="on" href="https://big12ology.com/attendance/">Attendance</a>
+    <span class="b12-right"><span class="b12-theme"></span></span>
   </nav>
   <header>
     <div class="hwrap">
-      <img src="assets/logos/big12.svg" alt="" class="brandmark" />
       <div>
         <h1>Big 12 Attendance Tracker
           <span class="dimyear" id="season-wrap">· <select id="season"></select></span></h1>
@@ -85,7 +89,7 @@
     <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
   </footer>
 
-  <script type="module" src="site/app.js?v=31"></script>
+  <script type="module" src="site/app.js?v=33"></script>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
 </body>
 </html>
