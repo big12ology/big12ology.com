@@ -191,20 +191,45 @@ def fetch_ratings(year):
 
 
 def fetch_lines(year):
-    """Closing spreads for games involving Big 12 teams. Averaged across
-    providers; CFBD convention is the home-team spread (negative = home
-    favored). Writes data/lines_<year>.json = {game_id: spread}."""
+    """The market for games involving Big 12 teams, averaged across
+    providers. CFBD convention is the home-team spread (negative = home
+    favored).
+
+    One call returns spread, spreadOpen, overUnder, overUnderOpen and both
+    moneylines per provider, and this used to keep the spread and throw the
+    rest away — so every season since 2011 has a total and a line movement
+    that were fetched, paid for out of a 1,000-a-month allowance, and
+    dropped on the floor. Capturing them costs nothing extra: same endpoint,
+    same call, same quota.
+
+    Writes data/lines_<year>.json = {game_id: {spread, spread_open,
+    over_under, over_under_open, home_ml, away_ml, books}}. Older files hold
+    a bare spread number; load_lines normalises both shapes.
+    """
     os.makedirs(DATA, exist_ok=True)
     raw = get(f"lines?year={year}", key())
+
+    def avg(vals):
+        vals = [v for v in vals if v is not None]
+        return round(sum(vals) / len(vals), 1) if vals else None
+
     out = {}
     for g in raw if isinstance(raw, list) else []:
         if g.get("homeConference") != "Big 12" \
                 and g.get("awayConference") != "Big 12":
             continue
-        spreads = [l.get("spread") for l in g.get("lines", [])
-                   if l.get("spread") is not None]
-        if spreads:
-            out[str(g["id"])] = round(sum(spreads) / len(spreads), 1)
+        books = g.get("lines") or []
+        rec = {
+            "spread": avg(l.get("spread") for l in books),
+            "spread_open": avg(l.get("spreadOpen") for l in books),
+            "over_under": avg(l.get("overUnder") for l in books),
+            "over_under_open": avg(l.get("overUnderOpen") for l in books),
+            "home_ml": avg(l.get("homeMoneyline") for l in books),
+            "away_ml": avg(l.get("awayMoneyline") for l in books),
+            "books": len(books),
+        }
+        if rec["spread"] is not None or rec["over_under"] is not None:
+            out[str(g["id"])] = {k: v for k, v in rec.items() if v is not None}
     p = os.path.join(DATA, f"lines_{year}.json")
     with open(p, "w") as f:
         json.dump(out, f, indent=1)

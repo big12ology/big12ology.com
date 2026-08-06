@@ -24,7 +24,10 @@ def tally(games, systems, lines=None):
             if not g["completed"] or g.get("ccg"):
                 continue
             win = tb.winner(g)
-            spread = lines.get(str(g["id"]))
+            mkt = lines.get(str(g["id"])) or {}
+            # Tolerate the pre-capture shape, where the value was the
+            # spread itself rather than a market record.
+            spread = mkt.get("spread") if isinstance(mkt, dict) else mkt
             if win is None or spread is None:
                 continue
             if spread == 0:

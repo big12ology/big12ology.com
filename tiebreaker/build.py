@@ -58,8 +58,15 @@ def load_ratings(year):
 
 
 def load_lines(year):
+    """{game_id: {spread, over_under, ...}}, normalising both file shapes.
+
+    Files written before the market capture hold a bare spread number.
+    Rather than migrate them — they would have to be refetched, and the
+    quota is the scarce thing here — wrap the old shape on read."""
     p = os.path.join(HERE, "data", f"lines_{year}.json")
-    return json.load(open(p)) if os.path.exists(p) else {}
+    raw = json.load(open(p)) if os.path.exists(p) else {}
+    return {k: (v if isinstance(v, dict) else {"spread": v})
+            for k, v in raw.items()}
 
 
 MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS"]
