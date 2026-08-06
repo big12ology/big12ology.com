@@ -2,13 +2,15 @@
   --bg: #f6f4ef;
   --surface: #ffffff;
   --text: #1a1c20;
-  --muted: #6b7280;
+  --muted: #666d7b;
   --border: #e2ddd2;
   --accent: #c8102e; /* Big12ology brand red */
   --full: #0d7a3f;
   --low: #b45309;
   --bad: #c0392b;
-  --pctl: 32%;
+  /* Contrast-driven: 32% left the mid-scale ambers at 3.5:1,
+     under the 4.5:1 WCAG AA floor. Hue carries the meaning. */
+  --pctl: 27%;
   font-size: 15px;
 }
 @media (prefers-color-scheme: dark) {
