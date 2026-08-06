@@ -214,6 +214,94 @@ def h2h_grid(all_games):
             + "".join(rows) + "</tbody></table></div>")
 
 
+STEP_NAMES = {"a": "head-to-head / mini round-robin",
+              "b": "common opponents", "c": "the standings walk",
+              "d": "strength of schedule", "e": "total wins",
+              "f": "SportSource rating", "g": "coin toss"}
+STEP_ORDER = "abcdefg"
+
+
+def ladder_section(all_stats):
+    """How far down the ladder each tie actually walked.
+
+    The archive's histogram counts a step if it seeded *anyone* in a group,
+    so one tie appears in several rows and the totals exceed the number of
+    ties. That answers "which steps get used" and cannot answer "how close
+    has this come to the bottom", which is the more interesting question:
+    the last two steps are a proprietary rating and a coin toss.
+    """
+    walks = []
+    for s in all_stats:
+        if not s["steps"]:
+            continue
+        deepest = max(s["steps"], key=lambda st: STEP_ORDER.index(st))
+        walks.append((STEP_ORDER.index(deepest), deepest, s))
+    walks.sort(key=lambda w: (-w[0], -w[2]["year"]))
+
+    depth = {}
+    for i, st, _ in walks:
+        depth[st] = depth.get(st, 0) + 1
+
+    rows = "".join(
+        f"<tr><td>{s['year']}</td>"
+        f"<td>{esc(s['group'].replace('+', ', '))}</td>"
+        f"<td>{s['size']}-way</td>"
+        f"<td><b>({st})</b> {esc(STEP_NAMES[st])}</td></tr>"
+        for _, st, s in walks[:12])
+
+    dist = "".join(
+        f"<tr><td>({k})</td><td>{esc(STEP_NAMES[k])}</td>"
+        f"<td>{depth.get(k, 0)}</td></tr>" for k in STEP_ORDER)
+
+    reached_e = depth.get("e", 0)
+    never = [k for k in "fg" if not depth.get(k)]
+
+    return f"""<div class=card id=ladderdepth>
+<h2>How far down it has gone</h2>
+<p>Each tie is counted once here, by the <em>deepest</em> step it needed —
+not by every step it touched. {len(walks)} tie groups, 2011&#8211;2025.</p>
+<div class="tablescroll scrollbox"><table class=laddertable>
+<thead><tr><th>Step that finished it</th><th>Ties</th></tr></thead>
+<tbody>{dist}</tbody></table></div>
+<p class=note>The archive's other table counts a step whenever it seeded
+anyone, so a single tie can appear in several of its rows and the column
+sums past the number of ties. This one sums to {len(walks)}, because a tie
+has exactly one deepest step.</p>
+</div>
+
+<div class=card id=ladderdeepest>
+<h2>The deepest walks</h2>
+<div class="tablescroll scrollbox"><table class=laddertable>
+<thead><tr><th>Season</th><th>Tie</th><th>Size</th>
+<th>Deepest step reached</th></tr></thead>
+<tbody>{rows}</tbody></table></div>
+</div>
+
+<div class=card id=stepsix>
+<h2>Step six, and why it matters that it has never fired</h2>
+<p>The published procedure has seven steps. The first five are arithmetic
+you can check: head-to-head, common opponents, the standings walk, strength
+of schedule, total wins. Anyone with the results can verify them, which is
+what this site does.</p>
+<p><b>Step six is not.</b> It is a
+<a href="https://www.sportsourceanalytics.com/">SportSource Analytics</a>
+team rating — a commercial product. The conference buys it. It is not
+published, it cannot be recomputed from public results, and there is no
+version of it a reader can audit. If a Big 12 championship-game berth ever
+turns on step six, the answer to "why this team?" is a number nobody outside
+the transaction can see.</p>
+<p>Step seven is a coin toss, which is at least honest about being
+arbitrary.</p>
+<p class=note>In {len(walks)} tie groups across fifteen seasons, step six has
+{'<b>never been reached</b>' if 'f' in never else 'been reached'}. The
+deepest any tie has gone is <b>({walks[0][1]}) {esc(STEP_NAMES[walks[0][1]])}
+</b>{f", which has settled {reached_e} of them" if reached_e else ""} — one
+rung above the part you cannot inspect. That is the whole margin: the
+procedure has stayed auditable so far by luck of the results, not by design.
+</p>
+</div>"""
+
+
 def cutline_section(all_games):
     """What it actually took to reach the title game.
 
@@ -286,6 +374,7 @@ def main():
     sections = []
     tie_count = 0
     step_hist = {}
+    all_stats = []
     diffs = []
     for year in range(LAST, FIRST - 1, -1):
         games = season_games(year)
@@ -296,12 +385,10 @@ def main():
             diffs.append(diff)
         for s in stats:
             tie_count += 1
+            all_stats.append(s)
             for st in s["steps"]:
                 step_hist[st] = step_hist.get(st, 0) + 1
-    step_names = {"a": "head-to-head / mini round-robin",
-                  "b": "common opponents", "c": "the standings walk",
-                  "d": "strength of schedule", "e": "total wins",
-                  "f": "SportSource rating", "g": "coin toss"}
+    step_names = STEP_NAMES
     hist_rows = "".join(
         f"<tr><td>({k})</td><td>{esc(step_names[k])}</td><td>{v}</td></tr>"
         for k, v in sorted(step_hist.items()))
@@ -365,6 +452,10 @@ realignment for you.</p>
     out = os.path.join(HIST, "history_body.html")
     with open(out, "w") as f:
         f.write(body)
+    lad = os.path.join(HIST, "ladder_body.html")
+    with open(lad, "w") as f:
+        f.write(ladder_section(all_stats))
+    print(f"built fragment {lad}")
     cut = os.path.join(HIST, "cutline_body.html")
     with open(cut, "w") as f:
         f.write(cutline_section(all_games))

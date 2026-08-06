@@ -238,6 +238,7 @@ SUBNAV_LINKS = [("brief", "./", "The Brief"),
                 ("draw", "draw.html", "The Draw"),
                 ("rotation", "rotation.html", "The Rotation"),
                 ("cutline", "cutline.html", "The Cut Line"),
+                ("ladder", "ladder.html", "The Ladder"),
                 ("how", "how.html", "The Rules"),
                 ("history", "history.html", "The Archive")]
 
@@ -1618,7 +1619,7 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   background: color-mix(in srgb, var(--dim) 18%, transparent);
   color: var(--dim); font-weight: 700; font-size: 12px; cursor: help; }}
 .teamcell {{ white-space: nowrap; }}
-.cuttable td {{ vertical-align: middle; }}
+.laddertable td, .cuttable td {{ vertical-align: middle; }}
 .samerec {{ color: var(--warn); font-weight: 600; font-size: 12px; }}
 .misslist {{ list-style: none; margin: 0; padding: 0; display: flex;
   flex-wrap: wrap; gap: 4px 14px; }}
@@ -2220,6 +2221,15 @@ def build_season(year, games, outdir, base, feed=True):
                       "produced, and where a different reading of the rules "
                       "would have sent a different team to the title game.",
                       ""))
+    lad_frag = os.path.join(HERE, "history", "ladder_body.html")
+    if os.path.exists(lad_frag):
+        pages.append(("ladder.html", "The Ladder", "ladder",
+                      rebase(open(lad_frag).read()),
+                      "How far down the Big 12 tiebreak ladder each tie has "
+                      "actually walked — and why it matters that step six, a "
+                      "proprietary rating nobody can inspect, has never "
+                      "fired.",
+                      ""))
     cut_frag = os.path.join(HERE, "history", "cutline_body.html")
     if os.path.exists(cut_frag):
         pages.append(("cutline.html", "The Cut Line", "cutline",
@@ -2231,7 +2241,8 @@ def build_season(year, games, outdir, base, feed=True):
     # Both lists below are the evergreen set and they are independent copies:
     # this one decides the canonical URL, the one in write_discovery decides
     # the sitemap. Updating one and not the other is the standing trap.
-    evergreen = {"history.html", "how.html", "cutline.html"}
+    evergreen = {"history.html", "how.html", "cutline.html",
+                 "ladder.html"}
     for fname, title, active, body, desc, head in pages:
         # Seasons share the tie archive and the rules explainer verbatim, so
         # the archived copies point their canonical at the live one rather
@@ -2494,7 +2505,8 @@ def write_discovery(years):
     subs = ["", "lab.html", "race.html", "standings.html",
             "schedule.html", "draw.html", "rotation.html"]
     # Listed once, under the live season — every year serves the same bytes.
-    evergreen = ["how.html", "history.html", "cutline.html"]
+    evergreen = ["how.html", "history.html", "cutline.html",
+                 "ladder.html"]
     today = datetime.date.today().isoformat()
     urls = []
     for y in years:
