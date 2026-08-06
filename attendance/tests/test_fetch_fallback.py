@@ -227,6 +227,31 @@ class RefreshesFromEspnAlone(unittest.TestCase):
         self.assertIs(self.season["big12Era"], True)
 
 
+class LeavesTheFileAloneWhenNothingMoved(unittest.TestCase):
+    """A season whose games are all ahead of it — every run between now and
+    the opener. The file must come back byte-identical: this writer indents
+    at 2 and add_conferences.py at 1, so a no-op rewrite would land as a
+    whole-season diff that reads like new data."""
+
+    def test_untouched(self):
+        tmp = tempfile.NamedTemporaryFile(
+            mode="w", suffix=".json", delete=False)
+        season = season_fixture()
+        for g in season["games"]:
+            g["date"] = "2099-09-30"
+        tmp.write(json.dumps(season, indent=1) + "\n")
+        tmp.close()
+        path = Path(tmp.name)
+        self.addCleanup(path.unlink)
+        before = path.read_bytes()
+
+        with mock.patch.object(fa, "espn_game") as espn, \
+                mock.patch.object(fa.time, "sleep"):
+            fa.refresh_from_espn(path, 2026)
+        espn.assert_not_called()
+        self.assertEqual(path.read_bytes(), before)
+
+
 class RoutesAroundCfbd(unittest.TestCase):
     """The trigger. CFBD answers a run over its monthly limit with 429 and
     {"message": "Monthly call quota exceeded."} — that must reach the ESPN

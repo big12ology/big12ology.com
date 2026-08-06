@@ -272,6 +272,15 @@ def refresh_from_espn(out: Path, year: int) -> None:
             print(f"  filled from ESPN: {g['team']} wk{g['week']} "
                   f"vs {g.get('opponent')} — {pf}-{pa}")
 
+    if not filled_att and not filled_score:
+        # Nothing moved, so don't touch the file. A rewrite here is not
+        # harmless: this writer indents at 2 and add_conferences.py at 1, so
+        # a no-op run would push the whole season reformatted and read as a
+        # data change to anyone looking at the commit.
+        print(f"{year}: ESPN-only refresh, {len(by_id)} games checked, "
+              f"nothing new — {out.name} left alone")
+        return
+
     out.write_text(json.dumps(season, indent=2) + "\n")
     print(f"{year}: ESPN-only refresh of {len(by_id)} games — "
           f"{filled_att} attendance, {filled_score} scores -> {out}")
