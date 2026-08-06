@@ -28,8 +28,13 @@ const seasons = readdirSync(join(ROOT, "data/seasons"))
 const q = (v) =>
   v == null ? "" : /[",\n]/.test(String(v)) ? `"${String(v).replaceAll('"', '""')}"` : String(v);
 
+// conference_game is Big 12 conference play specifically, not "both teams are
+// in the Big 12 now" — the archive starts in 2012, when most of the sixteen
+// were in the Pac-12 and the AAC, and even since 2024 the sixteen have met
+// out of conference most years. Without the column a reader cannot tell a
+// September cupcake from a league game, which is most of what fill means.
 const rows = [[
-  "season", "team", "week", "date", "opponent", "venue",
+  "season", "team", "week", "date", "opponent", "conference_game", "venue",
   "attendance", "capacity", "pct_of_capacity", "capacity_estimated",
 ].join(",")];
 
@@ -47,7 +52,11 @@ for (const season of seasons) {
       // Capacity read, not reconstructed from attendance/pct — same rule
       // stats.js uses: a game's own capacity beats the team's stadium.
       rows.push([
-        season, team.team, w.week, g?.date, g?.opponent, w.venue ?? s.stadium,
+        season, team.team, w.week, g?.date, g?.opponent,
+        // Empty, not false, when the source row is missing: an absent join is
+        // not evidence of a non-conference game.
+        g ? String(!!g.conferenceGame) : null,
+        w.venue ?? s.stadium,
         w.attendance, g?.capacity ?? team.capacity,
         w.pct.toFixed(4),
         s.capacityEstimate ? "true" : "false",

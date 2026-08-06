@@ -726,9 +726,16 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
 
 function roadDraw(cardEl, seasonsData, teamsData) {
   const t = theme();
-  // For every home game, compare the crowd to that host's own season
-  // average fill. A visitor's road draw is the average of those gaps —
-  // it isolates the visitor from the host's baseline popularity.
+  // For every Big 12 conference home game, compare the crowd to that host's
+  // own season average fill. A visitor's road draw is the average of those
+  // gaps — it isolates the visitor from the host's baseline popularity.
+  //
+  // Conference games only. The archive starts in 2012, when most of the
+  // sixteen were elsewhere, so counting every trip to a stadium that is Big
+  // 12 *today* measures different leagues for different teams: 21 of Utah's
+  // 30 trips here were Pac-12 games, while every one of West Virginia's was
+  // a Big 12 game. The host's baseline still spans its whole season — that
+  // is the crowd a visitor is being measured against.
   const byVisitor = new Map();
   const colorOf = new Map();
   for (const [year, season] of Object.entries(seasonsData)) {
@@ -741,6 +748,7 @@ function roadDraw(cardEl, seasonsData, teamsData) {
     const capOf = new Map(teams.map((x) => [x.team, x]));
     for (const g of season.games) {
       if (g.role || g.attendance == null || !g.opponent) continue;
+      if (!g.conferenceGame) continue;
       const base = hostPct.get(g.team);
       const cap = g.capacity ?? capOf.get(g.team)?.capacity;
       if (!base || !cap) continue;
@@ -752,14 +760,14 @@ function roadDraw(cardEl, seasonsData, teamsData) {
       byVisitor.set(g.opponent, cur);
     }
   }
-  // Conference members only — outside visitors appear once or twice and
-  // their averages are noise.
+  // Conference members only — the flag above already excludes everyone else,
+  // but a program that has since left would otherwise linger.
   const rows = [...byVisitor.entries()]
     .filter(([team, v]) => colorOf.has(team) && v.n >= 2)
     .map(([team, v]) => ({ team, avg: v.sum / v.n, n: v.n, hosts: v.hosts }))
     .sort((a, b) => b.avg - a.avg);
   if (rows.length < 4) {
-    return emptyNote(cardEl, "Not enough conference road games yet to compare.");
+    return emptyNote(cardEl, "Not enough Big 12 road games yet to compare.");
   }
   const show = rows;
 
@@ -802,7 +810,7 @@ function roadDraw(cardEl, seasonsData, teamsData) {
       class="${inside ? "val val-in" : "val"}">${label}</text>`;
   });
   marks += `<text x="${x0}" y="${H - 8}" text-anchor="middle" class="tick">
-    points of fill vs the host's season average · small number = road trips</text>`;
+    points of fill vs the host's season average · small number = Big 12 road games</text>`;
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.innerHTML = marks;
@@ -814,7 +822,7 @@ function roadDraw(cardEl, seasonsData, teamsData) {
     showTip(e.clientX, e.clientY, [
       { head: `${r.team} on the road` },
       { value: `${r.avg >= 0 ? "+" : ""}${(r.avg * 100).toFixed(1)} pts`,
-        label: `vs host average · ${r.n} trips` },
+        label: `vs host average · ${r.n} Big 12 road games` },
       { value: `${best.host} ${best.year}`,
         label: `best draw, ${num(best.att)} · ${best.gap >= 0 ? "+" : ""}${(best.gap * 100).toFixed(1)} pts` },
     ]);
@@ -1246,8 +1254,9 @@ export function renderAllTimeCharts(root, teamsData, seasonsData, gaps) {
   weatherScatter(c2, seasonsData, teamsData);
 
   const cRoad = card(`Road draw (${span})`,
-    "How much each Big 12 visitor lifts — or dents — the host's usual crowd; " +
-    "the small number is road trips in the sample");
+    "How much each Big 12 visitor lifts — or dents — the host's usual crowd. " +
+    "Conference games only, so a team's sample starts when it joined; the " +
+    "small number is how many it has played");
   roadDraw(cRoad, seasonsData, teamsData);
 
   const c3 = card(`Weekly percent full, year over year (${span})`, "Each line is a season; conference-wide");

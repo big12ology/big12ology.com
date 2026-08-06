@@ -24,6 +24,10 @@ the repo as-is, and a scheduled GitHub Action updates the data files weekly.
   `attendance: null` means unplayed/unreported; such games are excluded from
   every total and game count. Games at alternate venues carry their own
   `venue` and `capacity`; percent-full always divides by the per-game capacity.
+  `conferenceGame` is true only for **Big 12** conference games — not merely
+  two Big 12 teams meeting (Baylor at Utah 2024 was non-conference), and not
+  the Pac-12 and AAC games the tracked sixteen played against each other
+  before 2024. Charts that compare conference opponents filter on it.
   **Week numbers are derived from the game date** (weeks run Tuesday–Monday;
   Week 1 ends Labor Day Monday, Week 0 precedes it) — CFBD's week field has
   no Week 0, and hand-entered weeks proved unreliable at Fri/Sat boundaries.
@@ -77,6 +81,14 @@ are separate fields and a reported game always counts, whatever its value.
 ```bash
 python3 -m http.server 8080   # from the repo root, then open localhost:8080
 node --test tests/parity.test.mjs
+```
+
+Two scripts backfill per-season context the weekly fetch does not carry on its
+own, and both are idempotent — rerun them after adding a season file:
+
+```bash
+python3 scripts/add_conferences.py        # each team's league that season (CFBD, needs a key)
+python3 scripts/add_conference_games.py   # per-game Big 12 conference flag (from tiebreaker/data)
 ```
 
 ## Visual rules

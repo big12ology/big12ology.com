@@ -252,6 +252,13 @@ def main(year: int) -> None:
         )
         kickoff = kickoff_local(g.get("startDate") or g.get("start_date"), tz)
         week = display_week(kickoff.date(), year) if kickoff else g.get("week")
+        # Membership is not enough to infer this: two Big 12 teams meeting out
+        # of conference happens most years (Baylor at Utah 2024, Kansas State
+        # at Arizona 2025), and before 2024 most of the tracked sixteen were
+        # playing each other in the Pac-12 and the AAC. Charts that compare
+        # conference visitors need the schedule's own answer.
+        home_conf = g.get("homeConference") or g.get("home_conference")
+        away_conf = g.get("awayConference") or g.get("away_conference")
         base = {
             "week": week,
             "date": kickoff.date().isoformat() if kickoff else "",
@@ -261,6 +268,9 @@ def main(year: int) -> None:
                 else None
             ),
             "espnId": g.get("id"),
+            "conferenceGame": bool(
+                g.get("conferenceGame", g.get("conference_game"))
+            ) and home_conf == "Big 12" and away_conf == "Big 12",
         }
 
         if home_counts:
