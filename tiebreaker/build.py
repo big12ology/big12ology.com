@@ -274,16 +274,24 @@ def leverage_card(games, sims):
             t, d = e["movers"][0]
             gain = "+" if d > 0 else ""
             side = g["home"] if d > 0 else g["away"]
-            mover_txt = (f"<span class=dim> — biggest swing: {esc(t)} "
-                         f"{gain}{d * 100:.0f}% if {esc(side)} wins</span>")
+            mover_txt = (f"<div class='dim levswing'>Biggest swing: "
+                         f"{esc(t)} {gain}{d * 100:.0f}% if "
+                         f"{esc(side)} wins</div>")
         pct = min(e["total"] * 100, 100)
+        # Same column treatment as the race card: matchup, bar, number,
+        # then the swing note on its own line. Run inline it wrapped through
+        # the middle of "biggest swing: BYU +26% if BYU wins".
         rows.append(
-            f"<div class=clrow>{logo_img(g['away'], 16)}{esc(g['away'])} "
+            f"<div class=clrow><div class=levmain>"
+            f"<span class=levgame>{logo_img(g['away'], 16)}{esc(g['away'])} "
             f"<span class=dim>at</span> {logo_img(g['home'], 16)}"
-            f"{esc(g['home'])} <span class=dim>({date})</span> "
-            f"<span class=obar><i style='width:{pct:.0f}%;"
+            f"{esc(g['home'])}</span>"
+            f"<span class=levdate>{date}</span>"
+            f"<span class=levbar><span class=obar><i style='width:{pct:.0f}%;"
             f"background:{winpct_color(min(e['total'], 1.0))}'></i></span>"
-            f"<b class=opct>{e['total'] * 100:.0f}</b>{mover_txt}</div>")
+            f"</span>"
+            f"<b class=opct>{e['total'] * 100:.0f}</b>"
+            f"</div>{mover_txt}</div>")
     return (f"<div class=card id=levcard><h2>Games that matter · week {wk}"
             f"</h2>{''.join(rows)}"
             "<p class=note>Title-race leverage: the total swing in "
@@ -926,6 +934,22 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
 .mark { vertical-align:-3px; margin-right:6px }
 .clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:14.5px }
+.movemain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:22px minmax(110px,148px) 62px auto }
+.movepts { text-align:right; font-variant-numeric:tabular-nums }
+@media (max-width:640px) {
+  .movemain { grid-template-columns:22px 1fr auto; row-gap:2px }
+}
+.levmain { display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:minmax(0,1fr) auto 112px 34px }
+.levgame { min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap }
+.levdate { color:var(--dim); white-space:nowrap }
+.levswing { font-size:13px; margin-top:2px }
+@media (max-width:640px) {
+  .levmain { grid-template-columns:minmax(0,1fr) auto; row-gap:3px }
+  .levbar { display:none }
+}
 .clmain { display:grid; align-items:center; gap:0 10px;
   grid-template-columns:22px minmax(110px,148px) 112px 46px auto 1fr }
 .clteam { min-width:0; overflow:hidden; text-overflow:ellipsis;
@@ -1067,12 +1091,17 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
             out = []
             for d, t, was, now in items:
                 col = winpct_color(1.0 if d > 0 else 0.0)
+                # Columns, like every other row list on this site. Run
+                # inline, the team name's length decided where the swing
+                # and the before/after landed on each line.
                 out.append(
-                    f"<div class=clrow>{logo_img(t, 16)}<b>{esc(t)}</b> "
-                    f"<span style='color:{col}'>{'+' if d > 0 else ''}"
-                    f"{d * 100:.0f} pts</span> <span class=dim>"
-                    f"{fmt_prob(was)} &rarr; {fmt_prob(now)} to reach the "
-                    f"title game</span></div>")
+                    f"<div class=clrow><div class=movemain>"
+                    f"{logo_img(t, 16)}<b class=clteam>{esc(t)}</b>"
+                    f"<span class=movepts style='color:{col}'>"
+                    f"{'+' if d > 0 else ''}{d * 100:.0f} pts</span>"
+                    f"<span class=dim>{fmt_prob(was)} &rarr; {fmt_prob(now)}"
+                    f" to reach the title game</span>"
+                    f"</div></div>")
             return "".join(out)
 
         if up or down:
@@ -1804,6 +1833,22 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 }}
 :root[data-theme="dark"] .tag.live {{ color: #4ade80;
   background: color-mix(in srgb, #4ade80 14%, transparent); }}
+.movemain {{ display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:22px minmax(110px,148px) 62px auto }}
+.movepts {{ text-align:right; font-variant-numeric:tabular-nums }}
+@media (max-width:640px) {{
+  .movemain {{ grid-template-columns:22px 1fr auto; row-gap:2px }}
+}}
+.levmain {{ display:grid; align-items:center; gap:0 10px;
+  grid-template-columns:minmax(0,1fr) auto 112px 34px }}
+.levgame {{ min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap }}
+.levdate {{ color:var(--dim); white-space:nowrap }}
+.levswing {{ font-size:13px; margin-top:2px }}
+@media (max-width:640px) {{
+  .levmain {{ grid-template-columns:minmax(0,1fr) auto; row-gap:3px }}
+  .levbar {{ display:none }}
+}}
 .clmain {{ display:grid; align-items:center; gap:0 10px;
   grid-template-columns:22px minmax(110px,148px) 112px 46px auto 1fr }}
 .clteam {{ min-width:0; overflow:hidden; text-overflow:ellipsis;
