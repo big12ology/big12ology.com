@@ -356,3 +356,8 @@ svg text.val-in {
   cursor: help; vertical-align: 1px;
 }
 .estmark:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Records watch team cell — logo then name, like every other team cell. */
+.records-table td.rw-team { white-space: nowrap; }
+.records-table td.rw-team .team-logo { margin-right: 0.45rem;
+  vertical-align: -4px; }
