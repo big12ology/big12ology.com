@@ -2915,7 +2915,7 @@ def write_discovery(years):
     write_map(os.path.join(SCHEDULE_SITE, "sitemap.xml"), sched_urls)
     # No robots.txt here on purpose: crawlers only read it at the origin
     # root, and this is a project site under /tiebreaker/. The real one
-    # lives in the big12ology.github.io repo and points at this sitemap.
+    # lives at the repo root and points at this sitemap.
     print(f"built sitemap.xml ({len(urls)} tiebreaker, {len(sched_urls)} schedule)")
 
 
