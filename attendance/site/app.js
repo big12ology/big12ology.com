@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=35";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=35";
-import { gameTooltipHTML } from "./gametip.js?v=35";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=36";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=36";
+import { gameTooltipHTML } from "./gametip.js?v=36";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -375,7 +375,12 @@ async function main() {
   );
 
   const select = $("#season");
-  select.innerHTML = index.seasons
+  // Newest first, for two reasons. It is the order a reader wants, and the
+  // native popup positions itself so the selected option sits under the
+  // pointer — with the current season last, fourteen options opened upward
+  // off the top of the window.
+  select.innerHTML = [...index.seasons]
+    .sort((a2, b2) => b2 - a2)
     .map((y) => `<option value="${y}" ${y === index.default ? "selected" : ""}>${y}</option>`)
     .join("");
 
