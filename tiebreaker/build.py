@@ -2465,6 +2465,21 @@ def write_forecast(year, games, systems, sims):
     p = os.path.join(out, f"week-{week:02d}.json")
     # Overwritten within a week on purpose: the hourly build keeps refining
     # the same week, and what settles is that week's final state.
+    #
+    # But only when something actually moved. The odds are deterministic, so
+    # between results the payload is identical apart from `generated` — and
+    # rewriting it anyway would hand CI a one-line diff to commit on every
+    # hourly build, roughly three hundred a month, every one of them saying
+    # nothing. Compare without the timestamp and leave the file alone.
+    if os.path.exists(p):
+        try:
+            old = json.load(open(p))
+            if {k: v for k, v in old.items() if k != "generated"} == \
+               {k: v for k, v in payload.items() if k != "generated"}:
+                print(f"forecast: week {week} unchanged")
+                return
+        except (ValueError, OSError):
+            pass                     # unreadable: fall through and rewrite
     with open(p, "w") as f:
         json.dump(payload, f, indent=1, sort_keys=True)
     print(f"forecast: week {week} -> {p}")
