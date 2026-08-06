@@ -16,15 +16,15 @@
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
-<link rel=stylesheet href=brand.css>
+<link rel=stylesheet href="brand.css?v=14818839">
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href=feed.xml>
 <style>
 :root {
-  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #6b7280;
+  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
   --line: #e2ddd2; --accent: #c8102e; --accent2: #003087;
-  --ok: #15803d; --warn: #b45309;
+  --ok: #136536; --warn: #b45309;
   --tie0: #fff3f4; --tie1: #eef4ff; --tie2: #f0fdf4; --tie3: #fefce8;
-  --pctl: 32%;
+  --pctl: 27%;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -62,8 +62,8 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 .lchip { font-size: 11px; border-radius: 20px; padding: 2px 9px;
   font-weight: 700; letter-spacing: .03em; margin-left: 8px;
   vertical-align: 1px; white-space: nowrap; }
-.lchip.win { background: color-mix(in srgb, var(--ok, #15803d) 15%,
-  transparent); color: #15803d; }
+.lchip.win { background: color-mix(in srgb, var(--ok, #136536) 15%,
+  transparent); color: #136536; }
 .lchip.lose { background: color-mix(in srgb, var(--accent) 14%, transparent);
   color: var(--accent); }
 .lchip.none { background: color-mix(in srgb, var(--dim) 14%, transparent);
@@ -179,8 +179,8 @@ main > *, .duo > *, .cols > * { min-width: 0; }
   letter-spacing: .04em; }
 .tag { font-size: 11px; border-radius: 20px; padding: 2px 9px;
   font-weight: 700; letter-spacing: .03em; white-space: nowrap; }
-.tag.live { background: color-mix(in srgb, var(--ok, #15803d) 15%,
-  transparent); color: #15803d; }
+.tag.live { background: color-mix(in srgb, var(--ok, #136536) 15%,
+  transparent); color: #136536; }
 .tag.out { background: color-mix(in srgb, var(--dim) 14%, transparent);
   color: var(--dim); }
 .tag.alive { background: color-mix(in srgb, var(--accent2) 14%,
@@ -225,6 +225,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 </style>
 </head>
 <body>
+<a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar>
   <a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
   <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
@@ -240,7 +241,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
   </div>
 </header>
 <nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=off>The Standings</a><a href=lab.html class=on>The Lab</a><a href=schedule.html class=off>The Schedule</a><a href=how.html class=off>The Rules</a><a href=history.html class=off>The Archive</a></nav>
-<main>
+<main id=main tabindex="-1">
 <div class=card id=matchcard><h2>Season not started</h2><p>No conference results yet. The projected championship matchup will appear after the first Big 12 game.</p></div>
 
 <div class=duo>
@@ -297,7 +298,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
   procedure per the <a
   href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official
   Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (provenance in
-  <a href="logos/SOURCES.json">SOURCES.json</a>) · last updated August 5 at 23:48 UTC.<br>
+  <a href="logos/SOURCES.json">SOURCES.json</a>) · last updated August 6 at 00:00 UTC.<br>
   A Big12ology project · not affiliated with the Big 12 Conference; conference
   and team marks belong to their owners and appear for identification only.<br>
   <a href="https://github.com/big12ology">GitHub</a> ·

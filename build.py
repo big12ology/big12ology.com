@@ -190,7 +190,7 @@ def tracker_top(year, active, matchcard=""):
   </div>
 </header>
 {subnav(active)}
-<main>
+<main id=main tabindex="-1">
 {matchcard}"""
 
 
@@ -359,7 +359,7 @@ def h2h_card(games, teams, stand_rows):
         cells = []
         for b in order:
             if a == b:
-                cells.append("<td class=selfcell>&#9587;</td>")
+                cells.append("<td class=selfcell aria-hidden=true>&#9587;</td>")
                 continue
             g = meet.get(frozenset((a, b)))
             if g is None:
@@ -800,11 +800,13 @@ BRIEF_CSS = """
   line-height:22px; text-align:center; vertical-align:3px; margin-right:4px }
 .badge { font-size:11px; border-radius:20px; padding:2px 9px;
   vertical-align:1px; font-weight:600; letter-spacing:.03em }
-.badge.ok { background:#15803d26; color:#15803d }
+.badge.ok { background:#13653626; color:#136536 }
 .badge.warn { background:#b4530926; color:var(--warn) }
-:root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#6b7280;
+:root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#666d7b;
   --line:#e2ddd2; --accent:#c8102e; --accent2:#003087; --warn:#b45309;
-  --pctl:32%; }
+  --pctl:27%; }  /* lightness set by contrast, not taste: 32%
+  put the mid-scale ambers at 3.5:1, below the 4.5:1 WCAG AA
+  floor for body text. Hue still carries the meaning. */
 @media (prefers-color-scheme: dark) {
   :root { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1; --dim:#9aa0aa;
     --line:#2e323a; --accent:#ff5a6e; --accent2:#7aa2ff; --warn:#fbbf24;
@@ -836,7 +838,7 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
   font-size:13.5px }
 .cnum { font-size:36px; font-weight:800; line-height:1 }
 .tag { font-size:10.5px; border-radius:20px; padding:2px 8px; font-weight:700 }
-.tag.live { background:#15803d26; color:#15803d }
+.tag.live { background:#13653626; color:#136536 }
 .tag.destiny { background:#b4530926; color:var(--warn) }
 .scen { margin:5px 0 2px; padding-left:20px; font-size:13px; color:var(--dim) }
 .elim { font-size:13px } ul.games { list-style:none; padding:0; margin:0 }
@@ -1052,7 +1054,7 @@ table.h2h { width:100%; table-layout:auto }
   font-size:10px; font-weight:700; color:var(--dim); vertical-align:1px }
 /* The empty cells carry meaning — a third of this grid is pairs the
    schedule never makes — so they need to be visible, not ghosts. */
-.selfcell { color:var(--dim); opacity:.55;
+.selfcell { color:var(--dim); opacity:.75;
   background:color-mix(in srgb, var(--dim) 12%, transparent) }
 .nomeet { color:var(--dim); opacity:.75; font-size:15px; line-height:1 }
 
@@ -1131,10 +1133,11 @@ def build_subpage(title, active, body, year, matchcard,
 <title>{esc(title)} — Big 12 Tiebreaker Tracker</title>
 {social}
 <link rel=icon type=image/svg+xml href={BASE}favicon.svg>
-<link rel=stylesheet href={BASE}brand.css>
+<link rel=stylesheet href="{BASE}{asset_v("brand.css")}">
 <link rel=alternate type=application/rss+xml href={BASE}feed.xml>
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
+<a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
 <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a></nav>
 {tracker_top(year, active, matchcard)}
@@ -1381,6 +1384,7 @@ def render(year, games):
         v_engine=asset_v("engine.js"),
         v_pct=asset_v("pct.js"),
         v_scroll=asset_v("scrollcue.js"),
+        v_brand=asset_v("brand.css"),
         v_app=asset_v("app.js"),
         canon=(f"{site_url}lab.html" if year == LIVE_YEAR
                else f"{site_url}{year}/lab.html"),
@@ -1447,15 +1451,15 @@ TEMPLATE = """<!doctype html>
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
-<link rel=stylesheet href={base}brand.css>
+<link rel=stylesheet href="{base}{v_brand}">
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href={base}feed.xml>
 <style>
 :root {{
-  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #6b7280;
+  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
   --line: #e2ddd2; --accent: #c8102e; --accent2: #003087;
-  --ok: #15803d; --warn: #b45309;
+  --ok: #136536; --warn: #b45309;
   --tie0: #fff3f4; --tie1: #eef4ff; --tie2: #f0fdf4; --tie3: #fefce8;
-  --pctl: 32%;
+  --pctl: 27%;
 }}
 @media (prefers-color-scheme: dark) {{
   :root {{
@@ -1493,8 +1497,8 @@ body {{ margin: 0; background: var(--bg); color: var(--ink);
 .lchip {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
   font-weight: 700; letter-spacing: .03em; margin-left: 8px;
   vertical-align: 1px; white-space: nowrap; }}
-.lchip.win {{ background: color-mix(in srgb, var(--ok, #15803d) 15%,
-  transparent); color: #15803d; }}
+.lchip.win {{ background: color-mix(in srgb, var(--ok, #136536) 15%,
+  transparent); color: #136536; }}
 .lchip.lose {{ background: color-mix(in srgb, var(--accent) 14%, transparent);
   color: var(--accent); }}
 .lchip.none {{ background: color-mix(in srgb, var(--dim) 14%, transparent);
@@ -1610,8 +1614,8 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
   letter-spacing: .04em; }}
 .tag {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
   font-weight: 700; letter-spacing: .03em; white-space: nowrap; }}
-.tag.live {{ background: color-mix(in srgb, var(--ok, #15803d) 15%,
-  transparent); color: #15803d; }}
+.tag.live {{ background: color-mix(in srgb, var(--ok, #136536) 15%,
+  transparent); color: #136536; }}
 .tag.out {{ background: color-mix(in srgb, var(--dim) 14%, transparent);
   color: var(--dim); }}
 .tag.alive {{ background: color-mix(in srgb, var(--accent2) 14%,
@@ -1656,6 +1660,7 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 </style>
 </head>
 <body>
+<a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar>
   <a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
   <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
@@ -1724,7 +1729,7 @@ EXPLAINER = """<!doctype html>
 <meta name=description content="A plain-English walkthrough of the official Big 12 football tiebreaking procedures, with the 2024 four-way tie worked step by step.">
 <link rel=canonical href="https://big12ology.com/tiebreaker/how.html">
 <link rel=icon type=image/svg+xml href={base}favicon.svg>
-<link rel=stylesheet href={base}brand.css>
+<link rel=stylesheet href="{base}{v_brand}">
 <meta property=og:type content=article>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="How the Big 12 tiebreakers actually work">
@@ -1734,7 +1739,7 @@ EXPLAINER = """<!doctype html>
 <meta name=twitter:card content=summary_large_image>
 <style>
 :root {{
-  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #6b7280;
+  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
   --line: #e2ddd2; --accent: #c8102e; --accent2: #003087;
 }}
 @media (prefers-color-scheme: dark) {{
@@ -1790,7 +1795,7 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
   margin-right: 4px; }}
 .badge {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
   vertical-align: 1px; font-weight: 600; letter-spacing: .03em; }}
-.badge.ok {{ background: #15803d26; color: #15803d; }}
+.badge.ok {{ background: #13653626; color: #136536; }}
 .badge.warn {{ background: #b4530926; color: #b45309; }}
 .mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain; }}
 .dim {{ color: var(--dim); }}
@@ -1800,6 +1805,7 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
 </style>
 </head>
 <body>
+<a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar>
   <a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
   <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
@@ -2007,6 +2013,7 @@ def build_explainer(year, matchcard, outdir=None):
     with open(out, "w") as f:
         f.write(EXPLAINER.format(
             worked_2024=worked, base=BASE,
+            v_brand=asset_v("brand.css"),
             top=tracker_top(year, "how", matchcard)))
     print(f"built {out}")
 

@@ -14,7 +14,7 @@
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
 <link rel=icon type=image/svg+xml href=favicon.svg>
-<link rel=stylesheet href=brand.css>
+<link rel=stylesheet href="brand.css?v=14818839">
 <link rel=alternate type=application/rss+xml href=feed.xml>
 <style>
 .matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
@@ -29,11 +29,13 @@
   line-height:22px; text-align:center; vertical-align:3px; margin-right:4px }
 .badge { font-size:11px; border-radius:20px; padding:2px 9px;
   vertical-align:1px; font-weight:600; letter-spacing:.03em }
-.badge.ok { background:#15803d26; color:#15803d }
+.badge.ok { background:#13653626; color:#136536 }
 .badge.warn { background:#b4530926; color:var(--warn) }
-:root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#6b7280;
+:root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#666d7b;
   --line:#e2ddd2; --accent:#c8102e; --accent2:#003087; --warn:#b45309;
-  --pctl:32%; }
+  --pctl:27%; }  /* lightness set by contrast, not taste: 32%
+  put the mid-scale ambers at 3.5:1, below the 4.5:1 WCAG AA
+  floor for body text. Hue still carries the meaning. */
 @media (prefers-color-scheme: dark) {
   :root { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1; --dim:#9aa0aa;
     --line:#2e323a; --accent:#ff5a6e; --accent2:#7aa2ff; --warn:#fbbf24;
@@ -65,7 +67,7 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
   font-size:13.5px }
 .cnum { font-size:36px; font-weight:800; line-height:1 }
 .tag { font-size:10.5px; border-radius:20px; padding:2px 8px; font-weight:700 }
-.tag.live { background:#15803d26; color:#15803d }
+.tag.live { background:#13653626; color:#136536 }
 .tag.destiny { background:#b4530926; color:var(--warn) }
 .scen { margin:5px 0 2px; padding-left:20px; font-size:13px; color:var(--dim) }
 .elim { font-size:13px } ul.games { list-style:none; padding:0; margin:0 }
@@ -124,7 +126,7 @@ table.h2h { width:100%; table-layout:auto }
   font-size:10px; font-weight:700; color:var(--dim); vertical-align:1px }
 /* The empty cells carry meaning — a third of this grid is pairs the
    schedule never makes — so they need to be visible, not ghosts. */
-.selfcell { color:var(--dim); opacity:.55;
+.selfcell { color:var(--dim); opacity:.75;
   background:color-mix(in srgb, var(--dim) 12%, transparent) }
 .nomeet { color:var(--dim); opacity:.75; font-size:15px; line-height:1 }
 
@@ -181,6 +183,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
 <script defer src="scrollcue.js?v=5fef00f1"></script><script defer src="pct.js?v=e954e5a1"></script><script defer src="replay.js?v=1b08875d"></script></head><body>
+<a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
 <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a></nav>
 <header class=b12-head>
@@ -193,7 +196,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
   </div>
 </header>
 <nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=on>The Standings</a><a href=lab.html class=off>The Lab</a><a href=schedule.html class=off>The Schedule</a><a href=how.html class=off>The Rules</a><a href=history.html class=off>The Archive</a></nav>
-<main>
+<main id=main tabindex="-1">
 <div class=card id=matchcard><h2>Season not started</h2><p>No conference results yet. The projected championship matchup will appear after the first Big 12 game.</p></div>
 <div class="duo even">
 <div class=stack>
