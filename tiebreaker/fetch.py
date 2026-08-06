@@ -80,7 +80,12 @@ def fetch_season(year, force=False):
             "home_points": g.get("homePoints"),
             "away_points": g.get("awayPoints"),
         })
-    games.sort(key=lambda x: (x["week"], x["start"] or ""))
+    # Id breaks the tie. Games in the same week that kick off at the same
+    # minute sort equal on the first two keys, and CFBD does not return them
+    # in a stable order, so without this the same season fetched twice gives
+    # byte-different pages — which is the whole basis for rebuilding the
+    # domain on a schedule.
+    games.sort(key=lambda x: (x["week"], x["start"] or "", x["id"]))
     with open(cache, "w") as f:
         json.dump(games, f, indent=1)
     done = sum(1 for x in games if x["completed"])
