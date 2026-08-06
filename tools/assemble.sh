@@ -51,6 +51,7 @@ note() { echo "  MISSING  $1"; fail=1; }
 for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          brand.css tokens.css theme.js \
          tiebreaker/index.html tiebreaker/how.html tiebreaker/history.html \
+         tiebreaker/draw.html \
          tiebreaker/app.js tiebreaker/engine.js tiebreaker/feed.xml \
          attendance/index.html attendance/site/app.js \
          attendance/data/teams.json attendance/data/seasons/index.json; do

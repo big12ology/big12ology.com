@@ -110,6 +110,29 @@ def p_from_margin(m):
     return 0.5 * (1 + math.erf(m / (MARGIN_SIGMA * math.sqrt(2))))
 
 
+def team_strength(systems):
+    """{team: strength in scoring points}, averaged across the ensemble.
+
+    Each system is divided by its own per_pt first, so Elo's 27-points-per-
+    point scale lands on the same axis as SP+'s. Factored out of the odds so
+    anything asking "how good is this team" and anything asking "who wins
+    this game" cannot drift apart."""
+    tot, n = {}, {}
+    for s in systems.values():
+        r, per = s.get("ratings") or {}, s.get("per_pt", 1.0) or 1.0
+        for t, v in r.items():
+            tot[t] = tot.get(t, 0.0) + v / per
+            n[t] = n.get(t, 0) + 1
+    return {t: tot[t] / n[t] for t in tot}
+
+
+def hfa_points(systems):
+    """The ensemble's home-field bump, in scoring points."""
+    vals = [s["hfa"] / (s.get("per_pt", 1.0) or 1.0)
+            for s in systems.values() if s.get("ratings")]
+    return sum(vals) / len(vals) if vals else 0.0
+
+
 def win_probs(games, systems):
     """{game_id: p_home} ensemble across rating systems. Unrated opponents
     (FCS and lower) get a floor well below the worst rated team."""

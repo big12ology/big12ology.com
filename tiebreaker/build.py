@@ -21,6 +21,7 @@ import feed as feed_mod
 import fetch as fetcher
 import odds as odds_mod
 import scorecard as scorecard_mod
+import swap as swap_mod
 import tiebreaker as tb
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -233,6 +234,7 @@ SUBNAV_LINKS = [("brief", "./", "The Brief"),
                 ("standings", "standings.html", "The Standings"),
                 ("tracker", "lab.html", "The Lab"),
                 ("schedule", "schedule.html", "The Schedule"),
+                ("draw", "draw.html", "The Draw"),
                 ("how", "how.html", "The Rules"),
                 ("history", "history.html", "The Archive")]
 
@@ -1464,6 +1466,8 @@ def render(year, games):
         "matchcard": card,
         "standingspage": standings_page(games, overrides, display_rows, teams),
         "sims": sims,
+        "systems": systems,
+        "teams": teams,
     }
     return page, ctx
 
@@ -1611,6 +1615,12 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   background: color-mix(in srgb, var(--dim) 18%, transparent);
   color: var(--dim); font-weight: 700; font-size: 12px; cursor: help; }}
 .teamcell {{ white-space: nowrap; }}
+.drawsum td.num, .drawgridtable td {{ text-align: right;
+  font-variant-numeric: tabular-nums; }}
+.drawsum td.dim, .drawgridtable td.dim {{ color: var(--dim); }}
+.drawgridtable td.own {{ background: color-mix(in srgb, var(--accent) 12%,
+  transparent); font-weight: 600; }}
+.drawgridtable th {{ font-weight: 600; font-size: 12px; }}
 .cbar {{ display: inline-block; width: 4px; height: 16px; border-radius: 2px;
   margin-right: 8px; vertical-align: -2px; }}
 .seed {{ display: inline-block; background: var(--accent); color: #fff;
@@ -2180,6 +2190,11 @@ def build_season(year, games, outdir, base, feed=True):
          build_schedule_page(games, ctx),
          f"Every remaining game in {yr} and every result so far, by week.",
          ""),
+        ("draw.html", "The Draw", "draw",
+         build_draw_page(year, games, ctx["systems"], ctx["teams"]),
+         f"What the unbalanced {yr} schedule was worth, in wins: every Big "
+         "12 team's expected conference record on every other team's slate.",
+         ""),
     ]
     hist_frag = os.path.join(HERE, "history", "history_body.html")
     if os.path.exists(hist_frag):
@@ -2247,6 +2262,78 @@ def build_season(year, games, outdir, base, feed=True):
     print(f"built {year} -> {outdir}")
 
 
+def build_draw_page(year, games, systems, teams):
+    """What the unbalanced schedule was worth, in wins.
+
+    Nine games out of fifteen possible opponents means two teams on the same
+    record did not attempt the same thing. The standings cannot say that;
+    this can."""
+    if not systems:
+        return ("<div class=card><h2>The draw</h2><p class=note>This page "
+                "needs the rating systems, and ratings are only fetched for "
+                "the live season — an archived year has none, so there is "
+                "nothing here to compute. See the live season for the "
+                "current draw.</p></div>")
+    m, rows = swap_mod.matrix(games, systems, list(teams))
+    if not rows:
+        return ("<div class=card><h2>The draw</h2><p class=note>No conference "
+                "schedule yet.</p></div>")
+
+    spread = rows[-1]["vs_average"] - rows[0]["vs_average"]
+    head = "".join(f"<th title='{esc(t)}'>{esc(team_abbr(teams, t))}</th>"
+                   for t in sorted(m))
+    body = []
+    for t in sorted(m):
+        cells = []
+        for owner in sorted(m):
+            v = m[t][owner]
+            cls = " class=own" if owner == t else ""
+            cells.append(f"<td{cls}>{v:.1f}</td>" if v is not None
+                         else "<td class=dim>·</td>")
+        body.append(f"<tr><td class=teamcell>{logo_img(t, 16)}"
+                    f"{esc(team_abbr(teams, t))}</td>{''.join(cells)}</tr>")
+
+    summary = "".join(
+        f"<tr><td class=teamcell>{logo_img(r['team'], 16)}{esc(r['team'])}</td>"
+        f"<td class=num>{r['own']:.1f}</td>"
+        f"<td class=num>{r['vs_average']:+.2f}</td>"
+        f"<td class=num>{r['hardest'][0]:.1f}</td>"
+        f"<td class=dim>{esc(team_abbr(teams, r['hardest'][1]))}</td>"
+        f"<td class=num>{r['easiest'][0]:.1f}</td>"
+        f"<td class=dim>{esc(team_abbr(teams, r['easiest'][1]))}</td></tr>"
+        for r in rows)
+
+    return f"""<div class=card id=drawcard>
+<h2>What the draw was worth</h2>
+<p>Sixteen teams, nine conference games. Nobody plays everybody, so two
+teams finishing on the same record did not attempt the same thing. Every
+team's expected conference wins, on every team's schedule.</p>
+<div class="tablescroll scrollbox"><table class=drawsum>
+<thead><tr><th>Team</th><th>Own draw</th><th>vs average</th>
+<th colspan=2>Hardest slate</th><th colspan=2>Easiest slate</th></tr></thead>
+<tbody>{summary}</tbody></table></div>
+<p class=note>Between the hardest draw and the easiest sits
+<b>{spread:.2f}</b> of an expected win. <b>vs average</b> is a team's own
+schedule minus what it would average across all sixteen — negative is a
+harder road than typical.</p>
+</div>
+
+<div class=card id=drawgrid>
+<h2>Every team on every schedule</h2>
+<div class="tablescroll scrollbox"><table class=drawgridtable>
+<thead><tr><th></th>{head}</tr></thead>
+<tbody>{''.join(body)}</tbody></table></div>
+<p class=note>Read a row: that team's expected wins playing each column's
+schedule. The shaded diagonal is the schedule they actually drew.
+<b>A team cannot play itself</b> — where a borrowed schedule contains the
+borrower, it faces the team it borrowed from instead. Without that
+substitution, taking the best team's schedule would quietly delete the best
+team from your season and score it as an easier road; it inflated this
+spread by roughly half a win. Probabilities come from the same rating
+ensemble as the championship odds.</p>
+</div>"""
+
+
 def write_forecast(year, games, systems, sims):
     """Keep what we predicted, so it can be graded later.
 
@@ -2303,7 +2390,8 @@ def write_discovery(years):
     the archived seasons exist at all — nothing links to 2024 except the
     year pills, and the pages carry no dated signal of their own."""
     site = "https://big12ology.com/tiebreaker/"
-    subs = ["", "lab.html", "race.html", "standings.html", "schedule.html"]
+    subs = ["", "lab.html", "race.html", "standings.html",
+            "schedule.html", "draw.html"]
     # Listed once, under the live season — every year serves the same bytes.
     evergreen = ["how.html", "history.html"]
     today = datetime.date.today().isoformat()
