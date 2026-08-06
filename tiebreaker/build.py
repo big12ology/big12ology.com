@@ -21,6 +21,7 @@ import feed as feed_mod
 import fetch as fetcher
 import odds as odds_mod
 import scorecard as scorecard_mod
+import rotation as rotation_mod
 import swap as swap_mod
 import tiebreaker as tb
 
@@ -235,6 +236,7 @@ SUBNAV_LINKS = [("brief", "./", "The Brief"),
                 ("tracker", "lab.html", "The Lab"),
                 ("schedule", "schedule.html", "The Schedule"),
                 ("draw", "draw.html", "The Draw"),
+                ("rotation", "rotation.html", "The Rotation"),
                 ("how", "how.html", "The Rules"),
                 ("history", "history.html", "The Archive")]
 
@@ -1615,6 +1617,12 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   background: color-mix(in srgb, var(--dim) 18%, transparent);
   color: var(--dim); font-weight: 700; font-size: 12px; cursor: help; }}
 .teamcell {{ white-space: nowrap; }}
+.misslist {{ list-style: none; margin: 0; padding: 0; display: flex;
+  flex-wrap: wrap; gap: 4px 14px; }}
+.misslist li {{ white-space: nowrap; }}
+.firstlist {{ list-style: none; margin: 8px 0; padding: 0; font-size: 18px; }}
+.rotationtable td {{ vertical-align: middle; }}
+.warnpill {{ color: var(--warn); font-weight: 600; font-size: 12px; }}
 .drawsum td.num, .drawgridtable td {{ text-align: right;
   font-variant-numeric: tabular-nums; }}
 .drawsum td.dim, .drawgridtable td.dim {{ color: var(--dim); }}
@@ -2195,6 +2203,11 @@ def build_season(year, games, outdir, base, feed=True):
          f"What the unbalanced {yr} schedule was worth, in wins: every Big "
          "12 team's expected conference record on every other team's slate.",
          ""),
+        ("rotation.html", "The Rotation", "rotation",
+         build_rotation_page(year, games, ctx["teams"]),
+         f"Who each Big 12 team misses in {yr}, and the last time they met "
+         "as conference opponents — 48 of the 120 pairings sit out a season.",
+         ""),
     ]
     hist_frag = os.path.join(HERE, "history", "history_body.html")
     if os.path.exists(hist_frag):
@@ -2260,6 +2273,64 @@ def build_season(year, games, outdir, base, feed=True):
                 '<title>The Brief</title><a href="./">The Brief</a>')
     BASE = ""
     print(f"built {year} -> {outdir}")
+
+
+def build_rotation_page(year, games, teams):
+    """Who each team misses, and when they last met in conference play.
+
+    Nine games among sixteen teams leaves 48 of the 120 pairings unplayed
+    every season — the permanent condition of this format, and the reason
+    two teams on the same record did not face the same league."""
+    rows, st = rotation_mod.report(games, teams, range(2011, year))
+    sitting = st["pairs_total"] - st["pairs_played"]
+
+    def pair_line(a, b):
+        return (f"{logo_img(a, 16)}{esc(a)} <span class=dim>and</span> "
+                f"{logo_img(b, 16)}{esc(b)}")
+
+    firsts = ""
+    if st["firsts"]:
+        items = "".join(f"<li>{pair_line(a, b)}</li>" for a, b in st["firsts"])
+        remaining = st["pairs_total"] - st["pairs_ever"] - len(st["firsts"])
+        firsts = f"""<div class=card id=firstmeet>
+<h2>{'The last first meeting' if remaining == 0 and len(st['firsts']) == 1
+     else 'Meeting for the first time'}</h2>
+<ul class=firstlist>{items}</ul>
+<p class=note>Of the {st['pairs_total']} pairings this conference contains,
+{st['pairs_ever']} had already happened in conference play.
+{'This is the last one that had not. After ' + str(year) +
+ ', every pair in the Big 12 will have played as conference opponents.'
+ if remaining == 0 and len(st['firsts']) == 1
+ else f'{remaining} pairings will still be waiting after {year}.'}</p>
+</div>"""
+
+    body = []
+    for r in rows:
+        cells = "".join(
+            f"<li>{logo_img(m['opponent'], 16)}{esc(team_abbr(teams, m['opponent']))}"
+            + (f" <span class=dim>{m['last']}</span>" if m["last"]
+               else " <span class=warnpill>never</span>")
+            + "</li>"
+            for m in r["missing"])
+        body.append(f"<tr><td class=teamcell>{logo_img(r['team'], 16)}"
+                    f"{esc(r['team'])}</td>"
+                    f"<td><ul class=misslist>{cells}</ul></td></tr>")
+
+    return f"""{firsts}
+<div class=card id=rotationcard>
+<h2>Who you miss</h2>
+<p>Nine conference games among sixteen teams. <b>{sitting}</b> of the
+{st['pairs_total']} possible pairings sit out {year} entirely — more than a
+third of the league each team never sees. The year beside each name is the
+last season the two met <em>as conference opponents</em>.</p>
+<div class="tablescroll scrollbox"><table class=rotationtable>
+<tbody>{''.join(body)}</tbody></table></div>
+<p class=note>Conference meetings only, and membership as it was at the
+time: these programs have played each other in non-conference games and
+bowls for decades, so "never" here is a fact about the league, not about the
+two schools. A Utah–Baylor game in 2015 was not a Big 12 meeting — Utah was
+in the Pac-12.</p>
+</div>"""
 
 
 def build_draw_page(year, games, systems, teams):
@@ -2391,7 +2462,7 @@ def write_discovery(years):
     year pills, and the pages carry no dated signal of their own."""
     site = "https://big12ology.com/tiebreaker/"
     subs = ["", "lab.html", "race.html", "standings.html",
-            "schedule.html", "draw.html"]
+            "schedule.html", "draw.html", "rotation.html"]
     # Listed once, under the live season — every year serves the same bytes.
     evergreen = ["how.html", "history.html"]
     today = datetime.date.today().isoformat()
