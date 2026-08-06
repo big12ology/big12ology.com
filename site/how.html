@@ -6,8 +6,12 @@
 <title>How the Big 12 tiebreakers work — Big12ology</title>
 <meta name=description content="A plain-English walkthrough of the official Big 12 football tiebreaking procedures, with the 2024 four-way tie worked step by step.">
 <link rel=canonical href="https://big12ology.com/tiebreaker/how.html">
-<link rel=icon type=image/svg+xml href=favicon.svg>
-<link rel=stylesheet href="brand.css?v=14818839">
+<link rel=icon type=image/svg+xml href="favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="favicon-32.png">
+<link rel=apple-touch-icon href="favicon-180.png">
+<script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
+<link rel=stylesheet href="brand.css?v=34ffdfb0">
+<script defer src="theme.js?v=9a8f53fd"></script>
 <meta property=og:type content=article>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="How the Big 12 tiebreakers actually work">
@@ -18,13 +22,17 @@
 <style>
 :root {
   --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
-  --line: #e2ddd2; --accent: #c8102e; --accent2: #003087;
+  --line: #e2ddd2; --accent: #0B6E77; --accent2: #003087;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
-    --line: #2e323a; --accent: #ff5a6e; --accent2: #7aa2ff;
+    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
   }
+}
+:root[data-theme="dark"] {
+    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
+    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink);
@@ -85,13 +93,13 @@ table.models th { font-size: 12px; text-transform: uppercase;
 <body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar>
-  <a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
+  <a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
   <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
   <a href="https://big12ology.com/attendance/">Attendance</a>
+  <span class=b12-right><span class=b12-theme></span></span>
 </nav>
 <header class=b12-head>
   <div class=hwrap>
-    <img src=logos/big12.svg alt="">
     <div>
       <h1>Big 12 Tiebreaker Tracker <span class=yrpills><span class=yron>2026</span><a href='2025/'>2025</a><a href='2024/'>2024</a></span></h1>
       <p>Unofficial fan tool. Applies the official Big 12 tiebreaking procedures to live results after every game.</p>

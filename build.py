@@ -182,7 +182,6 @@ def tracker_top(year, active, matchcard=""):
              "tiebreaking procedures applied to the final results.")
     return f"""<header class=b12-head>
   <div class=hwrap>
-    <img src={BASE}logos/big12.svg alt="">
     <div>
       <h1>Big 12 Tiebreaker Tracker <span class=yrpills>{years}</span></h1>
       <p>{blurb}</p>
@@ -803,14 +802,17 @@ BRIEF_CSS = """
 .badge.ok { background:#13653626; color:#136536 }
 .badge.warn { background:#b4530926; color:var(--warn) }
 :root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#666d7b;
-  --line:#e2ddd2; --accent:#c8102e; --accent2:#003087; --warn:#b45309;
+  --line:#e2ddd2; --accent:#0B6E77; --accent2:#003087; --warn:#b45309;
   --pctl:27%; }  /* lightness set by contrast, not taste: 32%
   put the mid-scale ambers at 3.5:1, below the 4.5:1 WCAG AA
   floor for body text. Hue still carries the meaning. */
 @media (prefers-color-scheme: dark) {
-  :root { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1; --dim:#9aa0aa;
-    --line:#2e323a; --accent:#ff5a6e; --accent2:#7aa2ff; --warn:#fbbf24;
-    --pctl:63%; } }
+  :root:not([data-theme="light"]) { --bg:#14161a; --panel:#1d2026;
+    --ink:#e8e6e1; --dim:#9aa0aa; --line:#2e323a; --accent:#3FC7CE;
+    --accent2:#7aa2ff; --warn:#fbbf24; --pctl:63%; } }
+:root[data-theme="dark"] { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1;
+  --dim:#9aa0aa; --line:#2e323a; --accent:#3FC7CE; --accent2:#7aa2ff;
+  --warn:#fbbf24; --pctl:63%; }
 * { box-sizing:border-box }
 body { margin:0; background:var(--bg); color:var(--ink);
   font:16px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif }
@@ -845,8 +847,10 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
   font-size:14px } .ccgtag { color:var(--accent); font-weight:700;
   font-size:11px; text-transform:uppercase }
-@media (prefers-color-scheme: dark) { .tag.live { color:#4ade80;
-  background:#4ade8024 } }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tag.live { color:#4ade80;
+    background:#4ade8024 } }
+:root[data-theme="dark"] .tag.live { color:#4ade80; background:#4ade8024 }
 """
 
 
@@ -1132,14 +1136,18 @@ def build_subpage(title, active, body, year, matchcard,
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>{esc(title)} — Big 12 Tiebreaker Tracker</title>
 {social}
-<link rel=icon type=image/svg+xml href={BASE}favicon.svg>
+<link rel=icon type=image/svg+xml href="{BASE}favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="{BASE}favicon-32.png">
+<link rel=apple-touch-icon href="{BASE}favicon-180.png">
+<script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{BASE}{asset_v("brand.css")}">
+<script defer src="{BASE}{asset_v("theme.js")}"></script>
 <link rel=alternate type=application/rss+xml href={BASE}feed.xml>
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <a class=skip-link href="#main">Skip to content</a>
-<nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
-<a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a></nav>
+<nav class=b12-topbar><a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="{BASE}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{BASE}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
+<a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a><a href="https://big12ology.com/attendance/">Attendance</a><span class=b12-right><span class=b12-theme></span></span></nav>
 {tracker_top(year, active, matchcard)}
 {body}
 </main>
@@ -1385,6 +1393,7 @@ def render(year, games):
         v_pct=asset_v("pct.js"),
         v_scroll=asset_v("scrollcue.js"),
         v_brand=asset_v("brand.css"),
+        v_theme=asset_v("theme.js"),
         v_app=asset_v("app.js"),
         canon=(f"{site_url}lab.html" if year == LIVE_YEAR
                else f"{site_url}{year}/lab.html"),
@@ -1441,7 +1450,9 @@ TEMPLATE = """<!doctype html>
 <title>The Lab · what-if simulator — Big 12 Tiebreaker Tracker</title>
 <meta name=description content="The official Big 12 tiebreaking procedures applied to live results after every game — projected championship matchup, tie narratives, and a what-if simulator.">
 <link rel=canonical href="{canon}">
-<link rel=icon type=image/svg+xml href={base}favicon.svg>
+<link rel=icon type=image/svg+xml href="{base}favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
+<link rel=apple-touch-icon href="{base}favicon-180.png">
 <meta property=og:type content=website>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="The Lab · Big 12 what-if simulator — {year}">
@@ -1451,20 +1462,22 @@ TEMPLATE = """<!doctype html>
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
+<script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{base}{v_brand}">
+<script defer src="{base}{v_theme}"></script>
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href={base}feed.xml>
 <style>
 :root {{
   --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
-  --line: #e2ddd2; --accent: #c8102e; --accent2: #003087;
+  --line: #e2ddd2; --accent: #0B6E77; --accent2: #003087;
   --ok: #136536; --warn: #b45309;
   --tie0: #fff3f4; --tie1: #eef4ff; --tie2: #f0fdf4; --tie3: #fefce8;
   --pctl: 27%;
 }}
 @media (prefers-color-scheme: dark) {{
-  :root {{
+  :root:not([data-theme="light"]) {{
     --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
-    --line: #2e323a; --accent: #ff5a6e; --accent2: #7aa2ff;
+    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
     --ok: #4ade80; --warn: #fbbf24;
     --tie0: #2a1d20; --tie1: #1d2330; --tie2: #1d2a22; --tie3: #2a281d;
     --pctl: 63%;
@@ -1506,9 +1519,11 @@ body {{ margin: 0; background: var(--bg); color: var(--ink);
 .lchip.skip {{ background: none; border: 1px solid var(--line);
   color: var(--dim); font-weight: 500; }}
 @media (prefers-color-scheme: dark) {{
-  .lchip.win {{ color: #4ade80; background: color-mix(in srgb, #4ade80 14%,
-    transparent); }}
+  :root:not([data-theme="light"]) .lchip.win {{ color: #4ade80;
+    background: color-mix(in srgb, #4ade80 14%, transparent); }}
 }}
+:root[data-theme="dark"] .lchip.win {{ color: #4ade80;
+  background: color-mix(in srgb, #4ade80 14%, transparent); }}
 .lstep .evline {{ margin: 5px 0 0; }}
 main {{ max-width: var(--chrome-w); margin: 0 auto; padding: 20px;
   display: grid; gap: 20px; }}
@@ -1623,9 +1638,11 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 .tag.destiny {{ background: color-mix(in srgb, var(--warn) 15%, transparent);
   color: var(--warn); }}
 @media (prefers-color-scheme: dark) {{
-  .tag.live {{ color: #4ade80; background: color-mix(in srgb, #4ade80 14%,
-    transparent); }}
+  :root:not([data-theme="light"]) .tag.live {{ color: #4ade80;
+    background: color-mix(in srgb, #4ade80 14%, transparent); }}
 }}
+:root[data-theme="dark"] .tag.live {{ color: #4ade80;
+  background: color-mix(in srgb, #4ade80 14%, transparent); }}
 .clrow {{ padding: 8px 0; border-bottom: 1px solid var(--line);
   font-size: 15px; }}
 .obar {{ display: inline-block; width: 110px; height: 8px;
@@ -1662,9 +1679,10 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 <body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar>
-  <a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
+  <a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="{base}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{base}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
   <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
   <a href="https://big12ology.com/attendance/">Attendance</a>
+  <span class=b12-right><span class=b12-theme></span></span>
 </nav>
 {top}
 
@@ -1728,8 +1746,12 @@ EXPLAINER = """<!doctype html>
 <title>How the Big 12 tiebreakers work — Big12ology</title>
 <meta name=description content="A plain-English walkthrough of the official Big 12 football tiebreaking procedures, with the 2024 four-way tie worked step by step.">
 <link rel=canonical href="https://big12ology.com/tiebreaker/how.html">
-<link rel=icon type=image/svg+xml href={base}favicon.svg>
+<link rel=icon type=image/svg+xml href="{base}favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
+<link rel=apple-touch-icon href="{base}favicon-180.png">
+<script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{base}{v_brand}">
+<script defer src="{base}{v_theme}"></script>
 <meta property=og:type content=article>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="How the Big 12 tiebreakers actually work">
@@ -1740,13 +1762,17 @@ EXPLAINER = """<!doctype html>
 <style>
 :root {{
   --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
-  --line: #e2ddd2; --accent: #c8102e; --accent2: #003087;
+  --line: #e2ddd2; --accent: #0B6E77; --accent2: #003087;
 }}
 @media (prefers-color-scheme: dark) {{
-  :root {{
+  :root:not([data-theme="light"]) {{
     --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
-    --line: #2e323a; --accent: #ff5a6e; --accent2: #7aa2ff;
+    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
   }}
+}}
+:root[data-theme="dark"] {{
+    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
+    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
 }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--bg); color: var(--ink);
@@ -1807,9 +1833,10 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
 <body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar>
-  <a class=b12-brand href="https://big12ology.com/">Big12<span>ology</span></a>
+  <a class=b12-brand href="https://big12ology.com/" aria-label="Big12ology home"><picture><source srcset="{base}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{base}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
   <a class=on href="https://big12ology.com/tiebreaker/">Tiebreaker</a>
   <a href="https://big12ology.com/attendance/">Attendance</a>
+  <span class=b12-right><span class=b12-theme></span></span>
 </nav>
 {top}
 
@@ -2014,6 +2041,7 @@ def build_explainer(year, matchcard, outdir=None):
         f.write(EXPLAINER.format(
             worked_2024=worked, base=BASE,
             v_brand=asset_v("brand.css"),
+            v_theme=asset_v("theme.js"),
             top=tracker_top(year, "how", matchcard)))
     print(f"built {out}")
 
