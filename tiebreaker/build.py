@@ -1074,9 +1074,9 @@ SUBPAGE_EXTRA_CSS = """
 .drawchart .dval { font-size:11px; font-weight:600;
   font-variant-numeric:tabular-nums }
 .drawchart .dtick { fill:var(--dim); font-size:11px }
-.drawchart .dteam { transition:opacity .12s ease }
-.drawwrap:hover .dteam { opacity:.35 }
-.drawwrap .dteam:hover { opacity:1 }
+/* No hover-dim here. The bump chart fades its other lines because sixteen
+   of them overlap and you need to follow one; sixteen separate bars do not
+   overlap, so the same rule just greys out the chart you are reading. */
 .drawkey { margin: 6px 0 12px; padding-left: 20px; }
 .drawkey li { margin: 6px 0; }
 .drawgridtable td.dcell { text-align: right;
@@ -2417,8 +2417,12 @@ def draw_bars(rows, teams, span):
     scrolling wrapper rather than a scaling viewBox, marks via <image>, the
     same 11px type. A chart that sets its own type size is a second visual
     language on a site that has one."""
-    W, rowH, gap = 660, 20, 6
-    m = {"t": 10, "r": 22, "b": 26, "l": 158}
+    # 940 is the bump chart's canvas width. Same width in the same card
+    # means the same scale factor, which means 11px type renders at the same
+    # apparent size as every other chart here. Drawn at 660 it scaled 1.67x
+    # in a card this wide and the labels came out half again too big.
+    W, rowH, gap = 940, 20, 6
+    m = {"t": 10, "r": 26, "b": 26, "l": 190}
     H = m["t"] + len(rows) * (rowH + gap) + m["b"]
     iw = W - m["l"] - m["r"]
     mid = m["l"] + iw / 2
