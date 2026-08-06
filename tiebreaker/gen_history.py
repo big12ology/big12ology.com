@@ -223,7 +223,7 @@ def cutline_section(all_games):
     across the standings, it is the tiebreak ladder.
     """
     rows, same_record = [], 0
-    for year in sorted(all_games):
+    for year in fetcher.usable_seasons(sorted(all_games)):
         games = all_games[year]
         ccg = next((g for g in games if g.get("ccg") and g["completed"]), None)
         if not ccg:
@@ -268,12 +268,15 @@ game while another team on the <em>identical</em> conference record stayed
 home. In 2024 four teams finished 7&#8209;2 and the ladder chose two of
 them. That is the whole reason the seven steps exist: by the time the
 records are level, the standings have stopped being the answer.</p>
+<p class=note>2020 is not in this table. COVID left teams on eight, nine and
+ten conference games in the same standings, so nothing that season can be
+compared to another one — it is excluded from every analysis on this site
+rather than shown with a caveat.</p>
 <p class=note>Two formats sit in this table. Through 2016 this was a
 ten&#8209;team round robin — nine games meant everyone played everyone, and
 the record was a complete account. From 2024 it is sixteen teams playing
 nine of a possible fifteen, so the same 9&#8209;game denominator now
-describes two teams who did not face the same league. 2020 is shortened and
-uneven; COVID left teams on different game counts.</p>
+describes two teams who did not face the same league.</p>
 </div>"""
 
 

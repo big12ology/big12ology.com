@@ -18,6 +18,20 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 API = "https://api.collegefootballdata.com"
 
+# Not a season with an asterisk — a season that cannot be compared to any
+# other. COVID left teams on 8, 9 and 10 conference games in the same
+# standings, so records, rates and distributions all mean something
+# different that year. Excluded outright rather than included with a
+# footnote, because a footnote reads as optional. Anything iterating a year
+# *range* rather than this list will silently pull it back in.
+EXCLUDED_SEASONS = frozenset({2020})
+
+
+def usable_seasons(years):
+    """The seasons in `years` that any analysis may use."""
+    return [y for y in years if y not in EXCLUDED_SEASONS]
+
+
 BIG12 = [
     "Arizona", "Arizona State", "Baylor", "BYU", "Cincinnati", "Colorado",
     "Houston", "Iowa State", "Kansas", "Kansas State", "Oklahoma State",

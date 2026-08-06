@@ -2295,7 +2295,8 @@ def build_rotation_page(year, games, teams):
     Nine games among sixteen teams leaves 48 of the 120 pairings unplayed
     every season — the permanent condition of this format, and the reason
     two teams on the same record did not face the same league."""
-    rows, st = rotation_mod.report(games, teams, range(2011, year))
+    rows, st = rotation_mod.report(
+        games, teams, fetcher.usable_seasons(range(2011, year)))
     sitting = st["pairs_total"] - st["pairs_played"]
 
     def pair_line(a, b):
