@@ -36,7 +36,7 @@ on:
     - cron: "0 12 * 8-12 2"        # Tue — the weekly ratings/lines refresh
 
 permissions:
-  contents: read
+  contents: write   # to commit the week's forecast back; see the step below
   pages: write
   id-token: write
 
@@ -68,6 +68,29 @@ jobs:
           python3 build.py --fetch
           ${{ (github.event.schedule == '0 12 * 8-12 2' || inputs.refresh)
               && '--refresh' || '' }}
+
+      # The build writes tiebreaker/forecasts/<season>/week-NN.json. Odds are
+      # recomputed and discarded every run, so a week that is not committed
+      # here cannot be recovered later — there is no other record of what the
+      # model believed at the time. Never fails the deploy: losing one
+      # week's forecast is bad, taking the whole domain down over it is
+      # worse.
+      - name: Keep the week's forecast
+        if: github.event_name != 'workflow_dispatch' || inputs.deploy
+        continue-on-error: true
+        run: |
+          git config user.name "tiebreaker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add tiebreaker/forecasts
+          if git diff --cached --quiet; then
+            echo "Forecast unchanged."
+          else
+            git commit -m "Forecast: $(date -u +%Y-%m-%d)"
+            git push || {
+              git pull --rebase --autostash origin "${{ github.ref_name }}"
+              git push
+            }
+          fi
 
       - name: Assemble the three sites
         run: tools/assemble.sh dist

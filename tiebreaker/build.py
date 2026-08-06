@@ -2123,7 +2123,7 @@ def load_games(year, refetch=False, refresh=False):
                 fetcher.fetch_lines(year)
             if not os.path.exists(os.path.join(HERE, "data", "teams.json")):
                 fetcher.fetch_teams()
-            return games
+            return fetcher.mark_ccg(games)
         except Exception as e:
             # A spent quota or an API outage must not take the whole domain
             # down with it — this build deploys the hub and the attendance
@@ -2136,8 +2136,10 @@ def load_games(year, refetch=False, refresh=False):
             if not os.path.exists(path):
                 raise
     if not os.path.exists(path):
-        return fetcher.fetch_season(year)
-    return json.load(open(path))
+        return fetcher.mark_ccg(fetcher.fetch_season(year))
+    # Repair on load rather than on fetch, so the seasons already committed
+    # are correct without spending a call to re-pull them.
+    return fetcher.mark_ccg(json.load(open(path)))
 
 
 def build_season(year, games, outdir, base, feed=True):
@@ -2220,6 +2222,7 @@ def build_season(year, games, outdir, base, feed=True):
     }
     with open(os.path.join(outdir, "data.json"), "w") as f:
         json.dump(data, f, indent=1)
+    write_forecast(year, games, systems, sims)
     with open(os.path.join(outdir, "standings.csv"), "w") as f:
         f.write("rank,team,conf_w,conf_l,nonconf_w,nonconf_l,"
                 "overall_w,overall_l,p_ccg\n")
@@ -2242,6 +2245,57 @@ def build_season(year, games, outdir, base, feed=True):
                 '<title>The Brief</title><a href="./">The Brief</a>')
     BASE = ""
     print(f"built {year} -> {outdir}")
+
+
+def write_forecast(year, games, systems, sims):
+    """Keep what we predicted, so it can be graded later.
+
+    Odds are recomputed from scratch every build and thrown away, which is
+    fine for serving a page and fatal for ever asking "was the model any
+    good?". Nothing that produced a forecast survives the build: the ratings
+    file is overwritten each fetch, and a rebuild in December cannot
+    reconstruct what September believed. A week not written down here is
+    gone for good, so this writes one file per week and nothing grades it
+    yet — the grading needs seasons of these first.
+
+    The model description matters as much as the number. A reliability curve
+    over forecasts made by four different model configurations, with no
+    record of which was which, measures nothing.
+    """
+    if not sims or year != LIVE_YEAR:
+        return                       # archived seasons have nothing to predict
+    done = [g for g in games if g["completed"] and not g.get("ccg")]
+    week = max((g["week"] for g in done), default=0)
+    out = os.path.join(HERE, "forecasts", str(year))
+    os.makedirs(out, exist_ok=True)
+    payload = {
+        "season": year,
+        "through_week": week,
+        "games_complete": len(done),
+        "generated": datetime.datetime.now(datetime.timezone.utc)
+                             .replace(microsecond=0).isoformat(),
+        "model": {
+            "n_sims": odds_mod.N_SIMS,
+            "rating_sigma": round(odds_mod.rating_sigma(games), 3),
+            "margin_sigma": odds_mod.MARGIN_SIGMA,
+            "systems": {n: {"year": s.get("year"),
+                            "regressed": s.get("regressed")}
+                        for n, s in systems.items()},
+        },
+        # simulate() mixes bookkeeping into its return — "_n", and "_cond"
+        # when leverage is tracked. Select on shape, not on a name blocklist
+        # that the next key added would slip past.
+        "teams": {t: {"p_ccg": round(v["p_ccg"], 4),
+                      "exp_w": round(v["exp_w"], 3)}
+                  for t, v in sims.items()
+                  if isinstance(v, dict) and "p_ccg" in v},
+    }
+    p = os.path.join(out, f"week-{week:02d}.json")
+    # Overwritten within a week on purpose: the hourly build keeps refining
+    # the same week, and what settles is that week's final state.
+    with open(p, "w") as f:
+        json.dump(payload, f, indent=1, sort_keys=True)
+    print(f"forecast: week {week} -> {p}")
 
 
 def write_discovery(years):

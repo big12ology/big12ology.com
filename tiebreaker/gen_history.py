@@ -73,35 +73,9 @@ def season_games(year):
     if not os.path.exists(p):
         games = fetch_history_season(year)
         json.dump(games, open(p, "w"), indent=1)
-    return mark_ccg(json.load(open(p)))
+    return fetcher.mark_ccg(json.load(open(p)))
 
 
-def mark_ccg(games):
-    """Repair championship-game flags for historical seasons.
-
-    1. A 'championship' note only counts as THE Big 12 CCG when both sides
-       are Big 12 — future Big 12 members drag their old conferences' title
-       games (Pac-12, AAC) into the data.
-    2. CFBD's 2017-2021 feeds don't tag the Big 12 CCG at all. In a strict
-       round-robin, no pair meets twice — so the season's rematch, by date,
-       is the championship game.
-    """
-    for g in games:
-        if g.get("ccg") and not (g.get("home_conf") == "Big 12"
-                                 and g.get("away_conf") == "Big 12"):
-            g["ccg"] = False
-    if not any(g.get("ccg") for g in games):
-        seen = {}
-        conf = sorted((g for g in games if g["conference_game"]
-                       and g["completed"]),
-                      key=lambda g: g["start"] or "")
-        for g in conf:
-            pair = frozenset((g["home"], g["away"]))
-            if pair in seen:
-                g["ccg"] = True  # the rematch — round robins have none
-            else:
-                seen[pair] = g
-    return games
 
 
 def actual_outcome(year, games):

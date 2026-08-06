@@ -71,7 +71,13 @@ def fetch_season(year, force=False):
             "id": g.get("id"),
             "week": g.get("week"),
             "notes": notes,
-            "ccg": "championship" in notes.lower(),
+            # Both sides must be Big 12 for this to be OUR championship
+            # game. Members who joined later drag their old conferences'
+            # title games in with them — 2022 arrived carrying the Pac-12's
+            # and the American's alongside the Big 12's.
+            "ccg": ("championship" in notes.lower()
+                    and g.get("homeConference") == "Big 12"
+                    and g.get("awayConference") == "Big 12"),
             "start": g.get("startDate"),
             "completed": bool(g.get("completed")),
             "conference_game": bool(g.get("conferenceGame"))
@@ -107,6 +113,34 @@ SYSTEMS = {
     "Elo": ("ratings/elo", "elo", 55.0, 27.0),
     "SRS": ("ratings/srs", "rating", 2.5, 1.0),
 }
+
+
+def mark_ccg(games):
+    """Repair championship-game flags for historical seasons.
+
+    1. A 'championship' note only counts as THE Big 12 CCG when both sides
+       are Big 12 — future Big 12 members drag their old conferences' title
+       games (Pac-12, AAC) into the data.
+    2. CFBD's 2017-2021 feeds don't tag the Big 12 CCG at all. In a strict
+       round-robin, no pair meets twice — so the season's rematch, by date,
+       is the championship game.
+    """
+    for g in games:
+        if g.get("ccg") and not (g.get("home_conf") == "Big 12"
+                                 and g.get("away_conf") == "Big 12"):
+            g["ccg"] = False
+    if not any(g.get("ccg") for g in games):
+        seen = {}
+        conf = sorted((g for g in games if g["conference_game"]
+                       and g["completed"]),
+                      key=lambda g: g["start"] or "")
+        for g in conf:
+            pair = frozenset((g["home"], g["away"]))
+            if pair in seen:
+                g["ccg"] = True  # the rematch — round robins have none
+            else:
+                seen[pair] = g
+    return games
 
 
 def fetch_ratings(year):
