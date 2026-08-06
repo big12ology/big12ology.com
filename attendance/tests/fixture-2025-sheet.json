@@ -1,0 +1,728 @@
+{
+  "teams": {
+    "Kansas State": {
+      "games": 6,
+      "total": 310639,
+      "pct": 1.035463333
+    },
+    "Arizona State": {
+      "games": 7,
+      "total": 381109,
+      "pct": 1.015767885
+    },
+    "Colorado": {
+      "games": 7,
+      "total": 353284,
+      "pct": 1.005701988
+    },
+    "BYU": {
+      "games": 6,
+      "total": 382733,
+      "pct": 1.005023371
+    },
+    "Utah": {
+      "games": 6,
+      "total": 310208,
+      "pct": 1.005002203
+    },
+    "Texas Tech": {
+      "games": 7,
+      "total": 420999,
+      "pct": 0.9948508665
+    },
+    "Iowa State": {
+      "games": 6,
+      "total": 365174,
+      "pct": 0.9896314363
+    },
+    "UCF": {
+      "games": 7,
+      "total": 303861,
+      "pct": 0.9582286105
+    },
+    "Kansas": {
+      "games": 7,
+      "total": 276346,
+      "pct": 0.9507043949
+    },
+    "TCU": {
+      "games": 6,
+      "total": 259911,
+      "pct": 0.9417065217
+    },
+    "West Virginia": {
+      "games": 6,
+      "total": 327036,
+      "pct": 0.9084333333
+    },
+    "Cincinnati": {
+      "games": 7,
+      "total": 252364,
+      "pct": 0.9013
+    },
+    "Baylor": {
+      "games": 7,
+      "total": 276126,
+      "pct": 0.873871764
+    },
+    "Oklahoma State": {
+      "games": 7,
+      "total": 312649,
+      "pct": 0.8293406899
+    },
+    "Arizona": {
+      "games": 7,
+      "total": 292471,
+      "pct": 0.8227634089
+    },
+    "Houston": {
+      "games": 6,
+      "total": 193291,
+      "pct": 0.8053791667
+    }
+  },
+  "weekly": [
+    {
+      "week": 0,
+      "attendance": 41525,
+      "capacity": 41525,
+      "games": 1
+    },
+    {
+      "week": 1,
+      "attendance": 647657,
+      "capacity": 675809,
+      "games": 13
+    },
+    {
+      "week": 2,
+      "attendance": 460416,
+      "capacity": 473134,
+      "games": 9
+    },
+    {
+      "week": 3,
+      "attendance": 422457,
+      "capacity": 449830,
+      "games": 9
+    },
+    {
+      "week": 4,
+      "attendance": 320190,
+      "capacity": 333448,
+      "games": 7
+    },
+    {
+      "week": 5,
+      "attendance": 316042,
+      "capacity": 316807,
+      "games": 6
+    },
+    {
+      "week": 6,
+      "attendance": 307400,
+      "capacity": 330693,
+      "games": 7
+    },
+    {
+      "week": 7,
+      "attendance": 344370,
+      "capacity": 356718,
+      "games": 7
+    },
+    {
+      "week": 8,
+      "attendance": 281720,
+      "capacity": 302225,
+      "games": 6
+    },
+    {
+      "week": 9,
+      "attendance": 360972,
+      "capacity": 368522,
+      "games": 7
+    },
+    {
+      "week": 10,
+      "attendance": 317776,
+      "capacity": 339792,
+      "games": 7
+    },
+    {
+      "week": 11,
+      "attendance": 245257,
+      "capacity": 262537,
+      "games": 5
+    },
+    {
+      "week": 12,
+      "attendance": 300402,
+      "capacity": 316518,
+      "games": 6
+    },
+    {
+      "week": 13,
+      "attendance": 303875,
+      "capacity": 339210,
+      "games": 7
+    },
+    {
+      "week": 14,
+      "attendance": 348142,
+      "capacity": 413589,
+      "games": 8
+    }
+  ],
+  "season": {
+    "attendance": 5018201,
+    "capacity": 5320357,
+    "games": 105,
+    "pct": 0.9432075705
+  },
+  "sheetCapacities": {
+    "Arizona": 50782,
+    "Arizona State": 53599,
+    "BYU": 63470,
+    "Baylor": 45140,
+    "Cincinnati": 40000,
+    "Colorado": 50183,
+    "Houston": 40000,
+    "Iowa State": 61500,
+    "Kansas": 41525,
+    "Kansas State": 50000,
+    "Oklahoma State": 53855,
+    "TCU": 46000,
+    "Texas Tech": 60454,
+    "UCF": 45301,
+    "Utah": 51444,
+    "West Virginia": 60000
+  },
+  "games": [
+    {
+      "team": "Kansas",
+      "week": 0,
+      "attendance": 41525
+    },
+    {
+      "team": "Arizona",
+      "week": 1,
+      "attendance": 42423
+    },
+    {
+      "team": "Arizona State",
+      "week": 1,
+      "attendance": 56759
+    },
+    {
+      "team": "BYU",
+      "week": 1,
+      "attendance": 64494
+    },
+    {
+      "team": "Baylor",
+      "week": 1,
+      "attendance": 45233
+    },
+    {
+      "team": "Colorado",
+      "week": 1,
+      "attendance": 52868
+    },
+    {
+      "team": "Houston",
+      "week": 1,
+      "attendance": 28150
+    },
+    {
+      "team": "Iowa State",
+      "week": 1,
+      "attendance": 61500
+    },
+    {
+      "team": "Kansas",
+      "week": 1,
+      "attendance": 39129
+    },
+    {
+      "team": "Kansas State",
+      "week": 1,
+      "attendance": 51927
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 1,
+      "attendance": 44809
+    },
+    {
+      "team": "Texas Tech",
+      "week": 1,
+      "attendance": 60229
+    },
+    {
+      "team": "UCF",
+      "week": 1,
+      "attendance": 43043
+    },
+    {
+      "team": "West Virginia",
+      "week": 1,
+      "attendance": 57093
+    },
+    {
+      "team": "Arizona",
+      "week": 2,
+      "attendance": 40038
+    },
+    {
+      "team": "BYU",
+      "week": 2,
+      "attendance": 64692
+    },
+    {
+      "team": "Cincinnati",
+      "week": 2,
+      "attendance": 35421
+    },
+    {
+      "team": "Colorado",
+      "week": 2,
+      "attendance": 50341
+    },
+    {
+      "team": "Iowa State",
+      "week": 2,
+      "attendance": 61500
+    },
+    {
+      "team": "Kansas State",
+      "week": 2,
+      "attendance": 52723
+    },
+    {
+      "team": "Texas Tech",
+      "week": 2,
+      "attendance": 60229
+    },
+    {
+      "team": "UCF",
+      "week": 2,
+      "attendance": 44009
+    },
+    {
+      "team": "Utah",
+      "week": 2,
+      "attendance": 51463
+    },
+    {
+      "team": "Arizona",
+      "week": 3,
+      "attendance": 40051
+    },
+    {
+      "team": "Arizona State",
+      "week": 3,
+      "attendance": 54005
+    },
+    {
+      "team": "Baylor",
+      "week": 3,
+      "attendance": 41215
+    },
+    {
+      "team": "Cincinnati",
+      "week": 3,
+      "attendance": 30014
+    },
+    {
+      "team": "Houston",
+      "week": 3,
+      "attendance": 37899
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 3,
+      "attendance": 48842
+    },
+    {
+      "team": "TCU",
+      "week": 3,
+      "attendance": 48094
+    },
+    {
+      "team": "Texas Tech",
+      "week": 3,
+      "attendance": 60229
+    },
+    {
+      "team": "West Virginia",
+      "week": 3,
+      "attendance": 62108
+    },
+    {
+      "team": "Baylor",
+      "week": 4,
+      "attendance": 40964
+    },
+    {
+      "team": "Colorado",
+      "week": 4,
+      "attendance": 53442
+    },
+    {
+      "team": "Kansas",
+      "week": 4,
+      "attendance": 40320
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 4,
+      "attendance": 45689
+    },
+    {
+      "team": "TCU",
+      "week": 4,
+      "attendance": 43333
+    },
+    {
+      "team": "UCF",
+      "week": 4,
+      "attendance": 44206
+    },
+    {
+      "team": "Utah",
+      "week": 4,
+      "attendance": 52236
+    },
+    {
+      "team": "Arizona State",
+      "week": 5,
+      "attendance": 53774
+    },
+    {
+      "team": "Colorado",
+      "week": 5,
+      "attendance": 52265
+    },
+    {
+      "team": "Iowa State",
+      "week": 5,
+      "attendance": 61500
+    },
+    {
+      "team": "Kansas",
+      "week": 5,
+      "attendance": 41525
+    },
+    {
+      "team": "Kansas State",
+      "week": 5,
+      "attendance": 53013
+    },
+    {
+      "team": "West Virginia",
+      "week": 5,
+      "attendance": 53965
+    },
+    {
+      "team": "Arizona",
+      "week": 6,
+      "attendance": 40685
+    },
+    {
+      "team": "BYU",
+      "week": 6,
+      "attendance": 63917
+    },
+    {
+      "team": "Baylor",
+      "week": 6,
+      "attendance": 35596
+    },
+    {
+      "team": "Cincinnati",
+      "week": 6,
+      "attendance": 38007
+    },
+    {
+      "team": "Houston",
+      "week": 6,
+      "attendance": 42806
+    },
+    {
+      "team": "TCU",
+      "week": 6,
+      "attendance": 43160
+    },
+    {
+      "team": "UCF",
+      "week": 6,
+      "attendance": 43229
+    },
+    {
+      "team": "Arizona",
+      "week": 7,
+      "attendance": 47960
+    },
+    {
+      "team": "Cincinnati",
+      "week": 7,
+      "attendance": 35782
+    },
+    {
+      "team": "Colorado",
+      "week": 7,
+      "attendance": 52698
+    },
+    {
+      "team": "Kansas State",
+      "week": 7,
+      "attendance": 51316
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 7,
+      "attendance": 44941
+    },
+    {
+      "team": "Texas Tech",
+      "week": 7,
+      "attendance": 60229
+    },
+    {
+      "team": "Utah",
+      "week": 7,
+      "attendance": 51444
+    },
+    {
+      "team": "Arizona State",
+      "week": 8,
+      "attendance": 54177
+    },
+    {
+      "team": "BYU",
+      "week": 8,
+      "attendance": 64794
+    },
+    {
+      "team": "Houston",
+      "week": 8,
+      "attendance": 28535
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 8,
+      "attendance": 46901
+    },
+    {
+      "team": "TCU",
+      "week": 8,
+      "attendance": 43868
+    },
+    {
+      "team": "UCF",
+      "week": 8,
+      "attendance": 43445
+    },
+    {
+      "team": "Arizona State",
+      "week": 9,
+      "attendance": 54256
+    },
+    {
+      "team": "Cincinnati",
+      "week": 9,
+      "attendance": 38007
+    },
+    {
+      "team": "Iowa State",
+      "week": 9,
+      "attendance": 61500
+    },
+    {
+      "team": "Kansas",
+      "week": 9,
+      "attendance": 41525
+    },
+    {
+      "team": "Texas Tech",
+      "week": 9,
+      "attendance": 59625
+    },
+    {
+      "team": "Utah",
+      "week": 9,
+      "attendance": 51949
+    },
+    {
+      "team": "West Virginia",
+      "week": 9,
+      "attendance": 54110
+    },
+    {
+      "team": "Baylor",
+      "week": 10,
+      "attendance": 40212
+    },
+    {
+      "team": "Colorado",
+      "week": 10,
+      "attendance": 48322
+    },
+    {
+      "team": "Houston",
+      "week": 10,
+      "attendance": 25049
+    },
+    {
+      "team": "Iowa State",
+      "week": 10,
+      "attendance": 60899
+    },
+    {
+      "team": "Kansas",
+      "week": 10,
+      "attendance": 39511
+    },
+    {
+      "team": "Kansas State",
+      "week": 10,
+      "attendance": 52111
+    },
+    {
+      "team": "Utah",
+      "week": 10,
+      "attendance": 51672
+    },
+    {
+      "team": "Arizona",
+      "week": 11,
+      "attendance": 41115
+    },
+    {
+      "team": "TCU",
+      "week": 11,
+      "attendance": 44197
+    },
+    {
+      "team": "Texas Tech",
+      "week": 11,
+      "attendance": 60229
+    },
+    {
+      "team": "UCF",
+      "week": 11,
+      "attendance": 44206
+    },
+    {
+      "team": "West Virginia",
+      "week": 11,
+      "attendance": 55510
+    },
+    {
+      "team": "Arizona State",
+      "week": 12,
+      "attendance": 54101
+    },
+    {
+      "team": "BYU",
+      "week": 12,
+      "attendance": 64447
+    },
+    {
+      "team": "Baylor",
+      "week": 12,
+      "attendance": 38186
+    },
+    {
+      "team": "Cincinnati",
+      "week": 12,
+      "attendance": 37099
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 12,
+      "attendance": 46340
+    },
+    {
+      "team": "Texas Tech",
+      "week": 12,
+      "attendance": 60229
+    },
+    {
+      "team": "Arizona",
+      "week": 13,
+      "attendance": 40199
+    },
+    {
+      "team": "Cincinnati",
+      "week": 13,
+      "attendance": 38034
+    },
+    {
+      "team": "Colorado",
+      "week": 13,
+      "attendance": 43348
+    },
+    {
+      "team": "Houston",
+      "week": 13,
+      "attendance": 30852
+    },
+    {
+      "team": "Iowa State",
+      "week": 13,
+      "attendance": 58275
+    },
+    {
+      "team": "UCF",
+      "week": 13,
+      "attendance": 41723
+    },
+    {
+      "team": "Utah",
+      "week": 13,
+      "attendance": 51444
+    },
+    {
+      "team": "Arizona State",
+      "week": 14,
+      "attendance": 54037
+    },
+    {
+      "team": "BYU",
+      "week": 14,
+      "attendance": 60389
+    },
+    {
+      "team": "Baylor",
+      "week": 14,
+      "attendance": 34720
+    },
+    {
+      "team": "Kansas",
+      "week": 14,
+      "attendance": 32811
+    },
+    {
+      "team": "Kansas State",
+      "week": 14,
+      "attendance": 49549
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 14,
+      "attendance": 35127
+    },
+    {
+      "team": "TCU",
+      "week": 14,
+      "attendance": 37259
+    },
+    {
+      "team": "West Virginia",
+      "week": 14,
+      "attendance": 44250
+    }
+  ],
+  "note": "Pure math-engine check: the sheet's own inputs (games with the sheet's week labels, sheetCapacities) must reproduce the sheet's own outputs. Production data now comes from the CFBD API with date-derived weeks and corrected capacities, so it intentionally differs from this fixture."
+}

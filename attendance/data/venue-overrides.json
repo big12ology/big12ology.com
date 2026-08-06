@@ -1,0 +1,48 @@
+{
+ "2024": {
+  "Kansas": {
+   "reason": "David Booth Kansas Memorial Stadium rebuild \u2014 all six designated home games played in Kansas City; CFBD flags them neutral-site",
+   "source": "kuathletics.com (2024-01-30 schedule announcement); capacities: Children's Mercy Park 18,467 seats (sportingkc.com; ~2,000 additional standing room explains >100% figures), GEHA Field at Arrowhead Stadium 76,416",
+   "venues": {
+    "Children's Mercy Park": 18467,
+    "GEHA Field at Arrowhead Stadium": 76416
+   }
+  }
+ },
+ "2013": {
+  "Houston": {
+   "reason": "Robertson Stadium was demolished after 2012 and TDECU did not open until 2014, so Houston played the 2013 season in two rented buildings",
+   "source": "2013 Houston Cougars football team (Wikipedia) game log; capacities: Reliant Stadium 71,054, BBVA Compass Stadium 22,039",
+   "games": {
+    "Southern": {
+     "venue": "Reliant Stadium",
+     "capacity": 71054
+    },
+    "Rice": {
+     "venue": "Reliant Stadium",
+     "capacity": 71054
+    },
+    "BYU": {
+     "venue": "Reliant Stadium",
+     "capacity": 71054
+    },
+    "South Florida": {
+     "venue": "Reliant Stadium",
+     "capacity": 71054
+    },
+    "SMU": {
+     "venue": "Reliant Stadium",
+     "capacity": 71054
+    },
+    "Memphis": {
+     "venue": "BBVA Compass Stadium",
+     "capacity": 22039
+    },
+    "Cincinnati": {
+     "venue": "BBVA Compass Stadium",
+     "capacity": 22039
+    }
+   }
+  }
+ }
+}

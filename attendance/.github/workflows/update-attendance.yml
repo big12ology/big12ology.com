@@ -1,0 +1,68 @@
+name: Update attendance
+
+on:
+  schedule:
+    # All times below are Arizona (MST, UTC-7, no DST); season months only
+    # (late Aug – mid Dec). Every run commits only if data changed; the
+    # ESPN-direct fallback catches anything CFBD hasn't ingested yet.
+    # Saturday 3pm — early kickoffs are final, afternoon games in progress.
+    - cron: "0 22 * 8-12 6"
+    # Saturday 7pm — most afternoon/early-evening games final.
+    - cron: "0 2 * 8-12 0"
+    # Saturday overnight (11:30pm) — late Mountain/Pacific kickoffs final.
+    - cron: "30 6 * 8-12 0"
+    # Sunday morning 7am — the traditional full sweep.
+    - cron: "0 14 * 8-12 0"
+    # Sunday night 7pm — follow-up for late-reporting games and corrections.
+    - cron: "0 2 * 8-12 1"
+    # Friday and Saturday mornings 7am — Thursday/Friday night games.
+    - cron: "0 14 * 8-12 5,6"
+    # Monday morning 7am — Sunday games (weeks 1-2 have Sunday slates).
+    - cron: "0 14 * 8-12 1"
+  workflow_dispatch:
+    inputs:
+      year:
+        description: "Season year"
+        default: "2026"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch attendance from CFBD
+        env:
+          CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+        run: python3 scripts/fetch_attendance.py "${{ inputs.year || '2026' }}"
+
+      - name: Rebuild snapshots
+        run: node scripts/build_snapshots.mjs "${{ inputs.year || '2026' }}"
+
+      - name: Run tests (parity + chart render smoke)
+        run: node --test tests/parity.test.mjs tests/render.test.mjs
+
+      - name: Cross-check attendance vs ESPN
+        id: verify
+        continue-on-error: true
+        run: python3 scripts/verify_attendance.py "${{ inputs.year || '2026' }}"
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "attendance-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No new attendance data."
+          else
+            git commit -m "Attendance update: $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Fail run if cross-check found mismatches
+        if: steps.verify.outcome == 'failure'
+        run: |
+          echo "Attendance mismatch between CFBD and ESPN — see data/verification/. Official school box scores are the arbiter."
+          exit 1

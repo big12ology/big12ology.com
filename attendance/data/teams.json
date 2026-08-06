@@ -1,0 +1,265 @@
+{
+ "conference": "Big 12",
+ "notes": "Capacities and stadium names are season-specific and keyed by the first season each value applied. Sourcing policy: the current season comes from the university or athletic department; earlier seasons from athletic-department media guides and archived facility pages where available, otherwise stadium records of note. Researched August 2026 for the 2012-2026 span.\n\nCases worth knowing about. Houston had no home stadium in 2013 (Robertson demolished, TDECU not yet open) and split the season between Reliant Stadium and BBVA Compass Stadium - those games carry per-game venues and capacities in venue-overrides.json. Cincinnati played all of 2014 at Paul Brown Stadium during the Nippert rebuild. Baylor moved from Floyd Casey to McLane in 2014. Kansas played 2024 away from campus during the Memorial Stadium rebuild (two games at Children's Mercy Park, four at Arrowhead; see venue-overrides.json).\n\nKnown uncertainty. Kansas re-listed capacity mid-2019 (50,071 -> 47,233); the change is keyed to 2019. Kansas has published NO capacity for 2026, when the rebuilt east side is only partially open - the 2026 figure is carried forward from 2025 at 41,525 and is flagged in capacityEstimated, which the site surfaces as 'est'. Phase II demolished the east stand in December 2025 and returns only its lower bowl for 2026, so the true capacity is lower and Kansas percent full reads low until KU publishes. Iowa State's 2013 value is left at 55,000 because the 56,800 that circulates appears to be the 2012 single-game attendance record. Cincinnati's drop to 38,088 is keyed to the 2017 field widening, which the university's current page supports but Wikipedia dates to 2024. Oklahoma State and TCU figures come from media guides and archived official pages; several widely-quoted numbers for both (Wikipedia's 53,885 for OSU, 47,000 for TCU) are uncited or misdated and were not used. Several stadiums sell standing room, so utilization above 100% is expected and correct.",
+ "teams": [
+  {
+   "team": "Arizona",
+   "stadium": {
+    "2012": "Arizona Stadium",
+    "2026": "Casino Del Sol Stadium"
+   },
+   "capacity": {
+    "2012": 51811,
+    "2013": 56037,
+    "2014": 55675,
+    "2018": 53646,
+    "2019": 50782
+   },
+   "timezone": "America/Phoenix",
+   "color": "#0c234b",
+   "altColor": "#ab0520",
+   "logo": "assets/logos/ariz.svg"
+  },
+  {
+   "team": "Arizona State",
+   "stadium": {
+    "2012": "Sun Devil Stadium",
+    "2023": "Mountain America Stadium"
+   },
+   "capacity": {
+    "2012": 71706,
+    "2014": 65870,
+    "2015": 64248,
+    "2016": 56232,
+    "2017": 57078,
+    "2018": 53599
+   },
+   "timezone": "America/Phoenix",
+   "color": "#8e0c3a",
+   "altColor": "#ffc72c",
+   "logo": "assets/logos/asu.svg"
+  },
+  {
+   "team": "BYU",
+   "stadium": {
+    "2012": "LaVell Edwards Stadium"
+   },
+   "capacity": {
+    "2012": 63470,
+    "2024": 62073
+   },
+   "timezone": "America/Denver",
+   "color": "#003da5",
+   "altColor": "#ffffff",
+   "logo": "assets/logos/byu.png"
+  },
+  {
+   "team": "Baylor",
+   "stadium": {
+    "2012": "Floyd Casey Stadium",
+    "2014": "McLane Stadium"
+   },
+   "capacity": {
+    "2012": 50000,
+    "2014": 45140
+   },
+   "timezone": "America/Chicago",
+   "color": "#154734",
+   "altColor": "#ffb81c",
+   "logo": "assets/logos/bay.svg"
+  },
+  {
+   "team": "Cincinnati",
+   "stadium": {
+    "2012": "Nippert Stadium",
+    "2014": "Paul Brown Stadium",
+    "2015": "Nippert Stadium"
+   },
+   "capacity": {
+    "2012": 35000,
+    "2014": 65515,
+    "2015": 40000,
+    "2017": 38088
+   },
+   "timezone": "America/New_York",
+   "color": "#e00122",
+   "altColor": "#000000",
+   "logo": "assets/logos/cin.svg"
+  },
+  {
+   "team": "Colorado",
+   "stadium": {
+    "2012": "Folsom Field"
+   },
+   "capacity": {
+    "2012": 53613,
+    "2014": 50183
+   },
+   "timezone": "America/Denver",
+   "color": "#cfb87c",
+   "altColor": "#000000",
+   "logo": "assets/logos/cu.svg"
+  },
+  {
+   "team": "Houston",
+   "stadium": {
+    "2012": "Robertson Stadium",
+    "2013": "Reliant Stadium",
+    "2014": "TDECU Stadium"
+   },
+   "capacity": {
+    "2012": 32000,
+    "2013": 71054,
+    "2014": 40000
+   },
+   "timezone": "America/Chicago",
+   "color": "#c92a39",
+   "altColor": "#ffffff",
+   "logo": "assets/logos/hou.svg"
+  },
+  {
+   "team": "Iowa State",
+   "stadium": {
+    "2012": "Jack Trice Stadium"
+   },
+   "capacity": {
+    "2012": 55000,
+    "2014": 54800,
+    "2015": 61500
+   },
+   "timezone": "America/Chicago",
+   "color": "#822433",
+   "altColor": "#fdca2f",
+   "logo": "assets/logos/isu.svg"
+  },
+  {
+   "team": "Kansas",
+   "stadium": {
+    "2012": "Memorial Stadium",
+    "2017": "David Booth Kansas Memorial Stadium",
+    "2024": "Children's Mercy Park",
+    "2025": "David Booth Kansas Memorial Stadium"
+   },
+   "capacity": {
+    "2012": 50071,
+    "2019": 47233,
+    "2024": 18467,
+    "2025": 41525,
+    "2026": 41525
+   },
+   "timezone": "America/Chicago",
+   "color": "#0051ba",
+   "altColor": "#e8000d",
+   "logo": "assets/logos/ku.svg",
+   "capacityEstimated": {
+    "2026": "KU has published no 2026 capacity. Phase II of the Gateway rebuild demolished the east stand in December 2025 and only its lower bowl returns this season, so the real figure is below the 41,525 carried forward from 2025 — percent full for Kansas home games reads low until the university publishes a number."
+   }
+  },
+  {
+   "team": "Kansas State",
+   "stadium": {
+    "2012": "Bill Snyder Family Football Stadium"
+   },
+   "capacity": {
+    "2012": 50000
+   },
+   "timezone": "America/Chicago",
+   "color": "#3c0969",
+   "altColor": "#e2e3e4",
+   "logo": "assets/logos/ksu.svg"
+  },
+  {
+   "team": "Oklahoma State",
+   "stadium": {
+    "2012": "Boone Pickens Stadium"
+   },
+   "capacity": {
+    "2012": 60218,
+    "2017": 56790,
+    "2019": 55509,
+    "2023": 53855,
+    "2024": 52305,
+    "2025": 52202
+   },
+   "timezone": "America/Chicago",
+   "color": "#ff7300",
+   "altColor": "#000000",
+   "logo": "assets/logos/okst.svg"
+  },
+  {
+   "team": "TCU",
+   "stadium": {
+    "2012": "Amon G. Carter Stadium"
+   },
+   "capacity": {
+    "2012": 45000,
+    "2019": 46000
+   },
+   "timezone": "America/Chicago",
+   "color": "#4d1979",
+   "altColor": "#f1f2f3",
+   "logo": "assets/logos/tcu.svg"
+  },
+  {
+   "team": "Texas Tech",
+   "stadium": {
+    "2012": "Jones AT&T Stadium"
+   },
+   "capacity": {
+    "2012": 60454,
+    "2023": 56200,
+    "2024": 60229
+   },
+   "timezone": "America/Chicago",
+   "color": "#cc0000",
+   "altColor": "#000000",
+   "logo": "assets/logos/ttu.svg"
+  },
+  {
+   "team": "UCF",
+   "stadium": {
+    "2012": "Bright House Networks Stadium",
+    "2017": "Spectrum Stadium",
+    "2020": "Bounce House",
+    "2022": "FBC Mortgage Stadium",
+    "2025": "Acrisure Bounce House"
+   },
+   "capacity": {
+    "2012": 45301,
+    "2015": 44206
+   },
+   "timezone": "America/New_York",
+   "color": "#ba9b37",
+   "altColor": "#000000",
+   "logo": "assets/logos/ucf.svg"
+  },
+  {
+   "team": "Utah",
+   "stadium": {
+    "2012": "Rice-Eccles Stadium"
+   },
+   "capacity": {
+    "2012": 45017,
+    "2014": 45807,
+    "2021": 51444
+   },
+   "timezone": "America/Denver",
+   "color": "#ea002a",
+   "altColor": "#ffffff",
+   "logo": "assets/logos/utah.svg"
+  },
+  {
+   "team": "West Virginia",
+   "stadium": {
+    "2012": "Milan Puskar Stadium"
+   },
+   "capacity": {
+    "2012": 60000
+   },
+   "timezone": "America/New_York",
+   "color": "#002855",
+   "altColor": "#eaaa00",
+   "logo": "assets/logos/wvu.svg"
+  }
+ ]
+}

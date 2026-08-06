@@ -1,0 +1,77 @@
+[
+  {
+    "week": 0,
+    "file": "week-00.json",
+    "games": 1
+  },
+  {
+    "week": 1,
+    "file": "week-01.json",
+    "games": 14
+  },
+  {
+    "week": 2,
+    "file": "week-02.json",
+    "games": 23
+  },
+  {
+    "week": 3,
+    "file": "week-03.json",
+    "games": 31
+  },
+  {
+    "week": 4,
+    "file": "week-04.json",
+    "games": 38
+  },
+  {
+    "week": 5,
+    "file": "week-05.json",
+    "games": 45
+  },
+  {
+    "week": 6,
+    "file": "week-06.json",
+    "games": 52
+  },
+  {
+    "week": 7,
+    "file": "week-07.json",
+    "games": 59
+  },
+  {
+    "week": 8,
+    "file": "week-08.json",
+    "games": 65
+  },
+  {
+    "week": 9,
+    "file": "week-09.json",
+    "games": 72
+  },
+  {
+    "week": 10,
+    "file": "week-10.json",
+    "games": 79
+  },
+  {
+    "week": 11,
+    "file": "week-11.json",
+    "games": 84
+  },
+  {
+    "week": 12,
+    "file": "week-12.json",
+    "games": 90
+  },
+  {
+    "week": 13,
+    "file": "week-13.json",
+    "games": 97
+  },
+  {
+    "week": 14,
+    "file": "week-14.json",
+    "games": 105
+  }
+]
