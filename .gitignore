@@ -1,3 +1,15 @@
 
 # Local preview output — assemble.sh rebuilds it on demand.
 dist/
+
+# --- local agent + IDE state (machine-specific, never commit) ---
+.claude/
+.DS_Store
+
+# --- working notes: scratch, handoffs, plans (keep out of the repo) ---
+/notes/
+HANDOFF.md
+PLAN.md
+TODO.md
+SCRATCH.md
+*.wip.md
