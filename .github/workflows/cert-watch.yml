@@ -1,0 +1,80 @@
+name: Origin certificate watch
+
+# Fail loudly before the GitHub Pages certificate expires.
+#
+# Why this exists: big12ology.com is served through Cloudflare's proxy, so
+# visitors are presented with Cloudflare's edge certificate. The GitHub Pages
+# certificate is still required — Cloudflare's SSL mode is Full (strict), which
+# validates the origin — but nobody sees it, so its expiry is invisible until
+# every visitor gets a 526 at once.
+#
+# It can genuinely fail to renew. GitHub issues and renews the Pages
+# certificate only after "an automatic DNS check" succeeds, and while the apex
+# is proxied that check resolves big12ology.com to Cloudflare's addresses rather
+# than GitHub's. The renewal job may simply never queue.
+#
+# So this checks the certificate GitHub is serving, not the one Cloudflare is:
+# it connects to big12ology.github.io (never proxied) while sending SNI for
+# big12ology.com, which is exactly the handshake Cloudflare performs.
+#
+# When it fires: grey-cloud the apex A records in Cloudflare for about an hour
+# so GitHub's DNS check sees 185.199.x, let Let's Encrypt reissue, then re-enable
+# the proxy. Confirm with a manual run of this workflow before walking away.
+
+on:
+  schedule:
+    # Mondays 15:00 UTC (08:00 Arizona). Weekly is ample for a 21-day warning.
+    - cron: "0 15 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the origin certificate's remaining life
+        env:
+          ORIGIN_HOST: big12ology.github.io
+          SNI: big12ology.com
+          MIN_DAYS: "21"
+        run: |
+          set -euo pipefail
+
+          cert=$(echo | openssl s_client -connect "${ORIGIN_HOST}:443" \
+                   -servername "${SNI}" 2>/dev/null) || {
+            echo "::error::could not complete a TLS handshake with ${ORIGIN_HOST}"
+            exit 1
+          }
+
+          end=$(openssl x509 -noout -enddate <<<"$cert" | cut -d= -f2)
+          subject=$(openssl x509 -noout -subject <<<"$cert")
+          [ -n "$end" ] || { echo "::error::no notAfter in the certificate"; exit 1; }
+
+          end_epoch=$(date -u -d "$end" +%s)
+          days=$(( (end_epoch - $(date -u +%s)) / 86400 ))
+
+          echo "origin:  ${ORIGIN_HOST} (SNI ${SNI})"
+          echo "$subject"
+          echo "expires: $end  (${days} days)"
+
+          # The certificate must actually be for the custom domain. If GitHub
+          # ever serves its default *.github.io certificate here, Cloudflare's
+          # Full (strict) mode would reject the origin even though the dates
+          # look fine — a valid certificate for the wrong name is still an
+          # outage, so check the name as well as the clock.
+          grep -q "CN=${SNI}" <<<"$subject" || {
+            echo "::error::origin certificate is not for ${SNI} — Full (strict) will reject it"
+            exit 1
+          }
+
+          if [ "$days" -lt "${MIN_DAYS}" ]; then
+            echo "::error::Pages certificate expires in ${days} days (< ${MIN_DAYS})." \
+                 "Renewal may be blocked by the Cloudflare proxy." \
+                 "Fix: set the apex A records to DNS only for ~1 hour so GitHub's" \
+                 "DNS check sees 185.199.x, wait for reissue, then re-enable the proxy."
+            exit 1
+          fi
+
+          echo "OK — ${days} days of life left."

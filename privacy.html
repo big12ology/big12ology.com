@@ -40,7 +40,7 @@ a { color:var(--accent2); }
 </nav>
 <main id=main tabindex="-1">
 <h1>Privacy</h1>
-<p class=updated>Last updated: August 2, 2026</p>
+<p class=updated>Last updated: August 7, 2026</p>
 
 <p>Big12ology is a personal fan project — static websites about Big 12
 football. The short version: no accounts, no cookies, no ads, no selling of
@@ -49,17 +49,27 @@ anything, and as close to no data as a website can get.</p>
 <h2>What these sites collect</h2>
 <ul>
   <li><b>Nothing you type.</b> There are no forms, sign-ups, or comment boxes.</li>
-  <li><b>No cookies, no local storage.</b> Interactive features (like the
-  tiebreaker what-if simulator) run entirely in your browser's memory and
-  forget everything when you close the tab.</li>
+  <li><b>No cookies.</b> Interactive features (like the tiebreaker what-if
+  simulator) run entirely in your browser's memory and forget everything when
+  you close the tab.</li>
+  <li><b>One thing in local storage, and it is your setting.</b> If you pick
+  light or dark mode, that choice is saved in your browser under
+  <code>b12-theme</code> so the page does not flash the wrong theme next time.
+  It never leaves your device and it is not sent to us. Clearing your browser
+  data removes it.</li>
 </ul>
 
 <h2>Hosting</h2>
-<p>The sites are served by <a href="https://pages.github.com/">GitHub
-Pages</a>. Like most web hosts, GitHub may log visitor IP addresses for
-security and operational purposes; see the
+<p>The sites are built and stored on <a href="https://pages.github.com/">GitHub
+Pages</a> and delivered through <a href="https://www.cloudflare.com/">Cloudflare</a>,
+which also provides DNS. Both are ordinary web infrastructure and both may log
+request metadata — including your IP address, the page you asked for, and your
+browser's user-agent string — for security and operational purposes. Neither we
+nor they use that to build a profile of you. See the
 <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub
-Privacy Statement</a>. DNS is provided by Cloudflare.</p>
+Privacy Statement</a> and
+<a href="https://www.cloudflare.com/privacypolicy/">Cloudflare's Privacy
+Policy</a>.</p>
 
 <h2>Analytics</h2>
 <p>These sites use (or may use) <a
@@ -72,7 +82,10 @@ an individual.</p>
 <h2>External links and data sources</h2>
 <p>Links to other sites (GitHub, collegefootballdata.com, big12sports.com,
 and others) are governed by those sites' own privacy policies. Game data is
-fetched by our build servers, not by your browser.</p>
+fetched from third parties by our build servers, not by your browser — your
+browser never talks to a sports data provider. The attendance tracker does load
+its own data files from this site as you use it, which is an ordinary request to
+this site like any other.</p>
 
 <h2>Changes and contact</h2>
 <p>If this policy changes (for example, if analytics tooling changes), this
