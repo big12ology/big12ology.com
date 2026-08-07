@@ -54,10 +54,11 @@ are separate fields and a reported game always counts, whatever its value.
 
 1. Get a free API key at <https://collegefootballdata.com/key> and add it as a
    repo secret named `CFBD_API_KEY`.
-2. `.github/workflows/update-attendance.yml` runs five times each game
-   weekend (Sat 3pm / 7pm / 11:30pm and Sun 7am / 7pm, Arizona time, plus on
-   demand): fetches Big 12 games, rebuilds snapshots, runs the parity tests,
-   and commits only if data changed.
+2. `.github/workflows/attendance-data.yml`, at the repo root, runs eight times
+   across each game weekend (Fri and Sat 7am, Sat 3pm / 7pm / 11:30pm, Sun 7am
+   and 7pm, Mon 7am, Arizona time, plus on demand): fetches Big 12 games,
+   rebuilds snapshots, runs the parity tests, and commits only if data changed.
+   It does not deploy — it dispatches the Pages workflow when data moved.
 
 ### Attendance sources & verification
 
@@ -67,7 +68,7 @@ are separate fields and a reported game always counts, whatever its value.
   (`attendanceSource` marks ESPN-filled games; the next CFBD ingest
   normally converges to the same value).
 - **When CFBD is gone entirely** — a spent monthly quota (the key allows
-  1,000 calls; see HANDOFF.md) or an outage — the fetch does not fail the
+  1,000 calls a month) or an outage — the fetch does not fail the
   run. It refreshes the committed season file from ESPN alone, keyed on the
   ESPN game id every row already carries, and fills the two things a game
   day changes: attendance and the final score. It prints a `::warning::` and

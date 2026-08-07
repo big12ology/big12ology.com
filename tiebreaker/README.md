@@ -83,13 +83,14 @@ tie reaches them, put the values in `overrides.json`:
 
 ## Auto-updating
 
-`.github/workflows/update.yml` refetches and redeploys to GitHub Pages hourly
-during weekend game windows (Sep–Dec), every two hours in the late-night
-Thu/Fri windows, and daily otherwise. Setup after pushing to GitHub:
+`.github/workflows/pages.yml`, at the repo root, refetches and redeploys the
+whole domain hourly during weekend game windows (Aug–Dec), every two hours in
+the late-night Thu/Fri/Sun windows, and daily otherwise; Tuesday's run also
+refreshes ratings and closing lines. The schedule is the tiebreaker's — it is
+the only part of the site with a reason to rebuild on a clock. Setup:
 
 1. Repo → Settings → Secrets and variables → Actions → add `CFBD_API_KEY`.
 2. Repo → Settings → Pages → Source: **GitHub Actions**.
-3. Run the workflow once manually (Actions → Update site → Run workflow).
 
 Team and conference marks are from Wikimedia Commons (provenance in
 `site/logos/SOURCES.json`); they belong to their institutions and are used
