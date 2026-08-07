@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+#
+# What must never enter this repository's history.
+#
+# Versioned, and wired up with:
+#
+#     git config core.hooksPath tools/hooks
+#
+# which is the point. The previous version of this lived in .git/hooks/, where
+# it guarded exactly one clone — and the thing it guards against, HANDOFF.md,
+# had already been scrubbed from published history once. A fresh clone, a
+# second machine, or a CI checkout had no protection at all. tools/ is excluded
+# from the published output (see assemble.sh), so none of this ships.
+#
+# This is the second of two gates, and they are not the same gate:
+#
+#   assemble.sh  guards the deploy. It asks what is about to be served to the
+#                public web, and it runs on every build.
+#   this hook    guards the history. It asks what is about to become permanent,
+#                and it is the only one that runs before a push.
+#
+# The distinction matters for wrangler.toml, which is deliberately blocked by
+# one and not the other: it holds a route, a D1 database id and KV namespace
+# ids — configuration, not credentials, and worth committing. There is simply
+# no reason to serve it, so assemble.sh keeps it out of dist/ and this does not
+# keep it out of git.
+#
+# Neither gate can help once a secret is pushed. Rotate it; do not just revert.
+#
+#     git commit --no-verify     to override, when you actually mean it
+
+set -uo pipefail
+
+fail=0
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+[ -n "$staged" ] || exit 0
+
+reject() {
+  printf 'pre-commit: %s\n' "$1" >&2
+  printf '%s\n' "$2" | sed 's/^/  /' >&2
+  fail=1
+}
+
+# --- working notes ---------------------------------------------------------
+# .gitignore does not apply to a path that is already tracked, and `git add -f`
+# ignores it outright. This catches both.
+notes=$(printf '%s\n' "$staged" \
+        | grep -E '^(HANDOFF|PLAN|TODO|SCRATCH)\.md$|\.wip\.md$|^notes/' || true)
+[ -n "$notes" ] && reject \
+  "refusing to commit local working notes — the repo is public and these
+describe how the site was built:" "$notes"
+
+# --- credential files ------------------------------------------------------
+# .dev.vars is wrangler's local stand-in for `wrangler secret put`: the OAuth
+# client secrets and the identity pepper, in plaintext, in the working tree.
+secrets=$(printf '%s\n' "$staged" | grep -E \
+  '(^|/)\.dev\.vars($|\.)|(^|/)\.env($|\.)|(^|/)\.wrangler/|\.(pem|p12|pfx|keystore)$|(^|/)id_(rsa|dsa|ecdsa|ed25519)$' \
+  | grep -vE '\.(example|sample|template)$' || true)
+[ -n "$secrets" ] && reject \
+  "refusing to commit credential files:" "$secrets"
+
+# --- credential values in otherwise ordinary files -------------------------
+# The likelier accident by far: not committing .dev.vars, but pasting what was
+# in it into a config, a fixture or a comment. Only added lines are scanned,
+# and every pattern requires an actual value — naming a secret in prose, which
+# the assemble script and the workflows both do, is not a leak.
+#
+# This file is skipped because it necessarily contains the patterns it hunts.
+scan=$(printf '%s\n' "$staged" | grep -v '^tools/hooks/' || true)
+if [ -n "$scan" ]; then
+  added=$(printf '%s\n' "$scan" | tr '\n' '\0' \
+          | xargs -0 git diff --cached -U0 -- 2>/dev/null \
+          | grep '^+' | grep -v '^+++' || true)
+
+  found=""
+  add() { [ -n "$2" ] && found="${found}${1}\n"; }
+
+  # Private keys of any flavour.
+  add "a PEM private key block" \
+      "$(printf '%s' "$added" | grep -E 'BEGIN [A-Z ]*PRIVATE KEY' || true)"
+  # Google OAuth client secrets carry their own prefix.
+  add "a Google OAuth client secret (GOCSPX-...)" \
+      "$(printf '%s' "$added" | grep -E 'GOCSPX-[A-Za-z0-9_-]{8,}' || true)"
+  # GitHub tokens, all current prefixes.
+  add "a GitHub token" \
+      "$(printf '%s' "$added" \
+         | grep -E 'gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}' || true)"
+  # A named secret with something long enough after it to be real. The value
+  # bound is what keeps "IDENTITY_PEPPER is permanent — back it up" from
+  # tripping this.
+  add "a secret assigned a value" \
+      "$(printf '%s' "$added" | grep -E \
+         '(CLIENT_SECRET|API_KEY|APIKEY|IDENTITY_PEPPER|SIGNING_KEY|ADMIN_TOKEN|AUTH_TOKEN|ACCESS_TOKEN|PASSWORD|PRIVATE_KEY)[A-Z_]*["'"'"']?\s*[=:]\s*["'"'"']?[A-Za-z0-9_./+-]{16,}' || true)"
+
+  if [ -n "$found" ]; then
+    printf 'pre-commit: the staged changes look like they contain a secret:\n' >&2
+    printf "$found" | sed 's/^/  /' >&2
+    printf '  (the value is not printed here — check `git diff --cached`)\n' >&2
+    printf 'If this is a placeholder or a false positive: git commit --no-verify\n' >&2
+    printf 'If it is real: do not just unstage it. Rotate it.\n' >&2
+    fail=1
+  fi
+fi
+
+[ "$fail" -eq 0 ] || {
+  printf 'If you truly mean it: git commit --no-verify\n' >&2
+  exit 1
+}
+exit 0
