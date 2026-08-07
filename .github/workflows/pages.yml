@@ -20,7 +20,7 @@ on:
         type: boolean
         default: true
       refresh:
-        description: "Also refetch ratings and closing lines (+9 CFBD calls)"
+        description: "Also refetch ratings, closing lines and TV windows (+10 CFBD calls)"
         type: boolean
         default: false
   push:
@@ -75,15 +75,21 @@ jobs:
       # model believed at the time. Never fails the deploy: losing one
       # week's forecast is bad, taking the whole domain down over it is
       # worse.
-      - name: Keep the week's forecast
+      #
+      # tiebreaker/pickem/ rides along for the same reason, one step harder:
+      # the forecast is a record of an opinion, the slate is the number a
+      # player is scored against. fetch_lines overwrites data/lines_<year>.json
+      # on every refresh, so if a published week is not committed here, the
+      # line it was played on is gone and the week cannot be graded at all.
+      - name: Keep the week's forecast and slate
         if: github.event_name != 'workflow_dispatch' || inputs.deploy
         continue-on-error: true
         run: |
           git config user.name "tiebreaker-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add tiebreaker/forecasts
+          git add tiebreaker/forecasts tiebreaker/pickem
           if git diff --cached --quiet; then
-            echo "Forecast unchanged."
+            echo "Forecast and slate unchanged."
           else
             git commit -m "Forecast: $(date -u +%Y-%m-%d)"
             git push || {
@@ -91,6 +97,39 @@ jobs:
               git push
             }
           fi
+
+      # The slate is published by the weekly refresh, which runs once. If that
+      # run failed — a spent quota, a CFBD outage — the build falls back to
+      # committed data and the domain stays up, which is right, and no slate
+      # gets written, which is silent. The game simply has no week and nobody
+      # finds out until someone goes to pick. Say it out loud instead, without
+      # failing the deploy: the site not being down is still the priority.
+      - name: Warn if the week has no slate
+        if: github.event_name != 'workflow_dispatch' || inputs.deploy
+        continue-on-error: true
+        working-directory: tiebreaker
+        run: |
+          python3 - <<'PY'
+          import datetime, glob, json
+          now = datetime.datetime.now(datetime.timezone.utc).timestamp()
+          soon = []
+          for p in sorted(glob.glob("pickem/*/week-*.json")):
+              try:
+                  lock = json.load(open(p)).get("lock_at")
+              except (ValueError, OSError):
+                  continue
+              if lock and 0 < lock - now < 8 * 86400:
+                  soon.append((p, lock))
+          if soon:
+              p, lock = soon[0]
+              when = datetime.datetime.fromtimestamp(
+                  lock, datetime.timezone.utc).strftime("%a %d %b %H:%M UTC")
+              print(f"slate ready: {p} locks {when}")
+          else:
+              print("::warning::no pick'em slate locks in the next 8 days — "
+                    "the weekly refresh may have failed, and the game has no "
+                    "week until it succeeds")
+          PY
 
       - name: Assemble the three sites
         run: tools/assemble.sh dist

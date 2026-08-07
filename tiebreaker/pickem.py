@@ -41,6 +41,17 @@ CENTRAL = zoneinfo.ZoneInfo("America/Chicago")
 NO_LINE = "no_line"
 NO_KICKOFF = "kickoff_tbd"
 
+# How early a week may be frozen. The weekly refresh runs every Tuesday of the
+# year, so without this the first slate of the season is published the first
+# Tuesday the schedule exists — in 2026 that froze the August 29 opener on a
+# line taken three weeks out, and froze it for good, because the whole point of
+# this module is that a published line does not move. Openers drift further
+# than any other line on the board.
+#
+# Eight days is the Tuesday before the lock, plus a day of slack for a
+# Thursday-night opener and for the cron running a few hours late.
+LEAD_DAYS = 8
+
 
 def display_week(d, season):
     """Week number from a game's local date. Weeks run Tuesday–Monday, so
@@ -234,6 +245,18 @@ def publish_slate(season, games, lines, week=None, now=None, republish=False):
     slate = build_slate(season, games, lines, week)
     if slate is None:
         print("pickem: no unplayed games — nothing to publish")
+        return None
+
+    # Too far out to freeze. Only blocks the first write: once a week is
+    # published, later runs still merge into it, so a week that opened inside
+    # the window keeps filling in as its remaining lines post.
+    lock = slate["lock_at"]
+    p_early = os.path.join(OUT, str(season), f"week-{slate['week']:02d}.json")
+    if (lock is not None and not os.path.exists(p_early)
+            and lock - now.timestamp() > LEAD_DAYS * 86400):
+        days = (lock - now.timestamp()) / 86400
+        print(f"pickem: week {slate['week']} locks in {days:.0f} days — "
+              f"too early to freeze (publishes within {LEAD_DAYS})")
         return None
 
     out = os.path.join(OUT, str(season))

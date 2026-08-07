@@ -1,0 +1,90 @@
+name: Tests
+
+# The tests, on every change — which until now nothing did.
+#
+# pages.yml rebuilds and deploys the tiebreaker ~300 times a season and runs no
+# tests at all; attendance-data.yml runs its own two suites, but only on its own
+# data-fetch schedule, and never on a pull request. So the ten tiebreaker tests
+# — including test_parity.py, the one thing standing between engine.js and
+# tiebreaker.py drifting apart — have been local-only, on a repo whose deploy is
+# automatic. A change could reach the live site without a single test running.
+#
+# This workflow exists to close that. It fetches nothing, spends no CFBD quota,
+# and touches no credentials: every test here runs against committed data.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Read-only. This workflow proves things; it does not change them.
+permissions:
+  contents: read
+
+# A superseded run tells you about code nobody is looking at any more.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 3.12 matches pages.yml, which is what actually builds the site.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 22 for node:sqlite, which the worker's schema tests use to prove the
+      # D1 triggers fire. test_parity.py also shells out to node.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # These are scripts, not unittest cases: each one prints its own summary
+      # and exits non-zero on failure. `unittest discover` finds no TestCase in
+      # them, reports "NO TESTS RAN", and exits 0 — it imports each module,
+      # which runs the checks and prints, so it looks convincingly like a pass
+      # while asserting nothing. Run them the way they are written.
+      - name: Tiebreaker
+        working-directory: tiebreaker
+        run: |
+          fail=0
+          for t in tests/test_*.py; do
+            if out=$(python3 "$t" 2>&1); then
+              printf '  PASS  %-24s %s\n' "$(basename "$t")" "$(echo "$out" | tail -1)"
+            else
+              printf '  FAIL  %-24s\n' "$(basename "$t")"
+              echo "$out" | sed 's/^/        /'
+              fail=1
+            fi
+          done
+          exit $fail
+
+      # Named files, not the directory: `node --test tests/` also picks up
+      # fixture-2025-sheet.json and dies on it.
+      - name: Attendance
+        working-directory: attendance
+        run: |
+          node --test tests/parity.test.mjs tests/render.test.mjs
+          python3 -m unittest discover -s tests
+
+      # Skipped until the pick'em Worker lands, so this workflow can go in
+      # first — it is the thing that makes the rest of that work reviewable.
+      - name: Worker
+        run: |
+          if [ -d worker/test ]; then
+            cd worker && npm ci && node --test test/
+          else
+            echo "no worker/ yet — skipping"
+          fi
+
+      # The build gates are themselves untested code, and one of them now
+      # stands between a Worker's client secrets and the public web. Assembling
+      # here proves the manifest, the cache-bust rule, the CNAME check and the
+      # must-not-ship gate all still run clean.
+      - name: Assemble
+        run: tools/assemble.sh dist
