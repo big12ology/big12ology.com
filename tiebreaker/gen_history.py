@@ -212,8 +212,8 @@ def ladder_section(all_stats):
 <h2>How far down it has gone</h2>
 <p>Each tie is counted once here, by the <em>deepest</em> step it needed —
 not by every step it touched. {len(walks)} tie groups, 2011&#8211;2025.</p>
-<div class="tablescroll scrollbox"><table class=laddertable>
-<thead><tr><th>Step that finished it</th><th>Ties</th></tr></thead>
+<div class="tablescroll scrollbox"><table class="laddertable stepdepth">
+<thead><tr><th colspan=2>Step that finished it</th><th>Ties</th></tr></thead>
 <tbody>{dist}</tbody></table></div>
 <p class=note>The archive's other table counts a step whenever it seeded
 anyone, so a single tie can appear in several of its rows and the column

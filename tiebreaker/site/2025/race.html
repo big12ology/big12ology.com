@@ -136,6 +136,14 @@ ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
 .drawgridtable td.dcell.own { outline: 2px solid var(--ink);
   outline-offset: -2px; font-weight: 700; }
 .laddertable td, .cuttable td { vertical-align: middle; }
+/* Seven rows of "(a) head-to-head — 28". Stretched across the full chrome
+   the count drifted most of a page away from the step it counts, and the
+   head was a cell short of the body, so the numbers ran under no header at
+   all. Two columns of prose, one of figures, at a width you can read across
+   in one go. */
+.stepdepth { max-width: 34rem; }
+.stepdepth th:last-child, .stepdepth td:last-child { text-align: right;
+  font-variant-numeric: tabular-nums; }
 .samerec { color: var(--warn); font-weight: 600; font-size: 12px; }
 .misslist { list-style:none; margin:0; padding:0; display:flex;
   flex-wrap:wrap; gap:3px 0 }
