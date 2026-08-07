@@ -274,3 +274,37 @@
 /* Nothing here animates, so there is nothing for reduced-motion to suppress —
    deliberately. A countdown that pulses as the deadline nears would be a
    WCAG 2.3.1 problem and an anxiety machine. */
+
+/* --- the card ------------------------------------------------------------
+   Your slate, after the fact. Same row rhythm as the picker so the two read
+   as the same object seen twice, but nothing here is a control: the picking
+   is over, or it is happening on the other page. */
+
+.pk-card { list-style: none; margin: 0; padding: 0;
+           display: grid; gap: 3px; }
+@media (min-width: 900px) { .pk-card { grid-template-columns: 1fr 1fr;
+                                       gap: 3px 12px; } }
+
+.pk-cardrow {
+  display: grid; grid-template-columns: 64px minmax(0, 1fr) 3.4em 4.4em;
+  gap: 0 8px; align-items: center;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
+  padding: 4px 8px; min-width: 0;
+}
+.pk-cardmatch { min-width: 0; overflow: hidden; text-overflow: ellipsis;
+                white-space: nowrap; font-size: 14px; }
+/* The side you took carries the team's colour as a chip. On the picker the
+   whole control fills; here it is one word inside a sentence, so it takes the
+   smaller treatment. Still never the accent. */
+.pk-took { background: var(--tc, var(--tc-none)); color: var(--tfg, #fff);
+           font-weight: 700; border-radius: 4px; padding: 1px 5px; }
+
+.pk-cardrec { margin: 0 0 12px; font-size: 15px; }
+.pk-cardrec b { font-size: 17px; }
+.pk-open { color: var(--warn); font-weight: 600; }
+
+/* A game whose result is not in yet. A dot, not an empty cell, so the row
+   reads as waiting rather than as missing. */
+.pk-res.pending { color: var(--dim); background: none; }
+.pk-res.nopick { color: var(--dim);
+                 background: color-mix(in srgb, var(--dim) 10%, transparent); }

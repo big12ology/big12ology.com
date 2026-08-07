@@ -66,6 +66,11 @@ jobs:
 
       # Named files, not the directory: `node --test tests/` also picks up
       # fixture-2025-sheet.json and dies on it.
+      # The pick'em client is a browser file, so it needs a browser-shaped
+      # test rather than the script runner above.
+      - name: Pickem client
+        run: node --test tiebreaker/tests/pickem_render.test.mjs
+
       - name: Attendance
         working-directory: attendance
         run: |

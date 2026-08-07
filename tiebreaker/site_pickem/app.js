@@ -520,7 +520,8 @@
 
   // ----------------------------------------------------------------- board
 
-  var boardRows = [], sortKey = "rank", sortDir = 1, meId = null;
+  var boardRows = [], sortKey = "rank", sortDir = 1, meId = null,
+      chalk = null;
 
   var COLS = [
     {key: "rank", label: "#", num: true},
@@ -537,7 +538,7 @@
     tbl.textContent = "";
     var thead = el("thead"), tr = el("tr");
     COLS.forEach(function (c) {
-      var th = el("th", c.pk-num ? "n" : null);
+      var th = el("th", c.num ? "n" : null);
       if (sortKey === c.key) {
         th.setAttribute("aria-sort", sortDir > 0 ? "ascending" : "descending");
       }
@@ -566,7 +567,7 @@
       var tr2 = el("tr");
       if (meId && r.user_id === meId) tr2.className = "you";
       COLS.forEach(function (c) {
-        var td = el("td", c.pk-num ? "n" : null);
+        var td = el("td", c.num ? "n" : null);
         if (c.key === "pct") {
           td.textContent = r.pct == null ? "—" :
             (r.pct * 100).toFixed(1) + "%";
@@ -584,6 +585,27 @@
       tb.appendChild(tr2);
     });
     tbl.appendChild(tb);
+
+    // The chalk: always take the favourite, every game, no thinking. It is the
+    // benchmark the whole exercise is measured against — a board where most
+    // players sit below it is telling you something true — and it is the same
+    // comparison scorecard.py already makes for the models on the race card,
+    // presented the same way. In a <tfoot> because it is not a competitor.
+    if (chalk) {
+      var tf = el("tfoot"), row = el("tr");
+      COLS.forEach(function (c) {
+        var td = el("td", c.num ? "n" : null);
+        if (c.key === "display_name") td.textContent = "The chalk";
+        else if (c.key === "rank") td.textContent = "";
+        else if (c.key === "pct") {
+          td.textContent = chalk.pct == null ? "—"
+            : (chalk.pct * 100).toFixed(1) + "%";
+        } else td.textContent = chalk[c.key] == null ? "—" : chalk[c.key];
+        row.appendChild(td);
+      });
+      tf.appendChild(row);
+      tbl.appendChild(tf);
+    }
   }
 
   function fillWeeks(cur) {
@@ -617,6 +639,7 @@
     var q = week ? "?week=" + encodeURIComponent(week) : "";
     return api("/api/leaderboard" + q).then(function (r) {
       boardRows = r.rows || [];
+      chalk = r.chalk || null;
       note.textContent = boardRows.length
         ? (r.week == null ? "Season to date." : "Week " + r.week + ".")
         : "Nobody has a scored week yet.";
@@ -634,16 +657,105 @@
 
   // ------------------------------------------------------------------ card
 
+  // A pick is only a story once the game has a result, so the card joins the
+  // slate to your picks rather than listing either alone: what you took, the
+  // number you took it at, and how it came out — including the games you left
+  // blank, which is the thing a card is for noticing.
+  function cardRow(g, side, teams) {
+    var li = el("li", "pk-cardrow");
+    li.appendChild(el("span", "pk-when", shortWhen(g.kickoff)));
+
+    var m = el("span", "pk-cardmatch");
+    ["away", "home"].forEach(function (s, i) {
+      if (i) m.appendChild(el("span", "pk-at", " at "));
+      var t = el("span", s === side ? "pk-took" : null, g[s]);
+      if (s === side) {
+        var c = (teams[g[s]] && teams[g[s]].color) || "";
+        if (c) { t.style.setProperty("--tc", c); t.style.setProperty("--tfg", textOn(c)); }
+      }
+      m.appendChild(t);
+    });
+    li.appendChild(m);
+
+    li.appendChild(el("span", "pk-num",
+      side ? spreadText(g.spread_x2, side) : "—"));
+
+    var out = null;
+    if (!side) out = "nopick";
+    else if (g.result) {
+      out = g.result.ats === "void" ? "void"
+          : g.result.ats === "push" ? "push"
+          : g.result.ats === side ? "win" : "loss";
+    }
+    li.appendChild(out
+      ? el("span", "pk-res " + out, out === "nopick" ? "NO PICK" : out.toUpperCase())
+      : el("span", "pk-res pending", "·"));
+    return li;
+  }
+
+  function tallyCard(games, picks) {
+    var t = {w: 0, l: 0, p: 0, v: 0, made: 0, open: 0};
+    games.forEach(function (g) {
+      if (g.unpickable) return;
+      var side = picks[g.game_id];
+      if (!side) { t.open++; return; }
+      t.made++;
+      if (!g.result) return;
+      var a = g.result.ats;
+      if (a === "void") t.v++;
+      else if (a === "push") t.p++;
+      else if (a === side) t.w++;
+      else t.l++;
+    });
+    return t;
+  }
+
   function initCard(me) {
-    var note = $("cardnote");
-    if (!note) return;
-    if (!me) { note.textContent = "Sign in to see your card."; return; }
-    api("/api/picks").then(function (r) {
-      var n = Object.keys(r.picks || {}).length;
-      note.textContent = n
-        ? n + " picks in for week " + r.week + "."
-        : "No picks yet this week.";
-    }).catch(function (err) { note.textContent = explain(err); });
+    var note = $("cardnote"), wrap = $("card");
+    if (!note || !wrap) return;
+    if (!me) {
+      note.textContent = "";
+      wrap.appendChild(el("p", "pk-signedout",
+        "Sign in to see your card."));
+      return;
+    }
+    Promise.all([
+      api("/api/slate"),
+      api("/api/picks"),
+      fetch("/pickem/teams.json").then(function (r) { return r.ok ? r.json() : {}; })
+        .catch(function () { return {}; })
+    ]).then(function (r) {
+      var s = r[0], picks = (r[1] && r[1].picks) || {}, teams = r[2] || {};
+      var t = tallyCard(s.games, picks);
+      var decided = t.w + t.l;
+
+      note.textContent = "";
+      var line = el("p", "pk-cardrec");
+      line.appendChild(el("b", null, t.w + "–" + t.l +
+        (t.p ? "–" + t.p : "")));
+      line.appendChild(document.createTextNode(
+        decided ? "  ·  " + (100 * t.w / decided).toFixed(1) + "% against the spread"
+                : "  ·  nothing graded yet"));
+      // The number that actually matters before a lock: what you have not done.
+      if (t.open) {
+        line.appendChild(el("span", "pk-open",
+          "  ·  " + t.open + " still open"));
+      }
+      note.appendChild(line);
+
+      var ul = el("ul", "pk-card");
+      inPlayOrder(s.games).forEach(function (g) {
+        if (g.unpickable) return;      // nothing to say about a game nobody could pick
+        ul.appendChild(cardRow(g, picks[g.game_id] || null, teams));
+      });
+      wrap.textContent = "";
+      wrap.appendChild(ul);
+    }).catch(function (err) {
+      note.textContent = err.status === 404
+        ? "No slate published yet. The week goes up on Tuesday, once the "
+          + "lines are in."
+        : explain(err);
+    });
   }
 
   // ------------------------------------------------------------------ boot
