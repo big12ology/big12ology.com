@@ -1,0 +1,23 @@
+{
+ "_comment": [
+  "Kickoff times where a school publishes something other than what CFBD",
+  "returns. These are NOT corrections: the page still shows the fetched",
+  "time, because that is what the rest of the site is computed from and a",
+  "hand-edited clock would drift from it silently. They are flags, so a",
+  "reader sees that the number is contested and where the other one comes",
+  "from.",
+  "",
+  "Keyed by CFBD game id. `published` is the venue-local time the source",
+  "gives, 24-hour. Remove an entry once CFBD agrees with it.",
+  "",
+  "Found by hand. There is no signal in the feed for this — CFBD does not",
+  "mark a time as provisional once it has one, so nothing but a person",
+  "comparing against the school's own page will catch it."
+ ],
+ "401856774": {
+  "published": "19:00",
+  "source": "thesundevils.com/sports/football/schedule",
+  "checked": "2026-08-07",
+  "note": "Arizona State lists 7:00 p.m. MST for the Morgan State opener; ESPN's kickoff-time announcement says 7 p.m. Arizona time. CFBD returns 6:00 p.m."
+ }
+}

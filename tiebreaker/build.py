@@ -33,6 +33,12 @@ SITE = os.path.join(HERE, "site")
 # The schedule section is a sibling of /tiebreaker/ on the
 # domain, so its pages reach shared assets through ../tiebreaker/.
 SCHEDULE_SITE = os.path.join(HERE, "site_schedule")
+# The pick'em is generated here like the schedule, and served at /pickem/. It
+# is the one section whose body is not in the file: the shells are static and
+# every number in them arrives from /api/* at runtime, because a slate, a lock
+# countdown and a leaderboard are per-viewer and per-second. Everything around
+# that body — chrome, nav, footer, cache-busting — is the same as everywhere.
+PICKEM_SITE = os.path.join(HERE, "site_pickem")
 
 # team -> logo file key (assets in site/logos/, sourced from Wikimedia; BYU is png)
 TEAM_KEY = {
@@ -116,11 +122,16 @@ BASE = ""      # "../" while writing an archived season, so assets resolve
 LIVE_YEAR = None
 
 
-def asset_v(name):
+def asset_v(name, root=None):
     """Cache-bust by content. A browser that has app.js in cache will not ask
     the server whether it changed, so a deploy can silently keep running the
-    old file — this makes the URL change whenever the bytes do."""
-    p = os.path.join(SITE, name)
+    old file — this makes the URL change whenever the bytes do.
+
+    `root` is for assets that do not live in site/. The pick'em keeps its own
+    app.js and styles.css in site_pickem/ while still reaching back to
+    ../tiebreaker/ for the shared ones, so the two cannot be resolved against
+    the same directory."""
+    p = os.path.join(root or SITE, name)
     try:
         h = hashlib.sha1(open(p, "rb").read()).hexdigest()[:8]
     except OSError:
@@ -231,14 +242,21 @@ def section_href(section, year):
     return f"/{section}/" if year == LIVE_YEAR else f"/{section}/{year}/"
 
 
-def topbar(section, year, base=""):
-    """The masthead, one copy for every page that has one."""
+def topbar(section, year, base="", acct=False):
+    """The masthead, one copy for every page that has one.
+
+    `acct` reserves the signed-in chip. It is emitted empty and filled by
+    pickem/app.js once /api/me answers; leaving the box in the markup keeps
+    the row from reflowing when it does, and stops a signed-in reader seeing
+    "Sign in" for the length of a request."""
     def link(sect, label):
         on = " class=on" if sect == section else ""
         return f'<a{on} href="{section_href(sect, year)}">{label}</a>'
 
-    # Attendance keeps its seasons in a picker on one page, not in per-year
-    # directories, so there is no year to carry across to it.
+    # Attendance and the pick'em keep no per-year directories — attendance has
+    # a season picker on one page, and the pick'em only ever plays the current
+    # week — so neither takes a year across, and both are linked flat rather
+    # than through section_href, which would invent /pickem/2024/.
     return (f'<nav class=b12-topbar><a class=b12-brand href="/" '
             f'aria-label="Big12ology home"><picture>'
             f'<source srcset="{base}brand/big12ology-compact-dark.svg" '
@@ -247,7 +265,11 @@ def topbar(section, year, base=""):
             f'alt="Big12ology"></picture></a>'
             + link("tiebreaker", "Tiebreaker") + link("schedule", "Schedule")
             + '<a href="/attendance/">Attendance</a>'
-            '<span class=b12-right><span class=b12-theme></span></span>'
+            + f'<a{" class=on" if section == "pickem" else ""} '
+              f'href="/pickem/">Pickem</a>'
+            + '<span class=b12-right>'
+            + ('<span class=b12-acct hidden></span>' if acct else '')
+            + '<span class=b12-theme></span></span>'
             '</nav>')
 
 
@@ -322,14 +344,19 @@ def fmt_prob(p):
 
 
 def tracker_top(year, active, matchcard="", section="tiebreaker", page="",
-                up=""):
+                up="", yearpills=True):
     """The one top: header bar, pill row, matchup card. Styled entirely by
     brand.css (.b12-head/.subnav) — no page may restyle these.
 
     `page` is the file being built, "" for a section's front page; the year
-    pills carry it, so a season switch keeps the view."""
+    pills carry it, so a season switch keeps the view.
+
+    `yearpills` is not decoration. year_href() assumes every section has a
+    directory per archived season, and the pick'em has none — there is no 2024
+    pick'em and never will be. Left on, every page would carry two links to
+    directories that do not exist."""
     meta = SECTIONS[section]
-    years = "".join(
+    years = "" if not yearpills else "".join(
         (f"<span class=yron>{y}</span>" if y == year else
          f"<a href='{up}{year_href(y, page, year)}'>{y}</a>")
         for y in [LIVE_YEAR] + ARCHIVE_YEARS)
@@ -373,6 +400,15 @@ SECTIONS = {
         "past": ("The {year} conference schedule: every result by week, who "
                  "never met, and what the draw was worth."),
     },
+    "pickem": {
+        "title": "Big 12 Pickem",
+        "live": ("Pick every Big 12 game against the spread. One line for "
+                 "everyone, frozen when the week is published; the whole "
+                 "slate locks at the first kickoff."),
+        # Never rendered — the pick'em has no archived seasons — but
+        # tracker_top reads it unconditionally.
+        "past": "The {year} pick'em.",
+    },
 }
 
 SCHEDULE_PAGES = {"schedule.html", "matrix.html", "draw.html", "rotation.html"}
@@ -398,9 +434,19 @@ SCHEDULE_NAV = [("schedule", "./", "The Schedule"),
                 ("draw", "draw.html", "The Draw"),
                 ("rotation", "rotation.html", "The Rotation")]
 
+# The Card is your own picks and The Board is everyone's, which is the only
+# distinction a player needs. The account page is deliberately absent: it is
+# reached from the chip in the masthead, and a nav slot that says "Account"
+# on a page most readers never sign into is a slot wasted.
+PICKEM_NAV = [("slate", "./", "The Slate"),
+              ("card", "card.html", "The Card"),
+              ("board", "board.html", "The Board"),
+              ("rules", "rules.html", "The Rules")]
+
 
 def nav_for(section):
-    return SCHEDULE_NAV if section == "schedule" else SUBNAV_LINKS
+    return {"schedule": SCHEDULE_NAV,
+            "pickem": PICKEM_NAV}.get(section, SUBNAV_LINKS)
 
 
 def subnav(active, section="tiebreaker", prefix=""):
@@ -1409,6 +1455,10 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
 .slatemeta > div > :not(svg) { overflow:hidden; text-overflow:ellipsis }
 .slatewhen time, .slatetv { color:var(--ink) }
 .slatewhen time { font-variant-numeric:tabular-nums; font-weight:600 }
+.yourtime { color:var(--dim); font-weight:400 }
+/* A kickoff a school publishes differently. Marked, not overwritten. */
+.timeflag { color:var(--warn); text-decoration:none; cursor:help;
+  font-weight:700; margin-left:2px }
 .slatewx, .slateline { font-variant-numeric:tabular-nums }
 .wxwarn { color:var(--warn) }
 /* Decorative, and sized to the line rather than to the icon: they should
@@ -1555,6 +1605,12 @@ def build_subpage(title, active, body, year, matchcard,
     sect_title = SECTIONS[section]["title"]
     head_title = (sect_title if title == sect_title
                   else f"{title} — {sect_title}")
+    # rel=alternate claims another representation of THIS page. From a
+    # pick'em page BASE points at ../tiebreaker/, so the unconditional version
+    # advertised the tiebreaker's feed as an alternate form of the slate.
+    rss = ("" if section == "pickem"
+           else f"<link rel=alternate type=application/rss+xml "
+                f"href={BASE}feed.xml>")
     social = ""
     if canon:
         social = f"""<link rel=canonical href="{canon}">
@@ -1579,12 +1635,13 @@ def build_subpage(title, active, body, year, matchcard,
 <script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{BASE}{asset_v("brand.css")}">
 <script defer src="{BASE}{asset_v("theme.js")}"></script>
-<link rel=alternate type=application/rss+xml href={BASE}feed.xml>
+{rss}
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <a class=skip-link href="#main">Skip to content</a>
-{topbar(section, year, BASE)}
-{tracker_top(year, active, matchcard, section, page, up)}
+{topbar(section, year, BASE, acct=section == "pickem")}
+{tracker_top(year, active, matchcard, section, page, up,
+             yearpills=section != "pickem")}
 {body}
 </main>
 {footer()}
@@ -1599,22 +1656,35 @@ def build_subpage(title, active, body, year, matchcard,
 # beside it is the actual failure here — it reads as local and is not.
 LOCAL_TIME_JS = """<script>
 (function () {
-  // This sits in <head>, so the rows it rewrites do not exist yet. An
-  // inline script cannot be deferred; waiting for the parser is the whole
-  // job. Without this the page silently keeps every kickoff in Eastern.
+  // The server writes the kickoff in the venue's own zone, because that is
+  // how schools publish it and how a reader checks this page against
+  // theirs. This adds the reader's own clock beside it, and only when the
+  // two actually differ — telling somebody in Tucson that 7pm MST is 7pm
+  // their time is noise.
+  //
+  // It sits in <head>, so the rows do not exist yet; an inline script
+  // cannot be deferred, and waiting for the parser is the whole job.
   function localize() {
-  var tz;
-  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
-  document.querySelectorAll("time[data-kick]").forEach(function (el) {
-    var d = new Date(el.getAttribute("datetime"));
-    if (isNaN(d)) return;
-    var f = new Intl.DateTimeFormat([], {
-      weekday: "short", hour: "numeric", minute: "2-digit",
-      timeZoneName: "short"
+    var mine;
+    try { mine = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
+    document.querySelectorAll("time[data-kick]").forEach(function (el) {
+      var d = new Date(el.getAttribute("datetime"));
+      if (isNaN(d)) return;
+      var venue = el.getAttribute("data-tz");
+      if (!mine || !venue) return;
+      var fmt = function (tz) {
+        return new Intl.DateTimeFormat([], {
+          hour: "numeric", minute: "2-digit", timeZone: tz
+        }).format(d);
+      };
+      var here, there;
+      try { here = fmt(mine); there = fmt(venue); } catch (e) { return; }
+      if (here === there) return;
+      var span = document.createElement("span");
+      span.className = "yourtime";
+      span.textContent = " (" + here + " your time)";
+      el.insertAdjacentElement("afterend", span);
     });
-    el.textContent = f.format(d);
-    if (tz) el.title = tz;
-  });
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", localize);
@@ -1674,10 +1744,53 @@ def icon(name, cls="gi"):
             f"</svg>")
 
 
+def load_time_notes():
+    """Games whose kickoff a school publishes differently. Flags, not
+    corrections — see data/time-notes.json."""
+    p = os.path.join(HERE, "data", "time-notes.json")
+    try:
+        raw = json.load(open(p))
+    except (OSError, ValueError):
+        return {}
+    return {k: v for k, v in raw.items() if not k.startswith("_")}
+
+
+TIME_NOTES = load_time_notes()
+
+
+def time_note(g):
+    """A marker beside a contested kickoff. The number stays as fetched —
+    everything else on the site is computed from it, and a clock edited in
+    one place drifts from the rest in silence. This says the source is
+    contested and names the other one."""
+    n = TIME_NOTES.get(str(g.get("id")))
+    if not n:
+        return ""
+    said = n.get("published", "")
+    try:
+        h, m = (int(x) for x in said.split(":"))
+        ampm = "AM" if h < 12 else "PM"
+        said = f"{h % 12 or 12}:{m:02d} {ampm}"
+    except (ValueError, AttributeError):
+        pass
+    title = (f"{n.get('note', '')} Shown as fetched from "
+             f"collegefootballdata.com; {esc(n.get('source', 'the school'))} "
+             f"lists {said}.")
+    return (f"<abbr class=timeflag title=\"{esc(title)}\" "
+            f"aria-label=\"{esc(title)}\">*</abbr>")
+
+
 def kickoff(g):
-    """Kickoff as <time>, Eastern on the server and the reader's zone once
-    the script runs. CFBD publishes a placeholder hour for games with no
-    window announced, so a TBD game says so rather than inventing 8pm."""
+    """Kickoff in the venue's own zone, which is how every school and the
+    conference publish it — a reader checking this page against a school's
+    page should find the same number. The script beside it adds the
+    reader's own time when the two differ, so nobody has to do the
+    arithmetic either.
+
+    Eastern is the fallback for a venue we have no zone for. CFBD publishes
+    a placeholder hour for games with no window announced, so a TBD game
+    says so rather than inventing 8pm.
+    """
     iso = g.get("start")
     if not iso:
         return "<span class=dim>time TBD</span>"
@@ -1687,10 +1800,21 @@ def kickoff(g):
         when = datetime.datetime.fromisoformat(iso.replace("Z", "+00:00"))
     except ValueError:
         return "<span class=dim>time TBD</span>"
-    et = when.astimezone(zoneinfo.ZoneInfo("America/New_York"))
-    hour = et.strftime("%-I:%M %p")
-    return (f'<time data-kick datetime="{esc(iso)}">'
-            f"{_DOW[et.weekday()][:3]} {hour} ET</time>")
+    tzname = g.get("venue_tz") or "America/New_York"
+    try:
+        zone = zoneinfo.ZoneInfo(tzname)
+    except Exception:
+        tzname, zone = "America/New_York", zoneinfo.ZoneInfo("America/New_York")
+    local = when.astimezone(zone)
+    # %Z gives the zone the venue actually keeps — MST for Arizona in
+    # September, where its neighbours are on MDT. That distinction is the
+    # whole reason a kickoff gets misread by an hour.
+    label = local.strftime("%Z") or "local"
+    stamp = (f'<time data-kick datetime="{esc(iso)}" '
+             f'data-tz="{esc(tzname)}">'
+             f"{_DOW[local.weekday()][:3]} {local.strftime('%-I:%M %p')} "
+             f"{esc(label)}</time>")
+    return stamp + time_note(g)
 
 
 def where(g):
@@ -1901,11 +2025,13 @@ def build_schedule_page(games, ctx):
                  + "".join(slate_card(g, pages=bool(ctx.get("game_pages")))
                             for g in week_games)
                  + "</div>"
-                 "<p class=note>Kickoffs are shown in your own time zone "
-                 "where your browser will say what it is, Eastern "
-                 "otherwise. A forecast appears about two weeks out; before "
-                 "that the line reads what that venue is usually like at "
-                 "this point in the season.</p></div>")
+                 "<p class=note>Kickoffs are in the venue's own time zone, "
+                 "the way a school publishes them, with your clock beside "
+                 "it when the two differ. An asterisk marks a time the "
+                 "school lists differently — hover it for both. A forecast "
+                 "appears about two weeks out; before that the line reads "
+                 "what that venue is usually like at this point in the "
+                 "season.</p></div>")
     else:
         slate = ("<div class=card id=slate><h2>No games scheduled</h2>"
                  "<p class=note>The season's schedule has not been "
@@ -2181,6 +2307,8 @@ def place_and_forecast(year, games):
                 continue
             g["venue_city"] = ", ".join(
                 x for x in (v.get("city"), v.get("state")) if x)
+            if v.get("tz"):
+                g["venue_tz"] = v["tz"]
     # Both already on disk: the market is fetched for the what-if models and
     # the broadcast list on the weekly refresh. Reading them here spends
     # nothing and is the whole reason the slate can show them.
@@ -3711,6 +3839,205 @@ def _live_games_for_sitemap():
         return []
 
 
+# Every pick'em body is a shell. The parts that vary per viewer and per second
+# are empty here and filled by app.js; the parts that are true for everybody —
+# what the page is, what to do without JavaScript, where the data lives — are
+# in the markup, so a reader with a dead network or a blocked script still gets
+# a page that explains itself rather than a blank panel.
+#
+# The two live regions are separate on purpose. role=status is polite and
+# carries save progress; role=alert is assertive and carries only the lock and
+# a lost session. A lock is not a polite update, and "Saved" must never
+# interrupt someone mid-sentence.
+PICKEM_LIVE_REGIONS = """
+<p id=savestate class=savestate role=status aria-live=polite aria-atomic=true></p>
+<p id=alertstate class=alertstate role=alert></p>"""
+
+PICKEM_NOSCRIPT = """
+<noscript><p class=note><b>The picker needs JavaScript.</b> The rules and this
+week's slate are readable without it:
+<a href="rules.html">The Rules</a>, or
+<a href="/api/slate">the slate as JSON</a>.</p></noscript>"""
+
+PICKEM_SLATE_BODY = f"""
+<div class=card id=lockcard hidden>
+  <p class=lockline>Locks at first kickoff &mdash;
+    <time id=lockat datetime=""></time>
+    <span id=cd class=cd aria-hidden=true></span></p>
+  <p class=slatecount id=slatecount></p>
+</div>
+{PICKEM_LIVE_REGIONS}
+<div class=card id=signedout hidden>
+  <h2>Sign in to play</h2>
+  <p class=note>You can read the slate either way. Picking needs an account so
+  your card survives the browser you made it in.</p>
+  <p><a class=wbtn href="account.html">Sign in</a></p>
+</div>
+<form id=slateform>
+  <div id=slate class=slate>
+    <p class=note id=slateload>Loading this week's slate&hellip;</p>
+  </div>
+</form>
+{PICKEM_NOSCRIPT}
+<span class=sr-only role=status id=cdsr></span>"""
+
+PICKEM_CARD_BODY = f"""
+<div class=card>
+  <h2>Your card</h2>
+  <p class=note id=cardnote>Loading&hellip;</p>
+  <div id=card></div>
+</div>
+{PICKEM_NOSCRIPT}"""
+
+PICKEM_BOARD_BODY = f"""
+<div class=card>
+  <div class=boardhead>
+    <h2>The Board</h2>
+    <label class=wksel>Week
+      <select id=wksel aria-label="Which week to show"></select>
+    </label>
+  </div>
+  <p class=note id=boardnote>Loading&hellip;</p>
+  <div class=table-wrap><div class=table-scroll>
+    <table id=board></table>
+  </div></div>
+</div>
+{PICKEM_NOSCRIPT}"""
+
+PICKEM_ACCOUNT_BODY = f"""
+{PICKEM_LIVE_REGIONS}
+<div class=card id=signin hidden>
+  <h2>Sign in</h2>
+  <p class=note>We ask your provider for one thing: that you are you. Not your
+  email address, not your name, not your picture. What becomes public is the
+  display name you choose and your record.
+  <a href="/privacy">What we store</a>.</p>
+  <p class=signins>
+    <a class=wbtn href="/api/auth/login/google?return_to=/pickem/">Continue with Google</a>
+    <a class=wbtn href="/api/auth/login/github?return_to=/pickem/">Continue with GitHub</a>
+  </p>
+  <p class=note>Signing in sets one cookie. Nothing else.</p>
+</div>
+<div class=card id=named hidden>
+  <h2>Display name</h2>
+  <form id=nameform novalidate>
+    <label for=dname>Display name</label>
+    <input id=dname name=name type=text maxlength=20 required autocomplete=off
+           spellcheck=false aria-describedby="dnamehelp dnameerr">
+    <p id=dnamehelp class=note>2&ndash;20 characters. <b>This is public</b> &mdash;
+    it is what everyone sees beside your record on The Board.</p>
+    <p id=dnameerr class=fielderr role=alert hidden></p>
+    <button type=submit class=wbtn>Save name</button>
+  </form>
+</div>
+<div class=card id=acctinfo hidden>
+  <h2>Signed in</h2>
+  <div id=acctbody></div>
+</div>
+{PICKEM_NOSCRIPT}"""
+
+PICKEM_RULES = """
+<div class=card>
+<h2>How it works</h2>
+<p>Every game involving a Big 12 team is on the slate. Pick a side against the
+spread. The whole week locks at the first kickoff, and what you picked becomes
+public then — not before.</p>
+<h3>The line does not move</h3>
+<p>The spread is taken from the market when the week is published and written
+down. Everyone plays the same number, and it is the number you are scored
+against even if the market moves ten points afterwards. It is rounded to the
+nearest half point, because a cross-book average sitting on an arbitrary tenth
+is not a line anybody could have bet.</p>
+<h3>Push</h3>
+<p>Land exactly on the number and it is a push: not a win, not a loss, and
+counted in neither half of your percentage. Whole-number lines are the only
+ones that can do this. Over the 2025 season five of 120 games would have
+pushed.</p>
+<h3>Games you cannot pick</h3>
+<p>A game with no posted line is shown and greyed out. So is one whose kickoff
+has not been announced — the lock is the first kickoff, and a time nobody has
+set cannot be part of that. If a line appears before the lock, the game opens
+up.</p>
+<h3>A game that is not played</h3>
+<p>Cancelled or abandoned, it is void for everyone: no win, no loss, out of the
+percentage entirely. A voided opener does not reopen a week that has already
+locked.</p>
+<h3>Weeks</h3>
+<p>A pick'em week is a weekend, Tuesday to Monday. It is not the week number on
+the tiebreaker or schedule pages: those follow the data provider, whose 2025
+&ldquo;week&nbsp;1&rdquo; ran nine days and eighteen games. Opening week is the
+one genuine exception here too, running Thursday to Labor Day.</p>
+<h3>The board</h3>
+<p>Ranked by wins, then by percentage. A new account is hidden from the public
+board until it has completed one scored week &mdash; long enough that a
+throwaway account is not worth making, short enough that a real player waits
+once.</p>
+<h3>Signing in</h3>
+<p>Google or GitHub, and we ask them for one thing: that you are you. No email
+address, no name, no picture. What is public is the display name you choose and
+your record. <a href="/privacy">What we store</a>.</p>
+</div>"""
+
+
+def build_pickem(year):
+    """The five pick'em shells.
+
+    Nothing here knows a score, a spread or a player. The body of each page is
+    an empty target that pickem/app.js fills from /api/*, which is the whole
+    reason this section is generated rather than rendered: the deploy runs on
+    the tiebreaker's clock — driven by the CFBD quota, not by this game — and
+    a slate baked in at build time would be wrong the moment anyone signed in
+    or a lock elapsed.
+
+    What generation does buy is everything around that body. One chrome, one
+    footer, the content-hash cache busting, and a place in assemble.sh's
+    required-file manifest. Hand-writing these would have made the fifth copy
+    of a masthead this project deliberately consolidated into one.
+    """
+    global BASE
+    prev, BASE = BASE, "../tiebreaker/"
+    os.makedirs(PICKEM_SITE, exist_ok=True)
+
+    # styles.css after the inherited BRIEF_CSS so it can override; app.js is
+    # one classic script with no imports, so this hash is the whole truth
+    # about the code version. pct.js comes from the tiebreaker for the shared
+    # colour ramp rather than a second copy of the same curve.
+    head = (f'<link rel=stylesheet href="{asset_v("styles.css", PICKEM_SITE)}">'
+            f'<script defer src="{BASE}{asset_v("pct.js")}"></script>'
+            f'<script defer src="{asset_v("app.js", PICKEM_SITE)}"></script>')
+
+    canon = "https://big12ology.com/pickem/"
+    pages = [
+        ("index.html", "slate", "Big 12 Pickem", PICKEM_SLATE_BODY,
+         canon, "Pick every Big 12 game against the spread. One frozen line "
+                "for everyone; the slate locks at the first kickoff.", True),
+        ("card.html", "card", "The Card", PICKEM_CARD_BODY,
+         None, None, False),
+        ("board.html", "board", "The Board", PICKEM_BOARD_BODY,
+         canon + "board.html", "The Big 12 pick'em leaderboard: every "
+                               "player's record against the spread.", True),
+        ("rules.html", "rules", "The Rules", PICKEM_RULES,
+         canon + "rules.html", "How the Big 12 pick'em works: frozen lines, "
+                               "pushes, voids, and when the week locks.", True),
+        ("account.html", "account", "Your account", PICKEM_ACCOUNT_BODY,
+         None, None, False),
+    ]
+    for fname, active, title, body, url, desc, indexed in pages:
+        html = build_subpage(title, active, body, year, "", canon=url,
+                             desc=desc, head=head, section="pickem",
+                             page=fname if fname != "index.html" else "")
+        if not indexed:
+            # Your own card and your own account are per-viewer and empty to
+            # anyone else. Same directive redirect_stub already uses.
+            html = html.replace("<meta charset=utf-8>",
+                                "<meta charset=utf-8>"
+                                '<meta name=robots content="noindex, follow">')
+        with open(os.path.join(PICKEM_SITE, fname), "w") as f:
+            f.write(html)
+    BASE = prev
+    print(f"built pickem -> {PICKEM_SITE}")
+
+
 def write_discovery(years):
     """A sitemap. Without one a crawler has to guess that
     the archived seasons exist at all — nothing links to 2024 except the
@@ -3767,10 +4094,28 @@ def write_discovery(years):
     write_map(os.path.join(SITE, "sitemap.xml"), urls)
     os.makedirs(SCHEDULE_SITE, exist_ok=True)
     write_map(os.path.join(SCHEDULE_SITE, "sitemap.xml"), sched_urls)
+
+    # A third, for the same reason as the second: a sitemap only speaks for
+    # the path it is served from. Only the three pages that say the same thing
+    # to everyone are listed — The Card and the account page are per-viewer
+    # and carry noindex. The Rules is the section's real indexable content,
+    # since it is the one page whose body is in the file rather than fetched.
+    pick = "https://big12ology.com/pickem/"
+    pick_urls = [
+        f'  <url><loc>{pick}</loc><lastmod>{today}</lastmod>'
+        f'<changefreq>daily</changefreq><priority>0.8</priority></url>',
+        f'  <url><loc>{pick}rules.html</loc><lastmod>{today}</lastmod>'
+        f'<changefreq>monthly</changefreq><priority>0.7</priority></url>',
+        f'  <url><loc>{pick}board.html</loc><lastmod>{today}</lastmod>'
+        f'<changefreq>weekly</changefreq><priority>0.6</priority></url>',
+    ]
+    os.makedirs(PICKEM_SITE, exist_ok=True)
+    write_map(os.path.join(PICKEM_SITE, "sitemap.xml"), pick_urls)
     # No robots.txt here on purpose: crawlers only read it at the origin
     # root, and this is a project site under /tiebreaker/. The real one
     # lives at the repo root and points at this sitemap.
-    print(f"built sitemap.xml ({len(urls)} tiebreaker, {len(sched_urls)} schedule)")
+    print(f"built sitemap.xml ({len(urls)} tiebreaker, "
+          f"{len(sched_urls)} schedule, {len(pick_urls)} pickem)")
 
 
 def main():
@@ -3793,6 +4138,7 @@ def main():
                                      republish="--republish" in sys.argv)
         pickem_mod.write_scores(year, games,
                                 os.path.join(SITE, "pickem-scores.json"))
+        build_pickem(year)
     # Finished seasons are rebuilt from cached results — no API calls, and
     # their output is deterministic, so a rebuild is a no-op unless the
     # engine itself changed.
