@@ -49,14 +49,13 @@ jobs:
           }
 
           end=$(openssl x509 -noout -enddate <<<"$cert" | cut -d= -f2)
-          subject=$(openssl x509 -noout -subject <<<"$cert")
           [ -n "$end" ] || { echo "::error::no notAfter in the certificate"; exit 1; }
 
           end_epoch=$(date -u -d "$end" +%s)
           days=$(( (end_epoch - $(date -u +%s)) / 86400 ))
 
           echo "origin:  ${ORIGIN_HOST} (SNI ${SNI})"
-          echo "$subject"
+          openssl x509 -noout -subject <<<"$cert"
           echo "expires: $end  (${days} days)"
 
           # The certificate must actually be for the custom domain. If GitHub
@@ -64,8 +63,14 @@ jobs:
           # Full (strict) mode would reject the origin even though the dates
           # look fine — a valid certificate for the wrong name is still an
           # outage, so check the name as well as the clock.
-          grep -q "CN=${SNI}" <<<"$subject" || {
-            echo "::error::origin certificate is not for ${SNI} — Full (strict) will reject it"
+          #
+          # -checkhost rather than grepping the subject: it evaluates the SANs
+          # the way a TLS client actually does, and it does not care how a given
+          # OpenSSL build formats the text. The first version of this grepped
+          # for "CN=${SNI}" and failed on the runner, which prints "CN = ..."
+          # with spaces where macOS prints it without.
+          openssl x509 -noout -checkhost "${SNI}" <<<"$cert" || {
+            echo "::error::origin certificate is not valid for ${SNI} — Full (strict) will reject it"
             exit 1
           }
 
