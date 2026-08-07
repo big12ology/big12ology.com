@@ -41,7 +41,7 @@ jobs:
       contents: write
       actions: write   # to dispatch the Pages workflow below
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Fetch attendance from CFBD
         env:

@@ -991,14 +991,23 @@ def clinch_card(games, overrides, systems, stand_rows, sims):
         ccolor = ("var(--accent)" if cx["score"] >= 55
                   else "var(--warn)" if cx["score"] >= 35 else "var(--dim)")
         comps = cx["components"]
+        # Two scales live in this band and they were run together on one
+        # line: the score is 0-100, the three parts it is built from are
+        # each 0-1. Reading "0 is a decided race, 100 is a sixteen-way
+        # pileup" off the end of "still alive 1.00" makes the parts look
+        # like they are on the hundred scale and broken. The gloss belongs
+        # with the number it describes, and the parts get a line and a
+        # scale of their own.
         chaos_html = (
             f"<div class=chaosband>"
             f"<span class=cnum style='color:{ccolor}'>{cx['score']}</span>"
-            f"<div><b>Chaos Index: {cx['label']}</b><br>"
-            f"<span class=dim>race entropy {comps['entropy']:.2f} · "
-            f"tie tangle {comps['tangle']:.2f} · "
-            f"still alive {comps['breadth']:.2f} — "
-            f"0 is a decided race, 100 is a sixteen-way pileup</span>"
+            f"<div><b>Chaos Index: {cx['label']}</b>"
+            f"<div class=chaosscale>0 is a decided race, 100 is a "
+            f"sixteen-way pileup</div>"
+            f"<div class=chaosparts>Built from three parts, each 0 to 1: "
+            f"race entropy {comps['entropy']:.2f}, "
+            f"tie tangle {comps['tangle']:.2f}, "
+            f"still alive {comps['breadth']:.2f}</div>"
             f"</div></div>")
 
     def prob(t):
@@ -1183,6 +1192,9 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .chaosband { display:flex; align-items:center; gap:14px; border:1px solid
   var(--line); border-radius:8px; padding:10px 14px; margin-bottom:10px;
   font-size:13.5px }
+.chaosscale { color:var(--dim); font-size:12.5px; margin-top:2px }
+.chaosparts { color:var(--dim); font-size:12.5px; margin-top:3px;
+  font-variant-numeric:tabular-nums }
 .cnum { font-size:36px; font-weight:800; line-height:1 }
 .tag { font-size:10.5px; border-radius:20px; padding:2px 8px; font-weight:700 }
 .tag.live { background:#13653626; color:#136536 }
