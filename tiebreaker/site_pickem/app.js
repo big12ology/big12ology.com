@@ -149,8 +149,12 @@
   function startCountdown(lockAt) {
     var cd = $("cd"), sr = $("cdsr");
     if (!cd || !lockAt) return;
-    function tick() {
-      if (document.hidden) return;
+    function tick(force) {
+      // Skipping work in a background tab is the point of the guard, but the
+      // FIRST paint has to happen either way: a page opened in a background
+      // tab — cmd-click, "open in new tab", a restored session — is hidden
+      // when this runs, and the deadline stayed blank until it was focused.
+      if (document.hidden && force !== true) return;
       var left = Math.floor(lockAt - Date.now() / 1000);
       if (left <= 0) {
         cd.textContent = "locked";
@@ -175,9 +179,9 @@
         }
       }
     }
-    tick();
+    tick(true);
     setInterval(tick, 1000);
-    document.addEventListener("visibilitychange", tick);
+    document.addEventListener("visibilitychange", function () { tick(true); });
   }
 
   // -------------------------------------------------------------- the slate
