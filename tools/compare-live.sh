@@ -9,13 +9,21 @@
 #
 # Files fall into three buckets:
 #
-#   static      must match byte for byte. Any difference is a real finding.
-#   generated   the tiebreaker's build output. The live copy was built from
-#               a different fetch at a different minute, so timestamps and
-#               asset hashes legitimately differ. These are compared again
-#               with dates, times and ?v= hashes normalised away; if they
-#               match after that, the difference is only the stamp.
+#   static      non-HTML assets: must match byte for byte. Any difference is a
+#               real finding.
+#   stamped     every HTML page. All of them now carry "last updated <time>"
+#               in the shared footer, so the live copy and a fresh assemble
+#               never match byte for byte — they were stamped at different
+#               minutes, and against a site deployed yesterday they differ by
+#               a day. These are compared again with the stamp, dates, times
+#               and ?v= hashes normalised away; if they match after that, the
+#               difference is only the stamp.
 #   missing     not served live. Expect a short list, and know each entry.
+#
+# Every page used to be byte-comparable because only lab.html carried a time.
+# Tolerating the stamp on all HTML is the cost of one consistent footer; note
+# that it is *only* the stamp being ignored — every other byte still has to
+# match, so a real content change still shows up as DIFFERS.
 #
 # Exits non-zero if any static file differs or is missing.
 #
@@ -29,7 +37,14 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
 norm() {
-  sed -E -e 's/[0-9]{4}-[0-9]{2}-[0-9]{2}/DATE/g' \
+  # The footer stamp is matched as a whole clause, up to the sentence period,
+  # so it does not matter what format it is in: "August 7, 00:59 UTC" and a
+  # stamp from three days ago both collapse to the same token. Matching the
+  # clause rather than allowing a ±1 minute window is deliberate — a dry run
+  # compares against whatever is live, which is routinely hours or days old,
+  # and a one-minute tolerance would fail every time.
+  sed -E -e 's/last updated [^.<]*/last updated STAMP/g' \
+         -e 's/[0-9]{4}-[0-9]{2}-[0-9]{2}/DATE/g' \
          -e 's/[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?/TIME/g' \
          -e 's/\?v=[0-9A-Za-z]+/?v=HASH/g' "$1"
 }
@@ -54,9 +69,10 @@ while IFS= read -r file; do
     continue
   fi
 
-  # Generated pages carry a build stamp; compare them normalised.
+  # Every HTML page carries the footer's build stamp, and the tiebreaker's
+  # data exports carry their own; compare all of them normalised.
   case "$rel" in
-    tiebreaker/*.html|tiebreaker/*/*.html|tiebreaker/*.json|tiebreaker/*.xml|tiebreaker/*.csv)
+    *.html|tiebreaker/*.json|tiebreaker/*.xml|tiebreaker/*.csv)
       if diff -q <(norm "$file") <(norm "$TMP/live") >/dev/null; then
         stamped=$((stamped + 1)); stamped_list+=("$rel")
         continue

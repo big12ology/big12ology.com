@@ -154,6 +154,49 @@ def rebase_from(html, old, new):
     return html
 
 
+# One footer for every page on the domain: credits, disclaimer, Privacy and
+# the address. Nothing else. It had drifted into five variants, each carrying
+# whatever links that page happened to have — data.json, standings.csv, RSS,
+# GitHub, section nav — and a footer that differs per page stops being chrome
+# and starts being content.
+#
+# Every link here is root-relative or absolute, deliberately: no {BASE}, so the
+# same string is correct at every depth and in both sections. The four
+# hand-written pages (hub, attendance, privacy, 404) carry this same markup
+# with a {{BUILD_STAMP}} token that assemble.sh fills in.
+#
+# The RSS feed lost its footer link but keeps <link rel=alternate> in the head,
+# so readers still discover it.
+POLICY_URL = ("https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/"
+              "Big_12_Football_2024_Tiebreaker_Policy.pdf")
+
+
+def footer():
+    """The stamp is left as a {{BUILD_STAMP}} token for assemble.sh to fill.
+
+    Stamping it here instead put two different times on the domain — the
+    generated pages said 00:56 and the hand-written ones 00:57, because the
+    build and the assemble are separate steps a minute apart. One substitution
+    at assemble time is the only way all 37 pages can agree. It also stops the
+    committed site/ output from churning on a timestamp every build.
+    """
+    # The token must sit in a plain string: inside an f-string, {{ }} would
+    # collapse to single braces and assemble.sh would never match it.
+    return ('<footer class=b12-footer>Results from '
+            '<a href="https://collegefootballdata.com">'
+            'collegefootballdata.com</a> · procedure per the '
+            f'<a href="{POLICY_URL}">official Big 12 tiebreaker policy</a> · '
+            'marks via Wikimedia Commons (provenance in '
+            '<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · '
+            'last updated {{BUILD_STAMP}}.<br>'
+            'A Big12ology project · not affiliated with the Big 12 Conference; '
+            'conference and team marks belong to their owners and appear for '
+            'identification only.<br>'
+            '<a href="/privacy">Privacy</a> · '
+            '<a href="mailto:dept@big12ology.com">dept@big12ology.com</a>'
+            '</footer>')
+
+
 def year_href(y, page, year):
     """The same page you are on, in season `y`.
 
@@ -1443,11 +1486,7 @@ def build_subpage(title, active, body, year, matchcard,
 {tracker_top(year, active, matchcard, section, page)}
 {body}
 </main>
-<footer class=b12-footer>A Big12ology project · not affiliated with the
-Big 12 Conference · <a href=data.json>data.json</a> ·
-<a href=standings.csv>standings.csv</a> ·
-<a href={BASE}feed.xml>RSS</a> ·
-<a href="/privacy">Privacy</a></footer>
+{footer()}
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
 </body></html>"""
 
@@ -1690,12 +1729,11 @@ def render(year, games):
         canon=(f"{site_url}lab.html" if year == LIVE_YEAR
                else f"{site_url}{year}/lab.html"),
         topbar=topbar("tiebreaker", year, BASE),
+        footer=footer(),
         top=tracker_top(year, "tracker", card, page="lab.html"),
         whatif=whatif,
         standcard=standcard,
         payload=payload,
-        updated=f"{_MON[now.month - 1]} {now.day} at "
-                f"{now.strftime('%H:%M')} UTC",
     )
     ctx = {
         "clinchcard": clinch_card(games, overrides, systems, rows, sims),
@@ -2036,22 +2074,7 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 <script defer src={base}{v_scroll}></script>
 <script src={base}{v_pct}></script>
 <script src={base}{v_app}></script>
-<footer class=b12-footer>
-  Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> ·
-  procedure per the <a
-  href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official
-  Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (provenance in
-  <a href="{base}logos/SOURCES.json">SOURCES.json</a>) · last updated {updated}.<br>
-  A Big12ology project · not affiliated with the Big 12 Conference; conference
-  and team marks belong to their owners and appear for identification only.<br>
-  <a href="https://github.com/big12ology">GitHub</a> ·
-  <a href={base}feed.xml>RSS</a> ·
-  <a href=./>The Brief</a> ·
-  <a href=history.html>The Archive</a> ·
-  <a href=data.json>Data</a> ·
-  <a href="/privacy">Privacy</a> ·
-  <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
-</footer>
+{footer}
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
 </body>
 </html>
@@ -2327,17 +2350,7 @@ href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
 
 <a class=backlink href="./">← Back to the tracker</a>
 </main>
-<footer class=b12-footer>
-  A Big12ology project · not affiliated with the Big 12 Conference; conference
-  and team marks belong to their owners and appear for identification only.<br>
-  <a href="https://github.com/big12ology">GitHub</a> ·
-  <a href={base}feed.xml>RSS</a> ·
-  <a href=./>The Brief</a> ·
-  <a href=history.html>The Archive</a> ·
-  <a href=data.json>Data</a> ·
-  <a href="/privacy">Privacy</a> ·
-  <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
-</footer>
+{footer}
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
 </body>
 </html>
@@ -2362,6 +2375,7 @@ def build_explainer(year, matchcard, outdir=None):
             v_brand=asset_v("brand.css"),
             v_theme=asset_v("theme.js"),
             topbar=topbar("tiebreaker", year, BASE),
+            footer=footer(),
             top=tracker_top(year, "how", matchcard, page="how.html")))
     print(f"built {out}")
 

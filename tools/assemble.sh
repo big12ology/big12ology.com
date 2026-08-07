@@ -47,11 +47,38 @@ rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_schedule/" "$DIST/schedule/"
 rsync -a "${COMMON[@]}" "$ROOT/attendance/" "$DIST/attendance/"
 
 # --- checks ------------------------------------------------------------
+# --- footer stamp ---------------------------------------------------------
+# The four hand-written pages (hub, attendance, privacy, 404) carry the same
+# footer as the generated ones, and the footer names when the site was last
+# updated. Static HTML cannot know that, so they ship a {{BUILD_STAMP}} token
+# and it is filled here, at the moment the deploy is assembled. The format
+# matches build.py's build_stamp() exactly — the whole point is that every page
+# on the domain reads the same.
+STAMP="$(date -u '+%B %-d, %H:%M UTC')"
+echo "stamping footers: $STAMP"
+while IFS= read -r page; do
+  grep -q '{{BUILD_STAMP}}' "$page" || continue
+  # A literal replacement, so nothing in $STAMP is read as sed syntax.
+  python3 - "$page" "$STAMP" <<'PY'
+import sys
+p, stamp = sys.argv[1], sys.argv[2]
+with open(p, encoding="utf-8") as f:
+    s = f.read()
+with open(p, "w", encoding="utf-8") as f:
+    f.write(s.replace("{{BUILD_STAMP}}", stamp))
+PY
+done < <(find "$DIST" -name '*.html')
+
 # A missing page or a stale asset has shipped silently in this project
 # before. Both are cheap to catch here and expensive to notice in the wild.
 
 fail=0
 note() { echo "  MISSING  $1"; fail=1; }
+
+# An unfilled token would ship the literal braces into the footer.
+while IFS= read -r page; do
+  echo "  UNSTAMPED  ${page#"$DIST"/}"; fail=1
+done < <(grep -rl '{{BUILD_STAMP}}' "$DIST" --include='*.html' || true)
 
 for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          brand.css tokens.css theme.js \
