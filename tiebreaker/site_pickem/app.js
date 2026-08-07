@@ -123,6 +123,22 @@
     });
   }
 
+  // The row version: day and clock only, no month, no zone. The whole slate is
+  // one weekend, so the month repeats fifteen times and says nothing, and the
+  // zone belongs on the lock — which is the only time on this page anyone has
+  // to act on. The full string is still in the legend and in <time datetime>.
+  function shortWhen(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    var s = d.toLocaleString(undefined, {
+      weekday: "short", hour: "numeric", minute: "2-digit"
+    });
+    // "Sat 12:30 PM" -> "Sat 12:30p". Forty pixels a row, and every one of
+    // them comes off a team name. Locales that already use a 24-hour clock
+    // match neither pattern and are left alone, being short already.
+    return s.replace(/\s*AM$/i, "a").replace(/\s*PM$/i, "p");
+  }
+
   // ------------------------------------------------------------ countdown
 
   // Milestones, not seconds. A live region firing once a second is unusable;
@@ -169,29 +185,37 @@
   var slate = null, picks = {}, saveTimer = null, inflight = false;
 
   function gameRow(g, teams) {
-    var fs = el("fieldset", "slate-game");
+    var fs = el("fieldset", "pk-slate-game");
     fs.dataset.gid = g.game_id;
     var why = g.unpickable;
     if (why) fs.disabled = true;
 
-    var lg = el("legend");
-    lg.appendChild(document.createTextNode(g.away + " at " + g.home + " · "));
-    var t = el("time", null, fmtWhen(g.kickoff));
-    t.setAttribute("datetime", g.kickoff);
-    lg.appendChild(t);
-    var note = el("span", "sr-only");
-    note.textContent = why === "no_line"
-      ? " — no spread available, this game cannot be picked"
-      : why === "kickoff_tbd"
-        ? " — kickoff time not announced, this game cannot be picked"
-        : " — " + (g.spread_x2 < 0 ? g.home : g.away) + " favoured by " +
-          Math.abs(g.spread_x2 / 2);
-    lg.appendChild(note);
+    // The legend is the group's accessible name and carries the whole story:
+    // matchup, kickoff, the line, and why the game is closed if it is. It is
+    // visually hidden because repeating the team names above a row that
+    // already shows them cost a line per game — fifteen lines of a slate that
+    // has to fit on one screen. The time is re-emitted below as a visible,
+    // aria-hidden column so it is said once and shown once.
+    var lg = el("legend", "sr-only");
+    lg.appendChild(document.createTextNode(
+      g.away + " at " + g.home + ", " + fmtWhen(g.kickoff)));
+    lg.appendChild(document.createTextNode(
+      why === "no_line"
+        ? " — no spread available, this game cannot be picked"
+        : why === "kickoff_tbd"
+          ? " — kickoff time not announced, this game cannot be picked"
+          : " — " + (g.spread_x2 < 0 ? g.home : g.away) + " favoured by " +
+            Math.abs(g.spread_x2 / 2)));
     fs.appendChild(lg);
 
-    var sides = el("div", "sides");
+    var t = el("time", "pk-when", shortWhen(g.kickoff));
+    t.setAttribute("datetime", g.kickoff);
+    t.setAttribute("aria-hidden", "true");   // the legend already said it
+    fs.appendChild(t);
+
+    var sides = el("div", "pk-sides");
     ["away", "home"].forEach(function (side, i) {
-      if (i === 1) sides.appendChild(el("span", "at", "at"));
+      if (i === 1) sides.appendChild(el("span", "pk-at", "at"));
       var team = g[side];
       var id = "g" + g.game_id + "-" + side;
       var input = document.createElement("input");
@@ -202,39 +226,68 @@
       input.value = side;
       if (picks[g.game_id] === side) input.checked = true;
 
-      var lab = el("label", "side");
+      var lab = el("label", "pk-side");
       lab.setAttribute("for", id);
       var colour = (teams[team] && teams[team].color) || "";
       if (colour) {
         lab.style.setProperty("--tc", colour);
         lab.style.setProperty("--tfg", textOn(colour));
       }
-      lab.appendChild(el("span", "tname", team));
+      // The name is ellipsised when it has to be, so a title recovers it on
+      // hover. The <legend> already carries it in full for screen readers,
+      // which is why this is a convenience rather than the fix.
+      var nm = el("span", "pk-tname", team);
+      nm.title = team;
+      lab.appendChild(nm);
       if (!why) {
-        lab.appendChild(el("span", "num", spreadText(g.spread_x2, side)));
+        lab.appendChild(el("span", "pk-num", spreadText(g.spread_x2, side)));
         lab.appendChild(el("span", "sr-only", " " + spreadSaid(g.spread_x2, side)));
-      }
-      if (g.result) {
-        var out = g.result.ats === "void" ? "void"
-          : g.result.ats === "push" ? "push"
-          : g.result.ats === side ? "win" : "loss";
-        if (picks[g.game_id] === side) {
-          var chip = el("span", "res " + out, out.toUpperCase());
-          chip.appendChild(el("span", "sr-only", " your pick " + out));
-          lab.appendChild(chip);
-        }
       }
       sides.appendChild(input);
       sides.appendChild(lab);
     });
     fs.appendChild(sides);
 
+    // The outcome goes in its own column, NOT inside the selected label. In
+    // the label it sits on the team's own fill, and the three chip colours
+    // were chosen against the panel: LOSS is #c0392b, which on Houston's
+    // #c92a39 is invisible, and the greens and greys fared no better on a
+    // dark fill. Out here they are always on the background they were
+    // designed for, and the result reads as a property of the pick rather
+    // than of the team.
+    var mine = picks[g.game_id];
+    if (g.result && mine) {
+      var out = g.result.ats === "void" ? "void"
+        : g.result.ats === "push" ? "push"
+        : g.result.ats === mine ? "win" : "loss";
+      var chip = el("span", "pk-res " + out, out.toUpperCase());
+      chip.appendChild(el("span", "sr-only", " — your pick " + out));
+      fs.appendChild(chip);
+    }
+
     if (why) {
-      var tag = el("p", "tag out nopick",
+      var tag = el("p", "tag out pk-nopick",
         why === "no_line" ? "No Spread Available" : "Kickoff Not Announced");
       fs.appendChild(tag);
     }
     return fs;
+  }
+
+  // Playable first, then chronological within each group. The published slate
+  // stays in pure kickoff order — it is the durable record of the week and its
+  // order should not encode how a page happens to lay it out — so the grouping
+  // happens here, at render, where it is a presentation decision.
+  //
+  // Nine of fifteen games have no line in a non-conference week. Left in
+  // kickoff order they interleave with the pickable ones, so filling in a card
+  // means hunting past rows you cannot act on.
+  function inPlayOrder(games) {
+    return games.slice().sort(function (a, b) {
+      var ap = a.unpickable ? 1 : 0, bp = b.unpickable ? 1 : 0;
+      if (ap !== bp) return ap - bp;
+      if (a.kickoff_at !== b.kickoff_at) return a.kickoff_at - b.kickoff_at;
+      return a.game_id - b.game_id;
+    });
   }
 
   function renderSlate(teams) {
@@ -244,7 +297,18 @@
       wrap.appendChild(el("p", "note", "No games this week."));
       return;
     }
-    slate.games.forEach(function (g) { wrap.appendChild(gameRow(g, teams)); });
+    var ordered = inPlayOrder(slate.games);
+    var firstDead = true;
+    ordered.forEach(function (g) {
+      // One heading where the pickable games stop, so the break is announced
+      // rather than only implied by the styling.
+      if (g.unpickable && firstDead) {
+        firstDead = false;
+        var h = el("h2", "deadhead", "Not playable this week");
+        wrap.appendChild(h);
+      }
+      wrap.appendChild(gameRow(g, teams));
+    });
 
     var pickable = slate.games.filter(function (g) { return !g.unpickable; }).length;
     var n = slate.games.length;
@@ -461,7 +525,7 @@
     tbl.textContent = "";
     var thead = el("thead"), tr = el("tr");
     COLS.forEach(function (c) {
-      var th = el("th", c.num ? "n" : null);
+      var th = el("th", c.pk-num ? "n" : null);
       if (sortKey === c.key) {
         th.setAttribute("aria-sort", sortDir > 0 ? "ascending" : "descending");
       }
@@ -490,7 +554,7 @@
       var tr2 = el("tr");
       if (meId && r.user_id === meId) tr2.className = "you";
       COLS.forEach(function (c) {
-        var td = el("td", c.num ? "n" : null);
+        var td = el("td", c.pk-num ? "n" : null);
         if (c.key === "pct") {
           td.textContent = r.pct == null ? "—" :
             (r.pct * 100).toFixed(1) + "%";

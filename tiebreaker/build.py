@@ -3862,8 +3862,8 @@ def _live_games_for_sitemap():
 # a lost session. A lock is not a polite update, and "Saved" must never
 # interrupt someone mid-sentence.
 PICKEM_LIVE_REGIONS = """
-<p id=savestate class=savestate role=status aria-live=polite aria-atomic=true></p>
-<p id=alertstate class=alertstate role=alert></p>"""
+<p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
+<p id=alertstate class=pk-alertstate role=alert></p>"""
 
 PICKEM_NOSCRIPT = """
 <noscript><p class=note><b>The picker needs JavaScript.</b> The rules and this
@@ -3873,20 +3873,17 @@ week's slate are readable without it:
 
 PICKEM_SLATE_BODY = f"""
 <div class=card id=lockcard hidden>
-  <p class=lockline>Locks at first kickoff &mdash;
+  <p class=pk-lockline>Locks at first kickoff &mdash;
     <time id=lockat datetime=""></time>
-    <span id=cd class=cd aria-hidden=true></span></p>
-  <p class=slatecount id=slatecount></p>
+    <span id=cd class=pk-cd aria-hidden=true></span></p>
+  <p class=pk-slatecount id=slatecount></p>
 </div>
 {PICKEM_LIVE_REGIONS}
-<div class=card id=signedout hidden>
-  <h2>Sign in to play</h2>
-  <p class=note>You can read the slate either way. Picking needs an account so
-  your card survives the browser you made it in.</p>
-  <p><a class=wbtn href="account.html">Sign in</a></p>
-</div>
+<p class=pk-signedout id=signedout hidden>Reading is free.
+  <a href="account.html">Sign in</a> to pick &mdash; an account is what lets
+  your card outlive the browser you made it in.</p>
 <form id=slateform>
-  <div id=slate class=slate>
+  <div id=slate class=pk-slate>
     <p class=note id=slateload>Loading this week's slate&hellip;</p>
   </div>
 </form>
@@ -3903,9 +3900,9 @@ PICKEM_CARD_BODY = f"""
 
 PICKEM_BOARD_BODY = f"""
 <div class=card>
-  <div class=boardhead>
+  <div class=pk-boardhead>
     <h2>The Board</h2>
-    <label class=wksel>Week
+    <label class=pk-wksel>Week
       <select id=wksel aria-label="Which week to show"></select>
     </label>
   </div>
@@ -3924,7 +3921,7 @@ PICKEM_ACCOUNT_BODY = f"""
   email address, not your name, not your picture. What becomes public is the
   display name you choose and your record.
   <a href="/privacy">What we store</a>.</p>
-  <p class=signins>
+  <p class=pk-signins>
     <a class=wbtn href="/api/auth/login/google?return_to=/pickem/">Continue with Google</a>
     <a class=wbtn href="/api/auth/login/github?return_to=/pickem/">Continue with GitHub</a>
   </p>
@@ -3938,7 +3935,7 @@ PICKEM_ACCOUNT_BODY = f"""
            spellcheck=false aria-describedby="dnamehelp dnameerr">
     <p id=dnamehelp class=note>2&ndash;20 characters. <b>This is public</b> &mdash;
     it is what everyone sees beside your record on The Board.</p>
-    <p id=dnameerr class=fielderr role=alert hidden></p>
+    <p id=dnameerr class=pk-fielderr role=alert hidden></p>
     <button type=submit class=wbtn>Save name</button>
   </form>
 </div>

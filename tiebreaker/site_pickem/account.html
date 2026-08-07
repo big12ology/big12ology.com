@@ -7,7 +7,7 @@
 <link rel=icon type=image/png sizes=32x32 href="../tiebreaker/favicon-32.png">
 <link rel=apple-touch-icon href="../tiebreaker/favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
-<link rel=stylesheet href="../tiebreaker/brand.css?v=e3d9c99d">
+<link rel=stylesheet href="../tiebreaker/brand.css?v=97406c73">
 <script defer src="../tiebreaker/theme.js?v=9a8f53fd"></script>
 
 <style>
@@ -343,7 +343,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../tiebreaker/scrollcue.js?v=5fef00f1"></script><link rel=stylesheet href="styles.css?v=5f79164f"><script defer src="../tiebreaker/pct.js?v=03186563"></script><script defer src="app.js?v=7e946f23"></script></head><body>
+<script defer src="../tiebreaker/scrollcue.js?v=5fef00f1"></script><link rel=stylesheet href="styles.css?v=aecf71e3"><script defer src="../tiebreaker/pct.js?v=03186563"></script><script defer src="app.js?v=70b5ce6a"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pickem/">Pickem</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
@@ -360,15 +360,15 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 
 
 
-<p id=savestate class=savestate role=status aria-live=polite aria-atomic=true></p>
-<p id=alertstate class=alertstate role=alert></p>
+<p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
+<p id=alertstate class=pk-alertstate role=alert></p>
 <div class=card id=signin hidden>
   <h2>Sign in</h2>
   <p class=note>We ask your provider for one thing: that you are you. Not your
   email address, not your name, not your picture. What becomes public is the
   display name you choose and your record.
   <a href="/privacy">What we store</a>.</p>
-  <p class=signins>
+  <p class=pk-signins>
     <a class=wbtn href="/api/auth/login/google?return_to=/pickem/">Continue with Google</a>
     <a class=wbtn href="/api/auth/login/github?return_to=/pickem/">Continue with GitHub</a>
   </p>
@@ -382,7 +382,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
            spellcheck=false aria-describedby="dnamehelp dnameerr">
     <p id=dnamehelp class=note>2&ndash;20 characters. <b>This is public</b> &mdash;
     it is what everyone sees beside your record on The Board.</p>
-    <p id=dnameerr class=fielderr role=alert hidden></p>
+    <p id=dnameerr class=pk-fielderr role=alert hidden></p>
     <button type=submit class=wbtn>Save name</button>
   </form>
 </div>

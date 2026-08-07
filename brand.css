@@ -67,6 +67,26 @@
 .b12-topbar .b12-right { margin-left: auto; display: flex; align-items: center;
   gap: 10px; }
 
+/* The masthead did not fit a phone. At 375px the four section links plus the
+   theme toggle measured 473px against a 375px viewport, so the toggle sat off
+   the right edge and the whole page scrolled sideways to reach it — every
+   page on the domain, not one section. A fifth link made it 536px.
+ *
+ * Wrapping rather than scrolling the links: a horizontally scrollable nav
+ * hides its last item behind a gesture nobody is told about, and the last item
+ * here is the control that changes the theme. Two short rows cost 26px and
+ * hide nothing. The gap shrinks first, so most phones still fit one row.
+ */
+@media (max-width: 700px) {
+  .b12-topbar { flex-wrap: wrap; gap: 6px 14px; padding: 6px 14px; }
+  /* The lockup stays on the first row beside the theme toggle and the links
+     wrap beneath. Giving the brand a row of its own was the obvious version
+     and cost 61px of vertical chrome on every page — three rows where two
+     will do, on the screen with the least room to spare. */
+  .b12-topbar .b12-right { order: 2; }
+  .b12-topbar a:not(.b12-brand) { order: 3; }
+}
+
 /* ==== theme-paired artwork =============================================== */
 /* The lockup ships as two files — ink on light, bone on dark — and the page
    picks one. It cannot be a <picture media="(prefers-color-scheme: dark)">:

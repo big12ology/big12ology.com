@@ -150,6 +150,25 @@ done
 [ -s "$DIST/CNAME" ] && grep -qx "big12ology.com" "$DIST/CNAME" || {
   echo "  CNAME does not say big12ology.com"; fail=1; }
 
+# One chrome, three copies of it. brand.css, tokens.css and theme.js each exist
+# at the root and again inside attendance/ and tiebreaker/site/, because each
+# subtree is served from its own path and was once its own repo. Nothing keeps
+# them in step, and they are byte-identical only because everyone has so far
+# remembered — a fix applied to one copy simply does not reach the other two,
+# and the symptom is a section that looks subtly wrong on one path only.
+#
+# Found the hard way: a masthead fix landed in the root copy and changed
+# nothing on /tiebreaker/, because that page reads its own.
+for shared in brand.css tokens.css theme.js; do
+  a="$ROOT/$shared"
+  for b in "$ROOT/attendance/$shared" "$ROOT/tiebreaker/site/$shared"; do
+    [ -f "$a" ] && [ -f "$b" ] || continue
+    cmp -s "$a" "$b" || {
+      echo "  OUT OF SYNC  ${b#"$ROOT"/} differs from $shared at the root"
+      fail=1; }
+  done
+done
+
 # Cache-busting is not optional (HANDOFF.md). Every reference to one of the
 # shared, mutable assets must carry a query string.
 BUSTED='brand\.css|tokens\.css|theme\.js|app\.js|engine\.js|pct\.js|replay\.js|scrollcue\.js|styles\.css|charts\.js|gametip\.js|stats\.js'
