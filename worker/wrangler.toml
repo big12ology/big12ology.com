@@ -40,12 +40,12 @@ GITHUB_CLIENT_ID = ""
 [[d1_databases]]
 binding = "DB"
 database_name = "b12_pickem"
-database_id = "REPLACE_AFTER_wrangler_d1_create"
+database_id = "3fe46d0d-f188-4e11-9f4f-359c5a5b1efb"
 migrations_dir = "migrations"
 
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "REPLACE_AFTER_wrangler_kv_namespace_create"
+id = "c26df5e7e0904d1db35a4b2131b51a05"
 
 # Times are UTC, and chosen to mirror pages.yml's game windows so a final is
 # picked up within about an hour of being posted.
