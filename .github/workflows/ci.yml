@@ -88,6 +88,17 @@ jobs:
             echo "no worker tests yet — skipping"
           fi
 
+      # assemble.sh only copies — it does not build. Two of the files its
+      # manifest insists on, tiebreaker/index.html and history.html, are
+      # gitignored because they are regenerated on every build and would
+      # churn the repo, so a fresh checkout does not have them and the
+      # assemble step failed on every run of this workflow. Build first,
+      # the way pages.yml does. No --fetch: there is no CFBD key here and
+      # committed data/ is what the tests are about anyway.
+      - name: Build the tiebreaker
+        working-directory: tiebreaker
+        run: python3 build.py
+
       # The build gates are themselves untested code, and one of them now
       # stands between a Worker's client secrets and the public web. Assembling
       # here proves the manifest, the cache-bust rule, the CNAME check and the
