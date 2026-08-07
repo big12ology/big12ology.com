@@ -232,6 +232,21 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
 .slatelink.dim:visited { color:var(--dim) }
 
 /* ---- one game ---- */
+/* Two columns once there is room. None of these cards needs the full 1120px:
+   the market is four short figures and the pick'em split is a single bar, so
+   at full width each was mostly gutter and the reader scrolled past
+   whitespace to reach the next fact. The back link and the matchup stay full
+   width, being the page's heading rather than one of its panels.
+
+   main:has() rather than a class, because build_subpage owns the <main> and
+   #gamehead is on every game page and nothing else. Where :has is missing the
+   page simply stays one column, which is what it already was. */
+@media (min-width: 900px) {
+  main:has(#gamehead) { grid-template-columns:1fr 1fr; align-items:start;
+    gap:14px }
+  main:has(#gamehead) > .gameback,
+  main:has(#gamehead) > #gamehead { grid-column:1 / -1 }
+}
 .gameback { margin:2px 0 12px; font-size:13px }
 .gameback a { color:var(--accent); text-decoration:none }
 .gameback a:hover { text-decoration:underline }

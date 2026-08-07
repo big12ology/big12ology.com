@@ -297,6 +297,11 @@
       var tag = el("p", "tag out pk-nopick",
         why === "no_line" ? "No Spread Available" : "Kickoff Not Announced");
       fs.appendChild(tag);
+    } else if (LOCKED) {
+      // The third column is reserved on every row and stood empty here, which
+      // read as a row still waiting for input on a slate that had stopped
+      // accepting it. Once locked it says what the game is actually doing.
+      fs.appendChild(resultChip(g, picks[g.game_id] || null, true));
     }
     return fs;
   }
@@ -707,6 +712,17 @@
       m.appendChild(t);
     });
     li.appendChild(m);
+
+    // The score, in reading order: the row says "away at home", so the
+    // figures do too. A card that says WIN without saying 31-21 is withholding
+    // the thing anyone actually wants to look at.
+    var sc = el("span", "pk-score");
+    if (g.result && g.result.home_points != null) {
+      sc.textContent = g.result.away_points + "\u2013" + g.result.home_points;
+      sc.title = g.away + " " + g.result.away_points + ", " +
+                 g.home + " " + g.result.home_points;
+    }
+    li.appendChild(sc);
 
     li.appendChild(el("span", "pk-num",
       side ? spreadText(g.spread_x2, side) : "—"));

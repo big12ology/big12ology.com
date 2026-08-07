@@ -297,7 +297,12 @@
            display: grid; gap: 3px; }
 
 .pk-cardrow {
-  display: grid; grid-template-columns: 64px minmax(6em, 1fr) 3.2em 168px 4.6em;
+  display: grid; /* The matchup takes what it needs and no more; the gauge absorbs the slack.
+     The other way round left a gulf between the team names and the numbers,
+     with the reader's eye crossing empty panel to connect two halves of the
+     same fact. */
+  grid-template-columns:
+    58px minmax(0, max-content) 3.6em 3.2em minmax(110px, 1fr) 4.6em;
   gap: 0 8px; align-items: center;
   border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
   padding: 4px 8px; min-width: 0;
@@ -309,6 +314,9 @@
    smaller treatment. Still never the accent. */
 .pk-took { background: var(--tc, var(--tc-none)); color: var(--tfg, #fff);
            font-weight: 700; border-radius: 4px; padding: 1px 5px; }
+
+.pk-score { font-variant-numeric: tabular-nums; font-size: 13px;
+             color: var(--dim); white-space: nowrap; }
 
 .pk-cardrec { margin: 0 0 12px; font-size: 15px; }
 .pk-cardrec b { font-size: 17px; }

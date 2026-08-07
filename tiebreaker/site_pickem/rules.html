@@ -232,6 +232,21 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
 .slatelink.dim:visited { color:var(--dim) }
 
 /* ---- one game ---- */
+/* Two columns once there is room. None of these cards needs the full 1120px:
+   the market is four short figures and the pick'em split is a single bar, so
+   at full width each was mostly gutter and the reader scrolled past
+   whitespace to reach the next fact. The back link and the matchup stay full
+   width, being the page's heading rather than one of its panels.
+
+   main:has() rather than a class, because build_subpage owns the <main> and
+   #gamehead is on every game page and nothing else. Where :has is missing the
+   page simply stays one column, which is what it already was. */
+@media (min-width: 900px) {
+  main:has(#gamehead) { grid-template-columns:1fr 1fr; align-items:start;
+    gap:14px }
+  main:has(#gamehead) > .gameback,
+  main:has(#gamehead) > #gamehead { grid-column:1 / -1 }
+}
 .gameback { margin:2px 0 12px; font-size:13px }
 .gameback a { color:var(--accent); text-decoration:none }
 .gameback a:hover { text-decoration:underline }
@@ -353,7 +368,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../tiebreaker/scrollcue.js?v=5fef00f1"></script><link rel=stylesheet href="styles.css?v=e9a50467"><script defer src="../tiebreaker/pct.js?v=03186563"></script><script defer src="app.js?v=926c5259"></script></head><body>
+<script defer src="../tiebreaker/scrollcue.js?v=5fef00f1"></script><link rel=stylesheet href="styles.css?v=369092f3"><script defer src="../tiebreaker/pct.js?v=03186563"></script><script defer src="app.js?v=be34e6c0"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pickem/">Pickem</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
