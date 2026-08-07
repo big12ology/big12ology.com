@@ -164,6 +164,37 @@ def attach(games, venues, quiet=False):
     return sum(1 for g, _ in due if g.get("weather"))
 
 
+NORMALS = os.path.join(DATA, "normals.json")
+
+
+def load_normals():
+    """venue_id -> {bucket: {tempF, windMph, rainPct}}. Committed by
+    normals.py; read from disk and never fetched during a build."""
+    try:
+        return json.load(open(NORMALS))
+    except (OSError, ValueError):
+        return {}
+
+
+def normal_for(g, normals):
+    """What that venue is usually like when that game is played.
+
+    Only consulted when there is no forecast — a real one always wins. The
+    page renders this in the muted voice with the word "average" in front,
+    because it is a fact about the place and not a claim about the day.
+    """
+    if not normals or g.get("weather"):
+        return None
+    when = _parse(g.get("start"))
+    if not when:
+        return None
+    at = normals.get(str(g.get("venue_id")))
+    if not at:
+        return None
+    d = when.date()
+    return at.get(f"{d.month:02d}{'a' if d.day <= 15 else 'b'}")
+
+
 def _at_hour(hourly, when):
     """The forecast for the hour the ball is kicked, not the day's."""
     times = hourly.get("time") or []

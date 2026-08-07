@@ -321,7 +321,8 @@ def fmt_prob(p):
 
 
 
-def tracker_top(year, active, matchcard="", section="tiebreaker", page=""):
+def tracker_top(year, active, matchcard="", section="tiebreaker", page="",
+                up=""):
     """The one top: header bar, pill row, matchup card. Styled entirely by
     brand.css (.b12-head/.subnav) — no page may restyle these.
 
@@ -330,7 +331,7 @@ def tracker_top(year, active, matchcard="", section="tiebreaker", page=""):
     meta = SECTIONS[section]
     years = "".join(
         (f"<span class=yron>{y}</span>" if y == year else
-         f"<a href='{year_href(y, page, year)}'>{y}</a>")
+         f"<a href='{up}{year_href(y, page, year)}'>{y}</a>")
         for y in [LIVE_YEAR] + ARCHIVE_YEARS)
     blurb = (meta["live"] if year == LIVE_YEAR
              else meta["past"].format(year=year))
@@ -342,8 +343,9 @@ def tracker_top(year, active, matchcard="", section="tiebreaker", page=""):
     </div>
   </div>
 </header>
-{subnav(active, section)}
+{subnav(active, section, up)}
 <main id=main tabindex="-1">
+{icon_sprite()}
 {matchcard}"""
 
 
@@ -401,10 +403,13 @@ def nav_for(section):
     return SCHEDULE_NAV if section == "schedule" else SUBNAV_LINKS
 
 
-def subnav(active, section="tiebreaker"):
+def subnav(active, section="tiebreaker", prefix=""):
+    """`prefix` lifts the links for pages that sit a directory deeper. The
+    hrefs are relative, so from /schedule/game/ a bare "matrix.html" points
+    at a file that does not exist — and does it silently."""
     links = "".join(
-        f"<a href={href} class={'on' if key == active else 'off'}>{label}</a>"
-        for key, href, label in nav_for(section))
+        f"<a href={prefix}{href} class={'on' if key == active else 'off'}>"
+        f"{label}</a>" for key, href, label in nav_for(section))
     return f"<nav class=subnav>{links}</nav>"
 
 
@@ -1388,33 +1393,71 @@ tr.grpend td { border-bottom:2px solid var(--line) }
 .posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
 h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
-/* The week's slate. Every other game list on the site is one line because
-   it is an index; this one is the page, so a row gets room for the two
-   things a list cannot answer — when it kicks off and where it is. */
-ul.slatelist { list-style:none; padding:0; margin:0 }
-li.slate { display:grid; gap:2px 14px; padding:11px 0;
-  border-bottom:1px solid var(--line);
-  grid-template-columns:minmax(0,1fr) auto; align-items:baseline }
-li.slate:last-child { border-bottom:0 }
-.slateteams { font-size:15px; grid-column:1 }
-.slatemeta { grid-column:1; font-size:13px; color:var(--dim);
-  display:flex; flex-wrap:wrap; gap:2px 10px; align-items:baseline }
-.slatemeta time { font-variant-numeric:tabular-nums; font-weight:600;
-  color:var(--ink) }
-.slatewx::before, .slatewhere::before, .slatetv::before,
-.slateline::before { content:"\\00b7"; margin-right:10px }
-.slatetv { color:var(--ink) }
-/* The market is figures: line them up and keep them out of the prose voice
-   the rest of the row is written in. */
-.slateline { font-variant-numeric:tabular-nums; white-space:nowrap }
-.slatelink { grid-column:2; grid-row:1/span 2; align-self:center;
-  font-size:13px; font-weight:600; white-space:nowrap;
-  color:var(--accent); text-decoration:none }
+/* The week, as cards rather than rows. Sixteen one-line rows read as an
+   index of games; the week deserves to look like the week. Two up, not
+   four: at the chrome width four columns leave a card too narrow for
+   "Bill Snyder Family Stadium", and every line inside a card is written to
+   hold one fact and stay on one line. */
+.slatelist { display:grid; gap:10px; margin-top:2px;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,30rem),1fr)) }
+.slate { background:var(--bg); border:1px solid var(--line);
+  border-radius:10px; padding:11px 13px; min-width:0 }
+.slateteams { font-size:15px; margin-bottom:8px }
+.slatemeta { font-size:12.5px; color:var(--dim); display:grid; gap:4px }
+.slatemeta > div { display:flex; align-items:center; gap:7px;
+  min-width:0; white-space:nowrap }
+.slatemeta > div > :not(svg) { overflow:hidden; text-overflow:ellipsis }
+.slatewhen time, .slatetv { color:var(--ink) }
+.slatewhen time { font-variant-numeric:tabular-nums; font-weight:600 }
+.slatewx, .slateline { font-variant-numeric:tabular-nums }
+.wxwarn { color:var(--warn) }
+/* Decorative, and sized to the line rather than to the icon: they should
+   read as marginalia, never as buttons. */
+.gi { width:15px; height:15px; flex:0 0 15px; color:var(--dim);
+  opacity:.85 }
+.slatelinks { display:flex; gap:16px; margin-top:9px; padding-top:8px;
+  border-top:1px solid var(--line); font-size:12.5px }
+.slatelink { display:inline-flex; align-items:center; gap:5px;
+  font-weight:600; white-space:nowrap; color:var(--accent);
+  text-decoration:none }
+.slatelink.dim { color:var(--dim); font-weight:400 }
 .slatelink:hover { text-decoration:underline }
 .slatelink:visited { color:var(--accent) }
-@media (max-width: 560px) {
-  li.slate { grid-template-columns:minmax(0,1fr) }
-  .slatelink { grid-column:1; grid-row:auto; margin-top:3px }
+.slatelink.dim:visited { color:var(--dim) }
+
+/* ---- one game ---- */
+.gameback { margin:2px 0 12px; font-size:13px }
+.gameback a { color:var(--accent); text-decoration:none }
+.gameback a:hover { text-decoration:underline }
+.gamematch { font-size:19px; margin-bottom:9px }
+#gamehead .slatemeta { font-size:13.5px }
+/* The market is four figures, and figures want columns rather than a
+   paragraph: the number first, what it is underneath. */
+.mkgrid { display:grid; gap:12px;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  font-variant-numeric:tabular-nums }
+.mkval { font-size:20px; font-weight:600 }
+.mkgrid .dim { font-size:12.5px }
+/* Model against market: the same bar the race card uses, so a reader who
+   knows one knows the other. */
+.mline { display:grid; grid-template-columns:44px minmax(0,1fr);
+  align-items:center; gap:10px; margin:6px 0; font-size:13.5px }
+.msys { color:var(--dim); font-size:12px; text-transform:uppercase;
+  letter-spacing:.04em }
+.mrow { display:grid; align-items:center; gap:10px;
+  grid-template-columns:minmax(0,140px) minmax(0,1fr) 42px }
+.mname { overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.mbar { background:var(--line); border-radius:4px; height:8px;
+  overflow:hidden }
+.mbar i { display:block; height:100%; background:var(--accent) }
+.mrow.market .mbar i { background:var(--dim) }
+.mval { text-align:right; font-variant-numeric:tabular-nums }
+.mmarket { border-top:1px solid var(--line); padding-top:8px; margin-top:8px }
+.levtotal { margin-bottom:10px; font-size:14px }
+.levtotal b { font-size:22px; font-variant-numeric:tabular-nums }
+@media (max-width:560px) {
+  .mrow { grid-template-columns:minmax(0,1fr) 42px }
+  .mrow .mbar { display:none }
 }
 .duo { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
   gap:18px; align-items:start }
@@ -1508,7 +1551,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 
 def build_subpage(title, active, body, year, matchcard,
                   canon=None, desc=None, head="", section="tiebreaker",
-                  page=""):
+                  page="", up=""):
     sect_title = SECTIONS[section]["title"]
     head_title = (sect_title if title == sect_title
                   else f"{title} — {sect_title}")
@@ -1541,7 +1584,7 @@ def build_subpage(title, active, body, year, matchcard,
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <a class=skip-link href="#main">Skip to content</a>
 {topbar(section, year, BASE)}
-{tracker_top(year, active, matchcard, section, page)}
+{tracker_top(year, active, matchcard, section, page, up)}
 {body}
 </main>
 {footer()}
@@ -1582,6 +1625,55 @@ LOCAL_TIME_JS = """<script>
 </script>"""
 
 
+# Eight glyphs, drawn once per page and referenced by <use>. A webfont for
+# eight icons is absurd — this is under a kilobyte, needs no request, and
+# inherits currentColor, so both themes and the warning colour come free.
+# Paths from Tabler Icons (MIT, https://tabler.io/icons); the same treatment
+# the Archivo licence gets in fonts/OFL.txt.
+ICONS = {
+    "clock": "<circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/>",
+    "pin": ("<path d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/>"
+            "<path d='M17.657 16.657 13.414 20.9a2 2 0 0 1 -2.827 0l-4.244"
+            " -4.243a8 8 0 1 1 11.314 0z'/>"),
+    "tv": ("<rect x='3' y='7' width='18' height='13' rx='2'/>"
+           "<path d='M16 3l-4 4l-4 -4'/>"),
+    "sun": ("<circle cx='12' cy='12' r='4'/><path d='M3 12h1m8 -9v1m8 8h1m-9"
+            " 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7"
+            " .7'/>"),
+    "wind": ("<path d='M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24'/>"
+             "<path d='M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24'/>"
+             "<path d='M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24'/>"),
+    "rain": ("<path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0"
+             " 0 1 0 7h-1'/><path d='M11 20v1m4 -3v1m-8 -1v1'/>"),
+    "history": ("<path d='M12 8v4l3 3'/><path d='M3.05 11a9 9 0 1 1 .5 4m-.5"
+                " 5v-5h5'/>"),
+    "chart": ("<path d='M3 20h18'/><rect x='5' y='12' width='4' height='8'/>"
+              "<rect x='10' y='8' width='4' height='12'/>"
+              "<rect x='15' y='4' width='4' height='16'/>"),
+    "note": ("<rect x='4' y='4' width='16' height='16' rx='2'/>"
+             "<path d='M9 8h6M9 12h6M9 16h3'/>"),
+    "out": ("<path d='M12 6H6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2"
+            " -2v-6'/><path d='M11 13l9 -9'/><path d='M15 4h5v5'/>"),
+}
+
+
+def icon_sprite():
+    """The whole set, hidden, once per page."""
+    syms = "".join(
+        f"<symbol id='i-{k}' viewBox='0 0 24 24' fill='none' "
+        f"stroke='currentColor' stroke-width='2' stroke-linecap='round' "
+        f"stroke-linejoin='round'>{v}</symbol>" for k, v in ICONS.items())
+    return (f"<svg class=sprite width=0 height=0 aria-hidden=true "
+            f"style='position:absolute'>{syms}</svg>")
+
+
+def icon(name, cls="gi"):
+    """Decorative by contract: the text beside it always says the same
+    thing, so a reader who never sees the glyph loses nothing."""
+    return (f"<svg class='{cls}' aria-hidden=true><use href='#i-{name}'/>"
+            f"</svg>")
+
+
 def kickoff(g):
     """Kickoff as <time>, Eastern on the server and the reader's zone once
     the script runs. CFBD publishes a placeholder hour for games with no
@@ -1609,22 +1701,59 @@ def where(g):
     if not line:
         return ""
     if g.get("neutral_site"):
-        line += " <span class=dim>(neutral site)</span>"
-    return f"<div class=slatewhere>{line}</div>"
+        line += " <span class=dim>(neutral)</span>"
+    return f"<div class=slatewhere>{icon('pin')}{line}</div>"
+
+
+# Above these it stops being weather and starts being a factor in the game,
+# so the number takes the warning colour and the glyph changes with it. A
+# reader scanning sixteen cards should find the miserable one without
+# reading a single figure.
+WIND_WARN = 20      # mph
+RAIN_WARN = 50      # percent
 
 
 def weather_line(g):
-    """Kickoff-hour forecast, when one is in range. Open-Meteo reaches about
-    sixteen days, so most of a season has no forecast and says nothing."""
+    """The forecast inside sixteen days, the venue's average beyond it.
+
+    Both are three numbers on one line. The average is muted, prefixed with
+    the word that makes it not a forecast, and carries the history glyph —
+    it is a fact about the place, not a claim about the day, and it must
+    never be mistakable for one.
+    """
     w = g.get("weather")
-    if not w:
+    if w:
+        wind = w.get("windMph")
+        rain = w.get("precipChance")
+        windy = wind is not None and round(wind) >= WIND_WARN
+        wet = rain is not None and round(rain) >= RAIN_WARN
+        parts = [f"{round(w['tempF'])}&deg;F"]
+        if wind is not None:
+            mph = f"{round(wind)} mph"
+            parts.append(f"<span class=wxwarn>{mph}</span>" if windy else mph)
+        if rain is not None:
+            pct = f"{round(rain)}% rain"
+            parts.append(f"<span class=wxwarn>{pct}</span>" if wet else pct)
+        glyph = "rain" if wet else ("wind" if windy else "sun")
+        cls = "gi wxwarn" if wet or windy else "gi"
+        return (f"<div class=slatewx>{icon(glyph, cls)}"
+                + ", ".join(parts) + "</div>")
+
+    n = g.get("normal")
+    if not n:
         return ""
-    parts = [f"{round(w['tempF'])}&deg;F"]
-    if w.get("windMph") is not None:
-        parts.append(f"wind {round(w['windMph'])} mph")
-    if w.get("precipChance"):
-        parts.append(f"{round(w['precipChance'])}% precip")
-    return f"<div class=slatewx>{' · '.join(parts)}</div>"
+    parts = [f"{n['tempF']}&deg;F"]
+    if n.get("windMph") is not None:
+        parts.append(f"{n['windMph']} mph")
+    if n.get("rainPct") is not None:
+        parts.append(f"{n['rainPct']}% rain")
+    # The rain figure is the share of days that saw measurable rain, not a
+    # chance of rain at kickoff — Miami in September reads 93% and is not
+    # wrong. Say which one it is, because the two look identical.
+    return (f"<div class='slatewx dim' title='Ten seasons at this venue for "
+            f"this fortnight: mean temperature and wind, and the share of "
+            f"days with measurable rain. Not a forecast.'>"
+            f"{icon('history')}Average " + ", ".join(parts) + "</div>")
 
 
 def broadcast(g):
@@ -1641,7 +1770,7 @@ def broadcast(g):
     # distinction, and the outlet's own name already says which it is —
     # nobody mistakes ESPN+ for a channel. TV first, streams after.
     names = list(dict.fromkeys(tv + web))
-    return f"<div class=slatetv>{esc(' / '.join(names))}</div>"
+    return f"<div class=slatetv>{icon('tv')}{esc(' / '.join(names))}</div>"
 
 
 def market(g):
@@ -1663,10 +1792,13 @@ def market(g):
     if total is not None:
         bits.append(f"O/U {total:g}")
     if not bits:
-        return ""
+        # A card is a fixed shape; a row is not. Saying nothing here leaves
+        # a hole that reads as a bug, so the card says what is true.
+        return (f"<div class='slateline dim'>{icon('chart')}"
+                f"No line posted</div>")
     return (f"<div class=slateline title='Average of "
             f"{ln.get('books', 0)} book(s) via collegefootballdata.com'>"
-            + " · ".join(bits) + "</div>")
+            f"{icon('chart')}" + " · ".join(bits) + "</div>")
 
 
 def espn_link(g):
@@ -1677,36 +1809,67 @@ def espn_link(g):
         return ""
     played = g["completed"] and g["home_points"] is not None
     kind = "boxscore" if played else "game"
-    label = "Box score" if played else "Game preview"
-    return (f"<a class=slatelink target=_blank rel=noopener "
+    # Beside our own Preview link, "Game preview" twice would be two names
+    # for two different things. The destination is the label.
+    label = "ESPN box score" if played else "ESPN"
+    return (f"<a class='slatelink dim' target=_blank rel=noopener "
             f"href='https://www.espn.com/college-football/{kind}/_/gameId/"
-            f"{gid}'>{label} &#8599;</a>")
+            f"{gid}'>{icon('out')}{label}</a>")
 
 
-def slate_row(g):
-    """One game, with everything a reader needs to go and watch it."""
-    hm, am = logo_img(g["home"], 18), logo_img(g["away"], 18)
+def game_slug(g):
+    """<id>-<away>-at-<home>.html — the id makes it unambiguous and stable,
+    the names make a shared link readable."""
+    def part(name):
+        keep = [c.lower() if c.isalnum() else "-" for c in name]
+        return "".join(keep).strip("-").replace("--", "-")
+    return f"{g['id']}-{part(g['away'])}-at-{part(g['home'])}.html"
+
+
+def matchup(g, size=18):
+    """Both teams with their marks, scored if it has been played."""
+    hm, am = logo_img(g["home"], size), logo_img(g["away"], size)
     if g["completed"] and g["home_points"] is not None:
         hw = g["home_points"] > g["away_points"]
         away = (f"{am}<b>{esc(g['away'])}</b> {g['away_points']}" if not hw
                 else f"{am}{esc(g['away'])} {g['away_points']}")
         home = (f"{hm}<b>{esc(g['home'])}</b> {g['home_points']}" if hw
                 else f"{hm}{esc(g['home'])} {g['home_points']}")
-        when = f"<span class=dim>final</span>"
     else:
         away, home = f"{am}{esc(g['away'])}", f"{hm}{esc(g['home'])}"
-        when = kickoff(g)
     tag = ""
     if g.get("ccg"):
-        tag = "<span class=ccgtag>Championship</span>"
+        tag = " <span class=ccgtag>Championship</span>"
     elif not g["conference_game"]:
-        tag = "<span class=nctag>non-conf</span>"
-    return (f"<li class=slate>"
-            f"<div class=slateteams>{away} <span class=dim>at</span> {home}"
-            f" {tag}</div>"
-            f"<div class=slatemeta>{when}{where(g)}{weather_line(g)}"
-            f"{broadcast(g)}{market(g)}</div>"
-            f"{espn_link(g)}</li>")
+        tag = " <span class=nctag>non-conf</span>"
+    return f"{away} <span class=dim>at</span> {home}{tag}"
+
+
+def when_line(g):
+    """Kickoff, or the word for a game that has already happened."""
+    inner = ("<span class=dim>final</span>" if g["completed"]
+             else kickoff(g))
+    return f"<div class=slatewhen>{icon('clock')}{inner}</div>"
+
+
+def slate_card(g, pages=True):
+    """One game, with everything a reader needs to go and watch it.
+
+    Sixteen of these are the week. Every line holds one fact and stays on
+    one line — the grid is two up rather than four precisely so that the
+    longest stadium name still fits.
+    """
+    # Game pages exist for the live season only, so an archived slate must
+    # not offer a Preview link — it would point at a 404, and the page that
+    # produced it would look perfectly fine doing so.
+    ours = (f"<a class=slatelink href='game/{game_slug(g)}'>"
+            f"{icon('note')}Preview</a>" if pages else "")
+    return (f"<div class=slate>"
+            f"<div class=slateteams>{matchup(g)}</div>"
+            f"<div class=slatemeta>{when_line(g)}{where(g)}"
+            f"{broadcast(g)}"
+            f"{weather_line(g)}{market(g)}</div>"
+            f"<div class=slatelinks>{ours}{espn_link(g)}</div></div>")
 
 
 def slate_week(games):
@@ -1734,13 +1897,15 @@ def build_schedule_page(games, ctx):
         span = f" <span class=dim>&middot; {esc(pretty_date(first))}</span>" \
             if first else ""
         slate = (f"<div class=card id=slate><h2>Week {wk}{span}</h2>"
-                 f"<ul class=slatelist>"
-                 + "".join(slate_row(g) for g in week_games)
-                 + "</ul>"
+                 f"<div class=slatelist>"
+                 + "".join(slate_card(g, pages=bool(ctx.get("game_pages")))
+                            for g in week_games)
+                 + "</div>"
                  "<p class=note>Kickoffs are shown in your own time zone "
                  "where your browser will say what it is, Eastern "
-                 "otherwise. Forecasts appear about two weeks out, which is "
-                 "as far ahead as one is worth reading.</p></div>")
+                 "otherwise. A forecast appears about two weeks out; before "
+                 "that the line reads what that venue is usually like at "
+                 "this point in the season.</p></div>")
     else:
         slate = ("<div class=card id=slate><h2>No games scheduled</h2>"
                  "<p class=note>The season's schedule has not been "
@@ -1767,6 +1932,169 @@ def build_schedule_page(games, ctx):
                    + "".join(game_row(g) for g in done[:40])
                    + "</ul></div>")
     return slate + upcard + rescard
+
+
+def model_card(g, ctx):
+    """What four rating systems make of it, against what the market makes
+    of it. This is the section nobody else can write: the models are all
+    public, but nobody lines them up beside the number and says who
+    disagrees."""
+    favs = ctx.get("favorites") or {}
+    gid = str(g.get("id"))
+    rows = []
+    for name in MODEL_ORDER:
+        f = (favs.get(name) or {}).get(gid)
+        if f:
+            rows.append((name, f["team"], f["margin"]))
+    if not rows:
+        return ""
+    ln = g.get("line") or {}
+    spread = ln.get("spread")
+    mkt = None
+    if spread is not None and spread != 0:
+        mkt = (g["home"] if spread < 0 else g["away"], abs(spread))
+    top = max([m for _, _, m in rows] + ([mkt[1]] if mkt else [0])) or 1
+
+    def bar(team, margin, cls=""):
+        pct = min(100 * margin / top, 100)
+        return (f"<div class='mrow {cls}'><span class=mname>{esc(team)}</span>"
+                f"<span class=mbar><i style='width:{pct:.0f}%'></i></span>"
+                f"<b class=mval>{margin:g}</b></div>")
+
+    body = "".join(
+        f"<div class=mline><span class=msys>{esc(n)}</span>"
+        f"{bar(t, m)}</div>" for n, t, m in rows)
+    if mkt:
+        body += (f"<div class='mline mmarket'><span class=msys>Market</span>"
+                 f"{bar(mkt[0], mkt[1], 'market')}</div>")
+    note = ("Predicted margin in points, each system carrying its own "
+            "home-field bump. The market row is the closing spread, for "
+            "comparison.")
+    # Before a season starts, most of these are last year's numbers pulled
+    # toward the mean. A reader comparing against published SP+ deserves to
+    # know why ours is smaller rather than assuming one of us is wrong.
+    stale = sorted({n for n in MODEL_ORDER
+                    if (ctx.get("systems") or {}).get(n, {}).get("year")
+                    not in (None, ctx.get("year"))})
+    if stale:
+        note += (f" {', '.join(stale)} still publish last season's ratings, "
+                 f"regressed toward the mean for how wrong a rating can be "
+                 f"about a team this early.")
+    if mkt:
+        agree = sum(1 for _, t, _ in rows if t == mkt[0])
+        if agree == len(rows):
+            note += (f" All {len(rows)} systems side with the favourite.")
+        elif agree == 0:
+            note += " Every system takes the other side."
+    return (f"<div class=card><h2>What the models make it</h2>{body}"
+            f"<p class=note>{note}</p></div>")
+
+
+def race_card(g, ctx):
+    """What the result does to the championship picture. Conference games
+    only — a non-conference result cannot move a conference race."""
+    lev = (ctx.get("leverage") or {}).get(str(g.get("id")))
+    if not lev or not g.get("conference_game"):
+        return ""
+    total = lev["total"] * 100
+    # d is measured against the home team winning, so a negative number is
+    # a team that gains when the away side wins — not one that loses by
+    # winning. Say the gain and the result that produces it, or the row
+    # reads as nonsense: "Arizona -21% if Arizona wins".
+    movers = "".join(
+        f"<div class=clrow><span class=levgame>{logo_img(t, 16)}{esc(t)}"
+        f"</span><b class=opct>+{abs(d) * 100:.0f}%</b>"
+        f"<span class=dim>if {esc(g['home'] if d > 0 else g['away'])} wins"
+        f"</span></div>" for t, d in lev["movers"][:4])
+    return (f"<div class=card><h2>What it does to the race</h2>"
+            f"<div class=levtotal><b>{total:.0f}</b> "
+            f"<span class=dim>total swing in championship probability "
+            f"across all sixteen teams</span></div>{movers}"
+            f"<p class=note>From the same simulations the race card runs. "
+            f"100 means a full berth's worth of probability moves on this "
+            f"result.</p></div>")
+
+
+def series_card(g, ctx):
+    """The record between them as conference opponents, and the fact that
+    this game is the first tiebreak step if they finish level."""
+    wl = ctx.get("series") or {}
+    a, b = g["home"], g["away"]
+    rec = (wl.get(a) or {}).get(b)
+    if not rec or not g.get("conference_game"):
+        return ""
+    w, l = rec
+    if w + l == 0:
+        line = f"{esc(a)} and {esc(b)} have never met as conference opponents."
+    else:
+        line = (f"<b>{esc(a)} {w}&ndash;{l} {esc(b)}</b> as conference "
+                f"opponents since 2011.")
+    return (f"<div class=card><h2>The series</h2><p>{line}</p>"
+            f"<p class=note>If these two finish level in the standings, "
+            f"step (a) of the tiebreaker is head-to-head &mdash; which is "
+            f"this game. It is the first thing that separates them, before "
+            f"any of the six steps below it are read.</p></div>")
+
+
+def build_game_page(g, ctx):
+    """One game, everything the build already knows about it."""
+    back = (f"<div class=gameback><a href='../'>&#8592; Week "
+            f"{g['week']}</a></div>")
+    head = (back + f"<div class=card id=gamehead>"
+            f"<div class=gamematch>{matchup(g, 22)}</div>"
+            f"<div class=slatemeta>{when_line(g)}{where(g)}"
+            f"{broadcast(g)}{weather_line(g)}</div></div>")
+
+    ln = g.get("line") or {}
+    mk = ""
+    if ln:
+        cells = []
+        spread = ln.get("spread")
+        if spread is not None:
+            fav = ("pick'em" if spread == 0
+                   else f"{esc(g['home'] if spread < 0 else g['away'])} "
+                        f"{-abs(spread):g}")
+            op = ln.get("spread_open")
+            cells.append((fav, f"opened {-abs(op):g}"
+                          if op not in (None, spread) else "spread"))
+        if ln.get("over_under") is not None:
+            op = ln.get("over_under_open")
+            cells.append((f"O/U {ln['over_under']:g}",
+                          f"opened {op:g}"
+                          if op not in (None, ln["over_under"]) else "total"))
+        if ln.get("home_ml") is not None:
+            cells.append((f"{ln['home_ml']:+g}",
+                          f"{esc(g['home'])} moneyline"))
+        if ln.get("away_ml") is not None:
+            cells.append((f"{ln['away_ml']:+g}", esc(g["away"])))
+        grid = "".join(f"<div><div class=mkval>{v}</div>"
+                       f"<div class=dim>{k}</div></div>" for v, k in cells)
+        mk = (f"<div class=card><h2>The market</h2>"
+              f"<div class=mkgrid>{grid}</div>"
+              f"<p class=note>Average of {ln.get('books', 0)} book(s) via "
+              f"collegefootballdata.com.</p></div>")
+
+    return (head + mk + model_card(g, ctx) + race_card(g, ctx)
+            + series_card(g, ctx)
+            + f"<div class=card><h2>Elsewhere</h2>"
+              f"<div class=slatelinks>{espn_link(g)}</div></div>")
+
+
+_SERIES_CACHE = {}
+
+
+def series_records(year, teams, games):
+    """Every pairing's record as conference opponents, computed once.
+
+    Reads fifteen seasons out of history/, so the rotation page and the
+    game pages share one result rather than each paying for it.
+    """
+    key = (year, id(games))
+    if key not in _SERIES_CACHE:
+        seasons = fetcher.usable_seasons(range(2011, year))
+        _SERIES_CACHE[key] = rotation_mod.all_time_records(
+            seasons, teams, current=games)
+    return _SERIES_CACHE[key]
 
 
 def build_matrix_page(ctx):
@@ -1870,6 +2198,16 @@ def place_and_forecast(year, games):
         # A forecast is the least important thing on the page. It never
         # takes a deploy down with it.
         print(f"weather: skipped ({e})")
+    # Then averages, for the games a forecast could not reach. Committed by
+    # normals.py, and second on purpose: normal_for declines to answer for a
+    # game that already has a forecast, so the order is what enforces "a
+    # real forecast always wins".
+    normals = weather_mod.load_normals()
+    if normals:
+        for g in games:
+            n = weather_mod.normal_for(g, normals)
+            if n:
+                g["normal"] = n
 
 
 def render(year, games):
@@ -2054,7 +2392,18 @@ def render(year, games):
         "standingspage": standings_page(games, overrides, display_rows, teams),
         "sims": sims,
         "systems": systems,
+        "year": year,
+        # Only the live season gets a page per game; the slate asks before
+        # linking to one.
+        "game_pages": year == LIVE_YEAR,
         "teams": teams,
+        # For the game pages. All three are already computed above for other
+        # cards; exposing them here is cheaper than recomputing per game —
+        # the series in particular reads fifteen seasons off disk.
+        "favorites": favorites,
+        "leverage": {str(e["game"]["id"]): e for e in
+                     (odds_mod.leverage(sims, games) if sims else [])},
+        "series": series_records(year, sorted(teams), games),
     }
     return page, ctx
 
@@ -2873,6 +3222,35 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
             with open(os.path.join(outdir, fname), "w") as f:
                 f.write(redirect_stub(cu, title))
 
+    # A page per game, for the live season only. Archived seasons are read
+    # for results, and the leverage a game page exists to show is settled
+    # once a season is decided.
+    if sched_outdir and year == LIVE_YEAR:
+        gdir = os.path.join(sched_outdir, "game")
+        os.makedirs(gdir, exist_ok=True)
+        # One directory deeper than the schedule pages, so the climb goes on
+        # the front: "../" + "../tiebreaker/". Appending it instead walks
+        # out of the site root and every asset 404s in silence.
+        BASE_was, globals()["BASE"] = BASE, "../" + sched_base
+        try:
+            for g in games:
+                if not g.get("id"):
+                    continue
+                slug = game_slug(g)
+                body = rebase_from(build_game_page(g, ctx), base, BASE)
+                with open(os.path.join(gdir, slug), "w") as f:
+                    f.write(build_subpage(
+                        f"{g['away']} at {g['home']}", "schedule", body, year,
+                        "", canon=f"{sched_canon}game/{slug}",
+                        desc=(f"{g['away']} at {g['home']}, week {g['week']} "
+                              f"of the {year} Big 12 season: kickoff, venue, "
+                              f"broadcast, the line, and what four rating "
+                              f"models make of it."),
+                        head="", section="schedule", page="", up="../"))
+        finally:
+            globals()["BASE"] = BASE_was
+        print(f"built {len(games)} game pages -> {gdir}")
+
     build_explainer(year, ctx["matchcard"], outdir)
 
     if feed:
@@ -2934,7 +3312,7 @@ def alltime_h2h_card(year, games, teams):
     than a second look for the same kind of table.
     """
     seasons = fetcher.usable_seasons(range(2011, year))
-    wl = rotation_mod.all_time_records(seasons, teams, current=games)
+    wl = series_records(year, teams, games)
     # In August the live season has no results in it, and dating the grid
     # through a season nobody has played yet is a claim about games that do
     # not exist.
@@ -3323,6 +3701,16 @@ def write_forecast(year, games, systems, sims):
     print(f"forecast: week {week} -> {p}")
 
 
+def _live_games_for_sitemap():
+    """The live season's games, read straight off disk: write_discovery runs
+    after the build and does not carry the season it just rendered."""
+    p = os.path.join(HERE, "data", f"games_{LIVE_YEAR}.json")
+    try:
+        return [g for g in json.load(open(p)) if g.get("id")]
+    except (OSError, ValueError):
+        return []
+
+
 def write_discovery(years):
     """A sitemap. Without one a crawler has to guess that
     the archived seasons exist at all — nothing links to 2024 except the
@@ -3361,6 +3749,14 @@ def write_discovery(years):
                               f"<lastmod>{today}</lastmod>"
                               f"<changefreq>{freq}</changefreq>"
                               f"<priority>{pri}</priority></url>")
+    # A page per game of the live season. They are real pages with real
+    # content, and nothing links to most of them once the week turns over,
+    # so the sitemap is how they are found at all.
+    for g in _live_games_for_sitemap():
+        sched_urls.append(
+            f"  <url><loc>{sched}game/{game_slug(g)}</loc>"
+            f"<lastmod>{today}</lastmod><changefreq>weekly</changefreq>"
+            f"<priority>0.5</priority></url>")
 
     def write_map(path, entries):
         with open(path, "w") as f:

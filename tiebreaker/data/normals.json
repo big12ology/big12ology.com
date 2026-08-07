@@ -1,0 +1,8062 @@
+{
+ "1056": {
+  "08a": {
+   "days": 150,
+   "rainPct": 3,
+   "tempF": 76,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 4,
+   "tempF": 76,
+   "windMph": 4
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 9,
+   "tempF": 76,
+   "windMph": 4
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 15,
+   "tempF": 71,
+   "windMph": 4
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 15,
+   "tempF": 69,
+   "windMph": 4
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 14,
+   "tempF": 67,
+   "windMph": 4
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 10,
+   "tempF": 63,
+   "windMph": 3
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 17,
+   "tempF": 59,
+   "windMph": 3
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 16,
+   "tempF": 57,
+   "windMph": 3
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 28,
+   "tempF": 55,
+   "windMph": 4
+  }
+ },
+ "1964": {
+  "08a": {
+   "days": 150,
+   "rainPct": 61,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 69,
+   "tempF": 68,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 50,
+   "tempF": 65,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 62,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 57,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 62,
+   "tempF": 50,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 56,
+   "tempF": 43,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 67,
+   "tempF": 36,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 73,
+   "tempF": 32,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 74,
+   "tempF": 30,
+   "windMph": 9
+  }
+ },
+ "218": {
+  "08a": {
+   "days": 150,
+   "rainPct": 93,
+   "tempF": 82,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 96,
+   "tempF": 81,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 93,
+   "tempF": 81,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 90,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 91,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 69,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 62,
+   "tempF": 75,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 70,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 43,
+   "tempF": 70,
+   "windMph": 7
+  }
+ },
+ "2455": {
+  "08a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 65,
+   "windMph": 8
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 53,
+   "tempF": 63,
+   "windMph": 8
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 58,
+   "windMph": 9
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 55,
+   "windMph": 9
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 55,
+   "tempF": 53,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 49,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 44,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 56,
+   "tempF": 42,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 50,
+   "tempF": 44,
+   "windMph": 9
+  }
+ },
+ "347": {
+  "08a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 71,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 66,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 65,
+   "windMph": 8
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 57,
+   "windMph": 9
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 48,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 42,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 35,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 28,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 43,
+   "tempF": 27,
+   "windMph": 9
+  }
+ },
+ "3486": {
+  "08a": {
+   "days": 150,
+   "rainPct": 48,
+   "tempF": 77,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 76,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 73,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 71,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 63,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 32,
+   "tempF": 54,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 48,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 43,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 37,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 36,
+   "windMph": 8
+  }
+ },
+ "3493": {
+  "08a": {
+   "days": 150,
+   "rainPct": 79,
+   "tempF": 83,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 78,
+   "tempF": 82,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 67,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 62,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 70,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 65,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 58,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 58,
+   "windMph": 9
+  }
+ },
+ "3495": {
+  "08a": {
+   "days": 150,
+   "rainPct": 82,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 63,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 75,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 73,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 68,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 27,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 56,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 51,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 46,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 47,
+   "windMph": 8
+  }
+ },
+ "3504": {
+  "08a": {
+   "days": 150,
+   "rainPct": 69,
+   "tempF": 62,
+   "windMph": 9
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 60,
+   "tempF": 61,
+   "windMph": 10
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 70,
+   "tempF": 59,
+   "windMph": 10
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 56,
+   "windMph": 10
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 59,
+   "tempF": 54,
+   "windMph": 11
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 61,
+   "tempF": 52,
+   "windMph": 11
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 64,
+   "tempF": 50,
+   "windMph": 11
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 45,
+   "windMph": 11
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 59,
+   "tempF": 44,
+   "windMph": 12
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 55,
+   "tempF": 46,
+   "windMph": 12
+  }
+ },
+ "3558": {
+  "08a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 53,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 66,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 46,
+   "tempF": 64,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 58,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 49,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 43,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 37,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 31,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 31,
+   "windMph": 9
+  }
+ },
+ "3601": {
+  "08a": {
+   "days": 150,
+   "rainPct": 22,
+   "tempF": 85,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 33,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 78,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 76,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 15,
+   "tempF": 64,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 9,
+   "tempF": 58,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 9,
+   "tempF": 52,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 9,
+   "tempF": 48,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 16,
+   "tempF": 46,
+   "windMph": 5
+  }
+ },
+ "3604": {
+  "08a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 87,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 51,
+   "tempF": 85,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 82,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 77,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 70,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 65,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 61,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 57,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 39,
+   "tempF": 57,
+   "windMph": 7
+  }
+ },
+ "3608": {
+  "08a": {
+   "days": 150,
+   "rainPct": 78,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 68,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 52,
+   "tempF": 78,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 72,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 23,
+   "tempF": 65,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 61,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 22,
+   "tempF": 56,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 53,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 34,
+   "tempF": 52,
+   "windMph": 8
+  }
+ },
+ "3610": {
+  "08a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 80,
+   "windMph": 11
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 80,
+   "windMph": 11
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 55,
+   "tempF": 80,
+   "windMph": 10
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 56,
+   "tempF": 80,
+   "windMph": 10
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 63,
+   "tempF": 79,
+   "windMph": 9
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 59,
+   "tempF": 78,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 77,
+   "windMph": 10
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 50,
+   "tempF": 76,
+   "windMph": 10
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 75,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 53,
+   "tempF": 74,
+   "windMph": 9
+  }
+ },
+ "3615": {
+  "08a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 74,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 71,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 68,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 63,
+   "windMph": 8
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 58,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 40,
+   "tempF": 53,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 46,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 40,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 35,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 32,
+   "windMph": 9
+  }
+ },
+ "3616": {
+  "08a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 88,
+   "windMph": 8
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 85,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 80,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 80,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 75,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 31,
+   "tempF": 66,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 57,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 52,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 29,
+   "tempF": 51,
+   "windMph": 8
+  }
+ },
+ "3619": {
+  "08a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 88,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 27,
+   "tempF": 87,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 85,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 81,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 17,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 7,
+   "tempF": 71,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 7,
+   "tempF": 65,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 15,
+   "tempF": 60,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 16,
+   "tempF": 56,
+   "windMph": 4
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 21,
+   "tempF": 54,
+   "windMph": 4
+  }
+ },
+ "3622": {
+  "08a": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 77,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 77,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 73,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 71,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 64,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 33,
+   "tempF": 55,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 48,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 43,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 37,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 27,
+   "tempF": 36,
+   "windMph": 8
+  }
+ },
+ "3625": {
+  "08a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 76,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 68,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 33,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 54,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 49,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 44,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 45,
+   "windMph": 8
+  }
+ },
+ "3626": {
+  "08a": {
+   "days": 150,
+   "rainPct": 7,
+   "tempF": 71,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 9,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 60,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 55,
+   "windMph": 4
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 50,
+   "tempF": 51,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 61,
+   "tempF": 48,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 43,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 61,
+   "tempF": 40,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 69,
+   "tempF": 41,
+   "windMph": 5
+  }
+ },
+ "3628": {
+  "08a": {
+   "days": 150,
+   "rainPct": 77,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 55,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 75,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 67,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 60,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 55,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 24,
+   "tempF": 50,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 45,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 45,
+   "windMph": 7
+  }
+ },
+ "3632": {
+  "08a": {
+   "days": 150,
+   "rainPct": 56,
+   "tempF": 72,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 54,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 63,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 57,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 50,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 44,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 37,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 32,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 47,
+   "tempF": 32,
+   "windMph": 7
+  }
+ },
+ "3634": {
+  "08a": {
+   "days": 150,
+   "rainPct": 94,
+   "tempF": 81,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 88,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 81,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 60,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 75,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 67,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 62,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 59,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 32,
+   "tempF": 59,
+   "windMph": 6
+  }
+ },
+ "3636": {
+  "08a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 79,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 78,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 74,
+   "windMph": 8
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 72,
+   "windMph": 8
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 64,
+   "windMph": 9
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 55,
+   "windMph": 10
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 24,
+   "tempF": 48,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 43,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 16,
+   "tempF": 37,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 25,
+   "tempF": 35,
+   "windMph": 9
+  }
+ },
+ "3644": {
+  "08a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 85,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 52,
+   "tempF": 84,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 50,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 76,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 68,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 52,
+   "tempF": 63,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 56,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 55,
+   "windMph": 8
+  }
+ },
+ "3646": {
+  "08a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 82,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 77,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 75,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 69,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 30,
+   "tempF": 60,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 54,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 22,
+   "tempF": 49,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 15,
+   "tempF": 43,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 16,
+   "tempF": 43,
+   "windMph": 8
+  }
+ },
+ "3652": {
+  "08a": {
+   "days": 150,
+   "rainPct": 95,
+   "tempF": 81,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 92,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 91,
+   "tempF": 79,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 85,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 72,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 73,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 54,
+   "tempF": 71,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 65,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 64,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 40,
+   "tempF": 63,
+   "windMph": 7
+  }
+ },
+ "3653": {
+  "08a": {
+   "days": 150,
+   "rainPct": 8,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 4,
+   "tempF": 77,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 8,
+   "tempF": 72,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 17,
+   "tempF": 64,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 56,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 29,
+   "tempF": 50,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 44,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 38,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 33,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 50,
+   "tempF": 32,
+   "windMph": 7
+  }
+ },
+ "3654": {
+  "08a": {
+   "days": 150,
+   "rainPct": 85,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 71,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 54,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 70,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 29,
+   "tempF": 64,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 60,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 54,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 50,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 51,
+   "windMph": 7
+  }
+ },
+ "3660": {
+  "08a": {
+   "days": 150,
+   "rainPct": 1,
+   "tempF": 87,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 2,
+   "tempF": 85,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 3,
+   "tempF": 82,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 5,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 5,
+   "tempF": 70,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 11,
+   "tempF": 64,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 12,
+   "tempF": 58,
+   "windMph": 4
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 52,
+   "windMph": 4
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 48,
+   "windMph": 4
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 29,
+   "tempF": 47,
+   "windMph": 4
+  }
+ },
+ "3665": {
+  "08a": {
+   "days": 150,
+   "rainPct": 62,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 52,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 48,
+   "tempF": 68,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 63,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 35,
+   "tempF": 57,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 51,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 44,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 39,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 39,
+   "tempF": 39,
+   "windMph": 7
+  }
+ },
+ "3670": {
+  "08a": {
+   "days": 150,
+   "rainPct": 68,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 51,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 48,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 66,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 28,
+   "tempF": 60,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 55,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 49,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 45,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 33,
+   "tempF": 45,
+   "windMph": 7
+  }
+ },
+ "3674": {
+  "08a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 82,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 76,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 75,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 68,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 34,
+   "tempF": 59,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 54,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 49,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 43,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 24,
+   "tempF": 43,
+   "windMph": 8
+  }
+ },
+ "3687": {
+  "08a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 87,
+   "windMph": 8
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 85,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 80,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 79,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 74,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 31,
+   "tempF": 66,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 56,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 52,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 32,
+   "tempF": 51,
+   "windMph": 9
+  }
+ },
+ "3693": {
+  "08a": {
+   "days": 150,
+   "rainPct": 55,
+   "tempF": 81,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 52,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 76,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 71,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 29,
+   "tempF": 63,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 58,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 52,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 49,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 49,
+   "windMph": 7
+  }
+ },
+ "3699": {
+  "08a": {
+   "days": 150,
+   "rainPct": 69,
+   "tempF": 79,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 51,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 50,
+   "tempF": 75,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 48,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 68,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 29,
+   "tempF": 61,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 57,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 50,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 47,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 34,
+   "tempF": 47,
+   "windMph": 7
+  }
+ },
+ "3713": {
+  "08a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 67,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 64,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 22,
+   "tempF": 60,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 51,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 20,
+   "tempF": 45,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 17,
+   "tempF": 39,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 34,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 30,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 16,
+   "tempF": 29,
+   "windMph": 5
+  }
+ },
+ "3715": {
+  "08a": {
+   "days": 150,
+   "rainPct": 93,
+   "tempF": 82,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 94,
+   "tempF": 82,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 91,
+   "tempF": 81,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 93,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 90,
+   "tempF": 79,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 62,
+   "tempF": 77,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 71,
+   "tempF": 76,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 72,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 71,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 61,
+   "tempF": 70,
+   "windMph": 9
+  }
+ },
+ "3719": {
+  "08a": {
+   "days": 150,
+   "rainPct": 63,
+   "tempF": 76,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 52,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 52,
+   "tempF": 69,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 63,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 57,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 51,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 45,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 40,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 39,
+   "windMph": 7
+  }
+ },
+ "3724": {
+  "08a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 88,
+   "windMph": 8
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 86,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 80,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 37,
+   "tempF": 67,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 59,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 54,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 54,
+   "windMph": 9
+  }
+ },
+ "3725": {
+  "08a": {
+   "days": 150,
+   "rainPct": 67,
+   "tempF": 78,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 61,
+   "tempF": 77,
+   "windMph": 4
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 46,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 72,
+   "windMph": 4
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 67,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 59,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 54,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 48,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 44,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 45,
+   "windMph": 7
+  }
+ },
+ "3726": {
+  "08a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 71,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 37,
+   "tempF": 70,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 67,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 61,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 52,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 24,
+   "tempF": 46,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 24,
+   "tempF": 41,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 36,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 33,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 31,
+   "windMph": 6
+  }
+ },
+ "3735": {
+  "08a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 87,
+   "windMph": 8
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 85,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 80,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 79,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 74,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 65,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 56,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 51,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 34,
+   "tempF": 51,
+   "windMph": 8
+  }
+ },
+ "3738": {
+  "08a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 73,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 67,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 63,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 58,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 53,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 46,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 40,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 35,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 33,
+   "windMph": 8
+  }
+ },
+ "3739": {
+  "08a": {
+   "days": 150,
+   "rainPct": 52,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 54,
+   "tempF": 72,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 68,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 66,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 51,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 45,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 46,
+   "tempF": 39,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 33,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 50,
+   "tempF": 33,
+   "windMph": 9
+  }
+ },
+ "3752": {
+  "08a": {
+   "days": 150,
+   "rainPct": 61,
+   "tempF": 73,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 59,
+   "tempF": 72,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 66,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 60,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 52,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 46,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 40,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 35,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 56,
+   "tempF": 35,
+   "windMph": 7
+  }
+ },
+ "3754": {
+  "08a": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 76,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 50,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 67,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 61,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 55,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 49,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 42,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 37,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 39,
+   "tempF": 35,
+   "windMph": 7
+  }
+ },
+ "3764": {
+  "08a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 73,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 72,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 68,
+   "windMph": 8
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 67,
+   "windMph": 8
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 59,
+   "windMph": 9
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 49,
+   "windMph": 10
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 43,
+   "windMph": 10
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 37,
+   "windMph": 10
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 30,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 30,
+   "windMph": 10
+  }
+ },
+ "3765": {
+  "08a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 68,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 66,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 64,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 59,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 54,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 62,
+   "tempF": 51,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 67,
+   "tempF": 48,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 66,
+   "tempF": 45,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 63,
+   "tempF": 42,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 73,
+   "tempF": 41,
+   "windMph": 8
+  }
+ },
+ "3768": {
+  "08a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 59,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 68,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 66,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 60,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 50,
+   "tempF": 51,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 45,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 39,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 50,
+   "tempF": 33,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 56,
+   "tempF": 33,
+   "windMph": 8
+  }
+ },
+ "3772": {
+  "08a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 73,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 73,
+   "windMph": 8
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 69,
+   "windMph": 8
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 67,
+   "windMph": 9
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 59,
+   "windMph": 10
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 31,
+   "tempF": 50,
+   "windMph": 10
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 43,
+   "windMph": 10
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 37,
+   "windMph": 10
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 29,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 34,
+   "tempF": 28,
+   "windMph": 10
+  }
+ },
+ "3775": {
+  "08a": {
+   "days": 150,
+   "rainPct": 63,
+   "tempF": 76,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 51,
+   "tempF": 75,
+   "windMph": 4
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 71,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 69,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 64,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 40,
+   "tempF": 56,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 50,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 44,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 39,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 51,
+   "tempF": 40,
+   "windMph": 7
+  }
+ },
+ "3776": {
+  "08a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 83,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 55,
+   "tempF": 82,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 79,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 29,
+   "tempF": 64,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 59,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 55,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 51,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 52,
+   "windMph": 7
+  }
+ },
+ "3784": {
+  "08a": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 83,
+   "windMph": 9
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 28,
+   "tempF": 81,
+   "windMph": 8
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 76,
+   "windMph": 8
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 73,
+   "windMph": 9
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 68,
+   "windMph": 10
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 19,
+   "tempF": 60,
+   "windMph": 10
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 17,
+   "tempF": 55,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 14,
+   "tempF": 50,
+   "windMph": 10
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 12,
+   "tempF": 46,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 9,
+   "tempF": 45,
+   "windMph": 10
+  }
+ },
+ "3786": {
+  "08a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 45,
+   "tempF": 70,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 65,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 64,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 52,
+   "tempF": 56,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 47,
+   "tempF": 48,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 42,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 35,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 30,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 51,
+   "tempF": 29,
+   "windMph": 8
+  }
+ },
+ "3787": {
+  "08a": {
+   "days": 150,
+   "rainPct": 70,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 66,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 60,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 55,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 49,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 44,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 45,
+   "windMph": 6
+  }
+ },
+ "3793": {
+  "08a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 74,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 73,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 69,
+   "windMph": 8
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 68,
+   "windMph": 8
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 60,
+   "windMph": 9
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 50,
+   "windMph": 10
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 44,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 37,
+   "windMph": 10
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 30,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 30,
+   "windMph": 9
+  }
+ },
+ "3795": {
+  "08a": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 87,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 55,
+   "tempF": 85,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 80,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 77,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 68,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 63,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 56,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 40,
+   "tempF": 55,
+   "windMph": 8
+  }
+ },
+ "3797": {
+  "08a": {
+   "days": 150,
+   "rainPct": 81,
+   "tempF": 83,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 76,
+   "tempF": 82,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 78,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 75,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 31,
+   "tempF": 68,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 63,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 59,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 56,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 55,
+   "windMph": 8
+  }
+ },
+ "3799": {
+  "08a": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 72,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 54,
+   "tempF": 72,
+   "windMph": 4
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 46,
+   "tempF": 65,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 60,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 30,
+   "tempF": 53,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 48,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 41,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 37,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 34,
+   "tempF": 38,
+   "windMph": 6
+  }
+ },
+ "3801": {
+  "08a": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 77,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 21,
+   "tempF": 75,
+   "windMph": 4
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 17,
+   "tempF": 71,
+   "windMph": 4
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 63,
+   "windMph": 4
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 55,
+   "windMph": 4
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 48,
+   "windMph": 3
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 43,
+   "windMph": 3
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 36,
+   "windMph": 3
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 31,
+   "windMph": 3
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 30,
+   "windMph": 3
+  }
+ },
+ "3803": {
+  "08a": {
+   "days": 150,
+   "rainPct": 74,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 58,
+   "tempF": 79,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 77,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 30,
+   "tempF": 62,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 57,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 52,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 48,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 49,
+   "windMph": 8
+  }
+ },
+ "3805": {
+  "08a": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 47,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 77,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 75,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 31,
+   "tempF": 61,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 55,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 50,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 46,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 46,
+   "windMph": 8
+  }
+ },
+ "3806": {
+  "08a": {
+   "days": 150,
+   "rainPct": 60,
+   "tempF": 77,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 75,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 68,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 63,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 56,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 50,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 44,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 39,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 39,
+   "tempF": 37,
+   "windMph": 7
+  }
+ },
+ "3815": {
+  "08a": {
+   "days": 150,
+   "rainPct": 69,
+   "tempF": 82,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 66,
+   "tempF": 81,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 79,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 30,
+   "tempF": 66,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 61,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 57,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 53,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 53,
+   "windMph": 6
+  }
+ },
+ "3816": {
+  "08a": {
+   "days": 150,
+   "rainPct": 8,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 9,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 8,
+   "tempF": 71,
+   "windMph": 4
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 13,
+   "tempF": 63,
+   "windMph": 4
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 12,
+   "tempF": 57,
+   "windMph": 4
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 15,
+   "tempF": 52,
+   "windMph": 4
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 18,
+   "tempF": 47,
+   "windMph": 3
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 39,
+   "windMph": 3
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 36,
+   "windMph": 3
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 39,
+   "tempF": 35,
+   "windMph": 3
+  }
+ },
+ "3817": {
+  "08a": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 84,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 54,
+   "tempF": 83,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 73,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 27,
+   "tempF": 65,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 60,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 55,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 52,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 52,
+   "windMph": 7
+  }
+ },
+ "3820": {
+  "08a": {
+   "days": 150,
+   "rainPct": 11,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 12,
+   "tempF": 71,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 15,
+   "tempF": 67,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 59,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 52,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 47,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 55,
+   "tempF": 41,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 37,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 33,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 70,
+   "tempF": 31,
+   "windMph": 9
+  }
+ },
+ "3825": {
+  "08a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 86,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 43,
+   "tempF": 84,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 78,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 73,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 29,
+   "tempF": 64,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 59,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 55,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 50,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 32,
+   "tempF": 50,
+   "windMph": 8
+  }
+ },
+ "3830": {
+  "08a": {
+   "days": 150,
+   "rainPct": 50,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 69,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 63,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 54,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 47,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 41,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 36,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 37,
+   "windMph": 8
+  }
+ },
+ "3831": {
+  "08a": {
+   "days": 150,
+   "rainPct": 1,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 4,
+   "tempF": 63,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 5,
+   "tempF": 64,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 14,
+   "tempF": 63,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 11,
+   "tempF": 63,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 19,
+   "tempF": 60,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 56,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 52,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 49,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 48,
+   "windMph": 6
+  }
+ },
+ "3832": {
+  "08a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 74,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 74,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 70,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 69,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 53,
+   "windMph": 10
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 46,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 40,
+   "windMph": 10
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 33,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 39,
+   "tempF": 34,
+   "windMph": 10
+  }
+ },
+ "3833": {
+  "08a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 78,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 47,
+   "tempF": 77,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 73,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 71,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 64,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 28,
+   "tempF": 55,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 48,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 43,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 17,
+   "tempF": 37,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 24,
+   "tempF": 36,
+   "windMph": 8
+  }
+ },
+ "3834": {
+  "08a": {
+   "days": 150,
+   "rainPct": 46,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 34,
+   "tempF": 75,
+   "windMph": 8
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 72,
+   "windMph": 9
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 70,
+   "windMph": 9
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 60,
+   "windMph": 9
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 52,
+   "windMph": 10
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 45,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 40,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 20,
+   "tempF": 33,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 25,
+   "tempF": 31,
+   "windMph": 9
+  }
+ },
+ "3835": {
+  "08a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 83,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 82,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 77,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 75,
+   "windMph": 8
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 69,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 28,
+   "tempF": 60,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 55,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 50,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 45,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 21,
+   "tempF": 45,
+   "windMph": 9
+  }
+ },
+ "3838": {
+  "08a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 76,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 76,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 64,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 54,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 48,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 43,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 37,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 31,
+   "tempF": 37,
+   "windMph": 8
+  }
+ },
+ "3842": {
+  "08a": {
+   "days": 150,
+   "rainPct": 65,
+   "tempF": 73,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 61,
+   "tempF": 71,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 48,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 60,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 47,
+   "tempF": 53,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 47,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 50,
+   "tempF": 41,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 36,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 54,
+   "tempF": 37,
+   "windMph": 7
+  }
+ },
+ "3852": {
+  "08a": {
+   "days": 150,
+   "rainPct": 63,
+   "tempF": 76,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 53,
+   "tempF": 75,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 69,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 63,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 57,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 52,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 45,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 40,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 40,
+   "tempF": 39,
+   "windMph": 7
+  }
+ },
+ "3853": {
+  "08a": {
+   "days": 150,
+   "rainPct": 67,
+   "tempF": 77,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 47,
+   "tempF": 77,
+   "windMph": 4
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 71,
+   "windMph": 4
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 34,
+   "tempF": 58,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 53,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 47,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 43,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 39,
+   "tempF": 43,
+   "windMph": 6
+  }
+ },
+ "3854": {
+  "08a": {
+   "days": 150,
+   "rainPct": 55,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 69,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 63,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 43,
+   "tempF": 54,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 48,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 42,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 37,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 38,
+   "windMph": 8
+  }
+ },
+ "3855": {
+  "08a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 56,
+   "tempF": 71,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 67,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 66,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 48,
+   "tempF": 59,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 50,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 40,
+   "tempF": 44,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 52,
+   "tempF": 38,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 46,
+   "tempF": 32,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 54,
+   "tempF": 32,
+   "windMph": 9
+  }
+ },
+ "3861": {
+  "08a": {
+   "days": 150,
+   "rainPct": 60,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 52,
+   "tempF": 73,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 69,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 68,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 61,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 52,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 46,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 40,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 34,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 54,
+   "tempF": 35,
+   "windMph": 8
+  }
+ },
+ "3873": {
+  "08a": {
+   "days": 150,
+   "rainPct": 52,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 76,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 72,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 71,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 65,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 56,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 50,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 44,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 39,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 40,
+   "windMph": 7
+  }
+ },
+ "3874": {
+  "08a": {
+   "days": 150,
+   "rainPct": 55,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 69,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 63,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 54,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 48,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 42,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 37,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 38,
+   "windMph": 8
+  }
+ },
+ "3876": {
+  "08a": {
+   "days": 150,
+   "rainPct": 55,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 56,
+   "tempF": 73,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 70,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 62,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 40,
+   "tempF": 54,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 48,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 41,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 36,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 37,
+   "windMph": 7
+  }
+ },
+ "3886": {
+  "08a": {
+   "days": 150,
+   "rainPct": 97,
+   "tempF": 82,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 91,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 89,
+   "tempF": 80,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 76,
+   "tempF": 79,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 58,
+   "tempF": 77,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 39,
+   "tempF": 74,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 71,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 66,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 65,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 30,
+   "tempF": 64,
+   "windMph": 8
+  }
+ },
+ "3887": {
+  "08a": {
+   "days": 150,
+   "rainPct": 52,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 66,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 58,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 52,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 48,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 43,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 28,
+   "tempF": 43,
+   "windMph": 8
+  }
+ },
+ "3891": {
+  "08a": {
+   "days": 150,
+   "rainPct": 69,
+   "tempF": 84,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 72,
+   "tempF": 83,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 60,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 65,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 76,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 69,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 65,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 58,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 58,
+   "windMph": 8
+  }
+ },
+ "3892": {
+  "08a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 47,
+   "tempF": 72,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 64,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 58,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 53,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 46,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 39,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 35,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 43,
+   "tempF": 32,
+   "windMph": 7
+  }
+ },
+ "3893": {
+  "08a": {
+   "days": 150,
+   "rainPct": 9,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 14,
+   "tempF": 68,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 60,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 56,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 51,
+   "tempF": 52,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 62,
+   "tempF": 48,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 43,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 61,
+   "tempF": 41,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 73,
+   "tempF": 41,
+   "windMph": 6
+  }
+ },
+ "3895": {
+  "08a": {
+   "days": 150,
+   "rainPct": 69,
+   "tempF": 84,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 72,
+   "tempF": 83,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 60,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 65,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 76,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 69,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 65,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 58,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 58,
+   "windMph": 8
+  }
+ },
+ "3905": {
+  "08a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 73,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 18,
+   "tempF": 71,
+   "windMph": 4
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 66,
+   "windMph": 4
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 58,
+   "windMph": 4
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 51,
+   "windMph": 3
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 28,
+   "tempF": 44,
+   "windMph": 3
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 38,
+   "windMph": 3
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 31,
+   "windMph": 3
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 26,
+   "windMph": 3
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 24,
+   "windMph": 3
+  }
+ },
+ "3907": {
+  "08a": {
+   "days": 150,
+   "rainPct": 48,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 50,
+   "tempF": 74,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 70,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 69,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 52,
+   "windMph": 10
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 46,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 40,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 33,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 45,
+   "tempF": 34,
+   "windMph": 9
+  }
+ },
+ "3910": {
+  "08a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 87,
+   "windMph": 8
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 86,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 48,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 80,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 68,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 63,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 55,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 55,
+   "windMph": 8
+  }
+ },
+ "3914": {
+  "08a": {
+   "days": 150,
+   "rainPct": 16,
+   "tempF": 94,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 11,
+   "tempF": 92,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 11,
+   "tempF": 88,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 3,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 9,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 4,
+   "tempF": 68,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 5,
+   "tempF": 61,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 10,
+   "tempF": 54,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 11,
+   "tempF": 50,
+   "windMph": 4
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 14,
+   "tempF": 48,
+   "windMph": 5
+  }
+ },
+ "3923": {
+  "08a": {
+   "days": 150,
+   "rainPct": 56,
+   "tempF": 77,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 76,
+   "windMph": 4
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 72,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 69,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 63,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 24,
+   "tempF": 57,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 51,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 44,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 40,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 31,
+   "tempF": 40,
+   "windMph": 6
+  }
+ },
+ "3932": {
+  "08a": {
+   "days": 150,
+   "rainPct": 3,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 4,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 5,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 14,
+   "tempF": 69,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 12,
+   "tempF": 67,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 9,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 10,
+   "tempF": 63,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 18,
+   "tempF": 60,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 16,
+   "tempF": 57,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 55,
+   "windMph": 6
+  }
+ },
+ "3935": {
+  "08a": {
+   "days": 150,
+   "rainPct": 3,
+   "tempF": 70,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 2,
+   "tempF": 70,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 7,
+   "tempF": 70,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 8,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 13,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 16,
+   "tempF": 62,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 57,
+   "windMph": 4
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 53,
+   "windMph": 4
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 51,
+   "windMph": 4
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 39,
+   "tempF": 50,
+   "windMph": 5
+  }
+ },
+ "3936": {
+  "08a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 50,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 66,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 65,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 48,
+   "tempF": 58,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 50,
+   "tempF": 49,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 43,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 37,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 31,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 52,
+   "tempF": 31,
+   "windMph": 9
+  }
+ },
+ "3937": {
+  "08a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 34,
+   "tempF": 72,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 69,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 64,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 24,
+   "tempF": 54,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 20,
+   "tempF": 48,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 18,
+   "tempF": 41,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 20,
+   "tempF": 37,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 33,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 18,
+   "tempF": 31,
+   "windMph": 5
+  }
+ },
+ "3940": {
+  "08a": {
+   "days": 150,
+   "rainPct": 3,
+   "tempF": 69,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 3,
+   "tempF": 70,
+   "windMph": 4
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 6,
+   "tempF": 70,
+   "windMph": 4
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 12,
+   "tempF": 67,
+   "windMph": 4
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 11,
+   "tempF": 66,
+   "windMph": 4
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 14,
+   "tempF": 63,
+   "windMph": 4
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 59,
+   "windMph": 4
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 55,
+   "windMph": 4
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 52,
+   "windMph": 4
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 43,
+   "tempF": 51,
+   "windMph": 4
+  }
+ },
+ "3946": {
+  "08a": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 84,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 32,
+   "tempF": 81,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 78,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 71,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 12,
+   "tempF": 64,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 9,
+   "tempF": 58,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 13,
+   "tempF": 53,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 10,
+   "tempF": 49,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 18,
+   "tempF": 47,
+   "windMph": 6
+  }
+ },
+ "3947": {
+  "08a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 95,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 20,
+   "tempF": 94,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 16,
+   "tempF": 92,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 17,
+   "tempF": 86,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 17,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 6,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 5,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 14,
+   "tempF": 62,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 14,
+   "tempF": 57,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 19,
+   "tempF": 54,
+   "windMph": 5
+  }
+ },
+ "3948": {
+  "08a": {
+   "days": 150,
+   "rainPct": 93,
+   "tempF": 82,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 97,
+   "tempF": 81,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 93,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 89,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 89,
+   "tempF": 79,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 66,
+   "tempF": 76,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 67,
+   "tempF": 75,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 46,
+   "tempF": 70,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 51,
+   "tempF": 69,
+   "windMph": 7
+  }
+ },
+ "3953": {
+  "08a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 66,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 47,
+   "tempF": 64,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 54,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 46,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 39,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 32,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 22,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 41,
+   "tempF": 21,
+   "windMph": 7
+  }
+ },
+ "3965": {
+  "08a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 59,
+   "tempF": 70,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 66,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 64,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 50,
+   "tempF": 58,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 60,
+   "tempF": 50,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 54,
+   "tempF": 44,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 38,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 61,
+   "tempF": 33,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 62,
+   "tempF": 31,
+   "windMph": 9
+  }
+ },
+ "3970": {
+  "08a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 95,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 19,
+   "tempF": 94,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 14,
+   "tempF": 92,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 13,
+   "tempF": 86,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 15,
+   "tempF": 80,
+   "windMph": 4
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 4,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 2,
+   "tempF": 67,
+   "windMph": 4
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 13,
+   "tempF": 61,
+   "windMph": 4
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 11,
+   "tempF": 57,
+   "windMph": 4
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 19,
+   "tempF": 54,
+   "windMph": 4
+  }
+ },
+ "3971": {
+  "08a": {
+   "days": 150,
+   "rainPct": 20,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 22,
+   "tempF": 78,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 17,
+   "tempF": 75,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 16,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 64,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 16,
+   "tempF": 57,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 13,
+   "tempF": 51,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 45,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 15,
+   "tempF": 40,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 18,
+   "tempF": 39,
+   "windMph": 6
+  }
+ },
+ "3973": {
+  "08a": {
+   "days": 150,
+   "rainPct": 68,
+   "tempF": 78,
+   "windMph": 4
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 57,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 74,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 72,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 67,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 59,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 53,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 47,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 43,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 44,
+   "windMph": 7
+  }
+ },
+ "3974": {
+  "08a": {
+   "days": 150,
+   "rainPct": 59,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 55,
+   "tempF": 79,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 76,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 31,
+   "tempF": 62,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 56,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 51,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 47,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 48,
+   "windMph": 7
+  }
+ },
+ "3982": {
+  "08a": {
+   "days": 150,
+   "rainPct": 67,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 46,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 66,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 27,
+   "tempF": 59,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 54,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 48,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 44,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 35,
+   "tempF": 44,
+   "windMph": 6
+  }
+ },
+ "3984": {
+  "08a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 66,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 32,
+   "tempF": 65,
+   "windMph": 8
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 61,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 56,
+   "windMph": 8
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 46,
+   "windMph": 8
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 31,
+   "tempF": 39,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 35,
+   "windMph": 9
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 30,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 25,
+   "windMph": 10
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 33,
+   "tempF": 24,
+   "windMph": 10
+  }
+ },
+ "3985": {
+  "08a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 73,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 70,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 62,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 56,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 43,
+   "tempF": 51,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 44,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 37,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 32,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 30,
+   "windMph": 6
+  }
+ },
+ "3992": {
+  "08a": {
+   "days": 150,
+   "rainPct": 57,
+   "tempF": 76,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 76,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 72,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 69,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 63,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 27,
+   "tempF": 57,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 30,
+   "tempF": 51,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 45,
+   "windMph": 7
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 40,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 32,
+   "tempF": 40,
+   "windMph": 6
+  }
+ },
+ "3994": {
+  "08a": {
+   "days": 150,
+   "rainPct": 73,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 54,
+   "tempF": 80,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 44,
+   "tempF": 77,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 62,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 39,
+   "tempF": 58,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 53,
+   "windMph": 6
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 49,
+   "windMph": 6
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 37,
+   "tempF": 49,
+   "windMph": 7
+  }
+ },
+ "3996": {
+  "08a": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 50,
+   "tempF": 73,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 36,
+   "tempF": 69,
+   "windMph": 7
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 68,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 62,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 52,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 46,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 40,
+   "windMph": 9
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 34,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 51,
+   "tempF": 35,
+   "windMph": 9
+  }
+ },
+ "453": {
+  "08a": {
+   "days": 150,
+   "rainPct": 71,
+   "tempF": 84,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 76,
+   "tempF": 83,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 65,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 66,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 76,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 45,
+   "tempF": 69,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 65,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 46,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 58,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 58,
+   "windMph": 8
+  }
+ },
+ "4727": {
+  "08a": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 88,
+   "windMph": 8
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 43,
+   "tempF": 86,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 81,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 80,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 37,
+   "tempF": 67,
+   "windMph": 9
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 31,
+   "tempF": 59,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 54,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 36,
+   "tempF": 54,
+   "windMph": 9
+  }
+ },
+ "4728": {
+  "08a": {
+   "days": 150,
+   "rainPct": 71,
+   "tempF": 84,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 76,
+   "tempF": 83,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 65,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 66,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 76,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 45,
+   "tempF": 69,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 65,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 46,
+   "tempF": 62,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 58,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 58,
+   "windMph": 8
+  }
+ },
+ "4729": {
+  "08a": {
+   "days": 150,
+   "rainPct": 81,
+   "tempF": 82,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 81,
+   "tempF": 82,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 72,
+   "tempF": 80,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 62,
+   "tempF": 79,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 76,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 39,
+   "tempF": 69,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 42,
+   "tempF": 65,
+   "windMph": 8
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 61,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 58,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 58,
+   "windMph": 8
+  }
+ },
+ "4738": {
+  "08a": {
+   "days": 150,
+   "rainPct": 5,
+   "tempF": 69,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 8,
+   "tempF": 69,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 7,
+   "tempF": 69,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 12,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 13,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 14,
+   "tempF": 63,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 23,
+   "tempF": 59,
+   "windMph": 4
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 32,
+   "tempF": 54,
+   "windMph": 4
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 52,
+   "windMph": 4
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 40,
+   "tempF": 51,
+   "windMph": 5
+  }
+ },
+ "477": {
+  "08a": {
+   "days": 150,
+   "rainPct": 3,
+   "tempF": 73,
+   "windMph": 6
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 3,
+   "tempF": 73,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 7,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 9,
+   "tempF": 70,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 7,
+   "tempF": 68,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 11,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 8,
+   "tempF": 62,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 16,
+   "tempF": 59,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 14,
+   "tempF": 56,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 29,
+   "tempF": 54,
+   "windMph": 5
+  }
+ },
+ "5348": {
+  "08a": {
+   "days": 150,
+   "rainPct": 82,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 63,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 75,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 73,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 68,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 27,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 56,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 51,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 46,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 47,
+   "windMph": 8
+  }
+ },
+ "5388": {
+  "08a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 72,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 31,
+   "tempF": 71,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 26,
+   "tempF": 67,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 20,
+   "tempF": 62,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 27,
+   "tempF": 53,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 19,
+   "tempF": 47,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 41,
+   "windMph": 4
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 24,
+   "tempF": 36,
+   "windMph": 4
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 32,
+   "windMph": 4
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 21,
+   "tempF": 30,
+   "windMph": 4
+  }
+ },
+ "587": {
+  "08a": {
+   "days": 150,
+   "rainPct": 25,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 17,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 14,
+   "tempF": 71,
+   "windMph": 5
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 63,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 28,
+   "tempF": 55,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 26,
+   "tempF": 48,
+   "windMph": 4
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 21,
+   "tempF": 44,
+   "windMph": 4
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 33,
+   "tempF": 36,
+   "windMph": 4
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 31,
+   "windMph": 3
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 42,
+   "tempF": 31,
+   "windMph": 4
+  }
+ },
+ "5960": {
+  "08a": {
+   "days": 150,
+   "rainPct": 51,
+   "tempF": 73,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 54,
+   "tempF": 72,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 68,
+   "windMph": 8
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 67,
+   "windMph": 8
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 49,
+   "tempF": 60,
+   "windMph": 9
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 43,
+   "tempF": 51,
+   "windMph": 10
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 45,
+   "windMph": 10
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 38,
+   "windMph": 10
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 32,
+   "windMph": 9
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 45,
+   "tempF": 32,
+   "windMph": 10
+  }
+ },
+ "6501": {
+  "08a": {
+   "days": 150,
+   "rainPct": 13,
+   "tempF": 92,
+   "windMph": 7
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 11,
+   "tempF": 91,
+   "windMph": 7
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 12,
+   "tempF": 87,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 3,
+   "tempF": 80,
+   "windMph": 7
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 7,
+   "tempF": 74,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 5,
+   "tempF": 68,
+   "windMph": 6
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 4,
+   "tempF": 62,
+   "windMph": 6
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 9,
+   "tempF": 54,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 9,
+   "tempF": 50,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 17,
+   "tempF": 48,
+   "windMph": 5
+  }
+ },
+ "7173": {
+  "08a": {
+   "days": 150,
+   "rainPct": 55,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 49,
+   "tempF": 75,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 38,
+   "tempF": 69,
+   "windMph": 5
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 34,
+   "tempF": 63,
+   "windMph": 6
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 44,
+   "tempF": 54,
+   "windMph": 7
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 48,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 43,
+   "tempF": 42,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 37,
+   "windMph": 7
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 48,
+   "tempF": 38,
+   "windMph": 8
+  }
+ },
+ "721": {
+  "08a": {
+   "days": 150,
+   "rainPct": 82,
+   "tempF": 78,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 63,
+   "tempF": 77,
+   "windMph": 5
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 53,
+   "tempF": 75,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 41,
+   "tempF": 73,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 35,
+   "tempF": 68,
+   "windMph": 7
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 27,
+   "tempF": 60,
+   "windMph": 8
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 37,
+   "tempF": 56,
+   "windMph": 7
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 29,
+   "tempF": 51,
+   "windMph": 8
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 45,
+   "tempF": 46,
+   "windMph": 8
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 38,
+   "tempF": 47,
+   "windMph": 8
+  }
+ },
+ "7311": {
+  "08a": {
+   "days": 150,
+   "rainPct": 2,
+   "tempF": 71,
+   "windMph": 5
+  },
+  "08b": {
+   "days": 160,
+   "rainPct": 5,
+   "tempF": 71,
+   "windMph": 6
+  },
+  "09a": {
+   "days": 150,
+   "rainPct": 7,
+   "tempF": 72,
+   "windMph": 6
+  },
+  "09b": {
+   "days": 150,
+   "rainPct": 13,
+   "tempF": 69,
+   "windMph": 6
+  },
+  "10a": {
+   "days": 150,
+   "rainPct": 12,
+   "tempF": 67,
+   "windMph": 5
+  },
+  "10b": {
+   "days": 160,
+   "rainPct": 10,
+   "tempF": 66,
+   "windMph": 5
+  },
+  "11a": {
+   "days": 150,
+   "rainPct": 10,
+   "tempF": 62,
+   "windMph": 5
+  },
+  "11b": {
+   "days": 150,
+   "rainPct": 19,
+   "tempF": 59,
+   "windMph": 5
+  },
+  "12a": {
+   "days": 150,
+   "rainPct": 16,
+   "tempF": 57,
+   "windMph": 5
+  },
+  "12b": {
+   "days": 160,
+   "rainPct": 27,
+   "tempF": 55,
+   "windMph": 5
+  }
+ }
+}
