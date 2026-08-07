@@ -34,6 +34,7 @@ function slate() {
     ...(i >= 5 ? { unpickable: "no_line" } : {}),
     ...(i < 3 ? { result: { home_points: 31, away_points: 21,
                             ats: ["home", "away", "push"][i] } } : {}),
+    ...(i < 5 ? { consensus: { home: 110 + i, away: 70 - i } } : {}),
   }));
   return {
     season: 2026, week: 3, status: "published", locked: false,
@@ -105,7 +106,7 @@ const IDS = ["slate", "slateform", "slateload", "lockcard", "lockat", "cd",
              "signin", "named", "acctinfo", "acctbody", "nameform",
              "dname", "dnameerr"];
 
-function harness() {
+function harness(override) {
   const byId = Object.fromEntries(IDS.map((id) => [id, stubEl()]));
   const listeners = {};
   const doc = {
@@ -127,7 +128,7 @@ function harness() {
     encodeURIComponent, isNaN, parseInt, parseFloat,
     fetch(url) {
       const p = String(url).split("?")[0];
-      const body = API[p];
+      const body = (override && p in override) ? override[p] : API[p];
       return Promise.resolve({
         ok: body !== undefined,
         status: body === undefined ? 404 : 200,
@@ -178,6 +179,56 @@ test("the card renders a row per pickable game", async () => {
   assert.ok(list, "no card list rendered");
   assert.equal(list.children.length, S.pickable_count);
   assert.match(h.byId.cardnote.textContent + "", /.+/);
+});
+
+// A card read on a Saturday afternoon is mostly games that have not finished.
+// These are the states that are not outcomes, and they were the ones missing.
+test("a game that has not finished says which kind of not-finished", async () => {
+  const now = Math.floor(Date.now() / 1000);
+  const cases = [
+    { name: "kicked off, no result",  kickoff_at: now - 600, locked: true,  want: "IN PLAY" },
+    { name: "locked, not kicked off", kickoff_at: now + 600, locked: true,  want: "LOCKED"  },
+    { name: "still open",             kickoff_at: now + 600, locked: false, want: "OPEN"    },
+  ];
+  for (const c of cases) {
+    const g = { ...S.games[0], kickoff_at: c.kickoff_at,
+                kickoff: new Date(c.kickoff_at * 1000).toISOString() };
+    delete g.result;
+    const h = harness({
+      "/api/slate": { ...S, locked: c.locked, games: [g] },
+      "/api/picks": { season: 2026, week: 3, locked: c.locked,
+                      picks: { [g.game_id]: "home" } },
+    });
+    await h.fire();
+    await settle();
+    const row = h.byId.card.children[0].children[0];
+    assert.match(row.textContent, new RegExp(c.want),
+      `${c.name}: expected ${c.want}, row read "${row.textContent}"`);
+  }
+});
+
+test("an unpicked game says so rather than pretending to be pending", async () => {
+  const h = harness({ "/api/picks": { season: 2026, week: 3, picks: {} } });
+  await h.fire();
+  await settle();
+  const rows = h.byId.card.children[0].children;
+  assert.ok(rows.length > 0);
+  for (const r of rows) {
+    assert.match(r.textContent, /NO PICK/);
+  }
+});
+
+test("the crowd split is never rendered before the lock", async () => {
+  // The server withholds it, but the client must not invent it either: this
+  // is the one number that would change how people play if it leaked early.
+  const open = { ...S, locked: false,
+                 games: S.games.map((g) => ({ ...g })) };  // no consensus field
+  const h = harness({ "/api/slate": open });
+  await h.fire();
+  await settle();
+  const list = h.byId.card.children[0];
+  const withSplit = [...list.children].filter((r) => /% took/.test(r.textContent));
+  assert.equal(withSplit.length, 0, "a split was drawn on an unlocked week");
 });
 
 test("no view reports an error against good data", async () => {

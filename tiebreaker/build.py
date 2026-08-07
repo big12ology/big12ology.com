@@ -2212,7 +2212,24 @@ def build_game_page(g, ctx):
               f"<p class=note>Average of {ln.get('books', 0)} book(s) via "
               f"collegefootballdata.com.</p></div>")
 
-    return (head + mk + model_card(g, ctx) + race_card(g, ctx)
+    # What the public did with that number. Ships hidden and empty; pickcon.js
+    # fills it from /api/consensus once the week has locked, and leaves it
+    # hidden otherwise — no slate, no lock, no Worker, no card. Placed after
+    # the market because that is the number the public was reacting to.
+    #
+    # Team colours are emitted here rather than fetched: the build already
+    # knows them, and a second request for sixteen hex values would be silly.
+    teams_ = ctx.get("teams") or {}
+    con = ""
+    if g.get("line"):
+        con = (f"<div class=card id=pickcon hidden "
+               f"data-gid='{g['id']}' "
+               f"data-away=\"{esc(g['away'])}\" data-home=\"{esc(g['home'])}\" "
+               f"data-ac='{team_color(teams_, g['away'], '#252932')}' "
+               f"data-hc='{team_color(teams_, g['home'], '#252932')}'>"
+               f"<h2>What the public did</h2><div class=pcbody></div></div>")
+
+    return (head + mk + model_card(g, ctx) + con + race_card(g, ctx)
             + series_card(g, ctx)
             + f"<div class=card><h2>Elsewhere</h2>"
               f"<div class=slatelinks>{espn_link(g)}</div></div>")
@@ -3386,7 +3403,13 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                               f"of the {year} Big 12 season: kickoff, venue, "
                               f"broadcast, the line, and what four rating "
                               f"models make of it."),
-                        head="", section="schedule", page="", up="../"))
+                        # The only script on a game page, and the only place
+                        # the schedule section touches /api/*. Deferred and
+                        # entirely optional: it fills the consensus card or
+                        # leaves it hidden.
+                        head=(f'<script defer src="{BASE}'
+                              f'{asset_v("pickcon.js")}"></script>'),
+                        section="schedule", page="", up="../"))
         finally:
             globals()["BASE"] = BASE_was
         print(f"built {len(games)} game pages -> {gdir}")
@@ -3892,7 +3915,13 @@ PICKEM_SLATE_BODY = f"""
 
 PICKEM_CARD_BODY = f"""
 <div class=card>
-  <h2>Your card</h2>
+  <div class=pk-boardhead>
+    <h2>Your card</h2>
+    <label class=pk-wksel hidden>Week
+      <select id=cardwk aria-label="Which week to show"></select>
+    </label>
+  </div>
+  <p class=pk-cardseason id=cardseason hidden></p>
   <p class=note id=cardnote>Loading&hellip;</p>
   <div id=card></div>
 </div>

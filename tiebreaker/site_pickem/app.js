@@ -661,7 +661,7 @@
   // slate to your picks rather than listing either alone: what you took, the
   // number you took it at, and how it came out — including the games you left
   // blank, which is the thing a card is for noticing.
-  function cardRow(g, side, teams) {
+  function cardRow(g, side, teams, locked) {
     var li = el("li", "pk-cardrow");
     li.appendChild(el("span", "pk-when", shortWhen(g.kickoff)));
 
@@ -680,38 +680,72 @@
     li.appendChild(el("span", "pk-num",
       side ? spreadText(g.spread_x2, side) : "—"));
 
-    // How the room picked. The server only sends this once the week is
-    // locked, which is the whole design: before the lock it would let a late
-    // picker follow the crowd, and locking the slate at once exists precisely
-    // so nobody plays on more information than anybody else.
-    var con = el("span", "pk-con");
+    li.appendChild(resultChip(g, side, locked));
+
+    // How the room split, on its own line, because a single percentage next
+    // to a row never said what it was a percentage OF. A bar running from one
+    // team's colour to the other, a marker where the split falls, and each
+    // side's own number at its own end: the question is "which way did the
+    // room lean, and how hard", and that is a position, not a digit.
+    //
+    // Only present once the week is locked — the server does not send the
+    // field before, so a late picker cannot follow the room.
     if (g.consensus) {
       var h = g.consensus.home || 0, a = g.consensus.away || 0, n = h + a;
       if (n) {
-        var mineN = side === "home" ? h : side === "away" ? a : Math.max(h, a);
-        var pct = Math.round(100 * mineN / n);
-        var who = side || (h >= a ? "home" : "away");
-        con.appendChild(el("span", "pk-conbar-wrap")).appendChild(
-          el("i", "pk-conbar")).style.width = pct + "%";
-        con.appendChild(el("span", "pk-conpct", pct + "%"));
-        con.title = pct + "% of " + n + " cards took " + g[who];
-        con.appendChild(el("span", "sr-only",
-          " — " + pct + " percent of " + n + " cards took " + g[who]));
+        li.appendChild(consensusBar(g, side, teams, h, a, n));
       }
     }
-    li.appendChild(con);
-
-    var out = null;
-    if (!side) out = "nopick";
-    else if (g.result) {
-      out = g.result.ats === "void" ? "void"
-          : g.result.ats === "push" ? "push"
-          : g.result.ats === side ? "win" : "loss";
-    }
-    li.appendChild(out
-      ? el("span", "pk-res " + out, out === "nopick" ? "NO PICK" : out.toUpperCase())
-      : el("span", "pk-res pending", "·"));
     return li;
+  }
+
+  function consensusBar(g, side, teams, h, a, n) {
+    var hp = Math.round(100 * h / n), ap = 100 - hp;
+    var ac = (teams[g.away] && teams[g.away].color) || "";
+    var hc = (teams[g.home] && teams[g.home].color) || "";
+    var wrap = el("div", "pk-split");
+
+    var lp = el("span", "pk-splitpct pk-away", ap + "%");
+    if (side === "away") lp.className += " pk-mine";
+    wrap.appendChild(lp);
+
+    var bar = el("span", "pk-splitbar");
+    // The gradient carries which team is which; the marker carries where the
+    // split actually is. A gradient alone blurs the one number that matters.
+    bar.style.background = "linear-gradient(90deg," +
+      (ac || "var(--tc-none)") + " 0%," + (hc || "var(--tc-none)") + " 100%)";
+    var mark = el("i", "pk-splitmark");
+    mark.style.left = ap + "%";
+    bar.appendChild(mark);
+    wrap.appendChild(bar);
+
+    var rp = el("span", "pk-splitpct pk-home", hp + "%");
+    if (side === "home") rp.className += " pk-mine";
+    wrap.appendChild(rp);
+
+    wrap.title = ap + "% took " + g.away + ", " + hp + "% took " + g.home +
+                 " — " + n + " cards";
+    wrap.appendChild(el("span", "sr-only",
+      "Of " + n + " cards, " + ap + " percent took " + g.away + " and " +
+      hp + " percent took " + g.home + "."));
+    return wrap;
+  }
+
+  // Five states, not two. A card read on Saturday afternoon is mostly games
+  // that have not finished, and "nothing here yet" is the least useful thing
+  // a row can say about a game that is currently being played.
+  function resultChip(g, side, locked) {
+    if (!side) return el("span", "pk-res nopick", "NO PICK");
+    if (g.result) {
+      var a = g.result.ats;
+      var out = a === "void" ? "void" : a === "push" ? "push"
+              : a === side ? "win" : "loss";
+      return el("span", "pk-res " + out, out.toUpperCase());
+    }
+    var started = g.kickoff_at && (Date.now() / 1000) >= g.kickoff_at;
+    if (started) return el("span", "pk-res live", "IN PLAY");
+    if (locked) return el("span", "pk-res locked", "LOCKED");
+    return el("span", "pk-res pending", "OPEN");
   }
 
   function tallyCard(games, picks) {
@@ -740,43 +774,84 @@
         "Sign in to see your card."));
       return;
     }
-    Promise.all([
-      api("/api/slate"),
-      api("/api/picks"),
-      fetch("/pickem/teams.json").then(function (r) { return r.ok ? r.json() : {}; })
-        .catch(function () { return {}; })
-    ]).then(function (r) {
-      var s = r[0], picks = (r[1] && r[1].picks) || {}, teams = r[2] || {};
-      var t = tallyCard(s.games, picks);
-      var decided = t.w + t.l;
+    var teamsP = fetch("/pickem/teams.json")
+      .then(function (r) { return r.ok ? r.json() : {}; })
+      .catch(function () { return {}; });
 
-      note.textContent = "";
-      var line = el("p", "pk-cardrec");
-      line.appendChild(el("b", null, t.w + "–" + t.l +
-        (t.p ? "–" + t.p : "")));
-      line.appendChild(document.createTextNode(
-        decided ? "  ·  " + (100 * t.w / decided).toFixed(1) + "% against the spread"
-                : "  ·  nothing graded yet"));
-      // The number that actually matters before a lock: what you have not done.
-      if (t.open) {
-        line.appendChild(el("span", "pk-open",
-          "  ·  " + t.open + " still open"));
+    function draw(week) {
+      var q = week == null || week === "" ? "" : "?week=" + encodeURIComponent(week);
+      return Promise.all([api("/api/slate" + q), api("/api/picks" + q), teamsP])
+        .then(function (r) {
+          var s = r[0], picks = (r[1] && r[1].picks) || {}, teams = r[2] || {};
+          var t = tallyCard(s.games, picks);
+          var decided = t.w + t.l;
+
+          note.textContent = "";
+          var line = el("p", "pk-cardrec");
+          line.appendChild(el("b", null,
+            t.w + "–" + t.l + (t.p ? "–" + t.p : "")));
+          line.appendChild(document.createTextNode(decided
+            ? "  ·  " + (100 * t.w / decided).toFixed(1) + "% against the spread"
+            : "  ·  nothing graded yet"));
+          // Before a lock the useful number is what you have NOT done; after
+          // it there is nothing to be done about it, so it stops nagging.
+          if (t.open && !s.locked) {
+            line.appendChild(el("span", "pk-open",
+              "  ·  " + t.open + " still open"));
+          }
+          note.appendChild(line);
+
+          var ul = el("ul", "pk-card");
+          inPlayOrder(s.games).forEach(function (g) {
+            if (g.unpickable) return;   // nothing to say about a game nobody could pick
+            ul.appendChild(cardRow(g, picks[g.game_id] || null, teams, s.locked));
+          });
+          wrap.textContent = "";
+          wrap.appendChild(ul);
+          return s;
+        });
+    }
+
+    // Season first, because the week is the detail and the season is the
+    // record. Failing to get it is not worth blocking the card over.
+    api("/api/leaderboard").then(function (b) {
+      var mine = (b.rows || []).filter(function (r) {
+        return r.user_id === me.user_id; })[0];
+      if (!mine) return;
+      var el2 = $("cardseason");
+      if (!el2) return;
+      var d = mine.w + mine.l;
+      el2.textContent = "Season  " + mine.w + "–" + mine.l +
+        (mine.p ? "–" + mine.p : "") +
+        (d ? "  ·  " + (100 * mine.w / d).toFixed(1) + "%" : "") +
+        (mine.rank ? "  ·  " + ordinal(mine.rank) + " on the board" : "");
+      el2.hidden = false;
+    }).catch(function () { /* the week still stands on its own */ });
+
+    draw("").then(function (s) {
+      var sel = $("cardwk");
+      if (!sel || s == null) return;
+      for (var w = 0; w <= s.week; w++) {
+        var o = document.createElement("option");
+        o.value = String(w);
+        o.textContent = "Week " + w;
+        if (w === s.week) o.selected = true;
+        sel.appendChild(o);
       }
-      note.appendChild(line);
-
-      var ul = el("ul", "pk-card");
-      inPlayOrder(s.games).forEach(function (g) {
-        if (g.unpickable) return;      // nothing to say about a game nobody could pick
-        ul.appendChild(cardRow(g, picks[g.game_id] || null, teams));
-      });
-      wrap.textContent = "";
-      wrap.appendChild(ul);
+      var lab = sel.closest ? sel.closest("label") : null;
+      if (s.week > 0) { if (lab) lab.hidden = false; }
+      sel.addEventListener("change", function () { draw(sel.value); });
     }).catch(function (err) {
       note.textContent = err.status === 404
         ? "No slate published yet. The week goes up on Tuesday, once the "
           + "lines are in."
         : explain(err);
     });
+  }
+
+  function ordinal(n) {
+    var s = ["th", "st", "nd", "rd"], v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
   }
 
   // ------------------------------------------------------------------ boot

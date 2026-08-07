@@ -289,7 +289,7 @@
            display: grid; gap: 3px; }
 
 .pk-cardrow {
-  display: grid; grid-template-columns: 72px minmax(0, 1fr) 3.6em 6.5em 4.6em;
+  display: grid; grid-template-columns: 72px minmax(0, 1fr) 3.6em 5.4em;
   gap: 0 8px; align-items: center;
   border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
   padding: 4px 8px; min-width: 0;
@@ -313,19 +313,56 @@
                  background: color-mix(in srgb, var(--dim) 10%, transparent); }
 
 /* --- what the room did ---------------------------------------------------
-   Only ever rendered after the lock; the server does not send it before. A
-   bar rather than a bare number because the useful reading is "was I with
-   everyone or against them", which is a length, not a digit. Neutral grey:
-   the crowd is not good news or bad news, and colouring it would say it was. */
+   A single percentage beside a row never said what it was a percentage OF.
+   This runs from one team's colour to the other with each side's number at
+   its own end, so the reading is positional: which way the room leaned, and
+   how hard. Only ever rendered after the lock; the server withholds the field
+   before it.
 
-.pk-con { display: flex; align-items: center; gap: 5px; min-width: 0; }
-.pk-conbar-wrap {
-  flex: 1; min-width: 28px; height: 5px; border-radius: 3px;
-  background: color-mix(in srgb, var(--dim) 22%, transparent);
-  overflow: hidden;
+   The gradient carries the identity, the marker carries the number. A
+   gradient on its own looks better and says less — you cannot read a split
+   off a blur. */
+
+.pk-split {
+  grid-column: 2 / -1; display: flex; align-items: center; gap: 8px;
+  margin-top: 2px;
 }
-.pk-conbar { display: block; height: 100%; background: var(--dim); }
-.pk-conpct { font-size: 11px; color: var(--dim);
-             font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pk-splitbar {
+  position: relative; flex: 1; min-width: 60px; height: 7px;
+  border-radius: 4px; overflow: hidden;
+}
+/* Sits ON the colour, so it needs to read against sixteen different ones:
+   a white bar with a dark outline is legible over every team in the
+   conference and over the graphite an unknown opponent gets. */
+.pk-splitmark {
+  position: absolute; top: -2px; bottom: -2px; width: 3px;
+  transform: translateX(-1.5px);
+  background: var(--bg); box-shadow: 0 0 0 1px var(--fg);
+  border-radius: 1px;
+}
+.pk-splitpct {
+  font-size: 11px; color: var(--dim); font-variant-numeric: tabular-nums;
+  white-space: nowrap; min-width: 2.4em;
+}
+.pk-splitpct.pk-home { text-align: right; }
+/* Your side, in weight rather than hue — the crowd is not a verdict, and
+   colouring it would make it look like one. */
+.pk-splitpct.pk-mine { color: var(--fg); font-weight: 700; }
 
-@media (max-width: 620px) { .pk-con { display: none; } }
+.pk-cardseason { margin: 0 0 10px; font-size: 13px; color: var(--dim);
+                 font-variant-numeric: tabular-nums; }
+
+/* Five states. A card read mid-afternoon is mostly games that have not
+   finished, and the two that are not outcomes get no colour: nothing has
+   happened yet, and a chip that looks like a result would be a lie. */
+.pk-res.locked  { color: var(--dim);
+                  background: color-mix(in srgb, var(--dim) 12%, transparent); }
+.pk-res.live    { color: var(--warn); font-weight: 700;
+                  background: color-mix(in srgb, var(--warn) 16%, transparent); }
+.pk-res.pending { color: var(--dim); background: none; }
+.pk-res.nopick  { color: var(--dim);
+                  background: color-mix(in srgb, var(--dim) 10%, transparent); }
+
+@media (max-width: 620px) {
+  .pk-split { grid-column: 1 / -1; }
+}
