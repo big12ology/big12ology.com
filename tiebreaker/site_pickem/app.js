@@ -17,6 +17,13 @@
 
   var LOCKED = false;      // set once the server says so; never unset
 
+  // Below this many cards on a game, the split is not shown at all. Three
+  // people picking is not a consensus, it is three people — and rendered as a
+  // 67/33 bar it would read with exactly the same authority as a real one.
+  // The threshold is the client's, so a small pool simply sees nothing rather
+  // than something misleading; the server is free to send whatever it has.
+  var MIN_CONSENSUS = 10;
+
   function api(path, opts) {
     opts = opts || {};
     var init = {
@@ -94,6 +101,21 @@
   // Readable text on a team's own colour. Selected picks fill with the team
   // colour rather than the brand teal (teal is chrome only), which means the
   // foreground has to be computed rather than chosen.
+  // The same shape the rest of the site uses — tiebreaker/site/app.js:mark().
+  // A team with no freely-licensed mark gets nothing rather than a stand-in;
+  // logos/SOURCES.json is the registry and it says which those are.
+  function mark(teams, team, size) {
+    var src = teams[team] && teams[team].logo;
+    if (!src) return null;
+    var img = document.createElement("img");
+    img.className = "mark";
+    img.src = src;
+    img.alt = "";
+    img.width = size; img.height = size;
+    img.loading = "lazy";
+    return img;
+  }
+
   function textOn(hex) {
     var m = /^#?([0-9a-f]{6})$/i.exec(hex || "");
     if (!m) return "#fff";
@@ -237,6 +259,8 @@
         lab.style.setProperty("--tc", colour);
         lab.style.setProperty("--tfg", textOn(colour));
       }
+      var mk = mark(teams, team, 18);
+      if (mk) lab.appendChild(mk);
       // The name is ellipsised when it has to be, so a title recovers it on
       // hover. The <legend> already carries it in full for screen readers,
       // which is why this is a convenience rather than the fix.
@@ -332,6 +356,11 @@
       [].forEach.call(form.querySelectorAll("input[type=radio]"), function (i) {
         i.disabled = true;
       });
+      // Disabling the inputs stops the picking; it does not stop the page
+      // LOOKING like it is still asking. The borders still lit on hover and
+      // the cursor still turned, which is an interface promising something it
+      // cannot do. The class turns all of that off in one place.
+      form.className = "pk-locked";
     }
     var cd = $("cd");
     if (cd) cd.textContent = "locked";
@@ -668,6 +697,8 @@
     var m = el("span", "pk-cardmatch");
     ["away", "home"].forEach(function (s, i) {
       if (i) m.appendChild(el("span", "pk-at", " at "));
+      var mk2 = mark(teams, g[s], 15);
+      if (mk2) m.appendChild(mk2);
       var t = el("span", s === side ? "pk-took" : null, g[s]);
       if (s === side) {
         var c = (teams[g[s]] && teams[g[s]].color) || "";
@@ -680,22 +711,31 @@
     li.appendChild(el("span", "pk-num",
       side ? spreadText(g.spread_x2, side) : "—"));
 
-    li.appendChild(resultChip(g, side, locked));
-
-    // How the room split, on its own line, because a single percentage next
-    // to a row never said what it was a percentage OF. A bar running from one
-    // team's colour to the other, a marker where the split falls, and each
-    // side's own number at its own end: the question is "which way did the
-    // room lean, and how hard", and that is a position, not a digit.
+    // The split goes before the result, because the grid places children in
+    // DOM order and the result belongs in the last, narrow column. Appending
+    // it after put the chip in the gauge's slot and squeezed the gauge into
+    // the chip's.
     //
-    // Only present once the week is locked — the server does not send the
-    // field before, so a late picker cannot follow the room.
+    // A bar running from one team's colour to the other with a marker where
+    // the split falls and each side's number at its own end: the question is
+    // which way the room leaned and how hard, and that is a position rather
+    // than a digit.
+    //
+    // Absent below MIN_CONSENSUS, and absent entirely before the lock — the
+    // server does not send the field, so a late picker cannot follow the room.
+    var shown = false;
     if (g.consensus) {
       var h = g.consensus.home || 0, a = g.consensus.away || 0, n = h + a;
-      if (n) {
+      if (n >= MIN_CONSENSUS) {
         li.appendChild(consensusBar(g, side, teams, h, a, n));
+        shown = true;
       }
     }
+    // The column exists either way, so rows stay aligned down the card
+    // whether or not a given game reached the threshold.
+    if (!shown) li.appendChild(el("span", "pk-split"));
+
+    li.appendChild(resultChip(g, side, locked));
     return li;
   }
 

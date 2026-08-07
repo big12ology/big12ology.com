@@ -1988,6 +1988,33 @@ def when_line(g):
     return f"<div class=slatewhen>{icon('clock')}{inner}</div>"
 
 
+def pickem_line(g):
+    """An empty slot for what the pick'em made of this game.
+
+    Sixteen of these to a page, so it is one line and carries no percentages —
+    at this size the reading is only "which way, and how far", and two numbers
+    would crowd out the stadium name. The full split is on the game page and
+    on your card.
+
+    Ships empty and hidden. pickcon.js fills whichever of these it finds, in
+    one request for the whole page, and leaves the rest alone: no line, no
+    lock, too few cards, or no Worker all mean the row simply is not there.
+    """
+    if not (g.get("line") or {}).get("spread"):
+        return ""
+    teams_ = load_teams()
+    # Abbreviations only exist for the sixteen members, and team_abbr falls
+    # back to the full name for everyone else — which put "COLO" beside
+    # "Georgia Tech" in the same row. Either both are short or neither is.
+    al, ah = team_abbr(teams_, g["away"]), team_abbr(teams_, g["home"])
+    if al == g["away"] or ah == g["home"]:
+        al, ah = g["away"], g["home"]
+    return (f"<div class=slateline data-pkcon='{g['id']}' hidden "
+            f"data-ac='{team_color(teams_, g['away'], '#252932')}' "
+            f"data-hc='{team_color(teams_, g['home'], '#252932')}' "
+            f"data-al=\"{esc(al)}\" data-hl=\"{esc(ah)}\"></div>")
+
+
 def slate_card(g, pages=True):
     """One game, with everything a reader needs to go and watch it.
 
@@ -2004,7 +2031,7 @@ def slate_card(g, pages=True):
             f"<div class=slateteams>{matchup(g)}</div>"
             f"<div class=slatemeta>{when_line(g)}{where(g)}"
             f"{broadcast(g)}"
-            f"{weather_line(g)}{market(g)}</div>"
+            f"{weather_line(g)}{market(g)}{pickem_line(g)}</div>"
             f"<div class=slatelinks>{ours}{espn_link(g)}</div></div>")
 
 
@@ -2227,7 +2254,7 @@ def build_game_page(g, ctx):
                f"data-away=\"{esc(g['away'])}\" data-home=\"{esc(g['home'])}\" "
                f"data-ac='{team_color(teams_, g['away'], '#252932')}' "
                f"data-hc='{team_color(teams_, g['home'], '#252932')}'>"
-               f"<h2>What the public did</h2><div class=pcbody></div></div>")
+               f"<h2>Pickem says</h2><div class=pcbody></div></div>")
 
     return (head + mk + model_card(g, ctx) + con + race_card(g, ctx)
             + series_card(g, ctx)
@@ -3281,7 +3308,11 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          build_schedule_page(games, ctx),
          f"This week's Big 12 games in {yr}: kickoff times, where they are "
          "played, the forecast, and a link to every preview.",
-         LOCAL_TIME_JS),
+         # pickcon.js asks once for the whole week and fills whichever slate
+         # cards have a split worth showing. Everything else on this page is
+         # static, and stays static if it never answers.
+         LOCAL_TIME_JS +
+         f'<script defer src="/tiebreaker/{asset_v("pickcon.js")}"></script>'),
         ("matrix.html", "The Matrix", "matrix",
          build_matrix_page(ctx),
          f"The {yr} Big 12 head-to-head grid: who plays whom, home or away "
@@ -3407,8 +3438,9 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                         # the schedule section touches /api/*. Deferred and
                         # entirely optional: it fills the consensus card or
                         # leaves it hidden.
-                        head=(f'<script defer src="{BASE}'
-                              f'{asset_v("pickcon.js")}"></script>'),
+                        head=(f'<script defer '
+                              f'src="/tiebreaker/{asset_v("pickcon.js")}">'
+                              f'</script>'),
                         section="schedule", page="", up="../"))
         finally:
             globals()["BASE"] = BASE_was
@@ -4043,6 +4075,34 @@ def build_pickem(year):
     head = (f'<link rel=stylesheet href="{asset_v("styles.css", PICKEM_SITE)}">'
             f'<script defer src="{BASE}{asset_v("pct.js")}"></script>'
             f'<script defer src="{asset_v("app.js", PICKEM_SITE)}"></script>')
+
+    # Colour, mark and abbreviation for every team the site knows, written as
+    # a real file rather than served from /api/*. The build already has all of
+    # it, it never changes between deploys, and a page that must ask the Worker
+    # before it can draw a logo is a page that loses its logos when the Worker
+    # is down. Paths carry the pick'em's BASE, so they resolve to
+    # ../tiebreaker/logos/ exactly as the stylesheet does.
+    marks = {}
+    for t, e in (MARKS or {}).items():
+        if e.get("usable") is False:
+            continue
+        ext = (e.get("ext") or ".svg").lstrip(".")
+        marks[t] = f"{BASE}logos/{e['key']}.{ext}"
+    tmeta = load_teams()
+    meta = {}
+    for t in set(list(marks) + list(tmeta)):
+        row = {}
+        if marks.get(t):
+            row["logo"] = marks[t]
+        if tmeta.get(t, {}).get("color"):
+            row["color"] = tmeta[t]["color"]
+        ab = team_abbr(tmeta, t) if t in tmeta else None
+        if ab:
+            row["abbr"] = ab
+        if row:
+            meta[t] = row
+    with open(os.path.join(PICKEM_SITE, "teams.json"), "w") as f:
+        json.dump(meta, f, sort_keys=True, indent=1)
 
     canon = "https://big12ology.com/pickem/"
     pages = [

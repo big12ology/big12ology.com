@@ -119,17 +119,22 @@
 .pk-when { color: var(--dim); font-size: 12.5px; white-space: nowrap;
         font-variant-numeric: tabular-nums; }
 
-.pk-sides { display: grid; grid-template-columns: 1fr 1.6em 1fr; gap: 6px;
+.pk-sides { display: grid; grid-template-columns: 1fr 1.3em 1fr; gap: 5px;
          align-items: stretch; min-width: 0; }
 .pk-at { align-self: center; justify-self: center; color: var(--dim);
       font-size: 11px; }
 
 /* The input is hidden; the label is the control. */
+/* The same control The Lab already has, at slate density. Its .pick is
+   inline-flex, 1px --line, 8px radius, a 6px gap and the mark first; keeping
+   that here means a reader who has used one recognises the other, which is
+   the "same quantity presented the same way" rule in tiebreaker/README.md. */
 .pk-side {
-  display: flex; align-items: center; gap: 6px; min-width: 0;
-  border: 1px solid var(--line); border-radius: 6px; padding: 4px 7px;
-  cursor: pointer; background: var(--bg);
+  display: flex; align-items: center; gap: 5px; min-width: 0;
+  border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px;
+  cursor: pointer; background: var(--panel); color: var(--ink, var(--fg));
 }
+.pk-side img.mark { margin: 0; flex: none; }
 .pk-side .pk-tname { flex: 1; min-width: 0; overflow: hidden;
                text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
 .pk-side .pk-num { font-variant-numeric: tabular-nums; font-size: 14px;
@@ -184,7 +189,10 @@
    not the 12.5px the time is actually set in, so it reserved 112px for
    content that needs 62 — and the 50px difference came straight off the team
    names, which is what made "Texas Tech" ellipsise. */
-.pk-slate-game { grid-template-columns: 64px minmax(0, 1fr) 44px; }
+/* Every pixel these two columns take comes off a team name, and the marks
+   now want 20 of them a side. Sized to the content: "Sat 12:30p" needs 56,
+   and the chip needs 40. */
+.pk-slate-game { grid-template-columns: 56px minmax(0, 1fr) 40px; }
 /* Closed rows say why in words, which no fixed chip column fits. They give
    the space back from the sides, where it costs nothing: the row cannot be
    picked, and the full name is still in the legend and the title. */
@@ -289,7 +297,7 @@
            display: grid; gap: 3px; }
 
 .pk-cardrow {
-  display: grid; grid-template-columns: 72px minmax(0, 1fr) 3.6em 5.4em;
+  display: grid; grid-template-columns: 64px minmax(6em, 1fr) 3.2em 168px 4.6em;
   gap: 0 8px; align-items: center;
   border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
   padding: 4px 8px; min-width: 0;
@@ -323,12 +331,14 @@
    gradient on its own looks better and says less — you cannot read a split
    off a blur. */
 
-.pk-split {
-  grid-column: 2 / -1; display: flex; align-items: center; gap: 8px;
-  margin-top: 2px;
-}
+/* Inline, not a row of its own. Spanning the full width left the matchup
+   stranded at one edge, the line stranded at the other and a bar running the
+   whole way between them saying nothing about the distance it covered. At a
+   fixed width it is a gauge sitting where a gauge belongs, and it absorbs the
+   slack the matchup column used to hand to the gutter. */
+.pk-split { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .pk-splitbar {
-  position: relative; flex: 1; min-width: 60px; height: 7px;
+  position: relative; flex: 1; min-width: 40px; height: 7px;
   border-radius: 4px; overflow: hidden;
 }
 /* Sits ON the colour, so it needs to read against sixteen different ones:
@@ -342,7 +352,7 @@
 }
 .pk-splitpct {
   font-size: 11px; color: var(--dim); font-variant-numeric: tabular-nums;
-  white-space: nowrap; min-width: 2.4em;
+  white-space: nowrap; min-width: 2.2em;
 }
 .pk-splitpct.pk-home { text-align: right; }
 /* Your side, in weight rather than hue — the crowd is not a verdict, and
@@ -364,5 +374,30 @@
                   background: color-mix(in srgb, var(--dim) 10%, transparent); }
 
 @media (max-width: 620px) {
+  .pk-cardrow { grid-template-columns: 1fr auto; gap: 3px 8px; }
   .pk-split { grid-column: 1 / -1; }
+  .pk-cardrow .pk-when { grid-column: 1; }
 }
+
+/* --- a locked slate ------------------------------------------------------
+   Once the week is locked the picker is a record, not a control. Disabled
+   inputs stop the picking, but the borders still lit on hover and the cursor
+   still turned — an interface going on asking for something it will not
+   accept. Everything that suggested interactivity is off here, and the rows
+   fall back to reading as what they are: what you picked, fixed. */
+
+.pk-locked .pk-side { cursor: default; }
+.pk-locked .pk-side:hover { border-color: transparent; }
+.pk-locked .pk-slate-game { background: var(--bg); }
+
+/* The side you did not take stops being a box. A bordered panel on a plain
+   background is the shape of an available choice, and after the lock there
+   are none — leaving them looking pressable was the page going on offering
+   something it would refuse. Border and fill go; the words stay. */
+.pk-locked input:not(:checked) + .pk-side {
+  border-color: transparent; background: none; color: var(--dim);
+}
+/* What you did take keeps its colour, because that is the record. */
+.pk-locked input:checked + .pk-side { box-shadow: none; }
+/* A game you never picked has no record to show, so the whole row recedes. */
+.pk-locked .pk-slate-game:not(:has(input:checked)) { opacity: .6; }
