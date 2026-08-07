@@ -1,7 +1,7 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=36";
-import { gameTooltipHTML } from "./gametip.js?v=36";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=37";
+import { gameTooltipHTML } from "./gametip.js?v=37";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -92,6 +92,9 @@ function showTip(clientX, clientY, rows) {
 }
 
 function placeTip(el, clientX, clientY) {
+  // Chart tooltips trail the cursor; drop the cell anchor the table sets, so
+  // its hover bridge does not sit between the cursor and the chart.
+  delete el.dataset.anchor;
   const w = el.offsetWidth;
   let x = window.scrollX + clientX - w / 2;
   x = Math.max(8, Math.min(x, window.scrollX + document.documentElement.clientWidth - w - 8));

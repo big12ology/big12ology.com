@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=36";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=36";
-import { gameTooltipHTML } from "./gametip.js?v=36";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=37";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=37";
+import { gameTooltipHTML } from "./gametip.js?v=37";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -232,6 +232,7 @@ function renderTable() {
 
   $("#attendance-table").innerHTML = head + `<tbody>${body}</tbody>` + foot;
   tooltipEl().hidden = true;
+  tipFor = null;
 }
 
 // ---- game-detail tooltip ----------------------------------------------
@@ -268,6 +269,7 @@ function tooltipHTML(team, week) {
 }
 
 let hideTimer = null;
+let tipFor = null;
 
 function tooltipEl() {
   let el = $("#tooltip");
@@ -282,12 +284,23 @@ function tooltipEl() {
   return el;
 }
 
+// mouseover fires again for every child span inside a cell; re-rendering and
+// re-placing the card mid-hover makes it twitch under the pointer.
 function showTooltip(td) {
+  if (td === tipFor && !tooltipEl().hidden) {
+    clearTimeout(hideTimer);
+    return;
+  }
   const html = tooltipHTML(td.dataset.team, Number(td.dataset.week));
   if (!html) return;
   clearTimeout(hideTimer);
+  tipFor = td;
   const el = tooltipEl();
   el.innerHTML = html;
+  // Anchored under a cell, not trailing the cursor: styles.css bridges the
+  // 6px below so the pointer can reach the link without crossing the row
+  // underneath. Charts clear this when they borrow the same element.
+  el.dataset.anchor = "cell";
   el.hidden = false;
   const r = td.getBoundingClientRect();
   el.style.left = "0px";
@@ -302,6 +315,7 @@ function showTooltip(td) {
 function hideTooltip() {
   hideTimer = setTimeout(() => {
     tooltipEl().hidden = true;
+    tipFor = null;
   }, 150);
 }
 

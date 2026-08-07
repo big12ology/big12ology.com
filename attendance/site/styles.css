@@ -248,6 +248,21 @@ td.bye {
   font-size: 0.82rem;
   line-height: 1.45;
 }
+/* The card hangs below the cell with a gap, and that gap belongs to the row
+   underneath: aim for the box-score link and the pointer crosses the next
+   game's cell, which swaps the card out from under you. This invisible strip
+   bridges the gap so the trip from cell to link never leaves the tooltip.
+   Keep the height >= the offset app.js positions the card with. Only for the
+   cell-anchored card — the chart tooltips trail the cursor, and a strip
+   reaching back toward it would eat their own mousemoves. */
+#tooltip[data-anchor="cell"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -8px;
+  height: 8px;
+}
 #tooltip .tip-head { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
 #tooltip .tip-opp { font-weight: 600; }
 #tooltip .win { color: var(--full); }
