@@ -1053,5 +1053,39 @@
   "restrictions": "trademarked",
   "file_page": "https://commons.wikimedia.org/wiki/File:Wcu_catamounts_logo.png",
   "usable": true
+ },
+ {
+  "key": "oklahoma",
+  "team": "Oklahoma",
+  "article": "Oklahoma Sooners football",
+  "requested": "Oklahoma_Sooners_logo.svg",
+  "file": "Oklahoma_Sooners_logo.svg",
+  "url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Oklahoma_Sooners_logo.svg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original",
+  "mime": "image/svg+xml",
+  "bytes": 905,
+  "ext": ".svg",
+  "licence": "Public domain",
+  "credit": "https://s3.amazonaws.com/soonersports.com/documents/2018/5/8/5473175.pdf",
+  "artist": "University of Oklahoma",
+  "restrictions": "trademarked",
+  "file_page": "https://commons.wikimedia.org/wiki/File:Oklahoma_Sooners_logo.svg",
+  "usable": true
+ },
+ {
+  "key": "texas",
+  "team": "Texas",
+  "article": "Texas Longhorns football",
+  "requested": "Texas_Longhorns_logo.svg",
+  "file": "Texas_Longhorns_logo.svg",
+  "url": "https://upload.wikimedia.org/wikipedia/commons/8/8d/Texas_Longhorns_logo.svg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original",
+  "mime": "image/svg+xml",
+  "bytes": 1869,
+  "ext": ".svg",
+  "licence": "Public domain",
+  "credit": "here (archived link)",
+  "artist": "Unknown",
+  "restrictions": "",
+  "file_page": "https://commons.wikimedia.org/wiki/File:Texas_Longhorns_logo.svg",
+  "usable": true
  }
 ]

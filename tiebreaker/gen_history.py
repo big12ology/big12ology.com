@@ -17,7 +17,7 @@ import os
 
 import fetch as fetcher
 import tiebreaker as tb
-from build import esc
+from build import esc, logo_img
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HIST = os.path.join(HERE, "history")
@@ -284,10 +284,10 @@ def cutline_section(all_games):
         at_floor = [t for t, r in rec.items() if r == floor]
         rows.append(
             f"<tr><td>{year}</td>"
-            + "".join(f"<td class=teamcell>{esc(t)} "
+            + "".join(f"<td class=teamcell>{logo_img(t, 16)}{esc(t)} "
                       f"<b>{rec[t][0]}&#8209;{rec[t][1]}</b></td>"
                       for t in part)
-            + (f"<td class=teamcell>{esc(best[2])} "
+            + (f"<td class=teamcell>{logo_img(best[2], 16)}{esc(best[2])} "
                f"<b>{best[0]}&#8209;{-best[1]}</b></td>"
                f"<td>{'<span class=samerec>same record</span>' if tied else ''}"
                f"{f' — {len(at_floor)} tied there' if len(at_floor) > 2 else ''}"

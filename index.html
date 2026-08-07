@@ -17,7 +17,7 @@
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
-<link rel=stylesheet href="brand.css?v=4">
+<link rel=stylesheet href="brand.css?v=5">
 <script defer src="theme.js?v=1"></script>
 <style>
 :root {
@@ -39,7 +39,6 @@ header img { height: 64px; width: auto; margin-bottom: 14px; }
 h1 { margin: 0; }
 /* The lockup carries the name in outlines; it is never rebuilt from text. */
 h1 .b12-logo--primary { width: min(340px, 78vw); margin: 0 auto; }
-:root[data-theme="dark"] h1 picture source { display: none; }
 header p { margin: 8px auto 0; color: var(--dim); max-width: 520px; }
 main { max-width: 820px; margin: 0 auto; padding: 28px 20px 40px;
   display: grid; gap: 18px; }
@@ -77,12 +76,12 @@ a.card:hover { border-color: var(--accent); }
 </nav>
 <header>
   <h1 class=b12-logo-lockup>
-    <picture>
-      <source srcset="brand/big12ology-primary-dark.svg"
-              media="(prefers-color-scheme: dark)">
-      <img class="b12-logo b12-logo--primary" src="brand/big12ology-primary.svg"
-           alt="Big12ology" width="503" height="144">
-    </picture>
+    <img class="b12-logo b12-logo--primary b12-logo--light"
+         src="brand/big12ology-primary.svg"
+         alt="Big12ology" width="503" height="144">
+    <img class="b12-logo b12-logo--primary b12-logo--dark"
+         src="brand/big12ology-primary-dark.svg"
+         alt="" aria-hidden="true" width="503" height="144">
   </h1>
   <p>The study of the Big 12. Unofficial fan-built tools and data projects
   about the sixteen-team league — its standings math, its unbalanced

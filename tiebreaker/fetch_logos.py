@@ -4,6 +4,7 @@
     python3 fetch_logos.py 2026 --dry-run   # resolve and report, download nothing
     python3 fetch_logos.py 2026             # fetch what is missing
     python3 fetch_logos.py 2026 --force     # re-fetch even if present
+    python3 fetch_logos.py Oklahoma Texas   # named teams, no schedule involved
 
 Costs no CFBD quota — this talks to Wikipedia, and reads the schedule from
 the committed data/games_<year>.json.
@@ -167,7 +168,11 @@ def key_for(team, taken):
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    year = int(args[0]) if args else 2026
+    year = int(args[0]) if args and args[0].isdigit() else 2026
+    # Teams named outright, for the ones no current schedule will surface:
+    # Oklahoma and Texas are gone from the league but still stand in the
+    # record — the cut-line table lists them beside teams that have marks.
+    named = [a for a in args if not a.isdigit()]
     dry = "--dry-run" in sys.argv
     force = "--force" in sys.argv
 
@@ -177,8 +182,8 @@ def main():
     have = {e.get("team") for e in sources if e.get("team")}
     taken = {e["key"] for e in sources}
 
-    opponents = sorted({g[s] for g in games for s in ("home", "away")
-                        if g[s] not in big12})
+    opponents = named or sorted({g[s] for g in games for s in ("home", "away")
+                                 if g[s] not in big12})
     todo = [t for t in opponents if force or t not in have]
     print(f"{year}: {len(opponents)} non-conference opponents, "
           f"{len(todo)} to source\n")

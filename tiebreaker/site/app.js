@@ -11,6 +11,7 @@
 
   var payload = JSON.parse(document.getElementById("payload").textContent);
   var teams = payload.teams;
+  var marks = payload.marks || {};
   var stand = document.getElementById("stand");
   var stories = document.getElementById("stories");
   var matchcard = document.getElementById("matchcard");
@@ -44,10 +45,13 @@
       .replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
   }
 
+  // The sixteen carry colour and abbreviation; everyone else on the schedule
+  // carries only a mark. Both draw the same logo — a game row shows two
+  // teams and should not present them two ways.
   function mark(team, size) {
-    var m = teams[team];
-    if (!m) return "";
-    return "<img class=mark src='" + m.logo + "' alt='' width=" + size +
+    var src = (teams[team] && teams[team].logo) || marks[team];
+    if (!src) return "";
+    return "<img class=mark src='" + src + "' alt='' width=" + size +
       " height=" + size + " loading=lazy>";
   }
 

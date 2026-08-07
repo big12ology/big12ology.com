@@ -1080,7 +1080,12 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
   letter-spacing:.06em; color:var(--dim) }
 .dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
-.mark { vertical-align:-3px; margin-right:6px }
+/* Several marks carry a white plate inside the artwork itself, so on a dark
+   page they read as stray white cards. CSS cannot recolour what is baked
+   into the file — what it can do is make the plate look intended: one tile,
+   same in both themes, that the artwork's own white sits flush against. */
+.mark { vertical-align:-3px; margin-right:6px;
+  background:#f0ede6; border-radius:4px; padding:2px }
 .clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:14.5px }
 .movemain { display:grid; align-items:center; gap:0 10px;
   grid-template-columns:22px minmax(110px,148px) 62px auto }
@@ -1681,9 +1686,20 @@ def render(year, games):
             "color": team_color(teams, t),
             "abbr": (teams.get(t) or {}).get("abbr") or t,
         }
+    # Marks for everyone else on the schedule. `teams` is the sixteen and the
+    # page counts it — "all sixteen are 0–0", the list of teams not yet
+    # placed — so the non-conference marks ride separately. Without them the
+    # week list drew a logo beside the Big 12 side of a game and nothing
+    # beside its opponent, which is the one thing logo_img() exists to avoid.
+    mark_only = {
+        t: f"{BASE}logos/{e['key']}.{(e.get('ext') or '.svg').lstrip('.')}"
+        for t, e in MARKS.items()
+        if t not in team_meta and e.get("usable") is not False
+    }
     payload = json.dumps({
         "year": year,
         "teams": team_meta,
+        "marks": mark_only,
         "games": games,
         "favorites": favorites,
         "models": models,
@@ -1815,7 +1831,6 @@ TEMPLATE = """<!doctype html>
     --tie0: #2a1d20; --tie1: #1d2330; --tie2: #1d2a22; --tie3: #2a281d;
     --pctl: 63%;
   }}
-  .mark {{ background: #f0ede6; border-radius: 4px; padding: 2px; }}
 }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--bg); color: var(--ink);
@@ -1887,7 +1902,9 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   padding: 6px 10px 10px 2px; }}
 .tname {{ letter-spacing: -.01em; }}
 .vs {{ color: var(--dim); font-weight: 400; font-size: 18px; padding: 0 6px; }}
-.mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain; }}
+/* One tile, both themes — see the note on .mark in the main sheet. */
+.mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain;
+  background: #f0ede6; border-radius: 4px; padding: 2px; }}
 .nomark {{ display: inline-block; width: 16px; height: 16px;
   line-height: 16px; text-align: center; border-radius: 4px;
   background: color-mix(in srgb, var(--dim) 18%, transparent);
@@ -2166,7 +2183,9 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
   vertical-align: 1px; font-weight: 600; letter-spacing: .03em; }}
 .badge.ok {{ background: #13653626; color: #136536; }}
 .badge.warn {{ background: #b4530926; color: #b45309; }}
-.mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain; }}
+/* One tile, both themes — see the note on .mark in the main sheet. */
+.mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain;
+  background: #f0ede6; border-radius: 4px; padding: 2px; }}
 .nomark {{ display: inline-block; width: 16px; height: 16px;
   line-height: 16px; text-align: center; border-radius: 4px;
   background: color-mix(in srgb, var(--dim) 18%, transparent);

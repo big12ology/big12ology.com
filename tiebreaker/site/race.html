@@ -17,7 +17,7 @@
 <link rel=icon type=image/png sizes=32x32 href="favicon-32.png">
 <link rel=apple-touch-icon href="favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
-<link rel=stylesheet href="brand.css?v=34ffdfb0">
+<link rel=stylesheet href="brand.css?v=e3d9c99d">
 <script defer src="theme.js?v=9a8f53fd"></script>
 <link rel=alternate type=application/rss+xml href=feed.xml>
 <style>
@@ -62,7 +62,12 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
   letter-spacing:.06em; color:var(--dim) }
 .dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
-.mark { vertical-align:-3px; margin-right:6px }
+/* Several marks carry a white plate inside the artwork itself, so on a dark
+   page they read as stray white cards. CSS cannot recolour what is baked
+   into the file — what it can do is make the plate look intended: one tile,
+   same in both themes, that the artwork's own white sits flush against. */
+.mark { vertical-align:-3px; margin-right:6px;
+  background:#f0ede6; border-radius:4px; padding:2px }
 .clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:14.5px }
 .movemain { display:grid; align-items:center; gap:0 10px;
   grid-template-columns:22px minmax(110px,148px) 62px auto }

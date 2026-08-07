@@ -67,6 +67,22 @@
 .b12-topbar .b12-right { margin-left: auto; display: flex; align-items: center;
   gap: 10px; }
 
+/* ==== theme-paired artwork =============================================== */
+/* The lockup ships as two files — ink on light, bone on dark — and the page
+   picks one. It cannot be a <picture media="(prefers-color-scheme: dark)">:
+   that reads the OS and never hears the toggle, so a reader on a dark OS who
+   chose Light got the bone wordmark on a white page and could barely see it.
+   Ship both, hide one, and follow the same paired rules as everything else.
+   The light file is the one that carries the alt text. */
+.b12-logo--light, .b12-logo--dark { display: block; }
+.b12-logo--dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .b12-logo--light { display: none; }
+  :root:not([data-theme="light"]) .b12-logo--dark { display: block; }
+}
+:root[data-theme="dark"] .b12-logo--light { display: none; }
+:root[data-theme="dark"] .b12-logo--dark { display: block; }
+
 /* ==== theme toggle ======================================================= */
 .b12-theme {
   display: inline-flex; align-items: center; gap: 1px; padding: 2px;
