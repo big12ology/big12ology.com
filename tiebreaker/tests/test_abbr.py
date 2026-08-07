@@ -5,6 +5,11 @@ Arizona and Arizona State shipped as ARI and ARI in the tie archive because
 that page truncated the name instead of reading teams.json. Two teams sharing
 a header on a head-to-head grid makes every cell in those rows and columns
 unreadable, and nothing else on the page can tell you which is which.
+
+The grid that prompted this now lives on the rotation page, so the check
+builds that card and reads it. It reads the card rather than the built file
+for a reason: pointed at a generated fragment, this test found zero headers
+and passed anyway when the grid moved out from under it.
 """
 import os
 import re
@@ -48,32 +53,35 @@ for mod in ("build.py", "gen_history.py"):
         FAIL.append(f"{mod}:{line} builds a label by truncation; use "
                     f"team_abbr() so every grid agrees")
 
-# 3. The generated archive fragment uses them, with no duplicate header.
-frag = os.path.join(HERE, "history", "history_body.html")
-if os.path.exists(frag):
-    heads = re.findall(r"<th title='([^']*)'>([^<]+)</th>", open(frag).read())
-    grid = {}
-    for name, label in heads:
-        grid.setdefault(label, set()).add(name)
-    for label, names in sorted(grid.items()):
-        check(len(names) == 1,
-              f"archive grid: '{label}' labels {', '.join(sorted(names))}")
-    for name, label in heads:
-        check(label == build.team_abbr(teams, name),
-              f"archive grid: {name} shows '{label}', teams.json says "
-              f"'{build.team_abbr(teams, name)}'")
-    # Row labels carry the full name; a[:12] used to cut three of them
-    # off mid-word ("Arizona Stat").
-    body = re.findall(r"<td class=teamcell>.*?>([A-Za-z .'&-]+)</td>",
-                      open(frag).read())
-    for label in body:
-        check(label.strip() in teams,
-              f"archive grid row label '{label.strip()}' is not a team name "
-              f"— it looks truncated")
-    print(f"archive grid: {len(heads)} headers and {len(body)} row labels "
-          f"match teams.json")
-else:
-    print("archive fragment absent — skipped grid check")
+# 3. The all-time head-to-head grid uses them, with no duplicate header.
+YEAR = 2025
+card = build.alltime_h2h_card(YEAR, build.load_games(YEAR), teams)
+
+heads = re.findall(r"<th title='([^']*)'>([^<]+)</th>", card)
+check(len(heads) == len(teams),
+      f"the grid has {len(heads)} column headers for {len(teams)} teams — "
+      f"it is not the grid this test was written for")
+grid = {}
+for name, label in heads:
+    grid.setdefault(label, set()).add(name)
+for label, names in sorted(grid.items()):
+    check(len(names) == 1,
+          f"h2h grid: '{label}' labels {', '.join(sorted(names))}")
+for name, label in heads:
+    check(label == build.team_abbr(teams, name),
+          f"h2h grid: {name} shows '{label}', teams.json says "
+          f"'{build.team_abbr(teams, name)}'")
+# Row labels carry the full name; a[:12] used to cut three of them off
+# mid-word ("Arizona Stat").
+body = re.findall(r"<td class=teamcell>.*?>([A-Za-z .'&-]+)</td>", card)
+check(len(body) == len(teams),
+      f"the grid has {len(body)} row labels for {len(teams)} teams")
+for label in body:
+    check(label.strip() in teams,
+          f"h2h grid row label '{label.strip()}' is not a team name — it "
+          f"looks truncated")
+print(f"h2h grid: {len(heads)} headers and {len(body)} row labels "
+      f"match teams.json")
 
 if FAIL:
     for m in FAIL:

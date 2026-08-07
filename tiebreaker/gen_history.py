@@ -17,7 +17,7 @@ import os
 
 import fetch as fetcher
 import tiebreaker as tb
-from build import esc, load_teams, logo_img, team_abbr
+from build import esc
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HIST = os.path.join(HERE, "history")
@@ -164,54 +164,6 @@ def season_section(year, games):
              for tg in groups]
     return "".join(parts), stats, (None if agrees else
                                    {"year": year, "note": diff_note})
-
-
-def h2h_grid(all_games):
-    teams = sorted({g["home"] for gs in all_games.values() for g in gs
-                    if g["conference_game"]}
-                   & set(tb.conf_records(
-                       list(all_games[LAST])).keys()) | set())
-    # current 16 only, all-time records among them
-    current = sorted(tb.conf_records(all_games[LAST]).keys())
-    wl = {a: {b: [0, 0] for b in current} for a in current}
-    for year, gs in all_games.items():
-        for g in gs:
-            if not g["conference_game"] or g.get("ccg") or not g["completed"]:
-                continue
-            w = tb.winner(g)
-            if not w:
-                continue
-            l = g["away"] if w == g["home"] else g["home"]
-            if w in wl and l in wl:
-                wl[w][l][0] += 1
-                wl[l][w][1] += 1
-    # Same source as every other grid on the site: t[:3] made Arizona and
-    # Arizona State both ARI.
-    teams = load_teams()
-    head = "".join(f"<th title='{esc(t)}'>{esc(team_abbr(teams, t))}</th>"
-                   for t in current)
-    rows = []
-    for a in current:
-        cells = []
-        for b in current:
-            if a == b:
-                cells.append("<td class=selfcell>—</td>")
-                continue
-            w, l = wl[a][b]
-            if w == l == 0:
-                cells.append("<td class=dim>·</td>")
-            else:
-                p = w / (w + l)
-                cells.append(f"<td style='color:hsl({round(p * 130)} 60% "
-                             f"var(--pctl))' title='{esc(a)} {w}–{l} vs "
-                             f"{esc(b)}'>{w}–{l}</td>")
-        # Full name, like the schedule's grid — a[:12] was cutting Arizona
-        # State, Oklahoma State and West Virginia off mid-word.
-        rows.append(f"<tr><td class=teamcell>{logo_img(a, 14)}"
-                    f"{esc(a)}</td>{''.join(cells)}</tr>")
-    return ("<div class='table-scroll'><table class='mini h2h'><thead>"
-            f"<tr><th></th>{head}</tr></thead><tbody>"
-            + "".join(rows) + "</tbody></table></div>")
 
 
 STEP_NAMES = {"a": "head-to-head / mini round-robin",
@@ -409,9 +361,6 @@ table.mini th, table.mini td {{ padding:4px 8px; border-bottom:1px solid
   var(--line); text-align:left; font-variant-numeric:tabular-nums }}
 table.mini th {{ font-size:11px; text-transform:uppercase;
   letter-spacing:.05em; color:var(--dim) }}
-.table-scroll {{ overflow-x:auto }}
-.h2h td, .h2h th {{ padding:3px 5px; font-size:11.5px }}
-.selfcell {{ color:var(--line) }}
 .actual {{ font-size:14px; margin:10px 0 6px }}
 .diffbox {{ font-size:13.5px; background:var(--bg); border-left:3px solid
   var(--accent); border-radius:4px; padding:8px 12px; margin:8px 0 }}
@@ -442,12 +391,6 @@ group's resolution.</p>
 
 <h2>Season by season</h2>
 {"".join(sections)}
-
-<h2>All-time head-to-head, current sixteen</h2>
-<p class=note>Conference games only, {FIRST}–{LAST}, read across: row team's
-record against column team. Many pairs first met in 2023–24 — that's
-realignment for you.</p>
-{h2h_grid(all_games)}
 </div>"""
     out = os.path.join(HIST, "history_body.html")
     with open(out, "w") as f:

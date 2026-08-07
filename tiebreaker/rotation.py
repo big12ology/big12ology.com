@@ -20,9 +20,18 @@ import json
 import os
 
 import fetch as fetcher
+import tiebreaker as tb
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HIST = os.path.join(HERE, "history")
+
+
+def season_games(year):
+    """The frozen history corpus for a season, [] if it is not on disk."""
+    p = os.path.join(HIST, f"games_{year}.json")
+    if not os.path.exists(p):
+        return []
+    return fetcher.mark_ccg(json.load(open(p)))
 
 
 def meetings(games, year=None):
@@ -54,15 +63,46 @@ def conference_history(years, teams=None):
     keep = set(teams) if teams else None
     all_meet = {}
     for y in years:
-        p = os.path.join(HIST, f"games_{y}.json")
-        if not os.path.exists(p):
-            continue
-        games = fetcher.mark_ccg(json.load(open(p)))
+        games = season_games(y)
         for pair, ys in meetings(games, year=y).items():
             if keep and not pair <= keep:
                 continue
             all_meet.setdefault(pair, []).extend(ys)
     return all_meet
+
+
+def all_time_records(years, teams, current=None):
+    """{a: {b: [wins, losses]}} — every pairing's record as conference
+    opponents across `years`, plus the season in progress.
+
+    Deliberately the same corpus, and the same exclusions, as `report`:
+    history/ rather than data/, membership as it was at the time,
+    championship-game rematches dropped, and `years` already filtered
+    through `usable_seasons`. Counting the record from one set of games and
+    the last meeting from another is how a grid ends up claiming a win in a
+    season the page beside it says never happened.
+
+    `current` is the live season, which history/ has no file for yet.
+    """
+    names = sorted(teams)
+    wl = {a: {b: [0, 0] for b in names if b != a} for a in names}
+    seasons = [season_games(y) for y in years]
+    if current is not None:
+        seasons.append(current)
+    for games in seasons:
+        for g in games:
+            if not g.get("conference_game") or g.get("ccg"):
+                continue
+            if not g.get("completed") or g.get("home_points") is None:
+                continue
+            w = tb.winner(g)
+            if w is None:
+                continue
+            loser = g["away"] if w == g["home"] else g["home"]
+            if w in wl and loser in wl[w]:
+                wl[w][loser][0] += 1
+                wl[loser][w][1] += 1
+    return wl
 
 
 def scheduled(games):

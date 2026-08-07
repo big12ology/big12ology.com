@@ -154,9 +154,55 @@ def rebase_from(html, old, new):
     return html
 
 
-def year_href(y):
-    """Link from wherever we are now to another season's front page."""
-    return BASE if y == LIVE_YEAR else f"{BASE}{y}/"
+def year_href(y, page, year):
+    """The same page you are on, in season `y`.
+
+    Changing the season should change the data, not the subject: from the
+    2026 rotation, 2024 means the 2024 rotation. Every page exists in every
+    season directory, so this can name `page` unconditionally.
+
+    Deliberately not BASE. BASE is the *asset* base, and under /schedule/ it
+    points back at ../tiebreaker/ for the shared stylesheet and marks — the
+    year pills inherited it and threw you into the tracker's Brief. What is
+    wanted is the season base: the live season sits at the section root,
+    archived ones one directory below it.
+    """
+    up = "" if year == LIVE_YEAR else "../"
+    return f"{up}{page}" if y == LIVE_YEAR else f"{up}{y}/{page}"
+
+
+def section_href(section, year):
+    """Another section, same season.
+
+    The sections do not share page names — the tracker has eight pages, the
+    schedule three — so this lands on the section's front page rather than
+    inventing a counterpart. Keeping the year is the part that matters:
+    switching sections from 2024 used to land on the live season.
+
+    Root-relative, like the rest of the masthead, so a local preview stays
+    local.
+    """
+    return f"/{section}/" if year == LIVE_YEAR else f"/{section}/{year}/"
+
+
+def topbar(section, year, base=""):
+    """The masthead, one copy for every page that has one."""
+    def link(sect, label):
+        on = " class=on" if sect == section else ""
+        return f'<a{on} href="{section_href(sect, year)}">{label}</a>'
+
+    # Attendance keeps its seasons in a picker on one page, not in per-year
+    # directories, so there is no year to carry across to it.
+    return (f'<nav class=b12-topbar><a class=b12-brand href="/" '
+            f'aria-label="Big12ology home"><picture>'
+            f'<source srcset="{base}brand/big12ology-compact-dark.svg" '
+            f'media="(prefers-color-scheme: dark)">'
+            f'<img src="{base}brand/big12ology-compact-dark.svg" '
+            f'alt="Big12ology"></picture></a>'
+            + link("tiebreaker", "Tiebreaker") + link("schedule", "Schedule")
+            + '<a href="/attendance/">Attendance</a>'
+            '<span class=b12-right><span class=b12-theme></span></span>'
+            '</nav>')
 
 
 def load_marks():
@@ -229,13 +275,16 @@ def fmt_prob(p):
 
 
 
-def tracker_top(year, active, matchcard="", section="tiebreaker"):
+def tracker_top(year, active, matchcard="", section="tiebreaker", page=""):
     """The one top: header bar, pill row, matchup card. Styled entirely by
-    brand.css (.b12-head/.subnav) — no page may restyle these."""
+    brand.css (.b12-head/.subnav) — no page may restyle these.
+
+    `page` is the file being built, "" for a section's front page; the year
+    pills carry it, so a season switch keeps the view."""
     meta = SECTIONS[section]
     years = "".join(
         (f"<span class=yron>{y}</span>" if y == year else
-         f"<a href='{year_href(y)}'>{y}</a>")
+         f"<a href='{year_href(y, page, year)}'>{y}</a>")
         for y in [LIVE_YEAR] + ARCHIVE_YEARS)
     blurb = (meta["live"] if year == LIVE_YEAR
              else meta["past"].format(year=year))
@@ -1357,7 +1406,8 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 
 
 def build_subpage(title, active, body, year, matchcard,
-                  canon=None, desc=None, head="", section="tiebreaker"):
+                  canon=None, desc=None, head="", section="tiebreaker",
+                  page=""):
     sect_title = SECTIONS[section]["title"]
     head_title = (sect_title if title == sect_title
                   else f"{title} — {sect_title}")
@@ -1389,9 +1439,8 @@ def build_subpage(title, active, body, year, matchcard,
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <a class=skip-link href="#main">Skip to content</a>
-<nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="{BASE}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{BASE}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
-<a class="{ 'on' if section == 'tiebreaker' else '' }" href="/tiebreaker/">Tiebreaker</a><a class="{ 'on' if section == 'schedule' else '' }" href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><span class=b12-right><span class=b12-theme></span></span></nav>
-{tracker_top(year, active, matchcard, section)}
+{topbar(section, year, BASE)}
+{tracker_top(year, active, matchcard, section, page)}
 {body}
 </main>
 <footer class=b12-footer>A Big12ology project · not affiliated with the
@@ -1640,7 +1689,8 @@ def render(year, games):
         v_app=asset_v("app.js"),
         canon=(f"{site_url}lab.html" if year == LIVE_YEAR
                else f"{site_url}{year}/lab.html"),
-        top=tracker_top(year, "tracker", card),
+        topbar=topbar("tiebreaker", year, BASE),
+        top=tracker_top(year, "tracker", card, page="lab.html"),
         whatif=whatif,
         standcard=standcard,
         payload=payload,
@@ -1953,13 +2003,7 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 </head>
 <body>
 <a class=skip-link href="#main">Skip to content</a>
-<nav class=b12-topbar>
-  <a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="{base}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{base}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
-  <a class=on href="/tiebreaker/">Tiebreaker</a>
-  <a href="/schedule/">Schedule</a>
-  <a href="/attendance/">Attendance</a>
-  <span class=b12-right><span class=b12-theme></span></span>
-</nav>
+{topbar}
 {top}
 
 <div class=duo>
@@ -2112,13 +2156,7 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
 </head>
 <body>
 <a class=skip-link href="#main">Skip to content</a>
-<nav class=b12-topbar>
-  <a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="{base}brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="{base}brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a>
-  <a class=on href="/tiebreaker/">Tiebreaker</a>
-  <a href="/schedule/">Schedule</a>
-  <a href="/attendance/">Attendance</a>
-  <span class=b12-right><span class=b12-theme></span></span>
-</nav>
+{topbar}
 {top}
 
 <p class=lead>Sixteen teams, nine conference games each, no round robin —
@@ -2323,7 +2361,8 @@ def build_explainer(year, matchcard, outdir=None):
             worked_2024=worked, base=BASE,
             v_brand=asset_v("brand.css"),
             v_theme=asset_v("theme.js"),
-            top=tracker_top(year, "how", matchcard)))
+            topbar=topbar("tiebreaker", year, BASE),
+            top=tracker_top(year, "how", matchcard, page="how.html")))
     print(f"built {out}")
 
 
@@ -2410,8 +2449,9 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          ""),
         ("rotation.html", "The Rotation", "rotation",
          build_rotation_page(year, games, ctx["teams"]),
-         f"Who each Big 12 team misses in {yr}, and the last time they met "
-         "as conference opponents — 48 of the 120 pairings sit out a season.",
+         f"Who each Big 12 team misses in {yr}, the last time they met as "
+         "conference opponents, and every pairing's all-time conference "
+         "record — 48 of the 120 pairings sit out a season.",
          ""),
     ]
     hist_frag = os.path.join(HERE, "history", "history_body.html")
@@ -2467,11 +2507,15 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
             target = sched_outdir
             cu = sched_canon if index else sched_canon + fname
             sect = "schedule"
+            # A front page is addressed as a directory, so the year pills
+            # carry no filename for it.
+            pg = "" if index else fname
             BASE_was, globals()["BASE"] = BASE, sched_base
         else:
             target = outdir
             cu = (site_url + fname if fname in evergreen else canon + fname)
             sect = "tiebreaker"
+            pg = fname
         try:
             with open(os.path.join(target,
                                    out_name if schedule_page else fname),
@@ -2479,7 +2523,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                 f.write(build_subpage(title, active, body, year,
                                       ctx["matchcard"] if not schedule_page
                                       else "", canon=cu, desc=desc,
-                                      head=head, section=sect))
+                                      head=head, section=sect, page=pg))
         finally:
             if schedule_page:
                 globals()["BASE"] = BASE_was
@@ -2534,6 +2578,79 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                 '<title>The Brief</title><a href="./">The Brief</a>')
     BASE = ""
     print(f"built {year} -> {outdir}")
+
+
+def alltime_h2h_card(year, games, teams):
+    """Every pairing's all-time record as conference opponents.
+
+    This grid belongs on the rotation page because the rotation is what
+    shapes it: a format that leaves 48 of the 120 pairings unplayed every
+    year produces a ledger full of 1-0s, blanks and lopsided one-game
+    "series". It used to sit at the bottom of the tie archive, where the tie
+    archive's own styles were the only thing holding it up.
+
+    Same treatment as the current-season grid on the schedule page — one
+    card, the site's win-percentage ramp, the same empty-cell marks — rather
+    than a second look for the same kind of table.
+    """
+    seasons = fetcher.usable_seasons(range(2011, year))
+    wl = rotation_mod.all_time_records(seasons, teams, current=games)
+    # In August the live season has no results in it, and dating the grid
+    # through a season nobody has played yet is a claim about games that do
+    # not exist.
+    played = any(g["conference_game"] and not g.get("ccg") and g["completed"]
+                 for g in games)
+    through = year if played else max(seasons, default=year)
+    order = sorted(teams)
+    head = "".join(f"<th title='{esc(t)}'>{esc(team_abbr(teams, t))}</th>"
+                   for t in order)
+    body, never, once = [], 0, 0
+    for a in order:
+        cells = []
+        for b in order:
+            if a == b:
+                cells.append("<td class=selfcell aria-hidden=true>&#9587;</td>")
+                continue
+            w, l = wl[a][b]
+            n = w + l
+            if not n:
+                never += 1
+                cells.append(f"<td class=nomeet title='{esc(a)} and {esc(b)} "
+                             f"have never met as conference opponents'>"
+                             f"&bull;</td>")
+                continue
+            if n == 1:
+                once += 1
+            cells.append(
+                f"<td style='color:{winpct_color(w / n)}' title='{esc(a)} "
+                f"{w}&ndash;{l} vs {esc(b)} in {n} conference "
+                f"meeting{'' if n == 1 else 's'}'>{w}&ndash;{l}</td>")
+        body.append(f"<tr><td class=teamcell>{logo_img(a, 14)}{esc(a)}</td>"
+                    f"{''.join(cells)}</tr>")
+    # Both counts walk the grid twice, once from each team's side.
+    pairs = len(order) * (len(order) - 1) // 2
+    never, once = never // 2, once // 2
+    gap = (f"<b>{never}</b> of the {pairs} pairings "
+           f"{'has' if never == 1 else 'have'} still never met in conference "
+           f"play" if never else
+           f"all {pairs} pairings have now happened at least once")
+
+    return f"""<div class=card id=alltimeh2h>
+<h2>All-time head-to-head</h2>
+<p>Every pairing's record as conference opponents, 2011&#8211;{through}, read
+across: the row team's wins first. {gap}, and <b>{once}</b> have met exactly
+once — the whole series is one Saturday.</p>
+<div class="tablescroll scrollbox"><table class=h2h>
+<thead><tr><th></th>{head}</tr></thead>
+<tbody>{''.join(body)}</tbody></table></div>
+<p class=note>Conference meetings only, and membership as it was at the time —
+the same games the table above counts, so a pairing's record and the year it
+was last played never disagree. Championship-game rematches are left out,
+because the schedule only granted that pairing once. 2020 is not counted, as
+everywhere else on this site: teams played eight, nine and ten conference
+games that season. Many of these pairs first met in 2023 or 2024 — that's
+realignment for you.</p>
+</div>"""
 
 
 def build_rotation_page(year, games, teams):
@@ -2593,7 +2710,8 @@ time: these programs have played each other in non-conference games and
 bowls for decades, so "never" here is a fact about the league, not about the
 two schools. A Utah–Baylor game in 2015 was not a Big 12 meeting — Utah was
 in the Pac-12.</p>
-</div>"""
+</div>
+{alltime_h2h_card(year, games, teams)}"""
 
 
 def draw_color(d, span):
