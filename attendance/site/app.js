@@ -17,8 +17,16 @@ const view = {
   sort: { key: "pct", dir: "desc", metric: "pct" },
 };
 
+// The data are fetched, not linked, so assemble.sh's cache-bust check never
+// sees them — it reads href/src in the HTML. Today's code against yesterday's
+// JSON is the failure that hides: capacities and schedules change between
+// builds, and the page looks merely wrong rather than stale. Take the version
+// off this module's own URL so the two can never drift; the loader is the
+// only place data enters the page.
+const DATA_V = new URL(import.meta.url).search;
+
 async function loadJSON(path) {
-  const resp = await fetch(path);
+  const resp = await fetch(path + DATA_V);
   if (!resp.ok) throw new Error(`${path}: ${resp.status}`);
   return resp.json();
 }
