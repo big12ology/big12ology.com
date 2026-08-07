@@ -43,7 +43,11 @@
      yellow-green. Everybody would look identical, which is the opposite of
      what a leaderboard is for.
 
-     So this diverges around .500 instead, red below and green above, spending
+     Measured over a realistic board (.364 to .621): reusing ANCHORS spends 48
+     degrees of hue on it, hues 31 to 79, which is amber to yellow-green and
+     nothing else. This curve spends 123, and crosses zero.
+
+     So it diverges around .500 instead, red below and green above, spending
      its whole range on the twenty points either side where the differences
      actually are. The hue path is the same red→amber→green walk as
      divergeHSL in attendance/site/charts.js, and lightness stays on --pctl so

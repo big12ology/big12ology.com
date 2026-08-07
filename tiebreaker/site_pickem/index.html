@@ -1,25 +1,25 @@
 <!doctype html>
 <html lang=en><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
-<title>The Standings — Big 12 Tiebreaker Tracker</title>
-<link rel=canonical href="https://big12ology.com/tiebreaker/standings.html">
-<meta name=description content="The Big 12 standings as the conference keeps them, with ties left standing, next to the same 2026 board with every tie broken — plus a week-by-week replay of how the season moved.">
+<title>Big 12 Pickem</title>
+<link rel=canonical href="https://big12ology.com/pickem/">
+<meta name=description content="Pick every Big 12 game against the spread. One frozen line for everyone; the slate locks at the first kickoff.">
 <meta property=og:type content=website>
 <meta property=og:site_name content=Big12ology>
-<meta property=og:title content="The Standings — Big 12 Tiebreaker Tracker">
-<meta property=og:description content="The Big 12 standings as the conference keeps them, with ties left standing, next to the same 2026 board with every tie broken — plus a week-by-week replay of how the season moved.">
-<meta property=og:url content="https://big12ology.com/tiebreaker/standings.html">
+<meta property=og:title content="Big 12 Pickem">
+<meta property=og:description content="Pick every Big 12 game against the spread. One frozen line for everyone; the slate locks at the first kickoff.">
+<meta property=og:url content="https://big12ology.com/pickem/">
 <meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
-<link rel=icon type=image/svg+xml href="favicon.svg">
-<link rel=icon type=image/png sizes=32x32 href="favicon-32.png">
-<link rel=apple-touch-icon href="favicon-180.png">
+<link rel=icon type=image/svg+xml href="../tiebreaker/favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="../tiebreaker/favicon-32.png">
+<link rel=apple-touch-icon href="../tiebreaker/favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
-<link rel=stylesheet href="brand.css?v=e3d9c99d">
-<script defer src="theme.js?v=9a8f53fd"></script>
-<link rel=alternate type=application/rss+xml href=feed.xml>
+<link rel=stylesheet href="../tiebreaker/brand.css?v=e3d9c99d">
+<script defer src="../tiebreaker/theme.js?v=9a8f53fd"></script>
+
 <style>
 .matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
   flex-wrap:wrap }
@@ -353,46 +353,48 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="scrollcue.js?v=5fef00f1"></script><script defer src="pct.js?v=03186563"></script><script defer src="replay.js?v=1b08875d"></script></head><body>
+<script defer src="../tiebreaker/scrollcue.js?v=5fef00f1"></script><link rel=stylesheet href="styles.css?v=5f79164f"><script defer src="../tiebreaker/pct.js?v=03186563"></script><script defer src="app.js?v=7e946f23"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
-<nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a class=on href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a href="/pickem/">Pickem</a><span class=b12-right><span class=b12-theme></span></span></nav>
+<nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pickem/">Pickem</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
   <div class=hwrap>
     <div>
-      <h1>Big 12 Tiebreaker Tracker <span class=yrpills><span class=yron>2026</span><a href='2025/standings.html'>2025</a><a href='2024/standings.html'>2024</a></span></h1>
-      <p>Unofficial fan tool. Applies the official Big 12 tiebreaking procedures to live results after every game.</p>
+      <h1>Big 12 Pickem <span class=yrpills></span></h1>
+      <p>Pick every Big 12 game against the spread. One line for everyone, frozen when the week is published; the whole slate locks at the first kickoff.</p>
     </div>
   </div>
 </header>
-<nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=on>The Standings</a><a href=lab.html class=off>The Lab</a><a href=cutline.html class=off>The Cut Line</a><a href=ladder.html class=off>The Ladder</a><a href=how.html class=off>The Rules</a><a href=history.html class=off>The Archive</a></nav>
+<nav class=subnav><a href=./ class=on>The Slate</a><a href=card.html class=off>The Card</a><a href=board.html class=off>The Board</a><a href=rules.html class=off>The Rules</a></nav>
 <main id=main tabindex="-1">
 <svg class=sprite width=0 height=0 aria-hidden=true style='position:absolute'><symbol id='i-clock' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/></symbol><symbol id='i-pin' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/><path d='M17.657 16.657 13.414 20.9a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z'/></symbol><symbol id='i-tv' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='7' width='18' height='13' rx='2'/><path d='M16 3l-4 4l-4 -4'/></symbol><symbol id='i-sun' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='4'/><path d='M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7'/></symbol><symbol id='i-wind' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24'/><path d='M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24'/><path d='M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24'/></symbol><symbol id='i-rain' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M11 20v1m4 -3v1m-8 -1v1'/></symbol><symbol id='i-history' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 8v4l3 3'/><path d='M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5'/></symbol><symbol id='i-chart' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 20h18'/><rect x='5' y='12' width='4' height='8'/><rect x='10' y='8' width='4' height='12'/><rect x='15' y='4' width='4' height='16'/></symbol><symbol id='i-note' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='4' width='16' height='16' rx='2'/><path d='M9 8h6M9 12h6M9 16h3'/></symbol><symbol id='i-out' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 6H6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6'/><path d='M11 13l9 -9'/><path d='M15 4h5v5'/></symbol></svg>
-<div class=card id=matchcard><h2>Season not started</h2><p>No conference results yet. The projected championship matchup will appear after the first Big 12 game.</p></div>
-<div class="duo even">
-<div class=stack>
-<div class=card><h2>As the conference keeps it</h2>
-  <div class=tablewrap><table class=stbl><thead><tr><th></th><th>Team</th><th>Conf</th><th>Pct</th></tr></thead>
-  <tbody id=board-left><tr><td class=posc rowspan=16>—</td><td class='teamcell'><span class=cbar style='background:#0c234b'></span><img class=mark src='logos/ariz.svg' alt='' width=20 height=20 loading=lazy>Arizona</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#8e0c3a'></span><img class=mark src='logos/asu.svg' alt='' width=20 height=20 loading=lazy>Arizona State</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#003da5'></span><img class=mark src='logos/byu.png' alt='' width=20 height=20 loading=lazy>BYU</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#154734'></span><img class=mark src='logos/bay.svg' alt='' width=20 height=20 loading=lazy>Baylor</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#e00122'></span><img class=mark src='logos/cin.svg' alt='' width=20 height=20 loading=lazy>Cincinnati</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#cfb87c'></span><img class=mark src='logos/cu.svg' alt='' width=20 height=20 loading=lazy>Colorado</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#c92a39'></span><img class=mark src='logos/hou.svg' alt='' width=20 height=20 loading=lazy>Houston</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#822433'></span><img class=mark src='logos/isu.svg' alt='' width=20 height=20 loading=lazy>Iowa State</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#0051ba'></span><img class=mark src='logos/ku.svg' alt='' width=20 height=20 loading=lazy>Kansas</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#3c0969'></span><img class=mark src='logos/ksu.svg' alt='' width=20 height=20 loading=lazy>Kansas State</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#ff7300'></span><img class=mark src='logos/okst.svg' alt='' width=20 height=20 loading=lazy>Oklahoma State</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#4d1979'></span><img class=mark src='logos/tcu.svg' alt='' width=20 height=20 loading=lazy>TCU</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#cc0000'></span><img class=mark src='logos/ttu.svg' alt='' width=20 height=20 loading=lazy>Texas Tech</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#ba9b37'></span><img class=mark src='logos/ucf.svg' alt='' width=20 height=20 loading=lazy>UCF</td><td>0–0</td><td>—</td></tr><tr><td class='teamcell'><span class=cbar style='background:#ea002a'></span><img class=mark src='logos/utah.svg' alt='' width=20 height=20 loading=lazy>Utah</td><td>0–0</td><td>—</td></tr><tr class=grpend><td class='teamcell'><span class=cbar style='background:#002855'></span><img class=mark src='logos/wvu.svg' alt='' width=20 height=20 loading=lazy>West Virginia</td><td>0–0</td><td>—</td></tr></tbody></table></div>
-  <p class=note>The Big 12 runs its tiebreaking procedure for one purpose:
-  naming the two teams that play in the championship game. Every other tie
-  in the standings is left standing, so third place can be shared by four
-  programs and the conference simply lists them together. That is why its
-  published standings show co-positions instead of an order.</p>
-</div>
-</div>
-<div class=stack>
-<div class=card><h2>If every tie were broken</h2>
-  <div class=tablewrap><table class=stbl><thead><tr><th></th><th>Team</th><th>Conf</th><th>Pct</th></tr></thead>
-  <tbody id=board-right><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#0c234b'></span><img class=mark src='logos/ariz.svg' alt='' width=20 height=20 loading=lazy>Arizona</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#8e0c3a'></span><img class=mark src='logos/asu.svg' alt='' width=20 height=20 loading=lazy>Arizona State</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#003da5'></span><img class=mark src='logos/byu.png' alt='' width=20 height=20 loading=lazy>BYU</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#154734'></span><img class=mark src='logos/bay.svg' alt='' width=20 height=20 loading=lazy>Baylor</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#e00122'></span><img class=mark src='logos/cin.svg' alt='' width=20 height=20 loading=lazy>Cincinnati</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#cfb87c'></span><img class=mark src='logos/cu.svg' alt='' width=20 height=20 loading=lazy>Colorado</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#c92a39'></span><img class=mark src='logos/hou.svg' alt='' width=20 height=20 loading=lazy>Houston</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#822433'></span><img class=mark src='logos/isu.svg' alt='' width=20 height=20 loading=lazy>Iowa State</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#0051ba'></span><img class=mark src='logos/ku.svg' alt='' width=20 height=20 loading=lazy>Kansas</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#3c0969'></span><img class=mark src='logos/ksu.svg' alt='' width=20 height=20 loading=lazy>Kansas State</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#ff7300'></span><img class=mark src='logos/okst.svg' alt='' width=20 height=20 loading=lazy>Oklahoma State</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#4d1979'></span><img class=mark src='logos/tcu.svg' alt='' width=20 height=20 loading=lazy>TCU</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#cc0000'></span><img class=mark src='logos/ttu.svg' alt='' width=20 height=20 loading=lazy>Texas Tech</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#ba9b37'></span><img class=mark src='logos/ucf.svg' alt='' width=20 height=20 loading=lazy>UCF</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#ea002a'></span><img class=mark src='logos/utah.svg' alt='' width=20 height=20 loading=lazy>Utah</td><td>0–0</td><td>—</td></tr><tr><td class=posc>—</td><td class='teamcell'><span class=cbar style='background:#002855'></span><img class=mark src='logos/wvu.svg' alt='' width=20 height=20 loading=lazy>West Virginia</td><td>0–0</td><td>—</td></tr></tbody></table></div>
-  <p class=note>The same procedure carried all the way down, one team per
-  position. The conference never publishes this and it decides nothing — it
-  is what the rules produce if you ask them to sort the whole league, and it
-  is the order the rest of this site uses so every team has a place to
-  stand. <a href=how.html>The Rules</a> walks the steps.</p>
-</div>
-</div>
+
+
+<div class=card id=lockcard hidden>
+  <p class=lockline>Locks at first kickoff &mdash;
+    <time id=lockat datetime=""></time>
+    <span id=cd class=cd aria-hidden=true></span></p>
+  <p class=slatecount id=slatecount></p>
 </div>
 
+<p id=savestate class=savestate role=status aria-live=polite aria-atomic=true></p>
+<p id=alertstate class=alertstate role=alert></p>
+<div class=card id=signedout hidden>
+  <h2>Sign in to play</h2>
+  <p class=note>You can read the slate either way. Picking needs an account so
+  your card survives the browser you made it in.</p>
+  <p><a class=wbtn href="account.html">Sign in</a></p>
+</div>
+<form id=slateform>
+  <div id=slate class=slate>
+    <p class=note id=slateload>Loading this week's slate&hellip;</p>
+  </div>
+</form>
+
+<noscript><p class=note><b>The picker needs JavaScript.</b> The rules and this
+week's slate are readable without it:
+<a href="rules.html">The Rules</a>, or
+<a href="/api/slate">the slate as JSON</a>.</p></noscript>
+<span class=sr-only role=status id=cdsr></span>
 </main>
 <footer class=b12-footer>Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> · procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (provenance in <a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · last updated {{BUILD_STAMP}}.<br>A Big12ology project · not affiliated with the Big 12 Conference; conference and team marks belong to their owners and appear for identification only.<br><a href="/privacy">Privacy</a> · <a href="mailto:dept@big12ology.com">dept@big12ology.com</a></footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>

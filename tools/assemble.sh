@@ -78,6 +78,21 @@ rsync -a "${COMMON[@]}" "$ROOT/attendance/" "$DIST/attendance/"
 #
 # mkdir first: rsync creates the last missing directory of a destination but
 # not two, and /pickem/data/ is two while /pickem/ holds no pages yet.
+
+# The pick'em section itself, generated beside the tiebreaker like the
+# schedule and reaching back to ../tiebreaker/ for brand.css, theme.js and
+# pct.js rather than carrying a second copy of them. Its pages are shells:
+# everything a reader sees arrives from /api/* at runtime.
+rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_pickem/" "$DIST/pickem/"
+
+# The published slates, under /pickem/data/ so they cannot collide with the
+# section's pages. These are the frozen lines — the record of what each week
+# was played on, which the grader reads back and which is the only durable
+# copy, since data/lines_<year>.json is overwritten on every refresh. Public
+# for the same reason data.json and attendance.csv are.
+#
+# mkdir first: rsync creates the last missing directory of a destination but
+# not two, and /pickem/data/ was two before the section above existed.
 if [ -d "$ROOT/tiebreaker/pickem" ]; then
   mkdir -p "$DIST/pickem/data"
   rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/pickem/" "$DIST/pickem/data/"
@@ -125,7 +140,10 @@ for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          schedule/index.html schedule/draw.html schedule/rotation.html \
          schedule/sitemap.xml \
          attendance/index.html attendance/site/app.js \
-         attendance/data/teams.json attendance/data/seasons/index.json; do
+         attendance/data/teams.json attendance/data/seasons/index.json \
+         pickem/index.html pickem/card.html pickem/board.html \
+         pickem/rules.html pickem/account.html \
+         pickem/app.js pickem/styles.css pickem/sitemap.xml; do
   [ -e "$DIST/$f" ] || note "$f"
 done
 
@@ -165,6 +183,20 @@ done < <(find "$DIST" \( -name '.env' -o -name '.env.*' -o -name '.dev.vars' \
                       -o -name 'client_secret*.json' \
                       -o -name '*credentials*.json' \
                       -o -name '*service_account*.json' \) 2>/dev/null || true)
+
+# Under /pickem/ the rule is stricter than the named list above, and it has to
+# be. That list is a denylist: it catches app.js and styles.css because those
+# names happen to appear in it, and would wave through a pickem/countdown.js
+# added next year. A gate that silently stops covering new files is worse than
+# no gate, because it still reads as protection.
+while IFS= read -r page; do
+  bad=$(grep -oE '(src|href)="(\./)?[A-Za-z0-9_./-]+\.(js|css)"' "$page" \
+        | grep -v '://' || true)
+  [ -n "$bad" ] || continue
+  echo "  NO CACHE-BUST  ${page#"$DIST"/}"
+  echo "$bad" | sed 's/^/    /'
+  fail=1
+done < <(find "$DIST/pickem" -name '*.html' 2>/dev/null)
 
 if [ "$fail" -ne 0 ]; then
   echo "assemble: FAILED"

@@ -4,6 +4,7 @@ dist/
 
 # --- local agent + IDE state (machine-specific, never commit) ---
 .claude/
+.idea/
 .DS_Store
 
 # Python bytecode, anywhere. tiebreaker/.gitignore has covered its own tree
