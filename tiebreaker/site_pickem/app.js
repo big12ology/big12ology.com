@@ -680,6 +680,27 @@
     li.appendChild(el("span", "pk-num",
       side ? spreadText(g.spread_x2, side) : "—"));
 
+    // How the room picked. The server only sends this once the week is
+    // locked, which is the whole design: before the lock it would let a late
+    // picker follow the crowd, and locking the slate at once exists precisely
+    // so nobody plays on more information than anybody else.
+    var con = el("span", "pk-con");
+    if (g.consensus) {
+      var h = g.consensus.home || 0, a = g.consensus.away || 0, n = h + a;
+      if (n) {
+        var mineN = side === "home" ? h : side === "away" ? a : Math.max(h, a);
+        var pct = Math.round(100 * mineN / n);
+        var who = side || (h >= a ? "home" : "away");
+        con.appendChild(el("span", "pk-conbar-wrap")).appendChild(
+          el("i", "pk-conbar")).style.width = pct + "%";
+        con.appendChild(el("span", "pk-conpct", pct + "%"));
+        con.title = pct + "% of " + n + " cards took " + g[who];
+        con.appendChild(el("span", "sr-only",
+          " — " + pct + " percent of " + n + " cards took " + g[who]));
+      }
+    }
+    li.appendChild(con);
+
     var out = null;
     if (!side) out = "nopick";
     else if (g.result) {

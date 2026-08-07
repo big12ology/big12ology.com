@@ -280,13 +280,16 @@
    as the same object seen twice, but nothing here is a control: the picking
    is over, or it is happening on the other page. */
 
+/* One column, unlike the slate. The card lists only the games you could
+   pick, so it is always the shorter of the two, and a full-width row is what
+   lets five columns — time, matchup, line, crowd, result — coexist without
+   ellipsising every team name. Two columns fitted the rows and lost the
+   words, which is the wrong trade on the page you read after the fact. */
 .pk-card { list-style: none; margin: 0; padding: 0;
            display: grid; gap: 3px; }
-@media (min-width: 900px) { .pk-card { grid-template-columns: 1fr 1fr;
-                                       gap: 3px 12px; } }
 
 .pk-cardrow {
-  display: grid; grid-template-columns: 64px minmax(0, 1fr) 3.4em 4.4em;
+  display: grid; grid-template-columns: 72px minmax(0, 1fr) 3.6em 6.5em 4.6em;
   gap: 0 8px; align-items: center;
   border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
   padding: 4px 8px; min-width: 0;
@@ -308,3 +311,21 @@
 .pk-res.pending { color: var(--dim); background: none; }
 .pk-res.nopick { color: var(--dim);
                  background: color-mix(in srgb, var(--dim) 10%, transparent); }
+
+/* --- what the room did ---------------------------------------------------
+   Only ever rendered after the lock; the server does not send it before. A
+   bar rather than a bare number because the useful reading is "was I with
+   everyone or against them", which is a length, not a digit. Neutral grey:
+   the crowd is not good news or bad news, and colouring it would say it was. */
+
+.pk-con { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.pk-conbar-wrap {
+  flex: 1; min-width: 28px; height: 5px; border-radius: 3px;
+  background: color-mix(in srgb, var(--dim) 22%, transparent);
+  overflow: hidden;
+}
+.pk-conbar { display: block; height: 100%; background: var(--dim); }
+.pk-conpct { font-size: 11px; color: var(--dim);
+             font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+@media (max-width: 620px) { .pk-con { display: none; } }
