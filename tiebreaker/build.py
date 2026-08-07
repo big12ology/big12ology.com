@@ -4015,6 +4015,16 @@ PICKEM_ACCOUNT_BODY = f"""
     <button type=submit class=wbtn>Save name</button>
   </form>
 </div>
+<div class=card id=teamcard hidden>
+  <h2>Your team</h2>
+  <form id=teamform>
+    <label for=teampick>Who do you follow?</label>
+    <select id=teampick name=team></select>
+    <p class=note>Used to colour your own rows. It is not a pick, it does not
+    affect scoring, and it is not shown to anyone else.</p>
+    <button type=submit class=wbtn>Save team</button>
+  </form>
+</div>
 <div class=card id=acctinfo hidden>
   <h2>Signed in</h2>
   <div id=acctbody></div>
@@ -4114,6 +4124,12 @@ def build_pickem(year):
         ab = team_abbr(tmeta, t) if t in tmeta else None
         if ab:
             row["abbr"] = ab
+        # Which of the 63 are actually in the conference. The account page
+        # offers those sixteen and nothing else: data/teams.json is the
+        # membership list, and the rest are here only because they turn up on
+        # a schedule.
+        if t in tmeta:
+            row["b12"] = True
         if row:
             meta[t] = row
     with open(os.path.join(PICKEM_SITE, "teams.json"), "w") as f:

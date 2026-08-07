@@ -4,11 +4,13 @@
  },
  "Arizona": {
   "abbr": "ARIZ",
+  "b12": true,
   "color": "#0c234b",
   "logo": "../tiebreaker/logos/ariz.svg"
  },
  "Arizona State": {
   "abbr": "ASU",
+  "b12": true,
   "color": "#8e0c3a",
   "logo": "../tiebreaker/logos/asu.svg"
  },
@@ -23,11 +25,13 @@
  },
  "BYU": {
   "abbr": "BYU",
+  "b12": true,
   "color": "#003da5",
   "logo": "../tiebreaker/logos/byu.png"
  },
  "Baylor": {
   "abbr": "BAY",
+  "b12": true,
   "color": "#154734",
   "logo": "../tiebreaker/logos/bay.svg"
  },
@@ -42,6 +46,7 @@
  },
  "Cincinnati": {
   "abbr": "CIN",
+  "b12": true,
   "color": "#e00122",
   "logo": "../tiebreaker/logos/cin.svg"
  },
@@ -50,6 +55,7 @@
  },
  "Colorado": {
   "abbr": "COLO",
+  "b12": true,
   "color": "#cfb87c",
   "logo": "../tiebreaker/logos/cu.svg"
  },
@@ -70,6 +76,7 @@
  },
  "Houston": {
   "abbr": "HOU",
+  "b12": true,
   "color": "#c92a39",
   "logo": "../tiebreaker/logos/hou.svg"
  },
@@ -81,16 +88,19 @@
  },
  "Iowa State": {
   "abbr": "ISU",
+  "b12": true,
   "color": "#822433",
   "logo": "../tiebreaker/logos/isu.svg"
  },
  "Kansas": {
   "abbr": "KU",
+  "b12": true,
   "color": "#0051ba",
   "logo": "../tiebreaker/logos/ku.svg"
  },
  "Kansas State": {
   "abbr": "KSU",
+  "b12": true,
   "color": "#3c0969",
   "logo": "../tiebreaker/logos/ksu.svg"
  },
@@ -138,6 +148,7 @@
  },
  "Oklahoma State": {
   "abbr": "OKST",
+  "b12": true,
   "color": "#ff7300",
   "logo": "../tiebreaker/logos/okst.svg"
  },
@@ -164,6 +175,7 @@
  },
  "TCU": {
   "abbr": "TCU",
+  "b12": true,
   "color": "#4d1979",
   "logo": "../tiebreaker/logos/tcu.svg"
  },
@@ -175,6 +187,7 @@
  },
  "Texas Tech": {
   "abbr": "TTU",
+  "b12": true,
   "color": "#cc0000",
   "logo": "../tiebreaker/logos/ttu.svg"
  },
@@ -186,6 +199,7 @@
  },
  "UCF": {
   "abbr": "UCF",
+  "b12": true,
   "color": "#ba9b37",
   "logo": "../tiebreaker/logos/ucf.svg"
  },
@@ -194,6 +208,7 @@
  },
  "Utah": {
   "abbr": "UTAH",
+  "b12": true,
   "color": "#ea002a",
   "logo": "../tiebreaker/logos/utah.svg"
  },
@@ -214,6 +229,7 @@
  },
  "West Virginia": {
   "abbr": "WVU",
+  "b12": true,
   "color": "#002855",
   "logo": "../tiebreaker/logos/wvu.svg"
  },

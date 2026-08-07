@@ -24,6 +24,30 @@
   // than something misleading; the server is free to send whatever it has.
   var MIN_CONSENSUS = 10;
 
+  // Two answers that are not a team. Stored as-is so the difference between
+  // "no answer yet" and "deliberately no team" survives — one is a question
+  // we have not asked, the other is an answer.
+  var TEAM_B12 = "__big12", TEAM_CFB = "__cfb";
+
+  var teamsP = null;
+  function loadTeams() {
+    if (!teamsP) {
+      teamsP = fetch("teams.json")
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .catch(function () { return {}; });
+    }
+    return teamsP;
+  }
+
+  // The colour to tint a viewer's own rows with. A real team gets its own; the
+  // two generic answers get the brand accent, which is chrome and allowed on a
+  // row that is chrome rather than data.
+  function myColour(me, teams) {
+    if (!me || !me.team) return null;
+    if (me.team === TEAM_B12 || me.team === TEAM_CFB) return "var(--accent)";
+    return (teams[me.team] && teams[me.team].color) || null;
+  }
+
   function api(path, opts) {
     opts = opts || {};
     var init = {
@@ -520,6 +544,8 @@
       body.appendChild(out);
     }
 
+    initTeam(me);
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var input = $("dname"), err = $("dnameerr");
@@ -552,10 +578,36 @@
     });
   }
 
+  function initTeam(me) {
+    var card = $("teamcard"), sel = $("teampick"), form = $("teamform");
+    if (!card || !sel || !form || !me) return;
+    loadTeams().then(function (teams) {
+      var opts = [["", "Not saying"],
+                  [TEAM_B12, "Big 12, no particular team"],
+                  [TEAM_CFB, "College football generally"]];
+      Object.keys(teams).filter(function (t) { return teams[t].b12; })
+        .sort().forEach(function (t) { opts.push([t, t]); });
+      sel.textContent = "";
+      opts.forEach(function (o) {
+        var n = document.createElement("option");
+        n.value = o[0]; n.textContent = o[1];
+        if ((me.team || "") === o[0]) n.selected = true;
+        sel.appendChild(n);
+      });
+      card.hidden = false;
+    });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      api("/api/me", {method: "PATCH", body: {team: sel.value}})
+        .then(function () { status("Team saved."); me.team = sel.value; })
+        .catch(function (err) { alertMsg(explain(err)); });
+    });
+  }
+
   // ----------------------------------------------------------------- board
 
   var boardRows = [], sortKey = "rank", sortDir = 1, meId = null,
-      chalk = null;
+      chalk = null, myTint = null, myMark = null;
 
   var COLS = [
     {key: "rank", label: "#", num: true},
@@ -599,7 +651,14 @@
     var tb = el("tbody");
     rows.forEach(function (r) {
       var tr2 = el("tr");
-      if (meId && r.user_id === meId) tr2.className = "you";
+      if (meId && r.user_id === meId) {
+        tr2.className = "you";
+        // Your row in your own team's colour rather than the house accent.
+        // A wash, not a fill: it has to sit beside the ATS% ramp without
+        // competing with it, and at this strength it reads as "this one is
+        // yours" without claiming to mean anything about the numbers.
+        if (myTint) tr2.style.setProperty("--you", myTint);
+      }
       COLS.forEach(function (c) {
         var td = el("td", c.num ? "n" : null);
         if (c.key === "pct") {
@@ -611,6 +670,17 @@
           if (r.pct != null && window.B12PCT && window.B12PCT.ats) {
             td.style.color = window.B12PCT.ats(r.pct);
           }
+        } else if (c.key === "display_name") {
+          // Your team's mark beside your own name, and nobody else's — the
+          // others did not tell us theirs, and guessing would be worse than
+          // leaving it out.
+          if (meId && r.user_id === meId && myMark) {
+            var mi = document.createElement("img");
+            mi.className = "mark"; mi.src = myMark; mi.alt = "";
+            mi.width = 15; mi.height = 15; mi.loading = "lazy";
+            td.appendChild(mi);
+          }
+          td.appendChild(document.createTextNode(r[c.key] == null ? "—" : r[c.key]));
         } else {
           td.textContent = r[c.key] == null ? "—" : r[c.key];
         }
@@ -686,7 +756,11 @@
     var note = $("boardnote");
     if (!note) return;
     meId = me && me.user_id;
-    loadBoard("").then(function (r) { if (r) fillWeeks(r.week); });
+    loadTeams().then(function (teams) {
+      myTint = myColour(me, teams);
+      myMark = me && me.team && teams[me.team] && teams[me.team].logo;
+      return loadBoard("");
+    }).then(function (r) { if (r) fillWeeks(r.week); });
   }
 
   // ------------------------------------------------------------------ card
