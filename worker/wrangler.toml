@@ -1,0 +1,61 @@
+name = "b12-pickem"
+main = "src/index.js"
+compatibility_date = "2026-01-15"
+workers_dev = false
+
+# THE ROUTE IS THE BLAST RADIUS. Read this before changing it.
+#
+# big12ology.com is a static site on GitHub Pages, served through Cloudflare's
+# proxy. The apex A records point at 185.199.x and are orange-clouded, so every
+# request already transits the edge; this route is evaluated before the origin
+# fetch, which is what lets /api/* be handled here while everything else falls
+# through to Pages untouched. No DNS change was needed and none should be made.
+#
+# Two ways to take the entire domain down from this file:
+#
+#   * a route of "big12ology.com/*" — the Worker would answer for every page on
+#     the site, including the ones it knows nothing about.
+#   * a Workers Custom Domain on the apex — that REPLACES the A records, and
+#     the static site stops existing.
+#
+# The deploy workflow asserts this string before it runs. Bare /api is listed
+# separately because it does not match /api/* and would otherwise reach Pages
+# and 404 as HTML.
+routes = [
+  { pattern = "big12ology.com/api/*", zone_name = "big12ology.com" },
+  { pattern = "big12ology.com/api",   zone_name = "big12ology.com" },
+]
+
+# Public identifiers, not credentials. The client SECRETS live in
+# `wrangler secret put` and never in this file — see worker/README.md.
+[vars]
+SITE_ORIGIN = "https://big12ology.com"
+# The Pages origin, fetched directly for slates and scores: no Cloudflare cache
+# in the way, and no subrequest looping back through our own route. The same
+# trick cert-watch.yml and compare-live.sh already use.
+PAGES_ORIGIN = "https://big12ology.github.io"
+GOOGLE_CLIENT_ID = ""
+GITHUB_CLIENT_ID = ""
+
+[[d1_databases]]
+binding = "DB"
+database_name = "b12_pickem"
+database_id = "REPLACE_AFTER_wrangler_d1_create"
+migrations_dir = "migrations"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "REPLACE_AFTER_wrangler_kv_namespace_create"
+
+# Times are UTC, and chosen to mirror pages.yml's game windows so a final is
+# picked up within about an hour of being posted.
+[triggers]
+crons = [
+  "0 * * 8-12 6,0",        # hourly Sat + Sun — the score sweep
+  "0 0-8/2 * 8-12 1,5,6",  # Thu/Fri/Sun night finals, early UTC
+  "0 13 * 8-12 2",         # Tue — import the week's slate, an hour after
+                           # pages.yml's 12:00 refresh has published it
+]
+
+[observability]
+enabled = true

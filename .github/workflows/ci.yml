@@ -72,14 +72,20 @@ jobs:
           node --test tests/parity.test.mjs tests/render.test.mjs
           python3 -m unittest discover -s tests
 
-      # Skipped until the pick'em Worker lands, so this workflow can go in
-      # first — it is the thing that makes the rest of that work reviewable.
+      # No npm install: every test here is stdlib. node:sqlite runs the real
+      # migration and attacks its triggers, so the schema is covered without a
+      # database, a container, or a dependency to audit. wrangler is a
+      # devDependency of the deploy workflow's concern, not this one.
+      #
+      # Named files, not the directory: `node --test worker/test/` treats the
+      # path as a module to load and dies before running anything — the same
+      # shape of trap as the attendance suite's JSON fixture.
       - name: Worker
         run: |
-          if [ -d worker/test ]; then
-            cd worker && npm ci && node --test test/
+          if compgen -G "worker/test/*.test.js" > /dev/null; then
+            node --test worker/test/*.test.js
           else
-            echo "no worker/ yet — skipping"
+            echo "no worker tests yet — skipping"
           fi
 
       # The build gates are themselves untested code, and one of them now

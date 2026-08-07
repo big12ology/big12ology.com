@@ -1,0 +1,17 @@
+{
+  "name": "b12-pickem-worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The pick'em API. The only server-side code on big12ology.com.",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "dev": "wrangler dev --local",
+    "migrate:local": "wrangler d1 migrations apply b12_pickem --local",
+    "migrate:remote": "wrangler d1 migrations apply b12_pickem --remote",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.99.0"
+  }
+}

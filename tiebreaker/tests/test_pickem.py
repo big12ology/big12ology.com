@@ -306,6 +306,40 @@ finally:
     shutil.rmtree(tmp, ignore_errors=True)
 
 
+# --- the cross-language ATS fixture stays current --------------------------
+# worker/test/parity.test.js grades a real season against expectations
+# generated here, in Python. That only proves anything while the fixture still
+# matches the data it came from — a stale one turns the Worker's most important
+# test into a check that two old files agree with each other.
+
+fix_dir = os.path.join(os.path.dirname(os.path.dirname(HERE)),
+                       "worker", "test", "fixtures")
+sys.path.insert(0, fix_dir)
+try:
+    import gen_ats_fixture as genfix
+except ImportError as e:                                  # pragma: no cover
+    sys.exit(f"cannot import the ATS fixture generator: {e}")
+
+payload, _ = genfix.build()
+want = genfix.serialise(payload)
+if not os.path.exists(genfix.PATH):
+    check(False, f"the ATS fixture is missing — run {genfix.PATH}")
+else:
+    with open(genfix.PATH) as f:
+        have = f.read()
+    check(have == want,
+          "worker/test/fixtures/ats-2025.json no longer matches the data it "
+          "was generated from — rerun worker/test/fixtures/gen_ats_fixture.py")
+    print(f"ATS fixture: current, {len(payload['games'])} graded games")
+
+# The convention itself, once more, against the module the Worker mirrors.
+# freeze_spread is the only thing standing between a market mean and the
+# number a season is scored on.
+bad = [r for r in payload["games"]
+       if pickem.freeze_spread(r["spread_raw"]) != r["spread_x2"]]
+check(not bad, f"{len(bad)} fixture rows disagree with freeze_spread")
+
+
 if FAIL:
     for m in FAIL:
         print("FAIL:", m)

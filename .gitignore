@@ -6,6 +6,12 @@ dist/
 .claude/
 .DS_Store
 
+# Python bytecode, anywhere. tiebreaker/.gitignore has covered its own tree
+# since that was the only Python in the repo; the fixture generator under
+# worker/ is not in that tree and was staging .pyc files.
+__pycache__/
+*.pyc
+
 # --- backend credentials and local wrangler state (never commit) ---
 # The pick'em Worker holds the OAuth client secrets and the identity pepper.
 # .dev.vars is the local stand-in for `wrangler secret put`, in plaintext.
