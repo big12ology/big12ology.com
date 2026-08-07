@@ -304,7 +304,7 @@
       // rather than only implied by the styling.
       if (g.unpickable && firstDead) {
         firstDead = false;
-        var h = el("h2", "deadhead", "Not playable this week");
+        var h = el("h2", "pk-deadhead", "Not playable this week");
         wrap.appendChild(h);
       }
       wrap.appendChild(gameRow(g, teams));
@@ -405,7 +405,15 @@
       renderSlate(r[2] || {});
     }).catch(function (err) {
       var n = $("slateload");
-      if (n) n.textContent = explain(err);
+      if (!n) return;
+      // 404 here is not an error to apologise for: it is the ordinary state
+      // of a week that has not been published. The generic handler said "the
+      // server said no (404)", which tells a player nothing they can act on
+      // and reads like a fault. Slates go up on the Tuesday refresh.
+      n.textContent = err.status === 404
+        ? "No slate published yet. The week goes up on Tuesday, once the "
+          + "lines are in."
+        : explain(err);
     });
   }
 
