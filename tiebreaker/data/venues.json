@@ -1,0 +1,6450 @@
+{
+ "1027": {
+  "city": "San Luis Obispo",
+  "lat": 35.2984,
+  "lon": -120.665,
+  "name": "Alex G. Spanos Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "1056": {
+  "city": "Pasadena",
+  "lat": 34.1613,
+  "lon": -118.1676,
+  "name": "Rose Bowl",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "10803": {
+  "city": "Pensacola",
+  "lat": 30.5472,
+  "lon": -87.222,
+  "name": "Pen-Air Field",
+  "state": "FL",
+  "tz": "America/Chicago"
+ },
+ "11488": {
+  "city": "Pawtucket",
+  "lat": 41.8688,
+  "lon": -71.3826,
+  "name": "Centreville Bank Stadium",
+  "state": "RI",
+  "tz": "America/New_York"
+ },
+ "11553": {
+  "city": "Brookville",
+  "lat": 40.8163,
+  "lon": -73.5895,
+  "name": "Shark Stadium",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "11559": {
+  "city": "Huntsville",
+  "lat": 34.6996,
+  "lon": -86.5885,
+  "name": "Joe Davis Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "11823": {
+  "city": "Evanston",
+  "lat": 42.0656,
+  "lon": -87.6925,
+  "name": "Ryan Field",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "1400": {
+  "city": "Frisco",
+  "lat": 33.1544,
+  "lon": -96.8353,
+  "name": "Toyota Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "150": {
+  "city": "Bronx",
+  "lat": 40.8467,
+  "lon": -73.8786,
+  "name": "Jack Coffey Field",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "1905": {
+  "city": "Vermillion",
+  "lat": 42.7911,
+  "lon": -96.9278,
+  "name": "DakotaDome",
+  "state": "SD",
+  "tz": "America/Chicago"
+ },
+ "1930": {
+  "city": "Pocatello",
+  "lat": 42.8702,
+  "lon": -112.4281,
+  "name": "Holt Arena",
+  "state": "ID",
+  "tz": "America/Boise"
+ },
+ "1964": {
+  "city": "Syracuse",
+  "lat": 43.0362,
+  "lon": -76.1363,
+  "name": "JMA Wireless Dome",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "2023": {
+  "city": "Flagstaff",
+  "lat": 35.1805,
+  "lon": -111.6528,
+  "name": "Walkup Skydome",
+  "state": "AZ",
+  "tz": "America/Phoenix"
+ },
+ "2031": {
+  "city": "Miami",
+  "lat": 25.7525,
+  "lon": -80.3778,
+  "name": "Pitbull Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "2068": {
+  "city": "Richmond",
+  "lat": 37.5808,
+  "lon": -77.5372,
+  "name": "E. Claiborne Robins Stadium",
+  "state": "VA",
+  "tz": "America/New_York"
+ },
+ "218": {
+  "city": "Miami",
+  "lat": 25.7525,
+  "lon": -80.3779,
+  "name": "FIU Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "2455": {
+  "city": "London",
+  "lat": 51.5556,
+  "lon": -0.2794,
+  "name": "Wembley Stadium",
+  "state": "",
+  "tz": "Europe/London"
+ },
+ "3453": {
+  "city": "Bridgeview",
+  "lat": 41.7647,
+  "lon": -87.8061,
+  "name": "SeatGeek Stadium",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "347": {
+  "city": "Madison",
+  "lat": 43.0699,
+  "lon": -89.4127,
+  "name": "Camp Randall Stadium",
+  "state": "WI",
+  "tz": "America/Chicago"
+ },
+ "3485": {
+  "city": "Portland",
+  "lat": 45.5216,
+  "lon": -122.6917,
+  "name": "Providence Park",
+  "state": "OR",
+  "tz": "America/Los_Angeles"
+ },
+ "3486": {
+  "city": "Kansas City",
+  "lat": 39.1218,
+  "lon": -94.8232,
+  "name": "Children's Mercy Park",
+  "state": "KS",
+  "tz": "America/Chicago"
+ },
+ "3491": {
+  "city": "Washington",
+  "lat": 38.8898,
+  "lon": -76.9718,
+  "name": "RFK Stadium",
+  "state": "DC",
+  "tz": "America/New_York"
+ },
+ "3493": {
+  "city": "New Orleans",
+  "lat": 29.9508,
+  "lon": -90.0811,
+  "name": "Caesars Superdome",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "3494": {
+  "city": "Saint Louis",
+  "lat": 38.6264,
+  "lon": -90.1996,
+  "name": "The Dome at America's Center",
+  "state": "MO",
+  "tz": null
+ },
+ "3495": {
+  "city": "Atlanta",
+  "lat": 33.7577,
+  "lon": -84.4008,
+  "name": "Georgia Dome",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "3504": {
+  "city": "Dublin",
+  "lat": 53.3352,
+  "lon": -6.2284,
+  "name": "Aviva Stadium",
+  "state": "",
+  "tz": "Europe/Dublin"
+ },
+ "3558": {
+  "city": "Ann Arbor",
+  "lat": 42.2658,
+  "lon": -83.7487,
+  "name": "Michigan Stadium",
+  "state": "MI",
+  "tz": "America/Detroit"
+ },
+ "3597": {
+  "city": "Lexington",
+  "lat": 37.789,
+  "lon": -79.4351,
+  "name": "Alumni Memorial Field",
+  "state": "VA",
+  "tz": "America/New_York"
+ },
+ "3599": {
+  "city": "Baton Rouge",
+  "lat": 30.5221,
+  "lon": -91.1896,
+  "name": "Ace W. Mumford Stadium",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "36": {
+  "city": "Poughkeepsie",
+  "lat": 41.7191,
+  "lon": -73.933,
+  "name": "Leonidoff Field",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3600": {
+  "city": "Detroit",
+  "lat": 42.3316,
+  "lon": -83.0466,
+  "name": "Tom Adams Field",
+  "state": "MI",
+  "tz": null
+ },
+ "3601": {
+  "city": "Las Cruces",
+  "lat": 32.2796,
+  "lon": -106.7411,
+  "name": "Aggie Memorial Stadium",
+  "state": "NM",
+  "tz": "America/Denver"
+ },
+ "3602": {
+  "city": "Davis",
+  "lat": 38.5365,
+  "lon": -121.7628,
+  "name": "Aggie Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "3603": {
+  "city": "Greensboro",
+  "lat": 36.0814,
+  "lon": -79.77,
+  "name": "Aggie Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3604": {
+  "city": "San Antonio",
+  "lat": 29.417,
+  "lon": -98.4788,
+  "name": "Alamodome",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3605": {
+  "city": "Grand Forks",
+  "lat": 47.9106,
+  "lon": -97.091,
+  "name": "Alerus Center",
+  "state": "ND",
+  "tz": "America/Chicago"
+ },
+ "3606": {
+  "city": "Moorhead",
+  "lat": 46.8739,
+  "lon": -96.7539,
+  "name": "Scheels Field at Nemzek Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "3607": {
+  "city": "Orono",
+  "lat": 44.9051,
+  "lon": -68.6725,
+  "name": "Alfond Stadium",
+  "state": "ME",
+  "tz": "America/New_York"
+ },
+ "3608": {
+  "city": "Statesboro",
+  "lat": 32.4122,
+  "lon": -81.7849,
+  "name": "Allen E. Paulson Stadium",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "3609": {
+  "city": "Rolla",
+  "lat": 37.9504,
+  "lon": -91.7804,
+  "name": "Allgood-Bailey Stadium",
+  "state": "MO",
+  "tz": "America/Chicago"
+ },
+ "3610": {
+  "city": "Honolulu",
+  "lat": 21.3728,
+  "lon": -157.93,
+  "name": "Aloha Stadium",
+  "state": "HI",
+  "tz": "Pacific/Honolulu"
+ },
+ "3611": {
+  "city": "Leicester",
+  "lat": 42.2369,
+  "lon": -71.9112,
+  "name": "Alumni Field (MA)",
+  "state": "MA",
+  "tz": null
+ },
+ "3612": {
+  "city": "Salisbury",
+  "lat": 35.671,
+  "lon": -80.4742,
+  "name": "Alumni Memorial Stadium (NC)",
+  "state": "NC",
+  "tz": null
+ },
+ "3613": {
+  "city": "Dover",
+  "lat": 39.1894,
+  "lon": -75.5433,
+  "name": "Alumni Stadium",
+  "state": "DE",
+  "tz": "America/New_York"
+ },
+ "3614": {
+  "city": "Hanover",
+  "lat": 38.7142,
+  "lon": -85.4736,
+  "name": "Alumni Stadium (IN)",
+  "state": "IN",
+  "tz": null
+ },
+ "3615": {
+  "city": "Chestnut Hill",
+  "lat": 42.3351,
+  "lon": -71.1664,
+  "name": "Alumni Stadium (Chestnut Hill, MA)",
+  "state": "MA",
+  "tz": "America/New_York"
+ },
+ "3616": {
+  "city": "Fort Worth",
+  "lat": 32.7097,
+  "lon": -97.3681,
+  "name": "Amon G. Carter Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3617": {
+  "city": "Hamilton",
+  "lat": 42.8169,
+  "lon": -75.5453,
+  "name": "Andy Kerr Stadium",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3618": {
+  "city": "Newport News",
+  "lat": 36.9775,
+  "lon": -76.4298,
+  "name": "Apprentice Field",
+  "state": "VA",
+  "tz": null
+ },
+ "3619": {
+  "city": "Tucson",
+  "lat": 32.2288,
+  "lon": -110.9489,
+  "name": "Arizona Stadium",
+  "state": "AZ",
+  "tz": "America/Phoenix"
+ },
+ "3620": {
+  "city": "Hampton",
+  "lat": 37.0201,
+  "lon": -76.3332,
+  "name": "Armstrong Stadium",
+  "state": "VA",
+  "tz": "America/New_York"
+ },
+ "3621": {
+  "city": "Annville",
+  "lat": 40.3296,
+  "lon": -76.5152,
+  "name": "Arnold Field (PA)",
+  "state": "PA",
+  "tz": null
+ },
+ "3622": {
+  "city": "Kansas City",
+  "lat": 39.0489,
+  "lon": -94.4839,
+  "name": "GEHA Field at Arrowhead Stadium",
+  "state": "MO",
+  "tz": "America/Chicago"
+ },
+ "3623": {
+  "city": "Pittsburgh",
+  "lat": 40.4356,
+  "lon": -79.99,
+  "name": "Arthur J. Rooney Athletic Field",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "3624": {
+  "city": "New Britain",
+  "lat": 41.6951,
+  "lon": -72.7616,
+  "name": "Arute Field",
+  "state": "CT",
+  "tz": "America/New_York"
+ },
+ "3625": {
+  "city": "Jonesboro",
+  "lat": 35.8489,
+  "lon": -90.6677,
+  "name": "Centennial Bank Stadium",
+  "state": "AR",
+  "tz": "America/Chicago"
+ },
+ "3626": {
+  "city": "Eugene",
+  "lat": 44.0583,
+  "lon": -123.0685,
+  "name": "Autzen Stadium",
+  "state": "OR",
+  "tz": "America/Los_Angeles"
+ },
+ "3627": {
+  "city": "Clinton",
+  "lat": 34.4616,
+  "lon": -81.8614,
+  "name": "Bailey Memorial Stadium",
+  "state": "SC",
+  "tz": "America/New_York"
+ },
+ "3628": {
+  "city": "Charlotte",
+  "lat": 35.2258,
+  "lon": -80.8528,
+  "name": "Bank of America Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3629": {
+  "city": "Buies Creek",
+  "lat": 35.4048,
+  "lon": -78.7425,
+  "name": "Barker-Lane Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3630": {
+  "city": "Winston-Salem",
+  "lat": 36.1306,
+  "lon": -80.2546,
+  "name": "Allegacy Federal Credit Union Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3631": {
+  "city": "Houston",
+  "lat": 29.7522,
+  "lon": -95.3524,
+  "name": "BBVA Compass Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3632": {
+  "city": "University Park",
+  "lat": 40.8122,
+  "lon": -77.8561,
+  "name": "Beaver Stadium",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "3633": {
+  "city": "Silver City",
+  "lat": 32.7751,
+  "lon": -108.2754,
+  "name": "Ben Altamirano Field",
+  "state": "NM",
+  "tz": null
+ },
+ "3634": {
+  "city": "Gainesville",
+  "lat": 29.6499,
+  "lon": -82.3486,
+  "name": "Ben Hill Griffin Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "3635": {
+  "city": "Indianola",
+  "lat": 41.3605,
+  "lon": -93.5613,
+  "name": "Bill Buxton Stadium",
+  "state": "IA",
+  "tz": null
+ },
+ "3636": {
+  "city": "Manhattan",
+  "lat": 39.202,
+  "lon": -96.5938,
+  "name": "Bill Snyder Family Stadium",
+  "state": "KS",
+  "tz": "America/Chicago"
+ },
+ "3638": {
+  "city": "Bismarck",
+  "lat": 46.8083,
+  "lon": -100.7837,
+  "name": "MDU Resources Community Bowl",
+  "state": "ND",
+  "tz": null
+ },
+ "3639": {
+  "city": "Prairie View",
+  "lat": 30.0911,
+  "lon": -95.9945,
+  "name": "Blackshear Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3640": {
+  "city": "Greencastle",
+  "lat": 39.6445,
+  "lon": -86.8647,
+  "name": "Blackstock Stadium",
+  "state": "IN",
+  "tz": null
+ },
+ "3641": {
+  "city": "Mankato",
+  "lat": 44.1635,
+  "lon": -93.9994,
+  "name": "Blakeslee Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "3642": {
+  "city": "Frostburg",
+  "lat": 39.6581,
+  "lon": -78.9284,
+  "name": "Bobcat Stadium (MD)",
+  "state": "MD",
+  "tz": null
+ },
+ "3643": {
+  "city": "Bozeman",
+  "lat": 45.659,
+  "lon": -111.0495,
+  "name": "Bobcat Stadium",
+  "state": "MT",
+  "tz": "America/Denver"
+ },
+ "3644": {
+  "city": "San Marcos",
+  "lat": 29.891,
+  "lon": -97.9256,
+  "name": "Bobcat Stadium (TX)",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3645": {
+  "city": "Forest City",
+  "lat": 43.2627,
+  "lon": -93.6377,
+  "name": "Bolstorff Field",
+  "state": "IA",
+  "tz": null
+ },
+ "3646": {
+  "city": "Stillwater",
+  "lat": 36.1257,
+  "lon": -97.0665,
+  "name": "Boone Pickens Stadium",
+  "state": "OK",
+  "tz": "America/Chicago"
+ },
+ "3647": {
+  "city": "Huntsville",
+  "lat": 30.7139,
+  "lon": -95.542,
+  "name": "Elliott T. Bowers Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3649": {
+  "city": "Winston-Salem",
+  "lat": 36.0834,
+  "lon": -80.222,
+  "name": "Bowman Gray Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3650": {
+  "city": "Tallahassee",
+  "lat": 30.4262,
+  "lon": -84.2923,
+  "name": "Bragg Memorial Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "3651": {
+  "city": "Harrisonburg",
+  "lat": 38.4353,
+  "lon": -78.8729,
+  "name": "Bridgeforth Stadium",
+  "state": "VA",
+  "tz": "America/New_York"
+ },
+ "3652": {
+  "city": "Orlando",
+  "lat": 28.608,
+  "lon": -81.1927,
+  "name": "FBC Mortgage Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "3653": {
+  "city": "Boise",
+  "lat": 43.6029,
+  "lon": -116.1959,
+  "name": "Albertsons Stadium",
+  "state": "ID",
+  "tz": "America/Boise"
+ },
+ "3654": {
+  "city": "Conway",
+  "lat": 33.7929,
+  "lon": -79.0167,
+  "name": "Brooks Stadium (SC)",
+  "state": "SC",
+  "tz": "America/New_York"
+ },
+ "3655": {
+  "city": "Valparaiso",
+  "lat": 41.4656,
+  "lon": -87.0479,
+  "name": "Brown Field",
+  "state": "IN",
+  "tz": "America/Chicago"
+ },
+ "3656": {
+  "city": "Providence",
+  "lat": 41.8421,
+  "lon": -71.3939,
+  "name": "Brown Stadium",
+  "state": "RI",
+  "tz": "America/New_York"
+ },
+ "3657": {
+  "city": "Tuscaloosa",
+  "lat": 33.2083,
+  "lon": -87.5504,
+  "name": "Bryant-Denny Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "3658": {
+  "city": "North Charleston",
+  "lat": 32.981,
+  "lon": -80.066,
+  "name": "Buccaneer Field",
+  "state": "SC",
+  "tz": "America/New_York"
+ },
+ "3659": {
+  "city": "Seward",
+  "lat": 40.8696,
+  "lon": -97.1707,
+  "name": "Bulldog Stadium (NE)",
+  "state": "NE",
+  "tz": null
+ },
+ "3660": {
+  "city": "Fresno",
+  "lat": 36.8144,
+  "lon": -119.758,
+  "name": "Valley Children's Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "3661": {
+  "city": "Smithfield",
+  "lat": 41.9242,
+  "lon": -71.5385,
+  "name": "Bulldog Stadium",
+  "state": "RI",
+  "tz": "America/New_York"
+ },
+ "3662": {
+  "city": "Jacksonville",
+  "lat": 33.8201,
+  "lon": -85.7665,
+  "name": "AmFirst Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "3663": {
+  "city": "Jefferson City",
+  "lat": 36.1223,
+  "lon": -83.4924,
+  "name": "Burke-Tarr Stadium",
+  "state": "TN",
+  "tz": null
+ },
+ "3664": {
+  "city": "Indianapolis",
+  "lat": 39.8445,
+  "lon": -86.1659,
+  "name": "Butler Bowl",
+  "state": "IN",
+  "tz": "America/Indiana/Indianapolis"
+ },
+ "3665": {
+  "city": "College Park",
+  "lat": 38.9903,
+  "lon": -76.9474,
+  "name": "SECU Stadium",
+  "state": "MD",
+  "tz": "America/New_York"
+ },
+ "3666": {
+  "city": "Lafayette",
+  "lat": 30.2158,
+  "lon": -92.0417,
+  "name": "Cajun Field",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "3667": {
+  "city": "Princeton",
+  "lat": 37.3663,
+  "lon": -81.1027,
+  "name": "Callaghan Stadium",
+  "state": "WV",
+  "tz": null
+ },
+ "3668": {
+  "city": "Fairfield",
+  "lat": 41.2212,
+  "lon": -73.2417,
+  "name": "Campus Field",
+  "state": "CT",
+  "tz": "America/New_York"
+ },
+ "3670": {
+  "city": "Raleigh",
+  "lat": 35.8008,
+  "lon": -78.7196,
+  "name": "Carter-Finley Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3671": {
+  "city": "Cleveland",
+  "lat": 41.5134,
+  "lon": -81.6036,
+  "name": "Case Field",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3673": {
+  "city": "Seattle",
+  "lat": 47.5952,
+  "lon": -122.3316,
+  "name": "Lumen Field",
+  "state": "WA",
+  "tz": "America/Los_Angeles"
+ },
+ "3674": {
+  "city": "Tulsa",
+  "lat": 36.1489,
+  "lon": -95.9438,
+  "name": "Chapman Stadium",
+  "state": "OK",
+  "tz": "America/Chicago"
+ },
+ "3675": {
+  "city": "Utica",
+  "lat": 43.1009,
+  "lon": -75.2327,
+  "name": "Charles A. Gaetano Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "3676": {
+  "city": "Lewisburg",
+  "lat": 40.9519,
+  "lon": -76.8848,
+  "name": "Christy Mathewson-Memorial Stadium",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "3677": {
+  "city": "Latrobe",
+  "lat": 40.3173,
+  "lon": -79.384,
+  "name": "Chuck Noll Field",
+  "state": "PA",
+  "tz": null
+ },
+ "3678": {
+  "city": "Lynchburg",
+  "lat": 37.4138,
+  "lon": -79.1422,
+  "name": "City Stadium (VA)",
+  "state": "VA",
+  "tz": null
+ },
+ "3681": {
+  "city": "The Bronx",
+  "lat": 40.8616,
+  "lon": -73.8828,
+  "name": "Coffey Field",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3683": {
+  "city": "Lexington",
+  "lat": 38.0221,
+  "lon": -84.5053,
+  "name": "Kroger Field",
+  "state": "KY",
+  "tz": "America/New_York"
+ },
+ "3684": {
+  "city": "Azusa",
+  "lat": 34.1339,
+  "lon": -117.9056,
+  "name": "Citrus Stadium",
+  "state": "CA",
+  "tz": null
+ },
+ "3685": {
+  "city": "Brookings",
+  "lat": 44.3212,
+  "lon": -96.7801,
+  "name": "Coughlin-Alumni Stadium",
+  "state": "SD",
+  "tz": "America/Chicago"
+ },
+ "3686": {
+  "city": "Lake Charles",
+  "lat": 30.1805,
+  "lon": -93.2179,
+  "name": "Cowboy Stadium",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "3687": {
+  "city": "Arlington",
+  "lat": 32.7478,
+  "lon": -97.0928,
+  "name": "AT&T Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3688": {
+  "city": "Durham",
+  "lat": 43.1386,
+  "lon": -70.9393,
+  "name": "Wildcat Stadium",
+  "state": "NH",
+  "tz": "America/New_York"
+ },
+ "3689": {
+  "city": "Montgomery",
+  "lat": 32.3795,
+  "lon": -86.293,
+  "name": "Cramton Bowl",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "3690": {
+  "city": "Plymouth",
+  "lat": 43.7572,
+  "lon": -71.6885,
+  "name": "Charles L. Currier Memorial Field",
+  "state": "NH",
+  "tz": null
+ },
+ "3691": {
+  "city": "Jacksonville",
+  "lat": 30.3569,
+  "lon": -81.6055,
+  "name": "D. B. Milne Field",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "3693": {
+  "city": "Starkville",
+  "lat": 33.4563,
+  "lon": -88.7934,
+  "name": "Davis Wade Stadium",
+  "state": "MS",
+  "tz": "America/Chicago"
+ },
+ "3694": {
+  "city": "Loretto",
+  "lat": 40.5063,
+  "lon": -78.6372,
+  "name": "DeGol Field",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "3695": {
+  "city": "Newark",
+  "lat": 39.6617,
+  "lon": -75.7488,
+  "name": "Delaware Stadium",
+  "state": "DE",
+  "tz": "America/New_York"
+ },
+ "3696": {
+  "city": "Kent",
+  "lat": 41.1391,
+  "lon": -81.3135,
+  "name": "Dix Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3697": {
+  "city": "Tallahassee",
+  "lat": 30.4382,
+  "lon": -84.3044,
+  "name": "Doak Campbell Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "3698": {
+  "city": "Findlay",
+  "lat": 41.0414,
+  "lon": -83.6504,
+  "name": "Donnell Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "3699": {
+  "city": "Greenville",
+  "lat": 35.5968,
+  "lon": -77.3646,
+  "name": "Dowdy-Ficklen Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3700": {
+  "city": "Bowling Green",
+  "lat": 41.378,
+  "lon": -83.6225,
+  "name": "Doyt L. Perry Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3701": {
+  "city": "Des Moines",
+  "lat": 41.605,
+  "lon": -93.655,
+  "name": "Drake Stadium",
+  "state": "IA",
+  "tz": "America/Chicago"
+ },
+ "3702": {
+  "city": "Durham",
+  "lat": 35.9967,
+  "lon": -78.9018,
+  "name": "Durham County Memorial Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "3703": {
+  "city": "Raleigh",
+  "lat": 35.7804,
+  "lon": -78.6391,
+  "name": "Durham County Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "3704": {
+  "city": "Cullowhee",
+  "lat": 35.3048,
+  "lon": -83.1818,
+  "name": "E. J. Whitmire Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3705": {
+  "city": "Jacksonville",
+  "lat": 30.3322,
+  "lon": -81.6557,
+  "name": "Earl Kitchings Stadium",
+  "state": "FL",
+  "tz": null
+ },
+ "3706": {
+  "city": "Cedar City",
+  "lat": 37.6758,
+  "lon": -113.0774,
+  "name": "Eccles Coliseum",
+  "state": "UT",
+  "tz": "America/Denver"
+ },
+ "3709": {
+  "city": "Beverly",
+  "lat": 42.5584,
+  "lon": -70.88,
+  "name": "Hempstead Stadium",
+  "state": "MA",
+  "tz": null
+ },
+ "3710": {
+  "city": "Boiling Springs",
+  "lat": 35.2458,
+  "lon": -81.674,
+  "name": "Ernest W. Spangler Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3711": {
+  "city": "Conway",
+  "lat": 35.0803,
+  "lon": -92.46,
+  "name": "Estes Stadium",
+  "state": "AR",
+  "tz": "America/Chicago"
+ },
+ "3712": {
+  "city": "Jacksonville",
+  "lat": 30.3239,
+  "lon": -81.6375,
+  "name": "EverBank Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "3713": {
+  "city": "Colorado Springs",
+  "lat": 38.997,
+  "lon": -104.8436,
+  "name": "Falcon Stadium",
+  "state": "CO",
+  "tz": "America/Denver"
+ },
+ "3714": {
+  "city": "Fargo",
+  "lat": 46.903,
+  "lon": -96.8003,
+  "name": "Fargodome",
+  "state": "ND",
+  "tz": "America/Chicago"
+ },
+ "3715": {
+  "city": "Boca Raton",
+  "lat": 26.3764,
+  "lon": -80.1016,
+  "name": "FAU Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "3716": {
+  "city": "Franklin",
+  "lat": 33.7042,
+  "lon": -117.7511,
+  "name": "Stewart \"\"Red\"\" Faught Stadium",
+  "state": "IN",
+  "tz": null
+ },
+ "3717": {
+  "city": "Rochester",
+  "lat": 43.1573,
+  "lon": -77.6152,
+  "name": "Edwin Fauver Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "3718": {
+  "city": "Canton",
+  "lat": 40.7985,
+  "lon": -81.375,
+  "name": "Tom Benson Hall of Fame Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "3719": {
+  "city": "Landover",
+  "lat": 38.9078,
+  "lon": -76.8644,
+  "name": "Northwest Stadium",
+  "state": "MD",
+  "tz": "America/New_York"
+ },
+ "3720": {
+  "city": "Chattanooga",
+  "lat": 35.0364,
+  "lon": -85.3159,
+  "name": "Finley Stadium",
+  "state": "TN",
+  "tz": "America/New_York"
+ },
+ "3721": {
+  "city": "Easton",
+  "lat": 40.701,
+  "lon": -75.2106,
+  "name": "Fisher Field",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "3722": {
+  "city": "Worcester",
+  "lat": 42.2404,
+  "lon": -71.8111,
+  "name": "Fitton Field",
+  "state": "MA",
+  "tz": "America/New_York"
+ },
+ "3723": {
+  "city": "Quincy",
+  "lat": 39.9356,
+  "lon": -91.4099,
+  "name": "QU Stadium",
+  "state": "IL",
+  "tz": null
+ },
+ "3724": {
+  "city": "Waco",
+  "lat": 31.5302,
+  "lon": -97.1484,
+  "name": "Floyd Casey Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3725": {
+  "city": "Murfreesboro",
+  "lat": 35.8511,
+  "lon": -86.3682,
+  "name": "Johnny \"Red\" Floyd Stadium",
+  "state": "TN",
+  "tz": "America/Chicago"
+ },
+ "3726": {
+  "city": "Boulder",
+  "lat": 40.0095,
+  "lon": -105.2669,
+  "name": "Folsom Field",
+  "state": "CO",
+  "tz": "America/Denver"
+ },
+ "3727": {
+  "city": "Detroit",
+  "lat": 42.34,
+  "lon": -83.0456,
+  "name": "Ford Field",
+  "state": "MI",
+  "tz": "America/Detroit"
+ },
+ "3728": {
+  "city": "Burnaby",
+  "lat": 35.8953,
+  "lon": -78.5151,
+  "name": "Terry Fox Field",
+  "state": "BC",
+  "tz": null
+ },
+ "3729": {
+  "city": "Hillsdale",
+  "lat": 41.8779,
+  "lon": -84.5984,
+  "name": "Frank \"Muddy\" Waters Stadium",
+  "state": "MI",
+  "tz": null
+ },
+ "3730": {
+  "city": "Philadelphia",
+  "lat": 39.9501,
+  "lon": -75.1901,
+  "name": "Franklin Field",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "3731": {
+  "city": "Tiffin",
+  "lat": 41.1145,
+  "lon": -83.178,
+  "name": "Frost-Kalnow Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "3733": {
+  "city": "Lewiston",
+  "lat": 44.1004,
+  "lon": -70.2148,
+  "name": "Garcelon Field",
+  "state": "ME",
+  "tz": null
+ },
+ "3734": {
+  "city": "San Antonio",
+  "lat": 29.4675,
+  "lon": -98.47,
+  "name": "Gayle and Tom Benson Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3735": {
+  "city": "University Park",
+  "lat": 32.8377,
+  "lon": -96.7828,
+  "name": "Gerald J. Ford Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3737": {
+  "city": "Spartanburg",
+  "lat": 34.9619,
+  "lon": -81.9329,
+  "name": "Gibbs Stadium",
+  "state": "SC",
+  "tz": "America/New_York"
+ },
+ "3738": {
+  "city": "Foxborough",
+  "lat": 42.0909,
+  "lon": -71.2643,
+  "name": "Gillette Stadium",
+  "state": "MA",
+  "tz": "America/New_York"
+ },
+ "3739": {
+  "city": "Toledo",
+  "lat": 41.6575,
+  "lon": -83.6136,
+  "name": "Glass Bowl",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3740": {
+  "city": "Pine Bluff",
+  "lat": 34.2533,
+  "lon": -92.0214,
+  "name": "Golden Lion Stadium",
+  "state": "AR",
+  "tz": "America/Chicago"
+ },
+ "3741": {
+  "city": "Bethlehem",
+  "lat": 40.5891,
+  "lon": -75.3554,
+  "name": "Goodman Stadium",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "3742": {
+  "city": "Clarksville",
+  "lat": 36.5363,
+  "lon": -87.3526,
+  "name": "Governors Stadium",
+  "state": "TN",
+  "tz": "America/Chicago"
+ },
+ "3744": {
+  "city": "Normal",
+  "lat": 40.5125,
+  "lon": -88.9967,
+  "name": "Hancock Stadium",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "3745": {
+  "city": "Saint George",
+  "lat": 37.1099,
+  "lon": -113.5674,
+  "name": "Greater Zion Stadium",
+  "state": "UT",
+  "tz": "America/Denver"
+ },
+ "3746": {
+  "city": "Macomb",
+  "lat": 40.4684,
+  "lon": -90.6841,
+  "name": "Hanson Field",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "3747": {
+  "city": "Midland",
+  "lat": 43.6156,
+  "lon": -84.2472,
+  "name": "Hantz Stadium",
+  "state": "MI",
+  "tz": null
+ },
+ "3748": {
+  "city": "Martin",
+  "lat": 36.3448,
+  "lon": -88.8616,
+  "name": "Graham Stadium",
+  "state": "TN",
+  "tz": "America/Chicago"
+ },
+ "3749": {
+  "city": "Saint Charles",
+  "lat": 38.7946,
+  "lon": -90.5198,
+  "name": "Hunter Stadium",
+  "state": "MO",
+  "tz": "America/Chicago"
+ },
+ "3750": {
+  "city": "Boston",
+  "lat": 42.3667,
+  "lon": -71.1268,
+  "name": "Harvard Stadium",
+  "state": "MA",
+  "tz": "America/New_York"
+ },
+ "3752": {
+  "city": "Pittsburgh",
+  "lat": 40.4468,
+  "lon": -80.0158,
+  "name": "Acrisure Stadium",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "3754": {
+  "city": "Piscataway",
+  "lat": 40.5137,
+  "lon": -74.4656,
+  "name": "High Point Solutions Stadium",
+  "state": "NJ",
+  "tz": "America/New_York"
+ },
+ "3755": {
+  "city": "Holland",
+  "lat": 42.7876,
+  "lon": -86.1091,
+  "name": "Ray and Sue Smith Stadium",
+  "state": "MI",
+  "tz": null
+ },
+ "3756": {
+  "city": "Nacogdoches",
+  "lat": 31.6257,
+  "lon": -94.6444,
+  "name": "Homer Bryce Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3757": {
+  "city": "Sacramento",
+  "lat": 38.5557,
+  "lon": -121.423,
+  "name": "Hornet Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "3758": {
+  "city": "Cape Girardeau",
+  "lat": 37.3095,
+  "lon": -89.5314,
+  "name": "Houck Stadium",
+  "state": "MO",
+  "tz": "America/Chicago"
+ },
+ "3760": {
+  "city": "Lock Haven",
+  "lat": 41.1369,
+  "lon": -77.4472,
+  "name": "Hubert Jack Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "3761": {
+  "city": "Fort Collins",
+  "lat": 40.5621,
+  "lon": -105.1416,
+  "name": "Sonny Lubick Field at Hughes Stadium",
+  "state": "CO",
+  "tz": "America/Denver"
+ },
+ "3762": {
+  "city": "Baltimore",
+  "lat": 39.344,
+  "lon": -76.583,
+  "name": "Hughes Stadium",
+  "state": "MD",
+  "tz": "America/New_York"
+ },
+ "3764": {
+  "city": "DeKalb",
+  "lat": 41.934,
+  "lon": -88.7778,
+  "name": "Huskie Stadium",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "3765": {
+  "city": "Seattle",
+  "lat": 47.6503,
+  "lon": -122.3016,
+  "name": "Husky Stadium",
+  "state": "WA",
+  "tz": "America/Los_Angeles"
+ },
+ "3766": {
+  "city": "Shreveport",
+  "lat": 32.4756,
+  "lon": -93.7919,
+  "name": "Independence Stadium",
+  "state": "FL",
+  "tz": "America/Chicago"
+ },
+ "3767": {
+  "city": "Muskogee",
+  "lat": 35.663,
+  "lon": -95.3928,
+  "name": "Indian Bowl",
+  "state": "OK",
+  "tz": null
+ },
+ "3768": {
+  "city": "Akron",
+  "lat": 41.0726,
+  "lon": -81.5083,
+  "name": "InfoCision Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3769": {
+  "city": "Painesville",
+  "lat": 41.7245,
+  "lon": -81.2457,
+  "name": "Jack Britt Memorial Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "3770": {
+  "city": "Ashland",
+  "lat": 40.8686,
+  "lon": -82.3176,
+  "name": "Jack Miller Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "3771": {
+  "city": "Lorman",
+  "lat": 31.8736,
+  "lon": -91.1349,
+  "name": "Jack Spinks Stadium",
+  "state": "MS",
+  "tz": "America/Chicago"
+ },
+ "3772": {
+  "city": "Ames",
+  "lat": 42.014,
+  "lon": -93.6358,
+  "name": "Jack Trice Stadium",
+  "state": "IA",
+  "tz": "America/Chicago"
+ },
+ "3774": {
+  "city": "Morehead",
+  "lat": 38.1916,
+  "lon": -83.4253,
+  "name": "Jayne Stadium",
+  "state": "KY",
+  "tz": "America/New_York"
+ },
+ "3775": {
+  "city": "Huntington",
+  "lat": 38.4247,
+  "lon": -82.4214,
+  "name": "Joan C. Edwards Stadium",
+  "state": "WV",
+  "tz": "America/New_York"
+ },
+ "3776": {
+  "city": "Ruston",
+  "lat": 32.5321,
+  "lon": -92.656,
+  "name": "Joe Aillet Stadium",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "3777": {
+  "city": "Moon Township",
+  "lat": 40.521,
+  "lon": -80.2159,
+  "name": "Joe Walton Stadium",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "3778": {
+  "city": "Springfield",
+  "lat": 37.191,
+  "lon": -93.3017,
+  "name": "John F. Kennedy Stadium",
+  "state": "MO",
+  "tz": "America/Chicago"
+ },
+ "3779": {
+  "city": "Thibodaux",
+  "lat": 29.7867,
+  "lon": -90.8046,
+  "name": "Manning Field at John L. Guidry Stadium",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "3781": {
+  "city": "Towson",
+  "lat": 39.3886,
+  "lon": -76.616,
+  "name": "Johnny Unitas Stadium",
+  "state": "MD",
+  "tz": "America/New_York"
+ },
+ "3782": {
+  "city": "Charleston",
+  "lat": 32.7937,
+  "lon": -79.9558,
+  "name": "Johnson Hagood Stadium",
+  "state": "SC",
+  "tz": "America/New_York"
+ },
+ "3784": {
+  "city": "Lubbock",
+  "lat": 33.5911,
+  "lon": -101.8729,
+  "name": "Jones AT&T Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3785": {
+  "city": "Auburn",
+  "lat": 32.6026,
+  "lon": -85.4897,
+  "name": "Jordan-Hare Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "3786": {
+  "city": "Mount Pleasant",
+  "lat": 43.5777,
+  "lon": -84.771,
+  "name": "Kelly/Shorts Stadium",
+  "state": "MI",
+  "tz": "America/Detroit"
+ },
+ "3787": {
+  "city": "Chapel Hill",
+  "lat": 35.9069,
+  "lon": -79.0479,
+  "name": "Kenan Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3788": {
+  "city": "Stony Brook",
+  "lat": 40.9189,
+  "lon": -73.1243,
+  "name": "Kenneth P. LaValle Stadium",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3790": {
+  "city": "West Long Branch",
+  "lat": 40.2794,
+  "lon": -74.0093,
+  "name": "Kessler Field",
+  "state": "NJ",
+  "tz": "America/New_York"
+ },
+ "3791": {
+  "city": "Moscow",
+  "lat": 46.7263,
+  "lon": -117.0174,
+  "name": "Kibbie Dome",
+  "state": "ID",
+  "tz": "America/Los_Angeles"
+ },
+ "3792": {
+  "city": "Boone",
+  "lat": 36.2114,
+  "lon": -81.6854,
+  "name": "Kidd Brewer Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3793": {
+  "city": "Iowa City",
+  "lat": 41.6586,
+  "lon": -91.5511,
+  "name": "Kinnick Stadium",
+  "state": "IA",
+  "tz": "America/Chicago"
+ },
+ "3794": {
+  "city": "South Euclid",
+  "lat": 41.5231,
+  "lon": -81.5185,
+  "name": "Korb Field",
+  "state": "OH",
+  "tz": null
+ },
+ "3795": {
+  "city": "College Station",
+  "lat": 30.6099,
+  "lon": -96.3404,
+  "name": "Kyle Field",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3796": {
+  "city": "Bowling Green",
+  "lat": 36.9848,
+  "lon": -86.4594,
+  "name": "Houchens Industries-L.T. Smith Stadium",
+  "state": "KY",
+  "tz": "America/Chicago"
+ },
+ "3797": {
+  "city": "Mobile",
+  "lat": 30.673,
+  "lon": -88.0756,
+  "name": "Ladd Peebles Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "3798": {
+  "city": "Greenbay",
+  "lat": 44.5013,
+  "lon": -88.0623,
+  "name": "Lambeau Field",
+  "state": "WI",
+  "tz": "America/Chicago"
+ },
+ "3799": {
+  "city": "Blacksburg",
+  "lat": 37.22,
+  "lon": -80.4181,
+  "name": "Lane Stadium",
+  "state": "VA",
+  "tz": "America/New_York"
+ },
+ "3800": {
+  "city": "Atchison",
+  "lat": 39.5458,
+  "lon": -95.3326,
+  "name": "Larry Wilcox Stadium",
+  "state": "KS",
+  "tz": null
+ },
+ "3801": {
+  "city": "Provo",
+  "lat": 40.2575,
+  "lon": -111.6545,
+  "name": "LaVell Edwards Stadium",
+  "state": "UT",
+  "tz": "America/Denver"
+ },
+ "3802": {
+  "city": "Manhattan",
+  "lat": 40.8733,
+  "lon": -73.9165,
+  "name": "Lawrence A. Wien Stadium",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3803": {
+  "city": "Birmingham",
+  "lat": 33.5114,
+  "lon": -86.8428,
+  "name": "Legion Field",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "3804": {
+  "city": "Lake Wales",
+  "lat": 27.9014,
+  "lon": -81.5859,
+  "name": "Legions Field (FL)",
+  "state": "FL",
+  "tz": null
+ },
+ "3805": {
+  "city": "Memphis",
+  "lat": 35.1209,
+  "lon": -89.9771,
+  "name": "Simmons Bank Liberty Stadium",
+  "state": "TN",
+  "tz": "America/Chicago"
+ },
+ "3806": {
+  "city": "Philadelphia",
+  "lat": 39.9008,
+  "lon": -75.1675,
+  "name": "Lincoln Financial Field",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "3807": {
+  "city": "Forest Grove",
+  "lat": 45.5197,
+  "lon": -123.1114,
+  "name": "Lincoln Park Stadium",
+  "state": "OR",
+  "tz": null
+ },
+ "3808": {
+  "city": "Lincoln University",
+  "lat": 39.8066,
+  "lon": -75.9287,
+  "name": "Lincoln University Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "3809": {
+  "city": "Huntsville",
+  "lat": 34.7835,
+  "lon": -86.5784,
+  "name": "Louis Crews Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "3810": {
+  "city": "Nashville",
+  "lat": 36.1665,
+  "lon": -86.7713,
+  "name": "Nissan Stadium",
+  "state": "TN",
+  "tz": "America/Chicago"
+ },
+ "3811": {
+  "city": "Allendale",
+  "lat": 42.969,
+  "lon": -85.8947,
+  "name": "Lubbers Stadium",
+  "state": "MI",
+  "tz": "America/Detroit"
+ },
+ "3812": {
+  "city": "Indianapolis",
+  "lat": 39.7601,
+  "lon": -86.1638,
+  "name": "Lucas Oil Stadium",
+  "state": "IN",
+  "tz": "America/Indiana/Indianapolis"
+ },
+ "3813": {
+  "city": "Fayetteville",
+  "lat": 35.0526,
+  "lon": -78.8783,
+  "name": "Luther \"Nick\" Jeralds Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "3814": {
+  "city": "Baltimore",
+  "lat": 39.2781,
+  "lon": -76.6228,
+  "name": "M&T Bank Stadium",
+  "state": "MD",
+  "tz": "America/New_York"
+ },
+ "3815": {
+  "city": "Hattiesburg",
+  "lat": 31.3289,
+  "lon": -89.3318,
+  "name": "M. M. Roberts Stadium",
+  "state": "MS",
+  "tz": "America/Chicago"
+ },
+ "3816": {
+  "city": "Reno",
+  "lat": 39.5469,
+  "lon": -119.8175,
+  "name": "Mackay Stadium",
+  "state": "NV",
+  "tz": "America/Los_Angeles"
+ },
+ "3817": {
+  "city": "Monroe",
+  "lat": 32.5308,
+  "lon": -92.0661,
+  "name": "Malone Stadium",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "3818": {
+  "city": "Duluth",
+  "lat": 46.7729,
+  "lon": -92.1251,
+  "name": "Malosky Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "3819": {
+  "city": "Framingham",
+  "lat": 42.3096,
+  "lon": -71.4413,
+  "name": "Bowditch Field",
+  "state": "MA",
+  "tz": null
+ },
+ "3820": {
+  "city": "Pullman",
+  "lat": 46.7318,
+  "lon": -117.1605,
+  "name": "Gesa Field",
+  "state": "WA",
+  "tz": "America/Los_Angeles"
+ },
+ "3823": {
+  "city": "Sewanee",
+  "lat": 35.2006,
+  "lon": -85.9195,
+  "name": "Hardee-McGee Field",
+  "state": "TN",
+  "tz": null
+ },
+ "3824": {
+  "city": "Kingston",
+  "lat": 41.488,
+  "lon": -71.5347,
+  "name": "Meade Stadium",
+  "state": "RI",
+  "tz": "America/New_York"
+ },
+ "3825": {
+  "city": "Denton",
+  "lat": 33.2039,
+  "lon": -97.1592,
+  "name": "DATCU Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3826": {
+  "city": "Hanover",
+  "lat": 43.7013,
+  "lon": -72.2843,
+  "name": "Memorial Field",
+  "state": "NH",
+  "tz": "America/New_York"
+ },
+ "3827": {
+  "city": "Stephenville",
+  "lat": 32.2192,
+  "lon": -98.2131,
+  "name": "Memorial Stadium (Stephenville, TX)",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3829": {
+  "city": "Terre Haute",
+  "lat": 39.4747,
+  "lon": -87.367,
+  "name": "Memorial Stadium",
+  "state": "IN",
+  "tz": "America/Indiana/Indianapolis"
+ },
+ "3830": {
+  "city": "Bloomington",
+  "lat": 39.1809,
+  "lon": -86.5256,
+  "name": "Memorial Stadium (Bloomington, IN)",
+  "state": "IN",
+  "tz": "America/Indiana/Indianapolis"
+ },
+ "3831": {
+  "city": "Berkeley",
+  "lat": 37.871,
+  "lon": -122.2508,
+  "name": "California Memorial Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "3832": {
+  "city": "Champaign",
+  "lat": 40.0993,
+  "lon": -88.236,
+  "name": "Memorial Stadium (Champaign, IL)",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "3833": {
+  "city": "Lawrence",
+  "lat": 38.9629,
+  "lon": -95.2464,
+  "name": "Memorial Stadium",
+  "state": "KS",
+  "tz": "America/Chicago"
+ },
+ "3834": {
+  "city": "Lincoln",
+  "lat": 40.8207,
+  "lon": -96.7056,
+  "name": "Memorial Stadium (Lincoln, NE)",
+  "state": "NE",
+  "tz": "America/Chicago"
+ },
+ "3835": {
+  "city": "Norman",
+  "lat": 35.2059,
+  "lon": -97.4423,
+  "name": "Memorial Stadium (Norman, OK)",
+  "state": "OK",
+  "tz": "America/Chicago"
+ },
+ "3836": {
+  "city": "Clemson",
+  "lat": 34.6788,
+  "lon": -82.8432,
+  "name": "Memorial Stadium (Clemson, SC)",
+  "state": "SC",
+  "tz": "America/New_York"
+ },
+ "3837": {
+  "city": "Selma",
+  "lat": 32.4079,
+  "lon": -87.0207,
+  "name": "Memorial Stadium (Selma, AL)",
+  "state": "AL",
+  "tz": null
+ },
+ "3838": {
+  "city": "Columbia",
+  "lat": 38.9358,
+  "lon": -92.3332,
+  "name": "Memorial Stadium",
+  "state": "MO",
+  "tz": "America/Chicago"
+ },
+ "3839": {
+  "city": "East Rutherford",
+  "lat": 40.8136,
+  "lon": -74.0744,
+  "name": "MetLife Stadium",
+  "state": "NJ",
+  "tz": "America/New_York"
+ },
+ "3841": {
+  "city": "West Point",
+  "lat": 41.3875,
+  "lon": -73.9641,
+  "name": "Michie Stadium",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3842": {
+  "city": "Morgantown",
+  "lat": 39.6503,
+  "lon": -79.9552,
+  "name": "Milan Puskar Stadium",
+  "state": "WV",
+  "tz": "America/New_York"
+ },
+ "3843": {
+  "city": "New Ulm",
+  "lat": 44.314,
+  "lon": -94.4614,
+  "name": "MLC Bowl",
+  "state": "MN",
+  "tz": null
+ },
+ "3847": {
+  "city": "Washington",
+  "lat": 38.908,
+  "lon": -77.0753,
+  "name": "Cooper Field",
+  "state": "DC",
+  "tz": "America/New_York"
+ },
+ "3848": {
+  "city": "Worcester",
+  "lat": 42.2626,
+  "lon": -71.8019,
+  "name": "Multi-Sport Stadium",
+  "state": "MA",
+  "tz": null
+ },
+ "3850": {
+  "city": "Daytona Beach",
+  "lat": 29.1735,
+  "lon": -81.1175,
+  "name": "Municipal Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "3851": {
+  "city": "Stevenson",
+  "lat": 39.4103,
+  "lon": -76.7128,
+  "name": "Mustang Stadium",
+  "state": "MD",
+  "tz": null
+ },
+ "3852": {
+  "city": "Annapolis",
+  "lat": 38.9847,
+  "lon": -76.5076,
+  "name": "Navy-Marine Corps Memorial Stadium",
+  "state": "MD",
+  "tz": "America/New_York"
+ },
+ "3853": {
+  "city": "Knoxville",
+  "lat": 35.955,
+  "lon": -83.925,
+  "name": "Neyland Stadium",
+  "state": "TN",
+  "tz": "America/New_York"
+ },
+ "3854": {
+  "city": "Cincinnati",
+  "lat": 39.1312,
+  "lon": -84.5162,
+  "name": "Nippert Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3855": {
+  "city": "Notre Dame",
+  "lat": 41.6984,
+  "lon": -86.2339,
+  "name": "Notre Dame Stadium",
+  "state": "IN",
+  "tz": "America/Indiana/Indianapolis"
+ },
+ "3856": {
+  "city": "Greeley",
+  "lat": 40.4035,
+  "lon": -104.7051,
+  "name": "Nottingham Field",
+  "state": "CO",
+  "tz": "America/Denver"
+ },
+ "3858": {
+  "city": "Charleston",
+  "lat": 39.4805,
+  "lon": -88.1812,
+  "name": "O'Brien Stadium",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "3859": {
+  "city": "Greensburg",
+  "lat": 40.3015,
+  "lon": -79.5389,
+  "name": "Offutt Field",
+  "state": "PA",
+  "tz": null
+ },
+ "3860": {
+  "city": "Rapid City",
+  "lat": 44.0869,
+  "lon": -103.2274,
+  "name": "O'Harra Stadium",
+  "state": "SD",
+  "tz": null
+ },
+ "3861": {
+  "city": "Columbus",
+  "lat": 40.0016,
+  "lon": -83.0197,
+  "name": "Ohio Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3862": {
+  "city": "Durham",
+  "lat": 35.9739,
+  "lon": -78.897,
+  "name": "O'Kelly-Riddick Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3864": {
+  "city": "Orangeburg",
+  "lat": 33.4986,
+  "lon": -80.8447,
+  "name": "Oliver C. Dawson Stadium",
+  "state": "SC",
+  "tz": "America/New_York"
+ },
+ "3868": {
+  "city": "Greenville",
+  "lat": 34.9202,
+  "lon": -82.4371,
+  "name": "Paladin Stadium",
+  "state": "SC",
+  "tz": "America/New_York"
+ },
+ "3869": {
+  "city": "Naples",
+  "lat": 26.1422,
+  "lon": -81.7943,
+  "name": "Palmetto Ridge High School",
+  "state": "FL",
+  "tz": null
+ },
+ "3870": {
+  "city": "Columbus",
+  "lat": 39.9623,
+  "lon": -83.0007,
+  "name": "Panther Stadium (OH)",
+  "state": "OH",
+  "tz": null
+ },
+ "3871": {
+  "city": "Birmingham",
+  "lat": 33.5207,
+  "lon": -86.8024,
+  "name": "General Charles C. Krulak Stadium",
+  "state": "AL",
+  "tz": null
+ },
+ "3873": {
+  "city": "Louisville",
+  "lat": 38.2058,
+  "lon": -85.7588,
+  "name": "L&N Federal Credit Union Stadium",
+  "state": "KY",
+  "tz": "America/Kentucky/Louisville"
+ },
+ "3874": {
+  "city": "Cincinnati",
+  "lat": 39.0956,
+  "lon": -84.5161,
+  "name": "Paul Brown Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3875": {
+  "city": "Durant",
+  "lat": 33.992,
+  "lon": -96.3777,
+  "name": "Paul Laird Field",
+  "state": "OK",
+  "tz": null
+ },
+ "3876": {
+  "city": "Athens",
+  "lat": 39.3213,
+  "lon": -82.1034,
+  "name": "Peden Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3877": {
+  "city": "Alfred",
+  "lat": 42.2542,
+  "lon": -77.7906,
+  "name": "Pioneer Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "3878": {
+  "city": "Springfield",
+  "lat": 37.1976,
+  "lon": -93.2798,
+  "name": "Plaster Sports Complex",
+  "state": "MO",
+  "tz": "America/Chicago"
+ },
+ "3879": {
+  "city": "Newport News",
+  "lat": 36.9775,
+  "lon": -76.4298,
+  "name": "TowneBank Stadium",
+  "state": "VA",
+  "tz": null
+ },
+ "3880": {
+  "city": "Fulton",
+  "lat": 38.8467,
+  "lon": -91.948,
+  "name": "Priest Field",
+  "state": "MO",
+  "tz": null
+ },
+ "3881": {
+  "city": "Princeton",
+  "lat": 40.3458,
+  "lon": -74.65,
+  "name": "Princeton University Stadium",
+  "state": "NJ",
+  "tz": "America/New_York"
+ },
+ "3882": {
+  "city": "Beaumont",
+  "lat": 30.0431,
+  "lon": -94.07,
+  "name": "Provost Umphrey Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3885": {
+  "city": "University Center",
+  "lat": 25.7141,
+  "lon": -80.2764,
+  "name": "Harvey Randall Wickes Memorial Stadium",
+  "state": "MI",
+  "tz": null
+ },
+ "3886": {
+  "city": "Tampa",
+  "lat": 27.9759,
+  "lon": -82.5033,
+  "name": "Raymond James Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "3887": {
+  "city": "Fayetteville",
+  "lat": 36.0681,
+  "lon": -94.179,
+  "name": "Razorback Stadium",
+  "state": "AR",
+  "tz": "America/Chicago"
+ },
+ "3889": {
+  "city": "Bronx",
+  "lat": 40.8075,
+  "lon": -73.7977,
+  "name": "Reinhart Field",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3891": {
+  "city": "Houston",
+  "lat": 29.6847,
+  "lon": -95.4108,
+  "name": "NRG Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3892": {
+  "city": "East Hartford",
+  "lat": 41.7596,
+  "lon": -72.6188,
+  "name": "Pratt & Whitney Stadium",
+  "state": "CT",
+  "tz": "America/New_York"
+ },
+ "3893": {
+  "city": "Corvallis",
+  "lat": 44.5595,
+  "lon": -123.2814,
+  "name": "Reser Stadium",
+  "state": "OR",
+  "tz": "America/Los_Angeles"
+ },
+ "3894": {
+  "city": "Elon",
+  "lat": 36.1101,
+  "lon": -79.508,
+  "name": "Rhodes Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3895": {
+  "city": "Houston",
+  "lat": 29.7163,
+  "lon": -95.4093,
+  "name": "Rice Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3896": {
+  "city": "Itta Bena",
+  "lat": 33.5118,
+  "lon": -90.3398,
+  "name": "Rice-Totten Field",
+  "state": "MS",
+  "tz": "America/Chicago"
+ },
+ "3897": {
+  "city": "Davidson",
+  "lat": 35.4996,
+  "lon": -80.8428,
+  "name": "Richardson Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3901": {
+  "city": "Buena Vista",
+  "lat": 37.7343,
+  "lon": -79.3539,
+  "name": "Robert E. Williams Field",
+  "state": "VA",
+  "tz": null
+ },
+ "3902": {
+  "city": "Grambling",
+  "lat": 32.5259,
+  "lon": -92.7146,
+  "name": "Eddie Robinson Stadium",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "3904": {
+  "city": "Petersburg",
+  "lat": 37.2279,
+  "lon": -77.4019,
+  "name": "Rogers Stadium (VA)",
+  "state": "VA",
+  "tz": null
+ },
+ "3905": {
+  "city": "Logan",
+  "lat": 41.7517,
+  "lon": -111.8116,
+  "name": "Maverik Stadium",
+  "state": "UT",
+  "tz": "America/Denver"
+ },
+ "3906": {
+  "city": "Cheney",
+  "lat": 47.4928,
+  "lon": -117.5874,
+  "name": "Roos Field",
+  "state": "WA",
+  "tz": "America/Los_Angeles"
+ },
+ "3907": {
+  "city": "West Lafayette",
+  "lat": 40.4352,
+  "lon": -86.9187,
+  "name": "Ross-Ade Stadium",
+  "state": "IN",
+  "tz": "America/Indiana/Indianapolis"
+ },
+ "3908": {
+  "city": "Richmond",
+  "lat": 37.7344,
+  "lon": -84.2973,
+  "name": "Roy Kidd Stadium",
+  "state": "KY",
+  "tz": "America/New_York"
+ },
+ "3909": {
+  "city": "Murray",
+  "lat": 36.6215,
+  "lon": -88.3176,
+  "name": "Roy Stewart Stadium",
+  "state": "KY",
+  "tz": "America/Chicago"
+ },
+ "3910": {
+  "city": "Austin",
+  "lat": 30.2837,
+  "lon": -97.7325,
+  "name": "DKR-Texas Memorial Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3911": {
+  "city": "Evanston",
+  "lat": 42.0654,
+  "lon": -87.6925,
+  "name": "Ryan Field",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "3912": {
+  "city": "Ypsilanti",
+  "lat": 42.2561,
+  "lon": -83.6473,
+  "name": "Rynearson Stadium",
+  "state": "MI",
+  "tz": "America/Detroit"
+ },
+ "3913": {
+  "city": "Carbondale",
+  "lat": 37.7086,
+  "lon": -89.2162,
+  "name": "Saluki Stadium",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "3914": {
+  "city": "Whitney",
+  "lat": 36.0859,
+  "lon": -115.0173,
+  "name": "Sam Boyd Stadium",
+  "state": "NV",
+  "tz": "America/Los_Angeles"
+ },
+ "3915": {
+  "city": "Montgomery",
+  "lat": 32.367,
+  "lon": -86.3006,
+  "name": "Charles Lee Field at Samford Stadium",
+  "state": "AL",
+  "tz": null
+ },
+ "3917": {
+  "city": "Athens",
+  "lat": 33.9498,
+  "lon": -83.3734,
+  "name": "Sanford Stadium",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "3918": {
+  "city": "Norfolk",
+  "lat": 36.889,
+  "lon": -76.3049,
+  "name": "S.B. Ballard Stadium",
+  "state": "VA",
+  "tz": "America/New_York"
+ },
+ "3919": {
+  "city": "Muncie",
+  "lat": 40.2159,
+  "lon": -85.4161,
+  "name": "Scheumann Stadium",
+  "state": "IN",
+  "tz": "America/Indiana/Indianapolis"
+ },
+ "3920": {
+  "city": "Edwardsville",
+  "lat": 33.7072,
+  "lon": -85.5102,
+  "name": "Schmidt Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "3921": {
+  "city": "Ithaca",
+  "lat": 42.4439,
+  "lon": -76.4785,
+  "name": "Schoellkopf Field",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3922": {
+  "city": "Westminster",
+  "lat": 39.5753,
+  "lon": -76.9959,
+  "name": "Kenneth R. Gill Stadium",
+  "state": "MD",
+  "tz": null
+ },
+ "3923": {
+  "city": "Charlottesville",
+  "lat": 38.0312,
+  "lon": -78.5138,
+  "name": "Scott Stadium",
+  "state": "VA",
+  "tz": "America/New_York"
+ },
+ "3925": {
+  "city": "Homewood",
+  "lat": 33.4633,
+  "lon": -86.7953,
+  "name": "Seibert Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "3926": {
+  "city": "Newberry",
+  "lat": 34.2861,
+  "lon": -81.6225,
+  "name": "Setzler Field",
+  "state": "SC",
+  "tz": null
+ },
+ "3927": {
+  "city": "Houghton",
+  "lat": 46.8591,
+  "lon": -88.7775,
+  "name": "Sherman Field",
+  "state": "MI",
+  "tz": null
+ },
+ "3928": {
+  "city": "Abilene",
+  "lat": 32.4337,
+  "lon": -99.6986,
+  "name": "Shotwell Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "3932": {
+  "city": "San Diego",
+  "lat": 32.7831,
+  "lon": -117.1196,
+  "name": "Qualcomm Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "3933": {
+  "city": "Chicago",
+  "lat": 41.8625,
+  "lon": -87.6167,
+  "name": "Soldier Field",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "3934": {
+  "city": "Bethany",
+  "lat": 35.5187,
+  "lon": -97.6323,
+  "name": "Southern Nazarene University Football Stadium",
+  "state": "OK",
+  "tz": null
+ },
+ "3935": {
+  "city": "San Jose",
+  "lat": 37.3197,
+  "lon": -121.8683,
+  "name": "CEFCU Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "3936": {
+  "city": "East Lansing",
+  "lat": 42.7281,
+  "lon": -84.4849,
+  "name": "Spartan Stadium",
+  "state": "MI",
+  "tz": "America/Detroit"
+ },
+ "3937": {
+  "city": "Denver",
+  "lat": 39.7439,
+  "lon": -105.02,
+  "name": "Sports Authority Field at Mile High",
+  "state": "CO",
+  "tz": "America/Denver"
+ },
+ "3938": {
+  "city": "Cincinnati",
+  "lat": 39.1015,
+  "lon": -84.5125,
+  "name": "Sports Complex (OH)",
+  "state": "OH",
+  "tz": null
+ },
+ "3939": {
+  "city": "Indianapolis",
+  "lat": 39.7683,
+  "lon": -86.1584,
+  "name": "St. Vincent Health Field",
+  "state": "IN",
+  "tz": null
+ },
+ "3940": {
+  "city": "Stanford",
+  "lat": 37.4346,
+  "lon": -122.1611,
+  "name": "Stanford Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "3942": {
+  "city": "Ogden",
+  "lat": 41.1919,
+  "lon": -111.9401,
+  "name": "Stewart Stadium",
+  "state": "UT",
+  "tz": "America/Denver"
+ },
+ "3943": {
+  "city": "Tuscaloosa",
+  "lat": 33.2096,
+  "lon": -87.5675,
+  "name": "Stillman Stadium",
+  "state": "AL",
+  "tz": null
+ },
+ "3944": {
+  "city": "Hammond",
+  "lat": 30.511,
+  "lon": -90.4686,
+  "name": "Strawberry Stadium",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "3945": {
+  "city": "Beloit",
+  "lat": 42.5083,
+  "lon": -89.0318,
+  "name": "Strong Stadium",
+  "state": "WI",
+  "tz": "America/Chicago"
+ },
+ "3946": {
+  "city": "El Paso",
+  "lat": 31.7733,
+  "lon": -106.508,
+  "name": "Sun Bowl",
+  "state": "TX",
+  "tz": "America/Denver"
+ },
+ "3947": {
+  "city": "Tempe",
+  "lat": 33.4264,
+  "lon": -111.9325,
+  "name": "Mountain America Stadium",
+  "state": "AZ",
+  "tz": "America/Phoenix"
+ },
+ "3948": {
+  "city": "Miami Gardens",
+  "lat": 25.958,
+  "lon": -80.2389,
+  "name": "Hard Rock Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "3950": {
+  "city": "Marquette",
+  "lat": 46.5606,
+  "lon": -87.3937,
+  "name": "Superior Dome",
+  "state": "MI",
+  "tz": "America/Detroit"
+ },
+ "3951": {
+  "city": "Aberdeen",
+  "lat": 45.465,
+  "lon": -98.4878,
+  "name": "Swisher Field",
+  "state": "SD",
+  "tz": null
+ },
+ "3952": {
+  "city": "Savannah",
+  "lat": 32.0274,
+  "lon": -81.0687,
+  "name": "Ted Wright Stadium",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "3953": {
+  "city": "Minneapolis",
+  "lat": 44.9765,
+  "lon": -93.2245,
+  "name": "Huntington Bank Stadium",
+  "state": "MN",
+  "tz": "America/Chicago"
+ },
+ "3957": {
+  "city": "Livingston",
+  "lat": 32.5843,
+  "lon": -88.1872,
+  "name": "Tiger Stadium (AL)",
+  "state": "AL",
+  "tz": null
+ },
+ "3958": {
+  "city": "Baton Rouge",
+  "lat": 30.412,
+  "lon": -91.1838,
+  "name": "Tiger Stadium (LA)",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "3960": {
+  "city": "Big Rapids",
+  "lat": 43.6981,
+  "lon": -85.4837,
+  "name": "Top Taggart Field",
+  "state": "MI",
+  "tz": null
+ },
+ "3962": {
+  "city": "Cookeville",
+  "lat": 36.1781,
+  "lon": -85.5062,
+  "name": "Tucker Stadium",
+  "state": "TN",
+  "tz": "America/Chicago"
+ },
+ "3963": {
+  "city": "Natchitoches",
+  "lat": 31.7473,
+  "lon": -93.0961,
+  "name": "Harry Turpin Stadium",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "3965": {
+  "city": "Amherst",
+  "lat": 42.9991,
+  "lon": -78.7775,
+  "name": "UB Stadium",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3967": {
+  "city": "Cedar Falls",
+  "lat": 42.5156,
+  "lon": -92.4672,
+  "name": "UNI-Dome",
+  "state": "IA",
+  "tz": "America/Chicago"
+ },
+ "3969": {
+  "city": "Albany",
+  "lat": 42.681,
+  "lon": -73.8273,
+  "name": "University Field (NY)",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3970": {
+  "city": "Glendale",
+  "lat": 33.5276,
+  "lon": -112.2626,
+  "name": "State Farm Stadium",
+  "state": "AZ",
+  "tz": "America/Phoenix"
+ },
+ "3971": {
+  "city": "Albuquerque",
+  "lat": 35.0669,
+  "lon": -106.6283,
+  "name": "University Stadium (NM)",
+  "state": "NM",
+  "tz": "America/Denver"
+ },
+ "3973": {
+  "city": "Nashville",
+  "lat": 36.144,
+  "lon": -86.8089,
+  "name": "FirstBank Stadium",
+  "state": "TN",
+  "tz": "America/Chicago"
+ },
+ "3974": {
+  "city": "Oxford",
+  "lat": 34.362,
+  "lon": -89.5342,
+  "name": "Vaught-Hemingway Stadium",
+  "state": "MS",
+  "tz": "America/Chicago"
+ },
+ "3975": {
+  "city": "Troy",
+  "lat": 31.7996,
+  "lon": -85.9518,
+  "name": "Veterans Memorial Stadium (AL)",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "3976": {
+  "city": "Jackson",
+  "lat": 32.33,
+  "lon": -90.1796,
+  "name": "Mississippi Veterans Memorial Stadium",
+  "state": "MS",
+  "tz": "America/Chicago"
+ },
+ "3979": {
+  "city": "Staten Island",
+  "lat": 40.6147,
+  "lon": -74.0906,
+  "name": "Wagner College Stadium",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "3980": {
+  "city": "Kalamazoo",
+  "lat": 42.286,
+  "lon": -85.6008,
+  "name": "Waldo Stadium",
+  "state": "MI",
+  "tz": "America/Detroit"
+ },
+ "3982": {
+  "city": "Durham",
+  "lat": 35.9954,
+  "lon": -78.9418,
+  "name": "Wallace Wade Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "3983": {
+  "city": "Little Rock",
+  "lat": 34.7498,
+  "lon": -92.3301,
+  "name": "War Memorial Stadium (AR)",
+  "state": "AR",
+  "tz": "America/Chicago"
+ },
+ "3984": {
+  "city": "Laramie",
+  "lat": 41.3116,
+  "lon": -105.5681,
+  "name": "War Memorial Stadium",
+  "state": "WY",
+  "tz": "America/Denver"
+ },
+ "3985": {
+  "city": "Hadley",
+  "lat": 42.3773,
+  "lon": -72.5361,
+  "name": "Warren McGuirk Alumni Stadium",
+  "state": "MA",
+  "tz": "America/New_York"
+ },
+ "3987": {
+  "city": "Missoula",
+  "lat": 46.8639,
+  "lon": -113.9815,
+  "name": "Washington-Grizzly Stadium",
+  "state": "MT",
+  "tz": "America/Denver"
+ },
+ "3988": {
+  "city": "Dayton",
+  "lat": 39.7369,
+  "lon": -84.1981,
+  "name": "Welcome Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3990": {
+  "city": "Washington",
+  "lat": 38.9255,
+  "lon": -77.021,
+  "name": "William H. Greene Stadium",
+  "state": "DC",
+  "tz": "America/New_York"
+ },
+ "3991": {
+  "city": "Norfolk",
+  "lat": 36.8469,
+  "lon": -76.2601,
+  "name": "William Dick\"\" Price Stadium\"\"",
+  "state": "VA",
+  "tz": "America/New_York"
+ },
+ "3992": {
+  "city": "Lynchburg",
+  "lat": 37.3544,
+  "lon": -79.175,
+  "name": "Williams Stadium (VA)",
+  "state": "VA",
+  "tz": "America/New_York"
+ },
+ "3994": {
+  "city": "Columbia",
+  "lat": 33.973,
+  "lon": -81.0192,
+  "name": "Williams-Brice Stadium",
+  "state": "SC",
+  "tz": "America/New_York"
+ },
+ "3995": {
+  "city": "Bangor",
+  "lat": 44.8012,
+  "lon": -68.7778,
+  "name": "Dr. John W. Winkin Sports Complex",
+  "state": "ME",
+  "tz": null
+ },
+ "3996": {
+  "city": "Oxford",
+  "lat": 39.5197,
+  "lon": -84.733,
+  "name": "Yager Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "3997": {
+  "city": "New Haven",
+  "lat": 41.3132,
+  "lon": -72.9605,
+  "name": "Yale Bowl",
+  "state": "CT",
+  "tz": "America/New_York"
+ },
+ "3998": {
+  "city": "Williamsburg",
+  "lat": 37.2731,
+  "lon": -76.7137,
+  "name": "Zable Stadium",
+  "state": "VA",
+  "tz": "America/New_York"
+ },
+ "4013": {
+  "city": "Orlando",
+  "lat": 28.5392,
+  "lon": -81.4028,
+  "name": "Camping World Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "4014": {
+  "city": "Hickory",
+  "lat": 35.7333,
+  "lon": -81.3443,
+  "name": "Moretz Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "4015": {
+  "city": "Rome",
+  "lat": 34.257,
+  "lon": -85.1647,
+  "name": "Barron Stadium",
+  "state": "GA",
+  "tz": null
+ },
+ "4029": {
+  "city": "Nashville",
+  "lat": 36.1681,
+  "lon": -86.8269,
+  "name": "Hale Stadium",
+  "state": "TN",
+  "tz": "America/Chicago"
+ },
+ "4102": {
+  "city": "New York",
+  "lat": 40.8292,
+  "lon": -73.9264,
+  "name": "Yankee Stadium",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "4103": {
+  "city": "Excelsior Springs",
+  "lat": 39.3417,
+  "lon": -94.2224,
+  "name": "Tiger Stadium (MO)",
+  "state": "MO",
+  "tz": null
+ },
+ "4110": {
+  "city": "Columbus",
+  "lat": 32.4611,
+  "lon": -84.988,
+  "name": "A.J. McClung Stadium",
+  "state": "GA",
+  "tz": null
+ },
+ "4113": {
+  "city": "Saint Petersburg",
+  "lat": 27.7683,
+  "lon": -82.6533,
+  "name": "Tropicana Field",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "4133": {
+  "city": "Florence",
+  "lat": 34.8109,
+  "lon": -87.6706,
+  "name": "Braly Municipal Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "4134": {
+  "city": "Salem",
+  "lat": 37.2934,
+  "lon": -80.0547,
+  "name": "Salem Stadium",
+  "state": "VA",
+  "tz": null
+ },
+ "4205": {
+  "city": "San Diego",
+  "lat": 32.7174,
+  "lon": -117.1628,
+  "name": "Petco Park",
+  "state": "CA",
+  "tz": null
+ },
+ "4221": {
+  "city": "Minneapolis",
+  "lat": 44.9773,
+  "lon": -93.2655,
+  "name": "Target Field",
+  "state": "MN",
+  "tz": null
+ },
+ "4223": {
+  "city": "Miami",
+  "lat": 25.7781,
+  "lon": -80.2197,
+  "name": "Marlins Park",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "4245": {
+  "city": "Boston",
+  "lat": 42.3464,
+  "lon": -71.0975,
+  "name": "Fenway Park",
+  "state": "MA",
+  "tz": "America/New_York"
+ },
+ "4246": {
+  "city": "Atlanta",
+  "lat": 33.7353,
+  "lon": -84.3899,
+  "name": "Center Parc Stadium",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "4250": {
+  "city": "Chicago",
+  "lat": 41.8756,
+  "lon": -87.6244,
+  "name": "Wrigley Field",
+  "state": "IL",
+  "tz": null
+ },
+ "4251": {
+  "city": "Phoenix",
+  "lat": 33.4453,
+  "lon": -112.0669,
+  "name": "Chase Field",
+  "state": "AZ",
+  "tz": "America/Phoenix"
+ },
+ "4258": {
+  "city": "Carson",
+  "lat": 33.864,
+  "lon": -118.261,
+  "name": "Dignity Health Sports Park",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "4293": {
+  "city": "Chicago",
+  "lat": 41.83,
+  "lon": -87.6339,
+  "name": "Guaranteed Rate Field",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "4416": {
+  "city": "DeLand",
+  "lat": 29.0209,
+  "lon": -81.2994,
+  "name": "Spec Martin Municipal Stadium",
+  "state": "FL",
+  "tz": "America/New_York"
+ },
+ "4417": {
+  "city": "Macon",
+  "lat": 32.8262,
+  "lon": -83.6522,
+  "name": "Five Star Stadium at the Moye Complex",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "4418": {
+  "city": "Charlotte",
+  "lat": 35.3105,
+  "lon": -80.7401,
+  "name": "Jerry Richardson Stadium",
+  "state": "NC",
+  "tz": "America/New_York"
+ },
+ "4419": {
+  "city": "Albany",
+  "lat": 42.6808,
+  "lon": -73.8273,
+  "name": "Bob Ford Field",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "4420": {
+  "city": "Melbourne",
+  "lat": 28.1065,
+  "lon": -80.6372,
+  "name": "Florida Tech Panther Stadium",
+  "state": "FL",
+  "tz": null
+ },
+ "4421": {
+  "city": "Philippi",
+  "lat": 39.1523,
+  "lon": -80.0404,
+  "name": "Multi-Sport Performance Stadium",
+  "state": "WV",
+  "tz": null
+ },
+ "4422": {
+  "city": "Mount Berry",
+  "lat": 34.2751,
+  "lon": -85.1833,
+  "name": "Valhalla Stadium",
+  "state": "GA",
+  "tz": null
+ },
+ "4423": {
+  "city": "Conway",
+  "lat": 35.2522,
+  "lon": -92.6889,
+  "name": "Young-Wise Memorial Stadium",
+  "state": "AR",
+  "tz": null
+ },
+ "4424": {
+  "city": "Houston",
+  "lat": 29.6949,
+  "lon": -95.5167,
+  "name": "Husky Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "4425": {
+  "city": "Georgetown",
+  "lat": 30.6327,
+  "lon": -97.6772,
+  "name": "Southwestern Field House",
+  "state": "TX",
+  "tz": null
+ },
+ "4426": {
+  "city": "Seguin",
+  "lat": 29.5688,
+  "lon": -97.9647,
+  "name": "Matador Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "4427": {
+  "city": "West Chester",
+  "lat": 39.9597,
+  "lon": -75.606,
+  "name": "John A. Farrell Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4428": {
+  "city": "Erie",
+  "lat": 42.1295,
+  "lon": -80.0853,
+  "name": "Saxon Stadium",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "4429": {
+  "city": "Shippensburg",
+  "lat": 40.0507,
+  "lon": -77.5205,
+  "name": "Seth Grove Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4430": {
+  "city": "Slippery Rock",
+  "lat": 41.064,
+  "lon": -80.0564,
+  "name": "Mihalik-Thompson Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4431": {
+  "city": "Millersville",
+  "lat": 39.998,
+  "lon": -76.3545,
+  "name": "Chryst Field at Biemesderfer Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4432": {
+  "city": "Kutztown",
+  "lat": 40.5173,
+  "lon": -75.7774,
+  "name": "Andre Reed Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4433": {
+  "city": "Indiana",
+  "lat": 40.6215,
+  "lon": -79.1525,
+  "name": "George P. Miller Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4435": {
+  "city": "Bloomsburg",
+  "lat": 41.0045,
+  "lon": -76.4537,
+  "name": "Robert B. Redman Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4436": {
+  "city": "Brownsville",
+  "lat": 40.0237,
+  "lon": -79.8839,
+  "name": "Adamson Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4437": {
+  "city": "Clarion",
+  "lat": 41.2149,
+  "lon": -79.3857,
+  "name": "Memorial Stadium (Clarion, PA)",
+  "state": "PA",
+  "tz": null
+ },
+ "4438": {
+  "city": "Cheyney",
+  "lat": 39.9284,
+  "lon": -75.5227,
+  "name": "O'Shields-Stevenson Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4439": {
+  "city": "East Stroudsburg",
+  "lat": 40.9995,
+  "lon": -75.1813,
+  "name": "Eiler-Martin Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4440": {
+  "city": "Edinboro",
+  "lat": 41.8742,
+  "lon": -80.1317,
+  "name": "Sox Harrison Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4441": {
+  "city": "Erie",
+  "lat": 42.1295,
+  "lon": -80.0853,
+  "name": "McConnell Family Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4463": {
+  "city": "Belton",
+  "lat": 31.056,
+  "lon": -97.4645,
+  "name": "Crusader Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "453": {
+  "city": "Houston",
+  "lat": 29.7221,
+  "lon": -95.3492,
+  "name": "Robertson Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "4580": {
+  "city": "Copperas Cove",
+  "lat": 31.1241,
+  "lon": -97.9031,
+  "name": "Bulldawg Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "4582": {
+  "city": "Montgomery",
+  "lat": 32.3642,
+  "lon": -86.2897,
+  "name": "Hornet Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "4583": {
+  "city": "Texarkana",
+  "lat": 33.4254,
+  "lon": -94.0431,
+  "name": "Razorback Stadium (Texarkana)",
+  "state": "AR",
+  "tz": null
+ },
+ "4617": {
+  "city": "Bristol",
+  "lat": 36.516,
+  "lon": -82.257,
+  "name": "Bristol Motor Speedway",
+  "state": "TN",
+  "tz": "America/New_York"
+ },
+ "4724": {
+  "city": "Warrensburg",
+  "lat": 38.7624,
+  "lon": -93.741,
+  "name": "Audrey J. Walton Stadium at Vernon Kennedy Field",
+  "state": "MO",
+  "tz": null
+ },
+ "4727": {
+  "city": "Waco",
+  "lat": 31.5582,
+  "lon": -97.1157,
+  "name": "McLane Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "4728": {
+  "city": "Houston",
+  "lat": 29.722,
+  "lon": -95.3492,
+  "name": "TDECU Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "4729": {
+  "city": "New Orleans",
+  "lat": 29.9446,
+  "lon": -90.1167,
+  "name": "Yulman Stadium",
+  "state": "LA",
+  "tz": "America/Chicago"
+ },
+ "4738": {
+  "city": "Santa Clara",
+  "lat": 37.403,
+  "lon": -121.97,
+  "name": "Levi's Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "4747": {
+  "city": "Tuskegee",
+  "lat": 32.424,
+  "lon": -85.6916,
+  "name": "Abbott Memorial Alumni Stadium",
+  "state": "AL",
+  "tz": null
+ },
+ "4749": {
+  "city": "Xenia",
+  "lat": 39.6848,
+  "lon": -83.9297,
+  "name": "McPherson Memorial Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "4750": {
+  "city": "Gaffney",
+  "lat": 35.0718,
+  "lon": -81.6498,
+  "name": "The Reservation",
+  "state": "SC",
+  "tz": null
+ },
+ "4751": {
+  "city": "Tyler",
+  "lat": 32.3513,
+  "lon": -95.3011,
+  "name": "Mewbourne Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "4752": {
+  "city": "Winter Haven",
+  "lat": 28.0222,
+  "lon": -81.7329,
+  "name": "Jahna Field",
+  "state": "FL",
+  "tz": null
+ },
+ "4753": {
+  "city": "Liberty",
+  "lat": 39.2465,
+  "lon": -94.4191,
+  "name": "Greene Stadium",
+  "state": "MO",
+  "tz": null
+ },
+ "4757": {
+  "city": "Springfield",
+  "lat": 39.9379,
+  "lon": -83.8121,
+  "name": "Edwards-Maurer Field",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "4762": {
+  "city": "Commerce",
+  "lat": 33.2443,
+  "lon": -95.9006,
+  "name": "Memorial Stadium (Commerce TX)",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "4763": {
+  "city": "Alva",
+  "lat": 36.8031,
+  "lon": -98.666,
+  "name": "Ranger Field",
+  "state": "OK",
+  "tz": null
+ },
+ "4765": {
+  "city": "Portland",
+  "lat": 45.5546,
+  "lon": -122.9069,
+  "name": "Hillsboro Stadium",
+  "state": "OR",
+  "tz": "America/Los_Angeles"
+ },
+ "477": {
+  "city": "Los Angeles",
+  "lat": 34.0142,
+  "lon": -118.2878,
+  "name": "Los Angeles Memorial Coliseum",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "4779": {
+  "city": "Nassau",
+  "lat": 25.0556,
+  "lon": -77.3587,
+  "name": "Thomas A. Robinson National Stadium",
+  "state": "",
+  "tz": null
+ },
+ "4851": {
+  "city": "Valdosta",
+  "lat": 30.8327,
+  "lon": -83.2785,
+  "name": "Bazemore-Hyder Stadium",
+  "state": "GA",
+  "tz": null
+ },
+ "4852": {
+  "city": "Pueblo",
+  "lat": 38.2544,
+  "lon": -104.6091,
+  "name": "Neta and Eddie DeRose ThunderBowl",
+  "state": "CO",
+  "tz": null
+ },
+ "4853": {
+  "city": "Dover",
+  "lat": 39.1582,
+  "lon": -75.5244,
+  "name": "Scott D. Miller Stadium",
+  "state": "DE",
+  "tz": null
+ },
+ "4854": {
+  "city": "Whitewater",
+  "lat": 42.8336,
+  "lon": -88.7293,
+  "name": "Perkins Stadium",
+  "state": "WI",
+  "tz": null
+ },
+ "4855": {
+  "city": "Chester",
+  "lat": 39.8496,
+  "lon": -75.3557,
+  "name": "Leslie C. Quick Jr. Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "4856": {
+  "city": "Alliance",
+  "lat": 40.9153,
+  "lon": -81.1059,
+  "name": "Mount Union Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "4899": {
+  "city": "Kennesaw",
+  "lat": 34.0289,
+  "lon": -84.5676,
+  "name": "Fifth Third Stadium",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "4900": {
+  "city": "Johnson City",
+  "lat": 36.3269,
+  "lon": -82.371,
+  "name": "Kermit Tipton Stadium",
+  "state": "TN",
+  "tz": "America/New_York"
+ },
+ "499": {
+  "city": "Dallas",
+  "lat": 32.7797,
+  "lon": -96.7597,
+  "name": "Cotton Bowl",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "5015": {
+  "city": "Upland",
+  "lat": 40.4569,
+  "lon": -85.5012,
+  "name": "Turner Stadium",
+  "state": "IN",
+  "tz": null
+ },
+ "5083": {
+  "city": "Upland",
+  "lat": 40.4568,
+  "lon": -85.5012,
+  "name": "New Turner Stadium",
+  "state": "IN",
+  "tz": null
+ },
+ "5096": {
+  "city": "Georgetown",
+  "lat": 38.2044,
+  "lon": -84.5456,
+  "name": "Toyota Stadium",
+  "state": "KY",
+  "tz": null
+ },
+ "5113": {
+  "city": "Arkadelphia",
+  "lat": 34.1209,
+  "lon": -93.0538,
+  "name": "Ruggles Field at Carpenter-Haygood Stadium",
+  "state": "AR",
+  "tz": null
+ },
+ "5114": {
+  "city": "Abilene",
+  "lat": 32.4464,
+  "lon": -99.7476,
+  "name": "Shelton Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "5115": {
+  "city": "Wheaton",
+  "lat": 41.8647,
+  "lon": -88.1102,
+  "name": "McCully Stadium",
+  "state": "IL",
+  "tz": null
+ },
+ "5116": {
+  "city": "Saint Paul",
+  "lat": 44.9497,
+  "lon": -93.0931,
+  "name": "O'Shaughnessy Stadium",
+  "state": "MN",
+  "tz": "America/Chicago"
+ },
+ "5117": {
+  "city": "Collegeville",
+  "lat": 45.5944,
+  "lon": -94.3623,
+  "name": "Clemens Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "5119": {
+  "city": "Mcminnville",
+  "lat": 45.21,
+  "lon": -123.1945,
+  "name": "Maxwell Field",
+  "state": "OR",
+  "tz": "America/Los_Angeles"
+ },
+ "5120": {
+  "city": "Oshkosh",
+  "lat": 44.0207,
+  "lon": -88.5409,
+  "name": "J.J. Keller Field at Titan Stadium",
+  "state": "WI",
+  "tz": null
+ },
+ "5121": {
+  "city": "Charleston",
+  "lat": 38.3506,
+  "lon": -81.6333,
+  "name": "University of Charleston Stadium",
+  "state": "WV",
+  "tz": null
+ },
+ "5122": {
+  "city": "Salisbury",
+  "lat": 35.671,
+  "lon": -80.4742,
+  "name": "Shuford Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "5123": {
+  "city": "Crawfordsville",
+  "lat": 40.0402,
+  "lon": -86.899,
+  "name": "Little Giant Stadium",
+  "state": "IN",
+  "tz": null
+ },
+ "5124": {
+  "city": "Baltimore",
+  "lat": 39.2909,
+  "lon": -76.6108,
+  "name": "Homewood Field",
+  "state": "MD",
+  "tz": null
+ },
+ "5125": {
+  "city": "Cortland",
+  "lat": 41.2446,
+  "lon": -73.926,
+  "name": "Stadium Red Field",
+  "state": "NY",
+  "tz": null
+ },
+ "5127": {
+  "city": "Reading",
+  "lat": 40.3353,
+  "lon": -75.9279,
+  "name": "Gene L. Shirk Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "5133": {
+  "city": "Shepherdstown",
+  "lat": 39.4301,
+  "lon": -77.8042,
+  "name": "Ram Stadium (WV)",
+  "state": "WV",
+  "tz": null
+ },
+ "5134": {
+  "city": "Maryville",
+  "lat": 40.346,
+  "lon": -94.8724,
+  "name": "Bearcat Stadium",
+  "state": "MO",
+  "tz": null
+ },
+ "5220": {
+  "city": "Murfreesboro",
+  "lat": 36.4341,
+  "lon": -77.0984,
+  "name": "Garrison Stadium",
+  "state": "TN",
+  "tz": null
+ },
+ "5221": {
+  "city": "Sydney",
+  "lat": -33.847,
+  "lon": 151.0634,
+  "name": "ANZ Stadium",
+  "state": "",
+  "tz": "Australia/Sydney"
+ },
+ "5237": {
+  "city": "Brookings",
+  "lat": 44.321,
+  "lon": -96.7801,
+  "name": "Dana J. Dykhouse Stadium",
+  "state": "SD",
+  "tz": "America/Chicago"
+ },
+ "5238": {
+  "city": "Prairie View",
+  "lat": 30.0938,
+  "lon": -95.9961,
+  "name": "Panther Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "5263": {
+  "city": "Owensboro",
+  "lat": 37.7423,
+  "lon": -87.12,
+  "name": "Steele Stadium",
+  "state": "KY",
+  "tz": null
+ },
+ "5319": {
+  "city": "Atlanta",
+  "lat": 33.8908,
+  "lon": -84.4677,
+  "name": "SunTrust Park",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "5348": {
+  "city": "Atlanta",
+  "lat": 33.7556,
+  "lon": -84.4009,
+  "name": "Mercedes-Benz Stadium",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "5363": {
+  "city": "Sydney",
+  "lat": -33.8889,
+  "lon": 151.2253,
+  "name": "Allianz Stadium",
+  "state": "NSW",
+  "tz": "Australia/Sydney"
+ },
+ "538": {
+  "city": "Carson",
+  "lat": 33.8322,
+  "lon": -118.2518,
+  "name": "StubHub Center",
+  "state": "CA",
+  "tz": null
+ },
+ "5388": {
+  "city": "Fort Collins",
+  "lat": 40.57,
+  "lon": -105.0884,
+  "name": "Canvas Stadium",
+  "state": "CO",
+  "tz": "America/Denver"
+ },
+ "5389": {
+  "city": "West Long Branch",
+  "lat": 40.279,
+  "lon": -74.0095,
+  "name": "Kessler Stadium",
+  "state": "NJ",
+  "tz": "America/New_York"
+ },
+ "5400": {
+  "city": "Johnson City",
+  "lat": 36.2991,
+  "lon": -82.3741,
+  "name": "William B. Greene Jr. Stadium",
+  "state": "TN",
+  "tz": "America/New_York"
+ },
+ "5403": {
+  "city": "Orlanda",
+  "lat": 26.3212,
+  "lon": -81.693,
+  "name": "Orlando City Stadium",
+  "state": "FL",
+  "tz": null
+ },
+ "5440": {
+  "city": "Abilene",
+  "lat": 32.4723,
+  "lon": -99.7105,
+  "name": "Wildcat Stadium (TX)",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "5636": {
+  "city": "Oneonta",
+  "lat": 42.4535,
+  "lon": -75.063,
+  "name": "Wright Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "5637": {
+  "city": "Dudley",
+  "lat": 42.0573,
+  "lon": -71.9397,
+  "name": "Vendetti Field",
+  "state": "MA",
+  "tz": null
+ },
+ "5638": {
+  "city": "Castleton",
+  "lat": 43.6111,
+  "lon": -73.1807,
+  "name": "Dave Wolk Stadium",
+  "state": "VT",
+  "tz": "America/New_York"
+ },
+ "5689": {
+  "city": "Waterville",
+  "lat": 44.552,
+  "lon": -69.6317,
+  "name": "Seaverns Field At Harold Alfond Stadium",
+  "state": "ME",
+  "tz": null
+ },
+ "5780": {
+  "city": "Winona",
+  "lat": 43.9582,
+  "lon": -91.7808,
+  "name": "Altra Federal Credit Union Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "5781": {
+  "city": "Wingate",
+  "lat": 34.9843,
+  "lon": -80.4492,
+  "name": "Irwin Belk Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "5782": {
+  "city": "Gunnison",
+  "lat": 38.6477,
+  "lon": -107.0603,
+  "name": "Mountaineer Bowl",
+  "state": "CO",
+  "tz": null
+ },
+ "5783": {
+  "city": "Monmouth",
+  "lat": 44.8486,
+  "lon": -123.2291,
+  "name": "McArthur Field",
+  "state": "OR",
+  "tz": null
+ },
+ "5784": {
+  "city": "Buckhannon",
+  "lat": 38.9939,
+  "lon": -80.2323,
+  "name": "Cebe Ross Field",
+  "state": "WV",
+  "tz": null
+ },
+ "5785": {
+  "city": "Institute",
+  "lat": 38.3836,
+  "lon": -81.7655,
+  "name": "Dickerson Stadium",
+  "state": "WV",
+  "tz": null
+ },
+ "5786": {
+  "city": "Albion",
+  "lat": 42.2431,
+  "lon": -84.753,
+  "name": "Sprankle-Sprandel Stadium",
+  "state": "MI",
+  "tz": null
+ },
+ "5787": {
+  "city": "Adrian",
+  "lat": 41.8975,
+  "lon": -84.0373,
+  "name": "Docking Stadium",
+  "state": "MI",
+  "tz": null
+ },
+ "5788": {
+  "city": "Alfred",
+  "lat": 42.2542,
+  "lon": -77.7906,
+  "name": "Merrill Field at Yunevich Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "5789": {
+  "city": "Meadville",
+  "lat": 41.6414,
+  "lon": -80.1514,
+  "name": "Frank B. Fuhrer Field",
+  "state": "PA",
+  "tz": null
+ },
+ "5790": {
+  "city": "Alma",
+  "lat": 43.3789,
+  "lon": -84.6597,
+  "name": "Bahlke Field",
+  "state": "MI",
+  "tz": null
+ },
+ "5791": {
+  "city": "Reading",
+  "lat": 40.3353,
+  "lon": -75.9279,
+  "name": "Turf Field",
+  "state": "PA",
+  "tz": null
+ },
+ "5792": {
+  "city": "Amherst",
+  "lat": 42.3686,
+  "lon": -72.5057,
+  "name": "Pratt Field at Lehrman Stadium",
+  "state": "MA",
+  "tz": null
+ },
+ "5793": {
+  "city": "Anderson",
+  "lat": 40.1053,
+  "lon": -85.6803,
+  "name": "Macholtz Stadium",
+  "state": "IN",
+  "tz": null
+ },
+ "5794": {
+  "city": "Paxton",
+  "lat": 42.3123,
+  "lon": -71.9342,
+  "name": "Caparso Field",
+  "state": "MA",
+  "tz": null
+ },
+ "5795": {
+  "city": "Minneapolis",
+  "lat": 44.9773,
+  "lon": -93.2655,
+  "name": "Edor Nelson Field",
+  "state": "MN",
+  "tz": null
+ },
+ "5796": {
+  "city": "Rock Island",
+  "lat": 41.4412,
+  "lon": -90.5766,
+  "name": "Charles D. Lindberg Stadium",
+  "state": "IL",
+  "tz": null
+ },
+ "5797": {
+  "city": "Aurora",
+  "lat": 41.7572,
+  "lon": -88.3148,
+  "name": "Vago Field",
+  "state": "IL",
+  "tz": null
+ },
+ "5798": {
+  "city": "Sherman",
+  "lat": 36.2452,
+  "lon": -101.8859,
+  "name": "Jerry E. Apple Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "5799": {
+  "city": "Danville",
+  "lat": 36.586,
+  "lon": -79.395,
+  "name": "Daly Field at Frank R. Campbell Stadium",
+  "state": "VA",
+  "tz": null
+ },
+ "5800": {
+  "city": "Bridgewater",
+  "lat": 38.3821,
+  "lon": -78.9767,
+  "name": "Jopson Athletic Complex",
+  "state": "VA",
+  "tz": null
+ },
+ "5801": {
+  "city": "Berea",
+  "lat": 41.3662,
+  "lon": -81.8543,
+  "name": "George Finnie Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "5802": {
+  "city": "Jackson",
+  "lat": 32.299,
+  "lon": -90.1848,
+  "name": "Belhaven Bowl Stadium",
+  "state": "MS",
+  "tz": null
+ },
+ "5803": {
+  "city": "Bethany",
+  "lat": 40.2056,
+  "lon": -80.5567,
+  "name": "Bison Stadium",
+  "state": "WV",
+  "tz": null
+ },
+ "5804": {
+  "city": "Arden Hills",
+  "lat": 45.0761,
+  "lon": -93.1667,
+  "name": "Royal Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "5805": {
+  "city": "Bluffton",
+  "lat": 40.8934,
+  "lon": -83.8918,
+  "name": "Alumni Field (OH)",
+  "state": "OH",
+  "tz": null
+ },
+ "5806": {
+  "city": "Brunswick",
+  "lat": 43.9145,
+  "lon": -69.9653,
+  "name": "Whittier Field",
+  "state": "ME",
+  "tz": null
+ },
+ "5807": {
+  "city": "Brevard",
+  "lat": 35.2334,
+  "lon": -82.7343,
+  "name": "Brevard Memorial Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "5808": {
+  "city": "Bridgewater",
+  "lat": 41.9904,
+  "lon": -70.975,
+  "name": "Edward C. Swenson Athletic Complex",
+  "state": "MA",
+  "tz": null
+ },
+ "5809": {
+  "city": "Storm Lake",
+  "lat": 42.6453,
+  "lon": -95.1993,
+  "name": "J. Leslie Rollins Stadium",
+  "state": "IA",
+  "tz": null
+ },
+ "5810": {
+  "city": "Buffalo",
+  "lat": 42.8867,
+  "lon": -78.8784,
+  "name": "Coyer Field",
+  "state": "NY",
+  "tz": null
+ },
+ "5811": {
+  "city": "Thousand Oaks",
+  "lat": 34.1706,
+  "lon": -118.8376,
+  "name": "William Rolland Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "5812": {
+  "city": "Bexley",
+  "lat": 39.9692,
+  "lon": -82.9369,
+  "name": "Bernlohr Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "5813": {
+  "city": "Northfield",
+  "lat": 44.4582,
+  "lon": -93.1612,
+  "name": "Klein Field at Manitou",
+  "state": "MN",
+  "tz": null
+ },
+ "5814": {
+  "city": "Pittsburgh",
+  "lat": 40.4417,
+  "lon": -79.9901,
+  "name": "Gesling Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "5815": {
+  "city": "Waukesha",
+  "lat": 43.0053,
+  "lon": -88.2474,
+  "name": "Schneider Stadium",
+  "state": "WI",
+  "tz": null
+ },
+ "5816": {
+  "city": "Kenosha",
+  "lat": 42.5847,
+  "lon": -87.8212,
+  "name": "Art Keller Field",
+  "state": "WI",
+  "tz": null
+ },
+ "5817": {
+  "city": "Pella",
+  "lat": 41.4073,
+  "lon": -92.9174,
+  "name": "Ron and Joyce Schipper Stadium",
+  "state": "IA",
+  "tz": null
+ },
+ "5818": {
+  "city": "Danville",
+  "lat": 37.6456,
+  "lon": -84.7722,
+  "name": "Farris Stadium",
+  "state": "KY",
+  "tz": null
+ },
+ "5819": {
+  "city": "Orange",
+  "lat": 33.75,
+  "lon": -117.8705,
+  "name": "Ernie Chapman Stadium",
+  "state": "CA",
+  "tz": null
+ },
+ "5820": {
+  "city": "Chicago",
+  "lat": 41.8756,
+  "lon": -87.6244,
+  "name": "Amos Alonzo Stagg Field",
+  "state": "IL",
+  "tz": null
+ },
+ "5821": {
+  "city": "Claremont",
+  "lat": 34.0967,
+  "lon": -117.7198,
+  "name": "Fritz B. Burns Stadium",
+  "state": "CA",
+  "tz": null
+ },
+ "5822": {
+  "city": "New London",
+  "lat": 41.3556,
+  "lon": -72.0998,
+  "name": "Cadet Memorial Field",
+  "state": "CT",
+  "tz": null
+ },
+ "5823": {
+  "city": "Cedar Rapids",
+  "lat": 41.9759,
+  "lon": -91.6704,
+  "name": "Clark Field",
+  "state": "IA",
+  "tz": null
+ },
+ "5824": {
+  "city": "Ewing",
+  "lat": 40.2688,
+  "lon": -74.8007,
+  "name": "Lions Stadium",
+  "state": "NJ",
+  "tz": "America/New_York"
+ },
+ "5825": {
+  "city": "Moorhead",
+  "lat": 46.8739,
+  "lon": -96.7539,
+  "name": "Jake Christiansen Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "5826": {
+  "city": "River Forest",
+  "lat": 41.8978,
+  "lon": -87.8139,
+  "name": "Concordia Stadium",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "5827": {
+  "city": "Mequon",
+  "lat": 43.2219,
+  "lon": -87.9823,
+  "name": "Tomasini Stadium",
+  "state": "WI",
+  "tz": null
+ },
+ "5828": {
+  "city": "Mount Vernon",
+  "lat": 41.9222,
+  "lon": -91.4171,
+  "name": "Van Metre Field at Ash Park",
+  "state": "IA",
+  "tz": null
+ },
+ "5830": {
+  "city": "Milton",
+  "lat": 42.2501,
+  "lon": -71.0656,
+  "name": "Walter M. Katz Field",
+  "state": "MA",
+  "tz": null
+ },
+ "5831": {
+  "city": "Franklin",
+  "lat": 34.441,
+  "lon": -87.8339,
+  "name": "Dale Lippert Field",
+  "state": "MA",
+  "tz": null
+ },
+ "5832": {
+  "city": "Defiance",
+  "lat": 41.2845,
+  "lon": -84.3558,
+  "name": "Justin F. Coressel Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "5833": {
+  "city": "New Britain",
+  "lat": 40.3082,
+  "lon": -75.2164,
+  "name": "Robert A. Lipinski Field at James Work Memorial Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "5834": {
+  "city": "Granville",
+  "lat": 40.0681,
+  "lon": -82.5196,
+  "name": "Deeds Field-Piper Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "5835": {
+  "city": "Carlisle",
+  "lat": 40.2015,
+  "lon": -77.1891,
+  "name": "Biddle Field",
+  "state": "PA",
+  "tz": null
+ },
+ "5836": {
+  "city": "Dubuque",
+  "lat": 42.5006,
+  "lon": -90.6648,
+  "name": "Chalmers Field",
+  "state": "IA",
+  "tz": null
+ },
+ "5838": {
+  "city": "Marshall",
+  "lat": 32.5448,
+  "lon": -94.3661,
+  "name": "Ornelas Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "5839": {
+  "city": "Elmhurst",
+  "lat": 41.8995,
+  "lon": -87.9403,
+  "name": "Langhorst Field",
+  "state": "IL",
+  "tz": null
+ },
+ "5840": {
+  "city": "Meadowview",
+  "lat": 37.3065,
+  "lon": -80.0267,
+  "name": "Fred Selfe Stadium at Nicewonder Field",
+  "state": "VA",
+  "tz": null
+ },
+ "5841": {
+  "city": "Eureka",
+  "lat": 40.7213,
+  "lon": -89.2727,
+  "name": "Pete FioRito Stadium at McKinzie Field",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "5842": {
+  "city": "Madison",
+  "lat": 40.7598,
+  "lon": -74.4171,
+  "name": "Robert T. Shields Field",
+  "state": "NJ",
+  "tz": null
+ },
+ "5843": {
+  "city": "Ferrum",
+  "lat": 36.9379,
+  "lon": -80.0142,
+  "name": "W.B. Adams Stadium",
+  "state": "VA",
+  "tz": null
+ },
+ "5844": {
+  "city": "Hancock",
+  "lat": 47.1269,
+  "lon": -88.581,
+  "name": "McAfee Field",
+  "state": "MI",
+  "tz": null
+ },
+ "5845": {
+  "city": "Fitchburg",
+  "lat": 42.5904,
+  "lon": -71.812,
+  "name": "Elliot Field Athletic Complex",
+  "state": "MA",
+  "tz": null
+ },
+ "5847": {
+  "city": "Lancaster",
+  "lat": 40.0381,
+  "lon": -76.3057,
+  "name": "Sponaugle-Williamson Field",
+  "state": "PA",
+  "tz": null
+ },
+ "5848": {
+  "city": "Washington",
+  "lat": 38.895,
+  "lon": -77.0365,
+  "name": "Hotchkiss Field",
+  "state": "DC",
+  "tz": null
+ },
+ "5849": {
+  "city": "Beaver Falls",
+  "lat": 40.752,
+  "lon": -80.3192,
+  "name": "Reeves Field (PA)",
+  "state": "PA",
+  "tz": null
+ },
+ "5850": {
+  "city": "Newberg",
+  "lat": 45.3003,
+  "lon": -122.9728,
+  "name": "Stoffer Family Stadium",
+  "state": "OR",
+  "tz": null
+ },
+ "5851": {
+  "city": "Gettysburg",
+  "lat": 39.8309,
+  "lon": -77.231,
+  "name": "Shirk Field at Musselman Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "5852": {
+  "city": "Greensboro",
+  "lat": 36.0726,
+  "lon": -79.792,
+  "name": "Jamieson Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "5853": {
+  "city": "Greenville",
+  "lat": 38.8923,
+  "lon": -89.4131,
+  "name": "Francis Field (IL)",
+  "state": "IL",
+  "tz": null
+ },
+ "5854": {
+  "city": "Tiffin",
+  "lat": 41.1145,
+  "lon": -83.178,
+  "name": "Hoernemann Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "5855": {
+  "city": "Hiram",
+  "lat": 41.3126,
+  "lon": -81.1437,
+  "name": "Charles A. Henry Field",
+  "state": "OH",
+  "tz": null
+ },
+ "5856": {
+  "city": "Geneva",
+  "lat": 42.869,
+  "lon": -76.9786,
+  "name": "Boswell Field at David J. Urick Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "5857": {
+  "city": "Brownwood",
+  "lat": 31.707,
+  "lon": -98.9831,
+  "name": "Gordon Wood Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "5858": {
+  "city": "Jacksonville",
+  "lat": 39.7343,
+  "lon": -90.2288,
+  "name": "England Stadium",
+  "state": "IL",
+  "tz": null
+ },
+ "5859": {
+  "city": "Bloomington",
+  "lat": 40.4798,
+  "lon": -88.9939,
+  "name": "Tucci Stadium",
+  "state": "IL",
+  "tz": null
+ },
+ "5860": {
+  "city": "Mount Pleasant",
+  "lat": 40.9663,
+  "lon": -91.554,
+  "name": "Mapleleaf Athletic Complex",
+  "state": "IA",
+  "tz": null
+ },
+ "5861": {
+  "city": "Grinnell",
+  "lat": 41.743,
+  "lon": -92.724,
+  "name": "Rosenbloom Field",
+  "state": "IA",
+  "tz": null
+ },
+ "5862": {
+  "city": "Ithaca",
+  "lat": 42.4396,
+  "lon": -76.4968,
+  "name": "Butterfield Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "5863": {
+  "city": "University Heights",
+  "lat": 41.4978,
+  "lon": -81.5373,
+  "name": "Don Shula Stadium at Wasmer Field",
+  "state": "OH",
+  "tz": null
+ },
+ "5864": {
+  "city": "Grove City",
+  "lat": 41.1579,
+  "lon": -80.0887,
+  "name": "Robert E. Thorn Field",
+  "state": "PA",
+  "tz": null
+ },
+ "5866": {
+  "city": "Alamosa",
+  "lat": 37.5781,
+  "lon": -105.789,
+  "name": "Rex Stadium",
+  "state": "CO",
+  "tz": null
+ },
+ "5867": {
+  "city": "Albany",
+  "lat": 31.5782,
+  "lon": -84.1557,
+  "name": "Albany State University Coliseum",
+  "state": "GA",
+  "tz": null
+ },
+ "5868": {
+  "city": "Springfield",
+  "lat": 42.1019,
+  "lon": -72.5887,
+  "name": "Ronald J. Abdow Field",
+  "state": "MA",
+  "tz": null
+ },
+ "5869": {
+  "city": "San Angelo",
+  "lat": 31.465,
+  "lon": -100.4405,
+  "name": "LeGrand Stadium at 1st Community Credit Union Field",
+  "state": "TX",
+  "tz": null
+ },
+ "587": {
+  "city": "Salt Lake City",
+  "lat": 40.76,
+  "lon": -111.8488,
+  "name": "Rice-Eccles Stadium",
+  "state": "UT",
+  "tz": "America/Denver"
+ },
+ "5870": {
+  "city": "Russellville",
+  "lat": 35.2784,
+  "lon": -93.1338,
+  "name": "Thone Stadium at Buerkle Field",
+  "state": "AR",
+  "tz": null
+ },
+ "5871": {
+  "city": "Monticello",
+  "lat": 33.6293,
+  "lon": -91.7912,
+  "name": "Convoy Leslie Cotton Boll Stadium",
+  "state": "AR",
+  "tz": null
+ },
+ "5872": {
+  "city": "Sioux Falls",
+  "lat": 43.5488,
+  "lon": -96.7308,
+  "name": "Kirkeby-Over Stadium",
+  "state": "SD",
+  "tz": null
+ },
+ "5873": {
+  "city": "Bowie",
+  "lat": 38.9424,
+  "lon": -76.7302,
+  "name": "Bulldogs Stadium",
+  "state": "MD",
+  "tz": null
+ },
+ "5874": {
+  "city": "Bemidji",
+  "lat": 47.4785,
+  "lon": -94.8908,
+  "name": "Chet Anderson Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "5875": {
+  "city": "Columbia",
+  "lat": 34.0007,
+  "lon": -81.0343,
+  "name": "Charlie W. Johnson Stadium",
+  "state": "SC",
+  "tz": null
+ },
+ "5876": {
+  "city": "Waltham",
+  "lat": 42.3756,
+  "lon": -71.2358,
+  "name": "Bentley University Football Stadium",
+  "state": "MA",
+  "tz": null
+ },
+ "5877": {
+  "city": "Spearfish",
+  "lat": 44.4908,
+  "lon": -103.8594,
+  "name": "Lyle Hare Stadium",
+  "state": "SD",
+  "tz": null
+ },
+ "5878": {
+  "city": "Edmond",
+  "lat": 35.6571,
+  "lon": -97.4649,
+  "name": "Wantland Stadium",
+  "state": "OK",
+  "tz": null
+ },
+ "5879": {
+  "city": "Ellensburg",
+  "lat": 46.9971,
+  "lon": -120.5451,
+  "name": "Tomlinson Stadium",
+  "state": "WA",
+  "tz": null
+ },
+ "5880": {
+  "city": "Chadron",
+  "lat": 42.831,
+  "lon": -103.0004,
+  "name": "Elliott Field at Don Beebe Stadium",
+  "state": "NE",
+  "tz": null
+ },
+ "5881": {
+  "city": "Atlanta",
+  "lat": 33.749,
+  "lon": -84.3903,
+  "name": "CAU Panther Stadium",
+  "state": "GA",
+  "tz": null
+ },
+ "5882": {
+  "city": "Grand Junction",
+  "lat": 39.064,
+  "lon": -108.5507,
+  "name": "Ralph Stocker Stadium",
+  "state": "CO",
+  "tz": null
+ },
+ "5883": {
+  "city": "Golden",
+  "lat": 39.7546,
+  "lon": -105.2206,
+  "name": "Marv Kay Stadium at Campbell Field",
+  "state": "CO",
+  "tz": null
+ },
+ "5884": {
+  "city": "Canyon",
+  "lat": 34.9799,
+  "lon": -101.9192,
+  "name": "Buffalo Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "5885": {
+  "city": "Searcy",
+  "lat": 35.9019,
+  "lon": -92.7099,
+  "name": "First Security Stadium",
+  "state": "AR",
+  "tz": null
+ },
+ "5886": {
+  "city": "Wheeling",
+  "lat": 40.064,
+  "lon": -80.7209,
+  "name": "West Family Stadium",
+  "state": "WV",
+  "tz": null
+ },
+ "5887": {
+  "city": "Glenville",
+  "lat": 38.9343,
+  "lon": -80.8376,
+  "name": "I.L. & Sue Morris Stadium",
+  "state": "WV",
+  "tz": null
+ },
+ "5888": {
+  "city": "Carrollton",
+  "lat": 33.5801,
+  "lon": -85.1206,
+  "name": "University Stadium (GA)",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "5889": {
+  "city": "Arkadelphia",
+  "lat": 34.1209,
+  "lon": -93.0538,
+  "name": "Carpenter-Haygood Stadium",
+  "state": "AR",
+  "tz": null
+ },
+ "5890": {
+  "city": "Hays",
+  "lat": 38.8792,
+  "lon": -99.3268,
+  "name": "Lewis Field Stadium",
+  "state": "KS",
+  "tz": null
+ },
+ "5891": {
+  "city": "Magnolia",
+  "lat": 33.2671,
+  "lon": -93.2393,
+  "name": "Wilkins Stadium",
+  "state": "AR",
+  "tz": null
+ },
+ "5892": {
+  "city": "Greensboro",
+  "lat": 36.0726,
+  "lon": -79.792,
+  "name": "Armfield Athletic Center",
+  "state": "NC",
+  "tz": null
+ },
+ "5893": {
+  "city": "Saint Peter",
+  "lat": 44.3238,
+  "lon": -93.9585,
+  "name": "Hollingsworth Field",
+  "state": "MN",
+  "tz": null
+ },
+ "5894": {
+  "city": "Clinton",
+  "lat": 44.7279,
+  "lon": -73.6687,
+  "name": "Steuben Field",
+  "state": "NY",
+  "tz": null
+ },
+ "5895": {
+  "city": "Saint Paul",
+  "lat": 44.9497,
+  "lon": -93.0931,
+  "name": "Klas Field",
+  "state": "MN",
+  "tz": null
+ },
+ "5896": {
+  "city": "Farmville",
+  "lat": 37.3025,
+  "lon": -78.3924,
+  "name": "Lewis C. Everett Stadium",
+  "state": "VA",
+  "tz": null
+ },
+ "5897": {
+  "city": "Saint Louis",
+  "lat": 38.6264,
+  "lon": -90.1996,
+  "name": "Francis Field (MO)",
+  "state": "MO",
+  "tz": null
+ },
+ "5898": {
+  "city": "Worcester",
+  "lat": 42.2626,
+  "lon": -71.8019,
+  "name": "John Coughlin Memorial Field",
+  "state": "MA",
+  "tz": null
+ },
+ "5899": {
+  "city": "Worcester",
+  "lat": 42.2626,
+  "lon": -71.8019,
+  "name": "Alumni Stadium (Worcester, MA)",
+  "state": "MA",
+  "tz": null
+ },
+ "5900": {
+  "city": "Menomonie",
+  "lat": 44.8755,
+  "lon": -91.9193,
+  "name": "Don and Nona Williams Stadium",
+  "state": "WI",
+  "tz": null
+ },
+ "5901": {
+  "city": "River Falls",
+  "lat": 44.8595,
+  "lon": -92.6266,
+  "name": "David Smith Stadium at Ramer Field",
+  "state": "WI",
+  "tz": null
+ },
+ "5902": {
+  "city": "Huntingdon",
+  "lat": 40.4848,
+  "lon": -78.0103,
+  "name": "Knox Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "5903": {
+  "city": "Stevens Point",
+  "lat": 44.5229,
+  "lon": -89.5741,
+  "name": "Community Stadium at Goerke Park",
+  "state": "WI",
+  "tz": null
+ },
+ "5904": {
+  "city": "Kalamazoo",
+  "lat": 42.2917,
+  "lon": -85.5872,
+  "name": "Angell Field",
+  "state": "MI",
+  "tz": null
+ },
+ "5905": {
+  "city": "Union",
+  "lat": 40.6976,
+  "lon": -74.2632,
+  "name": "Kean Alumni Stadium",
+  "state": "NJ",
+  "tz": "America/New_York"
+ },
+ "5906": {
+  "city": "Gambier",
+  "lat": 40.3756,
+  "lon": -82.3971,
+  "name": "McBride Field",
+  "state": "OH",
+  "tz": null
+ },
+ "5907": {
+  "city": "Wilkes Barre Township",
+  "lat": 41.2337,
+  "lon": -75.8536,
+  "name": "McCarthy Stadium (Wilkes Barre)",
+  "state": "PA",
+  "tz": null
+ },
+ "5908": {
+  "city": "Galesburg",
+  "lat": 40.9476,
+  "lon": -90.3712,
+  "name": "Harley Knosher Bowl",
+  "state": "IL",
+  "tz": null
+ },
+ "5909": {
+  "city": "La Verne",
+  "lat": 34.1008,
+  "lon": -117.7678,
+  "name": "Ortmayer Stadium",
+  "state": "CA",
+  "tz": null
+ },
+ "5910": {
+  "city": "Lagrange",
+  "lat": 33.0393,
+  "lon": -85.0313,
+  "name": "Callaway Stadium",
+  "state": "GA",
+  "tz": null
+ },
+ "5911": {
+  "city": "Platteville",
+  "lat": 42.7343,
+  "lon": -90.4784,
+  "name": "Ralph E. Davis Pioneer Stadium",
+  "state": "WI",
+  "tz": null
+ },
+ "5913": {
+  "city": "Wauwatosa",
+  "lat": 43.0494,
+  "lon": -88.0079,
+  "name": "Warrior Field at Raabe Stadium",
+  "state": "WI",
+  "tz": "America/Chicago"
+ },
+ "5914": {
+  "city": "La Crosse",
+  "lat": 43.8123,
+  "lon": -91.2514,
+  "name": "Veterans Memorial Stadium (WI)",
+  "state": "WI",
+  "tz": null
+ },
+ "5915": {
+  "city": "Lake Forest",
+  "lat": 42.2586,
+  "lon": -87.8406,
+  "name": "Farwell Field",
+  "state": "IL",
+  "tz": null
+ },
+ "5916": {
+  "city": "Eau Claire",
+  "lat": 44.8113,
+  "lon": -91.4985,
+  "name": "Carson Park",
+  "state": "WI",
+  "tz": null
+ },
+ "5917": {
+  "city": "Odessa",
+  "lat": 31.8457,
+  "lon": -102.3677,
+  "name": "Ratliff Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "5918": {
+  "city": "Plymouth",
+  "lat": 43.7486,
+  "lon": -87.977,
+  "name": "Taylor Field",
+  "state": "WI",
+  "tz": "America/Chicago"
+ },
+ "5919": {
+  "city": "Appleton",
+  "lat": 44.2614,
+  "lon": -88.407,
+  "name": "Ron Roberts Field at the Banta Bowl",
+  "state": "WI",
+  "tz": null
+ },
+ "5920": {
+  "city": "Portland",
+  "lat": 45.5202,
+  "lon": -122.6742,
+  "name": "Griswold Stadium",
+  "state": "OR",
+  "tz": null
+ },
+ "5921": {
+  "city": "Dubuque",
+  "lat": 42.5006,
+  "lon": -90.6648,
+  "name": "Rock Bowl",
+  "state": "IA",
+  "tz": null
+ },
+ "5922": {
+  "city": "Pineville",
+  "lat": 31.3224,
+  "lon": -92.4343,
+  "name": "Wildcat Field",
+  "state": "LA",
+  "tz": null
+ },
+ "5923": {
+  "city": "Decorah",
+  "lat": 43.3042,
+  "lon": -91.7859,
+  "name": "Legacy Field in Carlson Stadium",
+  "state": "IA",
+  "tz": null
+ },
+ "5925": {
+  "city": "Williamsport",
+  "lat": 41.2493,
+  "lon": -77.0028,
+  "name": "David Person Field",
+  "state": "PA",
+  "tz": null
+ },
+ "5926": {
+  "city": "Cambridge",
+  "lat": 42.3751,
+  "lon": -71.1056,
+  "name": "Henry G. Steinbrenner '27 Stadium",
+  "state": "MA",
+  "tz": null
+ },
+ "5927": {
+  "city": "Jacksonville",
+  "lat": 39.7343,
+  "lon": -90.2288,
+  "name": "Freesen Field",
+  "state": "IL",
+  "tz": null
+ },
+ "5928": {
+  "city": "Saint Paul",
+  "lat": 44.9497,
+  "lon": -93.0931,
+  "name": "Macalester Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "5929": {
+  "city": "Castine",
+  "lat": 44.3882,
+  "lon": -68.7998,
+  "name": "Ritchie Field",
+  "state": "ME",
+  "tz": null
+ },
+ "5930": {
+  "city": "North Manchester",
+  "lat": 41.0006,
+  "lon": -85.7686,
+  "name": "Carl W. Burt Memorial Stadium",
+  "state": "IN",
+  "tz": null
+ },
+ "5931": {
+  "city": "Marietta",
+  "lat": 39.4168,
+  "lon": -81.4548,
+  "name": "Don Drumm Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "5932": {
+  "city": "Maryville",
+  "lat": 35.7565,
+  "lon": -83.9705,
+  "name": "Lloyd L. Thornton Stadium",
+  "state": "TN",
+  "tz": null
+ },
+ "5933": {
+  "city": "Saint Paul",
+  "lat": 44.9497,
+  "lon": -93.0931,
+  "name": "Sea Foam Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "5934": {
+  "city": "Caledonia",
+  "lat": 37.7634,
+  "lon": -90.7729,
+  "name": "Farmers Insurance Athletic Complex",
+  "state": "MI",
+  "tz": null
+ },
+ "5935": {
+  "city": "Cleveland",
+  "lat": 33.744,
+  "lon": -90.7248,
+  "name": "Parker Field at McCool Stadium",
+  "state": "MS",
+  "tz": null
+ },
+ "5936": {
+  "city": "Ada",
+  "lat": 34.7743,
+  "lon": -96.6784,
+  "name": "Koi Ishto Stadium",
+  "state": "OK",
+  "tz": null
+ },
+ "5938": {
+  "city": "Portales",
+  "lat": 34.1862,
+  "lon": -103.3344,
+  "name": "Al Whitehead Field at Greyhound Stadium",
+  "state": "NM",
+  "tz": null
+ },
+ "5939": {
+  "city": "Dartmouth",
+  "lat": 41.6332,
+  "lon": -70.988,
+  "name": "Cressy Field",
+  "state": "MA",
+  "tz": null
+ },
+ "5940": {
+  "city": "Buzzards Bay",
+  "lat": 41.7454,
+  "lon": -70.6181,
+  "name": "Clean Harbors Stadium",
+  "state": "MA",
+  "tz": null
+ },
+ "5941": {
+  "city": "Elizabeth City",
+  "lat": 36.2957,
+  "lon": -76.2248,
+  "name": "Roebuck Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "5942": {
+  "city": "Emporia",
+  "lat": 38.404,
+  "lon": -96.1816,
+  "name": "Francis G. Welch Stadium",
+  "state": "KS",
+  "tz": null
+ },
+ "5943": {
+  "city": "Fairmont",
+  "lat": 39.4851,
+  "lon": -80.1426,
+  "name": "Duvall-Rosier Field",
+  "state": "WV",
+  "tz": null
+ },
+ "5944": {
+  "city": "Durango",
+  "lat": 37.2395,
+  "lon": -107.8216,
+  "name": "Ray Dennison Memorial Field",
+  "state": "CO",
+  "tz": null
+ },
+ "5945": {
+  "city": "Fort Valley",
+  "lat": 32.5538,
+  "lon": -83.8874,
+  "name": "Wildcat Stadium (GA)",
+  "state": "GA",
+  "tz": null
+ },
+ "5960": {
+  "city": "Evanston",
+  "lat": 42.0582,
+  "lon": -87.6709,
+  "name": "Lanny and Sharon Martin Stadium",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "5996": {
+  "city": "Abilene",
+  "lat": 32.4464,
+  "lon": -99.7476,
+  "name": "Wilford Moore Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "5997": {
+  "city": "Kings Point",
+  "lat": 40.8198,
+  "lon": -73.7351,
+  "name": "Brooks Stadium (NY)",
+  "state": "NY",
+  "tz": null
+ },
+ "5998": {
+  "city": "Fayetteville",
+  "lat": 35.0526,
+  "lon": -78.8783,
+  "name": "Monarch Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "6006": {
+  "city": "Edinburg",
+  "lat": 26.2826,
+  "lon": -98.1352,
+  "name": "Robert and Janet Vackar Stadium",
+  "state": "TX",
+  "tz": "America/Chicago"
+ },
+ "6027": {
+  "city": "Fairfield",
+  "lat": 33.4859,
+  "lon": -86.9119,
+  "name": "Albert J. H. Sloan - Alumni Stadium",
+  "state": "AL",
+  "tz": null
+ },
+ "6030": {
+  "city": "Fayette",
+  "lat": 42.8421,
+  "lon": -91.8503,
+  "name": "Harms-Eischeid Stadium",
+  "state": "IA",
+  "tz": null
+ },
+ "6031": {
+  "city": "Urbana",
+  "lat": 40.1084,
+  "lon": -83.7524,
+  "name": "Urbana University Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "6032": {
+  "city": "Richmond",
+  "lat": 37.5385,
+  "lon": -77.4343,
+  "name": "Hovey Field",
+  "state": "VA",
+  "tz": null
+ },
+ "6033": {
+  "city": "Wise",
+  "lat": 36.9759,
+  "lon": -82.5757,
+  "name": "Carl Smith Stadium",
+  "state": "VA",
+  "tz": null
+ },
+ "6034": {
+  "city": "Topeka",
+  "lat": 39.049,
+  "lon": -95.6776,
+  "name": "Yager Stadium at Moore Bowl",
+  "state": "KS",
+  "tz": null
+ },
+ "6035": {
+  "city": "Wayne",
+  "lat": 42.1941,
+  "lon": -97.1696,
+  "name": "Memorial Stadium (Wayne, NE)",
+  "state": "NE",
+  "tz": null
+ },
+ "6036": {
+  "city": "Pensacola",
+  "lat": 30.4213,
+  "lon": -87.2169,
+  "name": "Blue Wahoos Stadium",
+  "state": "FL",
+  "tz": null
+ },
+ "6040": {
+  "city": "Indianapolis",
+  "lat": 39.7683,
+  "lon": -86.1584,
+  "name": "Key Stadium",
+  "state": "IN",
+  "tz": null
+ },
+ "6041": {
+  "city": "Charlotte",
+  "lat": 35.2272,
+  "lon": -80.8431,
+  "name": "Irwin Belk Complex",
+  "state": "NC",
+  "tz": null
+ },
+ "6042": {
+  "city": "Frankfort",
+  "lat": 38.2009,
+  "lon": -84.8733,
+  "name": "Alumni Stadium (KY)",
+  "state": "KY",
+  "tz": null
+ },
+ "6043": {
+  "city": "Brookville",
+  "lat": 40.8163,
+  "lon": -73.5895,
+  "name": "Bethpage Federal Credit Union Stadium",
+  "state": "NY",
+  "tz": "America/New_York"
+ },
+ "6044": {
+  "city": "Jackson",
+  "lat": 35.6144,
+  "lon": -88.8177,
+  "name": "Lane Field",
+  "state": "TN",
+  "tz": null
+ },
+ "6045": {
+  "city": "Jefferson City",
+  "lat": 38.5774,
+  "lon": -92.1724,
+  "name": "Dwight T. Reed Stadium",
+  "state": "MO",
+  "tz": null
+ },
+ "6046": {
+  "city": "Mars Hill",
+  "lat": 35.8269,
+  "lon": -82.5506,
+  "name": "Meares Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "6047": {
+  "city": "Lebanon",
+  "lat": 38.6039,
+  "lon": -89.8073,
+  "name": "Leemon Field",
+  "state": "IL",
+  "tz": null
+ },
+ "6048": {
+  "city": "North Andover",
+  "lat": 42.684,
+  "lon": -71.1127,
+  "name": "Duane Stadium",
+  "state": "MA",
+  "tz": "America/New_York"
+ },
+ "6049": {
+  "city": "Wichita Falls",
+  "lat": 33.9137,
+  "lon": -98.4934,
+  "name": "Memorial Stadium (Wichita Falls, TX)",
+  "state": "TX",
+  "tz": null
+ },
+ "6050": {
+  "city": "Crookston",
+  "lat": 47.774,
+  "lon": -96.6081,
+  "name": "Ed Widseth Field",
+  "state": "MN",
+  "tz": null
+ },
+ "6051": {
+  "city": "Duluth",
+  "lat": 46.7729,
+  "lon": -92.1251,
+  "name": "James S. Malosky Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "6052": {
+  "city": "Minot",
+  "lat": 48.2325,
+  "lon": -101.2963,
+  "name": "Herb Parker Stadium",
+  "state": "ND",
+  "tz": null
+ },
+ "6053": {
+  "city": "Clinton",
+  "lat": 32.3411,
+  "lon": -90.3216,
+  "name": "Robinson-Hale Stadium",
+  "state": "MS",
+  "tz": null
+ },
+ "6054": {
+  "city": "Joplin",
+  "lat": 37.0842,
+  "lon": -94.5132,
+  "name": "Fred G. Hughes Stadium",
+  "state": "MO",
+  "tz": null
+ },
+ "6055": {
+  "city": "Saint Joseph",
+  "lat": 39.7686,
+  "lon": -94.8466,
+  "name": "Craig Field at Spratt Memorial Stadium",
+  "state": "MO",
+  "tz": null
+ },
+ "6056": {
+  "city": "Atlanta",
+  "lat": 33.749,
+  "lon": -84.3903,
+  "name": "B.T. Harvey Stadium",
+  "state": "GA",
+  "tz": null
+ },
+ "6057": {
+  "city": "Kearney",
+  "lat": 40.4906,
+  "lon": -98.9472,
+  "name": "Ron & Carol Cope Stadium at Foster Field",
+  "state": "NE",
+  "tz": null
+ },
+ "6058": {
+  "city": "West Haven",
+  "lat": 41.2707,
+  "lon": -72.947,
+  "name": "Ralph F. DellaCamera Stadium",
+  "state": "CT",
+  "tz": "America/New_York"
+ },
+ "6059": {
+  "city": "Las Vegas",
+  "lat": 35.5939,
+  "lon": -105.2239,
+  "name": "Sanchez Family Stadium",
+  "state": "NM",
+  "tz": null
+ },
+ "6060": {
+  "city": "Pembroke",
+  "lat": 34.6802,
+  "lon": -79.195,
+  "name": "Grace P. Johnson Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "6061": {
+  "city": "Tigerville",
+  "lat": 35.0684,
+  "lon": -82.3685,
+  "name": "Younts Stadium",
+  "state": "SC",
+  "tz": null
+ },
+ "6062": {
+  "city": "Tahlequah",
+  "lat": 35.9154,
+  "lon": -94.97,
+  "name": "Gable Field at Doc Wadley Stadium",
+  "state": "OK",
+  "tz": null
+ },
+ "6063": {
+  "city": "South Euclid",
+  "lat": 41.5231,
+  "lon": -81.5185,
+  "name": "Mueller Field",
+  "state": "OH",
+  "tz": null
+ },
+ "6064": {
+  "city": "Shawnee",
+  "lat": 35.3273,
+  "lon": -96.9253,
+  "name": "Crain Family Stadium",
+  "state": "OK",
+  "tz": null
+ },
+ "6065": {
+  "city": "Arkadelphia",
+  "lat": 34.1209,
+  "lon": -93.0538,
+  "name": "Cliff Harris Stadium",
+  "state": "AR",
+  "tz": null
+ },
+ "6066": {
+  "city": "Pleasantville",
+  "lat": 41.1329,
+  "lon": -73.7926,
+  "name": "Pace Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "6067": {
+  "city": "Pittsburg",
+  "lat": 37.4109,
+  "lon": -94.705,
+  "name": "Carnie Smith Stadium",
+  "state": "KS",
+  "tz": null
+ },
+ "6068": {
+  "city": "Raleigh",
+  "lat": 35.7804,
+  "lon": -78.6391,
+  "name": "George Williams Athletic Complex",
+  "state": "NC",
+  "tz": null
+ },
+ "6069": {
+  "city": "Saint Cloud",
+  "lat": 45.5616,
+  "lon": -94.1642,
+  "name": "Husky Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "6070": {
+  "city": "Sioux Falls",
+  "lat": 43.5488,
+  "lon": -96.7308,
+  "name": "Bob Young Field",
+  "state": "SD",
+  "tz": null
+ },
+ "6071": {
+  "city": "New Haven",
+  "lat": 41.3082,
+  "lon": -72.9251,
+  "name": "Jess Dow Field",
+  "state": "CT",
+  "tz": null
+ },
+ "6072": {
+  "city": "Marshall",
+  "lat": 48.3605,
+  "lon": -96.382,
+  "name": "Schwan Regional Event Center",
+  "state": "MN",
+  "tz": null
+ },
+ "6073": {
+  "city": "Weatherford",
+  "lat": 35.5262,
+  "lon": -98.7076,
+  "name": "Milam Stadium",
+  "state": "OK",
+  "tz": null
+ },
+ "6074": {
+  "city": "Manchester",
+  "lat": 42.9956,
+  "lon": -71.4548,
+  "name": "Grappone Stadium",
+  "state": "NH",
+  "tz": null
+ },
+ "6075": {
+  "city": "North Easton",
+  "lat": 42.0668,
+  "lon": -71.1037,
+  "name": "W.B. Mason Stadium",
+  "state": "MA",
+  "tz": "America/New_York"
+ },
+ "6076": {
+  "city": "Kingsville",
+  "lat": 27.5159,
+  "lon": -97.8561,
+  "name": "Javelina Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "6077": {
+  "city": "Kirksville",
+  "lat": 40.1949,
+  "lon": -92.5834,
+  "name": "Stokes Stadium",
+  "state": "MO",
+  "tz": null
+ },
+ "6078": {
+  "city": "Greeneville",
+  "lat": 36.1632,
+  "lon": -82.831,
+  "name": "Pioneer Field (TN)",
+  "state": "TN",
+  "tz": null
+ },
+ "6079": {
+  "city": "Middlebury",
+  "lat": 44.0073,
+  "lon": -73.1633,
+  "name": "Alumni Stadium (VT)",
+  "state": "VT",
+  "tz": null
+ },
+ "6080": {
+  "city": "Decatur",
+  "lat": 39.8454,
+  "lon": -88.9524,
+  "name": "Frank M. Lindsay Field",
+  "state": "IL",
+  "tz": null
+ },
+ "6081": {
+  "city": "Jackson",
+  "lat": 32.299,
+  "lon": -90.1848,
+  "name": "Harper Davis Field",
+  "state": "MS",
+  "tz": null
+ },
+ "6082": {
+  "city": "Morris",
+  "lat": 45.5861,
+  "lon": -95.9139,
+  "name": "Big Cat Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "6083": {
+  "city": "Dallas",
+  "lat": 32.3118,
+  "lon": -87.1047,
+  "name": "Mangelsdorf Field",
+  "state": "PA",
+  "tz": null
+ },
+ "6084": {
+  "city": "Monmouth",
+  "lat": 40.9127,
+  "lon": -90.6472,
+  "name": "April Zorn Memorial Stadium",
+  "state": "IL",
+  "tz": null
+ },
+ "6085": {
+  "city": "Montclair",
+  "lat": 40.8164,
+  "lon": -74.2211,
+  "name": "Sprague Field",
+  "state": "NJ",
+  "tz": "America/New_York"
+ },
+ "6086": {
+  "city": "Bethlehem",
+  "lat": 40.6179,
+  "lon": -75.3787,
+  "name": "Rocco Calvo Field",
+  "state": "PA",
+  "tz": null
+ },
+ "6087": {
+  "city": "Morrisville",
+  "lat": 42.8987,
+  "lon": -75.6402,
+  "name": "Drake Field (NY)",
+  "state": "NY",
+  "tz": null
+ },
+ "6088": {
+  "city": "Cincinnati",
+  "lat": 39.1015,
+  "lon": -84.5125,
+  "name": "Schueler Field",
+  "state": "OH",
+  "tz": null
+ },
+ "6089": {
+  "city": "Allentown",
+  "lat": 40.6022,
+  "lon": -75.4713,
+  "name": "Scotty Wood Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "6090": {
+  "city": "New Concord",
+  "lat": 39.9935,
+  "lon": -81.7339,
+  "name": "Sherman Field at McConagha Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "6091": {
+  "city": "Lincoln",
+  "lat": 40.8089,
+  "lon": -96.7078,
+  "name": "Abel Stadium",
+  "state": "NE",
+  "tz": null
+ },
+ "6092": {
+  "city": "Rocky Mount",
+  "lat": 35.9424,
+  "lon": -77.7957,
+  "name": "Bishop Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "6093": {
+  "city": "Chicago",
+  "lat": 41.8756,
+  "lon": -87.6244,
+  "name": "Holmgren Athletic Complex",
+  "state": "IL",
+  "tz": null
+ },
+ "6094": {
+  "city": "Roseville",
+  "lat": 45.0061,
+  "lon": -93.1566,
+  "name": "Reynolds Field",
+  "state": "MN",
+  "tz": null
+ },
+ "6095": {
+  "city": "Northfield",
+  "lat": 44.1532,
+  "lon": -72.6568,
+  "name": "Sabine Field at Haynes Family Stadium",
+  "state": "VT",
+  "tz": null
+ },
+ "6096": {
+  "city": "Oberlin",
+  "lat": 41.2939,
+  "lon": -82.2174,
+  "name": "Austin E. Knowlton Athletics Complex",
+  "state": "OH",
+  "tz": null
+ },
+ "6097": {
+  "city": "Los Angeles",
+  "lat": 34.0537,
+  "lon": -118.2428,
+  "name": "Patterson Field at Jack Kemp Stadium",
+  "state": "CA",
+  "tz": null
+ },
+ "6098": {
+  "city": "Ada",
+  "lat": 38.8399,
+  "lon": -83.5052,
+  "name": "Dial-Roberson Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "6099": {
+  "city": "Delaware",
+  "lat": 40.2987,
+  "lon": -83.068,
+  "name": "Selby Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "6100": {
+  "city": "Olivet",
+  "lat": 42.4414,
+  "lon": -84.9242,
+  "name": "Cutler Field",
+  "state": "MI",
+  "tz": null
+ },
+ "6101": {
+  "city": "Westerville",
+  "lat": 40.1261,
+  "lon": -82.9295,
+  "name": "Memorial Stadium (Westerville, OH)",
+  "state": "OH",
+  "tz": null
+ },
+ "6102": {
+  "city": "Puyallup",
+  "lat": 47.1849,
+  "lon": -122.2921,
+  "name": "Sparks Stadium",
+  "state": "WA",
+  "tz": "America/Los_Angeles"
+ },
+ "6103": {
+  "city": "Claremont",
+  "lat": 34.0967,
+  "lon": -117.7198,
+  "name": "Merritt Field",
+  "state": "CA",
+  "tz": null
+ },
+ "6104": {
+  "city": "Tacoma",
+  "lat": 47.2496,
+  "lon": -122.4399,
+  "name": "Baker Stadium",
+  "state": "WA",
+  "tz": "America/Los_Angeles"
+ },
+ "6105": {
+  "city": "Ashland",
+  "lat": 37.7594,
+  "lon": -77.4807,
+  "name": "Day Field",
+  "state": "VA",
+  "tz": null
+ },
+ "6106": {
+  "city": "Redlands",
+  "lat": 34.055,
+  "lon": -117.1827,
+  "name": "Ted Runner Stadium",
+  "state": "CA",
+  "tz": null
+ },
+ "6107": {
+  "city": "Troy",
+  "lat": 42.7284,
+  "lon": -73.6918,
+  "name": "ECAV Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "6108": {
+  "city": "Memphis",
+  "lat": 35.1335,
+  "lon": -89.9669,
+  "name": "Crain Field",
+  "state": "TN",
+  "tz": null
+ },
+ "6109": {
+  "city": "Ripon",
+  "lat": 43.8425,
+  "lon": -88.8373,
+  "name": "Ingalls Field",
+  "state": "WI",
+  "tz": null
+ },
+ "6110": {
+  "city": "Rockford",
+  "lat": 42.2714,
+  "lon": -89.094,
+  "name": "Sam Greeley Field",
+  "state": "IL",
+  "tz": "America/Chicago"
+ },
+ "6111": {
+  "city": "Terre Haute",
+  "lat": 39.4667,
+  "lon": -87.4139,
+  "name": "Cook Stadium",
+  "state": "IN",
+  "tz": null
+ },
+ "6112": {
+  "city": "Glassboro",
+  "lat": 39.7028,
+  "lon": -75.1119,
+  "name": "Richard Wackar Stadium",
+  "state": "NJ",
+  "tz": "America/New_York"
+ },
+ "6113": {
+  "city": "Canton",
+  "lat": 44.5956,
+  "lon": -75.1691,
+  "name": "Leckonby Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "6114": {
+  "city": "Salisbury",
+  "lat": 38.366,
+  "lon": -75.601,
+  "name": "Sea Gull Stadium",
+  "state": "MD",
+  "tz": null
+ },
+ "6115": {
+  "city": "Newport",
+  "lat": 41.49,
+  "lon": -71.3138,
+  "name": "Toppa Field",
+  "state": "RI",
+  "tz": null
+ },
+ "6116": {
+  "city": "Winchester",
+  "lat": 39.1852,
+  "lon": -78.1652,
+  "name": "Shentel Stadium",
+  "state": "VA",
+  "tz": null
+ },
+ "6117": {
+  "city": "Buena Vista",
+  "lat": 37.7343,
+  "lon": -79.3539,
+  "name": "Knight Stadium",
+  "state": "VA",
+  "tz": null
+ },
+ "6118": {
+  "city": "Georgetown",
+  "lat": 30.6327,
+  "lon": -97.6772,
+  "name": "Birkelbach Field",
+  "state": "TX",
+  "tz": null
+ },
+ "6119": {
+  "city": "Springfield",
+  "lat": 42.1019,
+  "lon": -72.5887,
+  "name": "Stagg Field",
+  "state": "MA",
+  "tz": null
+ },
+ "6120": {
+  "city": "Rochester",
+  "lat": 43.1573,
+  "lon": -77.6152,
+  "name": "Growney Stadium",
+  "state": "NY",
+  "tz": null
+ },
+ "6121": {
+  "city": "De Pere",
+  "lat": 44.4494,
+  "lon": -88.06,
+  "name": "Donald J. Schneider Stadium",
+  "state": "WI",
+  "tz": null
+ },
+ "6122": {
+  "city": "Duluth",
+  "lat": 46.7729,
+  "lon": -92.1251,
+  "name": "Public Schools Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "6123": {
+  "city": "Alpine",
+  "lat": 30.3574,
+  "lon": -103.6609,
+  "name": "Jackson Field",
+  "state": "TX",
+  "tz": null
+ },
+ "6124": {
+  "city": "Selinsgrove",
+  "lat": 40.8062,
+  "lon": -76.8607,
+  "name": "Amos Alonzo Stagg Field (PA)",
+  "state": "PA",
+  "tz": null
+ },
+ "6125": {
+  "city": "Seguin",
+  "lat": 29.5688,
+  "lon": -97.9647,
+  "name": "Bulldog Stadium (TX)",
+  "state": "TX",
+  "tz": null
+ },
+ "6126": {
+  "city": "Brockport",
+  "lat": 43.2137,
+  "lon": -77.9392,
+  "name": "Bob Boozer Field",
+  "state": "NY",
+  "tz": null
+ },
+ "6127": {
+  "city": "Wooster",
+  "lat": 40.7981,
+  "lon": -81.9398,
+  "name": "John P. Papp Stadium",
+  "state": "OH",
+  "tz": null
+ },
+ "6128": {
+  "city": "Greenville",
+  "lat": 31.8296,
+  "lon": -86.6178,
+  "name": "Alumni Stadium (PA)",
+  "state": "PA",
+  "tz": null
+ },
+ "6130": {
+  "city": "Angola",
+  "lat": 41.6349,
+  "lon": -84.9993,
+  "name": "Fred Zollner Athletic Stadium",
+  "state": "IN",
+  "tz": null
+ },
+ "6131": {
+  "city": "Hartford",
+  "lat": 41.7646,
+  "lon": -72.6909,
+  "name": "Jessee/Miller Field",
+  "state": "CT",
+  "tz": null
+ },
+ "6132": {
+  "city": "San Antonio",
+  "lat": 29.4246,
+  "lon": -98.4951,
+  "name": "Trinity University Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "6133": {
+  "city": "Medford",
+  "lat": 42.4184,
+  "lon": -71.1062,
+  "name": "Ellis Oval at Zimman Field",
+  "state": "MA",
+  "tz": null
+ },
+ "6134": {
+  "city": "Schenectady",
+  "lat": 42.8142,
+  "lon": -73.9396,
+  "name": "Frank Bailey Field",
+  "state": "NY",
+  "tz": null
+ },
+ "6135": {
+  "city": "Portland",
+  "lat": 43.661,
+  "lon": -70.2549,
+  "name": "Blue Storm Stadium",
+  "state": "ME",
+  "tz": null
+ },
+ "6136": {
+  "city": "Collegeville",
+  "lat": 40.1857,
+  "lon": -75.4516,
+  "name": "Patterson Field",
+  "state": "PA",
+  "tz": null
+ },
+ "6137": {
+  "city": "Waverly",
+  "lat": 42.7258,
+  "lon": -92.4746,
+  "name": "Walston-Hoover Stadium",
+  "state": "IA",
+  "tz": null
+ },
+ "6138": {
+  "city": "Lexington",
+  "lat": 37.784,
+  "lon": -79.4428,
+  "name": "Wilson Field",
+  "state": "VA",
+  "tz": null
+ },
+ "6139": {
+  "city": "Washington",
+  "lat": 31.3991,
+  "lon": -88.202,
+  "name": "Cameron Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "6140": {
+  "city": "Waynesburg",
+  "lat": 39.8965,
+  "lon": -80.1792,
+  "name": "John F. Wiley Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "6141": {
+  "city": "Middletown",
+  "lat": 41.5623,
+  "lon": -72.6509,
+  "name": "Corwin Stadium",
+  "state": "CT",
+  "tz": null
+ },
+ "6142": {
+  "city": "Danbury",
+  "lat": 41.3948,
+  "lon": -73.454,
+  "name": "Westside Athletic Complex",
+  "state": "CT",
+  "tz": "America/New_York"
+ },
+ "6143": {
+  "city": "Springfield",
+  "lat": 42.1019,
+  "lon": -72.5887,
+  "name": "Golden Bear Stadium",
+  "state": "MA",
+  "tz": null
+ },
+ "6144": {
+  "city": "Westfield",
+  "lat": 42.139,
+  "lon": -72.7585,
+  "name": "Alumni Field (Westfield, MA)",
+  "state": "MA",
+  "tz": null
+ },
+ "6145": {
+  "city": "Fulton",
+  "lat": 38.8467,
+  "lon": -91.948,
+  "name": "Blue Jay Stadium",
+  "state": "MO",
+  "tz": null
+ },
+ "6146": {
+  "city": "New Wilmington",
+  "lat": 41.1223,
+  "lon": -80.3328,
+  "name": "Memorial Field (PA)",
+  "state": "PA",
+  "tz": null
+ },
+ "6147": {
+  "city": "Whittier",
+  "lat": 33.9709,
+  "lon": -118.0308,
+  "name": "Memorial Stadium (Whittier, CA)",
+  "state": "CA",
+  "tz": null
+ },
+ "6148": {
+  "city": "Spokane",
+  "lat": 47.6572,
+  "lon": -117.4235,
+  "name": "The Pine Bowl",
+  "state": "WA",
+  "tz": null
+ },
+ "6149": {
+  "city": "Salem",
+  "lat": 44.9392,
+  "lon": -123.0331,
+  "name": "McCulloch Stadium",
+  "state": "OR",
+  "tz": "America/Los_Angeles"
+ },
+ "6150": {
+  "city": "Wayne",
+  "lat": 40.9492,
+  "lon": -74.2377,
+  "name": "Wightman Stadium",
+  "state": "NJ",
+  "tz": null
+ },
+ "6151": {
+  "city": "Williamstown",
+  "lat": 42.6889,
+  "lon": -73.2246,
+  "name": "Farley-Lamb Field",
+  "state": "MA",
+  "tz": null
+ },
+ "6152": {
+  "city": "Wilmington",
+  "lat": 39.4453,
+  "lon": -83.8285,
+  "name": "Wiliams Stadium (OH)",
+  "state": "OH",
+  "tz": null
+ },
+ "6153": {
+  "city": "Forest Grove",
+  "lat": 45.5197,
+  "lon": -123.1114,
+  "name": "Hanson Stadium",
+  "state": "OR",
+  "tz": "America/Los_Angeles"
+ },
+ "6177": {
+  "city": "Houston",
+  "lat": 29.7589,
+  "lon": -95.3677,
+  "name": "Alexander Durley Sports Complex",
+  "state": "TX",
+  "tz": null
+ },
+ "6202": {
+  "city": "Washington",
+  "lat": 38.895,
+  "lon": -77.0365,
+  "name": "Cardinal Stadium (DC)",
+  "state": "DC",
+  "tz": null
+ },
+ "6208": {
+  "city": "Greenville",
+  "lat": 34.8514,
+  "lon": -82.3985,
+  "name": "Sirrine Stadium",
+  "state": "SC",
+  "tz": null
+ },
+ "6209": {
+  "city": "Dickinson",
+  "lat": 46.8792,
+  "lon": -102.7896,
+  "name": "Henry Biesiot Activities Center",
+  "state": "ND",
+  "tz": null
+ },
+ "6210": {
+  "city": "Chicago",
+  "lat": 41.8756,
+  "lon": -87.6244,
+  "name": "Bruce R. Deaton Memorial Field",
+  "state": "IL",
+  "tz": null
+ },
+ "6211": {
+  "city": "Rindge",
+  "lat": 42.7518,
+  "lon": -72.0101,
+  "name": "Sodexo Field",
+  "state": "NH",
+  "tz": null
+ },
+ "6212": {
+  "city": "Wheeling",
+  "lat": 40.064,
+  "lon": -80.7209,
+  "name": "Bishop Schmitt Field",
+  "state": "WV",
+  "tz": null
+ },
+ "6217": {
+  "city": "Columbia",
+  "lat": 34.0007,
+  "lon": -81.0343,
+  "name": "W.C. Hawkins Stadium",
+  "state": "SC",
+  "tz": null
+ },
+ "6218": {
+  "city": "Phenix City",
+  "lat": 32.471,
+  "lon": -85.0008,
+  "name": "Garrett-Harrison Stadium",
+  "state": "AL",
+  "tz": null
+ },
+ "6219": {
+  "city": "Defiance",
+  "lat": 41.2845,
+  "lon": -84.3558,
+  "name": "Fred J. Brown Athletic Complex",
+  "state": "OH",
+  "tz": null
+ },
+ "6220": {
+  "city": "Madison",
+  "lat": 44.0061,
+  "lon": -97.114,
+  "name": "Trojan Stadium",
+  "state": "SD",
+  "tz": null
+ },
+ "6221": {
+  "city": "Bluefield",
+  "lat": 37.2698,
+  "lon": -81.2223,
+  "name": "Mitchell Stadium",
+  "state": "WV",
+  "tz": null
+ },
+ "6222": {
+  "city": "Waxahachie",
+  "lat": 32.3945,
+  "lon": -96.8439,
+  "name": "Lumpkins Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "6223": {
+  "city": "Southfield",
+  "lat": 42.4734,
+  "lon": -83.2219,
+  "name": "Lawrence Tech Athletic Field",
+  "state": "MI",
+  "tz": null
+ },
+ "6231": {
+  "city": "Augusta",
+  "lat": 33.471,
+  "lon": -81.9748,
+  "name": "Lucy Laney Stadium",
+  "state": "GA",
+  "tz": null
+ },
+ "6241": {
+  "city": "Surprise",
+  "lat": 33.6292,
+  "lon": -112.368,
+  "name": "Spirit Field",
+  "state": "AZ",
+  "tz": null
+ },
+ "6269": {
+  "city": "Arlington",
+  "lat": 32.7356,
+  "lon": -97.1071,
+  "name": "Globe Life Field",
+  "state": "TX",
+  "tz": null
+ },
+ "6274": {
+  "city": "Washington",
+  "lat": 38.8689,
+  "lon": -77.0129,
+  "name": "Audi Field",
+  "state": "DC",
+  "tz": "America/New_York"
+ },
+ "6283": {
+  "city": "High Point",
+  "lat": 35.9557,
+  "lon": -80.0053,
+  "name": "A.J. Simeon Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "6284": {
+  "city": "Lisle",
+  "lat": 41.8012,
+  "lon": -88.0748,
+  "name": "Village of Lisle-Benedictine University Sports Complex",
+  "state": "IL",
+  "tz": null
+ },
+ "6501": {
+  "city": "Las Vegas",
+  "lat": 36.0907,
+  "lon": -115.1837,
+  "name": "Allegiant Stadium",
+  "state": "NV",
+  "tz": "America/Los_Angeles"
+ },
+ "6526": {
+  "city": "Mobile",
+  "lat": 30.6969,
+  "lon": -88.192,
+  "name": "Hancock Whitney Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "6553": {
+  "city": "Hickory",
+  "lat": 35.7333,
+  "lon": -81.3443,
+  "name": "Helen and Leonard Moretz Stadium",
+  "state": "NC",
+  "tz": null
+ },
+ "6577": {
+  "city": "Piscataway",
+  "lat": 40.5136,
+  "lon": -74.4653,
+  "name": "SHI Stadium",
+  "state": "NJ",
+  "tz": "America/New_York"
+ },
+ "7003": {
+  "city": "Cape Girardeau",
+  "lat": 37.3035,
+  "lon": -89.523,
+  "name": "Houck Field",
+  "state": "MO",
+  "tz": "America/Chicago"
+ },
+ "7065": {
+  "city": "Inglewood",
+  "lat": 33.9562,
+  "lon": -118.3531,
+  "name": "SoFi Stadium",
+  "state": "CA",
+  "tz": null
+ },
+ "7075": {
+  "city": "Wilson",
+  "lat": 35.7213,
+  "lon": -77.9155,
+  "name": "Electric Supply Company Field",
+  "state": "NC",
+  "tz": null
+ },
+ "7076": {
+  "city": "Greenwood",
+  "lat": 34.1954,
+  "lon": -82.1618,
+  "name": "J.W. Babb Stadium",
+  "state": "SC",
+  "tz": null
+ },
+ "7077": {
+  "city": "Lancaster",
+  "lat": 40.0381,
+  "lon": -76.3057,
+  "name": "Shadek Stadium",
+  "state": "PA",
+  "tz": null
+ },
+ "7079": {
+  "city": "Northfield",
+  "lat": 44.4582,
+  "lon": -93.1612,
+  "name": "Laird Stadium",
+  "state": "MN",
+  "tz": null
+ },
+ "7080": {
+  "city": "Rocky Mount",
+  "lat": 35.9424,
+  "lon": -77.7957,
+  "name": "Rocky Mount Athletic Complex",
+  "state": "NC",
+  "tz": null
+ },
+ "7082": {
+  "city": "La Plume",
+  "lat": 41.5566,
+  "lon": -75.7552,
+  "name": "Athletic Field Complex",
+  "state": "PA",
+  "tz": null
+ },
+ "716": {
+  "city": "San Diego",
+  "lat": 32.7731,
+  "lon": -117.1837,
+  "name": "Torero Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "717": {
+  "city": "Villanova",
+  "lat": 40.0343,
+  "lon": -75.3368,
+  "name": "Villanova Stadium",
+  "state": "PA",
+  "tz": "America/New_York"
+ },
+ "7173": {
+  "city": "Cincinnati",
+  "lat": 39.1114,
+  "lon": -84.5222,
+  "name": "TQL Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "7185": {
+  "city": "El Dorado",
+  "lat": 33.2076,
+  "lon": -92.6663,
+  "name": "Memorial Stadium (El Dorado, AR)",
+  "state": "AR",
+  "tz": null
+ },
+ "721": {
+  "city": "Atlanta",
+  "lat": 33.7724,
+  "lon": -84.3928,
+  "name": "Bobby Dodd Stadium",
+  "state": "GA",
+  "tz": "America/New_York"
+ },
+ "7220": {
+  "city": "Honolulu",
+  "lat": 21.2943,
+  "lon": -157.8193,
+  "name": "Clarence T.C. Ching Athletics Complex",
+  "state": "HI",
+  "tz": "Pacific/Honolulu"
+ },
+ "7221": {
+  "city": "Birmingham",
+  "lat": 33.5207,
+  "lon": -86.8024,
+  "name": "Protective Stadium",
+  "state": "AL",
+  "tz": "America/Chicago"
+ },
+ "7225": {
+  "city": "Worcester",
+  "lat": 42.2626,
+  "lon": -71.8019,
+  "name": "Polar Park",
+  "state": "MA",
+  "tz": null
+ },
+ "7232": {
+  "city": "Prosper",
+  "lat": 33.2386,
+  "lon": -96.7866,
+  "name": "Children's Health Stadium",
+  "state": "TX",
+  "tz": null
+ },
+ "7311": {
+  "city": "San Diego",
+  "lat": 32.7844,
+  "lon": -117.1228,
+  "name": "Snapdragon Stadium",
+  "state": "CA",
+  "tz": "America/Los_Angeles"
+ },
+ "844": {
+  "city": "Youngstown",
+  "lat": 41.1093,
+  "lon": -80.6502,
+  "name": "Stambaugh Stadium",
+  "state": "OH",
+  "tz": "America/New_York"
+ },
+ "980": {
+  "city": "Naperville",
+  "lat": 41.7729,
+  "lon": -88.1479,
+  "name": "Benedetti-Wehrli Stadium",
+  "state": "IL",
+  "tz": null
+ }
+}

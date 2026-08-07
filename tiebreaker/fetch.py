@@ -6,9 +6,11 @@ Needs a key in .env or the environment:  CFBD_API_KEY=...
 
     python3 fetch.py 2026            # fetch season, cache to data/games_2026.json
     python3 fetch.py 2026 --force    # refetch even if cached
+    python3 fetch.py --venues        # one-time: every venue's coordinates
 
 One API call per season fetched.
 """
+import datetime
 import json
 import os
 import subprocess
@@ -73,6 +75,15 @@ def get(path, k):
 def fetch_season(year, force=False):
     os.makedirs(DATA, exist_ok=True)
     cache = os.path.join(DATA, f"games_{year}.json")
+    # force was declared and never read, so every call spent a call —
+    # including on seasons that finished years ago and are committed right
+    # there. Only a caller that says it wants fresh scores gets them; the
+    # build's --fetch path says so explicitly.
+    if os.path.exists(cache) and not force:
+        games = json.load(open(cache))
+        print(f"{year}: {len(games)} games from cache, no call made "
+              f"(--force to refetch)")
+        return games
     raw = get(f"games?year={year}&seasonType=regular", key())
 
     games = []
@@ -97,6 +108,16 @@ def fetch_season(year, force=False):
             "conference_game": bool(g.get("conferenceGame"))
             and g.get("homeConference") == "Big 12"
             and g.get("awayConference") == "Big 12",
+            # Where it is played. CFBD returns these on the games call we
+            # are already making, so they cost nothing extra; venue_id is
+            # what joins a game to a coordinate in data/venues.json.
+            "venue": g.get("venue"),
+            "venue_id": g.get("venueId"),
+            "neutral_site": bool(g.get("neutralSite")),
+            # A kickoff window that has not been announced. CFBD still
+            # returns a placeholder hour, so without this flag the page
+            # publishes a time nobody set.
+            "start_tbd": bool(g.get("startTimeTBD")),
             "home": home,
             "away": away,
             "home_conf": g.get("homeConference"),
@@ -233,6 +254,18 @@ def fetch_lines(year):
     p = os.path.join(DATA, f"lines_{year}.json")
     with open(p, "w") as f:
         json.dump(out, f, indent=1)
+    # When, beside what. The file itself carries no date and is overwritten in
+    # place, so a stale one — a refresh that failed, a quota that ran out
+    # mid-season — is indistinguishable from a fresh one by looking at it.
+    # That was harmless while lines only decorated a page. The pick'em freezes
+    # a line into a slate people are scored against, and freezing last month's
+    # market as this week's is the kind of wrong that looks right. Kept as a
+    # sidecar rather than a key inside the file so nothing reading the old
+    # shape has to learn about it.
+    with open(os.path.join(DATA, f"lines_{year}.meta.json"), "w") as f:
+        json.dump({"fetched_at": datetime.datetime.now(datetime.timezone.utc)
+                                          .replace(microsecond=0).isoformat(),
+                   "count": len(out)}, f, indent=1)
     print(f"{year}: closing lines for {len(out)} games -> {p}")
     return out
 
@@ -251,7 +284,54 @@ def fetch_teams():
     return out
 
 
+VENUES = os.path.join(DATA, "venues.json")
+
+
+def load_venues():
+    """venue_id -> {name, city, state, lat, lon}. Committed, and read from
+    disk everywhere: nothing in a build is allowed to call for these."""
+    if not os.path.exists(VENUES):
+        return {}
+    return json.load(open(VENUES))
+
+
+def fetch_venues(force=False):
+    """Every venue's coordinates -> data/venues.json.
+
+    One call, once, for the whole catalogue — stadiums do not move, and the
+    handful that open or get renamed each year arrive with the next
+    --venues run rather than with every build. The build never calls this;
+    it reads the committed file and shows no forecast for a venue it has
+    never heard of.
+    """
+    if os.path.exists(VENUES) and not force:
+        have = load_venues()
+        print(f"venues: {len(have)} already cached, no call made "
+              f"(--force to refetch)")
+        return have
+    os.makedirs(DATA, exist_ok=True)
+    raw = get("venues", key())
+    out = {}
+    for v in raw:
+        vid = v.get("id")
+        lat, lon = v.get("latitude"), v.get("longitude")
+        if vid is None or lat is None or lon is None:
+            continue
+        out[str(vid)] = {"name": v.get("name"), "city": v.get("city"),
+                         "state": v.get("state"),
+                         "lat": round(float(lat), 4),
+                         "lon": round(float(lon), 4),
+                         "tz": v.get("timezone")}
+    with open(VENUES, "w") as f:
+        json.dump(out, f, indent=1, sort_keys=True)
+    print(f"venues: {len(out)} with coordinates -> {VENUES}")
+    return out
+
+
 if __name__ == "__main__":
+    if "--venues" in sys.argv:
+        fetch_venues(force="--force" in sys.argv)
+        sys.exit(0)
     year = int(sys.argv[1]) if len(sys.argv) > 1 else 2026
     fetch_season(year, force="--force" in sys.argv)
     fetch_ratings(year)

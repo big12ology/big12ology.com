@@ -6,6 +6,13 @@ dist/
 .claude/
 .DS_Store
 
+# --- backend credentials and local wrangler state (never commit) ---
+# The pick'em Worker holds the OAuth client secrets and the identity pepper.
+# .dev.vars is the local stand-in for `wrangler secret put`, in plaintext.
+.dev.vars
+.wrangler/
+worker/node_modules/
+
 # --- working notes: scratch, handoffs, plans (keep out of the repo) ---
 /notes/
 HANDOFF.md

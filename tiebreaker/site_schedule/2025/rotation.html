@@ -185,6 +185,30 @@ tr.grpend td { border-bottom:2px solid var(--line) }
 .posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
 h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
+/* The week's slate. Every other game list on the site is one line because
+   it is an index; this one is the page, so a row gets room for the two
+   things a list cannot answer — when it kicks off and where it is. */
+ul.slatelist { list-style:none; padding:0; margin:0 }
+li.slate { display:grid; gap:2px 14px; padding:11px 0;
+  border-bottom:1px solid var(--line);
+  grid-template-columns:minmax(0,1fr) auto; align-items:baseline }
+li.slate:last-child { border-bottom:0 }
+.slateteams { font-size:15px; grid-column:1 }
+.slatemeta { grid-column:1; font-size:13px; color:var(--dim);
+  display:flex; flex-wrap:wrap; gap:2px 10px; align-items:baseline }
+.slatemeta time { font-variant-numeric:tabular-nums; font-weight:600;
+  color:var(--ink) }
+.slatewx::before { content:"\00b7"; margin-right:10px }
+.slatewhere::before { content:"\00b7"; margin-right:10px }
+.slatelink { grid-column:2; grid-row:1/span 2; align-self:center;
+  font-size:13px; font-weight:600; white-space:nowrap;
+  color:var(--accent); text-decoration:none }
+.slatelink:hover { text-decoration:underline }
+.slatelink:visited { color:var(--accent) }
+@media (max-width: 560px) {
+  li.slate { grid-template-columns:minmax(0,1fr) }
+  .slatelink { grid-column:1; grid-row:auto; margin-top:3px }
+}
 .duo { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
   gap:18px; align-items:start }
 .duo > .stack { display:grid; gap:18px; align-content:start; min-width:0 }
@@ -284,7 +308,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
     </div>
   </div>
 </header>
-<nav class=subnav><a href=./ class=off>The Schedule</a><a href=draw.html class=off>The Draw</a><a href=rotation.html class=on>The Rotation</a></nav>
+<nav class=subnav><a href=./ class=off>The Schedule</a><a href=matrix.html class=off>The Matrix</a><a href=draw.html class=off>The Draw</a><a href=rotation.html class=on>The Rotation</a></nav>
 <main id=main tabindex="-1">
 
 <div class=card id=firstmeet>

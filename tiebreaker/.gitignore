@@ -7,3 +7,6 @@ data/*.tmp
 site/index.html
 !history/
 site/history.html
+
+# Forecasts are perishable and fetched at build time — see weather.py.
+data/weather_cache.json

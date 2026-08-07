@@ -14,13 +14,16 @@ import hashlib
 import json
 import os
 import sys
+import zoneinfo
 
 import chaos as chaos_mod
 import clinch as clinch_mod
 import feed as feed_mod
 import fetch as fetcher
 import odds as odds_mod
+import pickem as pickem_mod
 import scorecard as scorecard_mod
+import weather as weather_mod
 import rotation as rotation_mod
 import swap as swap_mod
 import tiebreaker as tb
@@ -370,7 +373,13 @@ SECTIONS = {
     },
 }
 
-SCHEDULE_PAGES = {"schedule.html", "draw.html", "rotation.html"}
+SCHEDULE_PAGES = {"schedule.html", "matrix.html", "draw.html", "rotation.html"}
+
+# The subset that used to answer at /tiebreaker/ and now lives under
+# /schedule/. Only these get a redirect left behind: a "moved" page for an
+# address that never existed sends a reader somewhere they were not, and
+# leaves the next person looking for a move that never happened.
+MOVED_TO_SCHEDULE = {"schedule.html", "draw.html", "rotation.html"}
 
 SUBNAV_LINKS = [("brief", "./", "The Brief"),
                 ("race", "race.html", "The Race"),
@@ -383,6 +392,7 @@ SUBNAV_LINKS = [("brief", "./", "The Brief"),
                 ("history", "history.html", "The Archive")]
 
 SCHEDULE_NAV = [("schedule", "./", "The Schedule"),
+                ("matrix", "matrix.html", "The Matrix"),
                 ("draw", "draw.html", "The Draw"),
                 ("rotation", "rotation.html", "The Rotation")]
 
@@ -1371,6 +1381,30 @@ tr.grpend td { border-bottom:2px solid var(--line) }
 .posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
 h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
+/* The week's slate. Every other game list on the site is one line because
+   it is an index; this one is the page, so a row gets room for the two
+   things a list cannot answer — when it kicks off and where it is. */
+ul.slatelist { list-style:none; padding:0; margin:0 }
+li.slate { display:grid; gap:2px 14px; padding:11px 0;
+  border-bottom:1px solid var(--line);
+  grid-template-columns:minmax(0,1fr) auto; align-items:baseline }
+li.slate:last-child { border-bottom:0 }
+.slateteams { font-size:15px; grid-column:1 }
+.slatemeta { grid-column:1; font-size:13px; color:var(--dim);
+  display:flex; flex-wrap:wrap; gap:2px 10px; align-items:baseline }
+.slatemeta time { font-variant-numeric:tabular-nums; font-weight:600;
+  color:var(--ink) }
+.slatewx::before { content:"\\00b7"; margin-right:10px }
+.slatewhere::before { content:"\\00b7"; margin-right:10px }
+.slatelink { grid-column:2; grid-row:1/span 2; align-self:center;
+  font-size:13px; font-weight:600; white-space:nowrap;
+  color:var(--accent); text-decoration:none }
+.slatelink:hover { text-decoration:underline }
+.slatelink:visited { color:var(--accent) }
+@media (max-width: 560px) {
+  li.slate { grid-template-columns:minmax(0,1fr) }
+  .slatelink { grid-column:1; grid-row:auto; margin-top:3px }
+}
 .duo { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
   gap:18px; align-items:start }
 .duo > .stack { display:grid; gap:18px; align-content:start; min-width:0 }
@@ -1504,20 +1538,173 @@ def build_subpage(title, active, body, year, matchcard,
 </body></html>"""
 
 
+# Times are stored as UTC and read by people in six zones. The server writes
+# Eastern, which is how the sport publishes a kickoff and is a defensible
+# answer with no JavaScript at all; the inline script below rewrites each one
+# to the reader's own zone and says which zone that is. A time with no zone
+# beside it is the actual failure here — it reads as local and is not.
+LOCAL_TIME_JS = """<script>
+(function () {
+  // This sits in <head>, so the rows it rewrites do not exist yet. An
+  // inline script cannot be deferred; waiting for the parser is the whole
+  // job. Without this the page silently keeps every kickoff in Eastern.
+  function localize() {
+  var tz;
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
+  document.querySelectorAll("time[data-kick]").forEach(function (el) {
+    var d = new Date(el.getAttribute("datetime"));
+    if (isNaN(d)) return;
+    var f = new Intl.DateTimeFormat([], {
+      weekday: "short", hour: "numeric", minute: "2-digit",
+      timeZoneName: "short"
+    });
+    el.textContent = f.format(d);
+    if (tz) el.title = tz;
+  });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", localize);
+  } else {
+    localize();
+  }
+})();
+</script>"""
+
+
+def kickoff(g):
+    """Kickoff as <time>, Eastern on the server and the reader's zone once
+    the script runs. CFBD publishes a placeholder hour for games with no
+    window announced, so a TBD game says so rather than inventing 8pm."""
+    iso = g.get("start")
+    if not iso:
+        return "<span class=dim>time TBD</span>"
+    if g.get("start_tbd"):
+        return (f"<span class=dim>{esc(pretty_date(iso))} · time TBD</span>")
+    try:
+        when = datetime.datetime.fromisoformat(iso.replace("Z", "+00:00"))
+    except ValueError:
+        return "<span class=dim>time TBD</span>"
+    et = when.astimezone(zoneinfo.ZoneInfo("America/New_York"))
+    hour = et.strftime("%-I:%M %p")
+    return (f'<time data-kick datetime="{esc(iso)}">'
+            f"{_DOW[et.weekday()][:3]} {hour} ET</time>")
+
+
+def where(g):
+    """Venue and city, once the season's data carries them. Fetches before
+    the venue fields existed simply have nothing to say here."""
+    bits = [g.get("venue"), g.get("venue_city")]
+    line = " · ".join(esc(b) for b in bits if b)
+    if not line:
+        return ""
+    if g.get("neutral_site"):
+        line += " <span class=dim>(neutral site)</span>"
+    return f"<div class=slatewhere>{line}</div>"
+
+
+def weather_line(g):
+    """Kickoff-hour forecast, when one is in range. Open-Meteo reaches about
+    sixteen days, so most of a season has no forecast and says nothing."""
+    w = g.get("weather")
+    if not w:
+        return ""
+    parts = [f"{round(w['tempF'])}&deg;F"]
+    if w.get("windMph") is not None:
+        parts.append(f"wind {round(w['windMph'])} mph")
+    if w.get("precipChance"):
+        parts.append(f"{round(w['precipChance'])}% precip")
+    return f"<div class=slatewx>{' · '.join(parts)}</div>"
+
+
+def espn_link(g):
+    """The box score once it exists, the preview until then. Same id either
+    way — CFBD's game id is ESPN's."""
+    gid = g.get("id")
+    if not gid:
+        return ""
+    played = g["completed"] and g["home_points"] is not None
+    kind = "boxscore" if played else "game"
+    label = "Box score" if played else "Game preview"
+    return (f"<a class=slatelink target=_blank rel=noopener "
+            f"href='https://www.espn.com/college-football/{kind}/_/gameId/"
+            f"{gid}'>{label} &#8599;</a>")
+
+
+def slate_row(g):
+    """One game, with everything a reader needs to go and watch it."""
+    hm, am = logo_img(g["home"], 18), logo_img(g["away"], 18)
+    if g["completed"] and g["home_points"] is not None:
+        hw = g["home_points"] > g["away_points"]
+        away = (f"{am}<b>{esc(g['away'])}</b> {g['away_points']}" if not hw
+                else f"{am}{esc(g['away'])} {g['away_points']}")
+        home = (f"{hm}<b>{esc(g['home'])}</b> {g['home_points']}" if hw
+                else f"{hm}{esc(g['home'])} {g['home_points']}")
+        when = f"<span class=dim>final</span>"
+    else:
+        away, home = f"{am}{esc(g['away'])}", f"{hm}{esc(g['home'])}"
+        when = kickoff(g)
+    tag = ""
+    if g.get("ccg"):
+        tag = "<span class=ccgtag>Championship</span>"
+    elif not g["conference_game"]:
+        tag = "<span class=dim>non-conf</span>"
+    return (f"<li class=slate>"
+            f"<div class=slateteams>{away} <span class=dim>at</span> {home}"
+            f" {tag}</div>"
+            f"<div class=slatemeta>{when}{where(g)}{weather_line(g)}</div>"
+            f"{espn_link(g)}</li>")
+
+
+def slate_week(games):
+    """The week the page opens on: the one the next kickoff sits in, and
+    once every game is played, the last week of the season."""
+    ahead = [g for g in games if not g["completed"] and g.get("start")]
+    if ahead:
+        return min(ahead, key=lambda g: g["start"])["week"]
+    unplayed = [g["week"] for g in games if not g["completed"]]
+    if unplayed:
+        return min(unplayed)
+    return max((g["week"] for g in games), default=None)
+
+
 def build_schedule_page(games, ctx):
-    rem = sorted((g for g in games if not g["completed"]),
+    """This week's games, in the order they kick off. The grid that used to
+    open this page answers a different question — which pairings exist at
+    all — and now has its own page; this one answers what is on today."""
+    wk = slate_week(games)
+    week_games = sorted((g for g in games if g["week"] == wk),
+                        key=lambda g: (g.get("start") or "", g["home"]))
+    if week_games:
+        first = next((g.get("start") for g in week_games if g.get("start")),
+                     None)
+        span = f" <span class=dim>&middot; {esc(pretty_date(first))}</span>" \
+            if first else ""
+        slate = (f"<div class=card id=slate><h2>Week {wk}{span}</h2>"
+                 f"<ul class=slatelist>"
+                 + "".join(slate_row(g) for g in week_games)
+                 + "</ul>"
+                 "<p class=note>Kickoffs are shown in your own time zone "
+                 "where your browser will say what it is, Eastern "
+                 "otherwise. Forecasts appear about two weeks out, which is "
+                 "as far ahead as one is worth reading.</p></div>")
+    else:
+        slate = ("<div class=card id=slate><h2>No games scheduled</h2>"
+                 "<p class=note>The season's schedule has not been "
+                 "published yet.</p></div>")
+
+    rem = sorted((g for g in games if not g["completed"] and g["week"] != wk),
                  key=lambda g: (g["week"], g["start"] or ""))
     by_week = {}
     for g in rem:
         by_week.setdefault(g["week"], []).append(g)
     up = ""
-    for wk in sorted(by_week):
-        up += (f"<h3 class=wkhead>Week {wk}</h3><ul class=games>"
-               + "".join(game_row(g) for g in by_week[wk]) + "</ul>")
-    upcard = (f"<div class=card><h2>Every remaining game</h2>{up}</div>"
+    for w in sorted(by_week):
+        up += (f"<h3 class=wkhead>Week {w}</h3><ul class=games>"
+               + "".join(game_row(g) for g in by_week[w]) + "</ul>")
+    upcard = (f"<div class=card><h2>The rest of the season</h2>{up}</div>"
               if up else "")
     done = [g for g in games if g["completed"]
-            and g["home_points"] is not None]
+            and g["home_points"] is not None and g["week"] != wk]
     done.sort(key=lambda g: g["start"] or "", reverse=True)
     rescard = ""
     if done:
@@ -1525,7 +1712,14 @@ def build_schedule_page(games, ctx):
                    "<ul class=games>"
                    + "".join(game_row(g) for g in done[:40])
                    + "</ul></div>")
-    return ctx["h2hcard"] + ctx["soscard"] + upcard + rescard
+    return slate + upcard + rescard
+
+
+def build_matrix_page(ctx):
+    """Who plays whom, as a grid. This and the remaining-difficulty table
+    are both about the shape of the draw rather than about this weekend,
+    which is why they sit together and away from the week's slate."""
+    return ctx["h2hcard"] + ctx["soscard"]
 
 
 def build_race_page(ctx):
@@ -1588,7 +1782,31 @@ def game_row(g):
     return f"<li class={cls}>{score}{tag}</li>"
 
 
+def place_and_forecast(games):
+    """Give each game its city and, if it is close enough, its forecast.
+
+    Both read from committed data or a keyless API, so this costs no CFBD
+    quota and a finished season costs nothing at all: every game is played,
+    so nothing is in forecast range and no request is made.
+    """
+    venues = fetcher.load_venues()
+    if venues:
+        for g in games:
+            v = venues.get(str(g.get("venue_id")))
+            if not v:
+                continue
+            g["venue_city"] = ", ".join(
+                x for x in (v.get("city"), v.get("state")) if x)
+    try:
+        weather_mod.attach(games, venues)
+    except Exception as e:
+        # A forecast is the least important thing on the page. It never
+        # takes a deploy down with it.
+        print(f"weather: skipped ({e})")
+
+
 def render(year, games):
+    place_and_forecast(games)
     overrides = tb.load_overrides()
     teams = load_teams()
     systems = load_ratings(year).get("systems", {})
@@ -2419,7 +2637,9 @@ def load_games(year, refetch=False, refresh=False):
     path = os.path.join(HERE, "data", f"games_{year}.json")
     if refetch:
         try:
-            games = fetcher.fetch_season(year)
+            # Explicit: --fetch is a request for fresh scores, and
+            # fetch_season now reads its cache unless told otherwise.
+            games = fetcher.fetch_season(year, force=True)
             if refresh:
                 fetcher.fetch_ratings(year)
                 fetcher.fetch_lines(year)
@@ -2481,7 +2701,14 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          f'<script defer src="{base}{asset_v("replay.js")}"></script>'),
         ("schedule.html", "The Schedule", "schedule",
          build_schedule_page(games, ctx),
-         f"Every remaining game in {yr} and every result so far, by week.",
+         f"This week's Big 12 games in {yr}: kickoff times, where they are "
+         "played, the forecast, and a link to every preview.",
+         LOCAL_TIME_JS),
+        ("matrix.html", "The Matrix", "matrix",
+         build_matrix_page(ctx),
+         f"The {yr} Big 12 head-to-head grid: who plays whom, home or away "
+         "and in which week — and the third of the grid the draw never "
+         "pairs at all.",
          ""),
         ("draw.html", "The Draw", "draw",
          build_draw_page(year, games, ctx["systems"], ctx["teams"]),
@@ -2568,7 +2795,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
         finally:
             if schedule_page:
                 globals()["BASE"] = BASE_was
-        if schedule_page:
+        if fname in MOVED_TO_SCHEDULE:
             # The old address keeps working. These pages were linked from
             # the tiebreaker nav for a day and are in the sitemap already.
             with open(os.path.join(outdir, fname), "w") as f:
@@ -3031,7 +3258,7 @@ def write_discovery(years):
     site = "https://big12ology.com/tiebreaker/"
     sched = "https://big12ology.com/schedule/"
     subs = ["", "lab.html", "race.html", "standings.html"]
-    sched_subs = ["", "draw.html", "rotation.html"]
+    sched_subs = ["", "matrix.html", "draw.html", "rotation.html"]
     # Listed once, under the live season — every year serves the same bytes.
     evergreen = ["how.html", "history.html", "cutline.html",
                  "ladder.html"]
@@ -3087,6 +3314,17 @@ def main():
                        refresh="--refresh" in sys.argv)
     build_season(year, games, SITE, "", sched_outdir=SCHEDULE_SITE,
                  sched_base="../tiebreaker/")
+
+    # The pick'em, which is the one part of this build that writes down a fact
+    # instead of deriving one. The slate is published on the weekly refresh —
+    # the only run that has just fetched the market — and frozen there. The
+    # scores file is rewritten every build, because that is what grades it.
+    if year == LIVE_YEAR:
+        if "--refresh" in sys.argv or "--republish" in sys.argv:
+            pickem_mod.publish_slate(year, games, load_lines(year),
+                                     republish="--republish" in sys.argv)
+        pickem_mod.write_scores(year, games,
+                                os.path.join(SITE, "pickem-scores.json"))
     # Finished seasons are rebuilt from cached results — no API calls, and
     # their output is deterministic, so a rebuild is a no-op unless the
     # engine itself changed.

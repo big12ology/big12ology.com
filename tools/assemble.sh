@@ -29,18 +29,30 @@ fi
 
 # Everything that is repo, not site. The subtree directories are excluded at
 # the root because each one is placed under its own path below.
+#
+# The second group is unanchored on purpose. /.env only excludes a file sitting
+# at the transfer root, so the same file one directory down ships. Anything
+# that names a credential or a backend gets excluded wherever it appears, in
+# every one of the copies below — and the gate at the bottom checks that it
+# worked, because an exclude that silently stops matching looks exactly like an
+# exclude that is doing its job.
 COMMON=(--exclude=.DS_Store --exclude=__pycache__ --exclude=node_modules
         --exclude=/.git --exclude=/.github --exclude=/.claude
-        --exclude=/.gitignore --exclude=/.env)
+        --exclude=/.gitignore --exclude=/.env
+        --exclude=.env --exclude=.env.* --exclude=.dev.vars
+        --exclude=wrangler.toml --exclude=.wrangler --exclude='*.sql')
 
 rm -rf "$DIST"
 mkdir -p "$DIST"
 
 echo "assembling into $DIST"
 
+# This copies every top-level path that is not named here. That default is the
+# reason /worker is on the list: the pick'em backend is repo, not site, and
+# nothing below would have noticed it arriving.
 rsync -a "${COMMON[@]}" \
       --exclude=/tiebreaker --exclude=/attendance --exclude=/tools \
-      --exclude=/dist --exclude=/HANDOFF.md \
+      --exclude=/dist --exclude=/HANDOFF.md --exclude=/worker \
       "$ROOT/" "$DIST/"
 
 rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site/" "$DIST/tiebreaker/"
@@ -54,6 +66,17 @@ rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_schedule/" "$DIST/schedule/"
 # all. Copying it wholesale is what makes the output comparable byte for byte
 # against what is live; see tools/compare-live.sh.
 rsync -a "${COMMON[@]}" "$ROOT/attendance/" "$DIST/attendance/"
+
+# The published pick'em slates, under /pickem/data/ rather than /pickem/ so
+# they cannot collide with the section's own pages. These are the frozen
+# lines: the record of what each week was played on, which the grader reads
+# back and which is the only durable copy — data/lines_<year>.json is
+# overwritten every refresh. Public for the same reason data.json and
+# attendance.csv are, and because a scoreboard nobody can check is a claim.
+# Absent until the first weekly refresh runs, so its absence is not an error.
+if [ -d "$ROOT/tiebreaker/pickem" ]; then
+  rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/pickem/" "$DIST/pickem/data/"
+fi
 
 # --- checks ------------------------------------------------------------
 # --- footer stamp ---------------------------------------------------------
@@ -118,6 +141,22 @@ while IFS= read -r page; do
   echo "$refs" | sed 's/^/    /'
   fail=1
 done < <(find "$DIST" -name '*.html')
+
+# Every check above asks whether something is missing. None of them asks
+# whether something arrived that must never be served, and that asymmetry is
+# how a credential ships: the root rsync copies each top-level path that is not
+# on an explicit exclude list, so a new directory of backend tooling is public
+# the moment it exists. A missing exclude fails nothing here and is invisible
+# in the wild — the file is simply served, correctly, to everyone.
+#
+# So the excludes are a fence and this is the alarm. Adding a backend without
+# reading this script is now a failed build rather than a leaked client secret.
+while IFS= read -r bad; do
+  echo "  MUST NOT SHIP  ${bad#"$DIST"/}"; fail=1
+done < <(find "$DIST" \( -name '.env' -o -name '.env.*' -o -name '.dev.vars' \
+                      -o -name 'wrangler.toml' -o -name '.wrangler' \
+                      -o -name '*.sql' -o -name 'package.json' \
+                      -o -name 'package-lock.json' \) 2>/dev/null || true)
 
 if [ "$fail" -ne 0 ]; then
   echo "assemble: FAILED"
