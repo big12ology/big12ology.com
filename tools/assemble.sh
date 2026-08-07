@@ -40,7 +40,8 @@ COMMON=(--exclude=.DS_Store --exclude=__pycache__ --exclude=node_modules
         --exclude=/.git --exclude=/.github --exclude=/.claude
         --exclude=/.gitignore --exclude=/.env
         --exclude=.env --exclude=.env.* --exclude=.dev.vars
-        --exclude=wrangler.toml --exclude=.wrangler --exclude='*.sql')
+        --exclude=wrangler.toml --exclude=.wrangler --exclude='*.sql'
+        --exclude='client_secret*.json' --exclude='*credentials*.json')
 
 rm -rf "$DIST"
 mkdir -p "$DIST"
@@ -160,7 +161,10 @@ while IFS= read -r bad; do
 done < <(find "$DIST" \( -name '.env' -o -name '.env.*' -o -name '.dev.vars' \
                       -o -name 'wrangler.toml' -o -name '.wrangler' \
                       -o -name '*.sql' -o -name 'package.json' \
-                      -o -name 'package-lock.json' \) 2>/dev/null || true)
+                      -o -name 'package-lock.json' \
+                      -o -name 'client_secret*.json' \
+                      -o -name '*credentials*.json' \
+                      -o -name '*service_account*.json' \) 2>/dev/null || true)
 
 if [ "$fail" -ne 0 ]; then
   echo "assemble: FAILED"

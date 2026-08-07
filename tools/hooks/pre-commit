@@ -53,9 +53,14 @@ describe how the site was built:" "$notes"
 # --- credential files ------------------------------------------------------
 # .dev.vars is wrangler's local stand-in for `wrangler secret put`: the OAuth
 # client secrets and the identity pepper, in plaintext, in the working tree.
+#
+# client_secret*.json is the file Google hands you when you create an OAuth
+# client. It arrives in ~/Downloads under a name nothing here would recognise,
+# it contains the secret in the clear, and moving it "somewhere safe in the
+# project" is the obvious wrong instinct.
 secrets=$(printf '%s\n' "$staged" | grep -E \
-  '(^|/)\.dev\.vars($|\.)|(^|/)\.env($|\.)|(^|/)\.wrangler/|\.(pem|p12|pfx|keystore)$|(^|/)id_(rsa|dsa|ecdsa|ed25519)$' \
-  | grep -vE '\.(example|sample|template)$' || true)
+  '(^|/)\.dev\.vars($|\.)|(^|/)\.env($|\.)|(^|/)\.wrangler/|\.(pem|p12|pfx|keystore)$|(^|/)id_(rsa|dsa|ecdsa|ed25519)$|(^|/)client_secret.*\.json$|(^|/).*credentials.*\.json$|(^|/).*service.?account.*\.json$' \
+  | grep -vE '\.(example|sample|template)(\.[A-Za-z0-9]+)?$' || true)
 [ -n "$secrets" ] && reject \
   "refusing to commit credential files:" "$secrets"
 
