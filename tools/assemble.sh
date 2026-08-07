@@ -3,7 +3,7 @@
 # Assemble the three sites into one directory laid out exactly the way
 # big12ology.com is served.
 #
-#     tools/assemble.sh [outdir]        # default: dist/
+#     tools/assemble.sh [outdir]        # default: <repo>/dist, wherever you run it
 #
 # The tiebreaker must already have been built — this only copies. Run
 # `cd tiebreaker && python3 build.py --fetch` first, or use the workflow.
@@ -15,8 +15,17 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DIST="${1:-dist}"
-case "$DIST" in /*) ;; *) DIST="$PWD/$DIST" ;; esac
+# The default output belongs to the repo, not to wherever you happen to be
+# standing: run this from tiebreaker/ and a relative "dist" built a whole
+# second copy of the site at tiebreaker/dist while the real one went stale —
+# and the stale one is what the preview keeps serving. A path you pass in is
+# still yours, and still relative to your shell.
+if [ "$#" -gt 0 ]; then
+  DIST="$1"
+  case "$DIST" in /*) ;; *) DIST="$PWD/$DIST" ;; esac
+else
+  DIST="$ROOT/dist"
+fi
 
 # Everything that is repo, not site. The subtree directories are excluded at
 # the root because each one is placed under its own path below.
