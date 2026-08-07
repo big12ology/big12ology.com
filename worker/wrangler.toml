@@ -34,8 +34,8 @@ SITE_ORIGIN = "https://big12ology.com"
 # in the way, and no subrequest looping back through our own route. The same
 # trick cert-watch.yml and compare-live.sh already use.
 PAGES_ORIGIN = "https://big12ology.github.io"
-GOOGLE_CLIENT_ID = ""
-GITHUB_CLIENT_ID = ""
+GOOGLE_CLIENT_ID = "1029553052112-5db59l7pljf20ovi2913lghhv7n9rvgm.apps.googleusercontent.com"
+GITHUB_CLIENT_ID = "Ov23lioQoMOhhs5h5Cs7"
 
 [[d1_databases]]
 binding = "DB"
