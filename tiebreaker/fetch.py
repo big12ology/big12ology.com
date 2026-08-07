@@ -284,6 +284,61 @@ def fetch_teams():
     return out
 
 
+def media_path(year):
+    return os.path.join(DATA, f"media_{year}.json")
+
+
+def load_media(year):
+    """{game_id: [{type, outlet}, ...]}. Read from disk; the build never
+    calls for these."""
+    p = media_path(year)
+    return json.load(open(p)) if os.path.exists(p) else {}
+
+
+def fetch_media(year, force=False):
+    """Who is carrying each game -> data/media_<year>.json.
+
+    One call for the season. CFBD returns every FBS game, so this keeps only
+    the ones already in games_<year>.json — the file stays small and a game
+    we do not track cannot appear on a page.
+
+    Radio is not in this feed. CFBD carries tv and web (and historically
+    'ppv'); there is no radio row for any 2026 game, so the page says what
+    it knows and stays quiet about the rest rather than showing an empty
+    Radio label on every row.
+
+    Assignments firm up roughly two weeks out and move, so this belongs on
+    the weekly --refresh, beside ratings and lines, not on the hourly build.
+    """
+    p = media_path(year)
+    if os.path.exists(p) and not force:
+        have = load_media(year)
+        print(f"media {year}: {len(have)} games already cached, no call made")
+        return have
+    ours = set()
+    cache = os.path.join(DATA, f"games_{year}.json")
+    if os.path.exists(cache):
+        ours = {str(g["id"]) for g in json.load(open(cache)) if g.get("id")}
+    raw = get(f"games/media?year={year}&seasonType=regular", key())
+    out = {}
+    for r in raw:
+        gid = str(r.get("id"))
+        if ours and gid not in ours:
+            continue
+        outlet = (r.get("outlet") or "").strip()
+        kind = (r.get("mediaType") or "").strip()
+        if not outlet or not kind:
+            continue
+        row = {"type": kind, "outlet": outlet}
+        if row not in out.setdefault(gid, []):
+            out[gid].append(row)
+    with open(p, "w") as f:
+        json.dump(out, f, indent=1, sort_keys=True)
+    tv = sum(1 for v in out.values() if any(m["type"] == "tv" for m in v))
+    print(f"media {year}: {len(out)} games, {tv} with a TV window -> {p}")
+    return out
+
+
 VENUES = os.path.join(DATA, "venues.json")
 
 
@@ -333,6 +388,9 @@ if __name__ == "__main__":
         fetch_venues(force="--force" in sys.argv)
         sys.exit(0)
     year = int(sys.argv[1]) if len(sys.argv) > 1 else 2026
+    if "--media" in sys.argv:
+        fetch_media(year, force="--force" in sys.argv)
+        sys.exit(0)
     fetch_season(year, force="--force" in sys.argv)
     fetch_ratings(year)
     fetch_lines(year)

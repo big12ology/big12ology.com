@@ -1141,6 +1141,13 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
   font-size:14px } .ccgtag { color:var(--accent); font-weight:700;
   font-size:11px; text-transform:uppercase }
+/* One non-conference marker for the whole site. It was a pill in the Lab's
+   own stylesheet and bare parenthetical text everywhere else, so the same
+   fact about the same game looked like two different things depending on
+   which page you read it on. Lives here now, where every page can see it. */
+.nctag { color:var(--dim); font-size:10.5px; border:1px solid var(--line);
+  border-radius:20px; padding:1px 7px; text-transform:uppercase;
+  letter-spacing:.04em; white-space:nowrap }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .tag.live { color:#4ade80;
     background:#4ade8024 } }
@@ -1394,8 +1401,12 @@ li.slate:last-child { border-bottom:0 }
   display:flex; flex-wrap:wrap; gap:2px 10px; align-items:baseline }
 .slatemeta time { font-variant-numeric:tabular-nums; font-weight:600;
   color:var(--ink) }
-.slatewx::before { content:"\\00b7"; margin-right:10px }
-.slatewhere::before { content:"\\00b7"; margin-right:10px }
+.slatewx::before, .slatewhere::before, .slatetv::before,
+.slateline::before { content:"\\00b7"; margin-right:10px }
+.slatetv { color:var(--ink) }
+/* The market is figures: line them up and keep them out of the prose voice
+   the rest of the row is written in. */
+.slateline { font-variant-numeric:tabular-nums; white-space:nowrap }
 .slatelink { grid-column:2; grid-row:1/span 2; align-self:center;
   font-size:13px; font-weight:600; white-space:nowrap;
   color:var(--accent); text-decoration:none }
@@ -1616,6 +1627,48 @@ def weather_line(g):
     return f"<div class=slatewx>{' · '.join(parts)}</div>"
 
 
+def broadcast(g):
+    """Who is carrying it. TV first and web after, because one is a channel
+    number and the other is an app — and a game on both should not read as
+    if it were on two networks. No radio: CFBD's media feed has none."""
+    media = g.get("media") or []
+    tv = [m["outlet"] for m in media if m.get("type") == "tv"]
+    web = [m["outlet"] for m in media if m.get("type") == "web"]
+    if not tv and not web:
+        return ""
+    # One weight for all of them. Bolding the TV window and leaving the
+    # stream plain read as two different typefaces rather than as a
+    # distinction, and the outlet's own name already says which it is —
+    # nobody mistakes ESPN+ for a channel. TV first, streams after.
+    names = list(dict.fromkeys(tv + web))
+    return f"<div class=slatetv>{esc(' / '.join(names))}</div>"
+
+
+def market(g):
+    """The line, said the way people say it.
+
+    CFBD stores the home spread — negative means the home team is favored —
+    which is a convention, not a sentence. A reader wants a team and a
+    number, so name the favourite. A pick'em game has no favourite to name,
+    so it says so."""
+    ln = g.get("line") or {}
+    spread, total = ln.get("spread"), ln.get("over_under")
+    bits = []
+    if spread is not None:
+        if spread == 0:
+            bits.append("pick'em")
+        else:
+            fav = g["home"] if spread < 0 else g["away"]
+            bits.append(f"{esc(fav)} {-abs(spread):g}")
+    if total is not None:
+        bits.append(f"O/U {total:g}")
+    if not bits:
+        return ""
+    return (f"<div class=slateline title='Average of "
+            f"{ln.get('books', 0)} book(s) via collegefootballdata.com'>"
+            + " · ".join(bits) + "</div>")
+
+
 def espn_link(g):
     """The box score once it exists, the preview until then. Same id either
     way — CFBD's game id is ESPN's."""
@@ -1647,11 +1700,12 @@ def slate_row(g):
     if g.get("ccg"):
         tag = "<span class=ccgtag>Championship</span>"
     elif not g["conference_game"]:
-        tag = "<span class=dim>non-conf</span>"
+        tag = "<span class=nctag>non-conf</span>"
     return (f"<li class=slate>"
             f"<div class=slateteams>{away} <span class=dim>at</span> {home}"
             f" {tag}</div>"
-            f"<div class=slatemeta>{when}{where(g)}{weather_line(g)}</div>"
+            f"<div class=slatemeta>{when}{where(g)}{weather_line(g)}"
+            f"{broadcast(g)}{market(g)}</div>"
             f"{espn_link(g)}</li>")
 
 
@@ -1776,14 +1830,16 @@ def game_row(g):
         score = (f"{am}{esc(g['away'])} <span class=dim>at</span> "
                  f"{hm}{esc(g['home'])} <span class=dim>({when})</span>")
         cls = "upcoming"
-    tag = "" if g["conference_game"] else " <span class=dim>(non-conf)</span>"
+    tag = ("" if g["conference_game"]
+           else " <span class=nctag>non-conf</span>")
     if g.get("ccg"):
         tag = " <span class=ccgtag>Championship</span>"
     return f"<li class={cls}>{score}{tag}</li>"
 
 
-def place_and_forecast(games):
-    """Give each game its city and, if it is close enough, its forecast.
+def place_and_forecast(year, games):
+    """Give each game its city, its broadcast, its line and — if it is
+    close enough for one — its forecast.
 
     Both read from committed data or a keyless API, so this costs no CFBD
     quota and a finished season costs nothing at all: every game is played,
@@ -1797,6 +1853,17 @@ def place_and_forecast(games):
                 continue
             g["venue_city"] = ", ".join(
                 x for x in (v.get("city"), v.get("state")) if x)
+    # Both already on disk: the market is fetched for the what-if models and
+    # the broadcast list on the weekly refresh. Reading them here spends
+    # nothing and is the whole reason the slate can show them.
+    media = fetcher.load_media(year)
+    lines = load_lines(year)
+    for g in games:
+        gid = str(g.get("id"))
+        if gid in media:
+            g["media"] = media[gid]
+        if gid in lines:
+            g["line"] = lines[gid]
     try:
         weather_mod.attach(games, venues)
     except Exception as e:
@@ -1806,7 +1873,7 @@ def place_and_forecast(games):
 
 
 def render(year, games):
-    place_and_forecast(games)
+    place_and_forecast(year, games)
     overrides = tb.load_overrides()
     teams = load_teams()
     systems = load_ratings(year).get("systems", {})
@@ -2643,6 +2710,11 @@ def load_games(year, refetch=False, refresh=False):
             if refresh:
                 fetcher.fetch_ratings(year)
                 fetcher.fetch_lines(year)
+                # Broadcast windows are announced about two weeks out and
+                # move after that. Weekly is the right cadence: on the
+                # hourly build it would be 300 calls a month to learn the
+                # same thing the Tuesday run already knows.
+                fetcher.fetch_media(year, force=True)
             if not os.path.exists(os.path.join(HERE, "data", "teams.json")):
                 fetcher.fetch_teams()
             return fetcher.mark_ccg(games)

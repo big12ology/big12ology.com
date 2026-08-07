@@ -1,0 +1,326 @@
+{
+ "401856636": [
+  {
+   "outlet": "ABC",
+   "type": "tv"
+  }
+ ],
+ "401856670": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856678": [
+  {
+   "outlet": "FOX",
+   "type": "tv"
+  }
+ ],
+ "401856683": [
+  {
+   "outlet": "ABC",
+   "type": "tv"
+  }
+ ],
+ "401856766": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856767": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856768": [
+  {
+   "outlet": "ESPNU",
+   "type": "tv"
+  }
+ ],
+ "401856769": [
+  {
+   "outlet": "ESPNU",
+   "type": "tv"
+  }
+ ],
+ "401856770": [
+  {
+   "outlet": "FS1",
+   "type": "tv"
+  }
+ ],
+ "401856771": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856772": [
+  {
+   "outlet": "ESPNU",
+   "type": "tv"
+  }
+ ],
+ "401856773": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856774": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856775": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856776": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856777": [
+  {
+   "outlet": "FOX",
+   "type": "tv"
+  }
+ ],
+ "401856778": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856779": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856780": [
+  {
+   "outlet": "TNT",
+   "type": "tv"
+  },
+  {
+   "outlet": "HBO Max",
+   "type": "web"
+  }
+ ],
+ "401856781": [
+  {
+   "outlet": "TNT",
+   "type": "tv"
+  },
+  {
+   "outlet": "HBO Max",
+   "type": "web"
+  }
+ ],
+ "401856782": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856783": [
+  {
+   "outlet": "CBS",
+   "type": "tv"
+  }
+ ],
+ "401856784": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856785": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856786": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856787": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856788": [
+  {
+   "outlet": "NBC",
+   "type": "tv"
+  }
+ ],
+ "401856789": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856790": [
+  {
+   "outlet": "ESPN2",
+   "type": "tv"
+  }
+ ],
+ "401856791": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856792": [
+  {
+   "outlet": "ESPN2",
+   "type": "tv"
+  }
+ ],
+ "401856793": [
+  {
+   "outlet": "TNT",
+   "type": "tv"
+  },
+  {
+   "outlet": "HBO Max",
+   "type": "web"
+  }
+ ],
+ "401856795": [
+  {
+   "outlet": "CBS",
+   "type": "tv"
+  }
+ ],
+ "401856797": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856798": [
+  {
+   "outlet": "ESPNU",
+   "type": "tv"
+  }
+ ],
+ "401856799": [
+  {
+   "outlet": "ESPNU",
+   "type": "tv"
+  }
+ ],
+ "401856800": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856801": [
+  {
+   "outlet": "FOX",
+   "type": "tv"
+  }
+ ],
+ "401856802": [
+  {
+   "outlet": "ACC Network",
+   "type": "tv"
+  }
+ ],
+ "401856803": [
+  {
+   "outlet": "ESPN+",
+   "type": "web"
+  }
+ ],
+ "401856804": [
+  {
+   "outlet": "CBS",
+   "type": "tv"
+  }
+ ],
+ "401856810": [
+  {
+   "outlet": "FOX",
+   "type": "tv"
+  }
+ ],
+ "401856811": [
+  {
+   "outlet": "FOX",
+   "type": "tv"
+  }
+ ],
+ "401856812": [
+  {
+   "outlet": "FS1",
+   "type": "tv"
+  }
+ ],
+ "401856826": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856844": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856855": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856860": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856869": [
+  {
+   "outlet": "FS1",
+   "type": "tv"
+  }
+ ],
+ "401856879": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856880": [
+  {
+   "outlet": "FOX",
+   "type": "tv"
+  }
+ ],
+ "401867804": [
+  {
+   "outlet": "ESPNU",
+   "type": "tv"
+  }
+ ]
+}
