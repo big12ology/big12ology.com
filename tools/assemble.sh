@@ -74,7 +74,11 @@ rsync -a "${COMMON[@]}" "$ROOT/attendance/" "$DIST/attendance/"
 # overwritten every refresh. Public for the same reason data.json and
 # attendance.csv are, and because a scoreboard nobody can check is a claim.
 # Absent until the first weekly refresh runs, so its absence is not an error.
+#
+# mkdir first: rsync creates the last missing directory of a destination but
+# not two, and /pickem/data/ is two while /pickem/ holds no pages yet.
 if [ -d "$ROOT/tiebreaker/pickem" ]; then
+  mkdir -p "$DIST/pickem/data"
   rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/pickem/" "$DIST/pickem/data/"
 fi
 
