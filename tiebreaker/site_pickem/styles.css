@@ -311,12 +311,13 @@
            display: grid; gap: 3px; }
 
 .pk-cardrow {
-  display: grid; /* The matchup takes what it needs and no more; the gauge absorbs the slack.
-     The other way round left a gulf between the team names and the numbers,
-     with the reader's eye crossing empty panel to connect two halves of the
-     same fact. */
-  grid-template-columns:
-    58px minmax(0, max-content) 3.6em 3.2em minmax(110px, 1fr) 4.6em;
+  display: grid; /* Whichever column has something to say takes the slack.
+     Before the lock there is no split to draw, and a 1fr column holding
+     nothing swallowed the whole row: every field jammed left, the result chip
+     stranded at the right edge, and a gap between them where the bar was
+     going to be. So the default hands the space to the matchup, and only a
+     row that actually has a gauge hands it to the gauge instead. */
+  grid-template-columns: 58px minmax(0, 1fr) 3.6em 3.2em auto 4.6em;
   gap: 0 8px; align-items: center;
   border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
   padding: 4px 8px; min-width: 0;
@@ -328,6 +329,11 @@
    smaller treatment. Still never the accent. */
 .pk-took { background: var(--tc, var(--tc-none)); color: var(--tfg, #fff);
            font-weight: 700; border-radius: 4px; padding: 1px 5px; }
+
+.pk-cardrow:has(.pk-splitbar) {
+  grid-template-columns:
+    58px minmax(0, max-content) 3.6em 3.2em minmax(110px, 1fr) 4.6em;
+}
 
 .pk-score { font-variant-numeric: tabular-nums; font-size: 13px;
              color: var(--dim); white-space: nowrap; }
