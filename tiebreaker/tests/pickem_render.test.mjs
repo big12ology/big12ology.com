@@ -182,28 +182,33 @@ test("the card renders a row per pickable game", async () => {
 });
 
 // A card read on a Saturday afternoon is mostly games that have not finished.
-// These are the states that are not outcomes, and they were the ones missing.
-test("a game that has not finished says which kind of not-finished", async () => {
+// The status column carries what the GAME is doing; the chip at the other end
+// carries what your pick did. These are the states in between, which are the
+// ones you cannot see by loading the page on a Tuesday.
+test("the status column says what the game is doing", async () => {
   const now = Math.floor(Date.now() / 1000);
   const cases = [
-    { name: "kicked off, no result",  kickoff_at: now - 600, locked: true,  want: "IN PLAY" },
-    { name: "locked, not kicked off", kickoff_at: now + 600, locked: true,  want: "LOCKED"  },
-    { name: "still open",             kickoff_at: now + 600, locked: false, want: "OPEN"    },
+    { name: "not kicked off",        at: now + 600,        result: null,  want: /\d/        },
+    { name: "kicked off, no score",  at: now - 600,        result: null,  want: /IN PLAY/  },
+    { name: "kick \u002B 3h, no score",  at: now - 4 * 3600,   result: null,  want: /WAITING/  },
+    { name: "graded",                at: now - 4 * 3600,
+      result: { home_points: 31, away_points: 21, ats: "home" },          want: /FINAL/    },
   ];
   for (const c of cases) {
-    const g = { ...S.games[0], kickoff_at: c.kickoff_at,
-                kickoff: new Date(c.kickoff_at * 1000).toISOString() };
+    const g = { ...S.games[0], kickoff_at: c.at,
+                kickoff: new Date(c.at * 1000).toISOString() };
     delete g.result;
+    if (c.result) g.result = c.result;
     const h = harness({
-      "/api/slate": { ...S, locked: c.locked, games: [g] },
-      "/api/picks": { season: 2026, week: 3, locked: c.locked,
+      "/api/slate": { ...S, locked: true, games: [g] },
+      "/api/picks": { season: 2026, week: 3, locked: true,
                       picks: { [g.game_id]: "home" } },
     });
     await h.fire();
     await settle();
-    const row = h.byId.card.children[0].children[0];
-    assert.match(row.textContent, new RegExp(c.want),
-      `${c.name}: expected ${c.want}, row read "${row.textContent}"`);
+    const status = h.byId.card.children[0].children[0].children[0];
+    assert.match(status.textContent, c.want,
+      `${c.name}: status read "${status.textContent}"`);
   }
 });
 

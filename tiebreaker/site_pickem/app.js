@@ -185,6 +185,27 @@
     return s.replace(/\s*AM$/i, "a").replace(/\s*PM$/i, "p");
   }
 
+  // A game is only "at 12:30" until 12:30. After that the kickoff time is the
+  // least useful thing the row could say, so the first column carries the
+  // game's own state instead: playing, waiting for a result, or done. What
+  // YOUR pick did stays in the chip at the other end — one column for the
+  // game, one for you.
+  //
+  // Three hours is the window. A college game runs about three and a half
+  // with stoppages, so past kick+3h "in play" stops being a claim we can
+  // stand behind and the honest answer is that we are waiting for the score.
+  var LIVE_WINDOW = 3 * 3600;
+
+  function gameStatus(g) {
+    if (g.result && g.result.home_points != null) {
+      return {kind: "final", text: "FINAL"};
+    }
+    var k = g.kickoff_at, now = Date.now() / 1000;
+    if (!k || now < k) return {kind: "time", text: shortWhen(g.kickoff)};
+    if (now < k + LIVE_WINDOW) return {kind: "live", text: "IN PLAY"};
+    return {kind: "wait", text: "WAITING"};
+  }
+
   // ------------------------------------------------------------ countdown
 
   // Milestones, not seconds. A live region firing once a second is unusable;
@@ -771,7 +792,12 @@
   // blank, which is the thing a card is for noticing.
   function cardRow(g, side, teams, locked) {
     var li = el("li", "pk-cardrow");
-    li.appendChild(el("span", "pk-when", shortWhen(g.kickoff)));
+    var st = gameStatus(g);
+    var when = el("span", "pk-when pk-st-" + st.kind, st.text);
+    if (st.kind !== "time") {
+      when.title = "Kickoff " + fmtWhen(g.kickoff);
+    }
+    li.appendChild(when);
 
     var m = el("span", "pk-cardmatch");
     ["away", "home"].forEach(function (s, i) {
@@ -864,6 +890,9 @@
   // Five states, not two. A card read on Saturday afternoon is mostly games
   // that have not finished, and "nothing here yet" is the least useful thing
   // a row can say about a game that is currently being played.
+  // What YOUR pick did — nothing about the game itself, which the status
+  // column already says. Before a result there is no outcome to report, so it
+  // stays empty rather than inventing a state for it.
   function resultChip(g, side, locked) {
     if (!side) return el("span", "pk-res nopick", "NO PICK");
     if (g.result) {
@@ -872,8 +901,6 @@
               : a === side ? "win" : "loss";
       return el("span", "pk-res " + out, out.toUpperCase());
     }
-    var started = g.kickoff_at && (Date.now() / 1000) >= g.kickoff_at;
-    if (started) return el("span", "pk-res live", "IN PLAY");
     if (locked) return el("span", "pk-res locked", "LOCKED");
     return el("span", "pk-res pending", "OPEN");
   }

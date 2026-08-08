@@ -304,36 +304,52 @@
 
 /* One column, unlike the slate. The card lists only the games you could
    pick, so it is always the shorter of the two, and a full-width row is what
-   lets five columns — time, matchup, line, crowd, result — coexist without
-   ellipsising every team name. Two columns fitted the rows and lost the
-   words, which is the wrong trade on the page you read after the fact. */
-.pk-card { list-style: none; margin: 0; padding: 0;
-           display: grid; gap: 3px; }
+   lets the six fields — time, matchup, score, line, crowd, result — coexist
+   without ellipsising every team name.
+
+   The tracks live HERE, on the list, and each row borrows them with subgrid.
+   Every row having its own grid was the bug: six independent grids sized
+   themselves to six different sets of content, so no two rows agreed where a
+   column started and the gauges all came out different lengths. One set of
+   tracks means the parts line up down the card — the alignment of a table,
+   without becoming one: no rules, no header row, and each game still its own
+   rounded panel. */
+.pk-card {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 3px;
+  grid-template-columns: max-content max-content 3.6em 3.2em minmax(0, 1fr) 4.6em;
+}
+/* Only when there is actually a gauge to draw — before the lock the server
+   sends no split, and a 1fr column holding nothing swallows the row. */
+.pk-card:has(.pk-splitbar) {
+  grid-template-columns:
+    max-content max-content 3.6em 3.2em minmax(120px, 1fr) 4.6em;
+}
 
 .pk-cardrow {
-  display: grid; /* Whichever column has something to say takes the slack.
-     Before the lock there is no split to draw, and a 1fr column holding
-     nothing swallowed the whole row: every field jammed left, the result chip
-     stranded at the right edge, and a gap between them where the bar was
-     going to be. So the default hands the space to the matchup, and only a
-     row that actually has a gauge hands it to the gauge instead. */
-  grid-template-columns: 58px minmax(0, 1fr) 3.6em 3.2em auto 4.6em;
-  gap: 0 8px; align-items: center;
+  /* Borrows the list's tracks rather than defining its own, which is what
+     makes every column line up down the card. The fallback below is the old
+     per-row grid: without subgrid the rows align less well and break not at
+     all. */
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: max-content max-content 3.6em 3.2em minmax(0, 1fr) 4.6em;
+  grid-template-columns: subgrid;
+  gap: 0 14px; align-items: center;
   border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
-  padding: 4px 8px; min-width: 0;
+  padding: 4px 10px; min-width: 0;
 }
+/* The track is the widest matchup on the card; every shorter one centres
+   inside it, so the column reads as one block rather than a ragged left edge
+   of names that happen to differ in length. */
 .pk-cardmatch { min-width: 0; overflow: hidden; text-overflow: ellipsis;
-                white-space: nowrap; font-size: 14px; }
+                white-space: nowrap; font-size: 14px;
+                justify-self: center; }
 /* The side you took carries the team's colour as a chip. On the picker the
    whole control fills; here it is one word inside a sentence, so it takes the
    smaller treatment. Still never the accent. */
 .pk-took { background: var(--tc, var(--tc-none)); color: var(--tfg, #fff);
            font-weight: 700; border-radius: 4px; padding: 1px 5px; }
-
-.pk-cardrow:has(.pk-splitbar) {
-  grid-template-columns:
-    58px minmax(0, max-content) 3.6em 3.2em minmax(110px, 1fr) 4.6em;
-}
 
 .pk-score { font-variant-numeric: tabular-nums; font-size: 13px;
              color: var(--dim); white-space: nowrap; }
@@ -429,3 +445,24 @@
 .pk-locked input:checked + .pk-side { box-shadow: none; }
 /* A game you never picked has no record to show, so the whole row recedes. */
 .pk-locked .pk-slate-game:not(:has(input:checked)) { opacity: .6; }
+
+/* --- the game's own state ------------------------------------------------
+   The kickoff time is only interesting until kickoff. After that this column
+   says what the game is doing, and the chip at the other end goes on saying
+   what your pick did. One column for the game, one for you.
+
+   FINAL and WAITING are quiet: they are bookkeeping. IN PLAY is the one state
+   worth an eye, and takes --warn, which this section already uses for the
+   thing that wants attention without being an error. */
+.pk-when.pk-st-final,
+.pk-when.pk-st-wait,
+.pk-when.pk-st-live {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .05em;
+  border-radius: 99px; padding: 2px 7px; text-align: center;
+}
+.pk-when.pk-st-final { color: var(--dim);
+  background: color-mix(in srgb, var(--dim) 12%, transparent); }
+.pk-when.pk-st-wait  { color: var(--dim); border: 1px dashed var(--line);
+  background: none; padding: 1px 6px; }
+.pk-when.pk-st-live  { color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 16%, transparent); }
