@@ -22,6 +22,20 @@ import feed as feed_mod
 import fetch as fetcher
 import odds as odds_mod
 import pickem as pickem_mod
+
+# The pick'em is finished enough to look at and not finished enough to ship:
+# the Worker behind /api/* does not exist yet, so every page of it renders an
+# error, and privacy.html still promises "no accounts, no cookies". Until both
+# are true this section is built only when asked for.
+#
+#     B12_PICKEM=1 python3 build.py     # with it
+#     python3 build.py                  # without, which is what CI does
+#
+# Off means all of it: no header link, no pages in dist/, no sitemap, and no
+# consensus band on the schedule cards — that last one fetches /api/consensus
+# on every schedule page view, which would be a request to a 404. Nothing is
+# deleted; the flag is the only thing between here and live.
+PICKEM_ENABLED = os.environ.get("B12_PICKEM") == "1"
 import scorecard as scorecard_mod
 import weather as weather_mod
 import rotation as rotation_mod
@@ -265,8 +279,8 @@ def topbar(section, year, base="", acct=False):
             f'alt="Big12ology"></picture></a>'
             + link("tiebreaker", "Tiebreaker") + link("schedule", "Schedule")
             + '<a href="/attendance/">Attendance</a>'
-            + f'<a{" class=on" if section == "pickem" else ""} '
-              f'href="/pickem/">Pickem</a>'
+            + (f'<a{" class=on" if section == "pickem" else ""} '
+               f'href="/pickem/">Pickem</a>' if PICKEM_ENABLED else "")
             + '<span class=b12-right>'
             + ('<span class=b12-acct hidden></span>' if acct else '')
             + '<span class=b12-theme></span></span>'
@@ -2027,6 +2041,8 @@ def pickem_line(g):
     one request for the whole page, and leaves the rest alone: no line, no
     lock, too few cards, or no Worker all mean the row simply is not there.
     """
+    if not PICKEM_ENABLED:
+        return ""
     if not (g.get("line") or {}).get("spread"):
         return ""
     teams_ = load_teams()
@@ -2276,7 +2292,7 @@ def build_game_page(g, ctx):
     # knows them, and a second request for sixteen hex values would be silly.
     teams_ = ctx.get("teams") or {}
     con = ""
-    if g.get("line"):
+    if g.get("line") and PICKEM_ENABLED:
         con = (f"<div class=card id=pickcon hidden "
                f"data-gid='{g['id']}' "
                f"data-away=\"{esc(g['away'])}\" data-home=\"{esc(g['home'])}\" "
@@ -3339,8 +3355,9 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          # pickcon.js asks once for the whole week and fills whichever slate
          # cards have a split worth showing. Everything else on this page is
          # static, and stays static if it never answers.
-         LOCAL_TIME_JS +
-         f'<script defer src="/tiebreaker/{asset_v("pickcon.js")}"></script>'),
+         LOCAL_TIME_JS + (
+             f'<script defer src="/tiebreaker/{asset_v("pickcon.js")}">'
+             f'</script>' if PICKEM_ENABLED else "")),
         ("matrix.html", "The Matrix", "matrix",
          build_matrix_page(ctx),
          f"The {yr} Big 12 head-to-head grid: who plays whom, home or away "
@@ -3468,7 +3485,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                         # leaves it hidden.
                         head=(f'<script defer '
                               f'src="/tiebreaker/{asset_v("pickcon.js")}">'
-                              f'</script>'),
+                              f'</script>' if PICKEM_ENABLED else ""),
                         section="schedule", page="", up="../"))
         finally:
             globals()["BASE"] = BASE_was
@@ -4264,8 +4281,11 @@ def write_discovery(years):
         f'  <url><loc>{pick}board.html</loc><lastmod>{today}</lastmod>'
         f'<changefreq>weekly</changefreq><priority>0.6</priority></url>',
     ]
-    os.makedirs(PICKEM_SITE, exist_ok=True)
-    write_map(os.path.join(PICKEM_SITE, "sitemap.xml"), pick_urls)
+    if PICKEM_ENABLED:
+        os.makedirs(PICKEM_SITE, exist_ok=True)
+        write_map(os.path.join(PICKEM_SITE, "sitemap.xml"), pick_urls)
+    else:
+        pick_urls = []
     # No robots.txt here on purpose: crawlers only read it at the origin
     # root, and this is a project site under /tiebreaker/. The real one
     # lives at the repo root and points at this sitemap.
@@ -4287,7 +4307,7 @@ def main():
     # instead of deriving one. The slate is published on the weekly refresh —
     # the only run that has just fetched the market — and frozen there. The
     # scores file is rewritten every build, because that is what grades it.
-    if year == LIVE_YEAR:
+    if year == LIVE_YEAR and PICKEM_ENABLED:
         if "--refresh" in sys.argv or "--republish" in sys.argv:
             pickem_mod.publish_slate(year, games, load_lines(year),
                                      republish="--republish" in sys.argv)

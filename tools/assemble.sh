@@ -37,7 +37,7 @@ fi
 # worked, because an exclude that silently stops matching looks exactly like an
 # exclude that is doing its job.
 COMMON=(--exclude=.DS_Store --exclude=__pycache__ --exclude=node_modules
-        --exclude=/.git --exclude=/.github --exclude=/.claude
+        --exclude=/.git --exclude=/.github --exclude=/.claude --exclude=/.idea
         --exclude=/.gitignore --exclude=/.env
         --exclude=.env --exclude=.env.* --exclude=.dev.vars
         --exclude=wrangler.toml --exclude=.wrangler --exclude='*.sql'
@@ -56,7 +56,18 @@ rsync -a "${COMMON[@]}" \
       --exclude=/dist --exclude=/HANDOFF.md --exclude=/worker \
       "$ROOT/" "$DIST/"
 
-rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site/" "$DIST/tiebreaker/"
+# Two of this directory's files belong to the pick'em and are tracked here
+# only because this is where build.py writes them: pickcon.js, which asks
+# /api/consensus, and pickem-scores.json, which the grader reads back. With
+# the section off nothing references either, so they would ship as dead
+# weight pointing at an API that does not exist.
+# Seeded rather than empty: bash 3.2 — which is what macOS ships — treats
+# "${arr[@]}" on an empty array as an unbound variable under set -u.
+PICKEM_EX=(--exclude=.keep-pickem-none)
+[ "${B12_PICKEM:-}" = "1" ] || PICKEM_EX+=(--exclude=pickcon.js
+                                           --exclude=pickem-scores.json)
+rsync -a "${COMMON[@]}" "${PICKEM_EX[@]}" \
+      "$ROOT/tiebreaker/site/" "$DIST/tiebreaker/"
 
 # The schedule section is generated beside the tiebreaker and served as a
 # sibling path; its pages reach back to ../tiebreaker/ for the shared marks
@@ -83,7 +94,14 @@ rsync -a "${COMMON[@]}" "$ROOT/attendance/" "$DIST/attendance/"
 # schedule and reaching back to ../tiebreaker/ for brand.css, theme.js and
 # pct.js rather than carrying a second copy of them. Its pages are shells:
 # everything a reader sees arrives from /api/* at runtime.
-rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_pickem/" "$DIST/pickem/"
+#
+# Gated on B12_PICKEM, the same flag build.py reads. The Worker behind
+# /api/* does not exist yet, so every page of this section renders an error
+# and privacy.html still promises "no accounts, no cookies". Off by default,
+# which is what CI gets; nothing is deleted, it is simply not published.
+if [ "${B12_PICKEM:-}" = "1" ]; then
+  rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_pickem/" "$DIST/pickem/"
+fi
 
 # The published slates, under /pickem/data/ so they cannot collide with the
 # section's pages. These are the frozen lines — the record of what each week
@@ -93,7 +111,7 @@ rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_pickem/" "$DIST/pickem/"
 #
 # mkdir first: rsync creates the last missing directory of a destination but
 # not two, and /pickem/data/ was two before the section above existed.
-if [ -d "$ROOT/tiebreaker/pickem" ]; then
+if [ "${B12_PICKEM:-}" = "1" ] && [ -d "$ROOT/tiebreaker/pickem" ]; then
   mkdir -p "$DIST/pickem/data"
   rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/pickem/" "$DIST/pickem/data/"
 fi
@@ -141,11 +159,27 @@ for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          schedule/sitemap.xml \
          attendance/index.html attendance/site/app.js \
          attendance/data/teams.json attendance/data/seasons/index.json \
-         pickem/index.html pickem/card.html pickem/board.html \
-         pickem/rules.html pickem/account.html \
-         pickem/app.js pickem/styles.css pickem/sitemap.xml; do
+         ; do
   [ -e "$DIST/$f" ] || note "$f"
 done
+
+# The pick'em's own manifest, checked only when it was asked for. Listed
+# unconditionally it would report nine missing files on every ordinary build,
+# which is how a required-file check stops being read.
+if [ "${B12_PICKEM:-}" = "1" ]; then
+  for f in pickem/index.html pickem/card.html pickem/board.html \
+           pickem/rules.html pickem/account.html \
+           pickem/app.js pickem/styles.css pickem/sitemap.xml; do
+    [ -e "$DIST/$f" ] || note "$f"
+  done
+else
+  # And the reverse, because the whole point is that it must not ship by
+  # accident: if it is off, none of it may be in dist/.
+  if [ -e "$DIST/pickem" ]; then
+    echo "  MUST NOT SHIP  dist/pickem/ exists with B12_PICKEM unset"
+    fail=1
+  fi
+fi
 
 [ -s "$DIST/CNAME" ] && grep -qx "big12ology.com" "$DIST/CNAME" || {
   echo "  CNAME does not say big12ology.com"; fail=1; }

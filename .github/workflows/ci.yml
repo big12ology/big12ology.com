@@ -110,3 +110,37 @@ jobs:
       # must-not-ship gate all still run clean.
       - name: Assemble
         run: tools/assemble.sh dist
+
+      # And again with the pick'em switched on. The section is dark on
+      # production until the Worker exists and privacy.html is rewritten,
+      # which means nothing else in this workflow would ever build it — a
+      # gated-off section that CI never compiles rots quietly and is
+      # discovered on the day you try to turn it on. This is the only run
+      # that exercises build_pickem, the pick'em sitemap, the section's own
+      # required-file manifest and its stricter cache-bust rule.
+      - name: Build and assemble with the pick'em on
+        env:
+          B12_PICKEM: "1"
+        run: |
+          (cd tiebreaker && python3 build.py)
+          tools/assemble.sh dist
+          test -s dist/pickem/index.html
+          test -s dist/pickem/sitemap.xml
+          # A generated topbar, not dist/index.html: the four hand-written
+          # pages carry a PICKEM-LINK marker instead, because the flag cannot
+          # reach into a file build.py does not write.
+          grep -q '>Pickem<' dist/tiebreaker/index.html
+
+      # Back to the shipping shape, so nothing downstream sees the dark
+      # section's output.
+      - name: Reassemble as production
+        run: |
+          (cd tiebreaker && python3 build.py)
+          tools/assemble.sh dist
+          # What a reader or a crawler can actually reach — not the literal
+          # string, which the PICKEM-LINK markers in the hand-written
+          # topbars contain on purpose.
+          test ! -e dist/pickem
+          ! grep -rq 'href="/pickem/"' dist
+          ! grep -rq 'pickcon' dist
+          ! grep -q pickem dist/sitemap.xml
