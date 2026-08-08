@@ -212,6 +212,52 @@ test("the status column says what the game is doing", async () => {
   }
 });
 
+// The two views want different words for the same unfinished state, and the
+// Slate used to append two chips to a graded row — one from a block of its own
+// and one from resultChip — which put a second WIN pill on an implicit grid
+// row underneath the first.
+test("locked and unfinished reads as the page's own word, once", async () => {
+  const now = Math.floor(Date.now() / 1000);
+  const picked = { ...S.games[0], kickoff_at: now - 600 };
+  const blank  = { ...S.games[1], kickoff_at: now - 600 };
+  const graded = { ...S.games[2], kickoff_at: now - 4 * 3600,
+                   result: { home_points: 31, away_points: 21, ats: "home" } };
+  delete picked.result; delete blank.result;
+
+  const h = harness({
+    "/api/slate": { ...S, locked: true, games: [picked, blank, graded] },
+    "/api/picks": { season: 2026, week: 3, locked: true,
+                    picks: { [picked.game_id]: "home",
+                             [graded.game_id]: "home" } },
+  });
+  await h.fire();
+  await settle();
+
+  const chips = (n) => (n.className || "").split(" ").includes("pk-res")
+    ? [n] : (n.children || []).flatMap(chips);
+
+  // Both views reorder — the Slate puts playable games first, so an index is
+  // not a game. Find each row by the matchup it names.
+  const row = (nodes, g) => [...nodes].find(
+    (n) => n.textContent.includes(g.away) && n.textContent.includes(g.home));
+
+  const slate = h.byId.slate.children;
+  for (const [g, want] of [[picked, /LOCKED/], [blank, /LOCKED/],
+                           [graded, /WIN/]]) {
+    const r = row(slate, g);
+    assert.ok(r, `no slate row for ${g.away} at ${g.home}`);
+    assert.equal(chips(r).length, 1,
+      `${g.away} at ${g.home}: drew ${chips(r).length} chips`);
+    assert.match(chips(r)[0].textContent, want);
+  }
+
+  const card = h.byId.card.children[0].children;
+  assert.ok(!/LOCKED/.test(row(card, picked).textContent),
+    "the Card called a pick awaiting a score LOCKED");
+  assert.match(row(card, blank).textContent, /NO PICK/);
+  assert.match(row(card, graded).textContent, /WIN/);
+});
+
 test("an unpicked game says so rather than pretending to be pending", async () => {
   const h = harness({ "/api/picks": { season: 2026, week: 3, picks: {} } });
   await h.fire();

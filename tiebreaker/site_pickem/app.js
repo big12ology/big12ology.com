@@ -328,16 +328,6 @@
     // dark fill. Out here they are always on the background they were
     // designed for, and the result reads as a property of the pick rather
     // than of the team.
-    var mine = picks[g.game_id];
-    if (g.result && mine) {
-      var out = g.result.ats === "void" ? "void"
-        : g.result.ats === "push" ? "push"
-        : g.result.ats === mine ? "win" : "loss";
-      var chip = el("span", "pk-res " + out, out.toUpperCase());
-      chip.appendChild(el("span", "sr-only", " — your pick " + out));
-      fs.appendChild(chip);
-    }
-
     if (why) {
       var tag = el("p", "tag out pk-nopick",
         why === "no_line" ? "No Spread Available" : "Kickoff Not Announced");
@@ -346,7 +336,13 @@
       // The third column is reserved on every row and stood empty here, which
       // read as a row still waiting for input on a slate that had stopped
       // accepting it. Once locked it says what the game is actually doing.
-      fs.appendChild(resultChip(g, picks[g.game_id] || null, true));
+      //
+      // ONE chip, from one function. There used to be a second block above
+      // this one appending a graded chip of its own, so every graded row got
+      // two: the first in the chip column and the second wrapped onto an
+      // implicit grid row beneath it, a WIN pill sitting under a WIN pill.
+      var chip = resultChip(g, picks[g.game_id] || null, true, "slate");
+      if (chip) fs.appendChild(chip);
     }
     return fs;
   }
@@ -851,7 +847,9 @@
     // whether or not a given game reached the threshold.
     if (!shown) li.appendChild(el("span", "pk-split"));
 
-    li.appendChild(resultChip(g, side, locked));
+    var res = resultChip(g, side, locked, "card");
+    if (res) li.appendChild(res);
+    else li.appendChild(el("span", "pk-res pk-res-none", ""));
     return li;
   }
 
@@ -893,16 +891,34 @@
   // What YOUR pick did — nothing about the game itself, which the status
   // column already says. Before a result there is no outcome to report, so it
   // stays empty rather than inventing a state for it.
-  function resultChip(g, side, locked) {
-    if (!side) return el("span", "pk-res nopick", "NO PICK");
-    if (g.result) {
+  function resultChip(g, side, locked, view) {
+    if (side && g.result) {
       var a = g.result.ats;
       var out = a === "void" ? "void" : a === "push" ? "push"
               : a === side ? "win" : "loss";
-      return el("span", "pk-res " + out, out.toUpperCase());
+      var chip = el("span", "pk-res " + out, out.toUpperCase());
+      chip.appendChild(el("span", "sr-only", " \u2014 your pick " + out));
+      return chip;
     }
-    if (locked) return el("span", "pk-res locked", "LOCKED");
-    return el("span", "pk-res pending", "OPEN");
+
+    // Nothing to report yet, and the two pages want different words for that.
+    //
+    // The Slate is the picker with the picking switched off. The only thing
+    // worth saying about a row there is that the week has closed, and it is
+    // the same sentence for every row: which side you took is already visible
+    // as the filled one, and a row you left blank is not a different kind of
+    // closed.
+    if (view === "slate") return el("span", "pk-res locked", "LOCKED");
+
+    // The Card is the record of what YOUR picks did, and "locked" is not
+    // something a pick did \u2014 it describes the week. A game you left blank
+    // is a permanent outcome and says so. A pick still waiting on a score has
+    // no outcome yet, and the status column at the other end of the row
+    // already says whether the game is in play or waiting, so this stays
+    // empty rather than saying it again in different words.
+    if (!side) return el("span", "pk-res nopick", "NO PICK");
+    if (!locked) return el("span", "pk-res pending", "OPEN");
+    return null;
   }
 
   function tallyCard(games, picks) {

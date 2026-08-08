@@ -45,8 +45,8 @@
     ".pcnames{display:flex;justify-content:space-between;gap:10px;" +
       "font-size:12px;color:var(--dim);margin-top:4px}" +
     /* the slate version: shorter, quieter, no numbers */
-    "[data-pkcon] .pcsplit{gap:6px;margin:0}" +
-    "[data-pkcon] .pcbar{height:6px;min-width:40px;max-width:120px;flex:0 1 120px}" +
+    "[data-pkcon] .pcsplit{gap:8px;margin:0}" +
+    "[data-pkcon] .pcbar{height:6px;min-width:40px;flex:1}" +
     "[data-pkcon] .pcab{font-size:11px;color:var(--dim);font-weight:600;" +
       "letter-spacing:.02em}";
 

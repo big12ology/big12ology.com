@@ -1462,6 +1462,18 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   border-radius:10px; padding:11px 13px; min-width:0 }
 .slateteams { font-size:15px; margin-bottom:8px }
 .slatemeta { font-size:12.5px; color:var(--dim); display:grid; gap:4px }
+  /* Two columns of facts once the card is wide enough for them. Five
+     single-line facts stacked made a tall card that was mostly one short
+     phrase per row, and the week is sixteen of these. Below 520px the card is
+     already narrow enough that a second column would only truncate. */
+  @media (min-width:520px) {
+    .slatemeta { grid-template-columns:1fr 1fr; gap:4px 14px }
+    /* The kickoff spans. It carries two clocks — the venue's and the
+       reader's — and is the longest line on the card by some way; halved it
+       lost the zone off the end, which is the part that makes it a time
+       rather than a number. The other four facts pair up beneath it. */
+    .slatemeta > .slatewhen { grid-column:1 / -1 }
+  }
 .slatemeta > div { display:flex; align-items:center; gap:7px;
   min-width:0; white-space:nowrap }
 .slatemeta > div > :not(svg) { overflow:hidden; text-overflow:ellipsis }
@@ -2046,7 +2058,8 @@ def slate_card(g, pages=True):
             f"<div class=slateteams>{matchup(g)}</div>"
             f"<div class=slatemeta>{when_line(g)}{where(g)}"
             f"{broadcast(g)}"
-            f"{weather_line(g)}{market(g)}{pickem_line(g)}</div>"
+            f"{weather_line(g)}{market(g)}</div>"
+            f"{pickem_line(g)}"
             f"<div class=slatelinks>{ours}{espn_link(g)}</div></div>")
 
 

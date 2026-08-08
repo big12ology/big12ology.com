@@ -283,7 +283,9 @@
    is a desktop goal; on a phone the thumb is doing the scrolling anyway. */
 @media (max-width: 620px) {
   .pk-slate-game,
-  .pk-slate-game[disabled] { grid-template-columns: 1fr; gap: 4px 0;
+  .pk-slate-game[disabled],
+  .pk-locked .pk-slate-game:not([disabled]) {
+                          grid-template-columns: 1fr; gap: 4px 0;
                           padding: 8px 10px; }
   .pk-res, .pk-nopick { justify-self: start; }
   .pk-sides { grid-template-columns: 1fr; gap: 4px; }
@@ -409,6 +411,9 @@
 /* Five states. A card read mid-afternoon is mostly games that have not
    finished, and the two that are not outcomes get no colour: nothing has
    happened yet, and a chip that looks like a result would be a lie. */
+/* A picked game the scores have not caught up with holds the cell open so the
+   rows stay aligned, and says nothing, because there is nothing yet to say. */
+.pk-res-none { padding: 0; background: none; }
 .pk-res.locked  { color: var(--dim);
                   background: color-mix(in srgb, var(--dim) 12%, transparent); }
 .pk-res.live    { color: var(--warn); font-weight: 700;
@@ -432,7 +437,19 @@
 
 .pk-locked .pk-side { cursor: default; }
 .pk-locked .pk-side:hover { border-color: transparent; }
-.pk-locked .pk-slate-game { background: var(--bg); }
+/* A locked row is still a card, and stays --panel like every other one on the
+   page. Dropping it to --bg was meant to make it recede; what it actually did
+   was make the six playable games the only things on the page painted in the
+   page's own colour, so they read as holes in the panel rather than as rows
+   that had closed. The stripped borders and the .6 opacity below already do
+   the receding, and they do it without leaving the row a different object. */
+
+/* The chip column was sized for "WIN" \2014 40px, the widest a graded row
+   needed. Once the week is locked every playable row carries a word instead,
+   and at 40px "LOCKED" ran straight out over the spread number to its left. */
+.pk-locked .pk-slate-game:not([disabled]) {
+  grid-template-columns: 56px minmax(0, 1fr) 62px;
+}
 
 /* The side you did not take stops being a box. A bordered panel on a plain
    background is the shape of an available choice, and after the lock there

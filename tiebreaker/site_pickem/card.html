@@ -196,6 +196,18 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   border-radius:10px; padding:11px 13px; min-width:0 }
 .slateteams { font-size:15px; margin-bottom:8px }
 .slatemeta { font-size:12.5px; color:var(--dim); display:grid; gap:4px }
+  /* Two columns of facts once the card is wide enough for them. Five
+     single-line facts stacked made a tall card that was mostly one short
+     phrase per row, and the week is sixteen of these. Below 520px the card is
+     already narrow enough that a second column would only truncate. */
+  @media (min-width:520px) {
+    .slatemeta { grid-template-columns:1fr 1fr; gap:4px 14px }
+    /* The kickoff spans. It carries two clocks — the venue's and the
+       reader's — and is the longest line on the card by some way; halved it
+       lost the zone off the end, which is the part that makes it a time
+       rather than a number. The other four facts pair up beneath it. */
+    .slatemeta > .slatewhen { grid-column:1 / -1 }
+  }
 .slatemeta > div { display:flex; align-items:center; gap:7px;
   min-width:0; white-space:nowrap }
 .slatemeta > div > :not(svg) { overflow:hidden; text-overflow:ellipsis }
@@ -358,7 +370,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../tiebreaker/scrollcue.js?v=5fef00f1"></script><link rel=stylesheet href="styles.css?v=a89c3584"><script defer src="../tiebreaker/pct.js?v=03186563"></script><script defer src="app.js?v=e8513b63"></script></head><body>
+<script defer src="../tiebreaker/scrollcue.js?v=5fef00f1"></script><link rel=stylesheet href="styles.css?v=ab262bff"><script defer src="../tiebreaker/pct.js?v=03186563"></script><script defer src="app.js?v=32283357"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pickem/">Pickem</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
