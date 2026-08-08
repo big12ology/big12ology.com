@@ -3576,11 +3576,23 @@ def alltime_h2h_card(year, games, teams):
            f"play" if never else
            f"all {pairs} pairings have now happened at least once")
 
+    # `through` is the last season with results in it, which between January
+    # and September is not the season this page is for. Two year pills then
+    # render a byte-identical grid, and a table that does not move when you
+    # change the year reads as one that failed to load rather than as a
+    # ledger nothing has been added to yet. The page already knows which it
+    # is — `played`, above — and used to keep it to itself.
+    pending = ("" if through == year else
+               f" No {year} conference game has been played yet, so this is "
+               f"where {through} left it and it matches the {through} page "
+               f"exactly; it starts moving again with the first conference "
+               f"Saturday.")
+
     return f"""<div class=card id=alltimeh2h>
 <h2>All-time head-to-head</h2>
 <p>Every pairing's record as conference opponents, 2011&#8211;{through}, read
 across: the row team's wins first. {gap}, and <b>{once}</b> have met exactly
-once — the whole series is one Saturday.</p>
+once — the whole series is one Saturday.{pending}</p>
 <div class="tablescroll scrollbox"><table class=h2h>
 <thead><tr><th></th>{head}</tr></thead>
 <tbody>{''.join(body)}</tbody></table></div>
