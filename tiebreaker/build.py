@@ -4031,8 +4031,9 @@ PICKEM_ACCOUNT_BODY = f"""
 <div class=card id=teamcard hidden>
   <h2>Your team</h2>
   <form id=teamform>
-    <label for=teampick>Who do you follow?</label>
-    <select id=teampick name=team></select>
+    <fieldset id=teampick class=pk-teamgrid>
+      <legend>Who do you follow?</legend>
+    </fieldset>
     <p class=note>Used to colour your own rows. It is not a pick, it does not
     affect scoring, and it is not shown to anyone else.</p>
     <button type=submit class=wbtn>Save team</button>

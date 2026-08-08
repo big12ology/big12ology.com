@@ -595,28 +595,66 @@
     });
   }
 
+  // Chips with marks, not a <select>. A native option list can render neither
+  // a logo nor a colour, and this is the one question on the site whose
+  // answers a reader recognises by sight before they have read them. It is
+  // also the same control the slate already uses — hidden radio, styled
+  // label — so it keeps native checked state, native keyboard handling and a
+  // single tab stop for the whole group, with no ARIA to get wrong.
   function initTeam(me) {
-    var card = $("teamcard"), sel = $("teampick"), form = $("teamform");
-    if (!card || !sel || !form || !me) return;
+    var card = $("teamcard"), box = $("teampick"), form = $("teamform");
+    if (!card || !box || !form || !me) return;
     loadTeams().then(function (teams) {
-      var opts = [["", "Not saying"],
-                  [TEAM_B12, "Big 12, no particular team"],
-                  [TEAM_CFB, "College football generally"]];
-      Object.keys(teams).filter(function (t) { return teams[t].b12; })
-        .sort().forEach(function (t) { opts.push([t, t]); });
-      sel.textContent = "";
-      opts.forEach(function (o) {
-        var n = document.createElement("option");
-        n.value = o[0]; n.textContent = o[1];
-        if ((me.team || "") === o[0]) n.selected = true;
-        sel.appendChild(n);
+      // The sixteen first: that is what nearly everyone is answering, and it
+      // is the part that can be found by its mark rather than read. The three
+      // that are not a team go below a rule — Big 12 with no particular one,
+      // college football at large, and no answer at all.
+      var opts = Object.keys(teams).filter(function (t) { return teams[t].b12; })
+        .sort().map(function (t) { return {v: t, label: t, team: true}; });
+      var teamCount = opts.length;
+      opts.push({v: TEAM_B12, label: "Big 12, no particular team"},
+                {v: TEAM_CFB, label: "College football generally"},
+                {v: "", label: "Not saying"});
+
+      while (box.children.length > 1) box.removeChild(box.lastChild);
+      opts.forEach(function (o, i) {
+        if (i === teamCount) box.appendChild(el("span", "pk-teamsep"));
+        var id = "tm" + i;
+        var input = document.createElement("input");
+        input.type = "radio";
+        input.className = "sr-only";
+        input.id = id;
+        input.name = "team";
+        input.value = o.v;
+        if ((me.team || "") === o.v) input.checked = true;
+
+        var lab = el("label", "pk-teamopt" + (o.team ? "" : " pk-teamopt-any"));
+        lab.setAttribute("for", id);
+        if (o.team) {
+          var colour = (teams[o.v] && teams[o.v].color) || "";
+          if (colour) {
+            lab.style.setProperty("--tc", colour);
+            lab.style.setProperty("--tfg", textOn(colour));
+          }
+          // No stand-in when a team has no freely-licensed mark; the slot
+          // still holds its width so the names stay in one column.
+          var mk = mark(teams, o.v, 20);
+          if (mk) lab.appendChild(mk);
+          else lab.appendChild(el("span", "pk-teamgap"));
+        }
+        lab.appendChild(el("span", "pk-tname", o.label));
+        box.appendChild(input);
+        box.appendChild(lab);
       });
       card.hidden = false;
     });
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      api("/api/me", {method: "PATCH", body: {team: sel.value}})
-        .then(function () { status("Team saved."); me.team = sel.value; })
+      var on = box.querySelector("input:checked");
+      var v = on ? on.value : "";
+      api("/api/me", {method: "PATCH", body: {team: v}})
+        .then(function () { status("Team saved."); me.team = v; })
         .catch(function (err) { alertMsg(explain(err)); });
     });
   }
@@ -737,7 +775,10 @@
     // control that looks broken, and one option is a control that lies about
     // being a choice.
     var opts = [{v: "", t: "Season"}];
-    for (var w = 0; w <= (cur == null ? -1 : cur); w++) {
+    // From 1. Weeks are 1-based — pickem.py publishes week-01 — and starting
+    // the loop at 0 put a "Week 0" at the top of every board that has never
+    // existed and returns nothing.
+    for (var w = 1; w <= (cur == null ? 0 : cur); w++) {
       opts.push({v: String(w), t: "Week " + w});
     }
     if (opts.length < 2) {
@@ -777,7 +818,12 @@
       myTint = myColour(me, teams);
       myMark = me && me.team && teams[me.team] && teams[me.team].logo;
       return loadBoard("");
-    }).then(function (r) { if (r) fillWeeks(r.week); });
+    }).then(function (r) {
+      // How many weeks there are to choose from, which is not the same as
+      // which one this response is for: the season-to-date response is for no
+      // week at all, and reading r.week there left nothing to enumerate.
+      if (r) fillWeeks(r.weeks != null ? r.weeks : r.week);
+    });
   }
 
   // ------------------------------------------------------------------ card
@@ -1004,7 +1050,7 @@
     draw("").then(function (s) {
       var sel = $("cardwk");
       if (!sel || s == null) return;
-      for (var w = 0; w <= s.week; w++) {
+      for (var w = 1; w <= s.week; w++) {   // 1-based, as published
         var o = document.createElement("option");
         o.value = String(w);
         o.textContent = "Week " + w;
@@ -1012,7 +1058,9 @@
         sel.appendChild(o);
       }
       var lab = sel.closest ? sel.closest("label") : null;
-      if (s.week > 0) { if (lab) lab.hidden = false; }
+      // One option is not a choice, and a control that offers one is a
+      // control that lies about being one.
+      if (s.week > 1) { if (lab) lab.hidden = false; }
       sel.addEventListener("change", function () { draw(sel.value); });
     }).catch(function (err) {
       note.textContent = err.status === 404

@@ -211,11 +211,86 @@
 .pk-res.push { color: var(--push); background: color-mix(in srgb, var(--push) 15%, transparent); }
 .pk-res.void { color: var(--dim);  background: color-mix(in srgb, var(--dim) 12%, transparent); }
 
+/* --- your team ------------------------------------------------------------
+   The same control as the slate — hidden radio, styled label — because it is
+   the same act: one choice out of a set you recognise by its mark. */
+
+.pk-teamgrid {
+  border: 0; padding: 0; margin: 0 0 12px;
+  /* A fieldset's default min-inline-size is min-content, which shrink-wrapped
+     the whole grid to one column's worth however wide the card was. */
+  min-inline-size: 0; inline-size: 100%;
+  display: grid; gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+.pk-teamgrid legend { grid-column: 1 / -1; padding: 0 0 6px;
+                      font-weight: 600; font-size: 14px; }
+/* The three answers that are not a team sit below the line and span it, so
+   the sixteen above stay a single scannable block of marks. */
+.pk-teamsep { grid-column: 1 / -1; height: 0; margin: 5px 0 2px;
+              border-top: 1px dashed var(--line); }
+.pk-teamopt {
+  display: flex; align-items: center; gap: 7px; min-width: 0;
+  border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px;
+  background: var(--panel); cursor: pointer; font-size: 13.5px;
+  transition: border-color .12s ease, background-color .12s ease;
+}
+.pk-teamopt .pk-tname { flex: 1; min-width: 0; overflow: hidden;
+                        text-overflow: ellipsis; white-space: nowrap; }
+.pk-teamopt img { flex: none; }
+/* Holds a missing mark's width so the names stay in one column down the grid
+   rather than stepping in and out by twenty pixels. */
+.pk-teamgap { flex: none; width: 20px; }
+.pk-teamopt-any { grid-column: 1 / -1; color: var(--dim); }
+
+.pk-teamopt:hover { border-color: var(--accent); }
+.pk-teamgrid input:checked + .pk-teamopt {
+  background: var(--tc, var(--accent));
+  border-color: var(--tc, var(--accent));
+  color: var(--tfg, #fff); font-weight: 700;
+}
+/* Colour is never the only signal — WCAG 1.4.1. */
+.pk-teamgrid input:checked + .pk-teamopt::after {
+  content: "\2713"; margin-left: auto; font-weight: 700;
+}
+/* Forwarded from the hidden input, or a keyboard user sees nothing at all. */
+.pk-teamgrid input:focus-visible + .pk-teamopt {
+  outline: 3px solid var(--accent); outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) { .pk-teamopt { transition: none; } }
+
 /* --- the board ---------------------------------------------------------- */
 
 .pk-boardhead { display: flex; justify-content: space-between; gap: 12px;
              align-items: baseline; flex-wrap: wrap; }
-.pk-wksel { font-size: 14px; color: var(--dim); }
+/* The week picker. A bare <select> is the one control on these pages the
+   browser draws for itself, and next to the pills and chips everything else
+   is made of it read as something the page had forgotten to style. Same pill
+   geometry as .yearpill, with the browser's arrow replaced by one that takes
+   its colour from the text, so it follows both themes without a second asset
+   or a data URI to keep in sync. */
+.pk-wksel { font-size: 13px; color: var(--dim); position: relative;
+            display: inline-flex; align-items: center; gap: 7px; }
+/* display on the element beats the UA's [hidden] rule, and this label is
+   hidden whenever there is only one week to offer. */
+.pk-wksel[hidden] { display: none; }
+.pk-wksel select {
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--fg);
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 999px; padding: 4px 27px 4px 12px; cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+}
+.pk-wksel select:hover { border-color: var(--accent); }
+.pk-wksel select:focus-visible { outline: 3px solid var(--accent);
+                                 outline-offset: 2px; }
+/* On the label, not the select: a <select> cannot carry a pseudo-element in
+   every engine. clip-path rather than a background image, so the arrow is
+   currentColor and needs no light and dark copy. */
+.pk-wksel::after {
+  content: ""; position: absolute; right: 12px; width: 9px; height: 6px;
+  background: currentColor; pointer-events: none;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
 
 #board { width: 100%; border-collapse: collapse; }
 #board th, #board td { padding: 7px 10px; text-align: left;
