@@ -1,0 +1,21 @@
+-- Which team you follow.
+--
+-- A display preference and nothing else: it tints your own rows on The Board
+-- and your own card, and it is not shown to anybody else. It is deliberately
+-- NOT an identity — no uniqueness, no cooldown, no history — because unlike a
+-- display name it publishes nothing, so none of the machinery around names
+-- has anything to protect here.
+--
+-- Free text rather than a foreign key to a teams table, because there is no
+-- teams table and there should not be one: the canonical list is
+-- tiebreaker/data/teams.json, it changes with realignment, and a copy in D1
+-- would be a second place for it to be wrong. The two non-team answers are
+-- stored as sentinels so that "no answer yet" and "deliberately no team" stay
+-- distinguishable — one is a question still to ask, the other is an answer.
+--
+--   NULL        never asked
+--   '__big12'   the conference, no particular team
+--   '__cfb'     college football generally
+--   <name>      a team name as it appears in teams.json
+
+ALTER TABLE users ADD COLUMN team TEXT;

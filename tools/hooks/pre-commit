@@ -93,9 +93,27 @@ if [ -n "$scan" ]; then
   # A named secret with something long enough after it to be real. The value
   # bound is what keeps "IDENTITY_PEPPER is permanent — back it up" from
   # tripping this.
-  add "a secret assigned a value" \
-      "$(printf '%s' "$added" | grep -E \
-         '(CLIENT_SECRET|API_KEY|APIKEY|IDENTITY_PEPPER|SIGNING_KEY|ADMIN_TOKEN|AUTH_TOKEN|ACCESS_TOKEN|PASSWORD|PRIVATE_KEY)[A-Z_]*["'"'"']?\s*[=:]\s*["'"'"']?[A-Za-z0-9_./+-]{16,}' || true)"
+  #
+  # Three things are subtracted before the check, because once the Worker
+  # existed all three appeared constantly and a hook that cries wolf on every
+  # commit is a hook that gets --no-verify'd out of existence:
+  #
+  #   ${{ secrets.X }} / ${{ vars.X }}  — an Actions reference is the OPPOSITE
+  #     of a leak. It is the mechanism for not committing the value.
+  #   a URL  — GOOGLE_TOKEN = "https://oauth2.googleapis.com/token" is an
+  #     endpoint constant, and every OAuth implementation has several.
+  #   a value that announces itself as fake  — test-, fake-, dummy-, example-,
+  #     placeholder-, PASTE_. Test fixtures need secret-shaped values and this
+  #     is the convention that keeps them distinguishable from real ones. It
+  #     is deliberately a PREFIX match: a real secret does not begin "test-",
+  #     and anything that does is either fake or has bigger problems.
+  candidates=$(printf '%s' "$added" | grep -E \
+      '(CLIENT_SECRET|API_KEY|APIKEY|IDENTITY_PEPPER|SIGNING_KEY|ADMIN_TOKEN|AUTH_TOKEN|ACCESS_TOKEN|PASSWORD|PRIVATE_KEY)[A-Z_]*["'"'"']?\s*[=:]\s*["'"'"']?[A-Za-z0-9_./+-]{16,}' \
+      | grep -vE '\$\{\{ *(secrets|vars)\.' \
+      | grep -vE '[=:]\s*["'"'"']?https?://' \
+      | grep -viE '[=:]\s*["'"'"']?(test|fake|dummy|example|placeholder|changeme|paste)[-_]' \
+      || true)
+  add "a secret assigned a value" "$candidates"
 
   if [ -n "$found" ]; then
     printf 'pre-commit: the staged changes look like they contain a secret:\n' >&2
