@@ -279,8 +279,11 @@ def topbar(section, year, base="", acct=False):
             f'alt="Big12ology"></picture></a>'
             + link("tiebreaker", "Tiebreaker") + link("schedule", "Schedule")
             + '<a href="/attendance/">Attendance</a>'
-            + (f'<a{" class=on" if section == "pickem" else ""} '
-               f'href="/pickem/">Pickem</a>' if PICKEM_ENABLED else "")
+            # Always. /pickem/ is a real page either way: the section when
+            # it is on, the Coming Soon page when it is not. It was only
+            # gated because the link used to point at a 404.
+            + f'<a{" class=on" if section == "pickem" else ""} '
+              f'href="/pickem/">Pickem</a>'
             + '<span class=b12-right>'
             + ('<span class=b12-acct hidden></span>' if acct else '')
             + '<span class=b12-theme></span></span>'
@@ -358,7 +361,7 @@ def fmt_prob(p):
 
 
 def tracker_top(year, active, matchcard="", section="tiebreaker", page="",
-                up="", yearpills=True):
+                up="", yearpills=True, subnavon=True):
     """The one top: header bar, pill row, matchup card. Styled entirely by
     brand.css (.b12-head/.subnav) — no page may restyle these.
 
@@ -368,7 +371,11 @@ def tracker_top(year, active, matchcard="", section="tiebreaker", page="",
     `yearpills` is not decoration. year_href() assumes every section has a
     directory per archived season, and the pick'em has none — there is no 2024
     pick'em and never will be. Left on, every page would carry two links to
-    directories that do not exist."""
+    directories that do not exist.
+
+    `subnavon` is the same argument for the row of section pills. The Coming
+    Soon page is the only thing at /pickem/ while the section is dark, so its
+    four pills would all be links to pages that are not there."""
     meta = SECTIONS[section]
     years = "" if not yearpills else "".join(
         (f"<span class=yron>{y}</span>" if y == year else
@@ -384,7 +391,7 @@ def tracker_top(year, active, matchcard="", section="tiebreaker", page="",
     </div>
   </div>
 </header>
-{subnav(active, section, up)}
+{subnav(active, section, up) if subnavon else ''}
 <main id=main tabindex="-1">
 {icon_sprite()}
 {matchcard}"""
@@ -1668,7 +1675,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 
 def build_subpage(title, active, body, year, matchcard,
                   canon=None, desc=None, head="", section="tiebreaker",
-                  page="", up=""):
+                  page="", up="", subnavon=True):
     sect_title = SECTIONS[section]["title"]
     head_title = (sect_title if title == sect_title
                   else f"{title} — {sect_title}")
@@ -1707,7 +1714,7 @@ def build_subpage(title, active, body, year, matchcard,
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <a class=skip-link href="#main">Skip to content</a>
 {topbar(section, year, BASE, acct=section == "pickem")}
-{tracker_top(year, active, matchcard, section, page, up,
+{tracker_top(year, active, matchcard, section, page, up, subnavon=subnavon,
              yearpills=section != "pickem")}
 {body}
 </main>
@@ -4179,6 +4186,155 @@ your record. <a href="/privacy">What we store</a>.</p>
 </div>"""
 
 
+PICKEM_SOON_CSS = """
+  .soonhero { text-align:center; padding:6px 0 2px }
+  .soonkick { display:inline-block; font-size:12px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--accent); font-weight:700;
+    border:1px solid var(--accent); border-radius:999px; padding:4px 13px }
+  /* The section's own h2 is a small uppercase grey label, which is right for
+     a card heading and wrong for the one line this page exists to say. */
+  .soonhero h2 { font-size:clamp(25px,4.2vw,38px); line-height:1.14;
+    margin:14px auto 10px; max-width:20ch; letter-spacing:-.01em;
+    text-transform:none; color:var(--ink); font-weight:800 }
+  .soonhero p { max-width:56ch; margin:0 auto; font-size:16px;
+    color:var(--dim) }
+  .soonwhen { margin-top:18px; font-size:15px }
+  .soonwhen b { color:var(--ink) }
+  .soonshot { margin:0; border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; background:var(--panel) }
+  /* max-width, not width. The slate shot is 1008 wide and fills; the chart
+     is 500 and would have been stretched to double its size, which on a 2x
+     asset is exactly the point at which it stops being sharp. */
+  .soonshot img { display:block; max-width:100%; height:auto; margin:0 auto }
+  /* Above the fold on a phone, so it must not be lazy — but the tag is
+     written once for all three, and the first is the one that matters. */
+  .soonshot:first-child img { background:var(--bg) }
+  .soonshot figcaption { padding:10px 14px; font-size:13.5px;
+    color:var(--dim); border-top:1px solid var(--line) }
+  .soonshot figcaption b { color:var(--ink); font-weight:600 }
+  .soonrow { display:grid; gap:14px; margin:16px 0 }
+  .soonwhat { display:grid; gap:14px; margin-top:4px;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr)) }
+  .soonwhat h3 { font-size:15px; margin:0 0 5px }
+  .soonwhat p { margin:0; font-size:14px; color:var(--dim) }
+  .soonfoot { text-align:center; color:var(--dim); font-size:14px;
+    margin:22px 0 2px }
+"""
+
+
+def season_opener(games):
+    """The first kickoff of the season, for the teaser to name a date.
+
+    Read out of the schedule rather than typed in, because a hardcoded date
+    on a "coming soon" page is a promise that rots on its own.
+    """
+    live = [g for g in games
+            if g.get("start") and not g.get("start_tbd")]
+    if not live:
+        return None
+    first = min(live, key=lambda g: g["start"])
+    try:
+        t = datetime.datetime.fromisoformat(
+            first["start"].replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return t.astimezone(datetime.timezone.utc)
+
+
+def build_pickem_soon(year, games):
+    """The page that stands at /pickem/ until the real thing is switched on.
+
+    It is generated, not hand-written, for the same reasons the rest of the
+    section is: one chrome, one footer, the cache-busting, and a place in the
+    required-file manifest. And the screenshots are real — captured from the
+    running build against a real slate, real scoring and a real chart — which
+    is the entire argument the page is making. Mock-ups on a coming-soon page
+    are how a coming-soon page stops being believed.
+    """
+    global BASE
+    prev, BASE = BASE, "../tiebreaker/"
+    os.makedirs(PICKEM_SITE, exist_ok=True)
+
+    opener = season_opener(games)
+    when = (f"Week one kicks off <b>"
+            f"{opener.strftime('%A, %B %-d')}</b>." if opener else
+            "Opening with the 2026 season.")
+
+    # Real screenshots of the running build, with their real dimensions, so
+    # the browser reserves the right space and nothing jumps as they load.
+    shots = [
+        ("slate", 1008, 330, "The Slate",
+         "Every Big 12 game, one frozen line, and a clock. Pick a side and it "
+         "saves as you go &mdash; there is no submit button to forget."),
+        ("chart", 500, 444, "Week by week",
+         "Your season against the shape of the field, drawn in your team's "
+         "colours. <b>The chalk</b> is what taking every favourite would have "
+         "scored, and it is harder to beat than it sounds."),
+        ("room", 1008, 209, "The room",
+         "What everybody else picked, on every game, scored as if one person "
+         "had made all of it. Beating the field is one thing; beating the "
+         "field put together is another."),
+    ]
+    figs = "".join(
+        f'<figure class=soonshot><img src="shots/{k}.png" width={w} '
+        f'height={h} loading="lazy" decoding="async" '
+        f'alt="{esc(t)}, from the pick&rsquo;em under construction.">'
+        f'<figcaption><b>{t}.</b> {c}</figcaption></figure>'
+        for k, w, h, t, c in shots)
+
+    body = f"""
+<div class=card>
+  <div class=soonhero>
+    <span class=soonkick>Coming soon</span>
+    <h2>Pick every Big 12 game against the spread.</h2>
+    <p>One line for everyone, frozen the moment the week is published. The
+    whole slate locks at the first kickoff, and what you picked becomes public
+    then &mdash; not before.</p>
+    <p class=soonwhen>{when}</p>
+  </div>
+</div>
+
+<div class=soonrow>{figs}</div>
+
+<div class=card>
+  <h2>What makes it different</h2>
+  <div class=soonwhat>
+    <div>
+      <h3>The line never moves</h3>
+      <p>Taken from the market when the week goes up and written down.
+      Everyone plays the same number, whatever the market does afterwards.</p>
+    </div>
+    <div>
+      <h3>A push is a push</h3>
+      <p>Land exactly on the number and it counts as neither a win nor a
+      loss, and it stays out of your percentage entirely.</p>
+    </div>
+    <div>
+      <h3>Two benchmarks, not just a rank</h3>
+      <p>Beating the field only means the field had a bad week. The board
+      also shows the chalk and the room, which are harder.</p>
+    </div>
+  </div>
+</div>
+
+<p class=soonfoot>No account needed to look. When it opens, signing in asks
+your provider for one thing &mdash; that you are you. No email address, no
+name, no picture. <a href="/privacy">What we store</a>.</p>
+"""
+
+    html = build_subpage("Pickem", "pickem", body, year, "",
+                         canon="https://big12ology.com/pickem/",
+                         desc="A weekly Big 12 pick'em against the spread, "
+                              "coming soon: one frozen line for everyone, and "
+                              "a board that shows the chalk and the crowd.",
+                         head=f"<style>{PICKEM_SOON_CSS}</style>",
+                         section="pickem", page="", subnavon=False)
+    with open(os.path.join(PICKEM_SITE, "soon.html"), "w") as f:
+        f.write(html)
+    BASE = prev
+    print(f"built pickem teaser -> {PICKEM_SITE}/soon.html")
+
+
 def build_pickem(year):
     """The five pick'em shells.
 
@@ -4369,13 +4525,18 @@ def main():
     # instead of deriving one. The slate is published on the weekly refresh —
     # the only run that has just fetched the market — and frozen there. The
     # scores file is rewritten every build, because that is what grades it.
-    if year == LIVE_YEAR and PICKEM_ENABLED:
-        if "--refresh" in sys.argv or "--republish" in sys.argv:
-            pickem_mod.publish_slate(year, games, load_lines(year),
-                                     republish="--republish" in sys.argv)
-        pickem_mod.write_scores(year, games,
-                                os.path.join(SITE, "pickem-scores.json"))
-        build_pickem(year)
+    if year == LIVE_YEAR:
+        if PICKEM_ENABLED:
+            if "--refresh" in sys.argv or "--republish" in sys.argv:
+                pickem_mod.publish_slate(year, games, load_lines(year),
+                                         republish="--republish" in sys.argv)
+            pickem_mod.write_scores(year, games,
+                                    os.path.join(SITE, "pickem-scores.json"))
+            build_pickem(year)
+        # Built either way. It is what stands at /pickem/ while the section
+        # is dark, and building it on every run means it cannot rot into
+        # something that no longer compiles by the time it is needed.
+        build_pickem_soon(year, games)
     # Finished seasons are rebuilt from cached results — no API calls, and
     # their output is deterministic, so a rebuild is a no-op unless the
     # engine itself changed.

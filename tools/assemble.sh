@@ -100,7 +100,18 @@ rsync -a "${COMMON[@]}" "$ROOT/attendance/" "$DIST/attendance/"
 # and privacy.html still promises "no accounts, no cookies". Off by default,
 # which is what CI gets; nothing is deleted, it is simply not published.
 if [ "${B12_PICKEM:-}" = "1" ]; then
-  rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_pickem/" "$DIST/pickem/"
+  # The section proper. soon.html is the teaser and has no business here.
+  rsync -a "${COMMON[@]}" --exclude=soon.html \
+        "$ROOT/tiebreaker/site_pickem/" "$DIST/pickem/"
+else
+  # Dark, /pickem/ is the Coming Soon page and its screenshots — and nothing
+  # else. Not app.js, not styles.css, not a slate: the teaser is one
+  # self-contained page, so there is no second thing to keep in step and
+  # nothing that can start talking to an API that does not exist.
+  mkdir -p "$DIST/pickem"
+  cp "$ROOT/tiebreaker/site_pickem/soon.html" "$DIST/pickem/index.html"
+  rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_pickem/shots/" \
+        "$DIST/pickem/shots/"
 fi
 
 # The published slates, under /pickem/data/ so they cannot collide with the
@@ -214,12 +225,14 @@ if [ "${B12_PICKEM:-}" = "1" ]; then
     [ -e "$DIST/$f" ] || note "$f"
   done
 else
-  # And the reverse, because the whole point is that it must not ship by
-  # accident: if it is off, none of it may be in dist/.
-  if [ -e "$DIST/pickem" ]; then
-    echo "  MUST NOT SHIP  dist/pickem/ exists with B12_PICKEM unset"
+  # And the reverse. Dark, exactly two things may be under /pickem/: the
+  # teaser and its pictures. Anything else means the section leaked.
+  [ -e "$DIST/pickem/index.html" ] || note "pickem/index.html (the teaser)"
+  while IFS= read -r stray; do
+    echo "  MUST NOT SHIP  ${stray#"$DIST"/} with B12_PICKEM unset"
     fail=1
-  fi
+  done < <(find "$DIST/pickem" -type f \
+                ! -name index.html ! -path "*/shots/*" 2>/dev/null)
 fi
 
 [ -s "$DIST/CNAME" ] && grep -qx "big12ology.com" "$DIST/CNAME" || {

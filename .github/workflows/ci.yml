@@ -131,6 +131,7 @@ jobs:
           grep -q '__Host-b12s' dist/privacy.html
           grep -q 'pickem' dist/sitemap.xml
           ! grep -q 'no accounts, no cookies' dist/privacy.html
+          test ! -e dist/pickem/soon.html
           ! grep -rq 'PICKEM-ONLY\|PICKEM-OFF' dist
           # A generated topbar, not dist/index.html: the four hand-written
           # pages carry a PICKEM-LINK marker instead, because the flag cannot
@@ -143,13 +144,19 @@ jobs:
         run: |
           (cd tiebreaker && python3 build.py)
           tools/assemble.sh dist
-          # What a reader or a crawler can actually reach — not the literal
-          # string, which the PICKEM-LINK markers in the hand-written
-          # topbars contain on purpose.
-          test ! -e dist/pickem
-          ! grep -rq 'href="/pickem/"' dist
+          # /pickem/ is a real page either way now: the section when the flag
+          # is on, the Coming Soon teaser when it is off. So what is asserted
+          # dark is that the teaser is there and NOTHING ELSE is — no slate,
+          # no app.js, nothing that would try to talk to an API that does not
+          # exist yet.
+          test -s dist/pickem/index.html
+          test -s dist/pickem/shots/slate.png
+          grep -q 'Coming soon' dist/pickem/index.html
+          test ! -e dist/pickem/app.js
+          test ! -e dist/pickem/board.html
+          test ! -e dist/pickem/data
           ! grep -rq 'pickcon' dist
-          ! grep -q pickem dist/sitemap.xml
-          # Dark, privacy.html must still make the promise that is true.
+          # And the disclosure still matches what is actually running.
           grep -q 'no accounts, no cookies' dist/privacy.html
+          # Dark, privacy.html must still make the promise that is true.
           ! grep -rq 'PICKEM-ONLY\|PICKEM-OFF' dist
