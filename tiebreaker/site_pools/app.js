@@ -41,7 +41,11 @@
   var teamsP = null;
   function loadTeams() {
     if (!teamsP) {
-      teamsP = fetch("teams.json")
+      // Absolute, because this file now serves pages at two depths —
+      // /pools/account.html and /pools/pickem/board.html — and a relative
+      // "teams.json" resolves to a different (and mostly wrong) place from
+      // each.
+      teamsP = fetch("/pools/teams.json")
         .then(function (r) { return r.ok ? r.json() : {}; })
         .catch(function () { return {}; });
     }
@@ -494,7 +498,7 @@
         if (e.status === 401) return {picks: {}};   // signed out: read-only
         throw e;
       }),
-      fetch("/pickem/teams.json").then(function (r) {
+      fetch("/pools/teams.json").then(function (r) {
         return r.ok ? r.json() : {};
       }).catch(function () { return {}; })
     ]).then(function (r) {
@@ -548,12 +552,12 @@
     chip.textContent = "";
     if (me && me.display_name) {
       var a = el("a", null, me.display_name);
-      a.href = "/pickem/account.html";
+      a.href = "/pools/account.html";
       chip.appendChild(document.createTextNode(""));
       chip.appendChild(a);
     } else {
       var s = el("a", null, me ? "Choose a name" : "Sign in");
-      s.href = "/pickem/account.html";
+      s.href = "/pools/account.html";
       chip.appendChild(s);
     }
     chip.hidden = false;
@@ -588,7 +592,7 @@
       out.addEventListener("submit", function (e) {
         e.preventDefault();
         api("/api/auth/logout", {method: "POST"}).then(function () {
-          location.href = "/pickem/";
+          location.href = "/pools/pickem/";
         });
       });
       var btn = el("button", "wbtn", "Sign out");
@@ -1476,13 +1480,13 @@
       note.textContent = "";
       var so = el("p", "pk-signedout");
       var a = el("a", null, "Sign in");
-      a.href = "account.html";
+      a.href = "/pools/account.html";
       so.appendChild(a);
       so.appendChild(document.createTextNode(" to see your card."));
       wrap.appendChild(so);
       return;
     }
-    var teamsP = fetch("/pickem/teams.json")
+    var teamsP = fetch("/pools/teams.json")
       .then(function (r) { return r.ok ? r.json() : {}; })
       .catch(function () { return {}; });
 
@@ -1564,6 +1568,351 @@
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
   }
 
+  // -------------------------------------------------------------- survivor
+
+  /* The survivor page. Same bones as the slate — hidden radio, styled label,
+   * saved the moment it changes — but one pick instead of fifteen, so there
+   * is no debounce and no card-replace: every change is its own PUT and the
+   * server's answer is repainted at once. The pickem's state (picks, LOCKED)
+   * is deliberately untouched; the two games share a slate and nothing else.
+   */
+  var svState = null;   // {slate, mine, teams} once loaded, for repaints
+
+  function svSpent(mine, week) {
+    // Teams already burned: any pick from another week whose outcome is not
+    // void. An ungraded pick counts — it is presumed live — which is also
+    // exactly what the server's trigger will say if the client gets it wrong.
+    var spent = {};
+    ((mine && mine.used) || []).forEach(function (u) {
+      if (u.week !== week && u.outcome !== "void") spent[u.team] = u.week;
+    });
+    return spent;
+  }
+
+  function svGameRow(g, mine, teams, spent, disabled) {
+    var fs = el("fieldset", "pk-slate-game");
+    fs.dataset.gid = g.game_id;
+
+    var lg = el("legend", "sr-only");
+    lg.textContent = g.away + " at " + g.home + ", " + fmtWhen(g.kickoff) +
+      " — pick a team to win the game outright";
+    fs.appendChild(lg);
+
+    var t = el("time", "pk-when", shortWhen(g.kickoff));
+    t.setAttribute("datetime", g.kickoff);
+    t.setAttribute("aria-hidden", "true");
+    fs.appendChild(t);
+
+    var sides = el("div", "pk-sides");
+    ["away", "home"].forEach(function (side, i) {
+      if (i === 1) sides.appendChild(el("span", "pk-at", "at"));
+      var team = g[side];
+      var id = "sv" + g.game_id + "-" + side;
+      var input = document.createElement("input");
+      input.type = "radio";
+      input.className = "sr-only";
+      input.id = id;
+      input.name = "sv";
+      input.value = g.game_id + "|" + team;
+      if (mine && mine.pick && mine.pick.team === team &&
+          mine.pick.game_id === g.game_id) input.checked = true;
+      if (disabled || spent[team] != null) input.disabled = true;
+
+      var lab = el("label", "pk-side" +
+        (spent[team] != null ? " pk-svspent" : ""));
+      lab.setAttribute("for", id);
+      var colour = (teams[team] && teams[team].color) || "";
+      if (colour) {
+        lab.style.setProperty("--tc", colour);
+        lab.style.setProperty("--tfg", textOn(colour));
+      }
+      var mk = mark(teams, team, 18);
+      if (mk) lab.appendChild(mk);
+      var nm = el("span", "pk-tname", team);
+      nm.title = team;
+      lab.appendChild(nm);
+      if (spent[team] != null) {
+        // Why this one is closed, in the slot the spread would use. The week
+        // number is the useful half: it says where to look on your run.
+        lab.appendChild(el("span", "pk-num", "wk " + spent[team]));
+        lab.appendChild(el("span", "sr-only",
+          " — already used in week " + spent[team]));
+      } else if (g.spread_x2 != null) {
+        // The line, as advice rather than as the bet: survivor is straight
+        // up, but which side the market likes is the whole question.
+        lab.appendChild(el("span", "pk-num", spreadText(g.spread_x2, side)));
+        lab.appendChild(el("span", "sr-only", " " + spreadSaid(g.spread_x2, side)));
+      }
+      sides.appendChild(input);
+      sides.appendChild(lab);
+    });
+    fs.appendChild(sides);
+    return fs;
+  }
+
+  function svOutcomeChip(outcome) {
+    // Wins and losses take the pickem's chips; the two quiet states get the
+    // same muted treatment the card gives games still in flight.
+    if (outcome === "win")  return el("span", "pk-res win", "WIN");
+    if (outcome === "loss") return el("span", "pk-res loss", "OUT");
+    if (outcome === "void") return el("span", "pk-res void", "VOID");
+    return el("span", "pk-res pending", "OPEN");
+  }
+
+  function svStandingText(mine, board) {
+    var s = mine && mine.standing;
+    if (s && !s.alive) {
+      return "Out — " + (s.out_reason === "missed"
+        ? "week " + s.out_week + " locked without your pick"
+        : "your week " + s.out_week + " team lost") +
+        ". " + s.wins + (s.wins === 1 ? " win" : " wins") + " on the run.";
+    }
+    var bits = [];
+    if (s) {
+      bits.push("Alive — " + s.wins + (s.wins === 1 ? " win" : " wins"));
+      if (s.rank) bits.push(ordinal(s.rank) + " in the pool");
+    } else if (mine && mine.used && mine.used.length) {
+      bits.push("In — first week still to be graded");
+    }
+    if (board && board.entrants) {
+      bits.push(board.alive + " of " + board.entrants + " still alive");
+    }
+    return bits.join("  ·  ");
+  }
+
+  function svSave(gameId, team, week) {
+    api("/api/survivor/pick", { method: "PUT",
+      body: { week: week, game_id: gameId, team: team } })
+      .then(function (r) {
+        status(team
+          ? "Saved — " + r.pick.team + " to win."
+          : "Pick withdrawn.");
+        return api("/api/survivor").then(function (mine) {
+          svState.mine = mine;
+          svRepaint();
+        });
+      })
+      .catch(function (err) {
+        status("");
+        var m = err.data && err.data.error;
+        if (m === "team_used") {
+          alertMsg("You already used that team. Voids give a team back; " +
+                   "wins and losses do not.");
+        } else if (m === "eliminated") {
+          alertMsg("Your run is over — the pool is watch-only from here.");
+        } else if (err.status === 409) {
+          alertMsg("The week locked before that saved. Your pick as it " +
+                   "stood at kickoff is shown.");
+          if (err.data && "pick" in err.data && svState.mine) {
+            svState.mine.pick = err.data.pick;
+            svState.mine.locked = true;
+          }
+        } else {
+          alertMsg(explain(err));
+        }
+        svRepaint();
+      });
+  }
+
+  function svRepaint() {
+    var st = svState;
+    if (!st) return;
+    var wrap = $("svslate"), note = $("svnote");
+    var mine = st.mine, slate = st.slate;
+    var week = slate.week;
+    var locked = !!slate.locked || !!(mine && mine.locked);
+    var dead = !!(mine && mine.standing && !mine.standing.alive);
+    var spent = svSpent(mine, week);
+
+    note.textContent = locked
+      ? "Week " + week + " is locked."
+      : dead
+        ? "Your run ended in week " + (mine.standing.out_week) +
+          ". The board keeps score without you now."
+        : "One team, to win the game — not to cover. Pick by the lock.";
+
+    wrap.textContent = "";
+    var games = inPlayOrder(slate.games).filter(function (g) {
+      return !g.unpickable;
+    });
+    if (!games.length) {
+      wrap.appendChild(el("p", "note", "No games this week."));
+      return;
+    }
+    var disabled = locked || dead || !SIGNED_IN;
+    games.forEach(function (g) {
+      wrap.appendChild(svGameRow(g, mine, st.teams, spent, disabled));
+    });
+    var form = $("svform");
+    form.className = disabled ? "pk-locked" + (SIGNED_IN ? "" : " pk-readonly")
+                              : "";
+
+    // The one control the slate does not have: a pick can be taken back
+    // outright, because unlike a card a single withdrawn pick is a state a
+    // player may genuinely want — sitting a week out is an elimination, so
+    // this is really "I will choose again before the lock".
+    var old = $("svwithdraw");
+    if (old) old.remove();
+    if (!disabled && mine && mine.pick) {
+      var btn = el("button", "wbtn", "Withdraw this week’s pick");
+      btn.type = "button";
+      btn.id = "svwithdraw";
+      btn.addEventListener("click", function () {
+        api("/api/survivor/pick", { method: "PUT",
+          body: { week: week, team: null } })
+          .then(function () {
+            status("Pick withdrawn. The week still needs one before the lock.");
+            return api("/api/survivor").then(function (m2) {
+              svState.mine = m2;
+              svRepaint();
+            });
+          })
+          .catch(function (err) { alertMsg(explain(err)); });
+      });
+      form.appendChild(btn);
+    }
+  }
+
+  function svDrawBoard(board, teams, me) {
+    var tbl = $("svboard"), note = $("svboardnote");
+    if (!tbl) return;
+    tbl.textContent = "";
+    if (!board || !board.rows || !board.rows.length) {
+      note.textContent = "Nobody has a graded week yet. Runs appear here "
+        + "once their first week is scored.";
+      return;
+    }
+    note.textContent = board.alive + " of " + board.entrants +
+      (board.entrants === 1 ? " run" : " runs") + " still alive.";
+
+    var showPicks = board.rows.some(function (r) { return r.pick; });
+    var thead = el("thead"), tr = el("tr");
+    var cols = ["#", "Player", "W", "Run"];
+    if (showPicks) cols.push("This week");
+    cols.forEach(function (c, i) {
+      tr.appendChild(el("th", i === 0 || c === "W" ? "n" : null, c));
+    });
+    thead.appendChild(tr);
+    tbl.appendChild(thead);
+
+    var tb = el("tbody");
+    board.rows.forEach(function (r) {
+      var tr2 = el("tr");
+      if (me && r.user_id === me.user_id) {
+        tr2.className = "you";
+        if (myTint) tr2.style.setProperty("--you", myTint);
+      }
+      if (!r.alive) tr2.className += " pk-svout";
+      tr2.appendChild(el("td", "n", r.rank));
+
+      var td = el("td");
+      var mk = mark(teams, r.team, 15);
+      if (mk) td.appendChild(mk);
+      else if (r.team) td.appendChild(el("span", "pk-markgap"));
+      td.appendChild(document.createTextNode(r.display_name || "—"));
+      tr2.appendChild(td);
+
+      tr2.appendChild(el("td", "n", r.wins));
+      tr2.appendChild(el("td", null, r.alive
+        ? "Alive"
+        : "Out wk " + r.out_week +
+          (r.out_reason === "missed" ? " (no pick)" : "")));
+
+      if (showPicks) {
+        var pd = el("td");
+        if (r.pick) {
+          var pmk = mark(teams, r.pick.team, 15);
+          if (pmk) pd.appendChild(pmk);
+          pd.appendChild(document.createTextNode(r.pick.team));
+          if (r.pick.outcome) {
+            pd.appendChild(document.createTextNode(" "));
+            pd.appendChild(svOutcomeChip(r.pick.outcome));
+          }
+        } else {
+          pd.textContent = "—";
+        }
+        tr2.appendChild(pd);
+      }
+      tb.appendChild(tr2);
+    });
+    tbl.appendChild(tb);
+  }
+
+  function initSurvivor(me) {
+    var form = $("svform");
+    if (!form) return;
+
+    show($("svsignedout"), !me);
+    show($("svneedsname"), !!me && !!me.needs_name);
+
+    var mineP = me
+      ? api("/api/survivor").catch(function () { return null; })
+      : Promise.resolve(null);
+    var boardP = api("/api/survivor/board").catch(function () { return null; });
+
+    Promise.all([api("/api/slate"), mineP, loadTeams(), boardP])
+      .then(function (r) {
+        var slate = r[0], mine = r[1], teams = r[2] || {}, board = r[3];
+        svState = { slate: slate, mine: mine, teams: teams };
+
+        show($("svlock"), true);
+        $("svweek").textContent = slate.week;
+        if (slate.lock_at) {
+          var lt = $("lockat");
+          lt.setAttribute("datetime",
+            new Date(slate.lock_at * 1000).toISOString());
+          lt.textContent = fmtWhen(slate.lock_at * 1000);
+          startCountdown(slate.lock_at);
+        }
+        $("svstanding").textContent = svStandingText(mine, board);
+
+        svRepaint();
+
+        // Your run, week by week, spent teams and all. Rendered from `used`
+        // rather than the board so a pick made ten seconds ago shows at once.
+        var ul = $("svused");
+        if (mine && mine.used && mine.used.length) {
+          ul.textContent = "";
+          mine.used.forEach(function (u) {
+            var li = el("li", "pk-svrunrow");
+            li.appendChild(el("span", "pk-when", "Wk " + u.week));
+            var nm = el("span", null, u.team);
+            var mk = mark(teams, u.team, 15);
+            if (mk) li.appendChild(mk);
+            li.appendChild(nm);
+            li.appendChild(svOutcomeChip(u.outcome));
+            ul.appendChild(li);
+          });
+          show($("svusedcard"), true);
+        }
+
+        loadTeams().then(function (tm) { myTint = myColour(me, tm); });
+        svDrawBoard(board, teams, me);
+      })
+      .catch(function (err) {
+        $("svnote").textContent = err.status === 404
+          ? "No slate published yet. The week goes up on Tuesday, once the "
+            + "lines are in."
+          : explain(err);
+        api("/api/survivor/board")
+          .then(function (b) { return loadTeams().then(function (tm) {
+            svDrawBoard(b, tm, me); }); })
+          .catch(function () {
+            $("svboardnote").textContent = "The pool is unavailable.";
+          });
+      });
+
+    form.addEventListener("change", function (e) {
+      var t = e.target;
+      if (!t || t.name !== "sv") return;
+      alertMsg("");
+      var parts = t.value.split("|");
+      svSave(Number(parts[0]), parts.slice(1).join("|"),
+             svState ? svState.slate.week : null);
+    });
+    form.addEventListener("submit", function (e) { e.preventDefault(); });
+  }
+
   // ------------------------------------------------------------------ boot
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -1583,6 +1932,7 @@
       initAccount(me);
       initBoard(me);
       initCard(me);
+      initSurvivor(me);
     });
   });
 

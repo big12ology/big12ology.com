@@ -17,7 +17,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const APP = path.join(HERE, "..", "site_pickem", "app.js");
+const APP = path.join(HERE, "..", "site_pools", "app.js");
 const DATA = path.join(HERE, "..", "data");
 
 const read = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
@@ -65,7 +65,7 @@ const API = {
       { rank: 3, user_id: "u3", display_name: "Nobody", w: 12, l: 26, p: 2, pct: 0.3158 },
     ],
   },
-  "/pickem/teams.json": Object.fromEntries(
+  "/pools/teams.json": Object.fromEntries(
     Object.entries(teams).map(([t, v]) => [t, { color: v.color }])),
 };
 

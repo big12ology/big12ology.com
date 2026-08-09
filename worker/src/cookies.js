@@ -92,10 +92,14 @@ export async function unsign(secret, token) {
  * "//evil.com" is the case worth naming: it is a valid protocol-relative URL
  * that starts with a slash, so a naive `startsWith("/")` waves it through.
  */
+/** Where a sign-in lands when there is nowhere better, and the prefix the
+ *  allowlist trusts. Both games and the account they share live under it. */
+export const HOME = "/pools/pickem/";
+
 export function safeReturn(to) {
-  if (typeof to !== "string") return "/pickem/";
+  if (typeof to !== "string") return HOME;
   if (!to.startsWith("/") || to.startsWith("//") || to.startsWith("/\\")) {
-    return "/pickem/";
+    return HOME;
   }
-  return to.startsWith("/pickem/") ? to : "/pickem/";
+  return to.startsWith("/pools/") ? to : HOME;
 }

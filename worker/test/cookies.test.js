@@ -7,7 +7,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  clear, parseCookies, safeReturn, serialize, sign, unsign,
+  clear, HOME, parseCookies, safeReturn, serialize, sign, unsign,
 } from "../src/cookies.js";
 
 const KEY = "test-signing-key-not-the-real-one";
@@ -71,15 +71,21 @@ test("SameSite is Lax and not Strict", () => {
 });
 
 test("return_to only ever goes somewhere in this section", () => {
-  assert.equal(safeReturn("/pickem/card.html"), "/pickem/card.html");
-  assert.equal(safeReturn("/pickem/"), "/pickem/");
+  // The allowlist is the roof, /pools/, not one game under it — both games
+  // and the account they share have to be reachable after a sign-in.
+  assert.equal(safeReturn("/pools/pickem/card.html"), "/pools/pickem/card.html");
+  assert.equal(safeReturn("/pools/survivor/"), "/pools/survivor/");
+  assert.equal(safeReturn("/pools/account.html"), "/pools/account.html");
+  assert.equal(safeReturn("/pools/"), "/pools/");
+  // The old flat URL is a redirect now, and not somewhere to be sent.
+  assert.equal(safeReturn("/pickem/"), HOME);
   // The one that gets through a naive startsWith("/"): a protocol-relative
   // URL is a valid absolute redirect to another host.
-  assert.equal(safeReturn("//evil.example"), "/pickem/");
-  assert.equal(safeReturn("/\\evil.example"), "/pickem/");
-  assert.equal(safeReturn("https://evil.example"), "/pickem/");
-  assert.equal(safeReturn("/tiebreaker/"), "/pickem/");
-  assert.equal(safeReturn(""), "/pickem/");
-  assert.equal(safeReturn(null), "/pickem/");
-  assert.equal(safeReturn({ toString: () => "/pickem/x" }), "/pickem/");
+  assert.equal(safeReturn("//evil.example"), HOME);
+  assert.equal(safeReturn("/\\evil.example"), HOME);
+  assert.equal(safeReturn("https://evil.example"), HOME);
+  assert.equal(safeReturn("/tiebreaker/"), HOME);
+  assert.equal(safeReturn(""), HOME);
+  assert.equal(safeReturn(null), HOME);
+  assert.equal(safeReturn({ toString: () => "/pools/x" }), HOME);
 });

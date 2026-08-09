@@ -124,14 +124,20 @@ jobs:
         run: |
           (cd tiebreaker && python3 build.py)
           tools/assemble.sh dist
-          test -s dist/pickem/index.html
-          test -s dist/pickem/sitemap.xml
+          test -s dist/pools/index.html
+          test -s dist/pools/pickem/index.html
+          test -s dist/pools/account.html
+          test -s dist/pools/sitemap.xml
+          # /pickem/ shipped before the games were grouped; it stays as a
+          # redirect for as long as anything still links to it.
+          grep -q 'url=/pools/pickem/' dist/pickem/index.html
           # The hand-written files switch too, via PICKEM-ONLY/PICKEM-OFF.
-          grep -q '/pickem/' dist/index.html
+          grep -q '/pools/' dist/index.html
           grep -q '__Host-b12s' dist/privacy.html
-          grep -q 'pickem' dist/sitemap.xml
+          grep -q 'pools' dist/sitemap.xml
           ! grep -q 'no accounts, no cookies' dist/privacy.html
-          test ! -e dist/pickem/soon.html
+          test ! -e dist/pools/soon.html
+          test ! -e dist/pools/_moved
           ! grep -rq 'PICKEM-ONLY\|PICKEM-OFF' dist
           # A generated topbar, not dist/index.html: the four hand-written
           # pages carry a PICKEM-LINK marker instead, because the flag cannot
@@ -149,12 +155,14 @@ jobs:
           # dark is that the teaser is there and NOTHING ELSE is — no slate,
           # no app.js, nothing that would try to talk to an API that does not
           # exist yet.
-          test -s dist/pickem/index.html
-          test -s dist/pickem/shots/slate.png
-          grep -q 'Coming soon' dist/pickem/index.html
-          test ! -e dist/pickem/app.js
-          test ! -e dist/pickem/board.html
-          test ! -e dist/pickem/data
+          test -s dist/pools/index.html
+          test -s dist/pools/shots/slate.png
+          grep -q 'Coming soon' dist/pools/index.html
+          test ! -e dist/pools/app.js
+          test ! -e dist/pools/pickem
+          test ! -e dist/pools/survivor
+          test ! -e dist/pools/data
+          grep -q 'url=/pools/pickem/' dist/pickem/index.html
           ! grep -rq 'pickcon' dist
           # And the disclosure still matches what is actually running.
           grep -q 'no accounts, no cookies' dist/privacy.html

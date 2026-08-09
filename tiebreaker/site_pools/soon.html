@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang=en><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
-<title>The Rules — Big 12 Pickem</title>
-<link rel=canonical href="https://big12ology.com/pickem/rules.html">
-<meta name=description content="How the Big 12 pick&#x27;em works: frozen lines, pushes, voids, and when the week locks.">
+<title>Pools — Big 12 Pools</title>
+<link rel=canonical href="https://big12ology.com/pools/">
+<meta name=description content="A weekly Big 12 pick&#x27;em against the spread, coming soon: one frozen line for everyone, and a board that shows the chalk and the crowd.">
 <meta property=og:type content=website>
 <meta property=og:site_name content=Big12ology>
-<meta property=og:title content="The Rules — Big 12 Pickem">
-<meta property=og:description content="How the Big 12 pick&#x27;em works: frozen lines, pushes, voids, and when the week locks.">
-<meta property=og:url content="https://big12ology.com/pickem/rules.html">
+<meta property=og:title content="Pools — Big 12 Pools">
+<meta property=og:description content="A weekly Big 12 pick&#x27;em against the spread, coming soon: one frozen line for everyone, and a board that shows the chalk and the crowd.">
+<meta property=og:url content="https://big12ology.com/pools/">
 <meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
@@ -19,7 +19,7 @@
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
 <link rel=stylesheet href="../tiebreaker/brand.css?v=97406c73">
 <script defer src="../tiebreaker/theme.js?v=9a8f53fd"></script>
-
+<link rel=alternate type=application/rss+xml href=../tiebreaker/feed.xml>
 <style>
 .matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
   flex-wrap:wrap }
@@ -200,10 +200,15 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
    four: at the chrome width four columns leave a card too narrow for
    "Bill Snyder Family Stadium", and every line inside a card is written to
    hold one fact and stay on one line. */
-.slatelist { display:grid; gap:10px; margin-top:2px;
-  grid-template-columns:repeat(auto-fit,minmax(min(100%,30rem),1fr)) }
+/* Same reasoning as the game page: auto-fit columns are still rows, and a
+   game with a forecast, a broadcast and a line sat beside one with none left
+   the short card padded out to match. column-width keeps the "two up at the
+   chrome width, one on a phone" behaviour the repeat(auto-fit, minmax(...))
+   was chosen for, without pairing the cards into rows. */
+.slatelist { columns:30rem; column-gap:10px; margin-top:2px }
 .slate { background:var(--bg); border:1px solid var(--line);
-  border-radius:10px; padding:11px 13px; min-width:0 }
+  border-radius:10px; padding:11px 13px; min-width:0;
+  break-inside:avoid; margin-bottom:10px }
 .slateteams { font-size:15px; margin-bottom:8px }
 .slatemeta { font-size:12.5px; color:var(--dim); display:grid; gap:4px }
   /* Two columns of facts once the card is wide enough for them. Five
@@ -253,11 +258,20 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
    main:has() rather than a class, because build_subpage owns the <main> and
    #gamehead is on every game page and nothing else. Where :has is missing the
    page simply stays one column, which is what it already was. */
+/* Columns, not a grid, and the difference is the whole point. A grid puts
+   these cards in ROWS, and a row is as tall as its tallest member — so a
+   short market card beside a tall model card leaves a hole the height of the
+   difference, and the page reads as broken rather than dense. Nothing here
+   is a row: the cards are independent and their only relationship is order.
+   Flowing them down columns lets each one end where its content ends.
+   attendance/site/styles.css does the same thing for its chart panels. */
 @media (min-width: 900px) {
-  main:has(#gamehead) { grid-template-columns:1fr 1fr; align-items:start;
-    gap:14px }
+  main:has(#gamehead) { display:block; columns:2; column-gap:14px }
+  /* A card must not be split down the middle of a column break. */
+  main:has(#gamehead) > .card { break-inside:avoid; margin-bottom:14px }
+  /* The header spans, the way it did when this was a grid. */
   main:has(#gamehead) > .gameback,
-  main:has(#gamehead) > #gamehead { grid-column:1 / -1 }
+  main:has(#gamehead) > #gamehead { column-span:all }
 }
 .gameback { margin:2px 0 12px; font-size:13px }
 .gameback a { color:var(--accent); text-decoration:none }
@@ -277,6 +291,11 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   align-items:center; gap:10px; margin:6px 0; font-size:13.5px }
 .msys { color:var(--dim); font-size:12px; text-transform:uppercase;
   letter-spacing:.04em }
+/* The season the rating comes from, under its name. Preseason these are last
+   year's numbers, and the row has to say so where the name is — the caveat in
+   the note below is read after the bars, if at all. */
+.msys i { display:block; font-style:normal; font-size:10px; opacity:.75;
+  letter-spacing:0; font-variant-numeric:tabular-nums }
 .mrow { display:grid; align-items:center; gap:10px;
   grid-template-columns:minmax(0,140px) minmax(0,1fr) 42px }
 .mname { overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
@@ -380,62 +399,93 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../tiebreaker/scrollcue.js?v=5fef00f1"></script><link rel=stylesheet href="styles.css?v=c6e642f4"><script defer src="../tiebreaker/pct.js?v=03186563"></script><script defer src="app.js?v=0fa98bd6"></script></head><body>
+<script defer src="../tiebreaker/scrollcue.js?v=5fef00f1"></script><style>
+  .soonhero { text-align:center; padding:6px 0 2px }
+  .soonkick { display:inline-block; font-size:12px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--accent); font-weight:700;
+    border:1px solid var(--accent); border-radius:999px; padding:4px 13px }
+  /* The section's own h2 is a small uppercase grey label, which is right for
+     a card heading and wrong for the one line this page exists to say. */
+  .soonhero h2 { font-size:clamp(25px,4.2vw,38px); line-height:1.14;
+    margin:14px auto 10px; max-width:20ch; letter-spacing:-.01em;
+    text-transform:none; color:var(--ink); font-weight:800 }
+  .soonhero p { max-width:56ch; margin:0 auto; font-size:16px;
+    color:var(--dim) }
+  .soonwhen { margin-top:18px; font-size:15px }
+  .soonwhen b { color:var(--ink) }
+  .soonshot { margin:0; border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; background:var(--panel) }
+  /* max-width, not width. The slate shot is 1008 wide and fills; the chart
+     is 500 and would have been stretched to double its size, which on a 2x
+     asset is exactly the point at which it stops being sharp. */
+  .soonshot img { display:block; max-width:100%; height:auto; margin:0 auto }
+  /* Above the fold on a phone, so it must not be lazy — but the tag is
+     written once for all three, and the first is the one that matters. */
+  .soonshot:first-child img { background:var(--bg) }
+  .soonshot figcaption { padding:10px 14px; font-size:13.5px;
+    color:var(--dim); border-top:1px solid var(--line) }
+  .soonshot figcaption b { color:var(--ink); font-weight:600 }
+  .soonrow { display:grid; gap:14px; margin:16px 0 }
+  .soonwhat { display:grid; gap:14px; margin-top:4px;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr)) }
+  .soonwhat h3 { font-size:15px; margin:0 0 5px }
+  .soonwhat p { margin:0; font-size:14px; color:var(--dim) }
+  .soonfoot { text-align:center; color:var(--dim); font-size:14px;
+    margin:22px 0 2px }
+</style></head><body>
 <a class=skip-link href="#main">Skip to content</a>
-<nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pickem/">Pickem</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
+<nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pools/">Pools</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
   <div class=hwrap>
     <div>
-      <h1>Big 12 Pickem <span class=yrpills></span></h1>
-      <p>Pick every Big 12 game against the spread. One line for everyone, frozen when the week is published; the whole slate locks at the first kickoff.</p>
+      <h1>Big 12 Pools <span class=yrpills></span></h1>
+      <p>Two season-long games, one account. Pick every game against the spread, or pick one team a week and never the same team twice.</p>
     </div>
   </div>
 </header>
-<nav class=subnav><a href=./ class=off>The Slate</a><a href=card.html class=off>The Card</a><a href=board.html class=off>The Board</a><a href=rules.html class=on>The Rules</a></nav>
+
 <main id=main tabindex="-1">
 <svg class=sprite width=0 height=0 aria-hidden=true style='position:absolute'><symbol id='i-clock' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/></symbol><symbol id='i-pin' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/><path d='M17.657 16.657 13.414 20.9a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z'/></symbol><symbol id='i-tv' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='7' width='18' height='13' rx='2'/><path d='M16 3l-4 4l-4 -4'/></symbol><symbol id='i-sun' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='4'/><path d='M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7'/></symbol><symbol id='i-wind' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24'/><path d='M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24'/><path d='M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24'/></symbol><symbol id='i-rain' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M11 20v1m4 -3v1m-8 -1v1'/></symbol><symbol id='i-history' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 8v4l3 3'/><path d='M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5'/></symbol><symbol id='i-chart' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 20h18'/><rect x='5' y='12' width='4' height='8'/><rect x='10' y='8' width='4' height='12'/><rect x='15' y='4' width='4' height='16'/></symbol><symbol id='i-note' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='4' width='16' height='16' rx='2'/><path d='M9 8h6M9 12h6M9 16h3'/></symbol><symbol id='i-out' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 6H6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6'/><path d='M11 13l9 -9'/><path d='M15 4h5v5'/></symbol></svg>
 
 
 <div class=card>
-<h2>How it works</h2>
-<p>Every game involving a Big 12 team is on the slate. Pick a side against the
-spread. The whole week locks at the first kickoff, and what you picked becomes
-public then — not before.</p>
-<h3>The line does not move</h3>
-<p>The spread is taken from the market when the week is published and written
-down. Everyone plays the same number, and it is the number you are scored
-against even if the market moves ten points afterwards. It is rounded to the
-nearest half point, because a cross-book average sitting on an arbitrary tenth
-is not a line anybody could have bet.</p>
-<h3>Push</h3>
-<p>Land exactly on the number and it is a push: not a win, not a loss, and
-counted in neither half of your percentage. Whole-number lines are the only
-ones that can do this. Over the 2025 season five of 120 games would have
-pushed.</p>
-<h3>Games you cannot pick</h3>
-<p>A game with no posted line is shown and greyed out. So is one whose kickoff
-has not been announced — the lock is the first kickoff, and a time nobody has
-set cannot be part of that. If a line appears before the lock, the game opens
-up.</p>
-<h3>A game that is not played</h3>
-<p>Cancelled or abandoned, it is void for everyone: no win, no loss, out of the
-percentage entirely. A voided opener does not reopen a week that has already
-locked.</p>
-<h3>Weeks</h3>
-<p>A pick'em week is a weekend, Tuesday to Monday. It is not the week number on
-the tiebreaker or schedule pages: those follow the data provider, whose 2025
-&ldquo;week&nbsp;1&rdquo; ran nine days and eighteen games. Opening week is the
-one genuine exception here too, running Thursday to Labor Day.</p>
-<h3>The board</h3>
-<p>Ranked by wins, then by percentage. A new account is hidden from the public
-board until it has completed one scored week &mdash; long enough that a
-throwaway account is not worth making, short enough that a real player waits
-once.</p>
-<h3>Signing in</h3>
-<p>Google or GitHub, and we ask them for one thing: that you are you. No email
-address, no name, no picture. What is public is the display name you choose and
-your record. <a href="/privacy">What we store</a>.</p>
+  <div class=soonhero>
+    <span class=soonkick>Coming soon</span>
+    <h2>Pick every Big 12 game against the spread.</h2>
+    <p>One line for everyone, frozen the moment the week is published. The
+    whole slate locks at the first kickoff, and what you picked becomes public
+    then &mdash; not before.</p>
+    <p class=soonwhen>Week one kicks off <b>Saturday, August 29</b>.</p>
+  </div>
 </div>
+
+<div class=soonrow><figure class=soonshot><img src="shots/slate.png" width=1008 height=330 loading="lazy" decoding="async" alt="The Slate, from the pick&rsquo;em under construction."><figcaption><b>The Slate.</b> Every Big 12 game, one frozen line, and a clock. Pick a side and it saves as you go &mdash; there is no submit button to forget.</figcaption></figure><figure class=soonshot><img src="shots/chart.png" width=500 height=444 loading="lazy" decoding="async" alt="Week by week, from the pick&rsquo;em under construction."><figcaption><b>Week by week.</b> Your season against the shape of the field, drawn in your team's colours. <b>The chalk</b> is what taking every favourite would have scored, and it is harder to beat than it sounds.</figcaption></figure><figure class=soonshot><img src="shots/room.png" width=1008 height=209 loading="lazy" decoding="async" alt="The room, from the pick&rsquo;em under construction."><figcaption><b>The room.</b> What everybody else picked, on every game, scored as if one person had made all of it. Beating the field is one thing; beating the field put together is another.</figcaption></figure></div>
+
+<div class=card>
+  <h2>What makes it different</h2>
+  <div class=soonwhat>
+    <div>
+      <h3>The line never moves</h3>
+      <p>Taken from the market when the week goes up and written down.
+      Everyone plays the same number, whatever the market does afterwards.</p>
+    </div>
+    <div>
+      <h3>A push is a push</h3>
+      <p>Land exactly on the number and it counts as neither a win nor a
+      loss, and it stays out of your percentage entirely.</p>
+    </div>
+    <div>
+      <h3>Two benchmarks, not just a rank</h3>
+      <p>Beating the field only means the field had a bad week. The board
+      also shows the chalk and the room, which are harder.</p>
+    </div>
+  </div>
+</div>
+
+<p class=soonfoot>No account needed to look. When it opens, signing in asks
+your provider for one thing &mdash; that you are you. No email address, no
+name, no picture. <a href="/privacy">What we store</a>.</p>
+
 </main>
 <footer class=b12-footer>Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> · procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (provenance in <a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · last updated {{BUILD_STAMP}}.<br>A Big12ology project · not affiliated with the Big 12 Conference; conference and team marks belong to their owners and appear for identification only.<br><a href="/privacy">Privacy</a> · <a href="mailto:dept@big12ology.com">dept@big12ology.com</a></footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>

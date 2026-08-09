@@ -751,3 +751,43 @@
 /* The room reads as a summary of the two below it, so it spans and its
    figures spread rather than stacking into a column. */
 #roomcard { margin-bottom: 14px; }
+
+/* --- survivor ------------------------------------------------------------
+   The picker is the slate's control verbatim — same classes, same states —
+   so the only styles here are the three facts the slate does not have: a
+   team you have already spent, a run, and a row whose player is out. */
+
+/* Spent: still legible (you will want to remember who you used), but
+   unmistakably not on offer. Dashed like an unpickable game, struck like an
+   eliminated team on the race pages — both signals this site already uses
+   for "closed". The input is disabled, so hover and focus never light it. */
+.pk-svspent { border-style: dashed; color: var(--dim); cursor: default; }
+.pk-svspent .pk-tname { text-decoration: line-through;
+                        text-decoration-color: var(--dim); }
+.pk-svspent:hover { border-color: var(--line); }
+.pk-svspent .pk-num { font-weight: 400; font-size: 11px; color: var(--dim); }
+
+/* Your run: one line per week, the same rhythm as the card's rows. */
+.pk-svrun { list-style: none; margin: 0; padding: 0; }
+.pk-svrunrow { display: flex; align-items: center; gap: 10px;
+               padding: 5px 0; border-bottom: 1px solid var(--line);
+               font-size: 14px; }
+.pk-svrunrow:last-child { border-bottom: none; }
+.pk-svrunrow .pk-when { min-width: 3.2em; }
+.pk-svrunrow img.mark { margin: 0; }
+
+/* The dead stay on the board — watching is the consolation game — but they
+   recede the way finished rows do everywhere else on the site. */
+#svboard tr.pk-svout td { color: var(--dim); }
+#svboard { width: 100%; border-collapse: collapse; }
+#svboard th, #svboard td { padding: 7px 10px; text-align: left;
+                           border-bottom: 1px solid var(--line); }
+#svboard td.n, #svboard th.n { text-align: right;
+                               font-variant-numeric: tabular-nums; }
+#svboard tr.you td { background: color-mix(in srgb, var(--you, var(--accent)) 10%, transparent); }
+#svboard tr.you td:first-child { box-shadow: inset 3px 0 0 var(--you, var(--accent)); }
+#svboard img.mark { vertical-align: -2px; margin-right: 6px; }
+#svboard .pk-res { margin-left: 6px; }
+
+#svwithdraw { margin-top: 10px; }
+#svlock { padding: 10px 14px; }

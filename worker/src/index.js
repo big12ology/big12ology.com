@@ -53,7 +53,7 @@ function redirect(to, headers = {}) {
  * mid-navigation in a browser tab. The reason rides in the query string so
  * the account page can say something specific.
  */
-function authFail(env, reason, returnTo = "/pickem/account.html") {
+function authFail(env, reason, returnTo = "/pools/account.html") {
   return redirect(`${returnTo}?auth_error=${encodeURIComponent(reason)}`,
                   { "Set-Cookie": clear(STATE_COOKIE) });
 }
@@ -95,7 +95,7 @@ async function handle(req, env, ctx) {
     if (!user) return authFail(env, "unauthenticated");
     if (!oauth.PROVIDERS.includes(link[1])) return fail("unknown_provider", 404);
     const { url: dest, cookie } = await oauth.begin(
-      env, link[1], "/pickem/account.html", "link");
+      env, link[1], "/pools/account.html", "link");
     return redirect(dest, {
       "Set-Cookie": serialize(STATE_COOKIE, cookie, { maxAge: oauth.STATE_TTL }),
     });
@@ -166,7 +166,7 @@ async function handle(req, env, ctx) {
       `SELECT display_name FROM users WHERE id = ?`).bind(res.userId).first();
     const dest = (named && named.display_name)
       ? safeReturn(state.return_to)
-      : `/pickem/account.html?welcome=1&next=${
+      : `/pools/account.html?welcome=1&next=${
           encodeURIComponent(safeReturn(state.return_to))}`;
 
     const headers = new Headers();
@@ -202,6 +202,9 @@ async function handle(req, env, ctx) {
   }
   if (path === "/api/consensus" && req.method === "GET") {
     return api.getConsensus(env, url);
+  }
+  if (path === "/api/survivor/board" && req.method === "GET") {
+    return api.getSurvivorBoard(env);
   }
   const upicks = path.match(/^\/api\/users\/([A-Za-z0-9]+)\/picks$/);
   if (upicks && req.method === "GET") {
@@ -248,6 +251,22 @@ async function handle(req, env, ctx) {
       const b = await body(req);
       if (!b) return fail("bad_json", 400);
       return withRefresh(await api.putPicks(env, user, b));
+    }
+    return fail("method_not_allowed", 405);
+  }
+
+  if (path === "/api/survivor") {
+    if (req.method === "GET") {
+      return withRefresh(await api.getSurvivor(env, user, url));
+    }
+    return fail("method_not_allowed", 405);
+  }
+  if (path === "/api/survivor/pick") {
+    if (req.method === "PUT") {
+      if (!csrfOk(req, env)) return fail("bad_origin", 403);
+      const b = await body(req);
+      if (!b) return fail("bad_json", 400);
+      return withRefresh(await api.putSurvivorPick(env, user, b));
     }
     return fail("method_not_allowed", 405);
   }

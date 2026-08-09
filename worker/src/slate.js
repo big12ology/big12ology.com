@@ -17,7 +17,7 @@ import { ats } from "./ats.js";
 /** Where the week lives once assemble.sh has copied it. */
 export function slateUrl(env, season, week) {
   const nn = String(week).padStart(2, "0");
-  return `${env.PAGES_ORIGIN}/pickem/data/${season}/week-${nn}.json`;
+  return `${env.PAGES_ORIGIN}/pools/data/${season}/week-${nn}.json`;
 }
 
 export function scoresUrl(env, season) {
@@ -153,7 +153,7 @@ export async function currentWeek(env, season) {
 }
 
 /**
- * A week, shaped exactly as tiebreaker/site_pickem/app.js expects it.
+ * A week, shaped exactly as tiebreaker/site_pools/app.js expects it.
  *
  * The consensus is attached HERE and only when the week is locked. It is the
  * one number on the site that would change how people play if it leaked

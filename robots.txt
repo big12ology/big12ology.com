@@ -10,5 +10,5 @@ Sitemap: https://big12ology.com/sitemap.xml
 Sitemap: https://big12ology.com/tiebreaker/sitemap.xml
 Sitemap: https://big12ology.com/schedule/sitemap.xml
 # PICKEM-ONLY
-Sitemap: https://big12ology.com/pickem/sitemap.xml
+Sitemap: https://big12ology.com/pools/sitemap.xml
 # /PICKEM-ONLY

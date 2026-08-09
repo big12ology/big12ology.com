@@ -100,19 +100,26 @@ rsync -a "${COMMON[@]}" "$ROOT/attendance/" "$DIST/attendance/"
 # and privacy.html still promises "no accounts, no cookies". Off by default,
 # which is what CI gets; nothing is deleted, it is simply not published.
 if [ "${B12_PICKEM:-}" = "1" ]; then
-  # The section proper. soon.html is the teaser and has no business here.
-  rsync -a "${COMMON[@]}" --exclude=soon.html \
-        "$ROOT/tiebreaker/site_pickem/" "$DIST/pickem/"
+  # Both games and the account they share. soon.html and _moved/ are build
+  # scaffolding and have no business in the published tree.
+  rsync -a "${COMMON[@]}" --exclude=soon.html --exclude=/_moved \
+        "$ROOT/tiebreaker/site_pools/" "$DIST/pools/"
 else
-  # Dark, /pickem/ is the Coming Soon page and its screenshots — and nothing
+  # Dark, /pools/ is the Coming Soon page and its screenshots — and nothing
   # else. Not app.js, not styles.css, not a slate: the teaser is one
   # self-contained page, so there is no second thing to keep in step and
   # nothing that can start talking to an API that does not exist.
-  mkdir -p "$DIST/pickem"
-  cp "$ROOT/tiebreaker/site_pickem/soon.html" "$DIST/pickem/index.html"
-  rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_pickem/shots/" \
-        "$DIST/pickem/shots/"
+  mkdir -p "$DIST/pools"
+  cp "$ROOT/tiebreaker/site_pools/soon.html" "$DIST/pools/index.html"
+  cp "$ROOT/tiebreaker/site_pools/sitemap.xml" "$DIST/pools/sitemap.xml"
+  rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_pools/shots/" \
+        "$DIST/pools/shots/"
 fi
+
+# /pickem/ shipped before the games were grouped. It stays, as a redirect, for
+# as long as anything out there still links to it.
+mkdir -p "$DIST/pickem"
+cp "$ROOT/tiebreaker/site_pools/_moved/pickem.html" "$DIST/pickem/index.html"
 
 # The published slates, under /pickem/data/ so they cannot collide with the
 # section's pages. These are the frozen lines — the record of what each week
@@ -123,8 +130,8 @@ fi
 # mkdir first: rsync creates the last missing directory of a destination but
 # not two, and /pickem/data/ was two before the section above existed.
 if [ "${B12_PICKEM:-}" = "1" ] && [ -d "$ROOT/tiebreaker/pickem" ]; then
-  mkdir -p "$DIST/pickem/data"
-  rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/pickem/" "$DIST/pickem/data/"
+  mkdir -p "$DIST/pools/data"
+  rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/pickem/" "$DIST/pools/data/"
 fi
 
 # --- checks ------------------------------------------------------------
@@ -219,20 +226,22 @@ done
 # unconditionally it would report nine missing files on every ordinary build,
 # which is how a required-file check stops being read.
 if [ "${B12_PICKEM:-}" = "1" ]; then
-  for f in pickem/index.html pickem/card.html pickem/board.html \
-           pickem/rules.html pickem/account.html \
-           pickem/app.js pickem/styles.css pickem/sitemap.xml; do
+  for f in pools/index.html pools/account.html pools/app.js \
+           pools/styles.css pools/sitemap.xml \
+           pools/pickem/index.html pools/pickem/card.html \
+           pools/pickem/board.html pools/pickem/rules.html; do
     [ -e "$DIST/$f" ] || note "$f"
   done
 else
   # And the reverse. Dark, exactly two things may be under /pickem/: the
   # teaser and its pictures. Anything else means the section leaked.
-  [ -e "$DIST/pickem/index.html" ] || note "pickem/index.html (the teaser)"
+  [ -e "$DIST/pools/index.html" ] || note "pools/index.html (the teaser)"
   while IFS= read -r stray; do
     echo "  MUST NOT SHIP  ${stray#"$DIST"/} with B12_PICKEM unset"
     fail=1
-  done < <(find "$DIST/pickem" -type f \
-                ! -name index.html ! -path "*/shots/*" 2>/dev/null)
+  done < <(find "$DIST/pools" -type f \
+                ! -name index.html ! -name sitemap.xml \
+                ! -path "*/shots/*" 2>/dev/null)
 fi
 
 [ -s "$DIST/CNAME" ] && grep -qx "big12ology.com" "$DIST/CNAME" || {

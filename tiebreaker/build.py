@@ -47,12 +47,24 @@ SITE = os.path.join(HERE, "site")
 # The schedule section is a sibling of /tiebreaker/ on the
 # domain, so its pages reach shared assets through ../tiebreaker/.
 SCHEDULE_SITE = os.path.join(HERE, "site_schedule")
-# The pick'em is generated here like the schedule, and served at /pickem/. It
-# is the one section whose body is not in the file: the shells are static and
-# every number in them arrives from /api/* at runtime, because a slate, a lock
-# countdown and a leaderboard are per-viewer and per-second. Everything around
-# that body — chrome, nav, footer, cache-busting — is the same as everywhere.
-PICKEM_SITE = os.path.join(HERE, "site_pickem")
+# The pools — two season-long games under one roof at /pools/, generated here
+# like the schedule. It is the one section whose body is not in the file: the
+# shells are static and every number in them arrives from /api/* at runtime,
+# because a slate, a lock countdown and a leaderboard are per-viewer and
+# per-second. Everything around that body — chrome, nav, footer,
+# cache-busting — is the same as everywhere.
+#
+#   /pools/                the two games, and what they are
+#   /pools/pickem/         every game, against the spread
+#   /pools/survivor/       one team a week, no repeats
+#   /pools/account.html    ONE account for both, so it sits at the top
+#
+# Pages one level down reach shared assets through ../../tiebreaker/, which is
+# what POOLS_UP is for.
+POOLS_SITE = os.path.join(HERE, "site_pools")
+PICKEM_SITE = os.path.join(POOLS_SITE, "pickem")
+SURVIVOR_SITE = os.path.join(POOLS_SITE, "survivor")
+POOLS_UP = "../"          # from /pools/x/ back up to /pools/
 
 # team -> logo file key (assets in site/logos/, sourced from Wikimedia; BYU is png)
 TEAM_KEY = {
@@ -282,8 +294,8 @@ def topbar(section, year, base="", acct=False):
             # Always. /pickem/ is a real page either way: the section when
             # it is on, the Coming Soon page when it is not. It was only
             # gated because the link used to point at a 404.
-            + f'<a{" class=on" if section == "pickem" else ""} '
-              f'href="/pickem/">Pickem</a>'
+            + f'<a{" class=on" if section in ("pickem", "pools") else ""} '
+              f'href="/pools/">Pools</a>'
             + '<span class=b12-right>'
             + ('<span class=b12-acct hidden></span>' if acct else '')
             + '<span class=b12-theme></span></span>'
@@ -421,6 +433,13 @@ SECTIONS = {
         "past": ("The {year} conference schedule: every result by week, who "
                  "never met, and what the draw was worth."),
     },
+    "pools": {
+        "title": "Big 12 Pools",
+        "live": ("Two season-long games, one account. Pick every game "
+                 "against the spread, or pick one team a week and never "
+                 "the same team twice."),
+        "past": "The {year} pools.",
+    },
     "pickem": {
         "title": "Big 12 Pickem",
         "live": ("Pick every Big 12 game against the spread. One line for "
@@ -459,15 +478,25 @@ SCHEDULE_NAV = [("schedule", "./", "The Schedule"),
 # distinction a player needs. The account page is deliberately absent: it is
 # reached from the chip in the masthead, and a nav slot that says "Account"
 # on a page most readers never sign into is a slot wasted.
-PICKEM_NAV = [("slate", "./", "The Slate"),
-              ("card", "card.html", "The Card"),
-              ("board", "board.html", "The Board"),
-              ("rules", "rules.html", "The Rules")]
+# Two navs under one roof. The games sit side by side at the top so a reader
+# can cross between them without going back to /pools/, and each game's own
+# pages hang below. Absolute hrefs, not relative: these links are rendered at
+# two different depths (/pools/account.html and /pools/pickem/card.html) and
+# a relative "card.html" means something different from each.
+POOLS_NAV = [("pools", "/pools/", "The Pools"),
+             ("slate", "/pools/pickem/", "Pickem"),
+             ("survivor", "/pools/survivor/", "Survivor")]
+
+PICKEM_NAV = POOLS_NAV + [
+    ("card", "/pools/pickem/card.html", "The Card"),
+    ("board", "/pools/pickem/board.html", "The Board"),
+    ("rules", "/pools/pickem/rules.html", "The Rules")]
 
 
 def nav_for(section):
     return {"schedule": SCHEDULE_NAV,
-            "pickem": PICKEM_NAV}.get(section, SUBNAV_LINKS)
+            "pickem": PICKEM_NAV,
+            "pools": POOLS_NAV}.get(section, SUBNAV_LINKS)
 
 
 def subnav(active, section="tiebreaker", prefix=""):
@@ -1713,9 +1742,9 @@ def build_subpage(title, active, body, year, matchcard,
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <a class=skip-link href="#main">Skip to content</a>
-{topbar(section, year, BASE, acct=section == "pickem")}
+{topbar(section, year, BASE, acct=section in ("pickem", "pools"))}
 {tracker_top(year, active, matchcard, section, page, up, subnavon=subnavon,
-             yearpills=section != "pickem")}
+             yearpills=section not in ("pickem", "pools"))}
 {body}
 </main>
 {footer()}
@@ -4075,8 +4104,8 @@ PICKEM_ACCOUNT_BODY = f"""
   display name you choose and your record.
   <a href="/privacy">What we store</a>.</p>
   <p class=pk-signins>
-    <a class=wbtn href="/api/auth/login/google?return_to=/pickem/">Continue with Google</a>
-    <a class=wbtn href="/api/auth/login/github?return_to=/pickem/">Continue with GitHub</a>
+    <a class=wbtn href="/api/auth/login/google?return_to=/pools/pickem/">Continue with Google</a>
+    <a class=wbtn href="/api/auth/login/github?return_to=/pools/pickem/">Continue with GitHub</a>
   </p>
   <p class=note>Signing in sets one cookie. Nothing else.</p>
 </div>
@@ -4113,7 +4142,7 @@ PICKEM_ACCOUNT_BODY = f"""
     one; you can change it whenever you like.</p>
     <noscript><button type=submit class=wbtn>Save team</button></noscript>
   </form>
-  <p class=pk-onward id=onward hidden><a href="/pickem/">Go to the slate
+  <p class=pk-onward id=onward hidden><a href="/pools/pickem/">Go to the slate
     &rarr;</a></p>
 </div>
 <div class=card id=acctinfo hidden>
@@ -4241,7 +4270,69 @@ def season_opener(games):
     return t.astimezone(datetime.timezone.utc)
 
 
-def build_pickem_soon(year, games):
+POOLS_HOME_BODY = """
+<div class=card>
+  <h2>Two games, one account</h2>
+  <p class=note>Sign in once and you are in both. The same display name, the
+  same team beside it, one set of rules about what is public and when.</p>
+</div>
+<div class=poolgrid>
+  <a class="card poolcard" href="pickem/">
+    <h2>Pickem</h2>
+    <p>Pick <b>every</b> Big 12 game against the spread. One line for
+    everyone, frozen when the week is published and never moved again. The
+    whole slate locks at the first kickoff.</p>
+    <p class=note>Scored week by week against the field, the chalk and the
+    room.</p>
+  </a>
+  <a class="card poolcard" href="survivor/">
+    <h2>Survivor</h2>
+    <p>Pick <b>one</b> team a week to win, and never the same team twice. Get
+    it wrong and you are out. The hard part is not this week &mdash; it is
+    which teams you have left in November.</p>
+    <p class=note>One pick, one life, the whole season.</p>
+  </a>
+</div>
+"""
+
+POOLS_HOME_CSS = """
+  .poolgrid { display:grid; gap:14px; margin-top:14px;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr)) }
+  .poolcard { display:block; text-decoration:none; color:inherit }
+  .poolcard h2 { color:var(--accent) }
+  .poolcard:hover { border-color:var(--accent) }
+  .poolcard p { margin:0 0 8px }
+  .poolcard p:last-child { margin:0 }
+"""
+
+
+def build_pools_home(year):
+    """The roof over the two games.
+
+    It exists because /pools/ has to be somewhere real: it is in the nav, it
+    is in the sitemap, and it is where a redirect from the old flat /pickem/
+    would otherwise dead-end. What it says is the one thing neither game can
+    say for itself — that they share an account.
+    """
+    global BASE
+    prev, BASE = BASE, "../tiebreaker/"
+    os.makedirs(POOLS_SITE, exist_ok=True)
+    head = (f'<link rel=stylesheet href="{asset_v("styles.css", POOLS_SITE)}">'
+            f'<style>{POOLS_HOME_CSS}</style>'
+            f'<script defer src="{asset_v("app.js", POOLS_SITE)}"></script>')
+    html = build_subpage("Pools", "pools", POOLS_HOME_BODY, year, "",
+                         canon="https://big12ology.com/pools/",
+                         desc="Two season-long Big 12 games, one account: a "
+                              "pick'em against the spread and a survivor "
+                              "pool.",
+                         head=head, section="pools", page="")
+    with open(os.path.join(POOLS_SITE, "index.html"), "w") as f:
+        f.write(html)
+    BASE = prev
+    print(f"built pools home -> {POOLS_SITE}/index.html")
+
+
+def build_pools_soon(year, games):
     """The page that stands at /pickem/ until the real thing is switched on.
 
     It is generated, not hand-written, for the same reasons the rest of the
@@ -4253,7 +4344,7 @@ def build_pickem_soon(year, games):
     """
     global BASE
     prev, BASE = BASE, "../tiebreaker/"
-    os.makedirs(PICKEM_SITE, exist_ok=True)
+    os.makedirs(POOLS_SITE, exist_ok=True)
 
     opener = season_opener(games)
     when = (f"Week one kicks off <b>"
@@ -4322,17 +4413,17 @@ your provider for one thing &mdash; that you are you. No email address, no
 name, no picture. <a href="/privacy">What we store</a>.</p>
 """
 
-    html = build_subpage("Pickem", "pickem", body, year, "",
-                         canon="https://big12ology.com/pickem/",
+    html = build_subpage("Pools", "pools", body, year, "",
+                         canon="https://big12ology.com/pools/",
                          desc="A weekly Big 12 pick'em against the spread, "
                               "coming soon: one frozen line for everyone, and "
                               "a board that shows the chalk and the crowd.",
                          head=f"<style>{PICKEM_SOON_CSS}</style>",
-                         section="pickem", page="", subnavon=False)
-    with open(os.path.join(PICKEM_SITE, "soon.html"), "w") as f:
+                         section="pools", page="", subnavon=False)
+    with open(os.path.join(POOLS_SITE, "soon.html"), "w") as f:
         f.write(html)
     BASE = prev
-    print(f"built pickem teaser -> {PICKEM_SITE}/soon.html")
+    print(f"built pools teaser -> {POOLS_SITE}/soon.html")
 
 
 def build_pickem(year):
@@ -4351,16 +4442,24 @@ def build_pickem(year):
     of a masthead this project deliberately consolidated into one.
     """
     global BASE
-    prev, BASE = BASE, "../tiebreaker/"
+    # Two levels down now (/pools/pickem/x.html), so the shared assets are two
+    # levels up. This is the whole cost of nesting the games under one roof.
+    prev, BASE = BASE, "../../tiebreaker/"
     os.makedirs(PICKEM_SITE, exist_ok=True)
+    os.makedirs(POOLS_SITE, exist_ok=True)
 
     # styles.css after the inherited BRIEF_CSS so it can override; app.js is
     # one classic script with no imports, so this hash is the whole truth
     # about the code version. pct.js comes from the tiebreaker for the shared
     # colour ramp rather than a second copy of the same curve.
-    head = (f'<link rel=stylesheet href="{asset_v("styles.css", PICKEM_SITE)}">'
+    # The stylesheet and the client live at /pools/, not inside either game:
+    # both games share them, and a second copy is a second thing to keep in
+    # step. POOLS_UP walks back out of the game's directory to reach them.
+    head = (f'<link rel=stylesheet '
+            f'href="{POOLS_UP}{asset_v("styles.css", POOLS_SITE)}">'
             f'<script defer src="{BASE}{asset_v("pct.js")}"></script>'
-            f'<script defer src="{asset_v("app.js", PICKEM_SITE)}"></script>')
+            f'<script defer '
+            f'src="{POOLS_UP}{asset_v("app.js", POOLS_SITE)}"></script>')
 
     # Colour, mark and abbreviation for every team the site knows, written as
     # a real file rather than served from /api/*. The build already has all of
@@ -4393,10 +4492,10 @@ def build_pickem(year):
             row["b12"] = True
         if row:
             meta[t] = row
-    with open(os.path.join(PICKEM_SITE, "teams.json"), "w") as f:
+    with open(os.path.join(POOLS_SITE, "teams.json"), "w") as f:
         json.dump(meta, f, sort_keys=True, indent=1)
 
-    canon = "https://big12ology.com/pickem/"
+    canon = "https://big12ology.com/pools/pickem/"
     pages = [
         ("index.html", "slate", "Big 12 Pickem", PICKEM_SLATE_BODY,
          canon, "Pick every Big 12 game against the spread. One frozen line "
@@ -4409,8 +4508,6 @@ def build_pickem(year):
         ("rules.html", "rules", "The Rules", PICKEM_RULES,
          canon + "rules.html", "How the Big 12 pick'em works: frozen lines, "
                                "pushes, voids, and when the week locks.", True),
-        ("account.html", "account", "Your account", PICKEM_ACCOUNT_BODY,
-         None, None, False),
     ]
     for fname, active, title, body, url, desc, indexed in pages:
         html = build_subpage(title, active, body, year, "", canon=url,
@@ -4490,20 +4587,27 @@ def write_discovery(years):
     # to everyone are listed — The Card and the account page are per-viewer
     # and carry noindex. The Rules is the section's real indexable content,
     # since it is the one page whose body is in the file rather than fetched.
-    pick = "https://big12ology.com/pickem/"
+    pool = "https://big12ology.com/pools/"
     pick_urls = [
-        f'  <url><loc>{pick}</loc><lastmod>{today}</lastmod>'
+        f'  <url><loc>{pool}</loc><lastmod>{today}</lastmod>'
         f'<changefreq>daily</changefreq><priority>0.8</priority></url>',
-        f'  <url><loc>{pick}rules.html</loc><lastmod>{today}</lastmod>'
+        f'  <url><loc>{pool}pickem/</loc><lastmod>{today}</lastmod>'
+        f'<changefreq>daily</changefreq><priority>0.8</priority></url>',
+        f'  <url><loc>{pool}pickem/rules.html</loc><lastmod>{today}</lastmod>'
         f'<changefreq>monthly</changefreq><priority>0.7</priority></url>',
-        f'  <url><loc>{pick}board.html</loc><lastmod>{today}</lastmod>'
+        f'  <url><loc>{pool}pickem/board.html</loc><lastmod>{today}</lastmod>'
         f'<changefreq>weekly</changefreq><priority>0.6</priority></url>',
+        f'  <url><loc>{pool}survivor/</loc><lastmod>{today}</lastmod>'
+        f'<changefreq>daily</changefreq><priority>0.8</priority></url>',
     ]
+    os.makedirs(POOLS_SITE, exist_ok=True)
     if PICKEM_ENABLED:
-        os.makedirs(PICKEM_SITE, exist_ok=True)
-        write_map(os.path.join(PICKEM_SITE, "sitemap.xml"), pick_urls)
+        write_map(os.path.join(POOLS_SITE, "sitemap.xml"), pick_urls)
     else:
-        pick_urls = []
+        # Dark, the only thing at /pools/ is the teaser, so it is the only
+        # thing worth listing.
+        write_map(os.path.join(POOLS_SITE, "sitemap.xml"), pick_urls[:1])
+        pick_urls = pick_urls[:1]
     # No robots.txt here on purpose: crawlers only read it at the origin
     # root, and this is a project site under /tiebreaker/. The real one
     # lives at the repo root and points at this sitemap.
@@ -4533,10 +4637,18 @@ def main():
             pickem_mod.write_scores(year, games,
                                     os.path.join(SITE, "pickem-scores.json"))
             build_pickem(year)
+            build_pools_home(year)
         # Built either way. It is what stands at /pickem/ while the section
         # is dark, and building it on every run means it cannot rot into
         # something that no longer compiles by the time it is needed.
-        build_pickem_soon(year, games)
+        build_pools_soon(year, games)
+        # /pickem/ shipped and was indexed before the games were grouped, so
+        # it does not get to disappear. Meta-refresh plus a canonical, which
+        # is all a static host can offer and is what the tiebreaker's own
+        # moved pages already use.
+        os.makedirs(os.path.join(POOLS_SITE, "_moved"), exist_ok=True)
+        with open(os.path.join(POOLS_SITE, "_moved", "pickem.html"), "w") as f:
+            f.write(redirect_stub("/pools/pickem/", "Pickem"))
     # Finished seasons are rebuilt from cached results — no API calls, and
     # their output is deterministic, so a rebuild is a no-op unless the
     # engine itself changed.
