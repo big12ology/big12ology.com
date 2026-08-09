@@ -24,6 +24,24 @@
 //   It is knowable before you sign up. "Join at week six and you start
 //   without these five teams" is a real price, quoted in advance.
 
+/** Whether a survivor pick on this side of this game is allowed at all. */
+export function isPickable(game, team) {
+  if (!game || !game.b12) return false;
+  if (game.b12 === "both") return team === game.home || team === game.away;
+  return team === (game.b12 === "home" ? game.home : game.away);
+}
+
+/**
+ * The favourite of a game, but only if it is one that can be picked.
+ *
+ * A game where the non-conference side is favoured has no chalk for survivor
+ * purposes — the favourite is unpickable and the underdog is not the chalk.
+ */
+function pickableFavourite(g) {
+  const fav = g.spread_x2 < 0 ? g.home : g.away;
+  return isPickable(g, fav) ? fav : null;
+}
+
 /** Below this many usable teams left, entering is not a game. */
 export const MIN_USABLE = 4;
 
@@ -40,7 +58,7 @@ export async function chalkRoster(env, season, entryWeek) {
   if (!(entryWeek > 1)) return [];
 
   const { results } = await env.DB.prepare(
-    `SELECT week, game_id, home, away, spread_x2
+    `SELECT week, game_id, home, away, spread_x2, b12
        FROM slate_games
       WHERE season = ? AND week < ? AND spread_x2 IS NOT NULL
       ORDER BY week, game_id`).bind(season, entryWeek).all();
@@ -48,11 +66,14 @@ export async function chalkRoster(env, season, entryWeek) {
   const byWeek = new Map();
   for (const g of results || []) {
     if (g.spread_x2 === 0) continue;            // a pick'em is not chalk
+    // Only a team somebody could have picked can have been spent. Burning a
+    // visiting non-conference favourite would take away nothing and leave the
+    // handicap a team short.
+    const team = pickableFavourite(g);
+    if (!team) continue;
     if (!byWeek.has(g.week)) byWeek.set(g.week, []);
     byWeek.get(g.week).push({
-      team: g.spread_x2 < 0 ? g.home : g.away,
-      margin: Math.abs(g.spread_x2),
-      game_id: g.game_id,
+      team, margin: Math.abs(g.spread_x2), game_id: g.game_id,
     });
   }
 
@@ -90,13 +111,14 @@ export async function entryWeek(env, season, userId, thisWeek) {
 /** Teams still available to someone entering now: never chalk, never spent. */
 export async function usableFrom(env, season, week, burnedTeams) {
   const { results } = await env.DB.prepare(
-    `SELECT DISTINCT home, away FROM slate_games
+    `SELECT DISTINCT home, away, b12 FROM slate_games
       WHERE season = ? AND week >= ? AND spread_x2 IS NOT NULL`)
     .bind(season, week).all();
   const out = new Set();
   for (const g of results || []) {
-    if (!burnedTeams.has(g.home)) out.add(g.home);
-    if (!burnedTeams.has(g.away)) out.add(g.away);
+    for (const t of [g.home, g.away]) {
+      if (isPickable(g, t) && !burnedTeams.has(t)) out.add(t);
+    }
   }
   return out;
 }

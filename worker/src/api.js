@@ -421,12 +421,16 @@ export async function putSurvivorPick(env, user, body) {
   // trigger message, and reading the slate row first also confirms the game
   // belongs to this week rather than to some other slate.
   const g = await env.DB.prepare(
-    `SELECT home, away, spread_x2 FROM slate_games
+    `SELECT home, away, spread_x2, b12 FROM slate_games
       WHERE season = ? AND week = ? AND game_id = ?`)
     .bind(s, week, gameId).first();
   if (!g) return fail("no_such_game", 400);
   if (g.spread_x2 == null) return fail("unpickable", 400);
   if (team !== g.home && team !== g.away) return fail("not_in_game", 400);
+  // Conference teams only. A visiting non-conference side plays a Big 12 team
+  // once all season, so spending one would cost nothing and the pool would be
+  // survived on borrowed opponents rather than on a roster.
+  if (!handicap.isPickable(g, team)) return fail("not_in_conference", 400);
 
   // The handicap. Checked here rather than in a trigger because it depends on
   // the whole prior slate rather than on the row being written, and because

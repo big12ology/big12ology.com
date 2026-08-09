@@ -313,11 +313,18 @@ export default {
       // point, and the week-by-week chart has nothing to draw. It costs
       // nothing in the ordinary case, because weeks already present are
       // skipped from a query rather than re-fetched.
-      const { results: have } = await env.DB.prepare(
-        `SELECT week FROM weeks WHERE season = ?`).bind(season).all();
-      const known = new Set((have || []).map((r) => r.week));
+      //
+      // Every week, not only the ones we have never seen. importWeek hashes
+      // the file and returns `unchanged` without writing when it matches, so
+      // the ordinary Saturday costs a fetch per week and nothing else — and
+      // the one time it is not ordinary is the time it matters. When the
+      // publisher starts carrying a field it did not carry before (the
+      // conference side of each game, say), the weeks already imported are
+      // exactly the ones that need re-reading, and a run that skips them
+      // leaves the new column NULL for the whole season with nothing to
+      // suggest anything is wrong.
       const want = new Set([wk, (wk || 0) + 1].filter((n) => n && n > 0));
-      for (let w = 1; w <= (wk || 0); w++) if (!known.has(w)) want.add(w);
+      for (let w = 1; w <= (wk || 0); w++) want.add(w);
 
       for (const w of [...want].sort((a, b) => a - b)) {
         const r = await importWeek(env, season, w);

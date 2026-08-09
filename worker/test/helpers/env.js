@@ -110,10 +110,16 @@ export function seedWeek(env, { season = 2026, week = 3, lockAt, games } = {}) {
   for (const g of games) {
     env.raw.prepare(
       `INSERT INTO slate_games (season, week, game_id, home, away, kickoff_at,
-                                spread_x2, frozen_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+                                spread_x2, b12, frozen_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      // Conference game unless a fixture says otherwise: that is the common
+      // case, and it keeps every test written before the survivor pool cared
+      // about conference membership saying what it always said.
       .run(season, week, g.game_id, g.home, g.away,
-           g.kickoff_at ?? lockAt, g.spread_x2, now - HOUR);
+           g.kickoff_at ?? lockAt, g.spread_x2,
+           // `in`, not ??: an explicit b12: null is a fixture saying "no
+           // conference side", and ?? would quietly turn it into "both".
+           "b12" in g ? g.b12 : "both", now - HOUR);
   }
   return { season, week, lockAt, games };
 }

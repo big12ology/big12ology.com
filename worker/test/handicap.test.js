@@ -369,3 +369,81 @@ test("the board tells the client who is playing for what", async () => {
   assert.equal(b.ranked_entry_by, 6);
   assert.equal(b.rows[0].ranked, 0);
 });
+
+// ------------------------------------------------------- conference only
+
+test("a non-conference team cannot be picked at all", async () => {
+  // The exploit this closes: the slate is every game involving a Big 12 team,
+  // so the visitors are on the board too. Spending BYU costs their eleven
+  // remaining appearances; spending Notre Dame costs nothing, because they
+  // play a Big 12 team once all season. Left open, the dominant strategy is
+  // to survive on borrowed opponents and never touch your own roster.
+  const env = makeEnv();
+  seedWeek(env, { week: 1, games: [
+    { game_id: 101, home: "BYU", away: "Notre Dame", spread_x2: 6,
+      b12: "home" },
+    { game_id: 102, home: "Kansas", away: "Iowa State", spread_x2: -6,
+      b12: "both" },
+    { game_id: 103, home: "Utah", away: "TCU", spread_x2: -3, b12: "both" },
+  ] });
+  seedUser(env, "u", { name: "Opportunist" });
+  const cookie = await signedIn(env, "u");
+
+  const bad = await call(env, "/api/survivor/pick", {
+    method: "PUT", cookie,
+    body: { week: 1, game_id: 101, team: "Notre Dame" },
+  });
+  assert.equal(bad.status, 400);
+  assert.equal((await bad.json()).error, "not_in_conference");
+
+  // Their opponent, in the same game, is fine.
+  const ok = await call(env, "/api/survivor/pick", {
+    method: "PUT", cookie, body: { week: 1, game_id: 101, team: "BYU" },
+  });
+  assert.equal(ok.status, 200, await ok.text());
+});
+
+test("a game whose favourite is not in the conference has no chalk",
+  async () => {
+    // The handicap must not burn a team nobody could have spent. Week 1's
+    // biggest favourite is a visitor, so the chalk is the biggest CONFERENCE
+    // favourite instead — and the underdog of that game is not it either.
+    const env = makeEnv();
+    seedWeek(env, { week: 1, games: [
+      { game_id: 101, home: "Kansas", away: "Notre Dame", spread_x2: 30,
+        b12: "home" },
+      { game_id: 102, home: "Utah", away: "Idaho State", spread_x2: -24,
+        b12: "home" },
+    ] });
+    seedWeek(env, { week: 2, games: [
+      { game_id: 201, home: "Baylor", away: "TCU", spread_x2: -4,
+        b12: "both" },
+    ] });
+
+    const burned = (await chalkRoster(env, 2026, 2)).map((b) => b.team);
+    assert.deepEqual(burned, ["Utah"],
+      "the handicap took a team that was never pickable");
+  });
+
+test("a game with no conference side at all is inert", async () => {
+  // Nullable b12 reads as "unknown, so not pickable" — a slate row imported
+  // before the publisher carried the column must not become a free pick.
+  const env = makeEnv();
+  seedWeek(env, { week: 1, games: [
+    { game_id: 101, home: "Somebody", away: "Anybody", spread_x2: -30,
+      b12: null },
+    { game_id: 102, home: "Utah", away: "Idaho State", spread_x2: -10,
+      b12: "home" },
+    { game_id: 103, home: "Kansas", away: "TCU", spread_x2: -3, b12: "both" },
+    { game_id: 104, home: "Baylor", away: "BYU", spread_x2: -3, b12: "both" },
+  ] });
+  seedUser(env, "u", { name: "Curious" });
+  const cookie = await signedIn(env, "u");
+  const r = await call(env, "/api/survivor/pick", {
+    method: "PUT", cookie, body: { week: 1, game_id: 101, team: "Somebody" },
+  });
+  assert.equal(r.status, 400);
+  assert.equal((await r.json()).error, "not_in_conference");
+  assert.deepEqual((await chalkRoster(env, 2026, 2)).map((b) => b.team),
+    ["Utah"]);
+});

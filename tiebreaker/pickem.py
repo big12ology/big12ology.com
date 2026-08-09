@@ -118,6 +118,9 @@ def freeze_spread(raw):
     return None if raw is None else round(raw * 2)
 
 
+CONFERENCE = "Big 12"
+
+
 def build_slate(season, games, lines, week=None):
     """The slate payload for a week, without touching the disk.
 
@@ -157,10 +160,27 @@ def build_slate(season, games, lines, week=None):
             spread_x2, reason = None, NO_KICKOFF
         elif spread_x2 is None:
             reason = NO_LINE
+        # Which side is actually in the conference.
+        #
+        # The pick'em does not care — you pick a SIDE of a game and both sides
+        # exist. The survivor pool does, and badly: you spend a team for the
+        # season there, and a non-conference visitor plays a Big 12 team once
+        # all year. Spending BYU costs eleven more appearances; spending Notre
+        # Dame costs nothing, so the whole pool would be played on borrowed
+        # opponents. Carried on the frozen slate rather than looked up later,
+        # because it has to mean the same thing in December as it did in
+        # August.
+        sides = []
+        if g.get("home_conf") == CONFERENCE:
+            sides.append("home")
+        if g.get("away_conf") == CONFERENCE:
+            sides.append("away")
+
         e = {
             "game_id": g["id"],
             "home": g["home"],
             "away": g["away"],
+            "b12": "both" if len(sides) == 2 else (sides[0] if sides else None),
             "kickoff": g["start"],
             "kickoff_at": int(k.timestamp()) if k else None,
             "spread_x2": spread_x2,
