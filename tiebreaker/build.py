@@ -4034,17 +4034,28 @@ PICKEM_CARD_BODY = f"""
 {PICKEM_NOSCRIPT}"""
 
 PICKEM_BOARD_BODY = f"""
-<div class=card>
-  <div class=pk-boardhead>
-    <h2>The Board</h2>
-    <label class=pk-wksel>Week
-      <select id=wksel aria-label="Which week to show"></select>
-    </label>
+<div class=card id=roomcard hidden>
+  <h2>The room</h2>
+  <div id=roombody></div>
+</div>
+<div class=pk-duo>
+  <div class=card>
+    <div class=pk-boardhead>
+      <h2>The Board</h2>
+      <label class=pk-wksel>Week
+        <select id=wksel aria-label="Which week to show"></select>
+      </label>
+    </div>
+    <p class=note id=boardnote>Loading&hellip;</p>
+    <div class=table-wrap><div class=table-scroll>
+      <table id=board></table>
+    </div></div>
   </div>
-  <p class=note id=boardnote>Loading&hellip;</p>
-  <div class=table-wrap><div class=table-scroll>
-    <table id=board></table>
-  </div></div>
+  <div class=card id=histcard hidden>
+    <h2>Week by week</h2>
+    <p class=note id=histnote></p>
+    <div id=hist></div>
+  </div>
 </div>
 {PICKEM_NOSCRIPT}"""
 

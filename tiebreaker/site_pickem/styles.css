@@ -147,7 +147,7 @@
 .pk-side {
   display: flex; align-items: center; gap: 5px; min-width: 0;
   border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px;
-  cursor: pointer; background: var(--panel); color: var(--ink, var(--fg));
+  cursor: pointer; background: var(--panel); color: var(--ink);
 }
 .pk-side img.mark { margin: 0; flex: none; }
 .pk-side .pk-tname { flex: 1; min-width: 0; overflow: hidden;
@@ -290,7 +290,7 @@
    hidden whenever there is only one week to offer. */
 .pk-wksel[hidden] { display: none; }
 .pk-wksel select {
-  font: inherit; font-size: 13px; font-weight: 600; color: var(--fg);
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--ink);
   background: var(--panel); border: 1px solid var(--line);
   border-radius: 999px; padding: 4px 27px 4px 12px; cursor: pointer;
   appearance: none; -webkit-appearance: none;
@@ -340,7 +340,7 @@
             align-items: flex-start; }
 #teamform label { font-weight: 600; font-size: 14px; }
 #teampick { font: inherit; padding: 7px 10px; border: 1px solid var(--line);
-            border-radius: 8px; background: var(--bg); color: var(--fg);
+            border-radius: 8px; background: var(--bg); color: var(--ink);
             min-width: min(320px, 100%); }
 #teampick:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
@@ -352,7 +352,7 @@
 #nameform label { font-weight: 600; font-size: 14px; }
 #nameform input {
   font: inherit; padding: 8px 10px; border: 1px solid var(--line);
-  border-radius: 8px; background: var(--bg); color: var(--ink, var(--fg));
+  border-radius: 8px; background: var(--bg); color: var(--ink);
   min-width: min(320px, 100%);
 }
 #nameform input:focus-visible { outline: 3px solid var(--accent);
@@ -528,7 +528,7 @@
 .pk-splitmark {
   position: absolute; top: -2px; bottom: -2px; width: 3px;
   transform: translateX(-1.5px);
-  background: var(--bg); box-shadow: 0 0 0 1px var(--fg);
+  background: var(--bg); box-shadow: 0 0 0 1px var(--ink);
   border-radius: 1px;
 }
 .pk-splitpct {
@@ -538,7 +538,7 @@
 .pk-splitpct.pk-home { text-align: right; }
 /* Your side, in weight rather than hue — the crowd is not a verdict, and
    colouring it would make it look like one. */
-.pk-splitpct.pk-mine { color: var(--fg); font-weight: 700; }
+.pk-splitpct.pk-mine { color: var(--ink); font-weight: 700; }
 
 .pk-cardseason { margin: 0 0 10px; font-size: 13px; color: var(--dim);
                  font-variant-numeric: tabular-nums; }
@@ -608,7 +608,7 @@
 .pk-readonly input:not(:checked) + .pk-side {
   border-color: var(--line);
   background: var(--panel);
-  color: var(--ink, var(--fg));
+  color: var(--ink);
 }
 /* No tick, because nothing is picked, and no hover, because nothing can be. */
 .pk-readonly .pk-side { cursor: default; }
@@ -652,3 +652,102 @@
    real answers rather than missing ones. Without it the names step in and out
    by fifteen pixels down the column. */
 .pk-markgap { display: inline-block; width: 15px; }
+
+/* --- week by week --------------------------------------------------------
+   Hand-drawn SVG rather than a chart library. One figure does not justify a
+   dependency on a section whose whole client is a single classic script, and
+   the site has no bundler to tree-shake one. */
+.pk-hist { width: 100%; height: auto; display: block; margin-top: 4px;
+           overflow: visible; }
+.pk-hgrid { stroke: var(--line); stroke-width: 1; }
+.pk-haxis { fill: var(--dim); font-size: 11px;
+            font-variant-numeric: tabular-nums; }
+/* The three lines carry a dash pattern as well as a colour, so they are told
+   apart without it — WCAG 1.4.1, and it also survives the reader's own team
+   colour landing near one of them. */
+/* Four lines over a band, so each needs a dash of its own — colour alone
+   would not separate them and the reader's team can land on any hue. The
+   median is the odd one out: it is context rather than a competitor, so it
+   is a thin light solid that reads as part of the band it sits in. */
+.pk-hmed  { stroke: var(--line); stroke-width: 2; }
+.pk-hchalk { stroke: var(--warn); stroke-width: 1.5;
+             stroke-dasharray: 7 3 2 3; }
+/* --ink, not --fg. There is no --fg on this domain: the token is --ink, and
+   `var(--fg)` resolved to nothing on all eleven of its uses in this file.
+   Ten of them fed `color`, which INHERITS, so an invalid value quietly became
+   the parent's colour and every one of them looked correct. This one fed
+   `stroke`, whose initial value is `none` — so the room simply had no line,
+   while sitting in the legend claiming to. An undefined custom property fails
+   invisibly on inheriting properties and completely on the rest. */
+.pk-hroom { stroke: var(--ink); stroke-width: 1.6; stroke-dasharray: 2 3;
+            opacity: .65; }
+.pk-hlead { stroke: var(--ok); stroke-width: 1.8; stroke-dasharray: 9 4; }
+.pk-hdot  { stroke: var(--panel); stroke-width: 1.5; }
+/* The rule down the hovered week, and the ring on your point in it. Both are
+   what stop the readout reading as a box floating in the corner. */
+.pk-hcross { stroke: var(--dim); stroke-width: 1; stroke-dasharray: 3 3;
+             opacity: .7; pointer-events: none; }
+.pk-hring  { fill: none; stroke: var(--ink); stroke-width: 1.5; opacity: .8;
+             pointer-events: none; }
+
+.pk-hkey { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 6px;
+           font-size: 12px; color: var(--dim); }
+.pk-hchip { display: inline-flex; align-items: center; gap: 6px; }
+/* A 20-unit line in a 20-unit box, so the dasharray on the shared class draws
+   at the same scale it does on the chart. */
+.pk-hswatch { width: 20px; height: 6px; flex: none; overflow: visible; }
+/* The band is a block rather than a line, and takes its own fill because the
+   band is the reader's team colour and the accent is not. */
+.pk-hblock { width: 16px; height: 9px; border-radius: 2px; flex: none;
+             background: var(--k, var(--line)); }
+/* The "you" line has no class of its own on the chart — its colour is inline
+   because it comes from the reader's team — so the swatch is given the same
+   weight here. */
+.pk-hyou { stroke-width: 2.5; stroke-linecap: round; }
+
+#hist { position: relative; }
+.pk-htip { position: absolute; z-index: 2; pointer-events: none;
+           background: var(--panel); border: 1px solid var(--line);
+           border-radius: 6px; padding: 5px 8px;
+           font-size: 11.5px; color: var(--ink); line-height: 1.35;
+           font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pk-htip[hidden] { display: none; }
+.pk-htipwk { font-size: 10.5px; letter-spacing: .05em; color: var(--dim);
+             text-transform: uppercase; margin-bottom: 2px; }
+/* Name, number, and whatever else the row has — three columns rather than a
+   sentence per line, which is what made the box wider than the plot. */
+.pk-htipgrid { display: grid; grid-template-columns: auto auto auto;
+               gap: 0 8px; align-items: baseline; }
+.pk-htipk { font-weight: 600; }
+.pk-htipk.you   { color: var(--ink); }
+.pk-htipk.lead  { color: var(--ok); }
+.pk-htipk.room  { color: var(--ink); }
+.pk-htipk.chalk { color: var(--warn); }
+.pk-htipk.med   { color: var(--dim); font-weight: 400; }
+.pk-htipv { text-align: right; }
+.pk-htipx { color: var(--dim); font-size: 10.5px; }
+
+/* --- the room, as a card ------------------------------------------------- */
+.pk-roomstats { display: grid; gap: 10px; margin-bottom: 10px;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+.pk-stat { background: var(--bg); border-radius: 8px; padding: 8px 11px; }
+.pk-statv { font-size: 21px; font-weight: 700;
+            font-variant-numeric: tabular-nums; }
+.pk-statv.up   { color: var(--ok); }
+.pk-statv.down { color: var(--bad); }
+.pk-statl { font-size: 11.5px; color: var(--dim); letter-spacing: .03em;
+            text-transform: uppercase; margin-top: 1px; }
+
+/* --- the board, beside its chart ------------------------------------------
+   Two panels rather than a flow of cards, so this is a grid and not the
+   column flow the slate and the game pages use: these two belong side by
+   side in that order, and the table must not wrap under the chart on a wide
+   screen. align-items:start because the table is the taller of the two and
+   there is no reason to stretch a chart to match a list of names. */
+.pk-duo { display: grid; gap: 14px; align-items: start; }
+@media (min-width: 980px) {
+  .pk-duo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+/* The room reads as a summary of the two below it, so it spans and its
+   figures spread rather than stacking into a column. */
+#roomcard { margin-bottom: 14px; }

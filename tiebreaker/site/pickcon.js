@@ -38,7 +38,7 @@
       "border-radius:4px;overflow:hidden}" +
     ".pcmark{position:absolute;top:-2px;bottom:-2px;width:3px;" +
       "transform:translateX(-1.5px);background:var(--bg);" +
-      "box-shadow:0 0 0 1px var(--fg);border-radius:1px}" +
+      "box-shadow:0 0 0 1px var(--ink);border-radius:1px}" +
     ".pcpct{font-size:13px;font-variant-numeric:tabular-nums;" +
       "white-space:nowrap;font-weight:600}" +
     ".pcpct.r{text-align:right}" +

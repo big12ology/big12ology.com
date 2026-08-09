@@ -12,7 +12,7 @@ import { ulid, hmac } from "./crypto.js";
 import * as session from "./session.js";
 import * as ratelimit from "./ratelimit.js";
 import { currentWeek, isLocked, readSlate } from "./slate.js";
-import { chalk, room } from "./scoring.js";
+import { chalk, history, room } from "./scoring.js";
 
 export const json = (data, status = 200, headers = {}) =>
   new Response(JSON.stringify(data), {
@@ -399,6 +399,23 @@ export async function getUserPicks(env, url, userId) {
 
   return json({ user_id: userId, display_name: u.display_name,
                 season: s, week, picks: results || [] });
+}
+
+/**
+ * Where you stood after each week, against the shape of the field.
+ *
+ * Signed out it still answers — the band, the leader and the room are public
+ * the moment a week is scored, and there is no reason to make somebody sign
+ * in to see how the season has gone.
+ */
+export async function getHistory(env, user) {
+  const s = season(env);
+  const h = await history(env, s);
+  if (!h) return json({ season: s, weeks: [], field: [], you: null,
+                        leader: null, room: [] });
+  const line = h._line;
+  delete h._line;
+  return json({ ...h, you: user ? line(user.userId) : null });
 }
 
 export async function getSeasonCurrent(env) {

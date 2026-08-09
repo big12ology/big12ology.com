@@ -191,6 +191,11 @@ async function handle(req, env, ctx) {
 
   if (path === "/api/health") return api.getHealth(env);
   if (path === "/api/season/current") return api.getSeasonCurrent(env);
+  if (path === "/api/history" && req.method === "GET") {
+    // Reads a session when there is one — the "you" line — but never needs
+    // one, so it sits with the public routes and resolves the user itself.
+    return api.getHistory(env, await session.read(env, rawSession));
+  }
   if (path === "/api/slate" && req.method === "GET") return api.getSlate(env, url);
   if (path === "/api/leaderboard" && req.method === "GET") {
     return api.getBoard(env, url);
@@ -279,9 +284,23 @@ export default {
     const season = Number(env.SEASON || new Date().getUTCFullYear());
     try {
       const wk = await currentWeek(env, season);
-      // The published week, and the next one, so a slate goes in as soon as
-      // it exists rather than waiting for the week to turn over.
-      for (const w of [wk, (wk || 0) + 1].filter((n) => n && n > 0)) {
+      // The current week and the next, so a slate goes in as soon as it
+      // exists rather than waiting for the week to turn over — plus any
+      // earlier week the database has never seen.
+      //
+      // That backfill matters more than it looks. Without it a Worker
+      // deployed in October knows only October: every earlier week is a
+      // published file nobody ever read, the season history is a single
+      // point, and the week-by-week chart has nothing to draw. It costs
+      // nothing in the ordinary case, because weeks already present are
+      // skipped from a query rather than re-fetched.
+      const { results: have } = await env.DB.prepare(
+        `SELECT week FROM weeks WHERE season = ?`).bind(season).all();
+      const known = new Set((have || []).map((r) => r.week));
+      const want = new Set([wk, (wk || 0) + 1].filter((n) => n && n > 0));
+      for (let w = 1; w <= (wk || 0); w++) if (!known.has(w)) want.add(w);
+
+      for (const w of [...want].sort((a, b) => a - b)) {
         const r = await importWeek(env, season, w);
         if (!r.ok) console.log(`import ${season} w${w}: ${r.reason}`);
         else if (!r.unchanged) console.log(`import ${season} w${w}: ${r.games} games`);

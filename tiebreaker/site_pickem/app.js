@@ -29,6 +29,10 @@
   // than something misleading; the server is free to send whatever it has.
   var MIN_CONSENSUS = 10;
 
+  // Below this many players the outer decile band is one person at each edge,
+  // which is not a distribution and reads as a second leader line.
+  var MIN_BAND = 20;
+
   // Two answers that are not a team. Stored as-is so the difference between
   // "no answer yet" and "deliberately no team" survives — one is a question
   // we have not asked, the other is an answer.
@@ -907,13 +911,403 @@
     loadTeams().then(function (teams) {
       myTint = myColour(me, teams);
       boardTeams = teams;
-      return loadBoard("");
+      // The season's shape, alongside the table rather than instead of it.
+      // Its own request because it is its own question, and because a board
+      // that waits on a chart to draw is a board that is slower for the
+      // people who only wanted the table.
+      //
+      // Both are needed before the room card can be drawn — its figures come
+      // from the leaderboard and its weekly comparison from the history — so
+      // they are joined rather than chained. Fired off first and awaited
+      // second: kicking it off inside the .then() and reading `room` from it
+      // was a race the table usually won and sometimes did not, which is the
+      // worst kind.
+      var histP = api("/api/history").catch(function () { return null; });
+      return loadBoard("").then(function (r) {
+        return histP.then(function (h) {
+          if (h) {
+            drawHistory(h, teams, me);
+            drawRoomCard(h, chalk, room);
+          }
+          return r;
+        });
+      });
     }).then(function (r) {
       // How many weeks there are to choose from, which is not the same as
       // which one this response is for: the season-to-date response is for no
       // week at all, and reading r.week there left nothing to enumerate.
       if (r) fillWeeks(r.weeks != null ? r.weeks : r.week);
     });
+  }
+
+  // --------------------------------------------------------------- history
+
+  var NS = "http://www.w3.org/2000/svg";
+  function sv(tag, attrs) {
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+    return n;
+  }
+
+  /** #rrggbb -> "r, g, b", so a colour can be reused at several alphas. */
+  function rgbOf(hex) {
+    var h = String(hex || "").replace("#", "");
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    if (h.length !== 6) return null;
+    return parseInt(h.slice(0, 2), 16) + ", " + parseInt(h.slice(2, 4), 16) +
+           ", " + parseInt(h.slice(4, 6), 16);
+  }
+
+  /**
+   * A team colour dark enough to be a 2.5px line on the light theme.
+   *
+   * Colorado's gold and UCF's are legible as a filled chip with dark text on
+   * them — which is what textOn() is for — and nearly invisible as a hairline
+   * on cream. Mixed toward black only as far as it has to be, so the line is
+   * still recognisably the team's.
+   */
+  function lineColour(hex, dark) {
+    var rgb = rgbOf(hex);
+    if (!rgb) return null;
+    var p = rgb.split(",").map(Number);
+    var lum = (0.2126 * p[0] + 0.7152 * p[1] + 0.0722 * p[2]) / 255;
+    if (!dark && lum > 0.55) {
+      var k = 0.55 / lum;
+      p = p.map(function (c) { return Math.round(c * k); });
+    }
+    return "rgb(" + p.join(",") + ")";
+  }
+
+  /**
+   * The season, week by week: you against the shape of the field.
+   *
+   * A band rather than a line per player. At a hundred players the lines are
+   * a grey mass — you can see you are above it and nothing else — where the
+   * band answers the questions actually being asked: how far above the
+   * middle, and is the field tightening. The leader and the room are drawn
+   * because they are the two lines worth chasing.
+   *
+   * Hand-drawn SVG, because this section has no chart library and should not
+   * acquire one for a single figure. Six paths and some text.
+   */
+  function drawHistory(h, teams, me) {
+    var box = $("hist"), note = $("histnote");
+    if (!box) return;
+    var weeks = h.weeks || [];
+    if (weeks.length < 2) return;      // one point is not a trend
+
+    var dark = document.documentElement.getAttribute("data-theme") === "dark" ||
+      (!document.documentElement.getAttribute("data-theme") &&
+       window.matchMedia &&
+       window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+    // The reader's own team colours the line, and the band is the same hue
+    // behind it — so the figure is about them without a legend saying so.
+    var tc = (me && me.team && teams[me.team] && teams[me.team].color) || null;
+    var you = lineColour(tc, dark) || (dark ? "#3FC7CE" : "#0B6E77");
+    var rgb = rgbOf(tc) || (dark ? "63, 199, 206" : "11, 110, 119");
+
+    // Sized for the column it lives in, not the page. An SVG scales its
+    // text with everything else, so a 720-wide viewBox rendered into a
+    // half-width card put the axis labels at about seven pixels. At 520 the
+    // box is drawn near 1:1 and 11px stays 11px.
+    var W = 520, H = 300, L = 40, R = 10, T = 12, B = 26;
+    var lo = 100, hi = 0;
+    var all = [];
+    (h.field || []).forEach(function (f) { all.push(f.p10, f.p90); });
+    [h.you, h.room, h.chalk,
+     h.leader && h.leader.rows].forEach(function (rows) {
+      (rows || []).forEach(function (r) { all.push(r.pct); });
+    });
+    all.forEach(function (v) {
+      if (v == null) return;
+      var p = v * 100;
+      if (p < lo) lo = p;
+      if (p > hi) hi = p;
+    });
+    if (hi <= lo) { lo = 40; hi = 60; }
+    lo = Math.max(0, Math.floor((lo - 3) / 5) * 5);
+    hi = Math.min(100, Math.ceil((hi + 3) / 5) * 5);
+
+    var x = function (i) {
+      return L + (weeks.length === 1 ? 0
+        : i * (W - L - R) / (weeks.length - 1));
+    };
+    var y = function (pct) {
+      return T + (H - T - B) * (1 - (pct * 100 - lo) / (hi - lo));
+    };
+    var idx = {};
+    weeks.forEach(function (w, i) { idx[w] = i; });
+
+    function area(topRows, botRows, key1, key2) {
+      var d = [];
+      topRows.forEach(function (f, i) {
+        d.push((i ? "L" : "M") + x(i) + " " + y(f[key1]));
+      });
+      for (var j = botRows.length - 1; j >= 0; j--) {
+        d.push("L" + x(j) + " " + y(botRows[j][key2]));
+      }
+      return d.join(" ") + " Z";
+    }
+    function line(rows) {
+      var d = [], started = false;
+      rows.forEach(function (r) {
+        if (r.pct == null || idx[r.week] == null) return;
+        d.push((started ? "L" : "M") + x(idx[r.week]) + " " + y(r.pct));
+        started = true;
+      });
+      return d.join(" ");
+    }
+
+    // aria-label rather than a <title> child. A <title> is the accessible
+    // name AND the browser's native tooltip, so hovering anywhere on the plot
+    // popped a grey box over the middle of the chart — on top of the readout
+    // it was competing with.
+    var svg = sv("svg", {viewBox: "0 0 " + W + " " + H, class: "pk-hist",
+                         role: "img", "aria-label":
+      "Season-to-date percentage after each week, against the field."});
+
+    // Gridlines and the axis, first, so everything else sits over them.
+    var step = (hi - lo) > 30 ? 10 : 5;
+    for (var g = lo; g <= hi; g += step) {
+      svg.appendChild(sv("line", {x1: L, x2: W - R, y1: y(g / 100),
+                                  y2: y(g / 100), class: "pk-hgrid"}));
+      var lab = sv("text", {x: L - 8, y: y(g / 100) + 4, class: "pk-haxis",
+                            "text-anchor": "end"});
+      lab.textContent = g + "%";
+      svg.appendChild(lab);
+    }
+    weeks.forEach(function (w, i) {
+      var t = sv("text", {x: x(i), y: H - 8, class: "pk-haxis",
+                          "text-anchor": "middle"});
+      t.textContent = w;
+      svg.appendChild(t);
+    });
+
+    var f = h.field || [];
+    // A decile needs a field to be a decile of. With twelve players the
+    // "90th percentile" is the second-best player and the "10th" is the
+    // second-worst — one person each, drawn as though they were a
+    // distribution, and sitting exactly under the leader's line because the
+    // leader IS the player next to them. Below the floor only the quartiles
+    // are drawn, which are still three players in from each end.
+    var wide = f.length > 1 && f.every(function (r) { return r.n >= MIN_BAND; });
+    if (f.length > 1) {
+      if (wide) {
+        svg.appendChild(sv("path", {d: area(f, f, "p90", "p10"),
+          fill: "rgba(" + rgb + ", .10)"}));
+      }
+      svg.appendChild(sv("path", {d: area(f, f, "p75", "p25"),
+        fill: "rgba(" + rgb + ", .20)"}));
+      svg.appendChild(sv("path", {
+        d: line(f.map(function (r) { return {week: r.week, pct: r.p50}; })),
+        fill: "none", class: "pk-hmed"}));
+    }
+
+    // Dashes as well as colour, so the three are told apart without it.
+    if (h.room && h.room.length) {
+      svg.appendChild(sv("path", {d: line(h.room), fill: "none",
+                                  class: "pk-hroom"}));
+    }
+    if (h.chalk && h.chalk.length) {
+      svg.appendChild(sv("path", {d: line(h.chalk), fill: "none",
+                                  class: "pk-hchalk"}));
+    }
+    if (h.leader && h.leader.rows) {
+      svg.appendChild(sv("path", {d: line(h.leader.rows), fill: "none",
+                                  class: "pk-hlead"}));
+    }
+    if (h.you && h.you.length) {
+      svg.appendChild(sv("path", {d: line(h.you), fill: "none", stroke: you,
+                                  "stroke-width": 2.5, "stroke-linejoin":
+                                  "round", "stroke-linecap": "round"}));
+      h.you.forEach(function (r) {
+        if (r.pct == null) return;
+        svg.appendChild(sv("circle", {cx: x(idx[r.week]), cy: y(r.pct), r: 3.5,
+                                      fill: you, class: "pk-hdot"}));
+      });
+    }
+
+    // A rule down the hovered week, and a ring on your point in it. Without
+    // one of these the readout is a box floating in the corner of a chart:
+    // pinned to the top of the plot it was nowhere near the point it
+    // described, and following the point it would have covered the line.
+    // The rule joins the two and costs one element.
+    var cross = sv("line", {y1: T, y2: H - B, class: "pk-hcross"});
+    cross.setAttribute("visibility", "hidden");
+    svg.appendChild(cross);
+    var ring = sv("circle", {r: 6, class: "pk-hring"});
+    ring.setAttribute("visibility", "hidden");
+    svg.appendChild(ring);
+
+    // One hit target per week, full height, so the tooltip is easy to reach.
+    var tip = el("div", "pk-htip");
+    tip.hidden = true;
+    weeks.forEach(function (w, i) {
+      var half = (W - L - R) / Math.max(1, weeks.length - 1) / 2;
+      var hit = sv("rect", {x: x(i) - half, y: T, width: half * 2,
+                            height: H - T - B, fill: "transparent"});
+      var say = function () {
+        // Two columns, not five sentences. Every row is a name and a
+        // percentage, so as prose it was five ragged lines carrying one
+        // number each and a box wider than the plot it sat on.
+        var at = function (rows) {
+          return (rows || []).filter(function (r) { return r.week === w; })[0];
+        };
+        var mine = at(h.you), fw = at(f), rm = at(h.room), ck = at(h.chalk);
+        var ld = h.leader && at(h.leader.rows);
+
+        tip.textContent = "";
+        tip.appendChild(el("div", "pk-htipwk", "Week " + w));
+        var grid = el("div", "pk-htipgrid");
+        var row = function (cls, label, pct, extra) {
+          if (pct == null) return;
+          grid.appendChild(el("span", "pk-htipk " + cls, label));
+          grid.appendChild(el("span", "pk-htipv",
+            (100 * pct).toFixed(1) + "%"));
+          grid.appendChild(el("span", "pk-htipx", extra || ""));
+        };
+        if (mine) row("you", "You", mine.pct,
+                      mine.rank ? ordinal(mine.rank) : "");
+        if (ld) row("lead", "Leader", ld.pct, h.leader.display_name || "");
+        if (rm) row("room", "Room", rm.pct, "");
+        if (ck) row("chalk", "Chalk", ck.pct, "");
+        if (fw) row("med", "Median", fw.p50, "of " + fw.n);
+        tip.appendChild(grid);
+        tip.hidden = false;
+
+        cross.setAttribute("x1", x(i));
+        cross.setAttribute("x2", x(i));
+        cross.setAttribute("visibility", "visible");
+
+        // Measured against the rendered box rather than the viewBox, because
+        // the SVG scales and the two only agree by accident. The card also
+        // holds the legend, so vertical offsets come off the svg, not it.
+        var bb = box.getBoundingClientRect();
+        var sb = svg.getBoundingClientRect();
+        var k = sb.width / W;
+        var top0 = sb.top - bb.top;
+
+        var anchor = mine && mine.pct != null ? y(mine.pct) : (T + (H - T - B) / 2);
+        if (mine && mine.pct != null) {
+          ring.setAttribute("cx", x(i));
+          ring.setAttribute("cy", anchor);
+          ring.setAttribute("visibility", "visible");
+        } else {
+          ring.setAttribute("visibility", "hidden");
+        }
+
+        var tw = tip.offsetWidth, th = tip.offsetHeight;
+        tip.style.left = Math.max(2,
+          Math.min(bb.width - tw - 2, x(i) * k - tw / 2)) + "px";
+        // Above the point, or below it when there is no room above. Either
+        // way it is beside the thing it is about, and the rule reaches it.
+        var above = anchor * k - th - 14;
+        tip.style.top = top0 + (above > 2 ? above : anchor * k + 16) + "px";
+      };
+      hit.addEventListener("mouseenter", say);
+      hit.addEventListener("focus", say);
+      var hide = function () {
+        tip.hidden = true;
+        cross.setAttribute("visibility", "hidden");
+        ring.setAttribute("visibility", "hidden");
+      };
+      hit.addEventListener("mouseleave", hide);
+      hit.addEventListener("blur", hide);
+      svg.appendChild(hit);
+    });
+
+    box.textContent = "";
+    var key = el("p", "pk-hkey");
+    // The swatch is a real line carrying the SAME class as the one on the
+    // chart, so the dash pattern cannot drift from what it stands for. It
+    // did: the swatches were border-top-style, which offers solid, dashed
+    // and dotted and nothing else, so the chalk's dash-dot was drawn as
+    // plain dashes and the leader's long dashes as short ones. A legend that
+    // is only approximately the chart is worse than none.
+    function chip(cls, label, colour) {
+      var sp = el("span", "pk-hchip " + cls);
+      if (colour) sp.style.setProperty("--k", colour);
+      if (cls.indexOf("band") === 0) {
+        sp.appendChild(el("span", "pk-hblock"));
+      } else {
+        var sw = sv("svg", {class: "pk-hswatch", viewBox: "0 0 20 6",
+                            "aria-hidden": "true"});
+        var ln = sv("line", {x1: 0, y1: 3, x2: 20, y2: 3, class: cls});
+        if (colour) ln.setAttribute("stroke", colour);
+        sw.appendChild(ln);
+        sp.appendChild(sw);
+      }
+      sp.appendChild(document.createTextNode(label));
+      key.appendChild(sp);
+    }
+    if (h.you && h.you.length) chip("pk-hyou", "You", you);
+    // "The leader", not their display name. The table below calls its two
+    // rows "The chalk" and "The room", and a legend that named a player
+    // instead read as a third row of the same kind — especially here, where
+    // the leader happens to be called Chalk Eater and the two were one
+    // character apart. Who it is belongs in the tooltip, where it changes.
+    if (h.leader) chip("pk-hlead", "The leader");
+    if (h.room && h.room.length) chip("pk-hroom", "The room");
+    if (h.chalk && h.chalk.length) chip("pk-hchalk", "The chalk");
+    // The swatch takes the band's own colour. It was the house accent while
+    // the band itself is the reader's team, so the two disagreed on every
+    // page where somebody had chosen one.
+    chip("band", "Middle half of the field", "rgba(" + rgb + ", .20)");
+    if (wide) chip("band wide", "10th to 90th", "rgba(" + rgb + ", .10)");
+    box.appendChild(key);
+    box.appendChild(svg);
+    box.appendChild(tip);
+    if (note) {
+      var n = f.length ? f[f.length - 1].n : 0;
+      note.textContent = "Season to date after each week. The band is the "
+        + "field: the middle 50% of " + n + " player" + (n === 1 ? "" : "s")
+        + (wide ? ", and lighter behind it the 10th to 90th." : ".");
+    }
+    show($("histcard"), true);
+  }
+
+  /** What the room did, as a card rather than a row. */
+  function drawRoomCard(h, chalkNow, roomNow) {
+    var body = $("roombody");
+    if (!body || !roomNow) return;
+    body.textContent = "";
+
+    var stats = el("div", "pk-roomstats");
+    function stat(label, value, cls) {
+      var d = el("div", "pk-stat");
+      d.appendChild(el("div", "pk-statv" + (cls ? " " + cls : ""), value));
+      d.appendChild(el("div", "pk-statl", label));
+      stats.appendChild(d);
+    }
+    stat("Record", roomNow.w + "–" + roomNow.l +
+                   (roomNow.p ? "–" + roomNow.p : ""));
+    stat("Against the spread", roomNow.pct == null ? "—"
+      : (100 * roomNow.pct).toFixed(1) + "%");
+    if (chalkNow && chalkNow.pct != null && roomNow.pct != null) {
+      var d = (roomNow.pct - chalkNow.pct) * 100;
+      stat("Versus the chalk", (d >= 0 ? "+" : "−") +
+           Math.abs(d).toFixed(1), d >= 0 ? "up" : "down");
+    }
+    if (roomNow.split) {
+      stat("Dead heats", String(roomNow.split));
+    }
+    body.appendChild(stats);
+
+    var beat = 0, of = 0;
+    (h && h.field ? h.field : []).forEach(function (fw) {
+      var rm = (h.room || []).filter(function (r) { return r.week === fw.week; })[0];
+      if (!rm || rm.pct == null || fw.p50 == null) return;
+      of++;
+      if (rm.pct > fw.p50) beat++;
+    });
+    var p = el("p", "note");
+    p.textContent = "The side most people took, on every game, scored as one "
+      + "card. Games where the picks landed exactly even are left out."
+      + (of ? "  Ahead of the median player after " + beat + " of " + of
+              + " weeks." : "");
+    body.appendChild(p);
+    show($("roomcard"), true);
   }
 
   // ------------------------------------------------------------------ card

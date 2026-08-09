@@ -334,6 +334,136 @@ export async function room(env, season, week = null) {
            pct: w + l === 0 ? null : w / (w + l) };
 }
 
+/**
+ * The season week by week: where everybody stood after each one.
+ *
+ * Season-to-date, not per-week. A week in isolation is fourteen coin flips
+ * and reads as noise; the cumulative figure is the one the board shows and
+ * the one that can be compared to the chalk and the room without converting
+ * anything in your head.
+ *
+ * The percentiles are computed here rather than in SQL because SQLite has no
+ * percentile function and the alternative is a correlated subquery per week
+ * per cut. The row count is players × weeks — a few thousand at the size this
+ * will ever be — so the arithmetic is free and the query stays legible.
+ */
+export async function history(env, season) {
+  const { results: rows } = await env.DB.prepare(
+    `WITH per AS (
+       SELECT s.user_id, s.week,
+              SUM(s.outcome = 'win')  AS w,
+              SUM(s.outcome = 'loss') AS l
+         FROM pick_scores s
+         JOIN users u ON u.id = s.user_id
+        WHERE s.season = ? AND u.status = 'active'
+        GROUP BY s.user_id, s.week)
+     SELECT user_id, week,
+            SUM(w) OVER (PARTITION BY user_id ORDER BY week) AS cw,
+            SUM(l) OVER (PARTITION BY user_id ORDER BY week) AS cl
+       FROM per
+      ORDER BY week, user_id`).bind(season).all();
+  if (!rows || !rows.length) return null;
+
+  const weeks = [...new Set(rows.map((r) => r.week))].sort((a, b) => a - b);
+  const byWeek = new Map(weeks.map((w) => [w, []]));
+  const byUser = new Map();
+  for (const r of rows) {
+    const pct = r.cw + r.cl === 0 ? null : r.cw / (r.cw + r.cl);
+    const point = { week: r.week, pct, w: r.cw, l: r.cl, user_id: r.user_id };
+    byWeek.get(r.week).push(point);
+    if (!byUser.has(r.user_id)) byUser.set(r.user_id, []);
+    byUser.get(r.user_id).push(point);
+  }
+
+  // Rank within each week, sharing a rank on a tie, the way the board does.
+  const field = [];
+  for (const w of weeks) {
+    const col = byWeek.get(w).filter((p) => p.pct != null)
+      .sort((a, b) => b.pct - a.pct);
+    col.forEach((p, i) => {
+      p.rank = i > 0 && col[i - 1].pct === p.pct ? col[i - 1].rank : i + 1;
+    });
+    const v = col.map((p) => p.pct);
+    const at = (q) => v.length ? v[Math.min(v.length - 1,
+      Math.round((1 - q) * (v.length - 1)))] : null;
+    field.push({ week: w, n: v.length,
+                 p10: at(0.10), p25: at(0.25), p50: at(0.50),
+                 p75: at(0.75), p90: at(0.90) });
+  }
+
+  const line = (id) => (byUser.get(id) || []).map(
+    (p) => ({ week: p.week, pct: p.pct, rank: p.rank, w: p.w, l: p.l }));
+
+  const top = await env.DB.prepare(
+    `SELECT b.user_id, u.display_name, u.team FROM leaderboard_season b
+       JOIN users u ON u.id = b.user_id
+      WHERE b.season = ? ORDER BY b.rank, u.display_name LIMIT 1`)
+    .bind(season).first();
+
+  return { season, weeks, field,
+           leader: top ? { user_id: top.user_id, display_name: top.display_name,
+                           team: top.team, rows: line(top.user_id) } : null,
+           room: await roomHistory(env, season, weeks),
+           chalk: await chalkHistory(env, season, weeks),
+           _line: line };
+}
+
+/** The chalk's cumulative record after each week, to match the room's. */
+async function chalkHistory(env, season, weeks) {
+  const { results } = await env.DB.prepare(
+    `SELECT r.week,
+            SUM(CASE WHEN r.ats IN ('push','void') THEN 0
+                     WHEN (g.spread_x2 < 0 AND r.ats = 'home')
+                       OR (g.spread_x2 > 0 AND r.ats = 'away') THEN 1
+                     ELSE 0 END) AS w,
+            SUM(CASE WHEN r.ats IN ('push','void') THEN 0
+                     WHEN (g.spread_x2 < 0 AND r.ats = 'home')
+                       OR (g.spread_x2 > 0 AND r.ats = 'away') THEN 0
+                     ELSE 1 END) AS l
+       FROM results r
+       JOIN slate_games g ON g.season = r.season AND g.week = r.week
+                         AND g.game_id = r.game_id
+      WHERE r.season = ? AND g.spread_x2 IS NOT NULL AND g.spread_x2 <> 0
+      GROUP BY r.week ORDER BY r.week`).bind(season).all();
+  let cw = 0, cl = 0;
+  const by = new Map((results || []).map((r) => [r.week, r]));
+  return weeks.map((week) => {
+    const r = by.get(week);
+    if (r) { cw += r.w || 0; cl += r.l || 0; }
+    return { week, pct: cw + cl === 0 ? null : cw / (cw + cl), w: cw, l: cl };
+  });
+}
+
+/** The room's cumulative record after each week. */
+async function roomHistory(env, season, weeks) {
+  const { results } = await env.DB.prepare(
+    `WITH majority AS (
+       SELECT p.season, p.week, p.game_id,
+              SUM(p.side = 'home') AS h, SUM(p.side = 'away') AS a
+         FROM picks p WHERE p.season = ?
+        GROUP BY p.season, p.week, p.game_id)
+     SELECT m.week,
+            SUM(CASE WHEN r.ats IN ('push','void') OR m.h = m.a THEN 0
+                     WHEN (m.h > m.a AND r.ats = 'home')
+                       OR (m.a > m.h AND r.ats = 'away') THEN 1
+                     ELSE 0 END) AS w,
+            SUM(CASE WHEN r.ats IN ('push','void') OR m.h = m.a THEN 0
+                     WHEN (m.h > m.a AND r.ats = 'home')
+                       OR (m.a > m.h AND r.ats = 'away') THEN 0
+                     ELSE 1 END) AS l
+       FROM majority m
+       JOIN results r ON r.season = m.season AND r.week = m.week
+                     AND r.game_id = m.game_id
+      GROUP BY m.week ORDER BY m.week`).bind(season).all();
+  let cw = 0, cl = 0;
+  const by = new Map((results || []).map((r) => [r.week, r]));
+  return weeks.map((week) => {
+    const r = by.get(week);
+    if (r) { cw += r.w || 0; cl += r.l || 0; }
+    return { week, pct: cw + cl === 0 ? null : cw / (cw + cl), w: cw, l: cl };
+  });
+}
+
 /** Every locked week of a season, scored oldest first. */
 export async function scoreAll(env, season, now = Math.floor(Date.now() / 1000)) {
   const scores = await fetchScores(env);
