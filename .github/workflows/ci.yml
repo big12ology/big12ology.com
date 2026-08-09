@@ -126,6 +126,12 @@ jobs:
           tools/assemble.sh dist
           test -s dist/pickem/index.html
           test -s dist/pickem/sitemap.xml
+          # The hand-written files switch too, via PICKEM-ONLY/PICKEM-OFF.
+          grep -q '/pickem/' dist/index.html
+          grep -q '__Host-b12s' dist/privacy.html
+          grep -q 'pickem' dist/sitemap.xml
+          ! grep -q 'no accounts, no cookies' dist/privacy.html
+          ! grep -rq 'PICKEM-ONLY\|PICKEM-OFF' dist
           # A generated topbar, not dist/index.html: the four hand-written
           # pages carry a PICKEM-LINK marker instead, because the flag cannot
           # reach into a file build.py does not write.
@@ -144,3 +150,6 @@ jobs:
           ! grep -rq 'href="/pickem/"' dist
           ! grep -rq 'pickcon' dist
           ! grep -q pickem dist/sitemap.xml
+          # Dark, privacy.html must still make the promise that is true.
+          grep -q 'no accounts, no cookies' dist/privacy.html
+          ! grep -rq 'PICKEM-ONLY\|PICKEM-OFF' dist

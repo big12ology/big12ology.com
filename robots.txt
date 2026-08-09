@@ -1,6 +1,14 @@
 User-agent: *
 Allow: /
+# Not content. Every response under here is per-viewer or per-second, carries
+# X-Robots-Tag: noindex anyway, and a crawler walking it would spend the rate
+# limit on JSON nobody can read. The pages that DESCRIBE the pick'em are
+# static and indexable; the API behind them is not.
+Disallow: /api/
 
 Sitemap: https://big12ology.com/sitemap.xml
 Sitemap: https://big12ology.com/tiebreaker/sitemap.xml
 Sitemap: https://big12ology.com/schedule/sitemap.xml
+# PICKEM-ONLY
+Sitemap: https://big12ology.com/pickem/sitemap.xml
+# /PICKEM-ONLY

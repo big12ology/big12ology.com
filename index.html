@@ -4,13 +4,18 @@
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>Big12ology — the study of the Big 12</title>
-<meta name=description content="Unofficial fan-built tools and data projects about Big 12 football: tiebreaker tracking, schedule structure, and attendance history.">
+<meta name=description content="Unofficial fan-built tools and data projects about Big 12 football: tiebreaker tracking, a weekly pick'em against the spread, schedule structure, and attendance history.">
 <link rel=canonical href="https://big12ology.com/">
 <link rel=icon type=image/svg+xml href=/favicon.svg>
 <meta property=og:type content=website>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="Big12ology — the study of the Big 12">
+<!-- PICKEM-ONLY -->
+<meta property=og:description content="Unofficial fan-built tools and data projects about Big 12 football: tiebreaker tracking, a weekly pick'em against the spread, schedule structure, and attendance history.">
+<!-- /PICKEM-ONLY -->
+<!-- PICKEM-OFF -->
 <meta property=og:description content="Unofficial fan-built tools and data projects about Big 12 football: tiebreaker tracking, schedule structure, and attendance history.">
+<!-- /PICKEM-OFF -->
 <meta property=og:url content="https://big12ology.com/">
 <meta property=og:image content="https://big12ology.com/og.png">
 <meta property=og:image:width content=1200>
@@ -72,9 +77,9 @@ a.card:hover { border-color: var(--accent); }
   <a href="/tiebreaker/">Tiebreaker</a>
   <a href="/schedule/">Schedule</a>
   <a href="/attendance/">Attendance</a>
-  <!-- PICKEM-LINK  The pick'em nav link belongs here once the section
-       goes live. This topbar is hand-written, so B12_PICKEM cannot put
-       it back the way it does the generated ones. Grep PICKEM-LINK. -->
+  <!-- PICKEM-ONLY -->
+  <a href="/pickem/">Pickem</a>
+  <!-- /PICKEM-ONLY -->
   <span class=b12-right><span class=b12-theme></span></span>
 </nav>
 <header>
@@ -86,9 +91,17 @@ a.card:hover { border-color: var(--accent); }
          src="brand/big12ology-primary-dark.svg"
          alt="" aria-hidden="true" width="503" height="144">
   </h1>
+  <!-- PICKEM-ONLY -->
+  <p>The study of the Big 12. Unofficial fan-built tools and data projects
+  about the sixteen-team league — its standings math, its unbalanced
+  schedule, its stadiums, its chaos, and a weekly pick'em against the
+  spread.</p>
+  <!-- /PICKEM-ONLY -->
+  <!-- PICKEM-OFF -->
   <p>The study of the Big 12. Unofficial fan-built tools and data projects
   about the sixteen-team league — its standings math, its unbalanced
   schedule, its stadiums, and its chaos.</p>
+  <!-- /PICKEM-OFF -->
 </header>
 <main id=main tabindex="-1">
   <a class=card href="/tiebreaker/">
@@ -102,6 +115,18 @@ a.card:hover { border-color: var(--accent); }
     seasons are kept alongside the live one: replay a year week by week, or
     rewrite a result and watch the rules answer.</p>
   </a>
+  <!-- PICKEM-ONLY -->
+  <a class=card href="/pickem/">
+    <h2>Pickem <span class="tag new">new</span></h2>
+    <p>Pick every Big 12 game against the spread, against everybody else. One
+    line for the whole room, frozen when the week is published and never moved
+    again; the whole slate locks at the first kickoff, and what you picked
+    becomes public then and not before. <b>The board</b> ranks the season with
+    pushes counted as pushes, next to <b>the chalk</b> — what simply taking
+    every favourite would have scored, which is a harder benchmark than it
+    sounds. Sign in with Google or GitHub; we never see your email.</p>
+  </a>
+  <!-- /PICKEM-ONLY -->
   <a class=card href="/schedule/">
     <h2>Schedule <span class="tag new">new</span></h2>
     <p>Sixteen teams play nine conference games out of a possible fifteen, so

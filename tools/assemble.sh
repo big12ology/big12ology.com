@@ -117,6 +117,47 @@ if [ "${B12_PICKEM:-}" = "1" ] && [ -d "$ROOT/tiebreaker/pickem" ]; then
 fi
 
 # --- checks ------------------------------------------------------------
+# --- the pick'em switch, in hand-written files -----------------------------
+# B12_PICKEM already decides what build.py generates and what gets copied. It
+# could not reach the four hand-written pages, the root sitemap or robots.txt,
+# because nothing generates those — so the last version of this left the nav
+# link deleted outright and a comment saying where to put it back. That made
+# launch day a manual edit in several files, which is precisely the "one
+# chrome" duplication hazard this project has already been bitten by.
+#
+# So those files carry BOTH versions, and this picks one:
+#
+#   <!-- PICKEM-ONLY -->  ...  <!-- /PICKEM-ONLY -->   kept only when on
+#   <!-- PICKEM-OFF -->   ...  <!-- /PICKEM-OFF -->    kept only when off
+#
+# and `# PICKEM-ONLY` / `# /PICKEM-ONLY` for robots.txt, which has no comment
+# syntax a browser would hide. Markers are always removed; only the content
+# between them varies. Turning the section on is now the flag and nothing else.
+echo "pick'em content: $([ "${B12_PICKEM:-}" = "1" ] && echo on || echo off)"
+while IFS= read -r page; do
+  grep -q 'PICKEM-ONLY\|PICKEM-OFF' "$page" || continue
+  B12_PICKEM="${B12_PICKEM:-}" python3 - "$page" <<'PY'
+import os, re, sys
+p = sys.argv[1]
+on = os.environ.get("B12_PICKEM") == "1"
+s = open(p, encoding="utf-8").read()
+
+def block(tag, keep):
+    """Drop or unwrap one marked region, in either comment syntax."""
+    global s
+    for open_, close in ((f"<!-- {tag} -->", f"<!-- /{tag} -->"),
+                         (f"# {tag}", f"# /{tag}")):
+        pat = re.compile(
+            r"[ \t]*" + re.escape(open_) + r"[ \t]*\n?(.*?)"
+            r"[ \t]*" + re.escape(close) + r"[ \t]*\n?", re.S)
+        s = pat.sub((lambda m: m.group(1)) if keep else "", s)
+
+block("PICKEM-ONLY", on)
+block("PICKEM-OFF", not on)
+open(p, "w", encoding="utf-8").write(s)
+PY
+done < <(find "$DIST" -type f \( -name '*.html' -o -name '*.xml' -o -name '*.txt' \))
+
 # --- footer stamp ---------------------------------------------------------
 # The four hand-written pages (hub, attendance, privacy, 404) carry the same
 # footer as the generated ones, and the footer names when the site was last

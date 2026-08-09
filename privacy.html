@@ -36,25 +36,166 @@ a { color:var(--accent2); }
   <a href="/tiebreaker/">Tiebreaker</a>
   <a href="/schedule/">Schedule</a>
   <a href="/attendance/">Attendance</a>
-  <!-- PICKEM-LINK  The pick'em nav link belongs here once the section
-       goes live. This topbar is hand-written, so B12_PICKEM cannot put
-       it back the way it does the generated ones. Grep PICKEM-LINK. -->
+  <!-- PICKEM-ONLY -->
+  <a href="/pickem/">Pickem</a>
+  <!-- /PICKEM-ONLY -->
   <span class=b12-right><span class=b12-theme></span></span>
 </nav>
 <main id=main tabindex="-1">
 <h1>Privacy</h1>
+<!-- PICKEM-ONLY -->
+<p class=updated>Last updated: August 9, 2026</p>
+<!-- /PICKEM-ONLY -->
+<!-- PICKEM-OFF -->
 <p class=updated>Last updated: August 7, 2026</p>
+<!-- /PICKEM-OFF -->
 
-<p>Big12ology is a personal fan project — static websites about Big 12
+<!-- PICKEM-ONLY -->
+<p>Big12ology is a personal fan project &mdash; static websites about Big 12
+football. Three of the four sections have no accounts and set no cookies at
+all. The fourth, the <a href="/pickem/">pick&rsquo;em</a>, has one of each,
+and only if you choose to sign in.</p>
+
+<h2>The short version</h2>
+<ul>
+  <li>No ads, no trackers, nothing sold to anybody, ever.</li>
+  <li>The tiebreaker, the schedule and the attendance tracker collect nothing
+  and set no cookies. Read them signed out and there is nothing to say.</li>
+  <li>If you sign in to the pick&rsquo;em: one cookie, a display name you
+  choose, and <b>we never receive your email address, your real name or your
+  profile picture</b> &mdash; not from Google, not from GitHub, not at all.</li>
+</ul>
+
+<h2>What the other sections collect</h2>
+<ul>
+  <li><b>Nothing you type.</b> On the tiebreaker, the schedule and the
+  attendance tracker there are no forms, sign-ups, or comment boxes.</li>
+  <li><b>No cookies there.</b> Interactive features (like the tiebreaker what-if
+  simulator) run entirely in your browser&rsquo;s memory and forget everything
+  when you close the tab.</li>
+  <li><b>One thing in local storage, and it is your setting.</b> If you pick
+  light or dark mode, that choice is saved in your browser under
+  <code>b12-theme</code> so the page does not flash the wrong theme next time.
+  It never leaves your device and it is not sent to us. Clearing your browser
+  data removes it. The pick&rsquo;em adds no second key &mdash;
+  <code>b12-theme</code> is still the only thing this domain stores in your
+  browser besides the sign-in cookie described below.</li>
+</ul>
+
+<h2>Signing in to the pick&rsquo;em</h2>
+<p>You sign in with Google or GitHub. We ask each of them for the least they
+will give us:</p>
+<ul>
+  <li><b>Google</b> is asked for the <code>openid</code> scope and nothing
+  else. Not <code>email</code>, not <code>profile</code>. What comes back is a
+  signed token containing an opaque subject identifier.</li>
+  <li><b>GitHub</b> is asked for an empty scope, which grants no access to
+  anything, and we then read the numeric account id from its public user
+  endpoint. We use the numeric id rather than your username because a username
+  can be changed and then registered by somebody else.</li>
+</ul>
+<p>We do not store the identifier either provider gives us. We store a keyed
+hash of it, using a secret that is not in the database. A copy of our database
+without that secret cannot be linked back to any Google or GitHub account. The
+access token GitHub issues is used for exactly one request and then discarded;
+it is never stored.</p>
+<p>Your provider will know that you signed in to this site, and when. That is
+visible to them regardless of what we do, and it is the trade you are making
+by using them to sign in. Their policies apply to their side of it:
+<a href="https://policies.google.com/privacy">Google&rsquo;s Privacy
+Policy</a> and <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub&rsquo;s
+Privacy Statement</a>.</p>
+
+<h2>The cookie</h2>
+<p>Signing in sets one cookie, <code>__Host-b12s</code>. It holds a random
+value and nothing else &mdash; no name, no identifier, nothing readable. It is
+<code>HttpOnly</code> (JavaScript cannot read it), <code>Secure</code> (it is
+never sent unencrypted), <code>SameSite=Lax</code> (it is not sent from other
+sites&rsquo; forms), and it lasts 30 days. Signing out deletes it.</p>
+<p>A second cookie, <code>__Host-b12oauth</code>, exists for the ten seconds
+between clicking &ldquo;Continue with Google&rdquo; and arriving back here. It
+carries the one-time values that prove the round trip is the same one you
+started, and it is deleted the moment you land.</p>
+<p><b>There is no consent banner, and that is deliberate rather than an
+oversight.</b> Both cookies are strictly necessary to a service you asked for
+by pressing a sign-in button, which is the one category that does not require
+consent. We do not set any cookie for analytics, advertising or measurement,
+so there is nothing for a banner to ask you about. If that ever changes, this
+page changes first.</p>
+<p>One honest limitation: signing out revokes your session immediately in our
+database, but the cached copy at Cloudflare&rsquo;s edge can take up to about a
+minute to catch up. Signing out on a shared computer is effective; it is not
+instantaneous everywhere on earth.</p>
+
+<h2>What is public</h2>
+<p>The pick&rsquo;em leaderboard is public and indexable by search engines. On
+it, anybody can see <b>the display name you chose</b> and <b>your record</b>.
+After a week locks, the picks you made that week become public too, along with
+the overall split of how everyone picked each game &mdash; that is the point of
+the game.</p>
+<p>Your display name is the only thing you publish, so choose it accordingly:
+it does not have to be your name and we would rather it were not. Nothing else
+about you is shown to anyone.</p>
+
+<h2>What we store, and for how long</h2>
+<ul>
+  <li><b>An account row</b> &mdash; a generated id, your display name, when you
+  signed up, and when you last changed your name. Kept while the account
+  exists.</li>
+  <li><b>Previous display names.</b> Kept so that a name cannot be used
+  abusively and then abandoned to escape it.</li>
+  <li><b>A keyed hash of your provider identifier</b>, as described above.</li>
+  <li><b>Your picks</b>, and what they scored. Kept indefinitely &mdash; they
+  are the record of the season.</li>
+  <li><b>Sessions</b> &mdash; a hash of the cookie value, a creation time and an
+  expiry. Never the cookie itself. Expired sessions stop working after 30
+  days.</li>
+  <li><b>A keyed hash of the IP address you signed up from.</b> Never the
+  address itself, and it is not linked to anything you do afterwards. It exists
+  so that twenty accounts appearing from one place in an hour can be looked at
+  by a person. It is never used to block anybody automatically: this is a
+  college football site, and shared campus and dorm connections are the normal
+  case rather than the suspicious one.</li>
+  <li><b>Which team you follow</b>, if you tell us. It only tints your own rows
+  on your own screen, and it is not shown to anyone else.</li>
+</ul>
+<p>We do not store your email address, because we never ask for it. That has a
+consequence worth knowing before you sign up: <b>there is no password reset and
+no way for us to recover your account</b>, because there is nothing to send a
+recovery link to. Your account is reachable only through the provider you
+signed in with. You can link both Google and GitHub to the same account, and
+that is the only backup there is.</p>
+
+<h2>Deleting your account</h2>
+<p>You can delete your account from the account page. When you do, we remove
+the link to your Google or GitHub identity, clear the signup hash, sign you out
+everywhere, and rename you to something anonymous like
+<code>deleted-4f2a91</code>.</p>
+<p><b>Your picks are kept, under that anonymous name.</b> We are telling you
+this plainly because it is a real limit on erasure rather than a technicality:
+a public leaderboard where past weeks develop holes is not an honest record,
+and everybody else&rsquo;s standing depends on those games having been picked.
+What is deleted is every link between those picks and you.</p>
+
+<h2>Children</h2>
+<p>The pick&rsquo;em involves a public leaderboard and an account, so it is not
+intended for children under 13, and we ask that they not sign in. The rest of
+the site is just football statistics and anyone is welcome to read it. If you
+believe a child has created an account, write to us and we will remove it.</p>
+
+<!-- /PICKEM-ONLY -->
+<!-- PICKEM-OFF -->
+<p>Big12ology is a personal fan project &mdash; static websites about Big 12
 football. The short version: no accounts, no cookies, no ads, no selling of
 anything, and as close to no data as a website can get.</p>
 
 <h2>What these sites collect</h2>
 <ul>
-  <li><b>Nothing you type.</b> There are no forms, sign-ups, or comment boxes.</li>
+  <li><b>Nothing you type.</b> There are no forms, sign-ups, or comment
+  boxes.</li>
   <li><b>No cookies.</b> Interactive features (like the tiebreaker what-if
-  simulator) run entirely in your browser's memory and forget everything when
-  you close the tab.</li>
+  simulator) run entirely in your browser&rsquo;s memory and forget everything
+  when you close the tab.</li>
   <li><b>One thing in local storage, and it is your setting.</b> If you pick
   light or dark mode, that choice is saved in your browser under
   <code>b12-theme</code> so the page does not flash the wrong theme next time.
@@ -62,17 +203,25 @@ anything, and as close to no data as a website can get.</p>
   data removes it.</li>
 </ul>
 
+<!-- /PICKEM-OFF -->
 <h2>Hosting</h2>
 <p>The sites are built and stored on <a href="https://pages.github.com/">GitHub
 Pages</a> and delivered through <a href="https://www.cloudflare.com/">Cloudflare</a>,
 which also provides DNS. Both are ordinary web infrastructure and both may log
-request metadata — including your IP address, the page you asked for, and your
-browser's user-agent string — for security and operational purposes. Neither we
-nor they use that to build a profile of you. See the
+request metadata &mdash; including your IP address, the page you asked for, and
+your browser&rsquo;s user-agent string &mdash; for security and operational
+purposes. Neither we nor they use that to build a profile of you. See the
 <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub
 Privacy Statement</a> and
-<a href="https://www.cloudflare.com/privacypolicy/">Cloudflare's Privacy
+<a href="https://www.cloudflare.com/privacypolicy/">Cloudflare&rsquo;s Privacy
 Policy</a>.</p>
+<!-- PICKEM-ONLY -->
+<p><b>Cloudflare&rsquo;s role changed when the pick&rsquo;em launched.</b> For
+the static sections it is a content delivery network passing pages along. For
+the pick&rsquo;em it also runs our code and holds our database, which makes it
+a processor handling your account and your picks on our behalf, not merely a
+pipe.</p>
+<!-- /PICKEM-ONLY -->
 
 <h2>Analytics</h2>
 <p>These sites use (or may use) <a
@@ -84,11 +233,17 @@ an individual.</p>
 
 <h2>External links and data sources</h2>
 <p>Links to other sites (GitHub, collegefootballdata.com, big12sports.com,
-and others) are governed by those sites' own privacy policies. Game data is
-fetched from third parties by our build servers, not by your browser — your
-browser never talks to a sports data provider. The attendance tracker does load
-its own data files from this site as you use it, which is an ordinary request to
-this site like any other.</p>
+and others) are governed by those sites&rsquo; own privacy policies. Game data
+is fetched from third parties by our build servers, not by your browser &mdash;
+your browser never talks to a sports data provider. The attendance tracker does
+load its own data files from this site as you use it, which is an ordinary
+request to this site like any other.</p>
+<!-- PICKEM-ONLY -->
+<p>The one time your browser talks to somebody else is when you choose to sign
+in: pressing &ldquo;Continue with Google&rdquo; or &ldquo;Continue with
+GitHub&rdquo; sends you to them and back. Nothing on any page of this site
+loads anything from Google or GitHub until you press one of those buttons.</p>
+<!-- /PICKEM-ONLY -->
 
 <h2>Changes and contact</h2>
 <p>If this policy changes (for example, if analytics tooling changes), this
