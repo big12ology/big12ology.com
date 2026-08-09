@@ -110,6 +110,21 @@ def load_lines(year):
 MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS"]
 
 
+def model_year(name, systems):
+    """The season a rating system's numbers actually come from. Preseason
+    that is usually last season: the new year's ratings do not publish until
+    late August, and fetch.py falls back a year rather than showing nothing."""
+    return ((systems or {}).get(name) or {}).get("year")
+
+
+def model_label(name, systems):
+    """A system's name carries the season behind it — "SP+ (2025)", the same
+    way the what-if picker has always labeled them. A bare "SP+" beside a
+    2026 schedule reads as a 2026 number, and in August it is not one."""
+    y = model_year(name, systems)
+    return f"{name} ({y})" if y else name
+
+
 def favorites_for(games, systems):
     """{system: {game_id: {team, margin}}} for every unplayed game (conference
     and non-conference). Margin is converted to scoring points via the
@@ -614,8 +629,10 @@ def scorecard_card(games, systems, lines=None):
         v = tal[name]
         tot = v["w"] + v["l"]
         pct = v["w"] / tot if tot else 0
+        # Same convention as the what-if picker and the game cards: the name
+        # carries the season its ratings came from.
         label = ("<b>Vegas</b> <span class=dim>(closing line)</span>"
-                 if name == "Vegas" else esc(name))
+                 if name == "Vegas" else esc(model_label(name, systems)))
         rows.append(
             f"<tr><td>{label}</td><td>{v['w']}–{v['l']}</td>"
             f"<td style='color:{winpct_color(pct)}'>{pct:.3f}</td></tr>")
@@ -1597,6 +1614,11 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
   align-items:center; gap:10px; margin:6px 0; font-size:13.5px }
 .msys { color:var(--dim); font-size:12px; text-transform:uppercase;
   letter-spacing:.04em }
+/* The season the rating comes from, under its name. Preseason these are last
+   year's numbers, and the row has to say so where the name is — the caveat in
+   the note below is read after the bars, if at all. */
+.msys i { display:block; font-style:normal; font-size:10px; opacity:.75;
+  letter-spacing:0; font-variant-numeric:tabular-nums }
 .mrow { display:grid; align-items:center; gap:10px;
   grid-template-columns:minmax(0,140px) minmax(0,1fr) 42px }
 .mname { overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
@@ -2220,25 +2242,34 @@ def model_card(g, ctx):
                 f"<span class=mbar><i style='width:{pct:.0f}%'></i></span>"
                 f"<b class=mval>{margin:g}</b></div>")
 
+    # The year sits under the name rather than beside it: this column is 44px
+    # and the bar beside it is the point of the card.
+    def sys_label(n):
+        y = model_year(n, ctx.get("systems"))
+        return f"{esc(n)}{f'<i>{esc(y)}</i>' if y else ''}"
+
     body = "".join(
-        f"<div class=mline><span class=msys>{esc(n)}</span>"
+        f"<div class=mline><span class=msys>{sys_label(n)}</span>"
         f"{bar(t, m)}</div>" for n, t, m in rows)
     if mkt:
         body += (f"<div class='mline mmarket'><span class=msys>Market</span>"
                  f"{bar(mkt[0], mkt[1], 'market')}</div>")
     note = ("Predicted margin in points, each system carrying its own "
-            "home-field bump. The market row is the closing spread, for "
+            "home-field bump. The year under a name is the season those "
+            "ratings come from. The market row is the closing spread, for "
             "comparison.")
     # Before a season starts, most of these are last year's numbers pulled
     # toward the mean. A reader comparing against published SP+ deserves to
-    # know why ours is smaller rather than assuming one of us is wrong.
+    # know why ours is smaller rather than assuming one of us is wrong. The
+    # labels now say which ones are last season's, so this says what was done
+    # to them rather than naming them a second time.
     stale = sorted({n for n in MODEL_ORDER
                     if (ctx.get("systems") or {}).get(n, {}).get("year")
                     not in (None, ctx.get("year"))})
     if stale:
-        note += (f" {', '.join(stale)} still publish last season's ratings, "
-                 f"regressed toward the mean for how wrong a rating can be "
-                 f"about a team this early.")
+        note += (f" Where that is last season, the rating is regressed toward "
+                 f"the mean for how wrong a rating can be about a team this "
+                 f"early.")
     if mkt:
         agree = sum(1 for _, t, _ in rows if t == mkt[0])
         if agree == len(rows):
@@ -4251,6 +4282,62 @@ PICKEM_SOON_CSS = """
 """
 
 
+# The survivor pool's one page. A shell like every pick'em body above: the
+# picker, the run and the pool all arrive from /api/*, and what is baked in
+# is only what is true for everybody. The rules live in the markup at the
+# bottom of the page — they are static text, and a reader with no JavaScript
+# should still come away knowing what the game is.
+SURVIVOR_BODY = """
+<div class="card" id=svlock hidden>
+  <p class=pk-lockline>Week <span id=svweek></span> locks
+    <time id=lockat datetime=""></time>
+    <span class=pk-cd aria-hidden=true>&nbsp;&middot;&nbsp;<span id=cd></span></span>
+    <span id=cdsr class=sr-only aria-live=polite></span>
+  </p>
+  <p class=pk-slatecount id=svstanding></p>
+</div>
+
+<p class=pk-signedout id=svsignedout hidden><a href="/pools/account.html">Sign
+in</a> to play the survivor pool. The rules are one sentence: one team a week
+to win its game outright, no team twice, and a loss or a forgotten week is the
+end of your run.</p>
+<p class=pk-signedout id=svneedsname hidden><a href="/pools/account.html">Choose
+a display name</a> before picking &mdash; a run with nobody's name on it
+cannot go on the board.</p>
+<p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
+<p id=alertstate class=pk-alertstate role=alert></p>
+
+<div class=card>
+  <h2>This week's pick</h2>
+  <p class=note id=svnote>Loading&hellip;</p>
+  <form id=svform>
+    <div id=svslate class=pk-slate></div>
+  </form>
+</div>
+
+<div class=card id=svusedcard hidden>
+  <h2>Your run</h2>
+  <ul class=pk-svrun id=svused></ul>
+</div>
+
+<div class=card>
+  <h2>The Pool</h2>
+  <p class=note id=svboardnote>Loading&hellip;</p>
+  <div class=table-wrap><div class=table-scroll>
+    <table id=svboard></table>
+  </div></div>
+  <p class=note>One team a week, picked to win the game &mdash; the spread
+  plays no part. A team can be used once a season; a cancelled game hands it
+  back. Lose, or let a week lock without a pick, and your run is over. Rank
+  is wins, with the living above the dead on a tie. You can join any week:
+  the weeks before your first pick simply never happened for you.</p>
+</div>
+
+<noscript><p class=note><b>The picker needs JavaScript.</b> The rules are in
+the card above, and the pool stands as
+<a href="/api/survivor/board">JSON</a>.</p></noscript>"""
+
+
 def season_opener(games):
     """The first kickoff of the season, for the teaser to name a date.
 
@@ -4521,8 +4608,39 @@ def build_pickem(year):
                                 '<meta name=robots content="noindex, follow">')
         with open(os.path.join(PICKEM_SITE, fname), "w") as f:
             f.write(html)
+
+    # The survivor pool. Same depth as the pick'em pages, so it shares their
+    # head verbatim; section "pools" rather than "pickem", so its subnav is
+    # the two games side by side without the pick'em's own tabs hanging off
+    # it — The Card and The Rules are that game's pages, not this one's.
+    os.makedirs(SURVIVOR_SITE, exist_ok=True)
+    sv = build_subpage(
+        "Survivor", "survivor", SURVIVOR_BODY, year, "",
+        canon="https://big12ology.com/pools/survivor/",
+        desc="The Big 12 survivor pool: one team a week to win outright, "
+             "no team twice, last streak standing.",
+        head=head, section="pools", page="survivor")
+    with open(os.path.join(SURVIVOR_SITE, "index.html"), "w") as f:
+        f.write(sv)
+
+    # One account for both games, so it sits above them rather than inside
+    # one. Written with the pools' own BASE, being a level shallower.
+    BASE = "../tiebreaker/"
+    acct_head = (f'<link rel=stylesheet '
+                 f'href="{asset_v("styles.css", POOLS_SITE)}">'
+                 f'<script defer src="{BASE}{asset_v("pct.js")}"></script>'
+                 f'<script defer src="{asset_v("app.js", POOLS_SITE)}"></script>')
+    acct = build_subpage("Your account", "account", PICKEM_ACCOUNT_BODY, year,
+                         "", desc=None, head=acct_head, section="pickem",
+                         page="account.html")
+    acct = acct.replace("<meta charset=utf-8>",
+                        "<meta charset=utf-8>"
+                        '<meta name=robots content="noindex, follow">')
+    with open(os.path.join(POOLS_SITE, "account.html"), "w") as f:
+        f.write(acct)
+
     BASE = prev
-    print(f"built pickem -> {PICKEM_SITE}")
+    print(f"built pools -> {POOLS_SITE}")
 
 
 def write_discovery(years):

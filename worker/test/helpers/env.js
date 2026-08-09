@@ -135,6 +135,15 @@ export function seedPick(env, userId, season, week, gameId, side, spreadX2) {
     .run(userId, season, week, gameId, side, spreadX2, now, now);
 }
 
+export function seedSurvivorPick(env, userId, season, week, gameId, team) {
+  const now = NOW();
+  env.raw.prepare(
+    `INSERT INTO survivor_picks (user_id, season, week, game_id, team,
+                                 created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`)
+    .run(userId, season, week, gameId, team, now, now);
+}
+
 /** Move a week's lock into the past without tripping weeks_lock_monotonic. */
 export function forceLock(env, season, week, at = NOW() - HOUR) {
   env.raw.exec("PRAGMA writable_schema = ON");

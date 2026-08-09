@@ -133,6 +133,8 @@ export async function scoreWeek(env, season, week, scores,
   await rebuildPickScores(env, season, week);
   await rebuildWeekBoard(env, season, week, now);
   await rebuildSeasonBoard(env, season, now);
+  await rebuildSurvivorScores(env, season, week);
+  await rebuildSurvivorBoard(env, season, now);
 
   await env.DB.prepare(
     `UPDATE weeks SET scored_at = ?, scored_rev = scored_rev + 1
@@ -161,6 +163,116 @@ async function rebuildPickScores(env, season, week) {
          JOIN results r ON r.season = p.season AND r.week = p.week
                        AND r.game_id = p.game_id
         WHERE p.season = ? AND p.week = ?`).bind(season, week),
+  ]);
+}
+
+/**
+ * Straight-up outcomes for the survivor pool. Same shape as
+ * rebuildPickScores: derived, deleted and recreated, never adjusted.
+ *
+ * The spread is not consulted. A survivor pick is a team to win the game,
+ * so the grading is points against points — with two escapes that both land
+ * on 'void': a game scoring voided (cancelled, or vanished past the
+ * thirty-six-hour clock), and the theoretical tie, which modern overtime
+ * rules should make impossible but which must not default to somebody's
+ * elimination if it ever happens.
+ */
+async function rebuildSurvivorScores(env, season, week) {
+  await env.DB.batch([
+    env.DB.prepare(`DELETE FROM survivor_scores WHERE season = ? AND week = ?`)
+      .bind(season, week),
+    env.DB.prepare(
+      `INSERT INTO survivor_scores (user_id, season, week, game_id, outcome)
+       SELECT p.user_id, p.season, p.week, p.game_id,
+              CASE WHEN r.status = 'void' THEN 'void'
+                   WHEN r.home_points = r.away_points THEN 'void'
+                   WHEN (p.team = g.home AND r.home_points > r.away_points)
+                     OR (p.team = g.away AND r.away_points > r.home_points)
+                     THEN 'win'
+                   ELSE 'loss' END
+         FROM survivor_picks p
+         JOIN slate_games g ON g.season = p.season AND g.week = p.week
+                           AND g.game_id = p.game_id
+         JOIN results r ON r.season = p.season AND r.week = p.week
+                       AND r.game_id = p.game_id
+        WHERE p.season = ? AND p.week = ?`).bind(season, week),
+  ]);
+}
+
+/**
+ * The survivor standings, season-wide, in one INSERT.
+ *
+ * The walk: for every entrant, every LOCKED week from their first pick
+ * onward is one of four things — a win, a loss, a void, or (no pick at all)
+ * a miss. The first loss or miss is the out; wins are counted strictly
+ * before it. A locked week whose game has no result yet is pending: it
+ * neither counts nor eliminates, and the next recompute settles it.
+ *
+ * Locked weeks, not scored weeks, and the difference is deliberate: the
+ * moment a week locks, "no pick" is a permanent fact — there is nothing to
+ * wait for — so a player who let it pass is out on the next recompute
+ * rather than in limbo until the games finish.
+ *
+ * Every entrant lands in the table, whatever their account status: the read
+ * side filters the public board to active accounts, but a provisional or
+ * banned player's own standing — and the pick handler's "you are out" —
+ * still has to come from somewhere.
+ */
+async function rebuildSurvivorBoard(env, season, now) {
+  await env.DB.batch([
+    env.DB.prepare(`DELETE FROM survivor_board WHERE season = ?`).bind(season),
+    env.DB.prepare(
+      `INSERT INTO survivor_board
+         (season, user_id, wins, alive, entered_week, out_week, out_reason,
+          rank, computed_at)
+       SELECT ?, user_id, wins,
+              CASE WHEN out_week IS NULL THEN 1 ELSE 0 END,
+              entered_week, out_week, out_reason,
+              RANK() OVER (ORDER BY wins DESC,
+                           CASE WHEN out_week IS NULL THEN 1 ELSE 0 END DESC),
+              ?
+         FROM (
+           -- Plain ? throughout, bound in text order: the node:sqlite shim
+           -- the tests run on cannot bind ?N numbered parameters
+           -- positionally, and a query only D1 can execute is a query the
+           -- suite cannot check.
+           WITH locked AS (
+             SELECT week FROM weeks
+              WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?),
+           entrants AS (
+             SELECT user_id, MIN(week) AS entered_week
+               FROM survivor_picks WHERE season = ? GROUP BY user_id),
+           walk AS (
+             SELECT e.user_id, e.entered_week, l.week,
+                    CASE WHEN p.user_id IS NULL THEN 'missed'
+                         ELSE COALESCE(s.outcome, 'pending') END AS outcome
+               FROM entrants e
+               JOIN locked l ON l.week >= e.entered_week
+               LEFT JOIN survivor_picks p
+                 ON p.user_id = e.user_id AND p.season = ? AND p.week = l.week
+               LEFT JOIN survivor_scores s
+                 ON s.user_id = e.user_id AND s.season = ? AND s.week = l.week)
+           SELECT e.user_id, e.entered_week,
+                  (SELECT MIN(w.week) FROM walk w
+                    WHERE w.user_id = e.user_id
+                      AND w.outcome IN ('loss', 'missed')) AS out_week,
+                  (SELECT CASE w2.outcome WHEN 'missed' THEN 'missed'
+                                          ELSE 'loss' END
+                     FROM walk w2
+                    WHERE w2.user_id = e.user_id
+                      AND w2.week = (SELECT MIN(w3.week) FROM walk w3
+                                      WHERE w3.user_id = e.user_id
+                                        AND w3.outcome IN ('loss', 'missed')))
+                    AS out_reason,
+                  (SELECT COUNT(*) FROM walk w4
+                    WHERE w4.user_id = e.user_id AND w4.outcome = 'win'
+                      AND w4.week < COALESCE(
+                            (SELECT MIN(w5.week) FROM walk w5
+                              WHERE w5.user_id = e.user_id
+                                AND w5.outcome IN ('loss', 'missed')),
+                            1000000)) AS wins
+             FROM entrants e)`)
+      .bind(season, now, season, now, season, season, season),
   ]);
 }
 
@@ -234,11 +346,18 @@ async function rebuildSeasonBoard(env, season, now) {
  * otherwise would be the mistake.
  */
 export async function promoteProvisional(env, season, week) {
+  // Either game counts. A survivor-only player has completed a scored week
+  // in exactly the sense the gate cares about — they played a week that has
+  // since been graded — and holding them provisional forever because they
+  // never filled in a spread card would be the rule outliving its reason.
   await env.DB.prepare(
     `UPDATE users SET status = 'active'
       WHERE status = 'provisional'
-        AND id IN (SELECT DISTINCT user_id FROM pick_scores
-                    WHERE season = ? AND week = ?)`).bind(season, week).run();
+        AND (id IN (SELECT DISTINCT user_id FROM pick_scores
+                     WHERE season = ? AND week = ?)
+          OR id IN (SELECT DISTINCT user_id FROM survivor_scores
+                     WHERE season = ? AND week = ?))`)
+    .bind(season, week, season, week).run();
 }
 
 /**

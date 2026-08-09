@@ -291,6 +291,213 @@ async function lockedNow(env, user, s, week) {
   return fail("locked", 409, { picks });
 }
 
+// ------------------------------------------------------------- survivor
+
+/**
+ * Your whole survivor season in one response: this week's pick, every team
+ * you have spent, and where you stand. The client draws the entire page
+ * from this plus /api/slate, which it is already fetching.
+ *
+ * `standing` is the materialised row and can lag a brand-new entrant by one
+ * scoring run; `used` is live. The client treats no-standing-yet as "in".
+ */
+export async function getSurvivor(env, user, url) {
+  if (!user) return fail("unauthenticated", 401);
+  const s = season(env);
+  const week = await weekParam(env, url, s);
+  if (week == null) return fail("no_slate", 404);
+
+  const w = await env.DB.prepare(
+    `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
+    .bind(s, week).first();
+
+  const pick = await env.DB.prepare(
+    `SELECT game_id, team FROM survivor_picks
+      WHERE user_id = ? AND season = ? AND week = ?`)
+    .bind(user.userId, s, week).first();
+
+  // Every pick of the season with its outcome, the ungraded ones NULL. This
+  // is what disables spent teams on the picker, so it must come from the
+  // picks themselves rather than the board — a pick made ten seconds ago is
+  // already a team you cannot pick again.
+  const { results: used } = await env.DB.prepare(
+    `SELECT p.week, p.game_id, p.team, s.outcome
+       FROM survivor_picks p
+       LEFT JOIN survivor_scores s
+         ON s.user_id = p.user_id AND s.season = p.season AND s.week = p.week
+      WHERE p.user_id = ? AND p.season = ?
+      ORDER BY p.week`).bind(user.userId, s).all();
+
+  const standing = await env.DB.prepare(
+    `SELECT wins, alive, entered_week, out_week, out_reason, rank
+       FROM survivor_board WHERE season = ? AND user_id = ?`)
+    .bind(s, user.userId).first();
+
+  return json({
+    season: s, week, locked: isLocked(w), lock_at: w ? w.lock_at : null,
+    pick: pick || null,
+    used: used || [],
+    standing: standing || null,
+  });
+}
+
+/**
+ * Set (or clear) the week's one pick. `{week, game_id, team}` to pick,
+ * `{week, team: null}` to withdraw before the lock.
+ *
+ * Same shape as putPicks: the cheap checks run here for clean errors, and
+ * the triggers inside the write are what actually hold the line — the lock,
+ * team-in-game, and no-reuse are all enforced by 0003 whatever this code
+ * does. Elimination is the one rule refused here alone, because it is a
+ * derived fact the recompute owns; a pick that slips through the staleness
+ * window is ignored by the walk, not resurrected by it.
+ */
+export async function putSurvivorPick(env, user, body) {
+  if (!user) return fail("unauthenticated", 401);
+
+  const who = await env.DB.prepare(
+    `SELECT display_name FROM users WHERE id = ?`).bind(user.userId).first();
+  if (!who || !who.display_name) return fail("no_display_name", 403);
+
+  const s = season(env);
+  const week = Number(body.week);
+  if (!Number.isInteger(week)) return fail("bad_week", 400);
+  if (body.season != null && Number(body.season) !== s) {
+    return fail("bad_season", 400);
+  }
+
+  const rl = await ratelimit.take(env, "picks", user.userId);
+  if (!rl.ok) return fail("rate_limited", 429, { retry_after: rl.retryAfter });
+
+  const w = await env.DB.prepare(
+    `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
+    .bind(s, week).first();
+  if (!w) return fail("no_slate", 404);
+  if (isLocked(w)) return survivorLockedNow(env, user, s, week);
+
+  const standing = await env.DB.prepare(
+    `SELECT alive, out_week, out_reason FROM survivor_board
+      WHERE season = ? AND user_id = ?`).bind(s, user.userId).first();
+  if (standing && !standing.alive) {
+    return fail("eliminated", 409,
+                { out_week: standing.out_week, out_reason: standing.out_reason });
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+
+  if (body.team == null || body.team === "") {
+    try {
+      await env.DB.prepare(
+        `DELETE FROM survivor_picks
+          WHERE user_id = ? AND season = ? AND week = ?`)
+        .bind(user.userId, s, week).run();
+    } catch (e) {
+      if (/week_locked/.test(String(e.message || e))) {
+        return survivorLockedNow(env, user, s, week);
+      }
+      throw e;
+    }
+    return json({ saved: true, pick: null });
+  }
+
+  const gameId = Number(body.game_id);
+  const team = String(body.team);
+  if (!Number.isInteger(gameId)) return fail("bad_game", 400);
+
+  // The friendly version of survivor_in_game: a 400 with a reason beats a
+  // trigger message, and reading the slate row first also confirms the game
+  // belongs to this week rather than to some other slate.
+  const g = await env.DB.prepare(
+    `SELECT home, away, spread_x2 FROM slate_games
+      WHERE season = ? AND week = ? AND game_id = ?`)
+    .bind(s, week, gameId).first();
+  if (!g) return fail("no_such_game", 400);
+  if (g.spread_x2 == null) return fail("unpickable", 400);
+  if (team !== g.home && team !== g.away) return fail("not_in_game", 400);
+
+  try {
+    await env.DB.prepare(
+      `INSERT INTO survivor_picks
+         (user_id, season, week, game_id, team, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(user_id, season, week) DO UPDATE SET
+         game_id = excluded.game_id,
+         team = excluded.team,
+         updated_at = excluded.updated_at`)
+      .bind(user.userId, s, week, gameId, team, now, now).run();
+  } catch (e) {
+    const msg = String(e.message || e);
+    if (/week_locked/.test(msg)) return survivorLockedNow(env, user, s, week);
+    if (/survivor_team_reused/.test(msg)) return fail("team_used", 409);
+    if (/survivor_not_in_game/.test(msg)) return fail("not_in_game", 400);
+    throw e;
+  }
+  return json({ saved: true, pick: { game_id: gameId, team } });
+}
+
+/** The survivor 409: what the database recorded at the lock, for repainting. */
+async function survivorLockedNow(env, user, s, week) {
+  const pick = await env.DB.prepare(
+    `SELECT game_id, team FROM survivor_picks
+      WHERE user_id = ? AND season = ? AND week = ?`)
+    .bind(user.userId, s, week).first();
+  return fail("locked", 409, { pick: pick || null });
+}
+
+/**
+ * The survivor board. Public and cacheable, same regime as the leaderboard:
+ * active accounts only, recomputed by the cron, identical for every reader.
+ *
+ * Each row carries the player's pick for the current week ONLY once that
+ * week has locked — before the lock somebody's survivor pick is exactly the
+ * information the lock exists to withhold, doubly so here where a team can
+ * only be spent once.
+ */
+export async function getSurvivorBoard(env) {
+  const s = season(env);
+  const week = await currentWeek(env, s);
+
+  const { results } = await env.DB.prepare(
+    `SELECT b.rank, b.user_id, u.display_name, u.team,
+            b.wins, b.alive, b.entered_week, b.out_week, b.out_reason
+       FROM survivor_board b JOIN users u ON u.id = b.user_id
+      WHERE b.season = ? AND u.status = 'active'
+      ORDER BY b.rank, u.display_name LIMIT 500`).bind(s).all();
+
+  const rows = results || [];
+  let picks = new Map();
+  if (week != null) {
+    const w = await env.DB.prepare(
+      `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
+      .bind(s, week).first();
+    if (isLocked(w)) {
+      const { results: wk } = await env.DB.prepare(
+        `SELECT p.user_id, p.team, s2.outcome
+           FROM survivor_picks p
+           LEFT JOIN survivor_scores s2
+             ON s2.user_id = p.user_id AND s2.season = p.season
+            AND s2.week = p.week
+          WHERE p.season = ? AND p.week = ?`).bind(s, week).all();
+      picks = new Map((wk || []).map((r) => [r.user_id, r]));
+    }
+  }
+
+  let alive = 0;
+  for (const r of rows) if (r.alive) alive++;
+  return json({
+    season: s, week,
+    entrants: rows.length, alive,
+    computed_at: Math.floor(Date.now() / 1000),
+    rows: rows.map((r) => {
+      const p = picks.get(r.user_id);
+      return { ...r, pick: p ? { team: p.team, outcome: p.outcome } : null };
+    }),
+  }, 200, {
+    "Cache-Control": "public, max-age=0, s-maxage=60",
+    Vary: "",
+  });
+}
+
 // ---------------------------------------------------------- leaderboard
 
 export async function getBoard(env, url) {
@@ -454,9 +661,13 @@ export async function resolveIdentity(env, provider, subjectHash,
 
   if (linkTo) {
     if (found && found.user_id !== linkTo) {
+      // "Has played" means either game. Deleting the found account cascades
+      // its survivor picks exactly as it would its card, so absorbing a
+      // survivor-only account would erase a season the same way.
       const other = await env.DB.prepare(
-        `SELECT COUNT(*) AS n FROM picks WHERE user_id = ?`)
-        .bind(found.user_id).first();
+        `SELECT (SELECT COUNT(*) FROM picks WHERE user_id = ?)
+              + (SELECT COUNT(*) FROM survivor_picks WHERE user_id = ?) AS n`)
+        .bind(found.user_id, found.user_id).first();
       if (other && other.n > 0) return { error: "identity_in_use" };
       await env.DB.batch([
         env.DB.prepare(`DELETE FROM identities WHERE user_id = ?`)

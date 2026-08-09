@@ -42,7 +42,7 @@ const call = (env, ...a) => worker.fetch(req(...a), env, {});
 
 test("nothing outside /api/ is answered", async () => {
   const env = makeEnv();
-  for (const p of ["/", "/pickem/", "/tiebreaker/index.html"]) {
+  for (const p of ["/", "/pools/", "/tiebreaker/index.html"]) {
     const r = await call(env, p);
     assert.equal(r.status, 404, `${p} was handled`);
   }
