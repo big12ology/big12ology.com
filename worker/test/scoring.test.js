@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
 import {
   makeEnv, seedWeek, seedUser, seedPick, forceLock, NOW, HOUR,
 } from "./helpers/env.js";
-import { chalk, promoteProvisional, scoreWeek } from "../src/scoring.js";
+import { chalk, promoteProvisional, room, scoreWeek } from "../src/scoring.js";
 
 // Iowa State -6.5 over Kansas (spread_x2 -13); Baylor +3.5 (spread_x2 7).
 const SCORES = { games: { "401": [31, 21, true], "402": [17, 24, true] } };
@@ -251,6 +251,76 @@ test("ranking is by wins then percentage, and ties share a rank", async () => {
   assert.equal(rows[0].rank, 1);
   assert.equal(rows[1].rank, 2);
   assert.equal(rows[2].rank, 2, "an identical record did not share a rank");
+});
+
+test("the room takes the majority, and abstains on a dead heat", async () => {
+  const env = makeEnv();
+  seedWeek(env, { games: [
+    // Three voters lean home, and home covers: the room wins.
+    { game_id: 901, home: "H", away: "A", spread_x2: -2 },
+    // Three voters lean away, and home covers: the room loses.
+    { game_id: 902, home: "H2", away: "A2", spread_x2: -2 },
+    // Two each way. The room had no opinion and does not get one.
+    { game_id: 903, home: "H3", away: "A3", spread_x2: -2 },
+  ] });
+  for (const u of ["a", "b", "c", "d"]) seedUser(env, u, { name: u.toUpperCase() });
+
+  seedPick(env, "a", 2026, 3, 901, "home", -2);
+  seedPick(env, "b", 2026, 3, 901, "home", -2);
+  seedPick(env, "c", 2026, 3, 901, "away", -2);
+
+  seedPick(env, "a", 2026, 3, 902, "away", -2);
+  seedPick(env, "b", 2026, 3, 902, "away", -2);
+  seedPick(env, "c", 2026, 3, 902, "home", -2);
+
+  seedPick(env, "a", 2026, 3, 903, "home", -2);
+  seedPick(env, "b", 2026, 3, 903, "home", -2);
+  seedPick(env, "c", 2026, 3, 903, "away", -2);
+  seedPick(env, "d", 2026, 3, 903, "away", -2);
+  lock(env);
+
+  // Home covers all three.
+  await scoreWeek(env, 2026, 3, { games: {
+    "901": [20, 0, true], "902": [20, 0, true], "903": [20, 0, true] } });
+
+  const r = await room(env, 2026, 3);
+  assert.equal(r.w, 1, "the room did not win the game it leaned right on");
+  assert.equal(r.l, 1, "the room did not lose the game it leaned wrong on");
+  assert.equal(r.split, 1, "the dead heat was not set aside");
+  // The tie is in neither term: 1-1 is 50%, not 33%.
+  assert.equal(r.pct, 0.5);
+});
+
+test("the room is the same population as the consensus bars", async () => {
+  // Verifiability is the whole reason it counts every account: a reader can
+  // add up the splits they can see and arrive at this row. Filtering to
+  // active accounts here would make it unreachable from the page.
+  const env = makeEnv();
+  seedWeek(env, { games: [
+    { game_id: 911, home: "H", away: "A", spread_x2: -2 }] });
+  seedUser(env, "act", { name: "Active" });
+  seedUser(env, "prov", { name: "Provisional", status: "provisional" });
+  seedPick(env, "act", 2026, 3, 911, "away", -2);
+  seedPick(env, "prov", 2026, 3, 911, "away", -2);
+  lock(env);
+  await scoreWeek(env, 2026, 3, { games: { "911": [20, 0, true] } });
+
+  const r = await room(env, 2026, 3);
+  // Both picks counted, so the room took away and lost. Counting only the
+  // active account gives the same side here — the point is that neither is
+  // dropped, which the split confirms.
+  assert.equal(r.l, 1);
+  assert.equal(r.split, 0);
+  const c = env.raw.prepare(
+    `SELECT SUM(side='home') h, SUM(side='away') a FROM picks
+      WHERE game_id = 911`).get();
+  assert.equal(c.a, 2, "the consensus bar and the room disagree on who voted");
+});
+
+test("the room is null before anything is graded", async () => {
+  const env = makeEnv();
+  seedWeek(env);
+  assert.equal(await room(env, 2026, 3), null);
 });
 
 test("the chalk takes the favourite, and skips pick'ems", async () => {

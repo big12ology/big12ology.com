@@ -814,24 +814,40 @@
     });
     tbl.appendChild(tb);
 
-    // The chalk: always take the favourite, every game, no thinking. It is the
-    // benchmark the whole exercise is measured against — a board where most
-    // players sit below it is telling you something true — and it is the same
-    // comparison scorecard.py already makes for the models on the race card,
-    // presented the same way. In a <tfoot> because it is not a competitor.
-    if (chalk) {
-      var tf = el("tfoot"), row = el("tr");
-      COLS.forEach(function (c) {
-        var td = el("td", c.num ? "n" : null);
-        if (c.key === "display_name") td.textContent = "The chalk";
-        else if (c.key === "rank") td.textContent = "";
-        else if (c.key === "pct") {
-          td.textContent = chalk.pct == null ? "—"
-            : (chalk.pct * 100).toFixed(1) + "%";
-        } else td.textContent = chalk[c.key] == null ? "—" : chalk[c.key];
-        row.appendChild(td);
+    // Two benchmarks, both in the <tfoot> because neither is a competitor,
+    // and they answer different questions. The chalk asks whether you beat
+    // the market. The room asks whether you beat everybody else put together.
+    // A player who clears both did something; a player who clears neither has
+    // an explanation available. This is the same comparison scorecard.py
+    // already makes for the models on the race card, presented the same way.
+    var BENCH = [
+      {data: chalk, label: "The chalk",
+       why: "Not a player: what taking the favourite in every game would "
+          + "have scored. Nothing to do with anyone's picks."},
+      {data: room, label: "The room",
+       why: "Not a player: the side most people took, on every game, scored "
+          + "as one card. Games split exactly down the middle are left out."},
+    ].filter(function (b) { return b.data; });
+
+    if (BENCH.length) {
+      var tf = el("tfoot");
+      BENCH.forEach(function (b) {
+        var row = el("tr");
+        row.title = b.why +
+          (b.data.split ? "  " + b.data.split + " dead heat" +
+                          (b.data.split === 1 ? "" : "s") + " excluded." : "");
+        COLS.forEach(function (c) {
+          var td = el("td", c.num ? "n" : null);
+          if (c.key === "display_name") td.textContent = b.label;
+          else if (c.key === "rank") td.textContent = "";
+          else if (c.key === "pct") {
+            td.textContent = b.data.pct == null ? "—"
+              : (b.data.pct * 100).toFixed(1) + "%";
+          } else td.textContent = b.data[c.key] == null ? "—" : b.data[c.key];
+          row.appendChild(td);
+        });
+        tf.appendChild(row);
       });
-      tf.appendChild(row);
       tbl.appendChild(tf);
     }
   }
@@ -859,7 +875,11 @@
     opts.forEach(function (o) {
       var n = document.createElement("option");
       n.value = o.v; n.textContent = o.t;
-      if (o.v === String(cur)) n.selected = true;
+      // "Season" is selected, because the season is what the board just
+      // loaded — initBoard calls loadBoard("") before it fills this in. The
+      // old line preselected the latest week instead, so the control read
+      // "Week 1" above a table captioned "Season to date."
+      if (o.v === "") n.selected = true;
       sel.appendChild(n);
     });
     sel.addEventListener("change", function () { loadBoard(sel.value); });
@@ -871,6 +891,7 @@
     return api("/api/leaderboard" + q).then(function (r) {
       boardRows = r.rows || [];
       chalk = r.chalk || null;
+      room = r.room || null;
       note.textContent = boardRows.length
         ? (r.week == null ? "Season to date." : "Week " + r.week + ".")
         : "Nobody has a scored week yet.";

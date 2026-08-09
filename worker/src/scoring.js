@@ -275,6 +275,65 @@ export async function chalk(env, season, week = null) {
            pct: w + l === 0 ? null : w / (w + l) };
 }
 
+/**
+ * The room: the majority pick on every game, scored as if one player made
+ * them all.
+ *
+ * The second benchmark, and it answers a different question from the chalk.
+ * The chalk asks whether you beat the market. This asks whether you beat
+ * everybody else put together — which is a real question, because a crowd is
+ * often better than the median member of it and occasionally much worse.
+ *
+ * Three decisions worth stating, because each could defensibly go the other
+ * way:
+ *
+ *   EVERY pick counts, from every account, exactly as the consensus bars on
+ *   the slate count them. That is the point: a reader can add up the bars
+ *   they can see and arrive at this row. Filtering to active accounts here
+ *   would make the number correct by some measure and unverifiable by any.
+ *
+ *   A DEAD HEAT IS NOT A PICK. Split exactly down the middle, the room had no
+ *   opinion, and inventing one — by falling back to the favourite, or to the
+ *   home side — would quietly turn this into a worse copy of the chalk. Those
+ *   games sit outside the record entirely and are counted separately.
+ *
+ *   NO MINIMUM. The consensus BAR needs ten cards before it will draw,
+ *   because a bar is a claim about a crowd. This is arithmetic on whoever
+ *   actually played, and a threshold would make the row appear and disappear
+ *   early in a season in a way that needs more explaining than it is worth.
+ */
+export async function room(env, season, week = null) {
+  const sql = `
+    WITH majority AS (
+      SELECT p.season, p.week, p.game_id,
+             SUM(p.side = 'home') AS h,
+             SUM(p.side = 'away') AS a
+        FROM picks p
+       WHERE p.season = ? ${week == null ? "" : "AND p.week = ?"}
+       GROUP BY p.season, p.week, p.game_id)
+    SELECT
+      SUM(CASE WHEN r.ats IN ('push','void') OR m.h = m.a THEN 0
+               WHEN (m.h > m.a AND r.ats = 'home')
+                 OR (m.a > m.h AND r.ats = 'away') THEN 1
+               ELSE 0 END) AS w,
+      SUM(CASE WHEN r.ats IN ('push','void') OR m.h = m.a THEN 0
+               WHEN (m.h > m.a AND r.ats = 'home')
+                 OR (m.a > m.h AND r.ats = 'away') THEN 0
+               ELSE 1 END) AS l,
+      SUM(CASE WHEN r.ats = 'push' AND m.h <> m.a THEN 1 ELSE 0 END) AS p,
+      SUM(CASE WHEN m.h = m.a THEN 1 ELSE 0 END) AS split
+      FROM majority m
+      JOIN results r ON r.season = m.season AND r.week = m.week
+                    AND r.game_id = m.game_id`;
+  const bind = week == null ? [season] : [season, week];
+  const row = await env.DB.prepare(sql).bind(...bind).first();
+  if (!row || (row.w == null && row.l == null)) return null;
+  const w = row.w || 0, l = row.l || 0;
+  if (w + l === 0 && !row.p && !row.split) return null;   // nothing to show yet
+  return { w, l, p: row.p || 0, split: row.split || 0,
+           pct: w + l === 0 ? null : w / (w + l) };
+}
+
 /** Every locked week of a season, scored oldest first. */
 export async function scoreAll(env, season, now = Math.floor(Date.now() / 1000)) {
   const scores = await fetchScores(env);

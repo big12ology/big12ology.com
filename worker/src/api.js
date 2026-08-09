@@ -12,7 +12,7 @@ import { ulid, hmac } from "./crypto.js";
 import * as session from "./session.js";
 import * as ratelimit from "./ratelimit.js";
 import { currentWeek, isLocked, readSlate } from "./slate.js";
-import { chalk } from "./scoring.js";
+import { chalk, room } from "./scoring.js";
 
 export const json = (data, status = 200, headers = {}) =>
   new Response(JSON.stringify(data), {
@@ -323,6 +323,7 @@ export async function getBoard(env, url) {
     season: s, week, weeks: (wk && wk.n) || 0,
     computed_at: Math.floor(Date.now() / 1000),
     chalk: await chalk(env, s, week),
+    room: await room(env, s, week),
     rows: results || [],
   }, 200, {
     // The one cacheable endpoint on the API: identical for every reader, and

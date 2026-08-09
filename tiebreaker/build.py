@@ -4140,6 +4140,27 @@ one genuine exception here too, running Thursday to Labor Day.</p>
 board until it has completed one scored week &mdash; long enough that a
 throwaway account is not worth making, short enough that a real player waits
 once.</p>
+<h3>The chalk</h3>
+<p>The bottom row of the board, and <b>not a player</b>. It is what you would
+have scored by taking the favourite in every single game, every week, without
+thinking about any of them. It has nothing to do with what anybody picked.</p>
+<p>It is there because finishing above the field only tells you the field had
+a bad week. Finishing above the chalk means your picks knew something the
+spread did not, which is the only version of this that is hard. Games with no
+favourite &mdash; a line of exactly zero &mdash; are skipped, because there is
+nothing for it to take.</p>
+<h3>The room</h3>
+<p>The other bottom row, and also not a player. It is the side <em>most people
+took</em> on every game, scored as if one person had made all of those picks.
+Where the chalk asks whether you beat the market, the room asks whether you
+beat everybody else put together &mdash; which is a real question, because a
+crowd is often better than the average person in it and occasionally much
+worse.</p>
+<p>Every card counts towards it, exactly as they count towards the split shown
+on each game, so you can add up what you can see and arrive at this row. A game
+where the picks land <b>exactly even</b> is left out: the room genuinely had no
+opinion, and inventing one for it would just make this a worse copy of the
+chalk.</p>
 <h3>Signing in</h3>
 <p>Google or GitHub, and we ask them for one thing: that you are you. No email
 address, no name, no picture. What is public is the display name you choose and
