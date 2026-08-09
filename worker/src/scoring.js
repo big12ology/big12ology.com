@@ -70,18 +70,32 @@ export async function scoreWeek(env, season, week, scores,
   let finals = 0, voids = 0, changed = 0;
 
   for (const g of games || []) {
+    // A game with no line was never pickable, so there is nothing to be right
+    // or wrong about and no pick can exist on it. It gets no result row at
+    // all — writing one made nine junk voids a week and put a "void" chip on
+    // a card row that only ever said "No Spread Available".
+    if (g.spread_x2 == null) continue;
+
     const raw = scores.games ? scores.games[String(g.game_id)] : null;
     const [hp, ap, completed] = raw || [null, null, false];
 
     let status, atsValue, home = null, away = null;
-    if (completed && hp != null && ap != null && g.spread_x2 != null) {
+    if (completed && hp != null && ap != null) {
       status = "final";
       home = hp; away = ap;
       atsValue = ats(hp, ap, g.spread_x2);
       finals++;
-    } else if (!raw || now > g.kickoff_at + VOID_AFTER) {
-      // Gone from the file, or so far past kickoff that no result is coming.
-      // A game with no line is void too: there was nothing to be right about.
+    } else if (now > g.kickoff_at + VOID_AFTER) {
+      // Thirty-six hours past kickoff with no final: no result is coming,
+      // whether the game was cancelled or simply dropped out of the file.
+      //
+      // Absence from the file is NOT its own trigger, though the plan said it
+      // could be. The scores file lists every game of the season, finished or
+      // not, so absence should mean "vanished" — but if it were ever
+      // truncated or written half-way, treating absence as a void would void
+      // an entire locked week of games that had not kicked off yet. The clock
+      // says the same thing about a genuinely cancelled game a day and a half
+      // later, and cannot be wrong about one still to be played.
       status = "void"; atsValue = "void";
       voids++;
     } else {

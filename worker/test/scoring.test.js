@@ -114,6 +114,52 @@ test("a game past kickoff with no score voids, and costs nobody", async () => {
   assert.equal(row.pct, 1, "a void was counted in the denominator");
 });
 
+// The bug a local run found that the suite did not: a game still being played
+// was voided the instant its week locked, because it was not yet in the scores
+// file. Eleven voids on a week with nine unplayable games.
+test("a game still to be played is not voided for being absent", async () => {
+  const env = makeEnv();
+  seedWeek(env, { lockAt: NOW() + HOUR, games: [
+    { game_id: 1101, home: "Playing", away: "Now", spread_x2: -3,
+      kickoff_at: NOW() - 2 * HOUR },       // kicked off, no score yet
+    { game_id: 1102, home: "Later", away: "Today", spread_x2: -3,
+      kickoff_at: NOW() + 6 * HOUR },       // has not kicked off
+    { game_id: 1103, home: "Long", away: "Gone", spread_x2: -3,
+      kickoff_at: NOW() - 40 * HOUR },      // no result is coming
+    { game_id: 1104, home: "No", away: "Line", spread_x2: null,
+      kickoff_at: NOW() - 40 * HOUR },      // never pickable
+  ] });
+  seedUser(env, "u1", { name: "Waiting" });
+  seedPick(env, "u1", 2026, 3, 1101, "home", -3);
+  lock(env);
+
+  // A scores file listing none of them, which is what a locked week looks
+  // like on a Saturday afternoon before anything has finished.
+  const r = await scoreWeek(env, 2026, 3, { games: {} });
+  assert.equal(r.voids, 1, "voided a game that had not finished");
+
+  const rows = env.raw.prepare(
+    "SELECT game_id, status FROM results ORDER BY game_id").all();
+  assert.deepEqual(rows.map((x) => x.game_id), [1103],
+    "only the 40-hours-stale game should have a result row");
+  // The card says WAITING off the missing row; a void would have said the
+  // game was cancelled.
+  assert.equal(env.raw.prepare(
+    "SELECT COUNT(*) c FROM pick_scores WHERE user_id='u1'").get().c, 0);
+});
+
+test("a game with no line never gets a result row", async () => {
+  const env = makeEnv();
+  seedWeek(env, { games: [
+    { game_id: 1201, home: "A", away: "B", spread_x2: null,
+      kickoff_at: NOW() - 40 * HOUR },
+  ] });
+  lock(env);
+  await scoreWeek(env, 2026, 3, { games: {} });
+  assert.equal(env.raw.prepare("SELECT COUNT(*) c FROM results").get().c, 0,
+    "an unpickable game produced a result nobody could have picked");
+});
+
 test("re-running changes nothing", async () => {
   const { env } = open();
   seedUser(env, "u1", { name: "Steady" });
