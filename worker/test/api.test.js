@@ -206,6 +206,41 @@ test("a game with no line is dropped, not rejected", async () => {
   assert.equal((await r.json()).count, 1);
 });
 
+// Signing in used to drop a brand-new account straight back on the slate,
+// where the only sign anything had happened was a chip reading "Choose a
+// name". These are the two halves of making that impossible.
+test("an account with no name cannot pick", async () => {
+  const env = makeEnv();
+  seedWeek(env);
+  seedUser(env, "u1");                       // signed in, never named
+  const cookie = await signedIn(env, "u1");
+
+  const r = await call(env, "/api/picks", { method: "PUT", cookie,
+    body: { week: 3, picks: { 401: "home" } } });
+  assert.equal(r.status, 403);
+  assert.equal((await r.json()).error, "no_display_name");
+  assert.equal(env.raw.prepare("SELECT COUNT(*) c FROM picks").get().c, 0);
+
+  // And the moment it has one, it can.
+  await call(env, "/api/me",
+    { method: "PATCH", cookie, body: { display_name: "Newcomer" } });
+  const ok = await call(env, "/api/picks", { method: "PUT", cookie,
+    body: { week: 3, picks: { 401: "home" } } });
+  assert.equal(ok.status, 200);
+});
+
+test("me reports needs_name, which is what the pages branch on", async () => {
+  const env = makeEnv();
+  seedUser(env, "u1");
+  const cookie = await signedIn(env, "u1");
+  assert.equal((await (await call(env, "/api/me", { cookie })).json()).needs_name,
+               true);
+  await call(env, "/api/me",
+    { method: "PATCH", cookie, body: { display_name: "Named Now" } });
+  assert.equal((await (await call(env, "/api/me", { cookie })).json()).needs_name,
+               false);
+});
+
 test("the lock is a 409 that hands back the server's picks", async () => {
   const env = makeEnv();
   seedWeek(env);

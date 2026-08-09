@@ -16,6 +16,11 @@
   // ---------------------------------------------------------------- fetch
 
   var LOCKED = false;      // set once the server says so; never unset
+  // Whether anybody is signed in. The slate is readable either way — that is
+  // deliberate, the lines are the interesting part — but picking is not, and
+  // a radio that fills in and then reports a server error is worse than one
+  // that was never armed.
+  var SIGNED_IN = false;
 
   // Below this many cards on a game, the split is not shown at all. Three
   // people picking is not a consensus, it is three people — and rendered as a
@@ -92,7 +97,9 @@
   // routes here so the page never just sits on "Loading…".
   function explain(err) {
     if (!err) return "Something went wrong.";
-    if (err.status === 401) return "You are signed out.";
+    if (err.status === 401) {
+      return "You are signed out — sign in and your picks will save.";
+    }
     if (err.status === 403 && err.data && err.data.error === "no_display_name")
       return "Choose a display name before picking.";
     if (err.status === 409) return "This week has locked.";
@@ -393,6 +400,21 @@
       (pickable < n ? " · " + (n - pickable) + " without" : "");
 
     if (LOCKED) lockDown();
+    else if (!SIGNED_IN) readOnly();
+  }
+
+  // Signed out: the same treatment as a locked week, for a different reason.
+  // Reused rather than reinvented — the reader cannot pick either way, and two
+  // visual languages for "not available to you" would be one too many. The
+  // difference is what the page SAYS: the notice above the slate offers a way
+  // in, where a lock offers none.
+  function readOnly() {
+    var form = $("slateform");
+    if (!form) return;
+    [].forEach.call(form.querySelectorAll("input[type=radio]"), function (i) {
+      i.disabled = true;
+    });
+    form.className = "pk-locked pk-readonly";
   }
 
   function lockDown() {
@@ -408,6 +430,7 @@
       // cannot do. The class turns all of that off in one place.
       form.className = "pk-locked";
     }
+    show($("signedin"), false);
     var cd = $("cd");
     if (cd) cd.textContent = "locked";
   }
@@ -535,9 +558,18 @@
   function initAccount(me) {
     var form = $("nameform");
     if (!form) return;
+    // First run: arrived here from the OAuth callback with nothing chosen
+    // yet. The query flag is only a hint — needs_name is the fact — so a
+    // reader who bookmarks the URL does not get welcomed forever.
+    var first = !!me && me.needs_name;
     show($("signin"), !me);
+    show($("welcome"), first);
     show($("named"), !!me);
     show($("acctinfo"), !!me);
+    if (first) {
+      var dn = $("dname");
+      if (dn && dn.focus) dn.focus();
+    }
 
     if (me) {
       if (me.display_name) $("dname").value = me.display_name;
@@ -580,6 +612,14 @@
         .then(function (r) {
           status("Name saved.");
           acctChip({display_name: r.display_name});
+          // The name was the only thing standing between them and picking.
+          // Say so, and offer the door, rather than leaving them on a form
+          // that has stopped being the point.
+          if (first) {
+            show($("welcome"), false);
+            show($("onward"), true);
+            first = false;
+          }
         })
         .catch(function (e2) {
           // Server and client errors look identical to the reader on purpose.
@@ -626,7 +666,11 @@
         input.id = id;
         input.name = "team";
         input.value = o.v;
-        if ((me.team || "") === o.v) input.checked = true;
+        // Only a real answer preselects. Matching null against the "Not
+        // saying" sentinel filled that chip in for everybody who had never
+        // been asked, so a question nobody had answered arrived on screen
+        // looking answered — on the one page whose job is to ask it.
+        if (me.team && me.team === o.v) input.checked = true;
 
         var lab = el("label", "pk-teamopt" + (o.team ? "" : " pk-teamopt-any"));
         lab.setAttribute("for", id);
@@ -989,8 +1033,12 @@
     if (!note || !wrap) return;
     if (!me) {
       note.textContent = "";
-      wrap.appendChild(el("p", "pk-signedout",
-        "Sign in to see your card."));
+      var so = el("p", "pk-signedout");
+      var a = el("a", null, "Sign in");
+      a.href = "account.html";
+      so.appendChild(a);
+      so.appendChild(document.createTextNode(" to see your card."));
+      wrap.appendChild(so);
       return;
     }
     var teamsP = fetch("/pickem/teams.json")
@@ -1082,7 +1130,14 @@
     // below branches on it.
     api("/api/me").catch(function () { return null; }).then(function (me) {
       acctChip(me);
+      // Signed in is not the same as ready to play. An account with no
+      // display name has nothing to put on the board, and the server refuses
+      // its picks — so the slate must not offer them either.
+      var ready = !!me && !me.needs_name;
+      SIGNED_IN = ready;
       show($("signedout"), !me && !!$("slateform"));
+      show($("needsname"), !!me && !ready && !!$("slateform"));
+      show($("signedin"), ready && !!$("slateform"));
       initSlate();
       initAccount(me);
       initBoard(me);

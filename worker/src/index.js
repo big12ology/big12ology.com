@@ -156,11 +156,24 @@ async function handle(req, env, ctx) {
     const s = await session.create(env, res.userId, {
       ua: null, ip: clientIp(req),
     });
+
+    // Where to land. An account with no display name cannot pick and cannot
+    // appear on the board, so returning it to the slate drops somebody who
+    // just signed up onto a page that looks identical to the one they left —
+    // which is exactly what it did. Send them to the page that finishes the
+    // job instead, and only then honour return_to.
+    const named = await env.DB.prepare(
+      `SELECT display_name FROM users WHERE id = ?`).bind(res.userId).first();
+    const dest = (named && named.display_name)
+      ? safeReturn(state.return_to)
+      : `/pickem/account.html?welcome=1&next=${
+          encodeURIComponent(safeReturn(state.return_to))}`;
+
     const headers = new Headers();
     headers.append("Set-Cookie", serialize(SESSION_COOKIE, s.raw,
                                            { maxAge: session.TTL }));
     headers.append("Set-Cookie", clear(STATE_COOKIE));
-    headers.set("Location", safeReturn(state.return_to));
+    headers.set("Location", dest);
     return new Response(null, { status: 302, headers });
   }
 

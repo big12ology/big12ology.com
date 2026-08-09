@@ -211,6 +211,14 @@ export async function getPicks(env, user, url) {
  */
 export async function putPicks(env, user, body) {
   if (!user) return fail("unauthenticated", 401);
+
+  // A pick is only worth storing if it can appear on the board with a name
+  // beside it, and the board is the whole product. Enforced here rather than
+  // trusted to the client, which is the half of it that can be skipped.
+  const who = await env.DB.prepare(
+    `SELECT display_name FROM users WHERE id = ?`).bind(user.userId).first();
+  if (!who || !who.display_name) return fail("no_display_name", 403);
+
   const s = season(env);
   const week = Number(body.week);
   if (!Number.isInteger(week)) return fail("bad_week", 400);

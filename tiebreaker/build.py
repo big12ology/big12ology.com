@@ -3991,9 +3991,12 @@ PICKEM_SLATE_BODY = f"""
   <p class=pk-slatecount id=slatecount></p>
 </div>
 {PICKEM_LIVE_REGIONS}
-<p class=pk-signedout id=signedout hidden>Reading is free.
-  <a href="account.html">Sign in</a> to pick &mdash; an account is what lets
-  your card outlive the browser you made it in.</p>
+<p class=pk-signedout id=signedout hidden><a href="account.html">Sign in</a>
+  to make your picks.</p>
+<p class=pk-hint id=signedin hidden>Picks save automatically and lock at
+  kickoff.</p>
+<p class=pk-signedout id=needsname hidden>Choose a display name before you can
+  pick &mdash; <a href="account.html">it takes a moment</a>.</p>
 <form id=slateform>
   <div id=slate class=pk-slate>
     <p class=note id=slateload>Loading this week's slate&hellip;</p>
@@ -4044,6 +4047,15 @@ PICKEM_ACCOUNT_BODY = f"""
     <a class=wbtn href="/api/auth/login/github?return_to=/pickem/">Continue with GitHub</a>
   </p>
   <p class=note>Signing in sets one cookie. Nothing else.</p>
+</div>
+<div class=card id=welcome hidden>
+  <h2>Two things before you can pick</h2>
+  <ol class=pk-steps>
+    <li><b>Choose a display name.</b> It is what everyone sees beside your
+    record, and it has to be one nobody else has taken.</li>
+    <li><b>Tell us who you follow.</b> Optional, and only used to pick out
+    your own rows on your own screen.</li>
+  </ol>
 </div>
 <div class=card id=named hidden>
   <h2>Display name</h2>

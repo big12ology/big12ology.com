@@ -67,6 +67,13 @@
                 border: 1px solid var(--line); border-radius: 8px;
                 padding: 8px 12px; background: var(--panel); }
 
+/* The signed-in counterpart is a hint, not an invitation, so it is a line of
+   text rather than a panel. A second bordered box above the slate would give
+   a returning player the same visual weight as a call to action they have
+   already answered. */
+.pk-hint { margin: 0 0 2px; font-size: 13px; color: var(--dim); }
+.pk-hint[hidden] { display: none; }
+
 /* Collapsed when empty so two idle live regions do not cost 40px above the
    slate. They still exist in the DOM the whole time — a live region created
    at the moment it has something to say is not announced. */
@@ -535,6 +542,24 @@
 }
 /* What you did take keeps its colour, because that is the record. */
 .pk-locked input:checked + .pk-side { box-shadow: none; }
+/* --- signed out ----------------------------------------------------------
+   .pk-locked is reused to switch the picking off, and then most of it has to
+   be switched back on, because the two states differ in what they are FOR.
+   A locked week is a record: the side you took is the only thing worth
+   reading, so everything else recedes. Signed out there is no record at all
+   and the lines are the entire reason the page is worth loading — dimming
+   them to --dim washed out the one thing a new reader came to see, and left
+   fifteen games looking broken rather than available.
+   Borders, fills and text colour all stay. Only the interactivity goes. */
+.pk-readonly .pk-slate-game:not(:has(input:checked)) { opacity: 1; }
+.pk-readonly input:not(:checked) + .pk-side {
+  border-color: var(--line);
+  background: var(--panel);
+  color: var(--ink, var(--fg));
+}
+/* No tick, because nothing is picked, and no hover, because nothing can be. */
+.pk-readonly .pk-side { cursor: default; }
+
 /* A game you never picked has no record to show, so the whole row recedes. */
 .pk-locked .pk-slate-game:not(:has(input:checked)) { opacity: .6; }
 
@@ -558,3 +583,19 @@
   background: none; padding: 1px 6px; }
 .pk-when.pk-st-live  { color: var(--warn);
   background: color-mix(in srgb, var(--warn) 16%, transparent); }
+
+/* --- first run -----------------------------------------------------------
+   Signing in used to drop a brand-new account back on the slate, where the
+   only sign anything had happened was a chip reading "Choose a name" in the
+   corner. These are the two steps that were implied and never asked for. */
+.pk-steps { margin: 6px 0 0; padding-left: 20px; font-size: 14px; }
+.pk-steps li { margin-bottom: 6px; }
+.pk-steps li:last-child { margin-bottom: 0; }
+.pk-onward { margin: 14px 0 0; font-size: 14px; }
+.pk-onward a { color: var(--accent); font-weight: 600; }
+
+/* Holds a mark's width for a player whose answer has no logo — a team with no
+   freely-licensed mark, or "the conference" and "college football", which are
+   real answers rather than missing ones. Without it the names step in and out
+   by fifteen pixels down the column. */
+.pk-markgap { display: inline-block; width: 15px; }
