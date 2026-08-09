@@ -915,7 +915,8 @@
       if (i) m.appendChild(el("span", "pk-at", " at "));
       var mk2 = mark(teams, g[s], 15);
       if (mk2) m.appendChild(mk2);
-      var t = el("span", s === side ? "pk-took" : null, g[s]);
+      var t = el("span",
+        s === side ? "pk-took" : (side ? "pk-nottook" : null), g[s]);
       if (s === side) {
         var c = (teams[g[s]] && teams[g[s]].color) || "";
         if (c) { t.style.setProperty("--tc", c); t.style.setProperty("--tfg", textOn(c)); }

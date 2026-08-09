@@ -1470,10 +1470,15 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
    four: at the chrome width four columns leave a card too narrow for
    "Bill Snyder Family Stadium", and every line inside a card is written to
    hold one fact and stay on one line. */
-.slatelist { display:grid; gap:10px; margin-top:2px;
-  grid-template-columns:repeat(auto-fit,minmax(min(100%,30rem),1fr)) }
+/* Same reasoning as the game page: auto-fit columns are still rows, and a
+   game with a forecast, a broadcast and a line sat beside one with none left
+   the short card padded out to match. column-width keeps the "two up at the
+   chrome width, one on a phone" behaviour the repeat(auto-fit, minmax(...))
+   was chosen for, without pairing the cards into rows. */
+.slatelist { columns:30rem; column-gap:10px; margin-top:2px }
 .slate { background:var(--bg); border:1px solid var(--line);
-  border-radius:10px; padding:11px 13px; min-width:0 }
+  border-radius:10px; padding:11px 13px; min-width:0;
+  break-inside:avoid; margin-bottom:10px }
 .slateteams { font-size:15px; margin-bottom:8px }
 .slatemeta { font-size:12.5px; color:var(--dim); display:grid; gap:4px }
   /* Two columns of facts once the card is wide enough for them. Five
@@ -1523,11 +1528,20 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
    main:has() rather than a class, because build_subpage owns the <main> and
    #gamehead is on every game page and nothing else. Where :has is missing the
    page simply stays one column, which is what it already was. */
+/* Columns, not a grid, and the difference is the whole point. A grid puts
+   these cards in ROWS, and a row is as tall as its tallest member — so a
+   short market card beside a tall model card leaves a hole the height of the
+   difference, and the page reads as broken rather than dense. Nothing here
+   is a row: the cards are independent and their only relationship is order.
+   Flowing them down columns lets each one end where its content ends.
+   attendance/site/styles.css does the same thing for its chart panels. */
 @media (min-width: 900px) {
-  main:has(#gamehead) { grid-template-columns:1fr 1fr; align-items:start;
-    gap:14px }
+  main:has(#gamehead) { display:block; columns:2; column-gap:14px }
+  /* A card must not be split down the middle of a column break. */
+  main:has(#gamehead) > .card { break-inside:avoid; margin-bottom:14px }
+  /* The header spans, the way it did when this was a grid. */
   main:has(#gamehead) > .gameback,
-  main:has(#gamehead) > #gamehead { grid-column:1 / -1 }
+  main:has(#gamehead) > #gamehead { column-span:all }
 }
 .gameback { margin:2px 0 12px; font-size:13px }
 .gameback a { color:var(--accent); text-decoration:none }
@@ -4006,7 +4020,7 @@ PICKEM_SLATE_BODY = f"""
 <span class=sr-only role=status id=cdsr></span>"""
 
 PICKEM_CARD_BODY = f"""
-<div class=card>
+<div class="card pk-fitcard">
   <div class=pk-boardhead>
     <h2>Your card</h2>
     <label class=pk-wksel hidden>Week

@@ -102,14 +102,22 @@
    makes them unreadable, and a slate you have to scroll to count is a slate
    you cannot tell you have finished.
 
-   Reading order still runs down column one and then down column two, which is
-   what the DOM order gives and what a keyboard walks — the grid does not
-   reorder anything. */
+   Columns, not a two-column grid, and the comment that used to sit here
+   claimed the grid already read down one column and then the other. It did
+   not. A grid fills ROW BY ROW, so the week ran 11:24 across, then 1:24
+   across, then 3:24 across — the eye tracks down a column and the times
+   jumped about, because consecutive kickoffs were side by side rather than
+   stacked. Column flow gives what the comment always said it did: the first
+   half of the week down the left, the second half down the right, in order.
+   Same DOM order either way, so the keyboard walks it the same. */
 @media (min-width: 900px) {
-  .pk-slate { grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+  .pk-slate { display: block; columns: 2; column-gap: 12px; }
+  /* No row gap in a column layout, so the rows carry their own. */
+  .pk-slate-game { break-inside: avoid; margin-bottom: 4px; }
   /* The break between playable and not spans both columns, so the two groups
-     never interleave across the gutter. */
-  .pk-deadhead { grid-column: 1 / -1; }
+     never interleave across the gutter — and it starts a fresh pair of
+     columns beneath it, which is what keeps the two groups from sharing one. */
+  .pk-deadhead { column-span: all; }
 }
 
 .pk-deadhead {
@@ -409,6 +417,41 @@
   grid-template-columns:
     max-content max-content 3.6em 3.2em minmax(120px, 1fr) 4.6em;
 }
+/* And when there is not, THE ROW STOPS BEING FULL WIDTH.
+   That is the fix, and two earlier attempts at it were not. minmax(0, 1fr)
+   on the gauge column held 494px of a 1042px row — half the card was an empty
+   track. Handing that slack to the matchup instead did not remove it, it just
+   moved the hole from the right of the row to the middle of it: a flexible
+   column with nothing to fill it is a gap wherever you put it.
+   So none of the columns flex. Every track is content-sized, the list is
+   exactly as wide as its widest row needs, and the rows are dense. The
+   matchup goes back to centring inside a track set by the longest pair, which
+   is what it was for. */
+.pk-card:not(:has(.pk-splitbar)) {
+  grid-template-columns: max-content max-content 3.6em 3.2em 0 4.6em;
+  width: max-content;
+  max-width: 100%;
+}
+
+/* And the CARD around the list shrinks with it. Tightening the rows moved the
+   empty space rather than removing it: a 537px list sat in a 1330px panel and
+   the void was simply outside the rows instead of inside them.
+   fit-content, floored so the header does not crush and capped at the chrome
+   width, and centred. A locked week whose rows carry a gauge is wider, and
+   the same rule sizes to that without a second breakpoint. */
+@media (min-width: 900px) {
+  /* Only when there is no gauge. fit-content shrinks to the smallest the
+     content will accept, and a gauge column of minmax(120px, 1fr) accepts
+     120px — so fitting the card unconditionally squeezed the bar down to its
+     floor on exactly the weeks it exists to be read on. With a gauge the card
+     stays full width and the 1fr gets what it was asking for. */
+  .pk-fitcard:not(:has(.pk-splitbar)) {
+    width: fit-content;
+    min-width: min(100%, 34rem);
+    max-width: 100%;
+    margin-inline: auto;
+  }
+}
 
 .pk-cardrow {
   /* Borrows the list's tracks rather than defining its own, which is what
@@ -434,6 +477,16 @@
    smaller treatment. Still never the accent. */
 .pk-took { background: var(--tc, var(--tc-none)); color: var(--tfg, #fff);
            font-weight: 700; border-radius: 4px; padding: 1px 5px; }
+/* A fill alone was not enough to read at a glance, and it could not be: on a
+   card of fifteen rows every row has some colour in it — the marks, the
+   result chips — so one more coloured thing is not a signal. The tick is,
+   and it is the same tick the picker uses on the side you chose, so the two
+   pages say "this one" the same way. Colour is never the only signal
+   anyway — WCAG 1.4.1 — and this is the row that most needed the other one. */
+.pk-took::after { content: "\00a0\2713"; font-weight: 700; }
+/* And the side you did not take steps back, so the contrast is between two
+   things rather than between one thing and the background. */
+.pk-nottook { color: var(--dim); }
 
 .pk-score { font-variant-numeric: tabular-nums; font-size: 13px;
              color: var(--dim); white-space: nowrap; }
