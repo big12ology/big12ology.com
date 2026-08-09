@@ -13,6 +13,8 @@ import * as session from "./session.js";
 import * as ratelimit from "./ratelimit.js";
 import { currentWeek, isLocked, readSlate } from "./slate.js";
 import { chalk, history, room } from "./scoring.js";
+import * as handicap from "./handicap.js";
+import { rankedEntryBy } from "./scoring.js";
 
 export const json = (data, status = 200, headers = {}) =>
   new Response(JSON.stringify(data), {
@@ -333,11 +335,22 @@ export async function getSurvivor(env, user, url) {
        FROM survivor_board WHERE season = ? AND user_id = ?`)
     .bind(s, user.userId).first();
 
+  // The chalk a late joiner starts without, and whether joining is still a
+  // game at all. Live like `used`, and for the same reason: it decides what
+  // the picker greys out, so it cannot come from a materialised row.
+  const roster = await handicap.rosterFor(env, s, user.userId, week);
+
   return json({
     season: s, week, locked: isLocked(w), lock_at: w ? w.lock_at : null,
     pick: pick || null,
     used: used || [],
     standing: standing || null,
+    entered_week: roster.entered_week,
+    joining: roster.joining,
+    burned: roster.burned,
+    join_closed: roster.closed,
+    ranked: roster.entered_week <= rankedEntryBy(env),
+    ranked_entry_by: rankedEntryBy(env),
   });
 }
 
@@ -415,6 +428,22 @@ export async function putSurvivorPick(env, user, body) {
   if (g.spread_x2 == null) return fail("unpickable", 400);
   if (team !== g.home && team !== g.away) return fail("not_in_game", 400);
 
+  // The handicap. Checked here rather than in a trigger because it depends on
+  // the whole prior slate rather than on the row being written, and because
+  // the refusal has to name the teams — "you joined at week six, so the chalk
+  // of weeks one to five is already spent" is the entire point of it.
+  const roster = await handicap.rosterFor(env, s, user.userId, week);
+  if (roster.joining && roster.closed) {
+    return fail("join_closed", 409,
+                { usable: roster.usable, min_usable: handicap.MIN_USABLE });
+  }
+  if (roster.burned.some((b) => b.team === team)) {
+    return fail("team_spent_before_entry", 409, {
+      entered_week: roster.entered_week,
+      burned: roster.burned.map((b) => b.team),
+    });
+  }
+
   try {
     await env.DB.prepare(
       `INSERT INTO survivor_picks
@@ -458,11 +487,12 @@ export async function getSurvivorBoard(env) {
   const week = await currentWeek(env, s);
 
   const { results } = await env.DB.prepare(
-    `SELECT b.rank, b.user_id, u.display_name, u.team,
+    `SELECT b.rank, b.ranked, b.user_id, u.display_name, u.team,
             b.wins, b.alive, b.entered_week, b.out_week, b.out_reason
        FROM survivor_board b JOIN users u ON u.id = b.user_id
       WHERE b.season = ? AND u.status = 'active'
-      ORDER BY b.rank, u.display_name LIMIT 500`).bind(s).all();
+      ORDER BY b.ranked DESC, b.rank, u.display_name LIMIT 500`)
+    .bind(s).all();
 
   const rows = results || [];
   let picks = new Map();
@@ -482,15 +512,43 @@ export async function getSurvivorBoard(env) {
     }
   }
 
-  let alive = 0;
-  for (const r of rows) if (r.alive) alive++;
+  // Which team ended each run, and the tally of them. In a survivor pool the
+  // upsets are the story — a board that says twelve people went out in week
+  // four without saying who beat them is withholding the interesting half.
+  const { results: outs } = await env.DB.prepare(
+    `SELECT p.user_id, p.team, p.week
+       FROM survivor_picks p
+       JOIN survivor_board b ON b.season = p.season AND b.user_id = p.user_id
+      WHERE p.season = ? AND b.alive = 0 AND b.out_week = p.week
+        AND b.out_reason = 'loss'`).bind(s).all();
+  const outTeam = new Map((outs || []).map((r) => [r.user_id, r.team]));
+
+  const tally = new Map();
+  for (const r of outs || []) {
+    const k = `${r.week}|${r.team}`;
+    tally.set(k, (tally.get(k) || 0) + 1);
+  }
+  const graveyard = [...tally.entries()]
+    .map(([k, n]) => ({ week: Number(k.split("|")[0]),
+                        team: k.split("|")[1], ended: n }))
+    .sort((a, b) => b.ended - a.ended || a.week - b.week);
+
+  let alive = 0, missed = 0, unranked = 0;
+  for (const r of rows) {
+    if (r.alive) alive++;
+    else if (r.out_reason === "missed") missed++;
+    if (!r.ranked) unranked++;
+  }
   return json({
     season: s, week,
-    entrants: rows.length, alive,
+    entrants: rows.length, alive, missed, unranked,
+    ranked_entry_by: rankedEntryBy(env),
+    graveyard,
     computed_at: Math.floor(Date.now() / 1000),
     rows: rows.map((r) => {
       const p = picks.get(r.user_id);
-      return { ...r, pick: p ? { team: p.team, outcome: p.outcome } : null };
+      return { ...r, out_team: outTeam.get(r.user_id) || null,
+               pick: p ? { team: p.team, outcome: p.outcome } : null };
     }),
   }, 200, {
     "Cache-Control": "public, max-age=0, s-maxage=60",

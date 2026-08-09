@@ -26,6 +26,27 @@ import { ats } from "./ats.js";
 
 const VOID_AFTER = 36 * 3600;
 
+// Enter by this week to be in the running for the season.
+//
+// Not a join deadline — entry stays open, under the chalk handicap, for as
+// long as there is a season left to play. This is only about the leaderboard,
+// and it exists because in a survivor pool almost everybody is dead by
+// December: without it, one person entering in the last week and winning once
+// could be the only player still alive and take the title on a single pick.
+//
+// Six of a roughly fourteen-week season leaves nine weeks to survive, which is
+// enough of the pool to have actually played it.
+// A season shorter or longer than usual wants a different number, so it is
+// configurable — but it is CONFIG, not a secret and not a per-request input:
+// changing it mid-season moves people on and off the leaderboard, which is why
+// it is a declared var rather than something a handler can be talked into.
+export const RANKED_ENTRY_BY = 6;
+
+export function rankedEntryBy(env) {
+  const v = Number(env && env.SURVIVOR_RANKED_ENTRY_BY);
+  return Number.isInteger(v) && v > 0 ? v : RANKED_ENTRY_BY;
+}
+
 async function hashOf(obj) {
   const buf = await crypto.subtle.digest("SHA-256",
     new TextEncoder().encode(JSON.stringify(obj)));
@@ -219,17 +240,40 @@ async function rebuildSurvivorScores(env, season, week) {
  * still has to come from somewhere.
  */
 async function rebuildSurvivorBoard(env, season, now) {
+  const cutoff = rankedEntryBy(env);
   await env.DB.batch([
     env.DB.prepare(`DELETE FROM survivor_board WHERE season = ?`).bind(season),
     env.DB.prepare(
       `INSERT INTO survivor_board
          (season, user_id, wins, alive, entered_week, out_week, out_reason,
-          rank, computed_at)
+          ranked, rank, computed_at)
        SELECT ?, user_id, wins,
               CASE WHEN out_week IS NULL THEN 1 ELSE 0 END,
               entered_week, out_week, out_reason,
-              RANK() OVER (ORDER BY wins DESC,
-                           CASE WHEN out_week IS NULL THEN 1 ELSE 0 END DESC),
+              -- Eligibility is about WHEN you entered, not how long you
+              -- lasted. Someone who joined in August and lost in week two
+              -- played the season and belongs on the board at the bottom of
+              -- it; someone who joined in November did not.
+              CASE WHEN entered_week <= ? THEN 1 ELSE 0 END,
+              -- Alive first, THEN wins. This is what a survivor pool means:
+              -- the last one standing wins it, and no eliminated player
+              -- outranks somebody still in it however deep their run was.
+              -- Wins order each group, so the deepest run leads the living
+              -- and the deepest run leads the dead.
+              --
+              -- Wins-first would let a 10-week run that ended be crowned over
+              -- a shorter run still alive in December. It is also what made
+              -- joining late pointless; with the chalk handicap pricing the
+              -- roster instead, alive-first is the honest order.
+              --
+              -- Partitioned so the ranked players' numbers are theirs alone.
+              -- Unranked entrants get their own 1..n, which nothing displays —
+              -- that keeps rank NOT NULL for everyone rather than making the
+              -- column nullable for the sake of a group that has no rank.
+              RANK() OVER (
+                PARTITION BY CASE WHEN entered_week <= ? THEN 1 ELSE 0 END
+                ORDER BY CASE WHEN out_week IS NULL THEN 1 ELSE 0 END DESC,
+                         wins DESC),
               ?
          FROM (
            -- Plain ? throughout, bound in text order: the node:sqlite shim
@@ -272,7 +316,10 @@ async function rebuildSurvivorBoard(env, season, now) {
                                 AND w5.outcome IN ('loss', 'missed')),
                             1000000)) AS wins
              FROM entrants e)`)
-      .bind(season, now, season, now, season, season, season),
+      // Text order, twice for the cutoff: the ranked flag and the partition
+      // that ranks within it have to agree, so they read the same binding.
+      .bind(season, cutoff, cutoff, now,
+            season, now, season, season, season),
   ]);
 }
 

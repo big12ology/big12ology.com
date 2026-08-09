@@ -34,6 +34,13 @@ SITE_ORIGIN = "https://big12ology.com"
 # in the way, and no subrequest looping back through our own route. The same
 # trick cert-watch.yml and compare-live.sh already use.
 PAGES_ORIGIN = "https://big12ology.github.io"
+# Enter the survivor pool by this week to be on its leaderboard. Entry itself
+# never closes; this only decides who is in the running for the season, and it
+# exists because almost every run is dead by December — without it, one person
+# joining in the last week and winning once could be the only survivor and take
+# the title on a single pick. tiebreaker/build.py states this number on the
+# rules page and must be changed with it.
+SURVIVOR_RANKED_ENTRY_BY = "6"
 GOOGLE_CLIENT_ID = "1029553052112-5db59l7pljf20ovi2913lghhv7n9rvgm.apps.googleusercontent.com"
 GITHUB_CLIENT_ID = "Ov23lioQoMOhhs5h5Cs7"
 
