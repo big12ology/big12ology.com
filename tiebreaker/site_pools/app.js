@@ -1633,6 +1633,14 @@
     show(box, true);
   }
 
+  /** Whether this side of this game is one the survivor pool will take. */
+  function svInConference(g, side) {
+    // Absent rather than "both" when the slate predates the field: unknown
+    // has to read as unpickable, or a stale row becomes a free pick.
+    if (!g.b12) return false;
+    return g.b12 === "both" || g.b12 === side;
+  }
+
   function svGameRow(g, mine, teams, spent, disabled) {
     var fs = el("fieldset", "pk-slate-game");
     fs.dataset.gid = g.game_id;
@@ -1661,10 +1669,15 @@
       if (mine && mine.pick && mine.pick.team === team &&
           mine.pick.game_id === g.game_id) input.checked = true;
       var sp = spent[team];
-      if (disabled || sp) input.disabled = true;
+      // Conference teams only. The slate carries every game a Big 12 team
+      // plays, so the visitors are on the board — but a team you can spend
+      // once and who appears once is not a cost, and survivor is a game about
+      // what a pick costs you later.
+      var outside = !svInConference(g, side);
+      if (disabled || sp || outside) input.disabled = true;
 
       var lab = el("label", "pk-side" +
-        (sp ? " pk-svspent" : ""));
+        (sp || outside ? " pk-svspent" : ""));
       lab.setAttribute("for", id);
       var colour = (teams[team] && teams[team].color) || "";
       if (colour) {
@@ -1676,7 +1689,11 @@
       var nm = el("span", "pk-tname", team);
       nm.title = team;
       lab.appendChild(nm);
-      if (sp) {
+      if (outside) {
+        lab.appendChild(el("span", "pk-num", "not Big 12"));
+        lab.appendChild(el("span", "sr-only",
+          " — not a Big 12 team, so not pickable here"));
+      } else if (sp) {
         // Why this one is closed, in the slot the spread would use. The week
         // number is the useful half: it says where to look on your run.
         lab.appendChild(el("span", "pk-num",
@@ -1743,7 +1760,10 @@
       .catch(function (err) {
         status("");
         var m = err.data && err.data.error;
-        if (m === "team_used") {
+        if (m === "not_in_conference") {
+          alertMsg("Survivor is the sixteen Big 12 teams. Their opponents "
+                   + "are on the card, but you cannot spend one.");
+        } else if (m === "team_used") {
           alertMsg("You already used that team. Voids give a team back; " +
                    "wins and losses do not.");
         } else if (m === "team_spent_before_entry") {
@@ -1877,19 +1897,25 @@
       // The week a run ended is half the fact. The team that ended it is the
       // half people actually talk about, so it goes in the cell with its own
       // mark rather than being left to the graveyard below.
-      var rd = el("td", "pk-svrun");
+      // The flex box goes INSIDE the cell, not on it. A td that is itself a
+      // flex container drops out of the table layout algorithm and takes the
+      // column's width with it — the row rules stop at the last real cell and
+      // the contents hang off the side of the card.
+      var rd = el("td");
+      var run = el("span", "pk-svrun");
       if (r.alive) {
-        rd.appendChild(el("span", "pk-svalive", "Alive"));
+        run.appendChild(el("span", "pk-svalive", "Alive"));
       } else {
-        rd.appendChild(el("span", "pk-svout", "Out wk " + r.out_week));
+        run.appendChild(el("span", "pk-svout", "Out wk " + r.out_week));
         if (r.out_reason === "missed") {
-          rd.appendChild(el("span", "pk-svwhy", "no pick"));
+          run.appendChild(el("span", "pk-svwhy", "no pick"));
         } else if (r.out_team) {
           var omk = mark(teams, r.out_team, 14);
-          if (omk) rd.appendChild(omk);
-          rd.appendChild(el("span", "pk-svwhy", r.out_team));
+          if (omk) run.appendChild(omk);
+          run.appendChild(el("span", "pk-svwhy", r.out_team));
         }
       }
+      rd.appendChild(run);
       tr2.appendChild(rd);
 
       if (showPicks) {

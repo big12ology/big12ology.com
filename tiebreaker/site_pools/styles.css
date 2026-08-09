@@ -804,7 +804,7 @@
 
 /* The Run cell. Two facts on one line — when it ended and what ended it —
    with the second set back so the column still scans as a status. */
-.pk-svrun { display: flex; align-items: center; gap: 6px;
+.pk-svrun { display: inline-flex; align-items: center; gap: 6px;
             white-space: nowrap; }
 .pk-svalive { color: var(--ok); font-weight: 600; }
 .pk-svout   { color: var(--dim); }

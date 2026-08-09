@@ -510,25 +510,31 @@ SCHEDULE_NAV = [("schedule", "./", "The Schedule"),
 # distinction a player needs. The account page is deliberately absent: it is
 # reached from the chip in the masthead, and a nav slot that says "Account"
 # on a page most readers never sign into is a slot wasted.
-# Two navs under one roof. The games sit side by side at the top so a reader
-# can cross between them without going back to /pools/, and each game's own
-# pages hang below. Absolute hrefs, not relative: these links are rendered at
-# two different depths (/pools/account.html and /pools/pickem/card.html) and
-# a relative "card.html" means something different from each.
-POOLS_NAV = [("pools", "/pools/", "The Pools"),
-             ("slate", "/pools/pickem/", "Pickem"),
-             ("survivor", "/pools/survivor/", "Survivor")]
+#
+# One row per game, and only that game's own pages in it — the same shape
+# every other section has. The first attempt hung each game's tabs off a
+# shared two-game switcher, which put "The Pools" in a row directly under the
+# "Pools" link in the topbar and mixed two levels of navigation in one strip.
+# Crossing from the pick'em to the survivor pool goes through /pools/ in the
+# topbar, exactly as crossing from the tiebreaker to the schedule does.
+#
+# Relative hrefs, like every other nav: each of these is rendered at exactly
+# one depth, so "card.html" always means the same file.
+PICKEM_NAV = [("slate", "./", "The Slate"),
+              ("card", "card.html", "The Card"),
+              ("board", "board.html", "The Board"),
+              ("rules", "rules.html", "The Rules")]
 
-PICKEM_NAV = POOLS_NAV + [
-    ("card", "/pools/pickem/card.html", "The Card"),
-    ("board", "/pools/pickem/board.html", "The Board"),
-    ("rules", "/pools/pickem/rules.html", "The Rules")]
+SURVIVOR_NAV = [("survivor", "./", "The Pick"),
+                ("svpool", "pool.html", "The Pool"),
+                ("svrules", "rules.html", "The Rules")]
 
-# Survivor's own tabs hang off the same two-game row, so the shape of the
-# section is the same whichever game you are in.
-SURVIVOR_NAV = POOLS_NAV + [
-    ("svpool", "/pools/survivor/pool.html", "The Pool"),
-    ("svrules", "/pools/survivor/rules.html", "The Rules")]
+# The two games, for the pages that sit above both of them at /pools/. The
+# hub does not use it — its body is two large cards saying the same thing —
+# but the account page does, because it is the one page a player lands on
+# from the masthead with no way back into either game.
+POOLS_NAV = [("slate", "pickem/", "Pickem"),
+             ("survivor", "survivor/", "Survivor")]
 
 
 def nav_for(section):
@@ -4416,6 +4422,17 @@ wrong and your run is over for the season.</p>
 <p>The catch, and the whole game: <b>you may use a team once</b>. Spending
 Texas Tech in September is a week you cannot spend them in November.</p>
 
+<h3>Big 12 teams only</h3>
+<p>The card shows every game a Big 12 team plays, opponent and all &mdash; but
+the team you pick has to be <b>one of the sixteen</b>. The visitors are there
+so you can see who your team is up against, not to be spent.</p>
+<p>The reason is the only reason that matters here: a pick has to cost you
+something. Spending BYU costs you BYU for the eleven other weeks they play.
+Spending a non-conference visitor costs nothing, because they play a Big 12
+team once all season and never appear again. Left open, the whole pool would
+be survived on borrowed opponents, and nobody's roster would ever run
+thin.</p>
+
 <h3>The spread plays no part</h3>
 <p>It is shown beside each game, because it is the best one-number guess at
 who wins and by how much, and you would want to know. It has nothing to do
@@ -4570,7 +4587,8 @@ def build_pools_home(year):
                          desc="Two season-long Big 12 games, one account: a "
                               "pick'em against the spread and a survivor "
                               "pool.",
-                         head=head, section="pools", page="")
+                         head=head, section="pools", page="",
+                         subnavon=False)
     with open(os.path.join(POOLS_SITE, "index.html"), "w") as f:
         f.write(html)
     BASE = prev
@@ -4742,7 +4760,7 @@ def build_pickem(year):
 
     canon = "https://big12ology.com/pools/pickem/"
     pages = [
-        ("index.html", "slate", "Big 12 Pickem", PICKEM_SLATE_BODY,
+        ("index.html", "slate", "The Slate", PICKEM_SLATE_BODY,
          canon, "Pick every Big 12 game against the spread. One frozen line "
                 "for everyone; the slate locks at the first kickoff.", True),
         ("card.html", "card", "The Card", PICKEM_CARD_BODY,
@@ -4768,13 +4786,11 @@ def build_pickem(year):
             f.write(html)
 
     # The survivor pool. Same depth as the pick'em pages, so it shares their
-    # head verbatim; section "pools" rather than "pickem", so its subnav is
-    # the two games side by side without the pick'em's own tabs hanging off
-    # it — The Card and The Rules are that game's pages, not this one's.
+    # head verbatim, and its own section so its nav is its own three pages.
     os.makedirs(SURVIVOR_SITE, exist_ok=True)
     svcanon = "https://big12ology.com/pools/survivor/"
     for fname, active, title, body, url, desc in [
-        ("index.html", "survivor", "Survivor", SURVIVOR_BODY, svcanon,
+        ("index.html", "survivor", "The Pick", SURVIVOR_BODY, svcanon,
          "The Big 12 survivor pool: one team a week to win outright, "
          "no team twice, last streak standing."),
         ("pool.html", "svpool", "The Pool", SURVIVOR_POOL_BODY,
@@ -4800,7 +4816,7 @@ def build_pickem(year):
                  f'<script defer src="{BASE}{asset_v("pct.js")}"></script>'
                  f'<script defer src="{asset_v("app.js", POOLS_SITE)}"></script>')
     acct = build_subpage("Your account", "account", PICKEM_ACCOUNT_BODY, year,
-                         "", desc=None, head=acct_head, section="pickem",
+                         "", desc=None, head=acct_head, section="pools",
                          page="account.html")
     acct = acct.replace("<meta charset=utf-8>",
                         "<meta charset=utf-8>"
