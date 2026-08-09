@@ -229,7 +229,9 @@ if [ "${B12_PICKEM:-}" = "1" ]; then
   for f in pools/index.html pools/account.html pools/app.js \
            pools/styles.css pools/sitemap.xml \
            pools/pickem/index.html pools/pickem/card.html \
-           pools/pickem/board.html pools/pickem/rules.html; do
+           pools/pickem/board.html pools/pickem/rules.html \
+           pools/survivor/index.html pools/survivor/pool.html \
+           pools/survivor/rules.html; do
     [ -e "$DIST/$f" ] || note "$f"
   done
 else

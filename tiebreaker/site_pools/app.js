@@ -1584,9 +1584,53 @@
     // exactly what the server's trigger will say if the client gets it wrong.
     var spent = {};
     ((mine && mine.used) || []).forEach(function (u) {
-      if (u.week !== week && u.outcome !== "void") spent[u.team] = u.week;
+      if (u.week !== week && u.outcome !== "void") {
+        spent[u.team] = { week: u.week, chalk: false };
+      }
+    });
+    // The late-joiner handicap: the chalk of every week before you entered is
+    // spent for you. Marked apart from your own picks because "already used
+    // in week 3" would be a lie to somebody who was not here in week 3.
+    ((mine && mine.burned) || []).forEach(function (b) {
+      if (!spent[b.team]) spent[b.team] = { week: b.week, chalk: true };
     });
     return spent;
+  }
+
+  /**
+   * What joining late cost, said once and above the slate.
+   *
+   * Only for players it applies to, and only while it is news: somebody who
+   * entered in week one has nothing to read here, and a permanent banner is
+   * a banner nobody reads.
+   */
+  function svHandicapNote(mine, week) {
+    var box = $("svhandicap");
+    if (!box) return;
+    var burned = (mine && mine.burned) || [];
+    if (!SIGNED_IN || !burned.length) { show(box, false); return; }
+
+    box.textContent = "";
+    var p = el("p");
+    p.appendChild(document.createTextNode(
+      "You joined in week " + mine.entered_week + ", so the chalk of the "
+      + (burned.length === 1 ? "week" : burned.length + " weeks")
+      + " before that is already spent: "));
+    burned.forEach(function (b, i) {
+      if (i) p.appendChild(document.createTextNode(i === burned.length - 1
+        ? " and " : ", "));
+      p.appendChild(el("b", null, b.team));
+    });
+    p.appendChild(document.createTextNode("."));
+    box.appendChild(p);
+
+    if (mine.ranked === false) {
+      box.appendChild(el("p", "note",
+        "Entry after week " + mine.ranked_entry_by + " plays outside the "
+        + "leaderboard — your run is shown, but not in the running for the "
+        + "season."));
+    }
+    show(box, true);
   }
 
   function svGameRow(g, mine, teams, spent, disabled) {
@@ -1616,10 +1660,11 @@
       input.value = g.game_id + "|" + team;
       if (mine && mine.pick && mine.pick.team === team &&
           mine.pick.game_id === g.game_id) input.checked = true;
-      if (disabled || spent[team] != null) input.disabled = true;
+      var sp = spent[team];
+      if (disabled || sp) input.disabled = true;
 
       var lab = el("label", "pk-side" +
-        (spent[team] != null ? " pk-svspent" : ""));
+        (sp ? " pk-svspent" : ""));
       lab.setAttribute("for", id);
       var colour = (teams[team] && teams[team].color) || "";
       if (colour) {
@@ -1631,12 +1676,15 @@
       var nm = el("span", "pk-tname", team);
       nm.title = team;
       lab.appendChild(nm);
-      if (spent[team] != null) {
+      if (sp) {
         // Why this one is closed, in the slot the spread would use. The week
         // number is the useful half: it says where to look on your run.
-        lab.appendChild(el("span", "pk-num", "wk " + spent[team]));
+        lab.appendChild(el("span", "pk-num",
+          sp.chalk ? "chalk" : "wk " + sp.week));
         lab.appendChild(el("span", "sr-only",
-          " — already used in week " + spent[team]));
+          sp.chalk
+            ? " — the chalk of week " + sp.week + ", spent before you joined"
+            : " — already used in week " + sp.week));
       } else if (g.spread_x2 != null) {
         // The line, as advice rather than as the bet: survivor is straight
         // up, but which side the market likes is the whole question.
@@ -1698,6 +1746,13 @@
         if (m === "team_used") {
           alertMsg("You already used that team. Voids give a team back; " +
                    "wins and losses do not.");
+        } else if (m === "team_spent_before_entry") {
+          alertMsg("That team is the chalk of a week you were not here for, "
+                   + "so it was spent when you joined in week "
+                   + (err.data.entered_week) + ".");
+        } else if (m === "join_closed") {
+          alertMsg("Too little of the season is left to start a run — the "
+                   + "handicap would leave you almost nothing to pick.");
         } else if (m === "eliminated") {
           alertMsg("Your run is over — the pool is watch-only from here.");
         } else if (err.status === 409) {
@@ -1723,6 +1778,8 @@
     var locked = !!slate.locked || !!(mine && mine.locked);
     var dead = !!(mine && mine.standing && !mine.standing.alive);
     var spent = svSpent(mine, week);
+
+    svHandicapNote(mine, week);
 
     note.textContent = locked
       ? "Week " + week + " is locked."
@@ -1773,8 +1830,9 @@
     }
   }
 
-  function svDrawBoard(board, teams, me) {
-    var tbl = $("svboard"), note = $("svboardnote");
+  function svDrawBoard(board, teams, me, opts) {
+    opts = opts || {};
+    var tbl = $(opts.into || "svboard"), note = $(opts.note || "svboardnote");
     if (!tbl) return;
     tbl.textContent = "";
     if (!board || !board.rows || !board.rows.length) {
@@ -1782,12 +1840,14 @@
         + "once their first week is scored.";
       return;
     }
-    note.textContent = board.alive + " of " + board.entrants +
-      (board.entrants === 1 ? " run" : " runs") + " still alive.";
+    if (note && !opts.note) {
+      note.textContent = board.alive + " of " + board.entrants +
+        (board.entrants === 1 ? " run" : " runs") + " still alive.";
+    }
 
     var showPicks = board.rows.some(function (r) { return r.pick; });
     var thead = el("thead"), tr = el("tr");
-    var cols = ["#", "Player", "W", "Run"];
+    var cols = opts.norank ? ["Player", "W", "Run"] : ["#", "Player", "W", "Run"];
     if (showPicks) cols.push("This week");
     cols.forEach(function (c, i) {
       tr.appendChild(el("th", i === 0 || c === "W" ? "n" : null, c));
@@ -1803,7 +1863,7 @@
         if (myTint) tr2.style.setProperty("--you", myTint);
       }
       if (!r.alive) tr2.className += " pk-svout";
-      tr2.appendChild(el("td", "n", r.rank));
+      if (!opts.norank) tr2.appendChild(el("td", "n", r.rank));
 
       var td = el("td");
       var mk = mark(teams, r.team, 15);
@@ -1813,10 +1873,24 @@
       tr2.appendChild(td);
 
       tr2.appendChild(el("td", "n", r.wins));
-      tr2.appendChild(el("td", null, r.alive
-        ? "Alive"
-        : "Out wk " + r.out_week +
-          (r.out_reason === "missed" ? " (no pick)" : "")));
+
+      // The week a run ended is half the fact. The team that ended it is the
+      // half people actually talk about, so it goes in the cell with its own
+      // mark rather than being left to the graveyard below.
+      var rd = el("td", "pk-svrun");
+      if (r.alive) {
+        rd.appendChild(el("span", "pk-svalive", "Alive"));
+      } else {
+        rd.appendChild(el("span", "pk-svout", "Out wk " + r.out_week));
+        if (r.out_reason === "missed") {
+          rd.appendChild(el("span", "pk-svwhy", "no pick"));
+        } else if (r.out_team) {
+          var omk = mark(teams, r.out_team, 14);
+          if (omk) rd.appendChild(omk);
+          rd.appendChild(el("span", "pk-svwhy", r.out_team));
+        }
+      }
+      tr2.appendChild(rd);
 
       if (showPicks) {
         var pd = el("td");
@@ -1836,6 +1910,118 @@
       tb.appendChild(tr2);
     });
     tbl.appendChild(tb);
+  }
+
+  /**
+   * The pool as a page of its own: where it stands, the full board, and what
+   * ended the runs that ended.
+   *
+   * Shares svDrawBoard with the picker page — same ids, same table — so the
+   * standings cannot say two different things in two places. What is extra
+   * here is the summary above it and the graveyard below.
+   */
+  function svDrawSummary(board) {
+    var box = $("svsummary");
+    if (!box || !board) return;
+    box.textContent = "";
+    var stats = el("div", "pk-roomstats");
+    function stat(label, value, cls) {
+      var d = el("div", "pk-stat");
+      d.appendChild(el("div", "pk-statv" + (cls ? " " + cls : ""), value));
+      d.appendChild(el("div", "pk-statl", label));
+      stats.appendChild(d);
+    }
+    stat("Still alive", String(board.alive), board.alive ? "up" : "down");
+    stat("Entrants", String(board.entrants));
+    var outs = board.entrants - board.alive;
+    if (outs) stat("Runs ended", String(outs));
+    if (board.missed) stat("By missing a week", String(board.missed));
+    if (board.week != null) stat("Week", String(board.week));
+    box.appendChild(stats);
+
+    // The number worth saying out loud, and the one a survivor pool is
+    // actually about: how thin it has got.
+    if (board.entrants) {
+      var pct = Math.round(100 * board.alive / board.entrants);
+      var line = pct + "% of the field is still in it" +
+        (board.alive === 1 ? " — one run left." : ".");
+      if (board.unranked) {
+        line += " " + board.unranked +
+          (board.unranked === 1 ? " run" : " runs") +
+          " started after week " + board.ranked_entry_by +
+          " and are playing outside the leaderboard.";
+      }
+      box.appendChild(el("p", "note", line));
+    }
+    show($("svsumcard"), true);
+  }
+
+  /** The same board object with a subset of its rows. */
+  function svSplit(board, keep) {
+    var rows = (board && board.rows ? board.rows : []).filter(keep);
+    var alive = 0;
+    rows.forEach(function (r) { if (r.alive) alive++; });
+    var out = {};
+    for (var k in board) if (board.hasOwnProperty(k)) out[k] = board[k];
+    out.rows = rows;
+    out.entrants = rows.length;
+    out.alive = alive;
+    return out;
+  }
+
+  function svDrawGraveyard(board, teams) {
+    var box = $("svgrave");
+    if (!box || !board || !board.graveyard || !board.graveyard.length) return;
+    box.textContent = "";
+    var ul = el("ul", "pk-svgrave");
+    board.graveyard.forEach(function (g) {
+      var li = el("li");
+      var mk = mark(teams, g.team, 16);
+      if (mk) li.appendChild(mk);
+      li.appendChild(el("b", null, g.team));
+      li.appendChild(document.createTextNode(
+        " lost in week " + g.week + " and took "));
+      li.appendChild(el("b", null,
+        g.ended + (g.ended === 1 ? " run" : " runs")));
+      li.appendChild(document.createTextNode(" with it."));
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+    show($("svgravecard"), true);
+  }
+
+  function initSurvivorPool() {
+    // Only on the pool page. The picker has its own init and draws the same
+    // table from the same call.
+    if (!$("svsummary")) return;
+    Promise.all([api("/api/survivor/board"), loadTeams()])
+      .then(function (r) {
+        var board = r[0], teams = r[1] || {};
+        // Two groups, one renderer. The leaderboard is the players who
+        // entered in time; the rest are playing the same game and their runs
+        // are worth showing, but a rank next to them would be a claim on a
+        // season they are not in the running for.
+        var ranked = svSplit(board, function (x) { return x.ranked !== 0; });
+        var late = svSplit(board, function (x) { return x.ranked === 0; });
+
+        svDrawSummary(board);
+        svDrawBoard(ranked, teams, null);
+        svDrawGraveyard(board, teams);
+
+        if (late.rows.length) {
+          $("svlatenote").textContent = late.rows.length +
+            (late.rows.length === 1 ? " run" : " runs") +
+            " that started after week " + board.ranked_entry_by +
+            ". Same rules, same handicap, not in the running for the season.";
+          svDrawBoard(late, teams, null,
+                      { into: "svlate", note: "svlatenote", norank: true });
+          show($("svlatecard"), true);
+        }
+      })
+      .catch(function () {
+        var n = $("svboardnote");
+        if (n) n.textContent = "The pool is unavailable.";
+      });
   }
 
   function initSurvivor(me) {
@@ -1932,6 +2118,7 @@
       initAccount(me);
       initBoard(me);
       initCard(me);
+      initSurvivorPool();
       initSurvivor(me);
     });
   });

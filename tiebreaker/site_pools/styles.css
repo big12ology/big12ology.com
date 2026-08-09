@@ -791,3 +791,28 @@
 
 #svwithdraw { margin-top: 10px; }
 #svlock { padding: 10px 14px; }
+
+/* The graveyard. A list, not a table: each line is a sentence, and the count
+   is the only number, so columns would be scaffolding around nothing. */
+.pk-svgrave { list-style: none; margin: 0; padding: 0;
+              display: grid; gap: 6px; }
+.pk-svgrave li { display: flex; align-items: center; gap: 7px;
+                 background: var(--bg); border-radius: 8px;
+                 padding: 7px 11px; font-size: 14px; }
+.pk-svgrave img { flex: none; }
+.pk-svgrave b { color: var(--ink); }
+
+/* The Run cell. Two facts on one line — when it ended and what ended it —
+   with the second set back so the column still scans as a status. */
+.pk-svrun { display: flex; align-items: center; gap: 6px;
+            white-space: nowrap; }
+.pk-svalive { color: var(--ok); font-weight: 600; }
+.pk-svout   { color: var(--dim); }
+.pk-svwhy   { color: var(--ink); }
+
+/* What joining late cost. A card rather than a note, because it changes what
+   the slate below it will let you do. */
+.pk-handicap { border-left: 3px solid var(--accent); }
+.pk-handicap p { margin: 0; }
+.pk-handicap p + p { margin-top: 6px; }
+.pk-handicap b { color: var(--ink); }

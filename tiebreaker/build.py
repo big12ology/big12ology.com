@@ -64,6 +64,17 @@ SCHEDULE_SITE = os.path.join(HERE, "site_schedule")
 POOLS_SITE = os.path.join(HERE, "site_pools")
 PICKEM_SITE = os.path.join(POOLS_SITE, "pickem")
 SURVIVOR_SITE = os.path.join(POOLS_SITE, "survivor")
+# The sections under /pools/. They share the account chip, and none of them
+# has a year archive — year_href() would emit 2025/ and 2024/ links to
+# directories that do not exist, on every page.
+POOL_SECTIONS = ("pools", "pickem", "survivor")
+
+# Enter the survivor pool by this week to be on its leaderboard. The Worker is
+# the authority — worker/src/scoring.js RANKED_ENTRY_BY enforces it — and this
+# copy exists only so the rules page can state the number. If they ever
+# disagree, the rules page is the one that is lying.
+SURVIVOR_RANKED_BY = 6
+
 POOLS_UP = "../"          # from /pools/x/ back up to /pools/
 
 # team -> logo file key (assets in site/logos/, sourced from Wikimedia; BYU is png)
@@ -448,6 +459,12 @@ SECTIONS = {
         "past": ("The {year} conference schedule: every result by week, who "
                  "never met, and what the draw was worth."),
     },
+    "survivor": {
+        "title": "Big 12 Survivor",
+        "live": ("One team a week, picked to win outright. Never the same "
+                 "team twice. Lose once and your run is over."),
+        "past": "The {year} survivor pool.",
+    },
     "pools": {
         "title": "Big 12 Pools",
         "live": ("Two season-long games, one account. Pick every game "
@@ -507,10 +524,17 @@ PICKEM_NAV = POOLS_NAV + [
     ("board", "/pools/pickem/board.html", "The Board"),
     ("rules", "/pools/pickem/rules.html", "The Rules")]
 
+# Survivor's own tabs hang off the same two-game row, so the shape of the
+# section is the same whichever game you are in.
+SURVIVOR_NAV = POOLS_NAV + [
+    ("svpool", "/pools/survivor/pool.html", "The Pool"),
+    ("svrules", "/pools/survivor/rules.html", "The Rules")]
+
 
 def nav_for(section):
     return {"schedule": SCHEDULE_NAV,
             "pickem": PICKEM_NAV,
+            "survivor": SURVIVOR_NAV,
             "pools": POOLS_NAV}.get(section, SUBNAV_LINKS)
 
 
@@ -1764,9 +1788,9 @@ def build_subpage(title, active, body, year, matchcard,
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <a class=skip-link href="#main">Skip to content</a>
-{topbar(section, year, BASE, acct=section in ("pickem", "pools"))}
+{topbar(section, year, BASE, acct=section in POOL_SECTIONS)}
 {tracker_top(year, active, matchcard, section, page, up, subnavon=subnavon,
-             yearpills=section not in ("pickem", "pools"))}
+             yearpills=section not in POOL_SECTIONS)}
 {body}
 </main>
 {footer()}
@@ -4297,6 +4321,8 @@ SURVIVOR_BODY = """
   <p class=pk-slatecount id=svstanding></p>
 </div>
 
+<div class="card pk-handicap" id=svhandicap hidden></div>
+
 <p class=pk-signedout id=svsignedout hidden><a href="/pools/account.html">Sign
 in</a> to play the survivor pool. The rules are one sentence: one team a week
 to win its game outright, no team twice, and a loss or a forgotten week is the
@@ -4336,6 +4362,138 @@ cannot go on the board.</p>
 <noscript><p class=note><b>The picker needs JavaScript.</b> The rules are in
 the card above, and the pool stands as
 <a href="/api/survivor/board">JSON</a>.</p></noscript>"""
+
+
+# The pool as its own page, because a leaderboard buried under a picker is a
+# leaderboard nobody reads — and because the standings are the thing a person
+# who is NOT playing wants to look at. The picker keeps a short version; this
+# is the full one, with the graveyard.
+SURVIVOR_POOL_BODY = """
+<div class=card id=svsumcard hidden>
+  <h2>Where it stands</h2>
+  <div id=svsummary></div>
+</div>
+
+<div class=card>
+  <h2>The Pool</h2>
+  <p class=note id=svboardnote>Loading&hellip;</p>
+  <div class=table-wrap><div class=table-scroll>
+    <table id=svboard></table>
+  </div></div>
+  <p class=note>Everyone alive is above everyone who is out, and wins order
+  each group &mdash; the last one standing wins a survivor pool, so a run that
+  ended does not sit above one that has not. A run that ended shows the week it
+  ended and the team that ended it. <a href="rules.html">The rules</a> explain
+  the handicap that lets people join all season.</p>
+</div>
+
+<div class=card id=svlatecard hidden>
+  <h2>Playing, not ranked</h2>
+  <p class=note id=svlatenote></p>
+  <div class=table-wrap><div class=table-scroll>
+    <table id=svlate></table>
+  </div></div>
+</div>
+
+<div class=card id=svgravecard hidden>
+  <h2>What went wrong</h2>
+  <p class=note>The teams that ended a run, and how many they took with
+  them. A survivor pool is decided by these far more than by the wins.</p>
+  <div id=svgrave></div>
+</div>
+
+<noscript><p class=note><b>This page needs JavaScript.</b> The pool stands as
+<a href="/api/survivor/board">JSON</a>, and
+<a href="rules.html">the rules are here</a>.</p></noscript>"""
+
+
+SURVIVOR_RULES = """
+<div class=card>
+<h2>How it works</h2>
+<p>Pick <b>one</b> team a week to <b>win its game outright</b>. Not to cover a
+spread &mdash; to win. Get it right and you are through to next week. Get it
+wrong and your run is over for the season.</p>
+<p>The catch, and the whole game: <b>you may use a team once</b>. Spending
+Texas Tech in September is a week you cannot spend them in November.</p>
+
+<h3>The spread plays no part</h3>
+<p>It is shown beside each game, because it is the best one-number guess at
+who wins and by how much, and you would want to know. It has nothing to do
+with whether your pick survives. A three-point favourite that wins by four is
+exactly as good as a thirty-point favourite that wins by four &mdash; one of
+those covered and one did not, and the pool does not care which.</p>
+
+<h3>A team is used once a season</h3>
+<p>Once a week locks with your pick on it, that team is spent whether it won
+or lost. The one exception is a game that is never played: a cancelled or
+abandoned game is void, and a voided week hands the team back for you to use
+again.</p>
+
+<h3>Missing a week ends your run</h3>
+<p>Once you have made your first pick you are in, and every week after that
+needs one. A week that locks with no pick from you is the same as a loss.
+There is no submit button &mdash; a pick saves the moment you choose it &mdash;
+but there is no reminder either, so the week the slate locks while you are
+away is the week it ends.</p>
+
+<h3>You can join whenever you like</h3>
+<p>Weeks before your first pick did not happen for you &mdash; there is no
+catching up to do and nothing counted against you before you arrived. Two
+things follow from joining late, and both are knowable before you sign up.</p>
+
+<h3>Join late and the chalk is already spent</h3>
+<p>A survivor pool gets hard in November for one reason: everyone burned the
+safe teams in September. Somebody walking in at week six with a completely
+fresh roster would not be playing the same game as the people who have been
+picking around five spent teams since August.</p>
+<p>So <b>you arrive having already spent the biggest favourite of every week
+you missed</b>. Join at week six and the week one through five chalk is gone
+from your board &mdash; the same teams the careful players spent first. If two
+weeks shared a favourite, the second week costs you the next biggest instead,
+so the handicap is always exactly one team per week missed.</p>
+<p>It is worked out from the posted lines, which are frozen when the slate is
+published and never change afterwards. That means you can see the exact price
+before you join, and nobody can argue about it later.</p>
+
+<h3>To play for the season, be in by week {RANKED_BY}</h3>
+<p>Entry never closes, but the leaderboard does. Almost everybody is out by
+December, so without a cutoff one person could join in the last week, win once,
+be the only run still alive, and take the season on a single pick.</p>
+<p>Enter by week {RANKED_BY} and you are on the leaderboard.
+Enter after it and you play the same game under the same handicap, and the pool
+shows your run &mdash; you are just not in the running for the season. Joining
+in November is for the run, not the title.</p>
+<p>This is about when you <b>entered</b>, not how long you lasted. Somebody who
+started in August and lost in week two played the season and stays on the
+board, at the bottom of it.</p>
+
+<h3>A game with no line cannot be picked</h3>
+<p>Same rule as the pick'em, for a plumbing reason worth stating: only games
+with a posted line are graded, and a pick that can never be graded is a player
+who can never be eliminated. If it is on the card, it is pickable.</p>
+
+<h3>The lock</h3>
+<p>The whole week locks at the first kickoff, exactly as the pick'em does
+&mdash; not at each game's own start. One clock for the week, so nobody picks
+on Saturday night knowing what happened at noon.</p>
+
+<h3>Ranking</h3>
+<p><b>Everyone still alive is above everyone who is out</b>, however deep the
+ended runs went. That is what a survivor pool is: the last one standing wins
+it. Wins order each group, so the longest live run leads the living and the
+longest ended run leads the dead.</p>
+<p>A run that ended keeps its wins &mdash; getting six weeks deep and losing is
+a better season than getting two weeks deep and losing, and the board says
+so.</p>
+
+<h3>What is public</h3>
+<p>The same as the pick'em: your display name, your record, and after a week
+locks, the team you picked. Nothing before the lock &mdash; the pool cannot
+show you what everyone else is on while you can still change your mind.
+<a href="/privacy">Here is everything we store</a>.</p>
+</div>"""
+SURVIVOR_RULES = SURVIVOR_RULES.replace("{RANKED_BY}",
+                                        str(SURVIVOR_RANKED_BY))
 
 
 def season_opener(games):
@@ -4614,14 +4772,25 @@ def build_pickem(year):
     # the two games side by side without the pick'em's own tabs hanging off
     # it — The Card and The Rules are that game's pages, not this one's.
     os.makedirs(SURVIVOR_SITE, exist_ok=True)
-    sv = build_subpage(
-        "Survivor", "survivor", SURVIVOR_BODY, year, "",
-        canon="https://big12ology.com/pools/survivor/",
-        desc="The Big 12 survivor pool: one team a week to win outright, "
-             "no team twice, last streak standing.",
-        head=head, section="pools", page="survivor")
-    with open(os.path.join(SURVIVOR_SITE, "index.html"), "w") as f:
-        f.write(sv)
+    svcanon = "https://big12ology.com/pools/survivor/"
+    for fname, active, title, body, url, desc in [
+        ("index.html", "survivor", "Survivor", SURVIVOR_BODY, svcanon,
+         "The Big 12 survivor pool: one team a week to win outright, "
+         "no team twice, last streak standing."),
+        ("pool.html", "svpool", "The Pool", SURVIVOR_POOL_BODY,
+         svcanon + "pool.html",
+         "The Big 12 survivor pool standings: who is still alive, who went "
+         "out and on which team."),
+        ("rules.html", "svrules", "The Rules", SURVIVOR_RULES,
+         svcanon + "rules.html",
+         "How the Big 12 survivor pool works: one team a week to win "
+         "outright, no team twice, and what happens if you miss a week."),
+    ]:
+        sv = build_subpage(title, active, body, year, "", canon=url,
+                           desc=desc, head=head, section="survivor",
+                           page=fname if fname != "index.html" else "survivor")
+        with open(os.path.join(SURVIVOR_SITE, fname), "w") as f:
+            f.write(sv)
 
     # One account for both games, so it sits above them rather than inside
     # one. Written with the pools' own BASE, being a level shallower.
@@ -4717,6 +4886,10 @@ def write_discovery(years):
         f'<changefreq>weekly</changefreq><priority>0.6</priority></url>',
         f'  <url><loc>{pool}survivor/</loc><lastmod>{today}</lastmod>'
         f'<changefreq>daily</changefreq><priority>0.8</priority></url>',
+        f'  <url><loc>{pool}survivor/rules.html</loc><lastmod>{today}</lastmod>'
+        f'<changefreq>monthly</changefreq><priority>0.7</priority></url>',
+        f'  <url><loc>{pool}survivor/pool.html</loc><lastmod>{today}</lastmod>'
+        f'<changefreq>weekly</changefreq><priority>0.6</priority></url>',
     ]
     os.makedirs(POOLS_SITE, exist_ok=True)
     if PICKEM_ENABLED:
