@@ -693,20 +693,42 @@
       card.hidden = false;
     });
 
+    // Saved on choosing it, like the slate. There is nothing to validate,
+    // nothing to collide with and no cooldown to spend, so a Save button here
+    // was a second step guarding nothing — and the one failure it made
+    // possible was choosing a team, leaving, and finding it had not stuck.
+    // The name keeps its button: it can be rejected, and it can only be
+    // changed once a month, so it must be deliberate.
+    function saveTeam(v) {
+      api("/api/me", {method: "PATCH", body: {team: v}})
+        .then(function () {
+          status(v ? "Team saved." : "Saved.");
+          me.team = v;
+          if (me.display_name || ($("dname") && $("dname").value.trim())) {
+            show($("onward"), true);
+          }
+        })
+        .catch(function (err) { alertMsg(explain(err)); });
+    }
+
+    box.addEventListener("change", function (e) {
+      if (e.target && e.target.name === "team") saveTeam(e.target.value);
+    });
+
+    // Kept for the no-JS and keyboard-Enter paths, and because a form that
+    // cannot be submitted is a form that reloads the page when you press
+    // Enter in it.
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var on = box.querySelector("input:checked");
-      var v = on ? on.value : "";
-      api("/api/me", {method: "PATCH", body: {team: v}})
-        .then(function () { status("Team saved."); me.team = v; })
-        .catch(function (err) { alertMsg(explain(err)); });
+      saveTeam(on ? on.value : "");
     });
   }
 
   // ----------------------------------------------------------------- board
 
   var boardRows = [], sortKey = "rank", sortDir = 1, meId = null,
-      chalk = null, myTint = null, myMark = null;
+      chalk = null, room = null, myTint = null, boardTeams = {};
 
   var COLS = [
     {key: "rank", label: "#", num: true},
@@ -770,14 +792,17 @@
             td.style.color = window.B12PCT.ats(r.pct);
           }
         } else if (c.key === "display_name") {
-          // Your team's mark beside your own name, and nobody else's — the
-          // others did not tell us theirs, and guessing would be worse than
-          // leaving it out.
-          if (meId && r.user_id === meId && myMark) {
-            var mi = document.createElement("img");
-            mi.className = "mark"; mi.src = myMark; mi.alt = "";
-            mi.width = 15; mi.height = 15; mi.loading = "lazy";
-            td.appendChild(mi);
+          // Everyone's mark, not just yours. Who a player follows is half the
+          // reading of a leaderboard — a Cyclone at the top of the board is a
+          // different fact from a name at the top of the board — and it is
+          // volunteered rather than guessed, so there is nothing to infer.
+          var mk = mark(boardTeams, r.team, 15);
+          if (mk) td.appendChild(mk);
+          else if (r.team) {
+            // Told us, but there is no freely-licensed mark for them, or the
+            // answer was "the conference" or "college football". A slot, so
+            // the names still line up down the column.
+            td.appendChild(el("span", "pk-markgap"));
           }
           td.appendChild(document.createTextNode(r[c.key] == null ? "—" : r[c.key]));
         } else {
@@ -860,7 +885,7 @@
     meId = me && me.user_id;
     loadTeams().then(function (teams) {
       myTint = myColour(me, teams);
-      myMark = me && me.team && teams[me.team] && teams[me.team].logo;
+      boardTeams = teams;
       return loadBoard("");
     }).then(function (r) {
       // How many weeks there are to choose from, which is not the same as

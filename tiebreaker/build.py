@@ -4075,10 +4075,14 @@ PICKEM_ACCOUNT_BODY = f"""
     <fieldset id=teampick class=pk-teamgrid>
       <legend>Who do you follow?</legend>
     </fieldset>
-    <p class=note>Used to colour your own rows. It is not a pick, it does not
-    affect scoring, and it is not shown to anyone else.</p>
-    <button type=submit class=wbtn>Save team</button>
+    <p class=note><b>This is public</b> &mdash; your team's mark appears
+    beside your name on The Board, which is half the fun of reading it. It is
+    not a pick and it does not affect scoring. Saved as soon as you choose
+    one; you can change it whenever you like.</p>
+    <noscript><button type=submit class=wbtn>Save team</button></noscript>
   </form>
+  <p class=pk-onward id=onward hidden><a href="/pickem/">Go to the slate
+    &rarr;</a></p>
 </div>
 <div class=card id=acctinfo hidden>
   <h2>Signed in</h2>

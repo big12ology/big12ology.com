@@ -304,7 +304,8 @@ export async function getBoard(env, url) {
   const bind = week == null ? [s] : [s, week];
 
   const { results } = await env.DB.prepare(
-    `SELECT b.rank, b.user_id, u.display_name, b.w, b.l, b.p, b.v, b.pct
+    `SELECT b.rank, b.user_id, u.display_name, u.team,
+            b.w, b.l, b.p, b.v, b.pct
        FROM ${table} b JOIN users u ON u.id = b.user_id
       WHERE ${where}
       -- Ties share a rank, so the name is what makes the order among them
