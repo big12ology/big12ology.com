@@ -816,3 +816,21 @@
 .pk-handicap p { margin: 0; }
 .pk-handicap p + p { margin-top: 6px; }
 .pk-handicap b { color: var(--ink); }
+
+/* The tables scroll inside their own box, not by dragging the page sideways.
+   .table-wrap and .table-scroll were in the markup from the start and styled
+   nowhere, which is invisible while a dozen short display names fit a phone
+   and stops being invisible the moment a real field turns up: the widest
+   allowed name, a team mark, and the this-week column together run past
+   375px, and an unstyled wrapper hands that overflow to the document.
+   attendance/site/styles.css solves it the same way. */
+/* A card is a grid item, and a grid item's min-width is auto — so it refuses
+   to shrink below its contents and a wide table pushes the whole card past
+   the viewport, taking the document with it. overflow-x on the wrapper does
+   nothing until this is set, because by then the ancestor has already grown.
+   Scoped to this stylesheet, so it applies to the pools pages and nothing
+   else on the domain. */
+.card { min-width: 0; }
+.table-wrap { border-radius: 8px; }
+.table-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+.table-scroll > table { min-width: 100%; }

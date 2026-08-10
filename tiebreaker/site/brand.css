@@ -85,6 +85,14 @@
      will do, on the screen with the least room to spare. */
   .b12-topbar .b12-right { order: 2; }
   .b12-topbar a:not(.b12-brand) { order: 3; }
+  /* Force the break after the toggle.
+     order alone did not do it. Flex decides where a line ends from the items'
+     own sizes, BEFORE margin-left:auto gets to eat the slack — so whatever was
+     left on row one pulled the first link up beside the lockup, and the nav
+     read "Big12ology [toggle] Tiebreaker" with the other three orphaned
+     below. A zero-height item with a full-width basis, last in source among
+     order:2, ends the row deliberately instead of leaving it to chance. */
+  .b12-topbar::after { content: ""; order: 2; flex-basis: 100%; height: 0; }
 }
 
 /* ==== theme-paired artwork =============================================== */
