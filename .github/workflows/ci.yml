@@ -142,7 +142,14 @@ jobs:
           # A generated topbar, not dist/index.html: the four hand-written
           # pages carry a PICKEM-LINK marker instead, because the flag cannot
           # reach into a file build.py does not write.
-          grep -q '>Pickem<' dist/tiebreaker/index.html
+          #
+          # The label is Pools, not Pickem — it has been since the games were
+          # grouped under one section, and this line went on asserting the old
+          # one for a fortnight of red runs. The link is now unconditional,
+          # because /pools/ is a real destination either way: the section when
+          # the flag is on and the teaser when it is off. So it is asserted in
+          # both shapes below rather than treated as a lit-only tell.
+          grep -q 'href="/pools/">Pools<' dist/tiebreaker/index.html
 
       # Back to the shipping shape, so nothing downstream sees the dark
       # section's output.
@@ -166,6 +173,9 @@ jobs:
           # built, so pointing at it sent the old URL's readers to a 404.
           grep -q 'url=/pools/' dist/pickem/index.html
           ! grep -q 'url=/pools/pickem/' dist/pickem/index.html
+          # The teaser still has to be reachable from every generated page,
+          # or the Coming Soon page is one nobody can find.
+          grep -q 'href="/pools/">Pools<' dist/tiebreaker/index.html
           ! grep -rq 'pickcon' dist
           # And the disclosure still matches what is actually running.
           grep -q 'no accounts, no cookies' dist/privacy.html
