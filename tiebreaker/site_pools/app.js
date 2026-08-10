@@ -1023,9 +1023,27 @@
     // half-width card put the axis labels at about seven pixels. At 520 the
     // box is drawn near 1:1 and 11px stays 11px.
     var W = 520, H = 300, L = 40, R = 10, T = 12, B = 26;
+
+    // A decile needs a field to be a decile of. With twelve players the
+    // "90th percentile" is the second-best player and the "10th" is the
+    // second-worst — one person each, drawn as though they were a
+    // distribution, and sitting exactly under the leader's line because the
+    // leader IS the player next to them. Below the floor only the quartiles
+    // are drawn, which are still three players in from each end.
+    //
+    // Decided BEFORE the axis, not after, because the axis has to be scaled
+    // to what is drawn. Including p10 and p90 unconditionally reserved room
+    // for a band that was never painted: a small pool whose worst player had
+    // a bad opening week got a plot squashed into its top third to make space
+    // for white.
+    var f = h.field || [];
+    var wide = f.length > 1 && f.every(function (r) { return r.n >= MIN_BAND; });
+
     var lo = 100, hi = 0;
     var all = [];
-    (h.field || []).forEach(function (f) { all.push(f.p10, f.p90); });
+    f.forEach(function (r) {
+      if (wide) { all.push(r.p10, r.p90); } else { all.push(r.p25, r.p75); }
+    });
     [h.you, h.room, h.chalk,
      h.leader && h.leader.rows].forEach(function (rows) {
       (rows || []).forEach(function (r) { all.push(r.pct); });
@@ -1095,14 +1113,6 @@
       svg.appendChild(t);
     });
 
-    var f = h.field || [];
-    // A decile needs a field to be a decile of. With twelve players the
-    // "90th percentile" is the second-best player and the "10th" is the
-    // second-worst — one person each, drawn as though they were a
-    // distribution, and sitting exactly under the leader's line because the
-    // leader IS the player next to them. Below the floor only the quartiles
-    // are drawn, which are still three players in from each end.
-    var wide = f.length > 1 && f.every(function (r) { return r.n >= MIN_BAND; });
     if (f.length > 1) {
       if (wide) {
         svg.appendChild(sv("path", {d: area(f, f, "p90", "p10"),
@@ -1270,7 +1280,13 @@
     box.appendChild(svg);
     box.appendChild(tip);
     if (note) {
-      var n = f.length ? f[f.length - 1].n : 0;
+      // The largest the field ever was, not the last week's. Somebody who
+      // misses the final week drops out of that week's percentiles, and
+      // reading the count off the end made a twelve-player pool describe
+      // itself as eleven — on a sentence whose whole job is to say how many
+      // people the band is drawn from.
+      var n = 0;
+      f.forEach(function (r) { if (r.n > n) n = r.n; });
       note.textContent = "Season to date after each week. The band is the "
         + "field: the middle 50% of " + n + " player" + (n === 1 ? "" : "s")
         + (wide ? ", and lighter behind it the 10th to 90th." : ".");

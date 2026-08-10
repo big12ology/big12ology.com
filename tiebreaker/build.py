@@ -78,6 +78,14 @@ SURVIVOR_RANKED_BY = 6
 
 POOLS_UP = "../"          # from /pools/x/ back up to /pools/
 
+# The day the pools open. Only the teaser at /pools/ reads it — nothing gates
+# on it, because the gate is which pages assemble.sh publishes, and that is a
+# decision a person makes rather than a clock. It is a date and not a
+# datetime for the same reason the site never prints a deadline without a
+# timezone: "Wednesday" is a promise anyone can keep, and 9am somewhere is
+# not.
+POOLS_OPEN = datetime.date(2026, 8, 19)
+
 # team -> logo file key (assets in site/logos/, sourced from Wikimedia; BYU is png)
 TEAM_KEY = {
     "Arizona": "ariz", "Arizona State": "asu", "Baylor": "bay", "BYU": "byu",
@@ -4614,15 +4622,23 @@ def build_pools_soon(year, games):
     prev, BASE = BASE, "../tiebreaker/"
     os.makedirs(POOLS_SITE, exist_ok=True)
 
+    # Two dates, and they are not the same one. The doors open a fortnight
+    # before there is anything to pick, which is deliberate: an account and a
+    # display name are the two things nobody wants to be doing at 4:55 on the
+    # Thursday the first slate locks.
+    # The eyebrow carries the opening date, so this sentence carries the other
+    # one. It deliberately does not say "week one": the pool numbers a week
+    # zero, and the first kickoff of the season is in it.
     opener = season_opener(games)
-    when = (f"Week one kicks off <b>"
+    when = (f"Sign in from <b>{POOLS_OPEN.strftime('%A, %B %-d')}</b>. The "
+            f"first slate locks with the season opener, <b>"
             f"{opener.strftime('%A, %B %-d')}</b>." if opener else
-            "Opening with the 2026 season.")
+            f"Sign in from <b>{POOLS_OPEN.strftime('%A, %B %-d')}</b>.")
 
     # Real screenshots of the running build, with their real dimensions, so
     # the browser reserves the right space and nothing jumps as they load.
     shots = [
-        ("slate", 1008, 330, "The Slate",
+        ("slate", 1008, 312, "The Slate",
          "Every Big 12 game, one frozen line, and a clock. Pick a side and it "
          "saves as you go &mdash; there is no submit button to forget."),
         ("chart", 500, 444, "Week by week",
@@ -4644,7 +4660,7 @@ def build_pools_soon(year, games):
     body = f"""
 <div class=card>
   <div class=soonhero>
-    <span class=soonkick>Coming soon</span>
+    <span class=soonkick>Opens {POOLS_OPEN.strftime('%B %-d')}</span>
     <h2>Pick every Big 12 game against the spread.</h2>
     <p>One line for everyone, frozen the moment the week is published. The
     whole slate locks at the first kickoff, and what you picked becomes public
