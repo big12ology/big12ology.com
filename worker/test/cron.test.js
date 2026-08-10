@@ -502,7 +502,7 @@ test("health is quiet out of season", async () => {
 
 test("a finished run pings the dead man's switch", async () => {
   const env = env0();
-  env.KUMA_PUSH_URL = "https://kuma.example/api/push/TOKEN";
+  env.HEARTBEAT_URL = "https://kuma.example/api/push/TOKEN";
   const inner = serve(publisher(season(3)));
   const pings = [];
   const wrapped = globalThis.fetch;
@@ -527,7 +527,7 @@ test("a run that fails stays silent", async () => {
   // schedule, a suspended account, a Worker that will not start — would be
   // invisible. Absence has to be the alarm.
   const env = env0();
-  env.KUMA_PUSH_URL = "https://kuma.example/api/push/TOKEN";
+  env.HEARTBEAT_URL = "https://kuma.example/api/push/TOKEN";
   const pings = [];
   globalThis.fetch = async (url) => {
     const u = String(url);
@@ -541,7 +541,7 @@ test("a run that fails stays silent", async () => {
 });
 
 test("no push URL configured is not an error", async () => {
-  const env = env0();               // KUMA_PUSH_URL unset
+  const env = env0();               // HEARTBEAT_URL unset
   serve(publisher(season(2)));
   await run(env);
   assert.ok(rows(env, `SELECT week FROM weeks WHERE season = ?`, SEASON).length > 0,
@@ -550,7 +550,7 @@ test("no push URL configured is not an error", async () => {
 
 test("a monitor that is down never breaks scoring", async () => {
   const env = env0();
-  env.KUMA_PUSH_URL = "https://kuma.example/api/push/TOKEN";
+  env.HEARTBEAT_URL = "https://kuma.example/api/push/TOKEN";
   const inner = serve(publisher(season(3)));
   const wrapped = globalThis.fetch;
   globalThis.fetch = async (url, init) => {

@@ -54,9 +54,17 @@ async function body(req) {
  * monitoring host is down; that would be the tail wagging the dog.
  */
 async function heartbeat(env, msg) {
-  if (!env.KUMA_PUSH_URL) return;
+  if (!env.HEARTBEAT_URL) return;
   try {
-    const u = new URL(env.KUMA_PUSH_URL);
+    const u = new URL(env.HEARTBEAT_URL);
+    // Named for the job rather than the service. This points at
+    // Healthchecks.io because the Uptime Kuma instance that watches
+    // everything else is bound to 127.0.0.1 on its own box and is not
+    // reachable from Cloudflare's edge — a switch has to be pingable by the
+    // thing it is watching, and that ruled Kuma out for this one job.
+    //
+    // Both spellings are harmless: Healthchecks.io ignores the query string,
+    // Kuma reads it, so the same call works if this ever moves.
     u.searchParams.set("status", "up");
     u.searchParams.set("msg", msg);
     await fetch(u.toString(), { method: "GET", cf: { cacheTtl: 0 } });
