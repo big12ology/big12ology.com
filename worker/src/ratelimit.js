@@ -35,16 +35,23 @@ export async function take(env, kind, key, now = Math.floor(Date.now() / 1000)) 
   // One statement, so two concurrent requests cannot both read 0 and both
   // write 1. ON CONFLICT resets the count when the row belongs to an older
   // window, which is also how old rows are recycled rather than accumulated.
-  await env.DB.prepare(
+  // RETURNING, so a caller learns ITS OWN position rather than the running
+  // total. Incrementing and then reading back are two statements, and several
+  // callers arriving together all finish incrementing before any of them
+  // reads — so each one saw the final count and every single request was
+  // refused, including the ones well inside the limit. Fail-closed, but wrong:
+  // a burst of thirty against a limit of thirty let nobody through at all.
+  //
+  // One statement also removes the window in which another caller can roll
+  // the window over between the write and the read.
+  const row = await env.DB.prepare(
     `INSERT INTO rate_limits (bucket, window_start, count) VALUES (?, ?, 1)
      ON CONFLICT(bucket) DO UPDATE SET
        count = CASE WHEN rate_limits.window_start = excluded.window_start
                     THEN rate_limits.count + 1 ELSE 1 END,
-       window_start = excluded.window_start`)
-    .bind(bucket, start).run();
-
-  const row = await env.DB.prepare(
-    `SELECT count FROM rate_limits WHERE bucket = ?`).bind(bucket).first();
+       window_start = excluded.window_start
+     RETURNING count`)
+    .bind(bucket, start).first();
   const count = row ? row.count : 1;
 
   return count <= limit.max

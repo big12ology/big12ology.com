@@ -760,17 +760,36 @@ export async function resolveIdentity(env, provider, subjectHash,
 
   const id = ulid();
   const ipHash = ip ? await hmac(env.IDENTITY_PEPPER, `ip|${ip}`) : null;
-  await env.DB.batch([
-    env.DB.prepare(
-      `INSERT INTO users (id, status, created_at, signup_ip_hash)
-       VALUES (?, 'provisional', ?, ?)`).bind(id, now, ipHash),
-    env.DB.prepare(
-      `INSERT INTO identities (provider, subject_hash, user_id, linked_at)
-       VALUES (?, ?, ?, ?)`).bind(provider, subjectHash, id, now),
-    env.DB.prepare(
-      `INSERT INTO audit_log (at, actor, action, subject, detail)
-       VALUES (?, ?, 'signup', ?, ?)`).bind(now, id, id, provider),
-  ]);
+  try {
+    await env.DB.batch([
+      env.DB.prepare(
+        `INSERT INTO users (id, status, created_at, signup_ip_hash)
+         VALUES (?, 'provisional', ?, ?)`).bind(id, now, ipHash),
+      env.DB.prepare(
+        `INSERT INTO identities (provider, subject_hash, user_id, linked_at)
+         VALUES (?, ?, ?, ?)`).bind(provider, subjectHash, id, now),
+      env.DB.prepare(
+        `INSERT INTO audit_log (at, actor, action, subject, detail)
+         VALUES (?, ?, 'signup', ?, ?)`).bind(now, id, id, provider),
+    ]);
+  } catch (e) {
+    // Somebody else created this identity between the lookup above and this
+    // write. Two sign-ins for one person arriving together is not exotic — a
+    // double-clicked button, a browser retrying the callback — and the
+    // identities primary key is what keeps it to one account.
+    //
+    // But the key protecting the DATA is not the same as handling it. Without
+    // this, the second request threw and the person got an error page while
+    // being, as far as the database was concerned, perfectly signed up. The
+    // batch is one transaction, so nothing partial survives it; the row that
+    // won is simply the answer.
+    if (!/UNIQUE|constraint/i.test(String(e && (e.message || e)))) throw e;
+    const raced = await env.DB.prepare(
+      `SELECT user_id FROM identities WHERE provider = ? AND subject_hash = ?`)
+      .bind(provider, subjectHash).first();
+    if (!raced) throw e;
+    return { userId: raced.user_id, created: false };
+  }
   return { userId: id, created: true };
 }
 

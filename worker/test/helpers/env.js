@@ -38,24 +38,37 @@ class Stmt {
 }
 
 class D1 {
-  constructor(db) { this.db = db; }
+  constructor(db) { this.db = db; this._queue = Promise.resolve(); }
   prepare(sql) { return new Stmt(this.db, sql); }
   /**
    * A D1 batch is one implicit transaction, and the handlers rely on that:
    * a trigger abort inside it must roll the whole thing back, which is what
    * stops a half-saved card.
+   *
+   * Serialised, because D1 is. Without the queue two overlapping batches try
+   * to open a transaction inside one another and sqlite refuses — which looks
+   * like a concurrency bug in the handler and is really this shim being less
+   * faithful than the thing it stands in for. Real D1 takes them one at a
+   * time, so a test that interleaves two writers should see them applied in
+   * some order rather than see an error neither would ever get.
    */
-  async batch(stmts) {
-    this.db.exec("BEGIN");
-    try {
-      const out = [];
-      for (const s of stmts) out.push(await s.run());
-      this.db.exec("COMMIT");
-      return out;
-    } catch (e) {
-      this.db.exec("ROLLBACK");
-      throw e;
-    }
+  batch(stmts) {
+    const run = async () => {
+      this.db.exec("BEGIN");
+      try {
+        const out = [];
+        for (const s of stmts) out.push(await s.run());
+        this.db.exec("COMMIT");
+        return out;
+      } catch (e) {
+        this.db.exec("ROLLBACK");
+        throw e;
+      }
+    };
+    // Chain onto the queue, and keep the queue alive when a batch rejects.
+    const result = this._queue.then(run, run);
+    this._queue = result.then(() => {}, () => {});
+    return result;
   }
 }
 
