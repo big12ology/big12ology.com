@@ -58,7 +58,24 @@ export async function begin(env, provider, returnTo, mode = "login") {
       client_id: env.GOOGLE_CLIENT_ID,
       redirect_uri: redirectUri(env, "google"),
       response_type: "code",
-      scope: "openid",          // deliberately the minimum. No email, no name.
+      // Deliberately the minimum. No email, no name — and it is also what
+      // decides whether anyone ever sees Google's "hasn't verified this app"
+      // screen.
+      //
+      // openid, email and profile are NON-SENSITIVE scopes, and an app that
+      // asks for nothing else needs no verification review at all. The
+      // interstitial is then purely a publishing-status setting: an app left
+      // in Testing shows it to every test user and is capped at a hundred of
+      // them; the same app published to production shows nothing, because the
+      // unverified warning only appears for sensitive or restricted scopes
+      // that have not been through review.
+      //
+      // So the cost of adding a scope here is not one line. Anything beyond
+      // these three puts the consent screen behind a Google review, brings
+      // the interstitial back for every reader until it passes, and breaks
+      // what privacy.html promises about never receiving an email address.
+      // test/oauth.e2e.test.js pins this string for that reason.
+      scope: "openid",
       state, nonce,
       code_challenge: challenge,
       code_challenge_method: "S256",
