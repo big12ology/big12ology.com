@@ -1,0 +1,25 @@
+{
+ "ccg": [
+  {
+   "p": 0.5721,
+   "team": "Texas Tech"
+  },
+  {
+   "p": 0.30885,
+   "team": "Utah"
+  }
+ ],
+ "counts": {
+  "games": 120,
+  "scheduled": 53,
+  "teams": 16
+ },
+ "next": {
+  "away": "North Carolina",
+  "home": "TCU",
+  "kickoff": "2026-08-29T16:00:00.000Z",
+  "neutral": true,
+  "spread": -7.0
+ },
+ "season": 2026
+}

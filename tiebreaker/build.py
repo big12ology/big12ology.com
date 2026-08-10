@@ -254,6 +254,18 @@ def footer():
     build and the assemble are separate steps a minute apart. One substitution
     at assemble time is the only way all 37 pages can agree. It also stops the
     committed site/ output from churning on a timestamp every build.
+
+    Two rows, and it takes editing to keep them at two. Every clause here is
+    load-bearing — the data licence, the policy the whole tracker implements,
+    the mark provenance, the non-affiliation — so the length is spent on
+    wording rather than on dropping one: "provenance in SOURCES.json" became
+    the link alone, "A Big12ology project" went because the domain already
+    says so, and the disclaimer stopped saying "conference and team marks"
+    when "marks" covers both. Anything added here should buy its line.
+
+    The four hand-written pages — index.html, privacy.html, 404.html and
+    attendance/index.html — carry this footer as literal HTML. Nothing checks
+    that they still match, so a change here is four edits, not one.
     """
     # The token must sit in a plain string: inside an f-string, {{ }} would
     # collapse to single braces and assemble.sh would never match it.
@@ -261,12 +273,11 @@ def footer():
             '<a href="https://collegefootballdata.com">'
             'collegefootballdata.com</a> · procedure per the '
             f'<a href="{POLICY_URL}">official Big 12 tiebreaker policy</a> · '
-            'marks via Wikimedia Commons (provenance in '
-            '<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · '
-            'last updated {{BUILD_STAMP}}.<br>'
-            'A Big12ology project · not affiliated with the Big 12 Conference; '
-            'conference and team marks belong to their owners and appear for '
-            'identification only.<br>'
+            'marks via Wikimedia Commons '
+            '(<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · '
+            'updated {{BUILD_STAMP}}.<br>'
+            'Not affiliated with the Big 12 Conference; marks belong to their '
+            'owners, shown for identification only. · '
             '<a href="/privacy">Privacy</a> · '
             '<a href="mailto:dept@big12ology.com">dept@big12ology.com</a>'
             '</footer>')
@@ -4545,6 +4556,66 @@ def season_opener(games):
     return t.astimezone(datetime.timezone.utc)
 
 
+def write_hub(year, games, lines, sims_race):
+    """The numbers the hand-written hub puts in its hero and on its cards.
+
+    index.html is not generated — it is hand-written at the repo root and has
+    been since before there was a build — and the argument for keeping it that
+    way is that it is the one page with no data on it. That stopped being
+    true the moment it was asked to show some.
+
+    So the page stays hand-written and the FACTS come from here, filled into
+    {{HUB_*}} tokens by tools/assemble.sh in exactly the way {{BUILD_STAMP}}
+    already is. The markup where a person edits it, the numbers where the data
+    is; neither has to know much about the other.
+
+    Every value is derived from committed data, never from the clock. "The
+    next game" is the first one with no result, not the first one after now —
+    which is what keeps two assembles a minute apart byte-identical, and is
+    the property tools/verify-deterministic.sh exists to hold. The one
+    time-dependent thing on the page, the countdown, is computed in the
+    browser from an ISO instant this writes down.
+    """
+    live = [g for g in games if g.get("start") and not g.get("start_tbd")]
+    nxt = None
+    for g in sorted(live, key=lambda x: (x["start"], x["id"])):
+        if not g.get("completed"):
+            nxt = g
+            break
+
+    hub = {"season": year}
+    if nxt:
+        sp = (lines.get(str(nxt["id"])) or {}).get("spread")
+        hub["next"] = {
+            "home": nxt["home"], "away": nxt["away"],
+            "kickoff": nxt["start"],
+            # The home number, same convention as everywhere else: negative
+            # means the home side is giving points. Rounded to the half at
+            # which a line is actually quoted.
+            "spread": (round(float(sp) * 2) / 2) if sp is not None else None,
+            "neutral": bool(nxt.get("neutral_site")),
+        }
+
+    # Preseason there are no standings to project from, so the two most likely
+    # to reach the title game IS the projection — it is what the simulator
+    # says, and it is the same p_ccg the tracker prints on every team row.
+    ranked = sorted(((t, (v or {}).get("p_ccg") or 0)
+                     for t, v in (sims_race or {}).items()),
+                    key=lambda x: (-x[1], x[0]))
+    if len(ranked) >= 2 and ranked[0][1] > 0:
+        hub["ccg"] = [{"team": t, "p": p} for t, p in ranked[:2]]
+
+    hub["counts"] = {
+        "teams": len(load_teams() or {}),
+        "games": len(games),
+        "scheduled": len(live),
+    }
+    # No timestamp in it, so an unchanged season rewrites nothing at all.
+    write_if_unchanged_skip(os.path.join(SITE, "hub.json"),
+                            json.dumps(hub, indent=1, sort_keys=True))
+    print(f"built hub numbers -> {SITE}/hub.json")
+
+
 POOLS_HOME_BODY = """
 <div class=card>
   <h2>Two games, one account</h2>
@@ -4979,6 +5050,16 @@ def main():
                        refresh="--refresh" in sys.argv)
     build_season(year, games, SITE, "", sched_outdir=SCHEDULE_SITE,
                  sched_base="../tiebreaker/")
+
+    # The hub's numbers, read back out of the season that was just written
+    # rather than recomputed here — the simulator is the expensive part of
+    # this build and running it twice to put two team names on the front page
+    # would be a poor trade.
+    try:
+        with open(os.path.join(SITE, "data.json"), encoding="utf-8") as f:
+            write_hub(year, games, load_lines(year), json.load(f).get("race"))
+    except OSError as e:
+        print(f"::warning::hub numbers not written: {e}")
 
     # The pick'em, which is the one part of this build that writes down a fact
     # instead of deriving one. The slate is published on the weekly refresh —

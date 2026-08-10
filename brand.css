@@ -128,8 +128,14 @@
 .b12-theme svg { width: 14px; height: 14px; display: block; }
 
 /* ==== footer ============================================================= */
+/* The page measure, not the prose measure. 880px is the width a paragraph
+   wants to be read at, and the footer is not paragraphs — it is two rows of
+   dot-separated metadata that are scanned, not read. Held at the reading
+   width, each row wrapped onto a second line and a three-row footer took
+   five, which is more chrome than the domain has anywhere else. At the
+   content width both rows land on one line each. */
 .b12-footer {
-  max-width: 880px; margin: 0 auto; padding: 14px 20px 44px;
+  max-width: var(--chrome-w); margin: 0 auto; padding: 14px 20px 44px;
   color: #666d7b; font-size: 13px; line-height: 1.65; text-align: center;
 }
 .b12-footer a { color: var(--b12-teal-text); }

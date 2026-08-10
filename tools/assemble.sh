@@ -201,16 +201,98 @@ with open(p, "w", encoding="utf-8") as f:
 PY
 done < <(find "$DIST" -name '*.html')
 
+# --- the hub's numbers ----------------------------------------------------
+# index.html is hand-written and is the only page on the domain that is. It
+# now shows the next kickoff and the projected title game, which are facts
+# about a season rather than things a person types, so build.py writes them
+# to tiebreaker/site/hub.json and they are filled in here — the same
+# arrangement as {{BUILD_STAMP}} directly above, for the same reason.
+#
+# None of it depends on the clock: "the next game" means the first one with no
+# result. Two assembles a minute apart produce identical bytes, which
+# tools/verify-deterministic.sh checks and pages.yml relies on.
+HUB_JSON="$DIST/tiebreaker/hub.json"
+if [ -f "$HUB_JSON" ] && grep -q '{{HUB_' "$DIST/index.html" 2>/dev/null; then
+  python3 - "$DIST/index.html" "$HUB_JSON" <<'PY'
+import datetime
+import html, json, sys
+
+page, data = sys.argv[1], sys.argv[2]
+hub = json.load(open(data, encoding="utf-8"))
+e = html.escape
+
+nxt = hub.get("next") or {}
+ccg = hub.get("ccg") or []
+counts = hub.get("counts") or {}
+
+
+def line(sp):
+    """The home number, written the way the pick'em writes it."""
+    if sp is None:
+        return "no line yet"
+    if sp == 0:
+        return "pick'em"
+    n = f"{abs(sp):g}"
+    # U+2212, and the favourite named rather than a bare sign, because the
+    # hero has room to say it and "-7" alone means nothing at a glance.
+    return f"{nxt.get('home') if sp < 0 else nxt.get('away')} −{n}"
+
+
+def when(iso):
+    """A readable UTC instant, for before the script runs and instead of it.
+
+    The page rewrites this to the reader's own zone on load, which is the only
+    correct answer — a kickoff has one instant and sixteen local times. Until
+    then it says UTC and says so, because a deadline printed without a zone is
+    a bug this project has already decided about.
+    """
+    if not iso:
+        return ""
+    try:
+        t = datetime.datetime.fromisoformat(iso.replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    return t.strftime("%a %-d %b, %H:%M UTC")
+
+
+tok = {
+    "HUB_NEXT_WHEN": e(when(nxt.get("kickoff"))),
+    "HUB_NEXT_AWAY": e(nxt.get("away") or ""),
+    "HUB_NEXT_HOME": e(nxt.get("home") or ""),
+    "HUB_NEXT_JOIN": "vs" if nxt.get("neutral") else "at",
+    "HUB_NEXT_LINE": e(line(nxt.get("spread"))),
+    "HUB_NEXT_ISO": e(nxt.get("kickoff") or ""),
+    "HUB_CCG_A": e(ccg[0]["team"]) if len(ccg) > 0 else "",
+    "HUB_CCG_B": e(ccg[1]["team"]) if len(ccg) > 1 else "",
+    "HUB_CCG_A_PCT": f"{round(ccg[0]['p'] * 100)}%" if len(ccg) > 0 else "",
+    "HUB_CCG_B_PCT": f"{round(ccg[1]['p'] * 100)}%" if len(ccg) > 1 else "",
+    "HUB_SEASON": str(hub.get("season") or ""),
+    "HUB_TEAMS": str(counts.get("teams") or ""),
+    "HUB_GAMES": str(counts.get("games") or ""),
+}
+
+s = open(page, encoding="utf-8").read()
+for k, v in tok.items():
+    s = s.replace("{{" + k + "}}", v)
+open(page, "w", encoding="utf-8").write(s)
+PY
+  echo "hub numbers: next kickoff and the projected title game"
+fi
+
 # A missing page or a stale asset has shipped silently in this project
 # before. Both are cheap to catch here and expensive to notice in the wild.
 
 fail=0
 note() { echo "  MISSING  $1"; fail=1; }
 
-# An unfilled token would ship the literal braces into the footer.
+# An unfilled token would ship the literal braces into the page. Both kinds:
+# the footer stamp, and the hub's numbers — whose fill is conditional on
+# hub.json existing, so a missing file would otherwise put "{{HUB_NEXT_HOME}}"
+# in the hero of the front page and fail nothing.
 while IFS= read -r page; do
   echo "  UNSTAMPED  ${page#"$DIST"/}"; fail=1
-done < <(grep -rl '{{BUILD_STAMP}}' "$DIST" --include='*.html' || true)
+done < <(grep -rlE '\{\{(BUILD_STAMP|HUB_[A-Z_]+)\}\}' "$DIST" \
+           --include='*.html' || true)
 
 for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          brand.css tokens.css theme.js \

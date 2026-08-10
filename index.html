@@ -44,9 +44,62 @@ header img { height: 64px; width: auto; margin-bottom: 14px; }
 h1 { margin: 0; }
 /* The lockup carries the name in outlines; it is never rebuilt from text. */
 h1 .b12-logo--primary { width: min(340px, 78vw); margin: 0 auto; }
-header p { margin: 8px auto 0; color: var(--dim); max-width: 520px; }
-main { max-width: 820px; margin: 0 auto; padding: 28px 20px 40px;
-  display: grid; gap: 18px; }
+/* Wider and a size down, so it settles into two lines instead of four. It is
+   a subtitle under a lockup, and at 520px it was a paragraph — four centred
+   lines of grey standing between the name and the two things worth reading. */
+header p { margin: 10px auto 0; color: var(--dim); max-width: 700px;
+  font-size: 16px; text-wrap: balance; }
+
+/* --- the hero readouts ---------------------------------------------------
+   The two facts that make the front page worth reloading during a season.
+   Styled as instruments rather than cards: the label is the only teal on the
+   page above the fold, the value is set in the masthead's own display face,
+   and there is no fill — the panel behind them is already white, so a second
+   box inside it would read as a dialog. */
+.hero { margin: 26px auto 0; display: flex; flex-wrap: wrap; gap: 14px;
+  justify-content: center; }
+.readout { display: grid; gap: 1px; text-align: left; text-decoration: none;
+  color: inherit; background: var(--bg); border: 1px solid var(--line);
+  border-left: 3px solid var(--accent); border-radius: 10px;
+  padding: 11px 18px 12px; min-width: 290px;
+  transition: border-color .15s, transform .15s; }
+.readout:hover { border-color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) {
+  .readout:hover { transform: translateY(-2px); }
+}
+.rolabel { font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--accent); }
+.romain { font-family: var(--b12-font-display); font-weight: 800;
+  font-size: 21px; letter-spacing: -.02em; color: var(--ink);
+  font-variation-settings: 'wdth' 92; }
+/* "at" and "vs" are joins, not teams. Held back so the two names read as the
+   two names. */
+.romain i { font-style: normal; font-weight: 500; font-size: 15px;
+  color: var(--dim); padding: 0 2px; }
+.rosub { font-size: 13px; color: var(--dim); }
+.rosub b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+/* Ticking digits, so they must not reflow the line every second. */
+.rocd { font-variant-numeric: tabular-nums; }
+.rocd:not(:empty)::before { content: " · "; }
+/* Four cards, so two rows of two rather than one column four deep. The pairing
+   is not incidental: the two long cards (Tiebreaker, Pools) sit on the top row
+   and the two shorter ones below, which is what keeps a grid row from
+   stretching one card to match a neighbour twice its length.
+
+   Two, stated rather than inferred. An auto-fit track list gets the same
+   result at today's widths and would quietly become three columns the day
+   --chrome-w grew, which is not what "two by two" meant. One column is the
+   floor and stays the floor until there is room for two 400px cards side by
+   side; a bare minmax(400px, 1fr) would instead hold a 400px card open on a
+   375px phone and scroll the whole document sideways.
+
+   The deeper line is a footnote to all four, so it spans. */
+main { max-width: var(--chrome-w); margin: 0 auto; padding: 28px 20px 40px;
+  display: grid; gap: 18px; grid-template-columns: 1fr; }
+@media (min-width: 860px) {
+  main { grid-template-columns: 1fr 1fr; }
+}
+main > .deeper { grid-column: 1 / -1; }
 .card { background: var(--panel); border: 1px solid var(--line);
   border-radius: 12px; padding: 22px 24px; display: block;
   text-decoration: none; color: var(--ink); transition: border-color .15s; }
@@ -54,6 +107,16 @@ a.card:hover { border-color: var(--accent); }
 .card h2 { margin: 0 0 6px; font-size: 20px; display: flex;
   align-items: center; gap: 10px; }
 .card p { margin: 0; color: var(--dim); font-size: 15px; }
+/* What each section holds, in figures, before the paragraph that describes
+   it. Four blocks of same-size grey prose gave the eye nowhere to land; this
+   is the entry point, and on a site about counting things it may as well
+   count them. */
+.stat { margin: 0 0 10px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--line); font-size: 13px; color: var(--dim);
+  letter-spacing: .01em; }
+.stat b { font-family: var(--b12-font-display); font-weight: 800;
+  font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums;
+  font-variation-settings: 'wdth' 92; }
 .tag { font-size: 11px; border-radius: 20px; padding: 2px 10px;
   font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
 .tag.live { background: color-mix(in srgb, #15803d 15%, transparent); color: #15803d; }
@@ -100,10 +163,32 @@ a.card:hover { border-color: var(--accent); }
   about the sixteen-team league — its standings math, its unbalanced
   schedule, its stadiums, and its chaos.</p>
   <!-- /PICKEM-OFF -->
+
+  <!-- Two things that are true right now, on a page that until this point
+       described a data site without showing it any data. Both are filled by
+       tools/assemble.sh from tiebreaker/site/hub.json; neither depends on the
+       clock, so the bytes are the same on every deploy of the same season. -->
+  <div class=hero>
+    <a class=readout href="/schedule/">
+      <span class=rolabel>Next kickoff</span>
+      <span class=romain>{{HUB_NEXT_AWAY}} <i>{{HUB_NEXT_JOIN}}</i>
+        {{HUB_NEXT_HOME}}</span>
+      <span class=rosub><b>{{HUB_NEXT_LINE}}</b> ·
+        <time id=nk datetime="{{HUB_NEXT_ISO}}">{{HUB_NEXT_WHEN}}</time><span
+          id=nkin class=rocd aria-hidden=true></span></span>
+    </a>
+    <a class=readout href="/tiebreaker/">
+      <span class=rolabel>Projected title game</span>
+      <span class=romain>{{HUB_CCG_A}} <i>vs</i> {{HUB_CCG_B}}</span>
+      <span class=rosub>{{HUB_CCG_A_PCT}} and {{HUB_CCG_B_PCT}} to get
+        there</span>
+    </a>
+  </div>
 </header>
 <main id=main tabindex="-1">
   <a class=card href="/tiebreaker/">
     <h2>Tiebreaker Tracker <span class="tag live">live</span></h2>
+    <p class=stat><b>{{HUB_TEAMS}}</b> teams · <b>7</b> tiebreak steps · <b>3</b> seasons, replayable</p>
     <p>The official Big 12 tiebreaking procedures applied to live results
     after every game — projected championship matchup, step-by-step tie
     narratives, clinch and elimination proofs, and a what-if simulator with
@@ -115,29 +200,35 @@ a.card:hover { border-color: var(--accent); }
   </a>
   <!-- PICKEM-ONLY -->
   <a class=card href="/pools/">
-    <h2>Pickem <span class="tag new">new</span></h2>
-    <p>Pick every Big 12 game against the spread, against everybody else. One
-    line for the whole room, frozen when the week is published and never moved
-    again; the whole slate locks at the first kickoff, and what you picked
-    becomes public then and not before. <b>The board</b> ranks the season with
-    pushes counted as pushes, next to <b>the chalk</b> — what simply taking
-    every favourite would have scored, which is a harder benchmark than it
-    sounds. Sign in with Google or GitHub; we never see your email.</p>
+    <h2>Pools <span class="tag new">new</span></h2>
+    <p class=stat><b>2</b> season-long games · <b>1</b> account · <b>0</b> email addresses</p>
+    <p>Two season-long games, one account. <b>The pick'em</b> takes every Big
+    12 game against the spread on one line for the whole room, frozen when the
+    week is published and never moved again. <b>Survivor</b> takes one team a
+    week and never the same team twice. Both lock at the first kickoff, and
+    what you picked becomes public then and not before. The boards rank the
+    season with pushes counted as pushes, next to <b>the chalk</b> — what
+    simply taking every favourite would have scored, which is a harder
+    benchmark than it sounds. Sign in with Google or GitHub; we never see your
+    email.</p>
   </a>
   <!-- /PICKEM-ONLY -->
   <!-- PICKEM-OFF -->
   <a class=card href="/pools/">
-    <h2>Pickem <span class="tag new">coming soon</span></h2>
-    <p>Pick every Big 12 game against the spread, against everybody else. One
-    line for the whole room, frozen when the week is published and never moved
-    again; the whole slate locks at the first kickoff. <b>The board</b> ranks
-    the season with pushes counted as pushes, next to <b>the chalk</b> — what
-    simply taking every favourite would have scored — and <b>the room</b>,
-    which is what everyone else picked. Have a look at what is coming.</p>
+    <h2>Pools <span class="tag new">coming soon</span></h2>
+    <p class=stat><b>2</b> season-long games · <b>1</b> account · <b>0</b> email addresses</p>
+    <p>Two season-long games, one account. <b>The pick'em</b> takes every Big
+    12 game against the spread on one line for the whole room, frozen when the
+    week is published and never moved again. <b>Survivor</b> takes one team a
+    week and never the same team twice. Both lock at the first kickoff. The
+    boards rank the season next to <b>the chalk</b> — what simply taking every
+    favourite would have scored — and <b>the room</b>, which is what everyone
+    else picked. Have a look at what is coming.</p>
   </a>
   <!-- /PICKEM-OFF -->
   <a class=card href="/schedule/">
     <h2>Schedule <span class="tag new">new</span></h2>
+    <p class=stat><b>9</b> conference games out of <b>15</b> possible opponents · <b>{{HUB_GAMES}}</b> on the {{HUB_SEASON}} card</p>
     <p>Sixteen teams play nine conference games out of a possible fifteen, so
     nobody plays everybody and two teams on the same record did not attempt
     the same thing. The head-to-head grid for the season, <b>the draw</b> —
@@ -147,6 +238,7 @@ a.card:hover { border-color: var(--accent); }
   </a>
   <a class=card href="/attendance/">
     <h2>Attendance Tracker <span class="tag live">live</span></h2>
+    <p class=stat><b>14</b> seasons · <b>1,402</b> home games · <b>62.7M</b> through the gates</p>
     <p>Weekly home-game attendance for all sixteen teams, back to 2012 —
     capacity-sourced stadium data, fill rates, sellout streaks, kickoff-window
     and weather effects, and hand-verified box scores where the feeds fall
@@ -163,14 +255,63 @@ a.card:hover { border-color: var(--accent); }
 <footer class=b12-footer>
   Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> ·
   procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official
-  Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (provenance in
-  <a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) ·
-  last updated {{BUILD_STAMP}}.<br>
-  A Big12ology project · not affiliated with the Big 12 Conference; conference
-  and team marks belong to their owners and appear for identification only.<br>
+  Big 12 tiebreaker policy</a> · marks via Wikimedia Commons
+  (<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) ·
+  updated {{BUILD_STAMP}}.<br>
+  Not affiliated with the Big 12 Conference; marks belong to their
+  owners, shown for identification only. ·
   <a href="/privacy">Privacy</a> ·
   <a href="mailto:dept@big12ology.com">dept@big12ology.com</a>
 </footer>
+<script>
+/* The kickoff, in the reader's own zone, and how long until it.
+ *
+ * The page ships the instant as an ISO datetime and a UTC rendering of it, so
+ * it is correct and complete before this runs and if it never runs. All this
+ * does is localise: a kickoff is one moment and sixteen local times, and the
+ * only right answer is the reader's.
+ *
+ * The site's rules for a clock, which this follows: the zone abbreviation is
+ * always shown, because a time without one is a bug; the ticking part is
+ * aria-hidden and the absolute instant stays in <time datetime>, so a screen
+ * reader is told the kickoff rather than the second; it stops while the tab
+ * is hidden; and nothing pulses or flashes as it runs down.
+ */
+(function () {
+  var el = document.getElementById("nk");
+  var cd = document.getElementById("nkin");
+  if (!el || !el.getAttribute("datetime")) return;
+  var at = new Date(el.getAttribute("datetime"));
+  if (isNaN(at)) return;
+
+  try {
+    var f = new Intl.DateTimeFormat(undefined, {
+      weekday: "short", day: "numeric", month: "short",
+      hour: "numeric", minute: "2-digit", timeZoneName: "short",
+    });
+    el.textContent = f.format(at).replace(/,([^,]*)$/, "$1");
+  } catch (e) { /* the UTC string it shipped with is already correct */ }
+
+  var timer = null;
+  function tick() {
+    if (!cd) return;
+    var s = Math.floor((at - Date.now()) / 1000);
+    if (s <= 0) { cd.textContent = ""; stop(); return; }
+    var d = Math.floor(s / 86400), h = Math.floor(s / 3600) % 24;
+    var m = Math.floor(s / 60) % 60;
+    // Days out, the seconds are noise; inside a day they are the point.
+    cd.textContent = d >= 1
+      ? d + "d " + h + "h"
+      : h + "h " + ("0" + m).slice(-2) + "m " + ("0" + (s % 60)).slice(-2) + "s";
+  }
+  function start() { if (!timer) { tick(); timer = setInterval(tick, 1000); } }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+  document.addEventListener("visibilitychange", function () {
+    document.hidden ? stop() : start();
+  });
+  start();
+})();
+</script>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
 </body>
 </html>

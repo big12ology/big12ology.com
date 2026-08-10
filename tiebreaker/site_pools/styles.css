@@ -67,6 +67,16 @@
                 border: 1px solid var(--line); border-radius: 8px;
                 padding: 8px 12px; background: var(--panel); }
 
+/* The link inside it had no rule at all, so it rendered in the browser's
+   default blue — the one colour on the page that belongs to no theme, sitting
+   in the one panel a signed-out visitor is meant to act on. It is the same
+   treatment as .pk-onward: the section's accent, and weight to separate the
+   thing you can do from the sentence explaining it. The underline stays, and
+   is offset so it clears the descenders in "Sign in". */
+.pk-signedout a { color: var(--accent); font-weight: 600;
+                  text-underline-offset: 2px; }
+.pk-signedout a:hover { text-decoration-thickness: 2px; }
+
 /* The signed-in counterpart is a hint, not an invitation, so it is a line of
    text rather than a panel. A second bordered box above the slate would give
    a returning player the same visual weight as a call to action they have

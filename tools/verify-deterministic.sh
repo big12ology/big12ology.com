@@ -65,13 +65,21 @@ echo "  assemble.sh: two runs at a fixed stamp, identical dist"
 # failure this whole script exists to name.
 unset B12_BUILD_STAMP
 B12_PICKEM=1 "$ROOT/tools/assemble.sh" "$TMP/dist3" >/dev/null
+# A changed line is allowed to be a build stamp, and the way to recognise one
+# is the stamp's own shape — "August 10, 23:50 UTC" — not the words the footer
+# happens to put in front of it. This matched on "last updated" and started
+# reporting a second clock the day the footer copy dropped the "last": a
+# wording change failing a check about determinism, which is the sort of false
+# alarm that gets a check switched off.
+STAMPRE='^(diff |---|[0-9]+(,[0-9]+)?c[0-9]+(,[0-9]+)?$|[<>] .*[0-9]{2}:[0-9]{2} UTC)'
 if diff -r "$TMP/dist1" "$TMP/dist3" >"$TMP/diff-stamp" 2>&1; then
   echo "  (the stamp happened to match; nothing to check)"
 else
-  if grep -qvE '^(diff |[<>] .*last updated|---|[0-9]+c[0-9]+)' "$TMP/diff-stamp"; then
+  if grep -qvE "$STAMPRE" "$TMP/diff-stamp"; then
     echo "something other than the build stamp changed between runs:"
-    grep -vE '^(diff |[<>] .*last updated|---|[0-9]+c[0-9]+)' "$TMP/diff-stamp" \
-      | head -20
+    # `|| true` so a SIGPIPE from head does not become the script's own exit
+    # code under `set -o pipefail` — the failure is reported below, by fail().
+    { grep -vE "$STAMPRE" "$TMP/diff-stamp" | head -20; } || true
     fail "a second clock leaked into the build"
   fi
   echo "  the build stamp is the only thing that differs between deploys"
