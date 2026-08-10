@@ -1,0 +1,93 @@
+# Somebody looking, so it is not always you.
+#
+# Every failure this project has that matters is quiet. The cron stops and the
+# boards keep serving Saturday's numbers. The token expires and deploys fail
+# into a tab nobody has open. CI goes red and stays red — that one is not
+# hypothetical: it sat red for a day during development while every local
+# suite passed, and was found by going and looking rather than by being told.
+#
+# This is the cheapest possible answer to that: a scheduled request, and a job
+# that fails when the answer is wrong. GitHub emails a failed scheduled run to
+# whoever last touched the cron, which is the notification channel this project
+# already has and does not have to be paid for.
+#
+# It deliberately does NOT check that the numbers are right — the tests do
+# that, against a database they control. This checks the things only
+# production can answer: is it up, is it serving the site, and is the thing
+# that runs unattended still running.
+
+name: Monitor
+
+on:
+  schedule:
+    # Every half hour through the season's months. Off-season the season check
+    # is trivially satisfied — nothing is locked — so this is mostly an uptime
+    # ping the rest of the year.
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: monitor
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: The site is up
+        run: |
+          set -e
+          fail=0
+          for p in / /tiebreaker/ /schedule/ /attendance/ /pools/; do
+            c=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
+                  "https://big12ology.com$p" || echo 000)
+            echo "  $p -> $c"
+            [ "$c" = "200" ] || { echo "::error::$p answered $c"; fail=1; }
+          done
+          exit $fail
+
+      - name: The API is up, and doing its job
+        run: |
+          set -e
+          body=$(curl -s --max-time 20 https://big12ology.com/api/health || echo '{}')
+          echo "$body"
+
+          ok=$(printf '%s' "$body" | python3 -c \
+            'import json,sys;print(json.load(sys.stdin).get("ok"))' 2>/dev/null || echo None)
+          [ "$ok" = "True" ] || { echo "::error::/api/health says $ok"; exit 1; }
+
+          # The quiet failure. A week whose deadline has passed and which has
+          # never been graded means the cron is not running — the API will go
+          # on answering perfectly while the boards freeze.
+          waiting=$(printf '%s' "$body" | python3 -c \
+            'import json,sys;print(json.load(sys.stdin).get("waiting_s") or 0)')
+          echo "  oldest ungraded locked week: ${waiting}s"
+          if [ "$waiting" -gt 7200 ]; then
+            echo "::error::a week locked ${waiting}s ago has never been scored."
+            echo "::error::The cron is not running, or it is failing. Check the"
+            echo "::error::Worker's logs and the last Worker workflow run."
+            exit 1
+          fi
+
+      - name: The Worker route still only owns /api/*
+        run: |
+          set -e
+          # The single worst outcome available here: a route of /* would put
+          # the Worker in front of every page on the domain. It is asserted at
+          # deploy time from wrangler.toml, and asserted again here from the
+          # outside, because the route can also be edited in the dashboard.
+          body=$(curl -s --max-time 20 https://big12ology.com/ || echo '')
+          printf '%s' "$body" | grep -q 'Big12ology' || {
+            echo "::error::the homepage is not the homepage — is a Worker"
+            echo "::error::answering for it?"
+            exit 1
+          }
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
+                   https://big12ology.com/api/definitely-not-a-route)
+          [ "$code" = "404" ] || {
+            echo "::error::/api/<nonsense> answered $code, expected 404"
+            exit 1
+          }

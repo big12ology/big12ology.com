@@ -700,13 +700,60 @@ export async function getSeasonCurrent(env) {
 }
 
 /** Enough to tell a deploy from an outage, and nothing a probe can mine. */
+/**
+ * Whether this is working, not merely answering.
+ *
+ * "The database replied to SELECT 1" was the whole of it, and that is true of
+ * a Worker whose cron has been dead for a week — the API keeps serving, the
+ * boards quietly stop moving, and nothing says so until somebody notices the
+ * scores are Saturday's. The failure that matters here is silent by nature: a
+ * revoked token, a Pages origin that started 404ing, the D1 write allowance
+ * spent.
+ *
+ * So it reports the one fact that cannot look healthy while the cron is
+ * stopped: a week whose deadline has passed and which has never been scored.
+ * In the offseason nothing is locked and the answer is zero, which is why it
+ * is measured this way rather than from the age of the last scoring run —
+ * scoreWeek deliberately does not touch scored_at when nothing changed, so a
+ * quiet week legitimately looks old.
+ *
+ * Everything here is already public: how many weeks exist and whether they
+ * have been graded is on the board.
+ */
 export async function getHealth(env) {
   let db = "down";
+  let stats = null;
   try {
-    await env.DB.prepare("SELECT 1").first();
+    const s = season(env);
+    const now = Math.floor(Date.now() / 1000);
+    stats = await env.DB.prepare(
+      `SELECT
+         (SELECT COUNT(*) FROM weeks WHERE season = ?) AS weeks,
+         (SELECT COUNT(*) FROM weeks
+           WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
+             AND scored_at IS NULL) AS unscored,
+         (SELECT MIN(lock_at) FROM weeks
+           WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
+             AND scored_at IS NULL) AS oldest,
+         (SELECT MAX(scored_at) FROM weeks WHERE season = ?) AS last_scored`)
+      .bind(s, s, now, s, now, s).first();
     db = "ok";
   } catch { /* reported as down */ }
-  return json({ ok: db === "ok", db, at: Math.floor(Date.now() / 1000) });
+
+  const now = Math.floor(Date.now() / 1000);
+  const waiting = stats && stats.oldest != null ? now - stats.oldest : 0;
+  return json({
+    ok: db === "ok",
+    db,
+    at: now,
+    season: season(env),
+    weeks: stats ? stats.weeks : null,
+    // Locked and never graded. Anything above zero for more than an hour or
+    // two means the cron is not running.
+    unscored: stats ? stats.unscored : null,
+    waiting_s: waiting,
+    last_scored_at: stats ? stats.last_scored : null,
+  });
 }
 
 // ------------------------------------------------------------- accounts

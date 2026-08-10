@@ -24,7 +24,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import worker from "../src/index.js";
-import { makeEnv, NOW, HOUR } from "./helpers/env.js";
+import { makeEnv, seedWeek, NOW, HOUR } from "./helpers/env.js";
 
 const SEASON = 2026;
 const ORIGIN = "https://big12ology.github.io";
@@ -454,3 +454,46 @@ test("a result that moves rebuilds its own game, not the whole week",
         "the whole week's pick_scores were deleted for one changed game");
     }
   });
+
+// ------------------------------------------------------------------ health
+
+test("health reports a locked week nobody has graded", async () => {
+  // The signal a monitor watches. "The database answered SELECT 1" is true of
+  // a Worker whose cron died a week ago, which is the failure worth catching:
+  // the API keeps serving and the boards quietly stop moving.
+  const env = env0();
+  const weeks = season(2);
+  serve(publisher(weeks));
+
+  // Locked, never scored — the shape of a cron that is not running.
+  seedWeek(env, { season: SEASON, week: 1,
+                  lockAt: NOW() - 3 * HOUR,
+                  games: [{ game_id: 11, home: "Utah", away: "BYU",
+                            spread_x2: -7, kickoff_at: NOW() - 3 * HOUR }] });
+
+  const before = await (await worker.fetch(
+    new Request("https://big12ology.com/api/health"), env, {})).json();
+  assert.equal(before.ok, true, "health should still be up");
+  assert.equal(before.unscored, 1, "a locked ungraded week was not reported");
+  assert.ok(before.waiting_s > 2 * 3600,
+    `waiting_s was ${before.waiting_s}, expected about three hours`);
+
+  // Once the cron has run, the signal clears.
+  await run(env);
+  const after = await (await worker.fetch(
+    new Request("https://big12ology.com/api/health"), env, {})).json();
+  assert.equal(after.unscored, 0, "still reporting an ungraded week after a run");
+  assert.equal(after.waiting_s, 0);
+  assert.ok(after.weeks > 0, "health does not say how many weeks it has");
+});
+
+test("health is quiet out of season", async () => {
+  // Nothing locked, nothing overdue. A monitor that cried every day from
+  // January to August would be turned off by February.
+  const env = env0();
+  const body = await (await worker.fetch(
+    new Request("https://big12ology.com/api/health"), env, {})).json();
+  assert.equal(body.ok, true);
+  assert.equal(body.unscored, 0);
+  assert.equal(body.waiting_s, 0);
+});
