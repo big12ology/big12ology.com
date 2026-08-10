@@ -93,21 +93,36 @@ norm() {
 same=0; stamped=0; differ=0; missing=0
 differ_list=(); missing_list=(); stamped_list=()
 
-while IFS= read -r file; do
-  rel="${file#"$DIST"/}"
-  # CNAME is a Pages control file: it configures the custom domain and is
-  # never served. Nothing to compare.
-  if [ "$rel" = "CNAME" ]; then continue; fi
-  # `|| code=000` rather than `|| echo 000`: on failure curl's -w still writes
-  # its own 000 to stdout, so the old form produced "HTTP 000000".
-  code=$(curl "${CURL[@]}" -o "$TMP/live" -w '%{http_code}' "$BASE/$rel") || code=000
+# --- fetch everything first, in parallel ----------------------------------
+#
+# One request at a time over four hundred files is four hundred round trips,
+# which is why this script has never once run to completion: it takes minutes
+# and gets killed before it says anything. The comparison itself is local and
+# instant; only the fetching is slow, and fetching is the part that
+# parallelises for free.
+#
+# PAR is deliberately modest. This points at GitHub Pages, and hammering
+# somebody's origin to save forty seconds is rude at best.
+PAR="${PAR:-12}"
+mkdir -p "$TMP/live"
+echo "fetching $(find "$DIST" -type f | wc -l | tr -d ' ') files, $PAR at a time..."
+find "$DIST" -type f | sed "s|^$DIST/||" | grep -v '^CNAME$' \
+  | xargs -P "$PAR" -I{} sh -c '
+      out="$1/live/$2"
+      mkdir -p "$(dirname "$out")"
+      code=$(curl '"${CURL[*]}"' -o "$out" -w "%{http_code}" "$3/$2") || code=000
+      printf "%s\t%s\n" "$code" "$2" >> "$1/codes"
+    ' _ "$TMP" {} "$BASE"
+
+while IFS=$'\t' read -r code rel; do
+  file="$DIST/$rel"
 
   if [ "$code" != "200" ]; then
     missing=$((missing + 1)); missing_list+=("$rel  (HTTP $code)")
     continue
   fi
 
-  if cmp -s "$file" "$TMP/live"; then
+  if cmp -s "$file" "$TMP/live/$rel"; then
     same=$((same + 1))
     continue
   fi
@@ -119,7 +134,7 @@ while IFS= read -r file; do
     # <lastmod> moves with every build. The root sitemap.xml is hand-maintained,
     # has no slash, and so stays byte-exact on purpose.
     *.html|*/sitemap.xml|tiebreaker/*.json|tiebreaker/*.xml|tiebreaker/*.csv)
-      if diff -q <(norm "$file") <(norm "$TMP/live") >/dev/null; then
+      if diff -q <(norm "$file") <(norm "$TMP/live/$rel") >/dev/null; then
         stamped=$((stamped + 1)); stamped_list+=("$rel")
         continue
       fi
@@ -132,9 +147,9 @@ while IFS= read -r file; do
     echo "--- live/$rel"
     echo "+++ dist/$rel"
     # diff exits 1 on difference and pipefail would take that as fatal.
-    diff <(norm "$TMP/live") <(norm "$file") | head -20 || true
+    diff <(norm "$TMP/live/$rel") <(norm "$file") | head -20 || true
   } >> "$TMP/diffs"
-done < <(find "$DIST" -type f | sort)
+done < <(sort -k2 "$TMP/codes")
 
 # --- edge canary -----------------------------------------------------------
 # Fetching the origin above makes this script immune to the proxy, which also

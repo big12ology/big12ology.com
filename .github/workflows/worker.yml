@@ -92,7 +92,14 @@ jobs:
 
       # A deploy that returns 200 on /api/health but has lost the static site
       # is the failure this whole file is arranged around, so both are checked.
+      # A failing smoke test used to be a red run and a live broken Worker:
+      # the deploy has already happened by the time anything is checked, so
+      # detection without remediation just means somebody has to be watching.
+      # `id` and `continue-on-error` let the failure be caught below instead
+      # of ending the job here.
       - name: Smoke
+        id: smoke
+        continue-on-error: true
         run: |
           set -e
           sleep 5
@@ -105,3 +112,34 @@ jobs:
             echo "  $p -> $c"
             [ "$c" = "200" ] || { echo "THE STATIC SITE IS DOWN at $p"; exit 1; }
           done
+
+      # Put the previous version back, immediately, without waiting for a
+      # person to notice. --message skips the interactive confirmation, and
+      # with no version id it returns to the one uploaded before this deploy.
+      #
+      # NOT the migrations. Those are forward-only and this does not undo
+      # them, which is the asymmetry worth knowing: a bad script is a minute's
+      # outage, a bad migration is a restore from Time Travel or from the
+      # weekly snapshot. That is also why the environment gate sits in front
+      # of this job.
+      - name: Roll back a bad deploy
+        if: steps.smoke.outcome == 'failure'
+        working-directory: worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          echo "::error::the smoke test failed; rolling back"
+          npx wrangler rollback --message "smoke test failed on ${{ github.sha }}"
+          sleep 5
+          code=$(curl -s -o /tmp/h2 -w '%{http_code}' https://big12ology.com/api/health)
+          echo "after rollback: $code $(cat /tmp/h2 || true)"
+          for p in / /tiebreaker/ /schedule/ /attendance/; do
+            c=$(curl -s -o /dev/null -w '%{http_code}' "https://big12ology.com$p")
+            echo "  $p -> $c"
+          done
+
+      # And still fail the run. A rollback is not a success; it is the site
+      # being where it was before somebody pressed approve.
+      - name: Report the smoke result
+        if: steps.smoke.outcome == 'failure'
+        run: exit 1

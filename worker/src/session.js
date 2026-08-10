@@ -90,6 +90,19 @@ export async function revoke(env, hash) {
 }
 
 /** Sign out everywhere. Used by account deletion and by unlinking. */
+/**
+ * Drop this edge's cached copy of a token, without touching D1.
+ *
+ * For the sign-out that finds nothing to revoke because another edge already
+ * did: the row is already marked, but this node's cache entry would otherwise
+ * sit there until its TTL, answering reads for a session the person has
+ * plainly finished with.
+ */
+export async function forget(env, raw) {
+  if (!raw) return;
+  await env.SESSIONS.delete(kvKey(await sha256(raw)));
+}
+
 export async function revokeAll(env, userId) {
   const { results } = await env.DB.prepare(
     `SELECT sid_hash FROM sessions

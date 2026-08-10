@@ -183,6 +183,11 @@ async function handle(req, env, ctx) {
     // revocation has not finished propagating away from.
     const user = await session.read(env, rawSession, { strict: true });
     if (user) await session.revoke(env, user.hash);
+    // And drop the cache entry for the token presented even when the strict
+    // read found nothing. Signing out twice inside the propagation window
+    // used to be a no-op that left this edge's copy behind, so the second
+    // press of the button reported success and changed nothing here.
+    else if (rawSession) await session.forget(env, rawSession);
     return new Response(null,
       { status: 204, headers: { "Set-Cookie": clear(SESSION_COOKIE) } });
   }
@@ -229,6 +234,23 @@ async function handle(req, env, ctx) {
     return res;
   };
 
+  /**
+   * The session again, asked of D1 rather than the cache.
+   *
+   * KV answers the ordinary request because every authenticated request makes
+   * one and D1 would be a query on each; that is the whole reason the cache
+   * is there. But it is eventually consistent, so a session revoked at one
+   * edge is still served at another for up to about a minute, and session.js
+   * says in as many words that the cached answer is not to be trusted for
+   * anything destructive.
+   *
+   * It was, though. Deleting an account and unlinking an identity both ran on
+   * the cached read, so signing out on a shared machine left a window in
+   * which that same cookie could still end the account — and with no email on
+   * file there is no way back from that.
+   */
+  const confirmed = async () => session.read(env, rawSession, { strict: true });
+
   if (path === "/api/me") {
     if (req.method === "GET") return withRefresh(await api.getMe(env, user));
     if (req.method === "PATCH") {
@@ -239,7 +261,7 @@ async function handle(req, env, ctx) {
     }
     if (req.method === "DELETE") {
       if (!csrfOk(req, env)) return fail("bad_origin", 403);
-      return api.deleteMe(env, user);
+      return api.deleteMe(env, await confirmed());
     }
     return fail("method_not_allowed", 405);
   }
@@ -274,7 +296,7 @@ async function handle(req, env, ctx) {
   const unlink = path.match(/^\/api\/auth\/identities\/(\w+)$/);
   if (unlink && req.method === "DELETE") {
     if (!csrfOk(req, env)) return fail("bad_origin", 403);
-    return api.unlink(env, user, unlink[1]);
+    return api.unlink(env, await confirmed(), unlink[1]);
   }
 
   return fail("not_found", 404);
