@@ -57,10 +57,25 @@ id = "c26df5e7e0904d1db35a4b2131b51a05"
 # Times are UTC, and chosen to mirror pages.yml's game windows so a final is
 # picked up within about an hour of being posted.
 [triggers]
+# CLOUDFLARE NUMBERS THE WEEK FROM 1 = SUNDAY TO 7 = SATURDAY.
+#
+# Not 0 = Sunday. It follows Quartz, and every one of these was first written
+# in ordinary cron, which made all three wrong in the same direction: the
+# Tuesday import ran on Monday, before pages.yml had published the slate it
+# was importing, and the weekend sweep ran on Friday.
+#
+# Only the first was caught, and only because it contained a 0, which is out
+# of Cloudflare's range and failed the deploy outright. The other two were
+# valid syntax with the wrong meaning and would have shipped silently — the
+# whole season running a day early, with nothing to say so.
+#
+# The times are UTC. A US Saturday runs from Saturday noon UTC into Sunday
+# morning UTC, which is why the sweep covers both days.
 crons = [
-  "0 * * 8-12 6,0",        # hourly Sat + Sun — the score sweep
-  "0 0-8/2 * 8-12 1,5,6",  # Thu/Fri/Sun night finals, early UTC
-  "0 13 * 8-12 2",         # Tue — import the week's slate, an hour after
+  "0 * * 8-12 1,7",        # hourly Sat + Sun UTC — the score sweep
+  "0 0-8/2 * 8-12 2,6,7",  # Mon/Fri/Sat UTC, small hours: Sun/Thu/Fri
+                           # night finals in the US
+  "0 13 * 8-12 3",         # Tue UTC — import the week's slate, an hour after
                            # pages.yml's 12:00 refresh has published it
 ]
 
