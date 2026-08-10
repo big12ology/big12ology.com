@@ -138,7 +138,11 @@ export async function importWeek(env, season, week) {
 }
 
 export function isLocked(week, now = Math.floor(Date.now() / 1000)) {
-  return week && week.lock_at != null && week.lock_at <= now;
+  // Coerced, because this is serialised straight into the API as `locked`.
+  // Without it a missing week — /api/survivor?week=99 — answered
+  // `"locked": null` on a field every caller reads as a boolean, and a client
+  // testing `locked === false` would have been quietly wrong.
+  return !!(week && week.lock_at != null && week.lock_at <= now);
 }
 
 /**
