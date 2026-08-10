@@ -164,7 +164,14 @@ jobs:
           # exist yet.
           test -s dist/pools/index.html
           test -s dist/pools/shots/slate.png
-          grep -q 'Coming soon' dist/pools/index.html
+          # Matched on the teaser's own structure, not on its wording. This
+          # was `grep -q 'Coming soon'` and went red the day the eyebrow
+          # started naming the opening date instead — a copy edit failing a
+          # build that was otherwise entirely correct. What the assertion
+          # means is "the dark assembly published the teaser rather than the
+          # section", and soonhero is the thing that is actually true of one
+          # and not the other.
+          grep -q 'class=soonhero' dist/pools/index.html
           test ! -e dist/pools/app.js
           test ! -e dist/pools/pickem
           test ! -e dist/pools/survivor
