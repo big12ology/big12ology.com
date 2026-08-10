@@ -390,3 +390,67 @@ test("the cron never reaches the apex, only the Pages origin", async () => {
   }
   assert.ok(inner.scores > 0);
 });
+
+// ------------------------------------------------------------- write budget
+
+test("a quiet hour writes nothing at all", async () => {
+  // The operational invariant, and the one that decides whether this survives
+  // its first weekend. D1's free plan allows 100,000 rows written a day and
+  // returns errors rather than throttling once that is gone, so an idle cron
+  // run has to cost nothing — the crons fire 29 times on a Saturday whether
+  // or not a single result has moved.
+  //
+  // Measured before the fix, at twenty players over fourteen weeks: an idle
+  // pass wrote 9,534 rows, MORE than the 5,244 of the very first pass, because
+  // the first had empty tables to delete from. 276,000 a day against an
+  // allowance of 100,000.
+  const env = env0();
+  serve(publisher(season(6)));
+  await run(env);
+
+  let written = 0;
+  const realPrepare = env.raw.prepare.bind(env.raw);
+  env.raw.prepare = (sql) => {
+    const st = realPrepare(sql);
+    const realRun = st.run.bind(st);
+    st.run = (...a) => {
+      const r = realRun(...a);
+      written += r.changes || 0;
+      return r;
+    };
+    return st;
+  };
+
+  await run(env);
+  assert.equal(written, 0,
+    `an unchanged cron run wrote ${written} rows; it must write none`);
+});
+
+test("a result that moves rebuilds its own game, not the whole week",
+  async () => {
+    // The other half of the budget. Rebuilding every pick of the week because
+    // one Saturday-afternoon final arrived costs players x games per run; the
+    // game that moved costs players. That is the difference between a ceiling
+    // around a hundred and fifty players and one above a thousand.
+    const env = env0();
+    serve(publisher(season(3)));
+    await run(env);
+
+    let deletes = [];
+    const realPrepare = env.raw.prepare.bind(env.raw);
+    env.raw.prepare = (sql) => {
+      if (/DELETE FROM pick_scores/i.test(sql)) deletes.push(sql);
+      return realPrepare(sql);
+    };
+
+    const fixed = publisher(season(3));
+    fixed.scores.games["11"] = [3, 40, true];      // one game, corrected
+    serve(fixed);
+    await run(env);
+
+    assert.ok(deletes.length > 0, "nothing was rebuilt after a correction");
+    for (const sql of deletes) {
+      assert.match(sql, /game_id IN/,
+        "the whole week's pick_scores were deleted for one changed game");
+    }
+  });

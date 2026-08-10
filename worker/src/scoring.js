@@ -75,7 +75,8 @@ export async function fetchScores(env) {
  * Returns a small report; the cron logs it.
  */
 export async function scoreWeek(env, season, week, scores,
-                                now = Math.floor(Date.now() / 1000)) {
+                                now = Math.floor(Date.now() / 1000),
+                                { force = false } = {}) {
   const w = await env.DB.prepare(
     `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
     .bind(season, week).first();
@@ -88,6 +89,7 @@ export async function scoreWeek(env, season, week, scores,
       WHERE season = ? AND week = ?`).bind(season, week).all();
 
   const stmts = [];
+  const touched = [];          // the games whose result actually moved
   let finals = 0, voids = 0, changed = 0;
 
   for (const g of games || []) {
@@ -130,6 +132,7 @@ export async function scoreWeek(env, season, week, scores,
       .bind(season, week, g.game_id).first();
     if (prev && prev.source_hash === src) continue;   // genuinely unchanged
     changed++;
+    touched.push(g.game_id);
 
     stmts.push(env.DB.prepare(
       `INSERT INTO results (season, week, game_id, home_points, away_points,
@@ -151,7 +154,45 @@ export async function scoreWeek(env, season, week, scores,
 
   if (stmts.length) await env.DB.batch(stmts);
 
-  await rebuildPickScores(env, season, week);
+  // NOTHING CHANGED, SO NOTHING IS REBUILT.
+  //
+  // The five rebuilds below are deletes-and-reinserts of every derived row
+  // for this week plus both season boards, and they used to run on every
+  // call whether or not a single result had moved. That is the difference
+  // between a quiet hour costing nothing and costing more than a busy one:
+  // measured at twenty players over fourteen weeks, an idle pass wrote 9,534
+  // rows where the very first pass wrote 5,244, because the first had empty
+  // tables to delete from. Twenty-nine cron runs on a Saturday made that
+  // 276,000 rows a day against a free-tier allowance of 100,000 — and D1
+  // does not throttle when the allowance is gone, it returns errors, so the
+  // pick'em would have gone dark on the first weekend it had players.
+  //
+  // Skipping is sound rather than merely cheap: this week is locked, picks
+  // cannot be written to a locked week, and no result changed. The join the
+  // rebuilds read from has identical inputs, so it would produce identical
+  // rows. The one thing that CAN change underneath is board membership, when
+  // a provisional account is published — scoreAll forces a pass for that.
+  // The membership check is not a formality. Relying on the caller to say
+  // "a provisional account was published, rebuild anyway" makes the skip
+  // correct only when it is called correctly, and scoreWeek is called
+  // directly from several places. Comparing who SHOULD be on this week's
+  // board against who is costs two counted reads and makes the skip prove
+  // itself instead.
+  const state = await env.DB.prepare(
+    `SELECT
+       (SELECT scored_at FROM weeks WHERE season = ? AND week = ?) AS scored_at,
+       (SELECT COUNT(DISTINCT s.user_id) FROM pick_scores s
+          JOIN users u ON u.id = s.user_id
+         WHERE s.season = ? AND s.week = ? AND u.status = 'active') AS want,
+       (SELECT COUNT(*) FROM leaderboard_week
+         WHERE season = ? AND week = ?) AS have`)
+    .bind(season, week, season, week, season, week).first();
+  if (!force && changed === 0 && state && state.scored_at != null
+      && state.want === state.have) {
+    return { finals, voids, changed: 0, skipped: "unchanged" };
+  }
+
+  await rebuildPickScores(env, season, week, touched);
   await rebuildWeekBoard(env, season, week, now);
   await rebuildSeasonBoard(env, season, now);
   await rebuildSurvivorScores(env, season, week);
@@ -169,10 +210,25 @@ export async function scoreWeek(env, season, week, scores,
  * never adjusted — it is deleted and recreated from the join, so it cannot
  * disagree with the picks it summarises.
  */
-async function rebuildPickScores(env, season, week) {
+/**
+ * @param {number[]|null} games only these games, or all of the week's when
+ *   empty — the first scoring of a week, or a forced pass.
+ *
+ * Scoped because the whole week is players x games rows, and rebuilding all
+ * of it because one Saturday afternoon final arrived is what puts a busy day
+ * over D1's write allowance: at 200 players, 3,400 rows a run rather than 600.
+ * Still a pure recompute, just of the rows whose inputs moved — a game nobody
+ * re-scored has the same pick, the same line and the same result, so its
+ * outcome cannot have changed.
+ */
+async function rebuildPickScores(env, season, week, games = null) {
+  const some = Array.isArray(games) && games.length;
+  const holes = some ? games.map(() => "?").join(",") : "";
   await env.DB.batch([
-    env.DB.prepare(`DELETE FROM pick_scores WHERE season = ? AND week = ?`)
-      .bind(season, week),
+    env.DB.prepare(
+      `DELETE FROM pick_scores WHERE season = ? AND week = ?` +
+      (some ? ` AND game_id IN (${holes})` : ""))
+      .bind(season, week, ...(some ? games : [])),
     env.DB.prepare(
       `INSERT INTO pick_scores (user_id, season, week, game_id, outcome)
        SELECT p.user_id, p.season, p.week, p.game_id,
@@ -183,7 +239,9 @@ async function rebuildPickScores(env, season, week) {
          FROM picks p
          JOIN results r ON r.season = p.season AND r.week = p.week
                        AND r.game_id = p.game_id
-        WHERE p.season = ? AND p.week = ?`).bind(season, week),
+        WHERE p.season = ? AND p.week = ?` +
+       (some ? ` AND p.game_id IN (${holes})` : ""))
+      .bind(season, week, ...(some ? games : [])),
   ]);
 }
 
@@ -397,7 +455,7 @@ export async function promoteProvisional(env, season, week) {
   // in exactly the sense the gate cares about — they played a week that has
   // since been graded — and holding them provisional forever because they
   // never filled in a spread card would be the rule outliving its reason.
-  await env.DB.prepare(
+  const r = await env.DB.prepare(
     `UPDATE users SET status = 'active'
       WHERE status = 'provisional'
         AND (id IN (SELECT DISTINCT user_id FROM pick_scores
@@ -405,6 +463,9 @@ export async function promoteProvisional(env, season, week) {
           OR id IN (SELECT DISTINCT user_id FROM survivor_scores
                      WHERE season = ? AND week = ?))`)
     .bind(season, week, season, week).run();
+  // How many were published, so the caller knows whether the boards it is
+  // about to skip rebuilding have changed membership underneath it.
+  return (r && (r.meta ? r.meta.changes : r.changes)) || 0;
 }
 
 /**
@@ -637,10 +698,18 @@ export async function scoreAll(env, season, now = Math.floor(Date.now() / 1000))
     `SELECT week FROM weeks
       WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
       ORDER BY week`).bind(season, now).all();
+  // Promotions first, and all of them, before anything is scored. A newly
+  // published account changes who belongs on the boards, and the boards are
+  // now only rebuilt when something moved — so this has to be known before
+  // that decision rather than after it.
+  let promoted = 0;
+  for (const { week } of results || []) {
+    promoted += await promoteProvisional(env, season, week);
+  }
   const report = [];
   for (const { week } of results || []) {
-    report.push({ week, ...(await scoreWeek(env, season, week, scores, now)) });
-    await promoteProvisional(env, season, week);
+    report.push({ week, ...(await scoreWeek(env, season, week, scores, now,
+                                            { force: promoted > 0 })) });
   }
   return report;
 }
