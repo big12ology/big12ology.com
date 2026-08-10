@@ -1726,15 +1726,22 @@
 
   function svStandingText(mine, board) {
     var s = mine && mine.standing;
+    // survivor_board.wins is NOT NULL and out_week is set whenever a run is
+    // over, so neither of these should ever be missing. They are coerced
+    // anyway because the cost is a token and the failure is a sentence
+    // reading "null wins on the run" to somebody whose season just ended.
+    var wins = s && typeof s.wins === "number" ? s.wins : 0;
+    var plural = function (n) { return n === 1 ? " win" : " wins"; };
     if (s && !s.alive) {
+      var when = s.out_week == null ? "a week" : "week " + s.out_week;
       return "Out — " + (s.out_reason === "missed"
-        ? "week " + s.out_week + " locked without your pick"
-        : "your week " + s.out_week + " team lost") +
-        ". " + s.wins + (s.wins === 1 ? " win" : " wins") + " on the run.";
+        ? when + " locked without your pick"
+        : "your " + when + " team lost") +
+        ". " + wins + plural(wins) + " on the run.";
     }
     var bits = [];
     if (s) {
-      bits.push("Alive — " + s.wins + (s.wins === 1 ? " win" : " wins"));
+      bits.push("Alive — " + wins + plural(wins));
       if (s.rank) bits.push(ordinal(s.rank) + " in the pool");
     } else if (mine && mine.used && mine.used.length) {
       bits.push("In — first week still to be graded");
@@ -2148,5 +2155,27 @@
       initSurvivor(me);
     });
   });
+
+  // ------------------------------------------------------------- for tests
+  //
+  // A named surface for test/pools.sim.test.js, which fuzzes these against a
+  // stub DOM. The single-file rule this script is built on is about IMPORTS —
+  // no sub-imports means the ?v= hash is the whole truth about the code
+  // running — and an export breaks none of that. The sibling attendance app
+  // is an ES module its tests import directly for exactly this reason.
+  //
+  // Nothing here is called by the page, and nothing secret passes through it:
+  // every one of these functions works on data the API already serves
+  // publicly.
+  window.B12POOLS = {
+    spreadText: spreadText, spreadSaid: spreadSaid, textOn: textOn,
+    rgbOf: rgbOf, lineColour: lineColour, ordinal: ordinal,
+    inPlayOrder: inPlayOrder, gameStatus: gameStatus, shortWhen: shortWhen,
+    fmtWhen: fmtWhen, svSpent: svSpent, svInConference: svInConference,
+    svSplit: svSplit, resultChip: resultChip, svOutcomeChip: svOutcomeChip,
+    gameRow: gameRow, cardRow: cardRow, svGameRow: svGameRow,
+    consensusBar: consensusBar, svStandingText: svStandingText,
+    explain: explain,
+  };
 
 })();
