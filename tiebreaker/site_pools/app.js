@@ -868,12 +868,19 @@
     // control that looks broken, and one option is a control that lies about
     // being a choice.
     var opts = [{v: "", t: "Season"}];
-    // From 1. Weeks are 1-based — pickem.py publishes week-01 — and starting
-    // the loop at 0 put a "Week 0" at the top of every board that has never
-    // existed and returns nothing.
-    for (var w = 1; w <= (cur == null ? 0 : cur); w++) {
+    // The weeks the server says have a board, not a range built from a count.
+    //
+    // This counted from 1 to a maximum, on the reasoning that weeks are
+    // 1-based. They are not: college football has a week 0, and 2026 opens
+    // with one game on August 29 that the publisher numbers week-00. Counting
+    // also assumed no gaps. Listing what exists is both correct and shorter.
+    var list = Array.isArray(cur) ? cur.slice()
+      : (typeof cur === "number" ? function () {
+          var a = []; for (var i = 1; i <= cur; i++) a.push(i); return a;
+        }() : []);
+    list.sort(function (a, b) { return a - b; }).forEach(function (w) {
       opts.push({v: String(w), t: "Week " + w});
-    }
+    });
     if (opts.length < 2) {
       var lab = sel.closest("label");
       if (lab) lab.hidden = true;

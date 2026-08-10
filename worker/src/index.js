@@ -320,9 +320,17 @@ export default {
       //
       // One gap is tolerated before giving up: a week nobody published (a bye,
       // a season that skips a number) must not hide everything after it.
+      //
+      // FROM ZERO, not one. College football has a week 0 — 2026 opens with a
+      // single game on August 29, nine days before Labor Day — and the
+      // publisher numbers weeks from the same Tuesday-to-Monday rule the
+      // attendance section uses, so it writes week-00.json for it. A walk
+      // starting at one would never fetch that file, and the season's first
+      // pick'em week would simply not exist: no slate, no picks, nothing to
+      // say anything was missing.
       const MAX_WEEK = 25;
       let misses = 0, imported = 0;
-      for (let w = 1; w <= MAX_WEEK && misses < 2; w++) {
+      for (let w = 0; w <= MAX_WEEK && misses < 2; w++) {
         const r = await importWeek(env, season, w);
         if (!r.ok) {
           misses++;

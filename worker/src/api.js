@@ -46,7 +46,8 @@ async function weekParam(env, url, s) {
   const raw = url.searchParams.get("week");
   if (raw != null && raw !== "") {
     const n = Number(raw);
-    if (!Number.isInteger(n) || n < 1 || n > 25) return null;
+    // 0 is a real week, not a missing one: see the cron's note in index.js.
+    if (!Number.isInteger(n) || n < 0 || n > 25) return null;
     return n;
   }
   return currentWeek(env, s);
@@ -585,11 +586,17 @@ export async function getBoard(env, url) {
   // one this response is for. The season view is for no week at all, and a
   // client reading `week` there has nothing to enumerate.
   const wk = await env.DB.prepare(
-    `SELECT MAX(week) AS n FROM leaderboard_week WHERE season = ?`)
+    `SELECT GROUP_CONCAT(week) AS list FROM
+       (SELECT DISTINCT week FROM leaderboard_week WHERE season = ?
+         ORDER BY week)`)
     .bind(s).first();
 
   return json({
-    season: s, week, weeks: (wk && wk.n) || 0,
+    // The weeks that HAVE a board, rather than a count of them. A count only
+    // works if the numbering starts at one and has no gaps, and this season
+    // starts at zero.
+    season: s, week,
+    weeks: wk && wk.list ? wk.list.split(",").map(Number) : [],
     computed_at: Math.floor(Date.now() / 1000),
     chalk: await chalk(env, s, week),
     room: await room(env, s, week),

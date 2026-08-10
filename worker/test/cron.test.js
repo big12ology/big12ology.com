@@ -215,8 +215,11 @@ test("the walk stops at the frontier instead of running to the cap",
     const hits = serve(publisher(season(3)));
     await run(env);
     const asked = [...hits.slates.keys()].sort((a, b) => a - b);
-    assert.deepEqual(asked, [1, 2, 3, 4, 5, 6],
-      "the walk did not stop two weeks past the last published one");
+    // From 0: college football has a week 0 and the publisher writes one.
+    // A miss there costs one fetch and does not end the walk, because the
+    // counter only stops on two in a row.
+    assert.deepEqual(asked, [0, 1, 2, 3, 4, 5, 6],
+      "the walk did not start at zero and stop two weeks past the last one");
   });
 
 test("a republished week that gains a field is re-read", async () => {
@@ -282,6 +285,38 @@ test("a late line fills in, because that transition is the one allowed",
       one(env, `SELECT spread_x2 FROM slate_games WHERE game_id = 13`).spread_x2,
       -3, "a game that gained a market never became playable");
   });
+
+test("a week 0 slate is imported like any other", async () => {
+  // The 2026 season opens on August 29 with a single game, nine days before
+  // Labor Day, and the publisher numbers it week 0 under the same
+  // Tuesday-to-Monday rule the rest of the site uses. The cron used to start
+  // at one, so that file would have been written every Tuesday and read
+  // never: no slate, no picks, and nothing anywhere saying a week was
+  // missing.
+  const env = env0();
+  const weeks = season(0, { lastWeek: 1 });
+  weeks.unshift({
+    week: 0,
+    lock_at: NOW() - 26 * HOUR,
+    games: [{ game_id: 1, home: "TCU", away: "North Carolina", spread_x2: -14,
+              kickoff_at: NOW() - 26 * HOUR, played: true,
+              home_points: 31, away_points: 20 }],
+  });
+  serve(publisher(weeks));
+  await run(env);
+
+  const have = rows(env, `SELECT week FROM weeks WHERE season = ? ORDER BY week`,
+                    SEASON).map((r) => r.week);
+  assert.ok(have.includes(0), "week 0 was never imported");
+  assert.equal(
+    one(env, `SELECT COUNT(*) n FROM slate_games WHERE season = ? AND week = 0`,
+        SEASON).n, 1, "week 0's game did not land");
+  // And it grades, so an opener is a real week rather than a decorative one.
+  // TCU by 7, winning by 11: the favourite covers.
+  assert.equal(
+    one(env, `SELECT ats FROM results WHERE season = ? AND week = 0`, SEASON).ats,
+    "home", "week 0 was imported but never scored");
+});
 
 // ------------------------------------------------------------------ scoring
 
