@@ -14,7 +14,7 @@ import * as session from "./session.js";
 import {
   SESSION_COOKIE, STATE_COOKIE, clear, parseCookies, safeReturn, serialize,
 } from "./cookies.js";
-import { importWeek, currentWeek } from "./slate.js";
+import { importWeek } from "./slate.js";
 import { scoreAll } from "./scoring.js";
 
 const { json, fail } = api;
@@ -302,35 +302,42 @@ export default {
   async scheduled(event, env, ctx) {
     const season = Number(env.SEASON || new Date().getUTCFullYear());
     try {
-      const wk = await currentWeek(env, season);
-      // The current week and the next, so a slate goes in as soon as it
-      // exists rather than waiting for the week to turn over — plus any
-      // earlier week the database has never seen.
+      // Walk forward from week one until the publisher runs out.
       //
-      // That backfill matters more than it looks. Without it a Worker
-      // deployed in October knows only October: every earlier week is a
-      // published file nobody ever read, the season history is a single
-      // point, and the week-by-week chart has nothing to draw. It costs
-      // nothing in the ordinary case, because weeks already present are
-      // skipped from a query rather than re-fetched.
+      // NOT from currentWeek(). That reads the weeks table, which on a cold
+      // start is empty — so the first run imported week one and only week
+      // one, and each hourly run after it advanced the frontier by exactly
+      // one. A Worker deployed in week ten took ten hours to learn the
+      // season, and served week one's slate the whole time. The local dev
+      // script has been running this cron twice in a row for weeks with a
+      // comment about "the first run has no weeks yet", which was the bug
+      // wearing a workaround.
       //
-      // Every week, not only the ones we have never seen. importWeek hashes
-      // the file and returns `unchanged` without writing when it matches, so
-      // the ordinary Saturday costs a fetch per week and nothing else — and
-      // the one time it is not ordinary is the time it matters. When the
-      // publisher starts carrying a field it did not carry before (the
-      // conference side of each game, say), the weeks already imported are
-      // exactly the ones that need re-reading, and a run that skips them
-      // leaves the new column NULL for the whole season with nothing to
-      // suggest anything is wrong.
-      const want = new Set([wk, (wk || 0) + 1].filter((n) => n && n > 0));
-      for (let w = 1; w <= (wk || 0); w++) want.add(w);
-
-      for (const w of [...want].sort((a, b) => a - b)) {
+      // The publisher only ever writes the current week and, once its lines
+      // land, the next — so this walks 1..current+1 and stops. Cheap, because
+      // importWeek hashes the file and returns `unchanged` without writing;
+      // the cost of a quiet Saturday is one conditional fetch per week.
+      //
+      // One gap is tolerated before giving up: a week nobody published (a bye,
+      // a season that skips a number) must not hide everything after it.
+      const MAX_WEEK = 25;
+      let misses = 0, imported = 0;
+      for (let w = 1; w <= MAX_WEEK && misses < 2; w++) {
         const r = await importWeek(env, season, w);
-        if (!r.ok) console.log(`import ${season} w${w}: ${r.reason}`);
-        else if (!r.unchanged) console.log(`import ${season} w${w}: ${r.games} games`);
+        if (!r.ok) {
+          misses++;
+          // A 404 past the frontier is the ordinary end of the walk and not
+          // worth a line every hour. Anything else is.
+          if (!/^fetch_404$/.test(r.reason)) {
+            console.log(`import ${season} w${w}: ${r.reason}`);
+          }
+          continue;
+        }
+        misses = 0;
+        imported++;
+        if (!r.unchanged) console.log(`import ${season} w${w}: ${r.games} games`);
       }
+      if (!imported) console.log(`import ${season}: nothing published yet`);
       const report = await scoreAll(env, season);
       for (const r of report) {
         if (r.changed) console.log(`score w${r.week}: ${JSON.stringify(r)}`);
