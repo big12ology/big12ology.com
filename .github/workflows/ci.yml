@@ -185,6 +185,9 @@ jobs:
           (cd tiebreaker && B12_PICKEM=1 python3 build.py)
           B12_PICKEM=1 tools/assemble.sh dist
           tools/verify-dist.py dist
+          # And the numbers on the page against the two other places the
+          # build publishes the same ones.
+          tools/verify-consistency.py dist
 
       # pages.yml redeploys on a cron roughly three hundred times a season and
       # its opening comment says unchanged content produces identical bytes.
