@@ -13,6 +13,7 @@ import html
 import hashlib
 import json
 import os
+import re
 import sys
 import zoneinfo
 
@@ -3605,8 +3606,10 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     build_explainer(year, ctx["matchcard"], outdir)
 
     if feed:
-        with open(os.path.join(outdir, "feed.xml"), "w") as f:
-            f.write(feed_mod.build_feed(games, year, systems, overrides))
+        write_if_unchanged_skip(
+            os.path.join(outdir, "feed.xml"),
+            feed_mod.build_feed(games, year, systems, overrides),
+            re.compile(r"<lastBuildDate>[^<]*</lastBuildDate>"))
 
     ccg = tb.championship(games, overrides)
     cl = clinch_mod.analyze(games, overrides)
@@ -3622,8 +3625,10 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                      "exp_conf_wins": (sims.get(t, {}) or {}).get("exp_w")}
                  for t, i in cl["teams"].items()},
     }
-    with open(os.path.join(outdir, "data.json"), "w") as f:
-        json.dump(data, f, indent=1)
+    write_if_unchanged_skip(
+        os.path.join(outdir, "data.json"),
+        json.dumps(data, indent=1),
+        re.compile(r'"generated": "[^"]*"'))
     write_forecast(year, games, systems, sims)
     with open(os.path.join(outdir, "standings.csv"), "w") as f:
         f.write("rank,team,conf_w,conf_l,nonconf_w,nonconf_l,"
@@ -4091,7 +4096,7 @@ PICKEM_LIVE_REGIONS = """
 PICKEM_NOSCRIPT = """
 <noscript><p class=note><b>The picker needs JavaScript.</b> The rules and this
 week's slate are readable without it:
-<a href="rules.html">The Rules</a>, or
+<a href="/pools/pickem/rules.html">The Rules</a>, or
 <a href="/api/slate">the slate as JSON</a>.</p></noscript>"""
 
 PICKEM_SLATE_BODY = f"""
@@ -4102,12 +4107,12 @@ PICKEM_SLATE_BODY = f"""
   <p class=pk-slatecount id=slatecount></p>
 </div>
 {PICKEM_LIVE_REGIONS}
-<p class=pk-signedout id=signedout hidden><a href="account.html">Sign in</a>
+<p class=pk-signedout id=signedout hidden><a href="/pools/account.html">Sign in</a>
   to make your picks.</p>
 <p class=pk-hint id=signedin hidden>Picks save automatically and lock at
   kickoff.</p>
 <p class=pk-signedout id=needsname hidden>Choose a display name before you can
-  pick &mdash; <a href="account.html">it takes a moment</a>.</p>
+  pick &mdash; <a href="/pools/account.html">it takes a moment</a>.</p>
 <form id=slateform>
   <div id=slate class=pk-slate>
     <p class=note id=slateload>Loading this week's slate&hellip;</p>
@@ -4828,6 +4833,33 @@ def build_pickem(year):
     print(f"built pools -> {POOLS_SITE}")
 
 
+def write_if_unchanged_skip(path, text, ignore=None):
+    """Write `text` to `path`, unless the only difference is a timestamp.
+
+    The same argument write_forecast() makes for its own file, applied to the
+    two others that carry a clock: a build that rewrites a file whose content
+    did not change hands CI a diff to commit on every hourly run — three
+    hundred a month, every one of them saying nothing — and buries the one
+    build that did change something.
+
+    `ignore` is a compiled regex whose matches are blanked before comparing,
+    so the timestamp is excluded from the question without being excluded from
+    the file.
+    """
+    if os.path.exists(path):
+        try:
+            old = open(path, encoding="utf-8").read()
+            a, b = (old, text) if ignore is None else \
+                   (ignore.sub("", old), ignore.sub("", text))
+            if a == b:
+                return False
+        except OSError:
+            pass                     # unreadable: fall through and rewrite
+    with open(path, "w") as f:
+        f.write(text)
+    return True
+
+
 def write_discovery(years):
     """A sitemap. Without one a crawler has to guess that
     the archived seasons exist at all — nothing links to 2024 except the
@@ -4953,9 +4985,17 @@ def main():
         # it does not get to disappear. Meta-refresh plus a canonical, which
         # is all a static host can offer and is what the tiebreaker's own
         # moved pages already use.
+        #
+        # Where it points depends on what is actually built. Dark, the only
+        # thing under /pools/ is the teaser, so a stub aimed at
+        # /pools/pickem/ bounced every reader of the old URL into a 404 —
+        # which is what production has been doing since the section was
+        # grouped, because nothing checked that a redirect lands on a page
+        # that exists.
         os.makedirs(os.path.join(POOLS_SITE, "_moved"), exist_ok=True)
         with open(os.path.join(POOLS_SITE, "_moved", "pickem.html"), "w") as f:
-            f.write(redirect_stub("/pools/pickem/", "Pickem"))
+            f.write(redirect_stub(
+                "/pools/pickem/" if PICKEM_ENABLED else "/pools/", "Pickem"))
     # Finished seasons are rebuilt from cached results — no API calls, and
     # their output is deterministic, so a rebuild is a no-op unless the
     # engine itself changed.

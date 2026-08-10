@@ -162,9 +162,34 @@ jobs:
           test ! -e dist/pools/pickem
           test ! -e dist/pools/survivor
           test ! -e dist/pools/data
-          grep -q 'url=/pools/pickem/' dist/pickem/index.html
+          # Dark, the stub has to land on the teaser: /pools/pickem/ is not
+          # built, so pointing at it sent the old URL's readers to a 404.
+          grep -q 'url=/pools/' dist/pickem/index.html
+          ! grep -q 'url=/pools/pickem/' dist/pickem/index.html
           ! grep -rq 'pickcon' dist
           # And the disclosure still matches what is actually running.
           grep -q 'no accounts, no cookies' dist/privacy.html
           # Dark, privacy.html must still make the promise that is true.
           ! grep -rq 'PICKEM-ONLY\|PICKEM-OFF' dist
+
+      # Everything above asks whether the right files exist. This asks whether
+      # everything that points at a file finds one — a renamed page, a logo
+      # that never got copied, a sitemap entry for something nobody built.
+      # None of those fail a build; all of them reach a reader.
+      - name: Verify the assembled site
+        run: |
+          # Production first: dist is still the dark assembly from the step
+          # above.
+          tools/verify-dist.py dist
+          # Then with the section on, which is the half that actually moves.
+          (cd tiebreaker && B12_PICKEM=1 python3 build.py)
+          B12_PICKEM=1 tools/assemble.sh dist
+          tools/verify-dist.py dist
+
+      # pages.yml redeploys on a cron roughly three hundred times a season and
+      # its opening comment says unchanged content produces identical bytes.
+      # That is load-bearing — it is what makes an actual change visible — and
+      # nothing checked it until a rebuild was found rewriting data.json and
+      # feed.xml on every run purely for a timestamp.
+      - name: Verify the build is deterministic
+        run: tools/verify-deterministic.sh

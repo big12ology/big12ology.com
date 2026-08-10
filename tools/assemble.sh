@@ -183,7 +183,10 @@ done < <(find "$DIST" -type f \( -name '*.html' -o -name '*.xml' -o -name '*.txt
 # and it is filled here, at the moment the deploy is assembled. The format
 # matches build.py's build_stamp() exactly — the whole point is that every page
 # on the domain reads the same.
-STAMP="$(date -u '+%B %-d, %H:%M UTC')"
+# Overridable so a build can be reproduced. Two assembles a minute apart
+# differ only here, and a determinism check that could not pin it would have
+# to diff around the one line that is supposed to change.
+STAMP="${B12_BUILD_STAMP:-$(date -u '+%B %-d, %H:%M UTC')}"
 echo "stamping footers: $STAMP"
 while IFS= read -r page; do
   grep -q '{{BUILD_STAMP}}' "$page" || continue
