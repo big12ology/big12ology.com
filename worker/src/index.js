@@ -40,6 +40,31 @@ async function body(req) {
   try { return await req.json(); } catch { return null; }
 }
 
+/**
+ * Tell the outside world this run finished.
+ *
+ * A dead man's switch, which is the only honest way to monitor something that
+ * runs unattended: everything else infers liveness from a symptom, and a cron
+ * that has silently stopped produces no symptom at all until the boards are
+ * visibly stale. Here the absence of a call IS the alarm, so it survives the
+ * Worker being broken, the account being suspended, or the schedule being
+ * deleted — none of which could send an error report.
+ *
+ * Fire and forget, and swallowed whole. Scoring must never fail because a
+ * monitoring host is down; that would be the tail wagging the dog.
+ */
+async function heartbeat(env, msg) {
+  if (!env.KUMA_PUSH_URL) return;
+  try {
+    const u = new URL(env.KUMA_PUSH_URL);
+    u.searchParams.set("status", "up");
+    u.searchParams.set("msg", msg);
+    await fetch(u.toString(), { method: "GET", cf: { cacheTtl: 0 } });
+  } catch (e) {
+    console.log(`heartbeat failed: ${e && (e.message || e)}`);
+  }
+}
+
 function clientIp(req) {
   return req.headers.get("CF-Connecting-IP") || null;
 }
@@ -372,8 +397,13 @@ export default {
       for (const r of report) {
         if (r.changed) console.log(`score w${r.week}: ${JSON.stringify(r)}`);
       }
+      const moved = report.filter((r) => r.changed).length;
+      await heartbeat(env, `${imported} weeks, ${moved} changed`);
     } catch (e) {
       console.error("cron", e && (e.stack || e.message || e));
+      // Deliberately no heartbeat here. Silence is the signal: a monitor that
+      // is told about the failure and one that simply stops being told are
+      // the same alert, and the second needs nothing to be working.
     }
   },
 };

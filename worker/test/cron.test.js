@@ -497,3 +497,72 @@ test("health is quiet out of season", async () => {
   assert.equal(body.unscored, 0);
   assert.equal(body.waiting_s, 0);
 });
+
+// --------------------------------------------------------------- heartbeat
+
+test("a finished run pings the dead man's switch", async () => {
+  const env = env0();
+  env.KUMA_PUSH_URL = "https://kuma.example/api/push/TOKEN";
+  const inner = serve(publisher(season(3)));
+  const pings = [];
+  const wrapped = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    const u = String(url);
+    if (u.startsWith("https://kuma.example/")) { pings.push(u); return new Response("ok"); }
+    return wrapped(url, init);
+  };
+
+  await run(env);
+  assert.equal(pings.length, 1, `${pings.length} heartbeats for one run`);
+  const u = new URL(pings[0]);
+  assert.equal(u.searchParams.get("status"), "up");
+  assert.match(u.searchParams.get("msg") || "", /weeks/,
+    "the heartbeat carried no summary");
+  assert.ok(inner.scores > 0);
+});
+
+test("a run that fails stays silent", async () => {
+  // The property that makes this worth having. If the cron reported its own
+  // failures, every way it can die without running at all — a deleted
+  // schedule, a suspended account, a Worker that will not start — would be
+  // invisible. Absence has to be the alarm.
+  const env = env0();
+  env.KUMA_PUSH_URL = "https://kuma.example/api/push/TOKEN";
+  const pings = [];
+  globalThis.fetch = async (url) => {
+    const u = String(url);
+    if (u.startsWith("https://kuma.example/")) { pings.push(u); return new Response("ok"); }
+    throw new Error("the origin is down");
+  };
+
+  await run(env);                       // must not throw
+  assert.equal(pings.length, 0,
+    "a failed run still told the monitor it was fine");
+});
+
+test("no push URL configured is not an error", async () => {
+  const env = env0();               // KUMA_PUSH_URL unset
+  serve(publisher(season(2)));
+  await run(env);
+  assert.ok(rows(env, `SELECT week FROM weeks WHERE season = ?`, SEASON).length > 0,
+    "the run did not complete without a monitor configured");
+});
+
+test("a monitor that is down never breaks scoring", async () => {
+  const env = env0();
+  env.KUMA_PUSH_URL = "https://kuma.example/api/push/TOKEN";
+  const inner = serve(publisher(season(3)));
+  const wrapped = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    if (String(url).startsWith("https://kuma.example/")) {
+      throw new Error("monitoring host unreachable");
+    }
+    return wrapped(url, init);
+  };
+
+  await run(env);
+  assert.equal(
+    one(env, `SELECT COUNT(*) n FROM results WHERE season = ?`, SEASON).n > 0,
+    true, "scoring did not survive the monitoring host being down");
+  void inner;
+});

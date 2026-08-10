@@ -77,6 +77,16 @@ crons = [
                            # night finals in the US
   "0 13 * 8-12 3",         # Tue UTC — import the week's slate, an hour after
                            # pages.yml's 12:00 refresh has published it
+  # ALL YEAR, unlike the three above. This one exists for the heartbeat: the
+  # cron pings a dead man's switch when it finishes, and a switch that stops
+  # being pinged every January would page somebody daily for seven months —
+  # so it would get muted, and a muted alarm is not an alarm.
+  #
+  # Out of season it costs two fetches: week 0 and week 1 both 404 because
+  # nothing is published, the walk gives up, and there are no locked weeks to
+  # score. It also means a January breakage is found in January rather than
+  # discovered in August.
+  "0 12 * * *",            # daily noon UTC — the heartbeat
 ]
 
 [observability]

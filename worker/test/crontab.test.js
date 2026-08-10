@@ -35,7 +35,7 @@ function daysOf(expr) {
 }
 
 test("every cron parses and has five fields", () => {
-  assert.equal(crons.length, 3, "expected three schedules");
+  assert.equal(crons.length, 4, "expected four schedules");
   for (const c of crons) {
     assert.equal(c.trim().split(/\s+/).length, 5, `not five fields: ${c}`);
   }
@@ -58,6 +58,7 @@ test("the schedules land on the days the comments claim", () => {
     "0 * * 8-12 1,7": ["Sun", "Sat"],          // the weekend score sweep
     "0 0-8/2 * 8-12 2,6,7": ["Mon", "Fri", "Sat"], // US night finals, UTC
     "0 13 * 8-12 3": ["Tue"],                  // the slate import
+    "0 12 * * *": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   };
   for (const c of crons) {
     const named = daysOf(c).map((d) => DAY[d]).sort();
@@ -71,7 +72,8 @@ test("the import runs after the publish, not before it", () => {
   // pages.yml refreshes and publishes the slate at 12:00 UTC on Tuesday. An
   // import that runs earlier in the day reads last week's file, which is
   // exactly what the ordinary-cron numbering caused.
-  const imp = crons.find((c) => daysOf(c).length === 1);
+  const imp = crons.find((c) => daysOf(c).length === 1
+                              && c.trim() !== "0 12 * * *");
   assert.ok(imp, "no single-day schedule found");
   assert.deepEqual(daysOf(imp).map((d) => DAY[d]), ["Tue"]);
   assert.ok(Number(imp.trim().split(/\s+/)[1]) > 12,
@@ -79,9 +81,17 @@ test("the import runs after the publish, not before it", () => {
     + `before the 12:00 publish it is meant to read`);
 });
 
-test("nothing is scheduled outside the season", () => {
+test("only the heartbeat runs outside the season", () => {
+  // The three working schedules are August to December. The fourth has to run
+  // all year, because it pings a dead man's switch — and a switch that stops
+  // being pinged every January pages somebody daily for seven months, after
+  // which it gets muted, and a muted alarm is not an alarm.
+  const allYear = crons.filter((c) => c.trim().split(/\s+/)[3] === "*");
+  assert.equal(allYear.length, 1,
+    `${allYear.length} schedules run all year; only the heartbeat should`);
+  assert.equal(allYear[0].trim(), "0 12 * * *");
   for (const c of crons) {
-    assert.equal(c.trim().split(/\s+/)[3], "8-12",
-      `${c} runs outside August–December`);
+    assert.ok(c.trim().split(/\s+/)[3] === "8-12" || c.trim() === "0 12 * * *",
+      `${c} runs outside August–December and is not the heartbeat`);
   }
 });

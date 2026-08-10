@@ -20,10 +20,18 @@ name: Monitor
 
 on:
   schedule:
-    # Every half hour through the season's months. Off-season the season check
-    # is trivially satisfied — nothing is locked — so this is mostly an uptime
-    # ping the rest of the year.
-    - cron: '*/30 * * * *'
+    # Every six hours, because this is the BACKSTOP rather than the watch.
+    #
+    # Uptime Kuma does the minute-by-minute checking now, and does it better:
+    # sixty-second intervals, retries before it decides, real alerting. What
+    # it cannot do is notice its own death — it runs on hardware you own, so
+    # if that box goes down you lose the monitoring and the ability to hear
+    # about it in the same instant.
+    #
+    # This runs on somebody else's infrastructure, which is the entire point.
+    # Six hours is slow for an outage and exactly right for "has the thing
+    # that watches everything stopped watching".
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 concurrency:
