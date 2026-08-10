@@ -1,0 +1,137 @@
+# Weekly snapshot of the one thing that cannot be rebuilt.
+#
+# Almost everything this site serves can be regenerated: the slates are
+# committed JSON, the results come from a file the build writes, the boards are
+# a pure recompute. Accounts and picks are not. There is no email on file, so a
+# lost users table cannot be re-associated with the people it belonged to —
+# they would simply be gone, mid-season, with their runs.
+#
+# D1's Time Travel is the first line and needs no setup: it is always on, costs
+# nothing, and restores to any minute. But the Workers Free plan keeps SEVEN
+# DAYS. A season runs four months. Time Travel answers "I broke it on Tuesday";
+# it does not answer "nobody noticed until November", and the failure most
+# likely to go unnoticed for weeks is a slow one — a bad migration, a handler
+# quietly deleting the wrong rows.
+#
+# So: a weekly export, encrypted before it leaves the runner, kept for a
+# season. The dump holds no plaintext identifiers — no emails were ever
+# collected, provider subjects are peppered HMACs, signup IPs are hashed — but
+# it does hold picks that have not locked yet, and the lock exists precisely so
+# nobody can see those. It is not going into an artifact in the clear on a
+# public repository.
+#
+# Restoring is documented in the run's own log rather than in a file somebody
+# has to find. The path is exercised end to end in the worker tests against a
+# local database: export, wipe, import, and confirm the triggers not only came
+# back but still refuse what they refused before. A restore that returns the
+# rows without the invariants is a database that accepts what the original
+# rejected.
+
+name: Backup
+
+on:
+  schedule:
+    # Sunday 09:00 UTC — after the weekend's scoring has settled and well
+    # before the Tuesday publish, so a snapshot is a quiet week's worth.
+    - cron: '0 9 * * 0'
+  workflow_dispatch:
+
+concurrency:
+  group: d1-backup
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install
+        working-directory: worker
+        run: npm ci
+
+      # Fail loudly rather than quietly producing nothing. A backup job that
+      # "succeeds" every week while writing an empty file is worse than no
+      # backup job, because it buys confidence it has not earned.
+      - name: Check the passphrase is set
+        env:
+          PASS: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          test -n "$PASS" || {
+            echo "::error::BACKUP_PASSPHRASE is not set. Add it in"
+            echo "::error::Settings > Secrets > Actions, and keep a copy in"
+            echo "::error::your password manager — without it these snapshots"
+            echo "::error::cannot be read."
+            exit 1
+          }
+
+      - name: Export
+        working-directory: worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx wrangler d1 export b12_pickem --remote --output ../d1.sql
+
+      # What is in it, in the log. The artifact expires; this line does not,
+      # so a year from now the run history still says how big the pool was and
+      # when it stopped growing.
+      - name: Report
+        run: |
+          set -e
+          size=$(wc -c < d1.sql)
+          echo "dump: $size bytes"
+          test "$size" -gt 1000 || { echo "::error::dump is implausibly small"; exit 1; }
+          for t in users identities picks survivor_picks slate_games results; do
+            n=$(grep -c "INSERT INTO \"$t\"" d1.sql || true)
+            echo "  $t: $n insert statements"
+          done
+          grep -q "CREATE TRIGGER" d1.sql || {
+            echo "::error::no triggers in the dump — the invariants would not"
+            echo "::error::survive a restore from it"
+            exit 1
+          }
+          echo "triggers: $(grep -c 'CREATE TRIGGER' d1.sql)"
+
+      - name: Encrypt
+        env:
+          PASS: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -e
+          openssl enc -aes-256-cbc -pbkdf2 -iter 250000 -salt \
+            -in d1.sql -out d1.sql.enc -pass env:PASS
+          rm -f d1.sql
+          echo "encrypted: $(wc -c < d1.sql.enc) bytes"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: d1-${{ github.run_id }}
+          path: d1.sql.enc
+          retention-days: 90
+
+      - name: How to restore
+        run: |
+          cat <<'TXT'
+          To read this snapshot:
+
+            openssl enc -d -aes-256-cbc -pbkdf2 -iter 250000 \
+              -in d1.sql.enc -out d1.sql -pass pass:YOUR_PASSPHRASE
+
+          To put it back — DESTRUCTIVE, it overwrites the live database:
+
+            cd worker
+            npx wrangler d1 execute b12_pickem --remote --file ../d1.sql
+
+          Before reaching for this, try Time Travel. It is finer grained and
+          does not need a file:
+
+            npx wrangler d1 time-travel info b12_pickem
+            npx wrangler d1 time-travel restore b12_pickem --timestamp=UNIX_TS
+
+          Time Travel keeps 7 days on the Workers Free plan, 30 on paid. Past
+          that window, this artifact is the only copy.
+          TXT
