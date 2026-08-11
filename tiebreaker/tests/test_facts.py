@@ -130,16 +130,26 @@ check(len(filled) >= 8,
 DEPARTED = facts.departed(by_year)
 check({"Texas", "Oklahoma"} <= DEPARTED,
       f"departed() has stopped seeing the leavers: {sorted(DEPARTED)}")
+# The rule is about SUBJECTS, not mentions. A departed school may be the
+# opponent in somebody else's record — that fact belongs to the team it is
+# about — but nothing may be a fact about the school that left.
 for f in every:
-    bad = set(f.get("w") or []) & DEPARTED
-    check(not bad, f"a fact about {sorted(bad)}, who left: {f['t']!r}")
+    check(f.get("s") not in DEPARTED,
+          f"a fact about {f.get('s')!r}, who left: {f['t']!r}")
 
-# Independent of the tags, because the tags are the thing that was broken.
-LEFT_RE = re.compile(r"\b(Texas|Oklahoma|Missouri|Nebraska)\b(?! State| Tech)")
-named = [f["t"] for f in every if LEFT_RE.search(f["t"])]
-check(not named,
-      f"{len(named)} fact(s) name a departed school in their text even though "
-      f"the tags say otherwise: {named[:2]}")
+# Independent of the tags, because the tags are the thing that was broken
+# last time: no fact may OPEN with a departed school.
+LEFT_RE = re.compile(r"^(Texas|Oklahoma|Missouri|Nebraska)\b(?! State| Tech)")
+opens = [f["t"] for f in every if LEFT_RE.match(f["t"])]
+check(not opens,
+      f"{len(opens)} fact(s) open with a departed school: {opens[:2]}")
+
+# And the narrowing has to have actually happened, or this is the blanket ban
+# wearing a different comment: opponent mentions must survive.
+kept = [f for f in every if set(f.get("w") or []) & DEPARTED]
+check(len(kept) >= 5,
+      f"only {len(kept)} facts mention a departed school as an opponent — the "
+      f"subject-only rule has collapsed back into banning the name")
 
 
 # --- the dated-fact rule ---------------------------------------------------

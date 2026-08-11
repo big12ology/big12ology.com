@@ -990,17 +990,28 @@ def build(year, games_by_year, teams, lines, rotation_mod, out_path):
     for k in sections:
         for f in sections[k]:
             claimed, rest = [], f["t"]
+            at = {}                      # team -> where it is first named
             for phrase, team in sorted(nick.items(), key=lambda kv: -len(kv[0])):
-                if phrase.lower() in rest.lower():
+                m = re.search(re.escape(phrase), rest, re.IGNORECASE)
+                if m:
                     claimed.append(team)
-                    rest = re.sub(re.escape(phrase), " ", rest,
+                    at.setdefault(team, m.start())
+                    rest = re.sub(re.escape(phrase), " " * len(phrase), rest,
                                   flags=re.IGNORECASE)
             for n in names:
-                if n in rest:
+                i = rest.find(n)
+                if i >= 0:
                     claimed.append(n)
-                    rest = rest.replace(n, " ")
+                    at[n] = min(at.get(n, i), i)
+                    rest = rest.replace(n, " " * len(n))
             if claimed:
                 f["w"] = sorted(set(claimed))
+                # The team named FIRST is the one the sentence is about. Every
+                # family here puts its subject up front — "Texas took the 2023
+                # season", "the biggest crowd Baylor has drawn" — and anyone
+                # named later is the opponent. That distinction is the whole
+                # of which facts a departed school may still appear in.
+                f["s"] = min(at, key=lambda t: at[t])
 
     # Stable order, so an unchanged season rewrites nothing.
     for k in sections:
@@ -1009,10 +1020,13 @@ def build(year, games_by_year, teams, lines, rotation_mod, out_path):
     # applied to everything: the record of the schools that walked out is not
     # what this site is for. It is done here rather than in each family so
     # that a new family cannot forget.
+    # Only the facts ABOUT them. A departed school may still be the opponent
+    # in somebody else's record — "the biggest crowd Baylor has drawn is
+    # 51,728, against Texas in 2013" is a fact about Baylor, and losing it to
+    # keep Texas off the page was throwing away the wrong thing.
     gone = departed(games_by_year)
     for k in sections:
-        sections[k] = [f for f in sections[k]
-                       if not (set(f.get("w") or []) & gone)]
+        sections[k] = [f for f in sections[k] if f.get("s") not in gone]
 
     payload = {"season": year, "sections": sections}
     with open(out_path, "w", encoding="utf-8") as f:
