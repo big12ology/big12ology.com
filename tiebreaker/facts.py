@@ -496,18 +496,31 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
     home = collections.Counter(g["home"] for g in conf)
     away = collections.Counter(g["away"] for g in conf)
     fives = sorted(t for t in names if home.get(t, 0) == 5)
-    if fives and len(fives) != len(names):
+    fours = sorted(t for t in names if home.get(t, 0) == 4)
+    if fives and fours:
         out.append(_fact(
             f"Nine conference games will not split evenly, so in {year} "
             f"{len(fives)} teams get five home games and the other "
-            f"{len(names) - len(fives)} get four."))
+            f"{len(fours)} get four."))
     for t in names:
         h, a = home.get(t, 0), away.get(t, 0)
-        if h + a:
-            S = _subj(t, "home", opener=True)
-            out.append(_fact(
-                f"{S['n']} play{S['v']} {h} of {S['its']} {h + a} {year} "
-                f"conference games at home."))
+        if not h + a:
+            continue
+        S = _subj(t, "home", opener=True)
+        # Four or five is the whole story, and it is invisible without the
+        # other fifteen: an odd number of games has to fall somewhere, and
+        # which side of it you land on is the closest thing the schedule has
+        # to luck.
+        if h > a and fours:
+            colour = (f" — the extra home date, in a season {len(fours)} "
+                      f"teams finish a game short")
+        elif a > h and fives:
+            colour = (f" — the short straw, while {len(fives)} teams get five")
+        else:
+            colour = ""
+        out.append(_fact(
+            f"{S['n']} play{S['v']} {h} of {S['its']} {h + a} {year} "
+            f"conference games at home{colour}."))
 
     # --- the games that are not in Texas, or America ------------------------
     for g in games:
@@ -560,8 +573,13 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
         miss = [m["opponent"] for m in r["missing"]]
         if miss:
             S = _subj(r["team"], "miss", opener=True)
+            # Which six you miss is the whole argument about an unbalanced
+            # schedule, so say how many of the fifteen that is rather than
+            # leaving a reader to count the list.
             out.append(_fact(
-                f"{S['n']} {S['does']} not play {_list(miss)} in {year}."))
+                f"{S['n']} {S['does']} not play {_list(miss)} in {year} — "
+                f"{len(miss)} of the {len(names) - 1} teams {S['they']} could "
+                f"have drawn."))
 
     # --- first meetings -----------------------------------------------------
     # The league has only been at sixteen since 2023, so "never met before" is
@@ -955,7 +973,18 @@ def build(year, games_by_year, teams, lines, rotation_mod, out_path):
     # Nicknames count as the team. A fact that says "The Bearcats" is about
     # Cincinnati, and if the tag misses that, the no-two-cards-same-team rule
     # on the hub silently stops applying to every fact that used a nickname.
-    names = sorted(set(teams or []), key=len, reverse=True)
+    # Every team the schedules name, not just the current sixteen. Tagging
+    # against teams.json alone left Texas and Oklahoma untagged — which made
+    # them invisible both to the hub's no-two-cards-same-team rule and to the
+    # departed-team filter below, so "Texas took the 2023 conference season"
+    # sailed through a check written to stop exactly that.
+    every_name = set(teams or [])
+    for _y in games_by_year:
+        for _g in games_by_year[_y]:
+            every_name.add(_g.get("home"))
+            every_name.add(_g.get("away"))
+    every_name.discard(None)
+    names = sorted(every_name, key=len, reverse=True)
     nick = {f"the {m}": t for t, m in _mascots().items()
             if m not in (_SHARED or set())}
     for k in sections:
@@ -976,6 +1005,15 @@ def build(year, games_by_year, teams, lines, rotation_mod, out_path):
     # Stable order, so an unchanged season rewrites nothing.
     for k in sections:
         sections[k] = sorted(sections[k], key=lambda f: (f.get("on") or "", f["t"]))
+    # And nobody who left. Same call as the rivalries, for the same reason and
+    # applied to everything: the record of the schools that walked out is not
+    # what this site is for. It is done here rather than in each family so
+    # that a new family cannot forget.
+    gone = departed(games_by_year)
+    for k in sections:
+        sections[k] = [f for f in sections[k]
+                       if not (set(f.get("w") or []) & gone)]
+
     payload = {"season": year, "sections": sections}
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(payload, indent=1, sort_keys=True))

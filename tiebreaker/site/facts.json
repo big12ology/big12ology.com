@@ -77,7 +77,8 @@
    {
     "t": "In 2012 the league averaged 46,933 a home game. The biggest single crowd was 71,004, Arizona State against Oregon on 18 October.",
     "w": [
-     "Arizona State"
+     "Arizona State",
+     "Oregon"
     ]
    },
    {
@@ -90,7 +91,8 @@
    {
     "t": "In 2014 the league averaged 46,269 a home game. The biggest single crowd was 65,870, Arizona State against Notre Dame on 8 November.",
     "w": [
-     "Arizona State"
+     "Arizona State",
+     "Notre Dame"
     ]
    },
    {
@@ -103,7 +105,8 @@
    {
     "t": "In 2016 the league averaged 46,814 a home game. The biggest single crowd was 62,904, BYU against UCLA on 17 September.",
     "w": [
-     "BYU"
+     "BYU",
+     "UCLA"
     ]
    },
    {
@@ -114,15 +117,10 @@
     ]
    },
    {
-    "t": "In 2018 the league averaged 45,224 a home game. The biggest single crowd was 60,713, West Virginia against Oklahoma on 23 November.",
-    "w": [
-     "West Virginia"
-    ]
-   },
-   {
     "t": "In 2019 the league averaged 46,789 a home game. The biggest single crowd was 62,546, BYU against USC on 14 September.",
     "w": [
-     "BYU"
+     "BYU",
+     "USC"
     ]
    },
    {
@@ -257,7 +255,8 @@
    {
     "t": "The biggest crowd Arizona has drawn since 2012 is 56,754, against USC in 2014.",
     "w": [
-     "Arizona"
+     "Arizona",
+     "USC"
     ]
    },
    {
@@ -268,15 +267,10 @@
     ]
    },
    {
-    "t": "The biggest crowd Baylor has drawn since 2012 is 51,728, against Texas in 2013.",
-    "w": [
-     "Baylor"
-    ]
-   },
-   {
     "t": "The biggest crowd Cincinnati has drawn since 2012 is 41,926, against Miami (OH) in 2014.",
     "w": [
-     "Cincinnati"
+     "Cincinnati",
+     "Miami (OH)"
     ]
    },
    {
@@ -289,13 +283,15 @@
    {
     "t": "The biggest crowd Houston has drawn since 2012 is 42,822, against Louisville in 2016.",
     "w": [
-     "Houston"
+     "Houston",
+     "Louisville"
     ]
    },
    {
     "t": "The biggest crowd Iowa State has drawn since 2012 is 61,500, against Northern Iowa in 2015.",
     "w": [
-     "Iowa State"
+     "Iowa State",
+     "Northern Iowa"
     ]
    },
    {
@@ -350,6 +346,7 @@
    {
     "t": "The biggest crowd West Virginia has drawn since 2012 is 62,108, against Pittsburgh in 2025.",
     "w": [
+     "Pittsburgh",
      "West Virginia"
     ]
    },
@@ -407,6 +404,7 @@
     "on": "08-23",
     "t": "In 2025, Kansas drew 41,525 against Fresno State.",
     "w": [
+     "Fresno State",
      "Kansas"
     ]
    },
@@ -414,14 +412,16 @@
     "on": "08-26",
     "t": "In 2017, BYU drew 55,427 against Portland State.",
     "w": [
-     "BYU"
+     "BYU",
+     "Portland State"
     ]
    },
    {
     "on": "08-28",
     "t": "In 2014, Arizona State drew 52,133 against Weber State.",
     "w": [
-     "Arizona State"
+     "Arizona State",
+     "Weber State"
     ]
    },
    {
@@ -436,20 +436,23 @@
     "on": "08-30",
     "t": "In 2025, BYU drew 64,494 against Portland State.",
     "w": [
-     "BYU"
+     "BYU",
+     "Portland State"
     ]
    },
    {
     "on": "08-31",
     "t": "In 2024, BYU drew 63,712 against Southern Illinois.",
     "w": [
-     "BYU"
+     "BYU",
+     "Southern Illinois"
     ]
    },
    {
     "on": "09-01",
     "t": "In 2012, West Virginia drew 59,120 against Marshall.",
     "w": [
+     "Marshall",
      "West Virginia"
     ]
    },
@@ -457,49 +460,48 @@
     "on": "09-02",
     "t": "In 2017, Iowa State drew 61,500 against Northern Iowa.",
     "w": [
-     "Iowa State"
+     "Iowa State",
+     "Northern Iowa"
     ]
    },
    {
     "on": "09-03",
     "t": "In 2016, Iowa State drew 60,629 against Northern Iowa.",
     "w": [
-     "Iowa State"
+     "Iowa State",
+     "Northern Iowa"
     ]
    },
    {
     "on": "09-04",
     "t": "In 2021, Iowa State drew 61,500 against Northern Iowa.",
     "w": [
-     "Iowa State"
+     "Iowa State",
+     "Northern Iowa"
     ]
    },
    {
     "on": "09-05",
     "t": "In 2015, Iowa State drew 61,500 against Northern Iowa.",
     "w": [
-     "Iowa State"
+     "Iowa State",
+     "Northern Iowa"
     ]
    },
    {
     "on": "09-06",
     "t": "In 2025, BYU drew 64,692 against Stanford.",
     "w": [
-     "BYU"
-    ]
-   },
-   {
-    "on": "09-07",
-    "t": "In 2013, BYU drew 63,197 against Texas.",
-    "w": [
-     "BYU"
+     "BYU",
+     "Stanford"
     ]
    },
    {
     "on": "09-08",
     "t": "In 2012, BYU drew 60,314 against Weber State.",
     "w": [
-     "BYU"
+     "BYU",
+     "Weber State"
     ]
    },
    {
@@ -530,13 +532,15 @@
     "on": "09-12",
     "t": "In 2015, BYU drew 63,470 against Boise State.",
     "w": [
-     "BYU"
+     "BYU",
+     "Boise State"
     ]
    },
    {
     "on": "09-13",
     "t": "In 2025, West Virginia drew 62,108 against Pittsburgh.",
     "w": [
+     "Pittsburgh",
      "West Virginia"
     ]
    },
@@ -544,13 +548,15 @@
     "on": "09-14",
     "t": "In 2013, Arizona State drew 66,155 against Wisconsin.",
     "w": [
-     "Arizona State"
+     "Arizona State",
+     "Wisconsin"
     ]
    },
    {
     "on": "09-15",
     "t": "In 2012, Texas Tech drew 58,955 against New Mexico.",
     "w": [
+     "New Mexico",
      "Texas Tech"
     ]
    },
@@ -558,14 +564,16 @@
     "on": "09-16",
     "t": "In 2017, BYU drew 61,143 against Wisconsin.",
     "w": [
-     "BYU"
+     "BYU",
+     "Wisconsin"
     ]
    },
    {
     "on": "09-17",
     "t": "In 2016, BYU drew 62,904 against UCLA.",
     "w": [
-     "BYU"
+     "BYU",
+     "UCLA"
     ]
    },
    {
@@ -580,14 +588,8 @@
     "on": "09-19",
     "t": "In 2015, Oklahoma State drew 54,351 against UTSA.",
     "w": [
-     "Oklahoma State"
-    ]
-   },
-   {
-    "on": "09-20",
-    "t": "In 2014, West Virginia drew 61,908 against Oklahoma.",
-    "w": [
-     "West Virginia"
+     "Oklahoma State",
+     "UTSA"
     ]
    },
    {
@@ -615,24 +617,19 @@
     ]
    },
    {
-    "on": "09-24",
-    "t": "In 2022, Texas Tech drew 60,975 against Texas.",
-    "w": [
-     "Texas Tech"
-    ]
-   },
-   {
     "on": "09-25",
     "t": "In 2014, Arizona State drew 60,876 against UCLA.",
     "w": [
-     "Arizona State"
+     "Arizona State",
+     "UCLA"
     ]
    },
    {
     "on": "09-26",
     "t": "In 2015, Arizona State drew 61,904 against USC.",
     "w": [
-     "Arizona State"
+     "Arizona State",
+     "USC"
     ]
    },
    {
@@ -647,7 +644,8 @@
     "on": "09-28",
     "t": "In 2013, Arizona State drew 64,987 against USC.",
     "w": [
-     "Arizona State"
+     "Arizona State",
+     "USC"
     ]
    },
    {
@@ -662,7 +660,8 @@
     "on": "09-30",
     "t": "In 2016, BYU drew 62,230 against Toledo.",
     "w": [
-     "BYU"
+     "BYU",
+     "Toledo"
     ]
    },
    {
@@ -702,14 +701,7 @@
     "t": "In 2012, BYU drew 63,086 against Utah State.",
     "w": [
      "BYU",
-     "Utah"
-    ]
-   },
-   {
-    "on": "10-06",
-    "t": "In 2012, Texas Tech drew 60,800 against Oklahoma.",
-    "w": [
-     "Texas Tech"
+     "Utah State"
     ]
    },
    {
@@ -732,7 +724,8 @@
     "on": "10-09",
     "t": "In 2021, BYU drew 63,470 against Boise State.",
     "w": [
-     "BYU"
+     "BYU",
+     "Boise State"
     ]
    },
    {
@@ -763,20 +756,23 @@
     "on": "10-13",
     "t": "In 2012, BYU drew 63,489 against Oregon State.",
     "w": [
-     "BYU"
+     "BYU",
+     "Oregon State"
     ]
    },
    {
     "on": "10-14",
     "t": "In 2016, BYU drew 62,184 against Mississippi State.",
     "w": [
-     "BYU"
+     "BYU",
+     "Mississippi State"
     ]
    },
    {
     "on": "10-15",
     "t": "In 2022, BYU drew 63,470 against Arkansas.",
     "w": [
+     "Arkansas",
      "BYU"
     ]
    },
@@ -789,17 +785,11 @@
     ]
    },
    {
-    "on": "10-17",
-    "t": "In 2015, Kansas State drew 52,867 against Oklahoma.",
-    "w": [
-     "Kansas State"
-    ]
-   },
-   {
     "on": "10-18",
     "t": "In 2012, Arizona State drew 71,004 against Oregon.",
     "w": [
-     "Arizona State"
+     "Arizona State",
+     "Oregon"
     ]
    },
    {
@@ -854,7 +844,8 @@
     "on": "10-25",
     "t": "In 2013, BYU drew 62,954 against Boise State.",
     "w": [
-     "BYU"
+     "BYU",
+     "Boise State"
     ]
    },
    {
@@ -893,7 +884,8 @@
     "on": "10-30",
     "t": "In 2021, BYU drew 57,685 against Virginia.",
     "w": [
-     "BYU"
+     "BYU",
+     "Virginia"
     ]
    },
    {
@@ -921,13 +913,6 @@
     ]
    },
    {
-    "on": "11-03",
-    "t": "In 2012, Texas Tech drew 60,879 against Texas.",
-    "w": [
-     "Texas Tech"
-    ]
-   },
-   {
     "on": "11-04",
     "t": "In 2023, Iowa State drew 61,500 against Kansas.",
     "w": [
@@ -936,17 +921,11 @@
     ]
    },
    {
-    "on": "11-05",
-    "t": "In 2016, Texas Tech drew 60,803 against Texas.",
-    "w": [
-     "Texas Tech"
-    ]
-   },
-   {
     "on": "11-06",
     "t": "In 2021, BYU drew 63,470 against Idaho State.",
     "w": [
-     "BYU"
+     "BYU",
+     "Idaho State"
     ]
    },
    {
@@ -961,7 +940,8 @@
     "on": "11-08",
     "t": "In 2014, Arizona State drew 65,870 against Notre Dame.",
     "w": [
-     "Arizona State"
+     "Arizona State",
+     "Notre Dame"
     ]
    },
    {
@@ -976,7 +956,8 @@
     "on": "11-10",
     "t": "In 2012, BYU drew 61,009 against Idaho.",
     "w": [
-     "BYU"
+     "BYU",
+     "Idaho"
     ]
    },
    {
@@ -992,7 +973,7 @@
     "t": "In 2016, BYU drew 59,302 against Southern Utah.",
     "w": [
      "BYU",
-     "Utah"
+     "Southern Utah"
     ]
    },
    {
@@ -1001,13 +982,6 @@
     "w": [
      "Oklahoma State",
      "TCU"
-    ]
-   },
-   {
-    "on": "11-14",
-    "t": "In 2015, West Virginia drew 56,736 against Texas.",
-    "w": [
-     "West Virginia"
     ]
    },
    {
@@ -1035,20 +1009,6 @@
     ]
    },
    {
-    "on": "11-18",
-    "t": "In 2023, BYU drew 63,714 against Oklahoma.",
-    "w": [
-     "BYU"
-    ]
-   },
-   {
-    "on": "11-19",
-    "t": "In 2016, West Virginia drew 57,645 against Oklahoma.",
-    "w": [
-     "West Virginia"
-    ]
-   },
-   {
     "on": "11-20",
     "t": "In 2021, Texas Tech drew 53,169 against Oklahoma State.",
     "w": [
@@ -1070,13 +1030,6 @@
     "w": [
      "Iowa State",
      "Kansas"
-    ]
-   },
-   {
-    "on": "11-23",
-    "t": "In 2018, West Virginia drew 60,713 against Oklahoma.",
-    "w": [
-     "West Virginia"
     ]
    },
    {
@@ -1104,20 +1057,6 @@
     ]
    },
    {
-    "on": "11-27",
-    "t": "In 2021, Oklahoma State drew 54,990 against Oklahoma.",
-    "w": [
-     "Oklahoma State"
-    ]
-   },
-   {
-    "on": "11-28",
-    "t": "In 2015, Oklahoma State drew 58,231 against Oklahoma.",
-    "w": [
-     "Oklahoma State"
-    ]
-   },
-   {
     "on": "11-29",
     "t": "In 2025, BYU drew 60,389 against UCF.",
     "w": [
@@ -1137,6 +1076,7 @@
     "on": "12-01",
     "t": "In 2018, Iowa State drew 56,738 against Drake.",
     "w": [
+     "Drake",
      "Iowa State"
     ]
    },
@@ -1144,6 +1084,7 @@
     "on": "12-02",
     "t": "In 2017, UCF drew 41,433 against Memphis.",
     "w": [
+     "Memphis",
      "UCF"
     ]
    },
@@ -1183,7 +1124,8 @@
     "on": "12-07",
     "t": "In 2013, Arizona State drew 69,535 against Stanford.",
     "w": [
-     "Arizona State"
+     "Arizona State",
+     "Stanford"
     ]
    }
   ],
@@ -1229,7 +1171,7 @@
     ]
    },
    {
-    "t": "Arizona State does not play Cincinnati, Houston, Iowa State, TCU, Utah and West Virginia in 2026.",
+    "t": "Arizona State does not play Cincinnati, Houston, Iowa State, TCU, Utah and West Virginia in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "Arizona State",
      "Cincinnati",
@@ -1255,7 +1197,7 @@
     ]
    },
    {
-    "t": "Arizona does not play UCF, Baylor, Colorado, Houston, Kansas and Oklahoma State in 2026.",
+    "t": "Arizona does not play UCF, Baylor, Colorado, Houston, Kansas and Oklahoma State in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "Arizona",
      "Baylor",
@@ -1269,11 +1211,14 @@
    {
     "t": "Arizona play Northern Arizona, Northern Illinois and Washington State out of conference in 2026.",
     "w": [
-     "Arizona"
+     "Arizona",
+     "Northern Arizona",
+     "Northern Illinois",
+     "Washington State"
     ]
    },
    {
-    "t": "Arizona plays 5 of its 9 2026 conference games at home.",
+    "t": "Arizona plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
     "w": [
      "Arizona"
     ]
@@ -1300,7 +1245,7 @@
     ]
    },
    {
-    "t": "BYU does not play Houston, Kansas State, Oklahoma State, Colorado, Texas Tech and West Virginia in 2026.",
+    "t": "BYU does not play Houston, Kansas State, Oklahoma State, Colorado, Texas Tech and West Virginia in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "BYU",
      "Colorado",
@@ -1315,12 +1260,13 @@
     "t": "BYU play Utah Tech, Colorado State and Notre Dame out of conference in 2026.",
     "w": [
      "BYU",
-     "Colorado",
-     "Utah"
+     "Colorado State",
+     "Notre Dame",
+     "Utah Tech"
     ]
    },
    {
-    "t": "BYU plays 5 of its 9 2026 conference games at home.",
+    "t": "BYU plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
     "w": [
      "BYU"
     ]
@@ -1328,6 +1274,7 @@
    {
     "t": "Baylor and Auburn meet at Mercedes-Benz Stadium in 2026 \u2014 neither team's home field.",
     "w": [
+     "Auburn",
      "Baylor"
     ]
    },
@@ -1339,7 +1286,7 @@
     ]
    },
    {
-    "t": "Baylor does not play West Virginia, Arizona, Cincinnati, Kansas State, Oklahoma State and Utah in 2026.",
+    "t": "Baylor does not play West Virginia, Arizona, Cincinnati, Kansas State, Oklahoma State and Utah in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "Arizona",
      "Baylor",
@@ -1353,11 +1300,14 @@
    {
     "t": "Baylor play Auburn, Prairie View A&M and Louisiana Tech out of conference in 2026.",
     "w": [
-     "Baylor"
+     "Auburn",
+     "Baylor",
+     "Louisiana Tech",
+     "Prairie View A&M"
     ]
    },
    {
-    "t": "Cincinnati does not play Arizona State, Baylor, Kansas, Oklahoma State, TCU and UCF in 2026.",
+    "t": "Cincinnati does not play Arizona State, Baylor, Kansas, Oklahoma State, TCU and UCF in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "Arizona State",
      "Baylor",
@@ -1378,11 +1328,14 @@
    {
     "t": "Colorado play Georgia Tech, Weber State and Northwestern out of conference in 2026.",
     "w": [
-     "Colorado"
+     "Colorado",
+     "Georgia Tech",
+     "Northwestern",
+     "Weber State"
     ]
    },
    {
-    "t": "Colorado plays 5 of its 9 2026 conference games at home.",
+    "t": "Colorado plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
     "w": [
      "Colorado"
     ]
@@ -1401,7 +1354,7 @@
     ]
    },
    {
-    "t": "Houston does not play BYU, Iowa State, Kansas, Arizona, Arizona State and TCU in 2026.",
+    "t": "Houston does not play BYU, Iowa State, Kansas, Arizona, Arizona State and TCU in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "Arizona",
      "Arizona State",
@@ -1415,17 +1368,20 @@
    {
     "t": "Houston play Oregon State, Southern and Georgia Southern out of conference in 2026.",
     "w": [
-     "Houston"
+     "Georgia Southern",
+     "Houston",
+     "Oregon State",
+     "Southern"
     ]
    },
    {
-    "t": "Houston plays 4 of its 9 2026 conference games at home.",
+    "t": "Houston plays 4 of its 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
     "w": [
      "Houston"
     ]
    },
    {
-    "t": "Iowa State does not play Houston, Texas Tech, Arizona State, Colorado, Kansas and TCU in 2026.",
+    "t": "Iowa State does not play Houston, Texas Tech, Arizona State, Colorado, Kansas and TCU in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "Arizona State",
      "Colorado",
@@ -1439,17 +1395,20 @@
    {
     "t": "Iowa State play Southeast Missouri State, Iowa and Bowling Green out of conference in 2026.",
     "w": [
-     "Iowa State"
+     "Bowling Green",
+     "Iowa",
+     "Iowa State",
+     "Southeast Missouri State"
     ]
    },
    {
-    "t": "Iowa State plays 5 of its 9 2026 conference games at home.",
+    "t": "Iowa State plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
     "w": [
      "Iowa State"
     ]
    },
    {
-    "t": "Kansas State does not play BYU, West Virginia, Baylor, Texas Tech, UCF and Utah in 2026.",
+    "t": "Kansas State does not play BYU, West Virginia, Baylor, Texas Tech, UCF and Utah in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "BYU",
      "Baylor",
@@ -1463,17 +1422,20 @@
    {
     "t": "Kansas State play Nicholls, Washington State and Tulane out of conference in 2026.",
     "w": [
-     "Kansas State"
+     "Kansas State",
+     "Nicholls",
+     "Tulane",
+     "Washington State"
     ]
    },
    {
-    "t": "Kansas State plays 4 of its 9 2026 conference games at home.",
+    "t": "Kansas State plays 4 of its 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
     "w": [
      "Kansas State"
     ]
    },
    {
-    "t": "Kansas does not play Colorado, Houston, Arizona, Cincinnati, Iowa State and Texas Tech in 2026.",
+    "t": "Kansas does not play Colorado, Houston, Arizona, Cincinnati, Iowa State and Texas Tech in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "Arizona",
      "Cincinnati",
@@ -1485,17 +1447,12 @@
     ]
    },
    {
-    "t": "Kansas play Long Island University, Missouri and Middle Tennessee out of conference in 2026.",
-    "w": [
-     "Kansas"
-    ]
-   },
-   {
     "t": "Nine conference games will not split evenly, so in 2026 8 teams get five home games and the other 8 get four."
    },
    {
     "t": "North Carolina and TCU meet at Aviva Stadium in 2026 \u2014 neither team's home field.",
     "w": [
+     "North Carolina",
      "TCU"
     ]
    },
@@ -1503,7 +1460,7 @@
     "t": "Of the 120 pairings this sixteen-team league could produce, 119 have happened at least once. The rotation is still working through the rest."
    },
    {
-    "t": "Oklahoma State does not play BYU, TCU, Utah, Arizona, Baylor and Cincinnati in 2026.",
+    "t": "Oklahoma State does not play BYU, TCU, Utah, Arizona, Baylor and Cincinnati in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "Arizona",
      "BYU",
@@ -1517,11 +1474,14 @@
    {
     "t": "Oklahoma State play Tulsa, Oregon and Murray State out of conference in 2026.",
     "w": [
-     "Oklahoma State"
+     "Murray State",
+     "Oklahoma State",
+     "Oregon",
+     "Tulsa"
     ]
    },
    {
-    "t": "Oklahoma State plays 4 of its 9 2026 conference games at home.",
+    "t": "Oklahoma State plays 4 of its 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
     "w": [
      "Oklahoma State"
     ]
@@ -1535,11 +1495,14 @@
    {
     "t": "TCU play North Carolina, Grambling and Arkansas State out of conference in 2026.",
     "w": [
+     "Arkansas State",
+     "Grambling",
+     "North Carolina",
      "TCU"
     ]
    },
    {
-    "t": "TCU plays 5 of its 9 2026 conference games at home.",
+    "t": "TCU plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
     "w": [
      "TCU"
     ]
@@ -1547,7 +1510,9 @@
    {
     "t": "Texas Tech play Abilene Christian, Oregon State and Sam Houston out of conference in 2026.",
     "w": [
-     "Houston",
+     "Abilene Christian",
+     "Oregon State",
+     "Sam Houston",
      "Texas Tech"
     ]
    },
@@ -1567,7 +1532,7 @@
     ]
    },
    {
-    "t": "The Bearcats play 4 of their 9 2026 conference games at home.",
+    "t": "The Bearcats play 4 of their 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
     "w": [
      "Cincinnati"
     ]
@@ -1575,11 +1540,14 @@
    {
     "t": "The Bearcats play Boston College, Western Carolina and Miami (OH) out of conference in 2026.",
     "w": [
-     "Cincinnati"
+     "Boston College",
+     "Cincinnati",
+     "Miami (OH)",
+     "Western Carolina"
     ]
    },
    {
-    "t": "The Bears play 4 of their 9 2026 conference games at home.",
+    "t": "The Bears play 4 of their 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
     "w": [
      "Baylor"
     ]
@@ -1615,7 +1583,7 @@
     "t": "The Big 12 plays 6 non-conference games against the Pac-12 in 2026."
    },
    {
-    "t": "The Buffaloes do not play Kansas, Arizona, BYU, Iowa State, TCU and West Virginia in 2026.",
+    "t": "The Buffaloes do not play Kansas, Arizona, BYU, Iowa State, TCU and West Virginia in 2026 \u2014 6 of the 15 teams they could have drawn.",
     "w": [
      "Arizona",
      "BYU",
@@ -1627,7 +1595,10 @@
     ]
    },
    {
-    "t": "The Cy-Hawk game is on the 2026 card, at Iowa."
+    "t": "The Cy-Hawk game is on the 2026 card, at Iowa.",
+    "w": [
+     "Iowa"
+    ]
    },
    {
     "t": "The Holy War is on the 2026 card, at Utah.",
@@ -1636,7 +1607,7 @@
     ]
    },
    {
-    "t": "The Horned Frogs do not play Oklahoma State, Arizona State, Cincinnati, Colorado, Houston and Iowa State in 2026.",
+    "t": "The Horned Frogs do not play Oklahoma State, Arizona State, Cincinnati, Colorado, Houston and Iowa State in 2026 \u2014 6 of the 15 teams they could have drawn.",
     "w": [
      "Arizona State",
      "Cincinnati",
@@ -1648,13 +1619,13 @@
     ]
    },
    {
-    "t": "The Jayhawks play 4 of their 9 2026 conference games at home.",
+    "t": "The Jayhawks play 4 of their 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
     "w": [
      "Kansas"
     ]
    },
    {
-    "t": "The Knights do not play Arizona, Utah, Cincinnati, Kansas State, Texas Tech and West Virginia in 2026.",
+    "t": "The Knights do not play Arizona, Utah, Cincinnati, Kansas State, Texas Tech and West Virginia in 2026 \u2014 6 of the 15 teams they could have drawn.",
     "w": [
      "Arizona",
      "Cincinnati",
@@ -1666,7 +1637,7 @@
     ]
    },
    {
-    "t": "The Mountaineers do not play Baylor, Kansas State, Arizona State, BYU, Colorado and UCF in 2026.",
+    "t": "The Mountaineers do not play Baylor, Kansas State, Arizona State, BYU, Colorado and UCF in 2026 \u2014 6 of the 15 teams they could have drawn.",
     "w": [
      "Arizona State",
      "BYU",
@@ -1678,7 +1649,7 @@
     ]
    },
    {
-    "t": "The Red Raiders do not play Iowa State, BYU, Kansas, Kansas State, UCF and Utah in 2026.",
+    "t": "The Red Raiders do not play Iowa State, BYU, Kansas, Kansas State, UCF and Utah in 2026 \u2014 6 of the 15 teams they could have drawn.",
     "w": [
      "BYU",
      "Iowa State",
@@ -1690,7 +1661,7 @@
     ]
    },
    {
-    "t": "The Red Raiders play 5 of their 9 2026 conference games at home.",
+    "t": "The Red Raiders play 5 of their 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
     "w": [
      "Texas Tech"
     ]
@@ -1708,13 +1679,7 @@
     ]
    },
    {
-    "t": "The Sun Devils play 4 of their 9 2026 conference games at home.",
-    "w": [
-     "Arizona State"
-    ]
-   },
-   {
-    "t": "The Sun Devils play Morgan State, Texas A&M and Hawai'i out of conference in 2026.",
+    "t": "The Sun Devils play 4 of their 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
     "w": [
      "Arizona State"
     ]
@@ -1739,7 +1704,7 @@
     ]
    },
    {
-    "t": "The Utes play 4 of their 9 2026 conference games at home.",
+    "t": "The Utes play 4 of their 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
     "w": [
      "Utah"
     ]
@@ -1747,17 +1712,20 @@
    {
     "t": "UCF play Bethune-Cookman, Pittsburgh and Georgia State out of conference in 2026.",
     "w": [
+     "Bethune-Cookman",
+     "Georgia State",
+     "Pittsburgh",
      "UCF"
     ]
    },
    {
-    "t": "UCF plays 5 of its 9 2026 conference games at home.",
+    "t": "UCF plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
     "w": [
      "UCF"
     ]
    },
    {
-    "t": "Utah does not play Oklahoma State, UCF, Arizona State, Baylor, Kansas State and Texas Tech in 2026.",
+    "t": "Utah does not play Oklahoma State, UCF, Arizona State, Baylor, Kansas State and Texas Tech in 2026 \u2014 6 of the 15 teams it could have drawn.",
     "w": [
      "Arizona State",
      "Baylor",
@@ -1771,23 +1739,30 @@
    {
     "t": "Utah play Idaho, Arkansas and Utah State out of conference in 2026.",
     "w": [
-     "Utah"
+     "Arkansas",
+     "Idaho",
+     "Utah",
+     "Utah State"
     ]
    },
    {
     "t": "West Virginia and Virginia meet at Bank of America Stadium in 2026 \u2014 neither team's home field.",
     "w": [
+     "Virginia",
      "West Virginia"
     ]
    },
    {
     "t": "West Virginia play Coastal Carolina, UT Martin and Virginia out of conference in 2026.",
     "w": [
+     "Coastal Carolina",
+     "UT Martin",
+     "Virginia",
      "West Virginia"
     ]
    },
    {
-    "t": "West Virginia plays 5 of its 9 2026 conference games at home.",
+    "t": "West Virginia plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
     "w": [
      "West Virginia"
     ]
@@ -1860,14 +1835,14 @@
     "t": "BYU and Utah State have met 11 times since 2011 in the Old Wagon Wheel game. In those games BYU leads 8\u20133.",
     "w": [
      "BYU",
-     "Utah"
+     "Utah State"
     ]
    },
    {
     "t": "BYU and Utah State play for the Old Wagon Wheel. BYU won it last, in 2022.",
     "w": [
      "BYU",
-     "Utah"
+     "Utah State"
     ]
    },
    {
@@ -1960,25 +1935,29 @@
    {
     "t": "Cincinnati and Louisville have met 3 times since 2011 in the Keg of Nails game. In those games Louisville leads 2\u20131.",
     "w": [
-     "Cincinnati"
+     "Cincinnati",
+     "Louisville"
     ]
    },
    {
     "t": "Cincinnati and Louisville play for the Keg of Nails. Louisville won it last, in 2013.",
     "w": [
-     "Cincinnati"
+     "Cincinnati",
+     "Louisville"
     ]
    },
    {
     "t": "Cincinnati and Miami (OH) have met 13 times since 2011 in the Battle for the Victory Bell. In those games Cincinnati leads 12\u20131.",
     "w": [
-     "Cincinnati"
+     "Cincinnati",
+     "Miami (OH)"
     ]
    },
    {
     "t": "Cincinnati and Miami (OH) play for the Victory Bell. Cincinnati holds it, on the 2024 result.",
     "w": [
-     "Cincinnati"
+     "Cincinnati",
+     "Miami (OH)"
     ]
    },
    {
@@ -1996,7 +1975,8 @@
    {
     "t": "Colorado and Colorado State have met 11 times since 2011 in the Rocky Mountain Showdown. In those games Colorado leads 9\u20132.",
     "w": [
-     "Colorado"
+     "Colorado",
+     "Colorado State"
     ]
    },
    {
@@ -2024,13 +2004,15 @@
    {
     "t": "Houston and Rice have met 10 times since 2011 in the Bayou Bucket game. In those games Houston leads 9\u20131.",
     "w": [
-     "Houston"
+     "Houston",
+     "Rice"
     ]
    },
    {
     "t": "Houston and Rice play for the Bayou Bucket. Houston holds it, on the 2025 result.",
     "w": [
-     "Houston"
+     "Houston",
+     "Rice"
     ]
    },
    {
@@ -2054,12 +2036,14 @@
    {
     "t": "Iowa State and Iowa have met 14 times since 2011 in the Cy-Hawk game. In those games Iowa leads 8\u20136.",
     "w": [
+     "Iowa",
      "Iowa State"
     ]
    },
    {
     "t": "Iowa State and Iowa play for the Cy-Hawk Trophy. Iowa State holds it, on the 2025 result.",
     "w": [
+     "Iowa",
      "Iowa State"
     ]
    },
@@ -2170,7 +2154,10 @@
     ]
    },
    {
-    "t": "Louisville has won the last 2 meetings in the Keg of Nails game, most recently in 2013."
+    "t": "Louisville has won the last 2 meetings in the Keg of Nails game, most recently in 2013.",
+    "w": [
+     "Louisville"
+    ]
    },
    {
     "t": "Oklahoma State has reached the Big 12 championship game twice without winning it.",
@@ -2209,56 +2196,16 @@
     ]
    },
    {
-    "t": "Oklahoma beat Baylor 30\u201323 in the 2019 Big 12 championship game.",
-    "w": [
-     "Baylor"
-    ]
-   },
-   {
-    "t": "Oklahoma beat Iowa State 27\u201321 in the 2020 Big 12 championship game.",
-    "w": [
-     "Iowa State"
-    ]
-   },
-   {
-    "t": "Oklahoma beat TCU 41\u201317 in the 2017 Big 12 championship game.",
-    "w": [
-     "TCU"
-    ]
-   },
-   {
-    "t": "Oklahoma has won the Big 12 championship game 3 times since the game returned in 2017."
-   },
-   {
-    "t": "Oklahoma took the 2015 conference season outright at 8\u20130."
-   },
-   {
-    "t": "Oklahoma took the 2016 conference season outright at 8\u20130."
-   },
-   {
-    "t": "Oklahoma took the 2017 conference season outright at 7\u20131."
-   },
-   {
-    "t": "Oklahoma took the 2018 conference season outright at 8\u20130."
-   },
-   {
-    "t": "Oklahoma was 79\u201322 in Big 12 conference games from 2011 to 2023, 78% \u2014 the best in the league."
-   },
-   {
-    "t": "Oklahoma's best Big 12 season is 2015, at 8\u20130 \u2014 the best of the 13 they played from 2011 to 2023."
-   },
-   {
-    "t": "Oklahoma's longest run of Big 12 wins from 2011 to 2023 was 17 in a row, from 2015 to 2017 \u2014 the best in the league."
-   },
-   {
     "t": "TCU and SMU have met 14 times since 2011 in the Iron Skillet game. In those games TCU leads 10\u20134.",
     "w": [
+     "SMU",
      "TCU"
     ]
    },
    {
     "t": "TCU and SMU play for the Iron Skillet. TCU holds it, on the 2025 result.",
     "w": [
+     "SMU",
      "TCU"
     ]
    },
@@ -2329,27 +2276,6 @@
     "w": [
      "Texas Tech"
     ]
-   },
-   {
-    "t": "Texas beat Oklahoma State 49\u201321 in the 2023 Big 12 championship game.",
-    "w": [
-     "Oklahoma State"
-    ]
-   },
-   {
-    "t": "Texas has won the Big 12 championship game once since the game returned in 2017."
-   },
-   {
-    "t": "Texas took the 2023 conference season outright at 8\u20130."
-   },
-   {
-    "t": "Texas was 62\u201339 in Big 12 conference games from 2011 to 2023, 61% \u2014 the third-best in the league."
-   },
-   {
-    "t": "Texas's best Big 12 season is 2023, at 8\u20130 \u2014 the best of the 13 they played from 2011 to 2023."
-   },
-   {
-    "t": "Texas's longest run of Big 12 wins from 2011 to 2023 was 10 in a row, across 2022 and 2023 \u2014 the third-best in the league."
    },
    {
     "t": "The Bearcats are 9\u201318 in Big 12 conference games since joining in 2023, 33% \u2014 the third-lowest in the league.",
@@ -2454,12 +2380,6 @@
     ]
    },
    {
-    "t": "The most lopsided conference game of 2020 was Oklahoma 62, Kansas 9 \u2014 a 53-point margin.",
-    "w": [
-     "Kansas"
-    ]
-   },
-   {
     "t": "The most lopsided conference game of 2021 was Iowa State 59, Kansas 7 \u2014 a 52-point margin.",
     "w": [
      "Iowa State",
@@ -2471,12 +2391,6 @@
     "w": [
      "Kansas State",
      "Oklahoma State"
-    ]
-   },
-   {
-    "t": "The most lopsided conference game of 2023 was Texas 57, Texas Tech 7 \u2014 a 50-point margin.",
-    "w": [
-     "Texas Tech"
     ]
    },
    {
@@ -2503,24 +2417,28 @@
    {
     "t": "The most one-sided meeting in the Battle for the Victory Bell since 2011 was 2012: Cincinnati by 38 over Miami (OH).",
     "w": [
-     "Cincinnati"
+     "Cincinnati",
+     "Miami (OH)"
     ]
    },
    {
     "t": "The most one-sided meeting in the Battle of the Brothers since 2011 was 2024: Utah by 17 over Utah State.",
     "w": [
-     "Utah"
+     "Utah",
+     "Utah State"
     ]
    },
    {
     "t": "The most one-sided meeting in the Bayou Bucket game since 2011 was 2011: Houston by 39 over Rice.",
     "w": [
-     "Houston"
+     "Houston",
+     "Rice"
     ]
    },
    {
     "t": "The most one-sided meeting in the Cy-Hawk game since 2011 was 2016: Iowa by 39 over Iowa State.",
     "w": [
+     "Iowa",
      "Iowa State"
     ]
    },
@@ -2534,6 +2452,7 @@
    {
     "t": "The most one-sided meeting in the Iron Skillet game since 2011 was 2014: TCU by 56 over SMU.",
     "w": [
+     "SMU",
      "TCU"
     ]
    },
@@ -2541,7 +2460,7 @@
     "t": "The most one-sided meeting in the Old Wagon Wheel game since 2011 was 2019: BYU by 28 over Utah State.",
     "w": [
      "BYU",
-     "Utah"
+     "Utah State"
     ]
    },
    {
@@ -2554,7 +2473,8 @@
    {
     "t": "The most one-sided meeting in the Rocky Mountain Showdown since 2011 was 2016: Colorado by 37 over Colorado State.",
     "w": [
-     "Colorado"
+     "Colorado",
+     "Colorado State"
     ]
    },
    {
@@ -2588,12 +2508,14 @@
    {
     "t": "The most one-sided meeting in the War on I-4 since 2011 was 2015: South Florida by 41 over UCF.",
     "w": [
+     "South Florida",
      "UCF"
     ]
    },
    {
     "t": "UCF and South Florida have met 10 times since 2011 in the War on I-4. In those games UCF leads 8\u20132.",
     "w": [
+     "South Florida",
      "UCF"
     ]
    },
@@ -2612,7 +2534,8 @@
    {
     "t": "Utah and Utah State have met 4 times since 2011 in the Battle of the Brothers. In those games Utah leads 3\u20131.",
     "w": [
-     "Utah"
+     "Utah",
+     "Utah State"
     ]
    },
    {
@@ -2630,6 +2553,7 @@
    {
     "t": "West Virginia and Pittsburgh have met 5 times since 2011 in the Backyard Brawl. In those games West Virginia leads 3\u20132.",
     "w": [
+     "Pittsburgh",
      "West Virginia"
     ]
    },

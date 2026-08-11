@@ -121,6 +121,27 @@ check(len(filled) >= 8,
       f"only {len(filled)} teams got a fill-rate fact; the K-State exclusion "
       f"is not being tested by anything")
 
+# --- nobody who left -------------------------------------------------------
+# The rivalries were filtered first and the rest of the facts were not, so the
+# front page went on saying "Texas took the 2023 conference season outright at
+# 8-0" for a while. The tags are what the filter runs on, and they were built
+# from teams.json — which no longer contains Texas, so the departed teams were
+# untagged and therefore invisible to a check written to catch them.
+DEPARTED = facts.departed(by_year)
+check({"Texas", "Oklahoma"} <= DEPARTED,
+      f"departed() has stopped seeing the leavers: {sorted(DEPARTED)}")
+for f in every:
+    bad = set(f.get("w") or []) & DEPARTED
+    check(not bad, f"a fact about {sorted(bad)}, who left: {f['t']!r}")
+
+# Independent of the tags, because the tags are the thing that was broken.
+LEFT_RE = re.compile(r"\b(Texas|Oklahoma|Missouri|Nebraska)\b(?! State| Tech)")
+named = [f["t"] for f in every if LEFT_RE.search(f["t"])]
+check(not named,
+      f"{len(named)} fact(s) name a departed school in their text even though "
+      f"the tags say otherwise: {named[:2]}")
+
+
 # --- the dated-fact rule ---------------------------------------------------
 dated = [f for f in every if f.get("on")]
 undated = [f for f in every if not f.get("on")]
