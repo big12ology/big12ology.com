@@ -127,6 +127,20 @@
 }
 .b12-theme svg { width: 14px; height: 14px; display: block; }
 
+/* ==== "in figures" ======================================================
+   The generated facts, written out as text on the section they belong to.
+   Two columns where there is room, because 169 one-line entries in a single
+   column is a page nobody scrolls to the end of. Defined here rather than in
+   any one section's stylesheet: the same block appears on pages built by
+   build.py and on the hand-written attendance page, which share only this
+   file. */
+ul.figures { list-style: none; margin: 10px 0 0; padding: 0;
+  columns: 2; column-gap: 30px; font-size: 13.5px; line-height: 1.55; }
+ul.figures li { break-inside: avoid; margin: 0 0 7px;
+  padding-left: 13px; text-indent: -13px; color: var(--b12-dim, #666d7b); }
+ul.figures li::before { content: "· "; color: var(--b12-teal); }
+@media (max-width: 720px) { ul.figures { columns: 1; } }
+
 /* ==== footer ============================================================= */
 /* The page measure, not the prose measure. 880px is the width a paragraph
    wants to be read at, and the footer is not paragraphs — it is two rows of

@@ -31,6 +31,7 @@
   <link rel="stylesheet" href="brand.css?v=42" />
   <script defer src="theme.js?v=1"></script>
   <link rel="stylesheet" href="site/styles.css?v=42" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","creator":{"@type":"Organization","name":"Big12ology","url":"https://big12ology.com/"},"description":"Weekly home-game attendance for all sixteen Big 12 football teams from 2012 onward: crowd, published stadium capacity, percent of capacity, opponent, venue, date and whether the game was a conference game. Hand-verified where the public feeds fall short.","distribution":[{"@type":"DataDownload","contentUrl":"https://big12ology.com/attendance/data/attendance.csv","encodingFormat":"text/csv"}],"isAccessibleForFree":true,"keywords":["Big 12","college football","attendance","stadium capacity","NCAA"],"license":"https://creativecommons.org/licenses/by/4.0/","name":"Big 12 home football attendance, 2012 to date","temporalCoverage":"2012/..","url":"https://big12ology.com/attendance/"}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -89,6 +90,17 @@
       <section id="charts-teams" class="charts"></section>
     </main>
   </div>
+
+  <section class="card" id="figures">
+
+    <h2>Big 12 attendance, in figures</h2>
+
+    <p class="note">Generated from this tracker&rsquo;s own data on every build. The 2020 season is left out of every comparison; the stadiums were shut.</p>
+
+    {{FACTS:attendance}}
+
+  </section>
+
 
   <footer class="b12-footer">
     <p id="source-note" class="srcnote"></p>

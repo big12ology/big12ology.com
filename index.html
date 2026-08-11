@@ -138,10 +138,20 @@ a.card:hover { border-color: var(--accent); }
   color: var(--dim); }
 .tag.new { background: color-mix(in srgb, var(--accent) 16%, transparent);
   color: var(--accent); }
-.deeper { margin: 2px 4px 0; color: var(--dim); font-size: 14px;
-  line-height: 1.7; }
-.deeper a { color: var(--accent2); }
+/* Deep links, as a row of them rather than a sentence with links buried in
+   it. The old version read as prose and its anchor text was written for
+   charm — "tie archaeology" is a nice phrase and nothing anybody types into a
+   search box. These say what the page is, which is both better signage and
+   the only part of this line that was ever doing SEO work. */
+.deeper { margin: 4px 0 0; display: flex; flex-wrap: wrap;
+  align-items: baseline; gap: 8px; font-size: 13.5px; color: var(--dim); }
+.deeper span { font-weight: 600; color: var(--ink); }
+.deeper a { color: var(--accent); text-decoration: none;
+  border: 1px solid var(--line); border-radius: 20px; padding: 4px 12px;
+  background: var(--panel); transition: border-color .15s; }
+.deeper a:hover { border-color: var(--accent); text-decoration: underline; }
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","description":"Unofficial fan-built tools and data about Big 12 football: tiebreaker tracking, schedule structure, attendance history and a weekly pick'em.","name":"Big12ology","publisher":{"@type":"Organization","logo":"https://big12ology.com/brand/big12ology-primary.svg","name":"Big12ology","url":"https://big12ology.com/"},"url":"https://big12ology.com/"}</script>
 </head>
 <body>
 <a class=skip-link href="#main">Skip to content</a>
@@ -260,12 +270,14 @@ a.card:hover { border-color: var(--accent); }
     every home game if you would rather do your own arithmetic.</p>
     <p class=fact hidden data-facts=attendance></p>
   </a>
-  <p class=deeper>Straight to the evergreen bits:
-    <a href="/tiebreaker/history.html">tie archaeology</a>, every
-    final-standings tie 2011–2025 broken step by step ·
-    <a href="/tiebreaker/how.html">the rules</a>, the seven steps in plain
-    English · <a href="/attendance/data/attendance.csv">the attendance
-    data</a> as CSV.</p>
+  <p class=deeper>
+    <span>Straight to it:</span>
+    <a href="/tiebreaker/how.html">Big 12 tiebreaker rules</a>
+    <a href="/tiebreaker/history.html">every tie since 2011, broken step by step</a>
+    <a href="/attendance/#figures">Big 12 attendance records</a>
+    <a href="/schedule/rotation.html">who plays whom, and who they miss</a>
+    <a href="/attendance/data/attendance.csv">attendance data (CSV)</a>
+  </p>
 </main>
 <footer class=b12-footer>
   Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> ·

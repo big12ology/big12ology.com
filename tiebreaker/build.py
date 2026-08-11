@@ -2377,6 +2377,95 @@ def series_card(g, ctx):
             f"any of the six steps below it are read.</p></div>")
 
 
+def figures_block(section, heading, intro):
+    """A page's share of the generated facts, as crawlable text.
+
+    Emits the token rather than the list: tools/assemble.sh fills it from
+    facts.json, so there is one renderer for this and for the hand-written
+    attendance page, which build.py does not write.
+
+    Open, not a <details>. Collapsed content is indexed, but this is the part
+    of the page most likely to answer the question somebody actually typed,
+    and hiding it behind a summary to save scrolling is optimising for the
+    wrong reader.
+    """
+    return (f'<section class=card id=figures>'
+            f'<h2>{esc(heading)}</h2>'
+            f'<p class=note>{intro}</p>'
+            f'{{{{FACTS:{section}}}}}'
+            f'</section>')
+
+
+def jsonld(obj):
+    """A JSON-LD block, escaped for the one thing that can break out of it.
+
+    A `</script>` sequence inside a JSON string ends the element early — the
+    browser is scanning for the tag before it is parsing JSON — so the slash
+    is escaped. Nothing here is attacker-controlled today; team names and
+    venues come from a committed file. It is one line and it stops this from
+    being the place that matters if that ever stops being true.
+    """
+    s = json.dumps(obj, separators=(",", ":"), sort_keys=True)
+    safe = s.replace("</", "<\\/")
+    return f'<script type="application/ld+json">{safe}</script>'
+
+
+def game_jsonld(g, year, url):
+    """SportsEvent for one game, and the trail that gets you to it.
+
+    Every one of these is a real, dated, located event with two named
+    competitors, which is exactly the shape search engines already understand
+    — and the site has 120 of them a season carrying nothing but prose. The
+    fields are the ones schema.org actually defines for a sporting fixture;
+    nothing is invented to fill a slot.
+    """
+    when = g.get("start")
+    if when and g.get("start_tbd"):
+        # CFBD returns a placeholder hour for an unannounced window. Claiming
+        # 04:00 UTC would be a wrong time rather than a missing one, so only
+        # the date is published — which is all anybody has decided.
+        when = when[:10]
+    elif when:
+        when = when.replace(".000Z", "Z")
+
+    ev = {
+        "@context": "https://schema.org",
+        "@type": "SportsEvent",
+        "name": f"{g['away']} at {g['home']}",
+        "sport": "American Football",
+        "url": url,
+        "competitor": [
+            {"@type": "SportsTeam", "name": g["away"]},
+            {"@type": "SportsTeam", "name": g["home"]},
+        ],
+    }
+    if when:
+        ev["startDate"] = when
+    if not g.get("neutral_site"):
+        ev["homeTeam"] = {"@type": "SportsTeam", "name": g["home"]}
+        ev["awayTeam"] = {"@type": "SportsTeam", "name": g["away"]}
+    if g.get("venue"):
+        ev["location"] = {"@type": "Place", "name": g["venue"]}
+    if not g.get("completed"):
+        ev["eventStatus"] = "https://schema.org/EventScheduled"
+        ev["eventAttendanceMode"] = \
+            "https://schema.org/OfflineEventAttendanceMode"
+
+    crumbs = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Big12ology",
+             "item": "https://big12ology.com/"},
+            {"@type": "ListItem", "position": 2, "name": f"{year} schedule",
+             "item": "https://big12ology.com/schedule/"},
+            {"@type": "ListItem", "position": 3,
+             "name": f"{g['away']} at {g['home']}"},
+        ],
+    }
+    return jsonld(ev) + jsonld(crumbs)
+
+
 def build_game_page(g, ctx):
     """One game, everything the build already knows about it."""
     back = (f"<div class=gameback><a href='../'>&#8592; Week "
@@ -3502,7 +3591,11 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          "12 team's expected conference record on every other team's slate.",
          ""),
         ("rotation.html", "The Rotation", "rotation",
-         build_rotation_page(year, games, ctx["teams"]),
+         build_rotation_page(year, games, ctx["teams"])
+         + figures_block(
+             "schedule", "The schedule, in figures",
+             "Generated from the committed schedule on every build, so a "
+             "line that stops being true stops being printed."),
          f"Who each Big 12 team misses in {yr}, the last time they met as "
          "conference opponents, and every pairing's all-time conference "
          "record — 48 of the 120 pairings sit out a season.",
@@ -3511,7 +3604,11 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     hist_frag = os.path.join(HERE, "history", "history_body.html")
     if os.path.exists(hist_frag):
         pages.append(("history.html", "The Archive", "history",
-                      rebase(open(hist_frag).read()),
+                      rebase(open(hist_frag).read())
+                      + figures_block(
+                          "tiebreaker", "The league, in figures",
+                          "Fifteen seasons of conference results, "
+                          "recomputed on every build."),
                       "Every Big 12 tie since 2017, what the tiebreakers "
                       "produced, and where a different reading of the rules "
                       "would have sent a different team to the title game.",
@@ -3615,9 +3712,11 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                         # the schedule section touches /api/*. Deferred and
                         # entirely optional: it fills the consensus card or
                         # leaves it hidden.
-                        head=(f'<script defer '
-                              f'src="/tiebreaker/{asset_v("pickcon.js")}">'
-                              f'</script>' if PICKEM_ENABLED else ""),
+                        head=((f'<script defer '
+                               f'src="/tiebreaker/{asset_v("pickcon.js")}">'
+                               f'</script>' if PICKEM_ENABLED else "")
+                              + game_jsonld(g, year,
+                                            f"{sched_canon}game/{slug}")),
                         section="schedule", page="", up="../"))
         finally:
             globals()["BASE"] = BASE_was

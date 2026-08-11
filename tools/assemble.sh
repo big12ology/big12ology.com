@@ -287,6 +287,57 @@ PY
   echo "hub numbers: next kickoff and the projected title game"
 fi
 
+# --- the facts, as crawlable text -----------------------------------------
+# The hub rotates one fact per card from JavaScript, which is right for the
+# hub and useless as content: a crawler sees an empty <p>, and even a renderer
+# that runs the script sees one of three hundred sentences chosen at random.
+#
+# So every fact is also written out statically, on the section page it belongs
+# to. A page carrying {{FACTS:attendance}} gets the attendance list. That is
+# the whole mechanism, and it works the same for the pages build.py generates
+# and the hand-written one under /attendance/, which is why it lives here
+# rather than in either.
+#
+# Dated facts are included with their date spelled out. On the hub a dated
+# fact is only true on its day; in a list headed "in figures" it is a dated
+# record, and reads as one.
+FACTS_JSON="$DIST/tiebreaker/facts.json"
+if [ -f "$FACTS_JSON" ]; then
+  while IFS= read -r page; do
+    python3 - "$page" "$FACTS_JSON" <<'PY'
+import html, json, re, sys
+
+page, data = sys.argv[1], sys.argv[2]
+facts = json.load(open(data, encoding="utf-8"))["sections"]
+MONTH = ["", "January", "February", "March", "April", "May", "June", "July",
+         "August", "September", "October", "November", "December"]
+
+
+def when(on):
+    m, d = int(on[:2]), int(on[3:])
+    return f"{MONTH[m]} {d}: "
+
+
+def block(name):
+    rows = facts.get(name) or []
+    if not rows:
+        return ""
+    items = "".join(
+        "<li>" + (when(f["on"]) if f.get("on") else "")
+        + html.escape(f["t"]) + "</li>"
+        for f in sorted(rows, key=lambda f: (f.get("on") or "", f["t"])))
+    return f'<ul class=figures>{items}</ul>'
+
+
+s = open(page, encoding="utf-8").read()
+s = re.sub(r"\{\{FACTS:([a-z]+)\}\}", lambda m: block(m.group(1)), s)
+open(page, "w", encoding="utf-8").write(s)
+PY
+  done < <(grep -rl '{{FACTS:' "$DIST" --include='*.html' || true)
+  n=$(grep -rl 'class=figures' "$DIST" --include='*.html' 2>/dev/null | wc -l)
+  echo "facts rendered into ${n// /} page(s)"
+fi
+
 # A missing page or a stale asset has shipped silently in this project
 # before. Both are cheap to catch here and expensive to notice in the wild.
 
@@ -299,7 +350,7 @@ note() { echo "  MISSING  $1"; fail=1; }
 # in the hero of the front page and fail nothing.
 while IFS= read -r page; do
   echo "  UNSTAMPED  ${page#"$DIST"/}"; fail=1
-done < <(grep -rlE '\{\{(BUILD_STAMP|HUB_[A-Z_]+)\}\}' "$DIST" \
+done < <(grep -rlE '\{\{(BUILD_STAMP|HUB_[A-Z_]+|FACTS:[a-z]+)\}\}' "$DIST" \
            --include='*.html' || true)
 
 for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
