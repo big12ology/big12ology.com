@@ -356,7 +356,17 @@ a.card:hover { border-color: var(--accent); }
 (function () {
   var slots = document.querySelectorAll("[data-facts]");
   if (!slots.length || !window.fetch) return;
-  fetch("/tiebreaker/facts.json", { cache: "force-cache" })
+  // "no-cache" means revalidate, NOT "do not cache" — the browser still
+  // keeps the file and the server answers 304 when it has not changed, which
+  // for a 6KB file behind an ETag is a couple of hundred bytes.
+  //
+  // This was "force-cache", which was a premature optimisation and a bug:
+  // force-cache serves a stored copy WITHOUT revalidating even after it goes
+  // stale, so a reader who had loaded the page once kept being shown the
+  // facts from that visit. Corrections to a fact would land on the site and
+  // never reach them. The file changes on every deploy; it has to be asked
+  // about.
+  fetch("/tiebreaker/facts.json", { cache: "no-cache" })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (d) {
       if (!d || !d.sections) return;
