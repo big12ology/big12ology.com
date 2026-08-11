@@ -385,6 +385,42 @@ def team_color(teams, team, fallback="#888888"):
     return c
 
 
+# Reaching the championship game is not a win percentage, and colouring it
+# with one said something false. Two teams out of sixteen play in it, so the
+# BASELINE is 2/16 — 12.5%, not 50%. A team sitting on 12.4% is exactly
+# average and was being painted the same deep red as a team on 1%, while
+# 30.9% — second in the league and comfortably in the race — looked like a
+# failing grade.
+#
+# So the ramp runs on the ratio to that baseline rather than on the raw
+# probability: 1.0x is the neutral yellow and it climbs from there. The hue
+# stops are the ones winpct_color already uses, so the two curves still look
+# like the same family even though they measure different things.
+TEAM_COUNT = 16          # two of sixteen reach the title game
+CCG_ANCHORS = [(0.0, 0), (0.35, 12), (0.7, 30), (1.0, 45), (1.6, 72),
+               (2.5, 100), (3.5, 128), (5.0, 152), (8.0, 168)]
+
+
+def ccg_color(p, teams, spots=2):
+    """Colour for a probability of reaching a `spots`-team game from `teams`."""
+    if not teams:
+        return winpct_color(p)
+    base = spots / float(teams)
+    r = (p or 0.0) / base if base else 0.0
+    a = CCG_ANCHORS
+    h = a[-1][1]
+    if r <= a[0][0]:
+        h = a[0][1]
+    else:
+        for i in range(1, len(a)):
+            if r <= a[i][0]:
+                t = (r - a[i - 1][0]) / (a[i][0] - a[i - 1][0])
+                h = a[i - 1][1] + t * (a[i][1] - a[i - 1][1])
+                break
+    s = 100 - (h / 45) * 35 if h < 45 else 65
+    return f"hsl({round(h)} {round(s)}% var(--pctl))"
+
+
 # Win-percentage color curve — same visual language as the attendance
 # tracker's fill gradient, mapped to the 0..1.000 win% domain with the
 # resolution concentrated at the top. Kept in sync with winPctColor in
@@ -1151,10 +1187,10 @@ def clinch_card(games, overrides, systems, stand_rows, sims):
         p = prob(t)
         bar = pctcell = ""
         if p is not None:
+            c = ccg_color(p, TEAM_COUNT)
             bar = (f"<span class=obar><i style='width:{p * 100:.1f}%;"
-                   f"background:{winpct_color(p)}'></i></span>")
-            pctcell = (f"<b class=opct style='color:{winpct_color(p)}'>"
-                       f"{fmt_prob(p)}</b>")
+                   f"background:{c}'></i></span>")
+            pctcell = f"<b class=opct style='color:{c}'>{fmt_prob(p)}</b>"
         bits = [chips[i["status"]]]
         if i["destiny"] and i["status"] == "alive":
             bits.append("<span class='tag destiny'>controls own destiny</span>")
@@ -1217,11 +1253,18 @@ def clinch_card(games, overrides, systems, stand_rows, sims):
     return CLINCH_CARD.format(body=body, note=" ".join(notes))
 
 
+# The percentage needs saying out loud. It is the chance of reaching the
+# championship game — which TWO teams do — so the column adds to about 200%
+# and not to 100%. Without that sentence a reader takes 57.2% for "chance to
+# win the Big 12", then finds the column summing to twice what it should and
+# has no way to tell which of the two readings is wrong.
 CLINCH_CARD = """<div class=card id=clinchcard>
   <h2>Championship race</h2>
   {body}
-  <p class=note>{note} Reflects real results only — what-if picks don't
-  change it.</p>
+  <p class=note>The percentage is the chance of <b>reaching the championship
+  game</b>, not of winning it or of finishing first. Two teams get there, so
+  these add up to about 200%. {note} Reflects real results only — what-if
+  picks don't change it.</p>
 </div>"""
 
 
