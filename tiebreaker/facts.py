@@ -483,8 +483,8 @@ def tiebreaker_facts(games_by_year):
             w, l = ((g["home"], g["away"]) if hp > ap else (g["away"], g["home"]))
             rec[w][0] += 1
             rec[l][1] += 1
-            order[w].append(True)
-            order[l].append(False)
+            order[w].append((y, True))
+            order[l].append((y, False))
         for t, (w, l) in rec.items():
             per_season[t][y] = (w, l)
 
@@ -499,14 +499,26 @@ def tiebreaker_facts(games_by_year):
             f"at {w}–{l}."))
 
     for team, results in sorted(order.items()):
-        run = best = 0
-        for won in results:
-            run = run + 1 if won else 0
-            best = max(best, run)
+        run, best, years, best_years = 0, 0, [], []
+        for y, won in results:
+            if won:
+                run += 1
+                years.append(y)
+            else:
+                run, years = 0, []
+            if run > best:
+                best, best_years = run, list(years)
         if best >= 4:
+            # "since 2011" without a date is a claim you cannot look up. A run
+            # can also straddle a new year, so the span is reported rather
+            # than a single season assumed.
+            span = sorted(set(best_years))
+            when = (f"in {span[0]}" if len(span) == 1
+                    else f"across {span[0]} and {span[-1]}" if len(span) == 2
+                    else f"from {span[0]} to {span[-1]}")
             out.append(_fact(
                 f"{team}'s longest run of conference wins since {TB_FIRST} "
-                f"is {best} in a row."))
+                f"is {best} in a row, {when}."))
 
     out.append(_fact(
         "The Big 12 tiebreaker runs seven steps. The last two are a "
@@ -560,6 +572,22 @@ def build(year, games_by_year, teams, lines, rotation_mod, out_path):
         "attendance": attendance_facts(),
         "pools": pools_facts(year, len(lines or {})),
     }
+    # Tag each fact with the teams it names, so the page can avoid printing
+    # the same team on two cards at once. Done here, against the real team
+    # list, rather than by the client guessing from the sentence: "Kansas"
+    # is a substring of "Kansas State", and a longest-first match is the only
+    # way that comes out right.
+    names = sorted(set(teams or []), key=len, reverse=True)
+    for k in sections:
+        for f in sections[k]:
+            claimed, rest = [], f["t"]
+            for n in names:
+                if n in rest:
+                    claimed.append(n)
+                    rest = rest.replace(n, " ")
+            if claimed:
+                f["w"] = sorted(claimed)
+
     # Stable order, so an unchanged season rewrites nothing.
     for k in sections:
         sections[k] = sorted(sections[k], key=lambda f: (f.get("on") or "", f["t"]))

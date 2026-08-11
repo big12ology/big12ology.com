@@ -251,7 +251,7 @@ a.card:hover { border-color: var(--accent); }
   <!-- /PICKEM-OFF -->
   <a class=card href="/schedule/">
     <h2>Schedule <span class="tag new">new</span></h2>
-    <p class=stat><b>9</b> conference games out of <b>15</b> possible opponents · <b>{{HUB_GAMES}}</b> on the {{HUB_SEASON}} card</p>
+    <p class=stat><b>9</b> of <b>15</b> possible opponents · <b>{{HUB_GAMES}}</b> games on the card</p>
     <p>Sixteen teams play nine conference games out of a possible fifteen, so
     nobody plays everybody and two teams on the same record did not attempt
     the same thing. The head-to-head grid for the season, <b>the draw</b> —
@@ -366,15 +366,40 @@ a.card:hover { border-color: var(--accent); }
       var pick = function (a) {
         return a[Math.floor(Math.random() * a.length)];
       };
+      // No team twice on the page. The four cards choose independently, so
+      // without this they land on the same team often enough to look broken —
+      // and a reader who sees "Arizona State" twice reads it as one fact
+      // repeated rather than two. Each fact carries the teams it names, so a
+      // card prefers one that claims nobody already spoken for, and falls
+      // back to any fact rather than showing none.
+      var used = {};
+      var free = function (f) {
+        var w = f.w || [];
+        for (var i = 0; i < w.length; i++) if (used[w[i]]) return false;
+        return true;
+      };
+      var claim = function (f) {
+        (f.w || []).forEach(function (t) { used[t] = true; });
+      };
       Array.prototype.forEach.call(slots, function (el) {
         var pool = d.sections[el.getAttribute("data-facts")] || [];
         var dated = pool.filter(function (f) { return f.on === today; });
         var plain = pool.filter(function (f) { return !f.on; });
-        var chosen = dated.length ? pick(dated)
-                   : plain.length ? pick(plain) : null;
+        // Prefer today's dated facts, but not at the price of the rule
+        // above. A date often has exactly one attendance entry, and if its
+        // team is already spoken for, forcing it is how the same team ends
+        // up on two cards — so an undated fact is taken instead, and only
+        // when nothing at all is free does a repeat get through.
+        var first = dated.length ? dated : plain;
+        var second = dated.length ? plain : [];
+        var open = first.filter(free);
+        if (!open.length) open = second.filter(free);
+        var chosen = open.length ? pick(open)
+                   : first.length ? pick(first) : null;
         if (!chosen) return;
+        claim(chosen);
         var label = document.createElement("b");
-        label.textContent = dated.length ? "On this day" : "Did you know";
+        label.textContent = chosen.on ? "On this day" : "Did you know";
         el.textContent = "";
         el.appendChild(label);
         el.appendChild(document.createTextNode(chosen.t));
