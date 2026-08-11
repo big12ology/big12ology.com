@@ -144,27 +144,43 @@ def attendance_facts():
         by_team[r["team"]].append(r)
 
     # --- one per team: how often the place is full -------------------------
+    # Every team's fill rate first, so each one can be told how it compares.
+    # "19 of 83" is not a fact until you know the league average is 46%.
+    rate = {}
     for team, rs in sorted(by_team.items()):
         if team in NO_PCT:
             continue
-        with_pct = [r for r in rs if r["pct"] is not None]
-        if len(with_pct) < 20:
+        wp = [r for r in rs if r["pct"] is not None]
+        if len(wp) >= 20:
+            rate[team] = len([r for r in wp if r["pct"] >= FULL]) / len(wp)
+    league = (sum(rate.values()) / len(rate)) if rate else 0
+
+    for team, rs in sorted(by_team.items()):
+        if team not in rate:
             continue
+        with_pct = [r for r in rs if r["pct"] is not None]
         full = [r for r in with_pct if r["pct"] >= FULL]
+        where = _rank(rate[team], list(rate.values()))
+        pct = rate[team] * 100
         if len(full) == len(with_pct):
             out.append(_fact(
                 f"{team} has filled its stadium for every one of its "
                 f"{len(with_pct)} home games since {ATT_FIRST} — every "
-                f"season, every opponent."))
+                f"season, every opponent, and the only team in the league "
+                f"that can say it."))
         elif full:
+            colour = f", {where}" if where else ""
             out.append(_fact(
-                f"{team} has filled its stadium in {len(full)} of "
-                f"{len(with_pct)} home games since {ATT_FIRST}."))
+                f"{team} has filled its stadium {len(full)} times in "
+                f"{len(with_pct)} home games since {ATT_FIRST} — "
+                f"{pct:.0f}%{colour}, against a league average of "
+                f"{league * 100:.0f}%."))
         else:
             best = max(with_pct, key=lambda r: r["pct"])
             out.append(_fact(
-                f"{team} has not filled its stadium once since {ATT_FIRST}. "
-                f"The closest it came was {best['pct'] * 100:.0f}% against "
+                f"{team} has not filled its stadium once since {ATT_FIRST}, "
+                f"the only team in the league that has not. The closest it "
+                f"came was {best['pct'] * 100:.0f}% against "
                 f"{best['opponent']} in {best['season']}."))
 
     # --- one per team: the biggest crowd it has drawn ----------------------
@@ -176,23 +192,34 @@ def attendance_facts():
             f"{best['season']}."))
 
     # --- one per team: what an ordinary Saturday looks like ----------------
+    avgs = {t: sum(r["att"] for r in rs) / len(rs)
+            for t, rs in by_team.items()}
     for team, rs in sorted(by_team.items()):
-        avg = sum(r["att"] for r in rs) / len(rs)
+        where = _rank(avgs[team], list(avgs.values()))
+        colour = f" — {where}" if where else ""
         out.append(_fact(
-            f"{team} averages {_comma(avg)} a home game since {ATT_FIRST}, "
-            f"over {len(rs)} games."))
+            f"{team} averages {_comma(avgs[team])} a home game since "
+            f"{ATT_FIRST}, over {len(rs)} games{colour}."))
 
     # --- one per season ----------------------------------------------------
     by_season = collections.defaultdict(list)
     for r in normal:
         by_season[r["season"]].append(r)
-    for s, rs in sorted(by_season.items()):
+    for s_, rs in sorted(by_season.items()):
         avg = sum(r["att"] for r in rs) / len(rs)
         big = max(rs, key=lambda r: r["att"])
+        # Who they were playing, not just where. "64,885 at Arizona State" is
+        # a stadium capacity; "against Texas A&M" is why anyone turned up.
+        when = ""
+        try:
+            d = datetime.date.fromisoformat(big["date"][:10])
+            when = d.strftime(" on %-d %B")
+        except (TypeError, ValueError):
+            pass
         out.append(_fact(
-            f"In {s} the league averaged {_comma(avg)} a home game, and the "
-            f"biggest single crowd was {_comma(big['att'])} at "
-            f"{big['team']}."))
+            f"In {s_} the league averaged {_comma(avg)} a home game. The "
+            f"biggest single crowd was {_comma(big['att'])}, "
+            f"{big['team']} against {big['opponent']}{when}."))
 
     # --- league records ----------------------------------------------------
     if normal:
@@ -385,10 +412,74 @@ def _series(items):
 
 # -------------------------------------------------------------- tiebreaker
 
+ORD = ["", "", "second-", "third-", "fourth-", "fifth-"]
+
+
+def _rank(value, others, high_is_good=True):
+    """Where `value` sits among `others`, as a phrase — or "" if mid-table.
+
+    The point of a fact is not the number, it is whether the number is any
+    good, and "19 of 83" answers that only for somebody who already knows what
+    the other fifteen teams did. Only the top and bottom few get a phrase;
+    seventh-best of sixteen is not an interesting thing to be told.
+    """
+    vals = sorted(others, reverse=high_is_good)
+    try:
+        i = vals.index(value)
+    except ValueError:
+        return ""
+    n = len(vals)
+    if i < 5:
+        word = "best" if high_is_good else "lowest"
+        return f"the {ORD[i + 1]}{word} in the league" if i else \
+               f"the {word} in the league"
+    if i >= n - 5:
+        j = n - i
+        word = "lowest" if high_is_good else "best"
+        return f"the {ORD[j]}{word} in the league" if j > 1 else \
+               f"the {word} in the league"
+    return ""
+
+
+def _span(team, played):
+    """The window a claim about this team actually covers.
+
+    A team that has been here the whole time gets "since 2011". Everyone else
+    gets the years they were actually in the league, because the alternative
+    is a sentence that silently annexes seasons they spent in another
+    conference — which is exactly how "Cincinnati's best conference season
+    since 2011" came to mean "best of their three".
+    """
+    ys = played.get(team) or []
+    if not ys:
+        return ""
+    first, last = ys[0], ys[-1]
+    if first == TB_FIRST and last == TB_LAST:
+        return f"since {TB_FIRST}"
+    if last < TB_LAST:                       # they have left
+        return f"from {first} to {last}"
+    return f"since joining in {first}"
+
+
+def _was(team, played):
+    """Present tense for a current member, past for a departed one."""
+    ys = played.get(team) or []
+    return "was" if (ys and ys[-1] < TB_LAST) else "is"
+
+
 def tiebreaker_facts(games_by_year):
     out = []
     titles = collections.Counter()
     appearances = collections.Counter()
+    played = collections.defaultdict(list)      # team -> seasons in the league
+    for y in sorted(games_by_year):
+        here = set()
+        for g in games_by_year[y]:
+            if g.get("conference_game") and not g.get("ccg"):
+                here.add(g["home"])
+                here.add(g["away"])
+        for t in here:
+            played[t].append(y)
 
     for y in sorted(games_by_year):
         games = games_by_year[y]
@@ -459,12 +550,22 @@ def tiebreaker_facts(games_by_year):
             margin = abs(hp - ap)
             if y not in biggest or margin > biggest[y][0]:
                 biggest[y] = (margin, w, l, max(hp, ap), min(hp, ap))
+    # Fourteen of the twenty teams in this data did not play all fifteen
+    # seasons — four arrived in 2023, four more in 2024, and Texas, Oklahoma,
+    # Missouri and Texas A&M left. "Since 2011" for any of them is a window
+    # they were not in the conference for: Cincinnati's "best conference
+    # season since 2011" quietly ignored an 8-0 AAC season and a Playoff
+    # semi-final, because this file has never held a game they played
+    # anywhere else. Every claim below names the span it actually covers.
+    pcts = {t: w / (w + l) for t, (w, l) in alltime.items() if w + l >= 20}
     for team, (w, l) in sorted(alltime.items()):
         if w + l < 20:                # too little to be a record
             continue
+        where = _rank(pcts[team], list(pcts.values()))
+        colour = f" — {where}" if where else ""
         out.append(_fact(
-            f"{team} is {w}–{l} in Big 12 conference games between "
-            f"{TB_FIRST} and {TB_LAST}."))
+            f"{team} {_was(team, played)} {w}–{l} in Big 12 conference games "
+            f"{_span(team, played)}, {w / (w + l) * 100:.0f}%{colour}."))
     for y, (margin, w, l, hi, lo) in sorted(biggest.items()):
         out.append(_fact(
             f"The most lopsided conference game of {y} was {w} {hi}, "
@@ -475,10 +576,10 @@ def tiebreaker_facts(games_by_year):
     order = collections.defaultdict(list)     # team -> results, in date order
     for y in sorted(games_by_year):
         rec = collections.defaultdict(lambda: [0, 0])
-        played = [g for g in games_by_year[y]
+        graded = [g for g in games_by_year[y]
                   if g.get("conference_game") and not g.get("ccg")
                   and g.get("home_points") is not None]
-        for g in sorted(played, key=lambda x: (x.get("start") or "", x["id"])):
+        for g in sorted(graded, key=lambda x: (x.get("start") or "", x["id"])):
             hp, ap = g["home_points"], g["away_points"]
             w, l = ((g["home"], g["away"]) if hp > ap else (g["away"], g["home"]))
             rec[w][0] += 1
@@ -494,10 +595,15 @@ def tiebreaker_facts(games_by_year):
         best_y = max(seasons, key=lambda y: (seasons[y][0] - seasons[y][1],
                                              seasons[y][0]))
         w, l = seasons[best_y]
+        # How many seasons that is "best of" is the whole of whether it
+        # impresses. Three is a note; fifteen is a record.
+        n = len(played.get(team) or seasons)
         out.append(_fact(
-            f"{team}'s best conference season since {TB_FIRST} is {best_y}, "
-            f"at {w}–{l}."))
+            f"{team}'s best Big 12 season is {best_y}, at {w}–{l} — the best "
+            f"of the {n} {'they have' if _was(team, played) == 'is' else 'they'} "
+            f"played {_span(team, played)}."))
 
+    runs = {}
     for team, results in sorted(order.items()):
         run, best, years, best_years = 0, 0, [], []
         for y, won in results:
@@ -516,9 +622,14 @@ def tiebreaker_facts(games_by_year):
             when = (f"in {span[0]}" if len(span) == 1
                     else f"across {span[0]} and {span[-1]}" if len(span) == 2
                     else f"from {span[0]} to {span[-1]}")
-            out.append(_fact(
-                f"{team}'s longest run of conference wins since {TB_FIRST} "
-                f"is {best} in a row, {when}."))
+            runs[team] = (best, when)
+
+    for team, (best, when) in sorted(runs.items()):
+        where = _rank(best, [v[0] for v in runs.values()])
+        colour = f" — {where}" if where else ""
+        out.append(_fact(
+            f"{team}'s longest run of Big 12 wins {_span(team, played)} "
+            f"{_was(team, played)} {best} in a row, {when}{colour}."))
 
     out.append(_fact(
         "The Big 12 tiebreaker runs seven steps. The last two are a "

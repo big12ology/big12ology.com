@@ -102,8 +102,12 @@ NO_PERCENT_CLAIMS = {"Kansas State"}
 check(NO_PERCENT_CLAIMS <= set(facts.NO_PCT),
       f"facts.NO_PCT no longer covers {NO_PERCENT_CLAIMS - set(facts.NO_PCT)}; "
       f"the tracker does not trust that published capacity as a denominator")
+# Scoped to the attendance section, because that is where a percentage means
+# "of capacity". A conference win rate is also a percentage and is a perfectly
+# ordinary thing to say about this team — the first version of this check did
+# not distinguish them and failed the moment records grew a percentage.
 for team in NO_PERCENT_CLAIMS:
-    bad = [f["t"] for f in every
+    bad = [f["t"] for f in sections["attendance"]
            if team in f["t"] and re.search(r"\d+\s*%|filled its stadium",
                                            f["t"])]
     check(not bad,

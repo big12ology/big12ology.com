@@ -15,7 +15,7 @@
     ]
    },
    {
-    "t": "Arizona State has filled its stadium in 19 of 87 home games since 2012.",
+    "t": "Arizona State has filled its stadium 19 times in 87 home games since 2012 \u2014 22%, the fifth-lowest in the league, against a league average of 30%.",
     "w": [
      "Arizona State"
     ]
@@ -27,43 +27,43 @@
     ]
    },
    {
-    "t": "Arizona has filled its stadium in 7 of 86 home games since 2012.",
+    "t": "Arizona has filled its stadium 7 times in 86 home games since 2012 \u2014 8%, the lowest in the league, against a league average of 30%.",
     "w": [
      "Arizona"
     ]
    },
    {
-    "t": "BYU averages 59,569 a home game since 2012, over 76 games.",
+    "t": "BYU averages 59,569 a home game since 2012, over 76 games \u2014 the best in the league.",
     "w": [
      "BYU"
     ]
    },
    {
-    "t": "BYU has filled its stadium in 22 of 76 home games since 2012.",
+    "t": "BYU has filled its stadium 22 times in 76 home games since 2012 \u2014 29%, against a league average of 30%.",
     "w": [
      "BYU"
     ]
    },
    {
-    "t": "Baylor averages 43,926 a home game since 2012, over 81 games.",
+    "t": "Baylor averages 43,926 a home game since 2012, over 81 games \u2014 the fifth-lowest in the league.",
     "w": [
      "Baylor"
     ]
    },
    {
-    "t": "Baylor has filled its stadium in 33 of 81 home games since 2012.",
+    "t": "Baylor has filled its stadium 33 times in 81 home games since 2012 \u2014 41%, the second-best in the league, against a league average of 30%.",
     "w": [
      "Baylor"
     ]
    },
    {
-    "t": "Cincinnati averages 34,053 a home game since 2012, over 83 games.",
+    "t": "Cincinnati averages 34,053 a home game since 2012, over 83 games \u2014 the third-lowest in the league.",
     "w": [
      "Cincinnati"
     ]
    },
    {
-    "t": "Cincinnati has filled its stadium in 19 of 83 home games since 2012.",
+    "t": "Cincinnati has filled its stadium 19 times in 83 home games since 2012 \u2014 23%, against a league average of 30%.",
     "w": [
      "Cincinnati"
     ]
@@ -75,67 +75,70 @@
     ]
    },
    {
-    "t": "Colorado has filled its stadium in 21 of 79 home games since 2012.",
+    "t": "Colorado has filled its stadium 21 times in 79 home games since 2012 \u2014 27%, against a league average of 30%.",
     "w": [
      "Colorado"
     ]
    },
    {
-    "t": "Houston averages 29,953 a home game since 2012, over 81 games.",
+    "t": "Houston averages 29,953 a home game since 2012, over 81 games \u2014 the lowest in the league.",
     "w": [
      "Houston"
     ]
    },
    {
-    "t": "Houston has filled its stadium in 8 of 81 home games since 2012.",
+    "t": "Houston has filled its stadium 8 times in 81 home games since 2012 \u2014 10%, the second-lowest in the league, against a league average of 30%.",
     "w": [
      "Houston"
     ]
    },
    {
-    "t": "In 2012 the league averaged 46,933 a home game, and the biggest single crowd was 71,004 at Arizona State.",
+    "t": "In 2012 the league averaged 46,933 a home game. The biggest single crowd was 71,004, Arizona State against Oregon on 18 October.",
     "w": [
      "Arizona State"
     ]
    },
    {
-    "t": "In 2013 the league averaged 47,636 a home game, and the biggest single crowd was 72,542 at Arizona State.",
+    "t": "In 2013 the league averaged 47,636 a home game. The biggest single crowd was 72,542, Arizona State against Arizona on 30 November.",
+    "w": [
+     "Arizona",
+     "Arizona State"
+    ]
+   },
+   {
+    "t": "In 2014 the league averaged 46,269 a home game. The biggest single crowd was 65,870, Arizona State against Notre Dame on 8 November.",
     "w": [
      "Arizona State"
     ]
    },
    {
-    "t": "In 2014 the league averaged 46,269 a home game, and the biggest single crowd was 65,870 at Arizona State.",
+    "t": "In 2015 the league averaged 46,691 a home game. The biggest single crowd was 64,885, Arizona State against Arizona on 21 November.",
     "w": [
+     "Arizona",
      "Arizona State"
     ]
    },
    {
-    "t": "In 2015 the league averaged 46,691 a home game, and the biggest single crowd was 64,885 at Arizona State.",
-    "w": [
-     "Arizona State"
-    ]
-   },
-   {
-    "t": "In 2016 the league averaged 46,814 a home game, and the biggest single crowd was 62,904 at BYU.",
+    "t": "In 2016 the league averaged 46,814 a home game. The biggest single crowd was 62,904, BYU against UCLA on 17 September.",
     "w": [
      "BYU"
     ]
    },
    {
-    "t": "In 2017 the league averaged 45,626 a home game, and the biggest single crowd was 63,470 at BYU.",
+    "t": "In 2017 the league averaged 45,626 a home game. The biggest single crowd was 63,470, BYU against Utah on 9 September.",
     "w": [
-     "BYU"
+     "BYU",
+     "Utah"
     ]
    },
    {
-    "t": "In 2018 the league averaged 45,224 a home game, and the biggest single crowd was 60,713 at West Virginia.",
+    "t": "In 2018 the league averaged 45,224 a home game. The biggest single crowd was 60,713, West Virginia against Oklahoma on 23 November.",
     "w": [
      "West Virginia"
     ]
    },
    {
-    "t": "In 2019 the league averaged 46,789 a home game, and the biggest single crowd was 62,546 at BYU.",
+    "t": "In 2019 the league averaged 46,789 a home game. The biggest single crowd was 62,546, BYU against USC on 14 September.",
     "w": [
      "BYU"
     ]
@@ -144,43 +147,48 @@
     "t": "In 2020 the league averaged 10,351 a home game. It is left out of every comparison here: that is a number about a pandemic, not about football."
    },
    {
-    "t": "In 2021 the league averaged 45,075 a home game, and the biggest single crowd was 63,470 at BYU.",
+    "t": "In 2021 the league averaged 45,075 a home game. The biggest single crowd was 63,470, BYU against Utah on 11 September.",
     "w": [
+     "BYU",
+     "Utah"
+    ]
+   },
+   {
+    "t": "In 2022 the league averaged 46,999 a home game. The biggest single crowd was 63,470, BYU against Baylor on 10 September.",
+    "w": [
+     "BYU",
+     "Baylor"
+    ]
+   },
+   {
+    "t": "In 2023 the league averaged 49,103 a home game. The biggest single crowd was 63,834, BYU against Cincinnati on 29 September.",
+    "w": [
+     "BYU",
+     "Cincinnati"
+    ]
+   },
+   {
+    "t": "In 2024 the league averaged 48,314 a home game. The biggest single crowd was 64,420, BYU against Arizona on 12 October.",
+    "w": [
+     "Arizona",
      "BYU"
     ]
    },
    {
-    "t": "In 2022 the league averaged 46,999 a home game, and the biggest single crowd was 63,470 at BYU.",
+    "t": "In 2025 the league averaged 47,792 a home game. The biggest single crowd was 64,794, BYU against Utah on 18 October.",
     "w": [
-     "BYU"
+     "BYU",
+     "Utah"
     ]
    },
    {
-    "t": "In 2023 the league averaged 49,103 a home game, and the biggest single crowd was 63,834 at BYU.",
-    "w": [
-     "BYU"
-    ]
-   },
-   {
-    "t": "In 2024 the league averaged 48,314 a home game, and the biggest single crowd was 64,420 at BYU.",
-    "w": [
-     "BYU"
-    ]
-   },
-   {
-    "t": "In 2025 the league averaged 47,792 a home game, and the biggest single crowd was 64,794 at BYU.",
-    "w": [
-     "BYU"
-    ]
-   },
-   {
-    "t": "Iowa State averages 57,062 a home game since 2012, over 84 games.",
+    "t": "Iowa State averages 57,062 a home game since 2012, over 84 games \u2014 the second-best in the league.",
     "w": [
      "Iowa State"
     ]
    },
    {
-    "t": "Iowa State has filled its stadium in 29 of 84 home games since 2012.",
+    "t": "Iowa State has filled its stadium 29 times in 84 home games since 2012 \u2014 35%, the fourth-best in the league, against a league average of 30%.",
     "w": [
      "Iowa State"
     ]
@@ -192,25 +200,25 @@
     ]
    },
    {
-    "t": "Kansas averages 33,870 a home game since 2012, over 83 games.",
+    "t": "Kansas averages 33,870 a home game since 2012, over 83 games \u2014 the second-lowest in the league.",
     "w": [
      "Kansas"
     ]
    },
    {
-    "t": "Kansas has filled its stadium in 13 of 83 home games since 2012.",
+    "t": "Kansas has filled its stadium 13 times in 83 home games since 2012 \u2014 16%, the third-lowest in the league, against a league average of 30%.",
     "w": [
      "Kansas"
     ]
    },
    {
-    "t": "Oklahoma State averages 54,176 a home game since 2012, over 86 games.",
+    "t": "Oklahoma State averages 54,176 a home game since 2012, over 86 games \u2014 the fifth-best in the league.",
     "w": [
      "Oklahoma State"
     ]
    },
    {
-    "t": "Oklahoma State has filled its stadium in 21 of 86 home games since 2012.",
+    "t": "Oklahoma State has filled its stadium 21 times in 86 home games since 2012 \u2014 24%, against a league average of 30%.",
     "w": [
      "Oklahoma State"
     ]
@@ -222,19 +230,19 @@
     ]
    },
    {
-    "t": "TCU has filled its stadium in 32 of 82 home games since 2012.",
+    "t": "TCU has filled its stadium 32 times in 82 home games since 2012 \u2014 39%, the third-best in the league, against a league average of 30%.",
     "w": [
      "TCU"
     ]
    },
    {
-    "t": "Texas Tech averages 56,663 a home game since 2012, over 80 games.",
+    "t": "Texas Tech averages 56,663 a home game since 2012, over 80 games \u2014 the third-best in the league.",
     "w": [
      "Texas Tech"
     ]
    },
    {
-    "t": "Texas Tech has filled its stadium in 27 of 80 home games since 2012.",
+    "t": "Texas Tech has filled its stadium 27 times in 80 home games since 2012 \u2014 34%, the fifth-best in the league, against a league average of 30%.",
     "w": [
      "Texas Tech"
     ]
@@ -360,13 +368,13 @@
     ]
    },
    {
-    "t": "UCF averages 39,927 a home game since 2012, over 84 games.",
+    "t": "UCF averages 39,927 a home game since 2012, over 84 games \u2014 the fourth-lowest in the league.",
     "w": [
      "UCF"
     ]
    },
    {
-    "t": "UCF has filled its stadium in 18 of 84 home games since 2012.",
+    "t": "UCF has filled its stadium 18 times in 84 home games since 2012 \u2014 21%, the fourth-lowest in the league, against a league average of 30%.",
     "w": [
      "UCF"
     ]
@@ -378,19 +386,19 @@
     ]
    },
    {
-    "t": "Utah has filled its stadium for every one of its 83 home games since 2012 \u2014 every season, every opponent.",
+    "t": "Utah has filled its stadium for every one of its 83 home games since 2012 \u2014 every season, every opponent, and the only team in the league that can say it.",
     "w": [
      "Utah"
     ]
    },
    {
-    "t": "West Virginia averages 54,299 a home game since 2012, over 82 games.",
+    "t": "West Virginia averages 54,299 a home game since 2012, over 82 games \u2014 the fourth-best in the league.",
     "w": [
      "West Virginia"
     ]
    },
    {
-    "t": "West Virginia has filled its stadium in 19 of 82 home games since 2012.",
+    "t": "West Virginia has filled its stadium 19 times in 82 home games since 2012 \u2014 23%, against a league average of 30%.",
     "w": [
      "West Virginia"
     ]
@@ -1762,13 +1770,13 @@
     ]
    },
    {
-    "t": "Arizona State's longest run of conference wins since 2011 is 7 in a row, across 2024 and 2025.",
+    "t": "Arizona State's longest run of Big 12 wins since joining in 2024 is 7 in a row, across 2024 and 2025.",
     "w": [
      "Arizona State"
     ]
    },
    {
-    "t": "Arizona's longest run of conference wins since 2011 is 5 in a row, in 2025.",
+    "t": "Arizona's longest run of Big 12 wins since joining in 2024 is 5 in a row, in 2025.",
     "w": [
      "Arizona"
     ]
@@ -1780,19 +1788,19 @@
     ]
    },
    {
-    "t": "BYU is 17\u201310 in Big 12 conference games between 2011 and 2025.",
+    "t": "BYU is 17\u201310 in Big 12 conference games since joining in 2023, 63% \u2014 the second-best in the league.",
     "w": [
      "BYU"
     ]
    },
    {
-    "t": "BYU's best conference season since 2011 is 2025, at 8\u20131.",
+    "t": "BYU's best Big 12 season is 2025, at 8\u20131 \u2014 the best of the 3 they have played since joining in 2023.",
     "w": [
      "BYU"
     ]
    },
    {
-    "t": "BYU's longest run of conference wins since 2011 is 6 in a row, in 2024.",
+    "t": "BYU's longest run of Big 12 wins since joining in 2023 is 6 in a row, in 2024.",
     "w": [
      "BYU"
     ]
@@ -1811,7 +1819,7 @@
     ]
    },
    {
-    "t": "Baylor is 72\u201363 in Big 12 conference games between 2011 and 2025.",
+    "t": "Baylor is 72\u201363 in Big 12 conference games since 2011, 53%.",
     "w": [
      "Baylor"
     ]
@@ -1829,37 +1837,37 @@
     ]
    },
    {
-    "t": "Baylor's best conference season since 2011 is 2013, at 8\u20131.",
+    "t": "Baylor's best Big 12 season is 2013, at 8\u20131 \u2014 the best of the 15 they have played since 2011.",
     "w": [
      "Baylor"
     ]
    },
    {
-    "t": "Baylor's longest run of conference wins since 2011 is 10 in a row, across 2014 and 2015.",
+    "t": "Baylor's longest run of Big 12 wins since 2011 is 10 in a row, across 2014 and 2015 \u2014 the third-best in the league.",
     "w": [
      "Baylor"
     ]
    },
    {
-    "t": "Cincinnati is 9\u201318 in Big 12 conference games between 2011 and 2025.",
+    "t": "Cincinnati is 9\u201318 in Big 12 conference games since joining in 2023, 33% \u2014 the third-lowest in the league.",
     "w": [
      "Cincinnati"
     ]
    },
    {
-    "t": "Cincinnati's best conference season since 2011 is 2025, at 5\u20134.",
+    "t": "Cincinnati's best Big 12 season is 2025, at 5\u20134 \u2014 the best of the 3 they have played since joining in 2023.",
     "w": [
      "Cincinnati"
     ]
    },
    {
-    "t": "Cincinnati's longest run of conference wins since 2011 is 5 in a row, in 2025.",
+    "t": "Cincinnati's longest run of Big 12 wins since joining in 2023 is 5 in a row, in 2025.",
     "w": [
      "Cincinnati"
     ]
    },
    {
-    "t": "Colorado's longest run of conference wins since 2011 is 4 in a row, in 2024.",
+    "t": "Colorado's longest run of Big 12 wins since joining in 2024 is 4 in a row, in 2024 \u2014 the second-lowest in the league.",
     "w": [
      "Colorado"
     ]
@@ -1868,13 +1876,13 @@
     "t": "Every tie in the final standings since 2011 is broken step by step in the archive \u2014 including the ones the league never had to publish."
    },
    {
-    "t": "Houston is 11\u201316 in Big 12 conference games between 2011 and 2025.",
+    "t": "Houston is 11\u201316 in Big 12 conference games since joining in 2023, 41% \u2014 the fourth-lowest in the league.",
     "w": [
      "Houston"
     ]
    },
    {
-    "t": "Houston's best conference season since 2011 is 2025, at 6\u20133.",
+    "t": "Houston's best Big 12 season is 2025, at 6\u20133 \u2014 the best of the 3 they have played since joining in 2023.",
     "w": [
      "Houston"
     ]
@@ -1886,7 +1894,7 @@
     ]
    },
    {
-    "t": "Iowa State is 60\u201375 in Big 12 conference games between 2011 and 2025.",
+    "t": "Iowa State is 60\u201375 in Big 12 conference games since 2011, 44%.",
     "w": [
      "Iowa State"
     ]
@@ -1898,13 +1906,13 @@
     ]
    },
    {
-    "t": "Iowa State's best conference season since 2011 is 2020, at 8\u20131.",
+    "t": "Iowa State's best Big 12 season is 2020, at 8\u20131 \u2014 the best of the 15 they have played since 2011.",
     "w": [
      "Iowa State"
     ]
    },
    {
-    "t": "Iowa State's longest run of conference wins since 2011 is 5 in a row, in 2018.",
+    "t": "Iowa State's longest run of Big 12 wins since 2011 is 5 in a row, in 2018.",
     "w": [
      "Iowa State"
     ]
@@ -1923,7 +1931,7 @@
     ]
    },
    {
-    "t": "Kansas State is 80\u201355 in Big 12 conference games between 2011 and 2025.",
+    "t": "Kansas State is 80\u201355 in Big 12 conference games since 2011, 59% \u2014 the fourth-best in the league.",
     "w": [
      "Kansas State"
     ]
@@ -1935,25 +1943,25 @@
     ]
    },
    {
-    "t": "Kansas State's best conference season since 2011 is 2012, at 8\u20131.",
+    "t": "Kansas State's best Big 12 season is 2012, at 8\u20131 \u2014 the best of the 15 they have played since 2011.",
     "w": [
      "Kansas State"
     ]
    },
    {
-    "t": "Kansas State's longest run of conference wins since 2011 is 10 in a row, across 2011 and 2012.",
+    "t": "Kansas State's longest run of Big 12 wins since 2011 is 10 in a row, across 2011 and 2012 \u2014 the third-best in the league.",
     "w": [
      "Kansas State"
     ]
    },
    {
-    "t": "Kansas is 21\u2013113 in Big 12 conference games between 2011 and 2025.",
+    "t": "Kansas is 21\u2013113 in Big 12 conference games since 2011, 16% \u2014 the lowest in the league.",
     "w": [
      "Kansas"
     ]
    },
    {
-    "t": "Kansas's best conference season since 2011 is 2023, at 5\u20134.",
+    "t": "Kansas's best Big 12 season is 2023, at 5\u20134 \u2014 the best of the 15 they have played since 2011.",
     "w": [
      "Kansas"
     ]
@@ -1965,7 +1973,7 @@
     ]
    },
    {
-    "t": "Oklahoma State is 77\u201358 in Big 12 conference games between 2011 and 2025.",
+    "t": "Oklahoma State is 77\u201358 in Big 12 conference games since 2011, 57% \u2014 the fifth-best in the league.",
     "w": [
      "Oklahoma State"
     ]
@@ -1983,13 +1991,13 @@
     ]
    },
    {
-    "t": "Oklahoma State's best conference season since 2011 is 2011, at 8\u20131.",
+    "t": "Oklahoma State's best Big 12 season is 2011, at 8\u20131 \u2014 the best of the 15 they have played since 2011.",
     "w": [
      "Oklahoma State"
     ]
    },
    {
-    "t": "Oklahoma State's longest run of conference wins since 2011 is 8 in a row, across 2014 and 2015.",
+    "t": "Oklahoma State's longest run of Big 12 wins since 2011 is 8 in a row, across 2014 and 2015.",
     "w": [
      "Oklahoma State"
     ]
@@ -2016,9 +2024,6 @@
     "t": "Oklahoma has won the Big 12 championship game 3 times since the game returned in 2017."
    },
    {
-    "t": "Oklahoma is 79\u201322 in Big 12 conference games between 2011 and 2025."
-   },
-   {
     "t": "Oklahoma took the 2015 conference season outright at 8\u20130."
    },
    {
@@ -2031,10 +2036,13 @@
     "t": "Oklahoma took the 2018 conference season outright at 8\u20130."
    },
    {
-    "t": "Oklahoma's best conference season since 2011 is 2015, at 8\u20130."
+    "t": "Oklahoma was 79\u201322 in Big 12 conference games from 2011 to 2023, 78% \u2014 the best in the league."
    },
    {
-    "t": "Oklahoma's longest run of conference wins since 2011 is 17 in a row, from 2015 to 2017."
+    "t": "Oklahoma's best Big 12 season is 2015, at 8\u20130 \u2014 the best of the 13 they played from 2011 to 2023."
+   },
+   {
+    "t": "Oklahoma's longest run of Big 12 wins from 2011 to 2023 was 17 in a row, from 2015 to 2017 \u2014 the best in the league."
    },
    {
     "t": "TCU has reached the Big 12 championship game twice without winning it.",
@@ -2043,7 +2051,7 @@
     ]
    },
    {
-    "t": "TCU is 70\u201356 in Big 12 conference games between 2011 and 2025.",
+    "t": "TCU is 70\u201356 in Big 12 conference games since joining in 2012, 56%.",
     "w": [
      "TCU"
     ]
@@ -2055,13 +2063,13 @@
     ]
    },
    {
-    "t": "TCU's best conference season since 2011 is 2022, at 9\u20130.",
+    "t": "TCU's best Big 12 season is 2022, at 9\u20130 \u2014 the best of the 14 they have played since joining in 2012.",
     "w": [
      "TCU"
     ]
    },
    {
-    "t": "TCU's longest run of conference wins since 2011 is 12 in a row, across 2014 and 2015.",
+    "t": "TCU's longest run of Big 12 wins since joining in 2012 is 12 in a row, across 2014 and 2015 \u2014 the second-best in the league.",
     "w": [
      "TCU"
     ]
@@ -2080,19 +2088,19 @@
     ]
    },
    {
-    "t": "Texas Tech is 57\u201378 in Big 12 conference games between 2011 and 2025.",
+    "t": "Texas Tech is 57\u201378 in Big 12 conference games since 2011, 42% \u2014 the fifth-lowest in the league.",
     "w": [
      "Texas Tech"
     ]
    },
    {
-    "t": "Texas Tech's best conference season since 2011 is 2025, at 8\u20131.",
+    "t": "Texas Tech's best Big 12 season is 2025, at 8\u20131 \u2014 the best of the 15 they have played since 2011.",
     "w": [
      "Texas Tech"
     ]
    },
    {
-    "t": "Texas Tech's longest run of conference wins since 2011 is 5 in a row, across 2024 and 2025.",
+    "t": "Texas Tech's longest run of Big 12 wins since 2011 is 5 in a row, across 2024 and 2025.",
     "w": [
      "Texas Tech"
     ]
@@ -2107,16 +2115,16 @@
     "t": "Texas has won the Big 12 championship game once since the game returned in 2017."
    },
    {
-    "t": "Texas is 62\u201339 in Big 12 conference games between 2011 and 2025."
-   },
-   {
     "t": "Texas took the 2023 conference season outright at 8\u20130."
    },
    {
-    "t": "Texas's best conference season since 2011 is 2023, at 8\u20130."
+    "t": "Texas was 62\u201339 in Big 12 conference games from 2011 to 2023, 61% \u2014 the third-best in the league."
    },
    {
-    "t": "Texas's longest run of conference wins since 2011 is 10 in a row, across 2022 and 2023."
+    "t": "Texas's best Big 12 season is 2023, at 8\u20130 \u2014 the best of the 13 they played from 2011 to 2023."
+   },
+   {
+    "t": "Texas's longest run of Big 12 wins from 2011 to 2023 was 10 in a row, across 2022 and 2023 \u2014 the third-best in the league."
    },
    {
     "t": "The Big 12 tiebreaker runs seven steps. The last two are a proprietary computer rating and, after that, a coin toss."
@@ -2225,37 +2233,37 @@
     ]
    },
    {
-    "t": "UCF is 7\u201320 in Big 12 conference games between 2011 and 2025.",
+    "t": "UCF is 7\u201320 in Big 12 conference games since joining in 2023, 26% \u2014 the second-lowest in the league.",
     "w": [
      "UCF"
     ]
    },
    {
-    "t": "UCF's best conference season since 2011 is 2023, at 3\u20136.",
+    "t": "UCF's best Big 12 season is 2023, at 3\u20136 \u2014 the best of the 3 they have played since joining in 2023.",
     "w": [
      "UCF"
     ]
    },
    {
-    "t": "Utah's longest run of conference wins since 2011 is 5 in a row, in 2025.",
+    "t": "Utah's longest run of Big 12 wins since joining in 2024 is 5 in a row, in 2025.",
     "w": [
      "Utah"
     ]
    },
    {
-    "t": "West Virginia is 60\u201365 in Big 12 conference games between 2011 and 2025.",
+    "t": "West Virginia is 60\u201365 in Big 12 conference games since joining in 2012, 48%.",
     "w": [
      "West Virginia"
     ]
    },
    {
-    "t": "West Virginia's best conference season since 2011 is 2016, at 7\u20132.",
+    "t": "West Virginia's best Big 12 season is 2016, at 7\u20132 \u2014 the best of the 14 they have played since joining in 2012.",
     "w": [
      "West Virginia"
     ]
    },
    {
-    "t": "West Virginia's longest run of conference wins since 2011 is 4 in a row, in 2014.",
+    "t": "West Virginia's longest run of Big 12 wins since joining in 2012 is 4 in a row, in 2014 \u2014 the second-lowest in the league.",
     "w": [
      "West Virginia"
     ]
