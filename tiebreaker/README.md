@@ -25,6 +25,19 @@ game.
   what-if tool client-side. Kept behaviorally identical to `tiebreaker.py`;
   change both together.
 - `site/app.js` — page behavior: sort toggle, pick buttons, model selector.
+- `site/race.js` — the Championship race card as The Lab computes it:
+  browser ports of `clinch.bounds`, `clinch.exact`, `odds.simulate` and
+  `chaos.index`, run against the season the what-if picks describe. The
+  build paints the card first, so The Lab and The Race agree at rest; the
+  moment a pick lands, this takes it over. Three differences from the build,
+  all stated in the card's own note: 2,000 simulations rather than 10,000
+  (interactive budget — standard error is about a point, under the
+  resolution the bars show), the ensemble is every model published to the
+  page rather than the three `odds.py` picks, and there are no this-week
+  clinch scenarios, because on The Lab the reader is choosing this week by
+  hand. Rating uncertainty is measured against *real* completed games, never
+  against picks: a picked result is a question, not evidence about a team.
+  `tests/race_client.test.mjs` holds the invariants (needs `node`).
 - `tests/test_seasons.py` — validates the engine against 2024 (the
   ASU/BYU/Colorado/Iowa State four-way 7-2 tie → ASU #1, ISU #2) and 2025
   (Texas Tech/BYU).
@@ -69,8 +82,8 @@ auto-written weekly Brief), `data.json`, and `standings.csv`.
 ## What-if simulator
 
 Every unplayed conference game gets a pair of pick buttons; picks re-run the
-official procedure instantly in the browser and update the matchup card,
-standings, and tie narratives. A model selector marks favorites (★, with
+official procedure instantly in the browser and update the matchup card, the
+Championship race card, standings, and tie narratives. A model selector marks favorites (★, with
 projected margins): SP+, FPI, Elo, and SRS from collegefootballdata.com —
 each falls back to the prior season until the new year's ratings exist.
 

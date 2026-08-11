@@ -71,6 +71,13 @@ jobs:
       - name: Pickem client
         run: node --test tiebreaker/tests/pickem_render.test.mjs
 
+      # The Lab's race card is a browser port of clinch.py, odds.py and
+      # chaos.py, so the Python suite above cannot reach it. Reads the
+      # payload out of the built pages, so it runs after the build step.
+      - name: Race card client
+        working-directory: tiebreaker
+        run: node --test tests/race_client.test.mjs
+
       - name: Attendance
         working-directory: attendance
         run: |

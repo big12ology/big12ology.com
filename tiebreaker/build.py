@@ -1135,7 +1135,8 @@ def standings_page(games, overrides, display_rows, teams):
 {bump_svg(frames, teams)}"""
 
 
-def clinch_card(games, overrides, systems, stand_rows, sims):
+def clinch_card(games, overrides, systems, stand_rows, sims,
+                chip="", tail=None):
     """The Championship race card: proof-grade clinch/elimination statuses,
     Monte Carlo odds, and the Chaos Index. Computed at build time from real
     results only — what-if picks in the browser don't touch it."""
@@ -1254,7 +1255,9 @@ def clinch_card(games, overrides, systems, stand_rows, sims):
                 f"Simulations also draw each team's true strength rather than "
                 f"trusting its rating exactly, which is why early-season odds "
                 f"sit closer to even than the ratings alone would suggest.")
-    return CLINCH_CARD.format(body=body, note=" ".join(notes))
+    return CLINCH_CARD.format(
+        body=body, note=" ".join(notes), chip=chip,
+        tail=CLINCH_TAIL if tail is None else tail)
 
 
 # The percentage needs saying out loud. It is the chance of reaching the
@@ -1263,13 +1266,22 @@ def clinch_card(games, overrides, systems, stand_rows, sims):
 # win the Big 12", then finds the column summing to twice what it should and
 # has no way to tell which of the two readings is wrong.
 CLINCH_CARD = """<div class=card id=clinchcard>
-  <h2>Championship race</h2>
-  {body}
+  <h2>Championship race{chip}</h2>
+  <div id=raceout>{body}
   <p class=note>The percentage is the chance of <b>reaching the championship
   game</b>, not of winning it or of finishing first. Two teams get there, so
-  these add up to about 200%. {note} Reflects real results only — what-if
-  picks don't change it.</p>
+  these add up to about 200%. {note} {tail}</p></div>
 </div>"""
+
+# Everywhere but The Lab, this card is the build's last word on the race.
+CLINCH_TAIL = "Reflects real results only — what-if picks don't change it."
+
+# On The Lab it is the first word instead: the server paints the real season
+# so the two pages agree at load — same proofs, same 10,000 simulations — and
+# race.js takes the card over the moment a pick makes the season hypothetical.
+CLINCH_TAIL_LAB = ("Reflects real results until you pick a game; from then on "
+                   "it re-runs in your browser on the season your picks "
+                   "describe.")
 
 
 
@@ -2884,6 +2896,7 @@ def render(year, games):
         base=BASE,
         v_engine=asset_v("engine.js"),
         v_pct=asset_v("pct.js"),
+        v_race=asset_v("race.js"),
         v_scroll=asset_v("scrollcue.js"),
         v_brand=asset_v("brand.css"),
         v_theme=asset_v("theme.js"),
@@ -2895,6 +2908,10 @@ def render(year, games):
         top=tracker_top(year, "tracker", card, page="lab.html"),
         whatif=whatif,
         standcard=standcard,
+        clinchcard=clinch_card(
+            games, overrides, systems, rows, sims,
+            chip=' <span id=w-chip3 class=wchip hidden>what-if</span>',
+            tail=CLINCH_TAIL_LAB),
         payload=payload,
     )
     ctx = {
@@ -3043,9 +3060,13 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   /* flatten the columns so cards can interleave in reading order */
   .duo > .stack {{ display: contents; }}
   #whatif {{ order: 1; }}
-  .standcard {{ order: 2; }}
-  #teamwhy {{ order: 3; }}
-  .rules {{ order: 4; }}
+  /* The race card answers the picker directly — "who reaches the title
+     game" — so it follows it here as it sits above the standings on the
+     wide layout, rather than being read after the table it summarises. */
+  #clinchcard {{ order: 2; }}
+  .standcard {{ order: 3; }}
+  #teamwhy {{ order: 4; }}
+  .rules {{ order: 5; }}
 }}
 .card {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 18px 20px; }}
@@ -3148,6 +3169,11 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 .nctag {{ color: var(--dim); font-size: 10.5px; border: 1px solid var(--line);
   border-radius: 20px; padding: 1px 7px; text-transform: uppercase;
   letter-spacing: .04em; }}
+/* Holds the chip's width open on a conference row so the dates in a mixed
+   week line up. visibility, not opacity: it keeps the box and its width
+   while staying out of the accessibility tree, so nothing announces a
+   "non-conf" that isn't there. */
+.nctag.ghost {{ visibility: hidden; }}
 .tag {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
   font-weight: 700; letter-spacing: .03em; white-space: nowrap; }}
 .tag.live {{ background: color-mix(in srgb, var(--ok, #136536) 15%,
@@ -3236,6 +3262,8 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 </div>
 <div class=stack>
 
+{clinchcard}
+
 {standcard}
 
 <div class=card id=teamwhy>
@@ -3257,6 +3285,7 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 <script src={base}{v_engine}></script>
 <script defer src={base}{v_scroll}></script>
 <script src={base}{v_pct}></script>
+<script src={base}{v_race}></script>
 <script src={base}{v_app}></script>
 {footer}
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>

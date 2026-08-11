@@ -15,6 +15,7 @@
   var stand = document.getElementById("stand");
   var stories = document.getElementById("stories");
   var matchcard = document.getElementById("matchcard");
+  var raceout = document.getElementById("raceout");
   var chip = document.getElementById("w-chip");
   var sortRaw = false;
   var picks = {}; // gameId -> winning team
@@ -38,7 +39,17 @@
     match: matchcard ? matchcard.innerHTML : "",
     stand: stand ? stand.innerHTML : "",
     stories: stories ? stories.innerHTML : "",
+    race: raceout ? raceout.innerHTML : "",
   };
+
+  // The race card starts as the build's own — the proofs and the 10,000
+  // simulations The Race publishes — and is handed to race.js only once a
+  // pick makes the season hypothetical. Restoring the snapshot on clear puts
+  // the published numbers back rather than leaving a 2,000-run estimate of
+  // the same real season standing next to them.
+  var race = window.B12Race || null;
+  var raceChip = document.getElementById("w-chip3");
+  if (race && raceout) race.mount(raceout, payload);
 
   function esc(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
@@ -259,6 +270,8 @@
       if (matchcard) matchcard.innerHTML = orig.match;
       if (stand) stand.innerHTML = orig.stand;
       if (stories) stories.innerHTML = orig.stories;
+      if (race && raceout) { race.cancel(); raceout.innerHTML = orig.race; }
+      if (raceChip) raceChip.hidden = true;
       if (chip) chip.hidden = true;
       if (tablewrap) tablewrap.hidden = false;
       lastRows = actualRows;
@@ -272,6 +285,8 @@
     var ccg = B12Engine.championship(games, payload.overrides || {});
     var nLeft = pickable().length - Object.keys(picks).length;
     if (matchcard) matchcard.innerHTML = renderMatch(ccg, nLeft);
+    if (race && raceout) race.update(games);
+    if (raceChip) raceChip.hidden = false;
     if (stand) stand.innerHTML = renderRows(rows);
     if (stories) stories.innerHTML = renderStories(rows);
     if (chip) chip.hidden = false;
@@ -415,8 +430,9 @@
     if (myEvIdx >= 0) {
       html += "Here is every level of the procedure they went through:</p>";
     } else if (first.resolved) {
-      html += "They never won a level — the last spot is theirs by " +
-        "elimination. Here is each level and who took it:</p>";
+      html += "They never won a level — at every step that separated the " +
+        "group, another team was seeded ahead of them. Here is each level " +
+        "and who took it:</p>";
     } else {
       html += "Their tie <b>can't be fully broken from public data</b> — " +
         "it reaches the SportSource rating or coin toss, which only the " +
@@ -498,10 +514,17 @@
           break;
         }
         if (remaining.length === 1) {
-          // selected team is the last one standing
-          html += "<p class=dim style='font-size:14px'>That left " +
-            esc(team) + " as the only team remaining — they take the last " +
-            "spot in the group without another comparison.</p>";
+          // The selected team is the last one standing — but not by default.
+          // The round that just ran compared them against the team seeded
+          // above, and they lost it; that chip is on screen directly above
+          // this note. Saying they placed "without another comparison" read
+          // as though nobody ever measured them. The procedure stops here
+          // because a group of one has nothing left to break, which is a
+          // different claim.
+          html += "<p class=dim style='font-size:14px'>That step is where " +
+            esc(team) + "'s place was settled. With " + esc(decider.team) +
+            " seeded they were the only team left, and a group of one has " +
+            "nothing left to break.</p>";
           break;
         }
       }
@@ -557,6 +580,16 @@
     var anyOpen = Object.keys(wasOpen).length > 0;
     var openWeek = weeks.length ? weeks[0] : null;
     var html = weeks.map(function (wk) {
+      // A week that mixes the two kinds of game read as ragged: the
+      // conference rows carry no chip, so their buttons ran on into the
+      // space it would have taken and the date landed further right than on
+      // the rows above and below. The chip's width is held open — same text,
+      // just not painted — so one column edge runs down the whole week.
+      // Only where a week actually has a chip to line up with: an all-
+      // conference week has no phantom column to keep.
+      var anyNc = byWeek[wk].some(function (g) {
+        return !g.conference_game;
+      });
       var inner = byWeek[wk].map(function (g) {
         var id = String(g.id);
         var fav = favs()[id];
@@ -566,7 +599,9 @@
           pickBtn(id, g.away, fav, was) +
           "<span class=at>at</span>" +
           pickBtn(id, g.home, fav, was) +
-          (g.conference_game ? "" : "<span class=nctag>non-conf</span>") +
+          (g.conference_game
+            ? (anyNc ? "<span class='nctag ghost'>non-conf</span>" : "")
+            : "<span class=nctag>non-conf</span>") +
           "<span class=wdate>" + date + "</span></div>";
       }).join("");
       var picked = byWeek[wk].filter(function (g) {
