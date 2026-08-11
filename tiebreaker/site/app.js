@@ -640,7 +640,7 @@
     return "<button class='pick" + (sel ? " sel" : "") +
       (stands ? " stands" : "") + "' data-id='" + id +
       "' data-team='" + esc(team) + "'" + style + ">" + mark(team, 18) +
-      esc(team) +
+      "<span class=nm>" + esc(team) + "</span>" +
       (isFav ? "<span class=star title='" + esc(model) + " favorite by ~" +
         fav.margin + "'>★</span>" : "") +
       "</button>";

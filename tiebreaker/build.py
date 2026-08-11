@@ -3129,9 +3129,19 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
   transition: opacity .18s ease;
   background: linear-gradient(to right, transparent, var(--panel)); }}
 .scrollbox.at-end::after {{ opacity: 0; }}
+/* No wrapping. The row was flex-wrap:wrap with pick buttons that could not
+   shrink, so "Southeast Missouri State at Iowa State" pushed the date onto a
+   second line and the list lost its rhythm. The two buttons share the space
+   and truncate — which is what the pick'em slate already does with the same
+   long names — while the tag and the date, both short and both fixed, never
+   move. */
 .wgame {{ display: flex; align-items: center; gap: 8px; padding: 5px 0;
-  border-bottom: 1px solid var(--line); flex-wrap: wrap; }}
-.wgame .pick {{ flex: 1 1 auto; min-width: 0; }}
+  border-bottom: 1px solid var(--line); }}
+.wgame .pick {{ flex: 1 1 0; min-width: 0; display: flex;
+  align-items: center; gap: 6px; overflow: hidden; }}
+.wgame .pick .nm {{ overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; }}
+.wgame .at, .wgame .wdate, .wgame .nctag {{ flex: 0 0 auto; }}
 .wgame:last-child {{ border-bottom: none; }}
 .wgame .at {{ color: var(--dim); font-size: 12px; }}
 .wgame .wdate {{ color: var(--dim); font-size: 12px; margin-left: auto; }}

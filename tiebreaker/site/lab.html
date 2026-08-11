@@ -179,9 +179,19 @@ main > *, .duo > *, .cols > * { min-width: 0; }
   transition: opacity .18s ease;
   background: linear-gradient(to right, transparent, var(--panel)); }
 .scrollbox.at-end::after { opacity: 0; }
+/* No wrapping. The row was flex-wrap:wrap with pick buttons that could not
+   shrink, so "Southeast Missouri State at Iowa State" pushed the date onto a
+   second line and the list lost its rhythm. The two buttons share the space
+   and truncate — which is what the pick'em slate already does with the same
+   long names — while the tag and the date, both short and both fixed, never
+   move. */
 .wgame { display: flex; align-items: center; gap: 8px; padding: 5px 0;
-  border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-.wgame .pick { flex: 1 1 auto; min-width: 0; }
+  border-bottom: 1px solid var(--line); }
+.wgame .pick { flex: 1 1 0; min-width: 0; display: flex;
+  align-items: center; gap: 6px; overflow: hidden; }
+.wgame .pick .nm { overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; }
+.wgame .at, .wgame .wdate, .wgame .nctag { flex: 0 0 auto; }
 .wgame:last-child { border-bottom: none; }
 .wgame .at { color: var(--dim); font-size: 12px; }
 .wgame .wdate { color: var(--dim); font-size: 12px; margin-left: auto; }
@@ -327,7 +337,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 <script src=engine.js?v=f5013bef></script>
 <script defer src=scrollcue.js?v=5fef00f1></script>
 <script src=pct.js?v=03186563></script>
-<script src=app.js?v=84bbbe9f></script>
+<script src=app.js?v=f5f4cbd5></script>
 <footer class=b12-footer>Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> · procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · updated {{BUILD_STAMP}}.<br>Not affiliated with the Big 12 Conference; marks belong to their owners, shown for identification only. · <a href="/privacy">Privacy</a> · <a href="mailto:dept@big12ology.com">dept@big12ology.com</a></footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
 </body>
