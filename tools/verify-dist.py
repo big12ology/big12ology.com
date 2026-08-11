@@ -3,7 +3,7 @@
 
     tools/verify-dist.py dist
 
-Three things nothing else looks at, all of them the kind of failure that
+Four things nothing else looks at, all of them the kind of failure that
 ships quietly because the build succeeds:
 
   LINKS AND ASSETS RESOLVE. assemble.sh gates on a manifest of files that
@@ -21,6 +21,13 @@ ships quietly because the build succeeds:
 
   NOTHING IS SHOUTING NaN. A rendered "None", "undefined" or "NaN" in the
   HTML is a Python or template bug that reached a reader.
+
+  THE CSS IS CSS. build.py writes its markup as a mix of .format() templates
+  and f-strings, and in both of those a literal brace is written "{{". A CSS
+  block that is emitted verbatim instead — interpolated into an f-string as a
+  value, say, the way SUBPAGE_EXTRA_CSS is — never has its braces collapsed,
+  and every rule in it ships as "{{ ... }}", which no browser parses. The page
+  looks built and the styling is simply absent, so nothing downstream notices.
 
 Exit 1 on any finding, with the file and what was expected. Pure stdlib, like
 everything else here.
@@ -47,6 +54,9 @@ TELLS = re.compile(r"\b(?:NaN|undefined|None|\[object Object\])\b")
 # Where a tell is legitimate: prose and code that talks ABOUT the value.
 TELL_OK = re.compile(r"(?:No[nN]e of|none of)")
 
+# A doubled brace in CSS: brace-doubling that was never collapsed.
+UNCOLLAPSED = re.compile(r"\{\{|\}\}")
+
 
 class Refs(HTMLParser):
     """Every local reference in a page, plus the text nodes worth scanning."""
@@ -55,7 +65,9 @@ class Refs(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.refs = []
         self.text = []
+        self.styles = []
         self._skip = 0
+        self._in_style = 0
         self.canonical = None
         self.title = None
         self._in_title = False
@@ -64,6 +76,8 @@ class Refs(HTMLParser):
         d = dict(attrs)
         if tag in ("script", "style"):
             self._skip += 1
+        if tag == "style":
+            self._in_style += 1
         if tag == "title":
             self._in_title = True
         if tag == "link" and d.get("rel") == "canonical":
@@ -82,12 +96,16 @@ class Refs(HTMLParser):
     def handle_endtag(self, tag):
         if tag in ("script", "style") and self._skip:
             self._skip -= 1
+        if tag == "style" and self._in_style:
+            self._in_style -= 1
         if tag == "title":
             self._in_title = False
 
     def handle_data(self, data):
         if self._in_title and self.title is None:
             self.title = data.strip()
+        if self._in_style:
+            self.styles.append(data)
         if not self._skip:
             self.text.append(data)
 
@@ -162,6 +180,23 @@ def main(dist):
         for m in re.finditer(r"last updated ([^.<]+)\.", html):
             stamps.add(m.group(1).strip())
 
+        # --- no uncollapsed brace-doubling in the CSS
+        #
+        # One finding per page, not per rule: a template that ships this way
+        # ships every rule in it, and eighty copies of the same line would
+        # push everything else off the report.
+        #
+        # The one legitimate "}}" in CSS is a nested block closed tight
+        # against its parent — "@media(...){ .x{color:red}}". Nothing here
+        # writes it that way, and a space is the fix if anything ever wants to.
+        css = "".join(p.styles)
+        hits = list(UNCOLLAPSED.finditer(css))
+        if hits:
+            m = hits[0]
+            around = " ".join(css[max(0, m.start() - 40):m.end() + 40].split())
+            bad.append(f"{here}: {len(hits)} doubled brace(s) in <style> — "
+                       f"...{around}...")
+
         # --- nothing shouting a debug value
         text = " ".join(p.text)
         for m in TELLS.finditer(text):
@@ -195,7 +230,7 @@ def main(dist):
             print(f"  ... and {len(bad) - 80} more")
         return 1
     print(f"verify-dist: {n} pages, links and assets resolve, "
-          f"canonicals agree, one build stamp")
+          f"canonicals agree, CSS parses, one build stamp")
     return 0
 
 

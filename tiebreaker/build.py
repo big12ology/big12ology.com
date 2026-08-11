@@ -1548,10 +1548,10 @@ SUBPAGE_EXTRA_CSS = """
 .rotationtable td { vertical-align:middle }
 .rotationtable td:first-child { white-space:nowrap }
 .warnpill { color: var(--warn); font-weight: 600; font-size: 12px; }
-.drawsum td.num, .drawgridtable td {{ text-align: right;
-  font-variant-numeric: tabular-nums; }}
-.drawsum td.dim, .drawgridtable td.dim {{ color: var(--dim); }}
-.drawgridtable th {{ font-weight: 600; font-size: 12px; }}
+.drawsum td.num, .drawgridtable td { text-align: right;
+  font-variant-numeric: tabular-nums; }
+.drawsum td.dim, .drawgridtable td.dim { color: var(--dim); }
+.drawgridtable th { font-weight: 600; font-size: 12px; }
 table { border-collapse:collapse; width:100%; font-size:14px }
 th, td { text-align:left; padding:6px 9px; border-bottom:1px solid
   var(--line); font-variant-numeric:tabular-nums }
