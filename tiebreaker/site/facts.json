@@ -45,33 +45,15 @@
     ]
    },
    {
-    "t": "Baylor averages 43,926 a home game since 2012, over 81 games \u2014 the fifth-lowest in the league.",
-    "w": [
-     "Baylor"
-    ]
-   },
-   {
     "t": "Baylor has filled its stadium 33 times in 81 home games since 2012 \u2014 41%, the second-best in the league, against a league average of 30%.",
     "w": [
      "Baylor"
     ]
    },
    {
-    "t": "Cincinnati averages 34,053 a home game since 2012, over 83 games \u2014 the third-lowest in the league.",
-    "w": [
-     "Cincinnati"
-    ]
-   },
-   {
     "t": "Cincinnati has filled its stadium 19 times in 83 home games since 2012 \u2014 23%, against a league average of 30%.",
     "w": [
      "Cincinnati"
-    ]
-   },
-   {
-    "t": "Colorado averages 45,870 a home game since 2012, over 79 games.",
-    "w": [
-     "Colorado"
     ]
    },
    {
@@ -182,12 +164,6 @@
     ]
    },
    {
-    "t": "Iowa State averages 57,062 a home game since 2012, over 84 games \u2014 the second-best in the league.",
-    "w": [
-     "Iowa State"
-    ]
-   },
-   {
     "t": "Iowa State has filled its stadium 29 times in 84 home games since 2012 \u2014 35%, the fourth-best in the league, against a league average of 30%.",
     "w": [
      "Iowa State"
@@ -197,12 +173,6 @@
     "t": "Kansas State averages 51,066 a home game since 2012, over 89 games.",
     "w": [
      "Kansas State"
-    ]
-   },
-   {
-    "t": "Kansas averages 33,870 a home game since 2012, over 83 games \u2014 the second-lowest in the league.",
-    "w": [
-     "Kansas"
     ]
    },
    {
@@ -224,25 +194,55 @@
     ]
    },
    {
-    "t": "TCU averages 44,410 a home game since 2012, over 82 games.",
-    "w": [
-     "TCU"
-    ]
-   },
-   {
     "t": "TCU has filled its stadium 32 times in 82 home games since 2012 \u2014 39%, the third-best in the league, against a league average of 30%.",
     "w": [
      "TCU"
     ]
    },
    {
-    "t": "Texas Tech averages 56,663 a home game since 2012, over 80 games \u2014 the third-best in the league.",
+    "t": "Texas Tech has filled its stadium 27 times in 80 home games since 2012 \u2014 34%, the fifth-best in the league, against a league average of 30%.",
     "w": [
      "Texas Tech"
     ]
    },
    {
-    "t": "Texas Tech has filled its stadium 27 times in 80 home games since 2012 \u2014 34%, the fifth-best in the league, against a league average of 30%.",
+    "t": "The Bearcats average 34,053 a home game since 2012, over 83 games \u2014 the third-lowest in the league.",
+    "w": [
+     "Cincinnati"
+    ]
+   },
+   {
+    "t": "The Bears average 43,926 a home game since 2012, over 81 games \u2014 the fifth-lowest in the league.",
+    "w": [
+     "Baylor"
+    ]
+   },
+   {
+    "t": "The Buffaloes average 45,870 a home game since 2012, over 79 games.",
+    "w": [
+     "Colorado"
+    ]
+   },
+   {
+    "t": "The Cyclones average 57,062 a home game since 2012, over 84 games \u2014 the second-best in the league.",
+    "w": [
+     "Iowa State"
+    ]
+   },
+   {
+    "t": "The Horned Frogs average 44,410 a home game since 2012, over 82 games.",
+    "w": [
+     "TCU"
+    ]
+   },
+   {
+    "t": "The Jayhawks average 33,870 a home game since 2012, over 83 games \u2014 the second-lowest in the league.",
+    "w": [
+     "Kansas"
+    ]
+   },
+   {
+    "t": "The Red Raiders average 56,663 a home game since 2012, over 80 games \u2014 the third-best in the league.",
     "w": [
      "Texas Tech"
     ]
@@ -1241,18 +1241,6 @@
     ]
    },
    {
-    "t": "Arizona State plays 4 of its 9 2026 conference games at home.",
-    "w": [
-     "Arizona State"
-    ]
-   },
-   {
-    "t": "Arizona State's 2026 non-conference schedule is Morgan State, Texas A&M and Hawai'i.",
-    "w": [
-     "Arizona State"
-    ]
-   },
-   {
     "t": "Arizona and Kansas State meet as conference opponents for the first time ever in 2026.",
     "w": [
      "Arizona",
@@ -1279,13 +1267,13 @@
     ]
    },
    {
-    "t": "Arizona plays 5 of its 9 2026 conference games at home.",
+    "t": "Arizona play Northern Arizona, Northern Illinois and Washington State out of conference in 2026.",
     "w": [
      "Arizona"
     ]
    },
    {
-    "t": "Arizona's 2026 non-conference schedule is Northern Arizona, Northern Illinois and Washington State.",
+    "t": "Arizona plays 5 of its 9 2026 conference games at home.",
     "w": [
      "Arizona"
     ]
@@ -1324,17 +1312,17 @@
     ]
    },
    {
-    "t": "BYU plays 5 of its 9 2026 conference games at home.",
-    "w": [
-     "BYU"
-    ]
-   },
-   {
-    "t": "BYU's 2026 non-conference schedule is Utah Tech, Colorado State and Notre Dame.",
+    "t": "BYU play Utah Tech, Colorado State and Notre Dame out of conference in 2026.",
     "w": [
      "BYU",
      "Colorado",
      "Utah"
+    ]
+   },
+   {
+    "t": "BYU plays 5 of its 9 2026 conference games at home.",
+    "w": [
+     "BYU"
     ]
    },
    {
@@ -1363,13 +1351,7 @@
     ]
    },
    {
-    "t": "Baylor plays 4 of its 9 2026 conference games at home.",
-    "w": [
-     "Baylor"
-    ]
-   },
-   {
-    "t": "Baylor's 2026 non-conference schedule is Auburn, Prairie View A&M and Louisiana Tech.",
+    "t": "Baylor play Auburn, Prairie View A&M and Louisiana Tech out of conference in 2026.",
     "w": [
      "Baylor"
     ]
@@ -1387,18 +1369,6 @@
     ]
    },
    {
-    "t": "Cincinnati plays 4 of its 9 2026 conference games at home.",
-    "w": [
-     "Cincinnati"
-    ]
-   },
-   {
-    "t": "Cincinnati's 2026 non-conference schedule is Boston College, Western Carolina and Miami (OH).",
-    "w": [
-     "Cincinnati"
-    ]
-   },
-   {
     "t": "Colorado and Kansas last met as conference opponents in 2024, and are not paired in 2026.",
     "w": [
      "Colorado",
@@ -1406,25 +1376,13 @@
     ]
    },
    {
-    "t": "Colorado does not play Kansas, Arizona, BYU, Iowa State, TCU and West Virginia in 2026.",
-    "w": [
-     "Arizona",
-     "BYU",
-     "Colorado",
-     "Iowa State",
-     "Kansas",
-     "TCU",
-     "West Virginia"
-    ]
-   },
-   {
-    "t": "Colorado plays 5 of its 9 2026 conference games at home.",
+    "t": "Colorado play Georgia Tech, Weber State and Northwestern out of conference in 2026.",
     "w": [
      "Colorado"
     ]
    },
    {
-    "t": "Colorado's 2026 non-conference schedule is Georgia Tech, Weber State and Northwestern.",
+    "t": "Colorado plays 5 of its 9 2026 conference games at home.",
     "w": [
      "Colorado"
     ]
@@ -1455,13 +1413,13 @@
     ]
    },
    {
-    "t": "Houston plays 4 of its 9 2026 conference games at home.",
+    "t": "Houston play Oregon State, Southern and Georgia Southern out of conference in 2026.",
     "w": [
      "Houston"
     ]
    },
    {
-    "t": "Houston's 2026 non-conference schedule is Oregon State, Southern and Georgia Southern.",
+    "t": "Houston plays 4 of its 9 2026 conference games at home.",
     "w": [
      "Houston"
     ]
@@ -1479,13 +1437,13 @@
     ]
    },
    {
-    "t": "Iowa State plays 5 of its 9 2026 conference games at home.",
+    "t": "Iowa State play Southeast Missouri State, Iowa and Bowling Green out of conference in 2026.",
     "w": [
      "Iowa State"
     ]
    },
    {
-    "t": "Iowa State's 2026 non-conference schedule is Southeast Missouri State, Iowa and Bowling Green.",
+    "t": "Iowa State plays 5 of its 9 2026 conference games at home.",
     "w": [
      "Iowa State"
     ]
@@ -1503,13 +1461,13 @@
     ]
    },
    {
-    "t": "Kansas State plays 4 of its 9 2026 conference games at home.",
+    "t": "Kansas State play Nicholls, Washington State and Tulane out of conference in 2026.",
     "w": [
      "Kansas State"
     ]
    },
    {
-    "t": "Kansas State's 2026 non-conference schedule is Nicholls, Washington State and Tulane.",
+    "t": "Kansas State plays 4 of its 9 2026 conference games at home.",
     "w": [
      "Kansas State"
     ]
@@ -1527,13 +1485,7 @@
     ]
    },
    {
-    "t": "Kansas plays 4 of its 9 2026 conference games at home.",
-    "w": [
-     "Kansas"
-    ]
-   },
-   {
-    "t": "Kansas's 2026 non-conference schedule is Long Island University, Missouri and Middle Tennessee.",
+    "t": "Kansas play Long Island University, Missouri and Middle Tennessee out of conference in 2026.",
     "w": [
      "Kansas"
     ]
@@ -1563,13 +1515,13 @@
     ]
    },
    {
-    "t": "Oklahoma State plays 4 of its 9 2026 conference games at home.",
+    "t": "Oklahoma State play Tulsa, Oregon and Murray State out of conference in 2026.",
     "w": [
      "Oklahoma State"
     ]
    },
    {
-    "t": "Oklahoma State's 2026 non-conference schedule is Tulsa, Oregon and Murray State.",
+    "t": "Oklahoma State plays 4 of its 9 2026 conference games at home.",
     "w": [
      "Oklahoma State"
     ]
@@ -1581,14 +1533,8 @@
     "t": "Sixteen teams, fifteen possible conference opponents, nine games. Nobody plays everybody, so two teams finishing on the same record did not attempt the same schedule."
    },
    {
-    "t": "TCU does not play Oklahoma State, Arizona State, Cincinnati, Colorado, Houston and Iowa State in 2026.",
+    "t": "TCU play North Carolina, Grambling and Arkansas State out of conference in 2026.",
     "w": [
-     "Arizona State",
-     "Cincinnati",
-     "Colorado",
-     "Houston",
-     "Iowa State",
-     "Oklahoma State",
      "TCU"
     ]
    },
@@ -1599,31 +1545,7 @@
     ]
    },
    {
-    "t": "TCU's 2026 non-conference schedule is North Carolina, Grambling and Arkansas State.",
-    "w": [
-     "TCU"
-    ]
-   },
-   {
-    "t": "Texas Tech does not play Iowa State, BYU, Kansas, Kansas State, UCF and Utah in 2026.",
-    "w": [
-     "BYU",
-     "Iowa State",
-     "Kansas",
-     "Kansas State",
-     "Texas Tech",
-     "UCF",
-     "Utah"
-    ]
-   },
-   {
-    "t": "Texas Tech plays 5 of its 9 2026 conference games at home.",
-    "w": [
-     "Texas Tech"
-    ]
-   },
-   {
-    "t": "Texas Tech's 2026 non-conference schedule is Abilene Christian, Oregon State and Sam Houston.",
+    "t": "Texas Tech play Abilene Christian, Oregon State and Sam Houston out of conference in 2026.",
     "w": [
      "Houston",
      "Texas Tech"
@@ -1642,6 +1564,24 @@
     "t": "The Battle of the Brothers is on the 2026 card, at Utah.",
     "w": [
      "Utah"
+    ]
+   },
+   {
+    "t": "The Bearcats play 4 of their 9 2026 conference games at home.",
+    "w": [
+     "Cincinnati"
+    ]
+   },
+   {
+    "t": "The Bearcats play Boston College, Western Carolina and Miami (OH) out of conference in 2026.",
+    "w": [
+     "Cincinnati"
+    ]
+   },
+   {
+    "t": "The Bears play 4 of their 9 2026 conference games at home.",
+    "w": [
+     "Baylor"
     ]
    },
    {
@@ -1681,12 +1621,84 @@
     ]
    },
    {
+    "t": "The Buffaloes do not play Kansas, Arizona, BYU, Iowa State, TCU and West Virginia in 2026.",
+    "w": [
+     "Arizona",
+     "BYU",
+     "Colorado",
+     "Iowa State",
+     "Kansas",
+     "TCU",
+     "West Virginia"
+    ]
+   },
+   {
     "t": "The Cy-Hawk game is on the 2026 card, at Iowa."
    },
    {
     "t": "The Holy War is on the 2026 card, at Utah.",
     "w": [
      "Utah"
+    ]
+   },
+   {
+    "t": "The Horned Frogs do not play Oklahoma State, Arizona State, Cincinnati, Colorado, Houston and Iowa State in 2026.",
+    "w": [
+     "Arizona State",
+     "Cincinnati",
+     "Colorado",
+     "Houston",
+     "Iowa State",
+     "Oklahoma State",
+     "TCU"
+    ]
+   },
+   {
+    "t": "The Jayhawks play 4 of their 9 2026 conference games at home.",
+    "w": [
+     "Kansas"
+    ]
+   },
+   {
+    "t": "The Knights do not play Arizona, Utah, Cincinnati, Kansas State, Texas Tech and West Virginia in 2026.",
+    "w": [
+     "Arizona",
+     "Cincinnati",
+     "Kansas State",
+     "Texas Tech",
+     "UCF",
+     "Utah",
+     "West Virginia"
+    ]
+   },
+   {
+    "t": "The Mountaineers do not play Baylor, Kansas State, Arizona State, BYU, Colorado and UCF in 2026.",
+    "w": [
+     "Arizona State",
+     "BYU",
+     "Baylor",
+     "Colorado",
+     "Kansas State",
+     "UCF",
+     "West Virginia"
+    ]
+   },
+   {
+    "t": "The Red Raiders do not play Iowa State, BYU, Kansas, Kansas State, UCF and Utah in 2026.",
+    "w": [
+     "BYU",
+     "Iowa State",
+     "Kansas",
+     "Kansas State",
+     "Texas Tech",
+     "UCF",
+     "Utah"
+    ]
+   },
+   {
+    "t": "The Red Raiders play 5 of their 9 2026 conference games at home.",
+    "w": [
+     "Texas Tech"
     ]
    },
    {
@@ -1699,6 +1711,18 @@
     "t": "The Rumble in the Rockies is on the 2026 card, at Colorado.",
     "w": [
      "Colorado"
+    ]
+   },
+   {
+    "t": "The Sun Devils play 4 of their 9 2026 conference games at home.",
+    "w": [
+     "Arizona State"
+    ]
+   },
+   {
+    "t": "The Sun Devils play Morgan State, Texas A&M and Hawai'i out of conference in 2026.",
+    "w": [
+     "Arizona State"
     ]
    },
    {
@@ -1721,25 +1745,19 @@
     ]
    },
    {
-    "t": "UCF does not play Arizona, Utah, Cincinnati, Kansas State, Texas Tech and West Virginia in 2026.",
+    "t": "The Utes play 4 of their 9 2026 conference games at home.",
     "w": [
-     "Arizona",
-     "Cincinnati",
-     "Kansas State",
-     "Texas Tech",
-     "UCF",
-     "Utah",
-     "West Virginia"
+     "Utah"
     ]
    },
    {
-    "t": "UCF plays 5 of its 9 2026 conference games at home.",
+    "t": "UCF play Bethune-Cookman, Pittsburgh and Georgia State out of conference in 2026.",
     "w": [
      "UCF"
     ]
    },
    {
-    "t": "UCF's 2026 non-conference schedule is Bethune-Cookman, Pittsburgh and Georgia State.",
+    "t": "UCF plays 5 of its 9 2026 conference games at home.",
     "w": [
      "UCF"
     ]
@@ -1757,13 +1775,7 @@
     ]
    },
    {
-    "t": "Utah plays 4 of its 9 2026 conference games at home.",
-    "w": [
-     "Utah"
-    ]
-   },
-   {
-    "t": "Utah's 2026 non-conference schedule is Idaho, Arkansas and Utah State.",
+    "t": "Utah play Idaho, Arkansas and Utah State out of conference in 2026.",
     "w": [
      "Utah"
     ]
@@ -1775,25 +1787,13 @@
     ]
    },
    {
-    "t": "West Virginia does not play Baylor, Kansas State, Arizona State, BYU, Colorado and UCF in 2026.",
+    "t": "West Virginia play Coastal Carolina, UT Martin and Virginia out of conference in 2026.",
     "w": [
-     "Arizona State",
-     "BYU",
-     "Baylor",
-     "Colorado",
-     "Kansas State",
-     "UCF",
      "West Virginia"
     ]
    },
    {
     "t": "West Virginia plays 5 of its 9 2026 conference games at home.",
-    "w": [
-     "West Virginia"
-    ]
-   },
-   {
-    "t": "West Virginia's 2026 non-conference schedule is Coastal Carolina, UT Martin and Virginia.",
     "w": [
      "West Virginia"
     ]
@@ -1946,12 +1946,6 @@
     ]
    },
    {
-    "t": "Baylor is 72\u201363 in Big 12 conference games since 2011, 53%.",
-    "w": [
-     "Baylor"
-    ]
-   },
-   {
     "t": "Baylor took the 2013 conference season outright at 8\u20131.",
     "w": [
      "Baylor"
@@ -1995,12 +1989,6 @@
    },
    {
     "t": "Cincinnati and Miami (OH) play for the Victory Bell. Cincinnati holds it, on the 2024 result.",
-    "w": [
-     "Cincinnati"
-    ]
-   },
-   {
-    "t": "Cincinnati is 9\u201318 in Big 12 conference games since joining in 2023, 33% \u2014 the third-lowest in the league.",
     "w": [
      "Cincinnati"
     ]
@@ -2119,12 +2107,6 @@
     ]
    },
    {
-    "t": "Iowa State is 60\u201375 in Big 12 conference games since 2011, 44%.",
-    "w": [
-     "Iowa State"
-    ]
-   },
-   {
     "t": "Iowa State took the 2020 conference season outright at 8\u20131.",
     "w": [
      "Iowa State"
@@ -2201,12 +2183,6 @@
    },
    {
     "t": "Kansas and Missouri have met twice since 2011 in the Border War. In those games Missouri leads 2\u20130.",
-    "w": [
-     "Kansas"
-    ]
-   },
-   {
-    "t": "Kansas is 21\u2013113 in Big 12 conference games since 2011, 16% \u2014 the lowest in the league.",
     "w": [
      "Kansas"
     ]
@@ -2421,7 +2397,43 @@
     "t": "Texas's longest run of Big 12 wins from 2011 to 2023 was 10 in a row, across 2022 and 2023 \u2014 the third-best in the league."
    },
    {
+    "t": "The Bearcats are 9\u201318 in Big 12 conference games since joining in 2023, 33% \u2014 the third-lowest in the league.",
+    "w": [
+     "Cincinnati"
+    ]
+   },
+   {
+    "t": "The Bears are 72\u201363 in Big 12 conference games since 2011, 53%.",
+    "w": [
+     "Baylor"
+    ]
+   },
+   {
     "t": "The Big 12 tiebreaker runs seven steps. The last two are a proprietary computer rating and, after that, a coin toss."
+   },
+   {
+    "t": "The Cyclones are 60\u201375 in Big 12 conference games since 2011, 44%.",
+    "w": [
+     "Iowa State"
+    ]
+   },
+   {
+    "t": "The Jayhawks are 21\u2013113 in Big 12 conference games since 2011, 16% \u2014 the lowest in the league.",
+    "w": [
+     "Kansas"
+    ]
+   },
+   {
+    "t": "The Knights are 7\u201320 in Big 12 conference games since joining in 2023, 26% \u2014 the second-lowest in the league.",
+    "w": [
+     "UCF"
+    ]
+   },
+   {
+    "t": "The Mountaineers are 60\u201365 in Big 12 conference games since joining in 2012, 48%.",
+    "w": [
+     "West Virginia"
+    ]
    },
    {
     "t": "The most lopsided conference game of 2011 was Oklahoma State 66, Texas Tech 6 \u2014 a 60-point margin.",
@@ -2667,12 +2679,6 @@
     ]
    },
    {
-    "t": "UCF is 7\u201320 in Big 12 conference games since joining in 2023, 26% \u2014 the second-lowest in the league.",
-    "w": [
-     "UCF"
-    ]
-   },
-   {
     "t": "UCF's best Big 12 season is 2023, at 3\u20136 \u2014 the best of the 3 they have played since joining in 2023.",
     "w": [
      "UCF"
@@ -2698,12 +2704,6 @@
    },
    {
     "t": "West Virginia and Pittsburgh have met 5 times since 2011 in the Backyard Brawl. In those games West Virginia leads 3\u20132.",
-    "w": [
-     "West Virginia"
-    ]
-   },
-   {
-    "t": "West Virginia is 60\u201365 in Big 12 conference games since joining in 2012, 48%.",
     "w": [
      "West Virginia"
     ]

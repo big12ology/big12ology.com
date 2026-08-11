@@ -1,82 +1,98 @@
 {
  "Arizona": {
-  "color": "#0c234b",
+  "abbr": "ARIZ",
   "alt": "#ab0520",
-  "abbr": "ARIZ"
+  "color": "#0c234b",
+  "mascot": "Wildcats"
  },
  "Arizona State": {
-  "color": "#8e0c3a",
+  "abbr": "ASU",
   "alt": "#ffc72c",
-  "abbr": "ASU"
- },
- "Baylor": {
-  "color": "#154734",
-  "alt": "#ffb81c",
-  "abbr": "BAY"
+  "color": "#8e0c3a",
+  "mascot": "Sun Devils"
  },
  "BYU": {
-  "color": "#003da5",
+  "abbr": "BYU",
   "alt": "#ffffff",
-  "abbr": "BYU"
+  "color": "#003da5",
+  "mascot": "Cougars"
+ },
+ "Baylor": {
+  "abbr": "BAY",
+  "alt": "#ffb81c",
+  "color": "#154734",
+  "mascot": "Bears"
  },
  "Cincinnati": {
-  "color": "#e00122",
+  "abbr": "CIN",
   "alt": "#000000",
-  "abbr": "CIN"
+  "color": "#e00122",
+  "mascot": "Bearcats"
  },
  "Colorado": {
-  "color": "#cfb87c",
+  "abbr": "COLO",
   "alt": "#000000",
-  "abbr": "COLO"
+  "color": "#cfb87c",
+  "mascot": "Buffaloes"
  },
  "Houston": {
-  "color": "#c92a39",
+  "abbr": "HOU",
   "alt": "#ffffff",
-  "abbr": "HOU"
+  "color": "#c92a39",
+  "mascot": "Cougars"
  },
  "Iowa State": {
-  "color": "#822433",
+  "abbr": "ISU",
   "alt": "#fdca2f",
-  "abbr": "ISU"
+  "color": "#822433",
+  "mascot": "Cyclones"
  },
  "Kansas": {
-  "color": "#0051ba",
+  "abbr": "KU",
   "alt": "#e8000d",
-  "abbr": "KU"
+  "color": "#0051ba",
+  "mascot": "Jayhawks"
  },
  "Kansas State": {
-  "color": "#3c0969",
+  "abbr": "KSU",
   "alt": "#e2e3e4",
-  "abbr": "KSU"
+  "color": "#3c0969",
+  "mascot": "Wildcats"
  },
  "Oklahoma State": {
-  "color": "#ff7300",
+  "abbr": "OKST",
   "alt": "#000000",
-  "abbr": "OKST"
+  "color": "#ff7300",
+  "mascot": "Cowboys"
  },
  "TCU": {
-  "color": "#4d1979",
+  "abbr": "TCU",
   "alt": "#f1f2f3",
-  "abbr": "TCU"
+  "color": "#4d1979",
+  "mascot": "Horned Frogs"
  },
  "Texas Tech": {
-  "color": "#cc0000",
+  "abbr": "TTU",
   "alt": "#000000",
-  "abbr": "TTU"
+  "color": "#cc0000",
+  "mascot": "Red Raiders"
  },
  "UCF": {
-  "color": "#ba9b37",
+  "abbr": "UCF",
   "alt": "#000000",
-  "abbr": "UCF"
+  "color": "#ba9b37",
+  "mascot": "Knights"
  },
  "Utah": {
-  "color": "#ea002a",
+  "abbr": "UTAH",
   "alt": "#ffffff",
-  "abbr": "UTAH"
+  "color": "#ea002a",
+  "mascot": "Utes"
  },
  "West Virginia": {
-  "color": "#002855",
+  "abbr": "WVU",
   "alt": "#eaaa00",
-  "abbr": "WVU"
+  "color": "#002855",
+  "mascot": "Mountaineers"
  }
 }

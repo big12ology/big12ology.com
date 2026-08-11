@@ -39,10 +39,12 @@ anything on the server knowing what day it is.
 """
 
 import collections
+import hashlib
 import csv
 import datetime
 import json
 import os
+import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
@@ -197,9 +199,10 @@ def attendance_facts():
     for team, rs in sorted(by_team.items()):
         where = _rank(avgs[team], list(avgs.values()))
         colour = f" — {where}" if where else ""
+        S = _subj(team, "avg", opener=True)
         out.append(_fact(
-            f"{team} averages {_comma(avgs[team])} a home game since "
-            f"{ATT_FIRST}, over {len(rs)} games{colour}."))
+            f"{S['n']} average{S['v']} {_comma(avgs[team])} a home game "
+            f"since {ATT_FIRST}, over {len(rs)} games{colour}."))
 
     # --- one per season ----------------------------------------------------
     by_season = collections.defaultdict(list)
@@ -462,9 +465,10 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
     for t in names:
         h, a = home.get(t, 0), away.get(t, 0)
         if h + a:
+            S = _subj(t, "home", opener=True)
             out.append(_fact(
-                f"{t} plays {h} of its {h + a} {year} conference games at "
-                f"home."))
+                f"{S['n']} play{S['v']} {h} of {S['its']} {h + a} {year} "
+                f"conference games at home."))
 
     # --- the games that are not in Texas, or America ------------------------
     for g in games:
@@ -488,9 +492,10 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
             nonconf[g["away"]].append(g["home"])
     for t, opps in sorted(nonconf.items()):
         if opps:
+            S = _subj(t, "nonconf", opener=True)
             out.append(_fact(
-                f"{t}'s {year} non-conference schedule is "
-                f"{_list(opps)}."))
+                f"{S['n']} play {_list(opps)} out of conference in "
+                f"{year}."))
 
     # --- who the league plays when it is not playing itself -----------------
     outside = collections.Counter()
@@ -515,8 +520,9 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
     for r in rows:
         miss = [m["opponent"] for m in r["missing"]]
         if miss:
+            S = _subj(r["team"], "miss", opener=True)
             out.append(_fact(
-                f"{r['team']} does not play {_list(miss)} in {year}."))
+                f"{S['n']} {S['does']} not play {_list(miss)} in {year}."))
 
     # --- first meetings -----------------------------------------------------
     # The league has only been at sixteen since 2023, so "never met before" is
@@ -718,8 +724,10 @@ def tiebreaker_facts(games_by_year):
             continue
         where = _rank(pcts[team], list(pcts.values()))
         colour = f" — {where}" if where else ""
+        S = _subj(team, "record", opener=True)
+        verb = (S["is"] if _was(team, played) == "is" else S["was"])
         out.append(_fact(
-            f"{team} {_was(team, played)} {w}–{l} in Big 12 conference games "
+            f"{S['n']} {verb} {w}–{l} in Big 12 conference games "
             f"{_span(team, played)}, {w / (w + l) * 100:.0f}%{colour}."))
     for y, (margin, w, l, hi, lo) in sorted(biggest.items()):
         out.append(_fact(
@@ -825,6 +833,63 @@ def pools_facts(year, lines_count):
     return out
 
 
+# ------------------------------------------------------- school or nickname
+
+_MASCOTS = None
+_SHARED = None
+
+
+def _mascots():
+    """{team: nickname}, and the nicknames more than one team answers to.
+
+    Arizona and Kansas State are both Wildcats; BYU and Houston are both
+    Cougars. "The Cougars average 38,000 a game" is not a fact about anybody,
+    so those four never get the bare nickname — the guard is here rather than
+    in the data because it is a property of the set, not of any one team.
+    """
+    global _MASCOTS, _SHARED
+    if _MASCOTS is None:
+        try:
+            with open(os.path.join(HERE, "data", "teams.json"),
+                      encoding="utf-8") as f:
+                raw = json.load(f)
+            _MASCOTS = {t: v["mascot"] for t, v in raw.items()
+                        if isinstance(v, dict) and v.get("mascot")}
+        except (OSError, ValueError):
+            _MASCOTS = {}
+        counts = collections.Counter(_MASCOTS.values())
+        _SHARED = {m for m, n in counts.items() if n > 1}
+    return _MASCOTS
+
+
+def _subj(team, family, opener=False):
+    """A team as a sentence subject — the school, or the nickname.
+
+    People do not say "Cincinnati" four times in a paragraph, they say the
+    Bearcats once. Alternating needs the grammar to follow: a school is
+    singular and a nickname is plural, so every verb and possessive around it
+    changes too. The caller gets the forms rather than guessing them.
+
+    The choice is stable for a given team and fact family — deterministic, so
+    the build stays reproducible, and keyed on the family so one team is not
+    "the Bearcats" in every sentence on the page.
+    """
+    m = _mascots().get(team)
+    # hashlib, NOT hash(): Python randomises string hashing per process, so
+    # hash() here would pick different wording on every build and
+    # verify-deterministic.sh would start failing at random.
+    d = hashlib.sha256(f"{team}|{family}".encode()).digest()[0]
+    use = bool(m) and m not in (_SHARED or set()) and d % 100 < 45
+    if not use:
+        return {"n": team, "is": "is", "was": "was", "has": "has",
+                "does": "does", "its": "its", "v": "s", "they": "it"}
+    # Stored lower-case because most uses are mid-sentence; `opener` is for
+    # the ones that start one.
+    return {"n": f"{'The' if opener else 'the'} {m}", "is": "are",
+            "was": "were", "has": "have", "does": "do", "its": "their",
+            "v": "", "they": "they"}
+
+
 # ------------------------------------------------------------------- build
 
 def build(year, games_by_year, teams, lines, rotation_mod, out_path):
@@ -848,16 +913,26 @@ def build(year, games_by_year, teams, lines, rotation_mod, out_path):
     # list, rather than by the client guessing from the sentence: "Kansas"
     # is a substring of "Kansas State", and a longest-first match is the only
     # way that comes out right.
+    # Nicknames count as the team. A fact that says "The Bearcats" is about
+    # Cincinnati, and if the tag misses that, the no-two-cards-same-team rule
+    # on the hub silently stops applying to every fact that used a nickname.
     names = sorted(set(teams or []), key=len, reverse=True)
+    nick = {f"the {m}": t for t, m in _mascots().items()
+            if m not in (_SHARED or set())}
     for k in sections:
         for f in sections[k]:
             claimed, rest = [], f["t"]
+            for phrase, team in sorted(nick.items(), key=lambda kv: -len(kv[0])):
+                if phrase.lower() in rest.lower():
+                    claimed.append(team)
+                    rest = re.sub(re.escape(phrase), " ", rest,
+                                  flags=re.IGNORECASE)
             for n in names:
                 if n in rest:
                     claimed.append(n)
                     rest = rest.replace(n, " ")
             if claimed:
-                f["w"] = sorted(claimed)
+                f["w"] = sorted(set(claimed))
 
     # Stable order, so an unchanged season rewrites nothing.
     for k in sections:
