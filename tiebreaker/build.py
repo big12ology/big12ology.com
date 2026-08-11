@@ -451,7 +451,11 @@ def fmt_prob(p):
         return "0%"
     if p < 0.001:
         return "&lt;0.1%"
-    return f"{p * 100:.1f}%".replace(".0%", "%")
+    # One decimal, always. The trailing zero was being stripped, so a column
+    # of these read 6.6, 6, 5.6, 5.3 — the digits stopped lining up and 6%
+    # looked like a different kind of measurement from 6.6%. Tabular figures
+    # only align if every number has the same shape.
+    return f"{p * 100:.1f}%"
 
 
 
