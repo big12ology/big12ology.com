@@ -290,13 +290,52 @@ def _cap(text):
     return text[:1].upper() + text[1:] if text else text
 
 
-def load_rivalries():
+# Schools that were in the Big 12 and left. Nebraska is named rather than
+# derived because it went in 2011, before the first season this repository
+# holds; the rest fall out of the schedules on their own and are picked up
+# below, so a future departure needs no edit here.
+DEPARTED_SEED = {"Nebraska"}
+
+
+def departed(games_by_year):
+    """Former members: in a conference game once, not in the latest season."""
+    by = {}
+    for y in sorted(games_by_year):
+        here = set()
+        for g in games_by_year[y]:
+            if g.get("conference_game") and not g.get("ccg"):
+                here.add(g.get("home"))
+                here.add(g.get("away"))
+        if here:
+            by[y] = here
+    if not by:
+        return set(DEPARTED_SEED)
+    latest = by[max(by)]
+    ever = set().union(*by.values())
+    return (ever - latest) | DEPARTED_SEED
+
+
+def load_rivalries(games_by_year=None):
+    """The curated pairings, minus the ones played against people who left.
+
+    Bedlam, the Border War, Colorado-Nebraska and the two Texas games are all
+    real and all excluded. It is an editorial call and not a data one: a Big
+    12 site printing the series record against the schools that walked out is
+    not a fun fact for the people still here. Opponents who were never in the
+    conference are untouched — Iowa and Pitt are just neighbours.
+
+    Enforced here as well as absent from the file, so that adding one back to
+    the JSON in good faith does not quietly put it on the front page.
+    """
     p = os.path.join(HERE, "data", "rivalries.json")
     try:
         with open(p, encoding="utf-8") as f:
-            return json.load(f).get("rivalries") or []
+            rivalries = json.load(f).get("rivalries") or []
     except (OSError, ValueError):
         return []
+    gone = departed(games_by_year or {})
+    return [r for r in rivalries
+            if not (set(r.get("teams") or []) & gone)]
 
 
 def _series(games_by_year, a, b):
@@ -320,7 +359,7 @@ def rivalry_facts(games_by_year, year, first_year):
     by anybody who did not know the data starts in 2011.
     """
     out = []
-    for r in load_rivalries():
+    for r in load_rivalries(games_by_year):
         a, b = r["teams"]
         name = r.get("name") or f"{a}–{b}"
         met = _series(games_by_year, a, b)
@@ -401,7 +440,7 @@ def rivalry_schedule_facts(games_by_year, year):
     out = []
     games = games_by_year.get(year) or []
     on, off = [], []
-    for r in load_rivalries():
+    for r in load_rivalries(games_by_year):
         a, b = r["teams"]
         hit = next((g for g in games
                     if {g.get("home"), g.get("away")} == {a, b}), None)

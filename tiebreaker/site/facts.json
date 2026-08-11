@@ -1615,12 +1615,6 @@
     "t": "The Big 12 plays 6 non-conference games against the Pac-12 in 2026."
    },
    {
-    "t": "The Border War is on the 2026 card, at Kansas.",
-    "w": [
-     "Kansas"
-    ]
-   },
-   {
     "t": "The Buffaloes do not play Kansas, Arizona, BYU, Iowa State, TCU and West Virginia in 2026.",
     "w": [
      "Arizona",
@@ -1927,12 +1921,6 @@
     ]
    },
    {
-    "t": "Baylor and Texas have met 13 times since 2011 in the Baylor\u2013Texas rivalry. In those games Texas leads 8\u20135.",
-    "w": [
-     "Baylor"
-    ]
-   },
-   {
     "t": "Baylor beat Oklahoma State 21\u201316 in the 2021 Big 12 championship game.",
     "w": [
      "Baylor",
@@ -2007,12 +1995,6 @@
    },
    {
     "t": "Colorado and Colorado State have met 11 times since 2011 in the Rocky Mountain Showdown. In those games Colorado leads 9\u20132.",
-    "w": [
-     "Colorado"
-    ]
-   },
-   {
-    "t": "Colorado and Nebraska have met 4 times since 2011 in the Colorado\u2013Nebraska rivalry. In those games Colorado leads 3\u20131.",
     "w": [
      "Colorado"
     ]
@@ -2182,12 +2164,6 @@
     ]
    },
    {
-    "t": "Kansas and Missouri have met twice since 2011 in the Border War. In those games Missouri leads 2\u20130.",
-    "w": [
-     "Kansas"
-    ]
-   },
-   {
     "t": "Kansas's best Big 12 season is 2023, at 5\u20134 \u2014 the best of the 15 they have played since 2011.",
     "w": [
      "Kansas"
@@ -2195,15 +2171,6 @@
    },
    {
     "t": "Louisville has won the last 2 meetings in the Keg of Nails game, most recently in 2013."
-   },
-   {
-    "t": "Missouri has won the last 2 meetings in the Border War, most recently in 2025."
-   },
-   {
-    "t": "Oklahoma State and Oklahoma have met 13 times since 2011 in Bedlam. In those games Oklahoma leads 9\u20134.",
-    "w": [
-     "Oklahoma State"
-    ]
    },
    {
     "t": "Oklahoma State has reached the Big 12 championship game twice without winning it.",
@@ -2333,12 +2300,6 @@
     ]
    },
    {
-    "t": "Texas Tech and Texas have met 13 times since 2011 in the Texas Tech\u2013Texas rivalry. In those games Texas leads 10\u20133.",
-    "w": [
-     "Texas Tech"
-    ]
-   },
-   {
     "t": "Texas Tech beat BYU 34\u20137 in the 2025 Big 12 championship game.",
     "w": [
      "BYU",
@@ -2377,12 +2338,6 @@
    },
    {
     "t": "Texas has won the Big 12 championship game once since the game returned in 2017."
-   },
-   {
-    "t": "Texas has won the last 2 meetings in the Baylor\u2013Texas rivalry, most recently in 2023.",
-    "w": [
-     "Baylor"
-    ]
    },
    {
     "t": "Texas took the 2023 conference season outright at 8\u20130."
@@ -2539,12 +2494,6 @@
     ]
    },
    {
-    "t": "The most one-sided meeting in Bedlam since 2011 was 2015: Oklahoma by 35 over Oklahoma State.",
-    "w": [
-     "Oklahoma State"
-    ]
-   },
-   {
     "t": "The most one-sided meeting in Farmageddon since 2011 was 2020: Iowa State by 45 over Kansas State.",
     "w": [
      "Iowa State",
@@ -2564,27 +2513,9 @@
     ]
    },
    {
-    "t": "The most one-sided meeting in the Baylor\u2013Texas rivalry since 2011 was 2023: Texas by 32 over Baylor.",
-    "w": [
-     "Baylor"
-    ]
-   },
-   {
     "t": "The most one-sided meeting in the Bayou Bucket game since 2011 was 2011: Houston by 39 over Rice.",
     "w": [
      "Houston"
-    ]
-   },
-   {
-    "t": "The most one-sided meeting in the Border War since 2011 was 2011: Missouri by 14 over Kansas.",
-    "w": [
-     "Kansas"
-    ]
-   },
-   {
-    "t": "The most one-sided meeting in the Colorado\u2013Nebraska rivalry since 2011 was 2023: Colorado by 22 over Nebraska.",
-    "w": [
-     "Colorado"
     ]
    },
    {
@@ -2651,12 +2582,6 @@
     "t": "The most one-sided meeting in the Texas Tech\u2013Baylor rivalry since 2011 was 2013: Baylor by 29 over Texas Tech.",
     "w": [
      "Baylor",
-     "Texas Tech"
-    ]
-   },
-   {
-    "t": "The most one-sided meeting in the Texas Tech\u2013Texas rivalry since 2011 was 2023: Texas by 50 over Texas Tech.",
-    "w": [
      "Texas Tech"
     ]
    },

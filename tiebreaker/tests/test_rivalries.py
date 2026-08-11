@@ -27,8 +27,34 @@ def check(cond, msg):
         FAIL.append(msg)
 
 
-rivalries = facts.load_rivalries()
+by_year_all = {}
+for _y in range(facts.TB_FIRST, facts.TB_LAST + 1):
+    _p = os.path.join(DATA, f"games_{_y}.json")
+    if os.path.exists(_p):
+        by_year_all[_y] = json.load(open(_p))
+
+rivalries = facts.load_rivalries(by_year_all)
 check(rivalries, "no rivalries loaded at all")
+
+# --- nobody who left ------------------------------------------------------
+# Editorial, and enforced: a Big 12 site does not print the series record
+# against the schools that walked out. Opponents who were never in the
+# conference are fine — Iowa and Pitt are just neighbours.
+gone = facts.departed(by_year_all)
+check("Oklahoma" in gone and "Texas" in gone and "Nebraska" in gone,
+      f"departed() no longer sees the obvious leavers: {sorted(gone)}")
+for r in rivalries:
+    bad = set(r.get("teams") or []) & gone
+    check(not bad,
+          f"{r.get('name')!r} is played against {sorted(bad)}, who left the "
+          f"Big 12 — that pairing is deliberately not printed")
+
+# And it has to be the loader doing it, not just the file being tidy: an
+# entry added back in good faith must still be dropped.
+raw = json.load(open(os.path.join(DATA, "rivalries.json")))["rivalries"]
+check(all(not (set(r["teams"]) & gone) for r in raw),
+      "rivalries.json itself lists a departed team; the loader hides it, but "
+      "the file should not carry it either")
 
 # Every team named anywhere in the committed schedules, which is the set a
 # pairing has to match to ever produce a fact.
