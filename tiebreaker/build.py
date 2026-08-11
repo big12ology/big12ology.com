@@ -2377,6 +2377,25 @@ def series_card(g, ctx):
             f"any of the six steps below it are read.</p></div>")
 
 
+def png_size(path):
+    """(width, height) from a PNG header, or None.
+
+    Thirty-three bytes and no dependency: a PNG opens with an 8-byte
+    signature and then an IHDR chunk whose first two fields are the
+    dimensions, big-endian. Adding Pillow to a stdlib-only build to read two
+    integers would be the wrong trade by a distance.
+    """
+    try:
+        with open(path, "rb") as f:
+            head = f.read(24)
+    except OSError:
+        return None
+    if len(head) < 24 or head[:8] != b"\x89PNG\r\n\x1a\n":
+        return None
+    return (int.from_bytes(head[16:20], "big"),
+            int.from_bytes(head[20:24], "big"))
+
+
 def figures_block(section, heading, intro):
     """A page's share of the generated facts, as crawlable text.
 
@@ -4815,27 +4834,42 @@ def build_pools_soon(year, games):
             f"{opener.strftime('%A, %B %-d')}</b>." if opener else
             f"Sign in from <b>{POOLS_OPEN.strftime('%A, %B %-d')}</b>.")
 
-    # Real screenshots of the running build, with their real dimensions, so
-    # the browser reserves the right space and nothing jumps as they load.
+    # Real screenshots of the running build, at their real dimensions, so the
+    # browser reserves the right space and nothing jumps as they load.
+    #
+    # MEASURED from the files, not typed in beside them. They were typed in,
+    # and the day the chart was re-cropped from 444 to 421 only the slate's
+    # number got updated — leaving the page reserving 23px it did not need and
+    # jumping when the image landed, which is the exact failure these
+    # attributes exist to prevent. A number that describes a file should be
+    # read off the file.
     shots = [
-        ("slate", 1008, 312, "The Slate",
+        ("slate", "The Slate",
          "Every Big 12 game, one frozen line, and a clock. Pick a side and it "
          "saves as you go &mdash; there is no submit button to forget."),
-        ("chart", 500, 444, "Week by week",
+        ("chart", "Week by week",
          "Your season against the shape of the field, drawn in your team's "
          "colours. <b>The chalk</b> is what taking every favourite would have "
          "scored, and it is harder to beat than it sounds."),
-        ("room", 1008, 209, "The room",
+        ("room", "The room",
          "What everybody else picked, on every game, scored as if one person "
          "had made all of it. Beating the field is one thing; beating the "
          "field put together is another."),
     ]
-    figs = "".join(
-        f'<figure class=soonshot><img src="shots/{k}.png" width={w} '
-        f'height={h} loading="lazy" decoding="async" '
-        f'alt="{esc(t)}, from the pick&rsquo;em under construction.">'
-        f'<figcaption><b>{t}.</b> {c}</figcaption></figure>'
-        for k, w, h, t, c in shots)
+    figs = []
+    for k, t, c in shots:
+        wh = png_size(os.path.join(POOLS_SITE, "shots", f"{k}.png"))
+        if not wh:
+            print(f"::warning::shots/{k}.png missing; teaser figure skipped")
+            continue
+        # Shot at 2x for retina, presented at half that.
+        w, h = wh[0] // 2, wh[1] // 2
+        figs.append(
+            f'<figure class=soonshot><img src="shots/{k}.png" width={w} '
+            f'height={h} loading="lazy" decoding="async" '
+            f'alt="{esc(t)}, from the pick&rsquo;em under construction.">'
+            f'<figcaption><b>{t}.</b> {c}</figcaption></figure>')
+    figs = "".join(figs)
 
     body = f"""
 <div class=card>
