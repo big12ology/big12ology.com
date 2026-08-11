@@ -275,6 +275,161 @@ def attendance_facts():
     return out
 
 
+# ---------------------------------------------------------------- rivalries
+
+def _cap(text):
+    """Capitalise a sentence opener without touching the rest.
+
+    Rivalry names are stored the way they read mid-sentence — "the Holy War" —
+    because that is how they appear in most of these facts. str.capitalize()
+    would lowercase the War.
+    """
+    return text[:1].upper() + text[1:] if text else text
+
+
+def load_rivalries():
+    p = os.path.join(HERE, "data", "rivalries.json")
+    try:
+        with open(p, encoding="utf-8") as f:
+            return json.load(f).get("rivalries") or []
+    except (OSError, ValueError):
+        return []
+
+
+def _series(games_by_year, a, b):
+    """Every meeting between two teams in the committed schedules."""
+    met = []
+    for y in sorted(games_by_year):
+        for g in games_by_year[y]:
+            pair = {g.get("home"), g.get("away")}
+            if pair == {a, b}:
+                met.append((y, g))
+    return met
+
+
+def rivalry_facts(games_by_year, year, first_year):
+    """What the named games have actually done, in the years on record.
+
+    The file behind this holds no numbers at all — see data/rivalries.json —
+    so everything here is counted from the schedules and states the window it
+    counted over. That matters more here than anywhere else in this module:
+    these are hundred-year series, and "leads 9-6" would be read as all-time
+    by anybody who did not know the data starts in 2011.
+    """
+    out = []
+    for r in load_rivalries():
+        a, b = r["teams"]
+        name = r.get("name") or f"{a}–{b}"
+        met = _series(games_by_year, a, b)
+        played = [(y, g) for y, g in met
+                  if g.get("home_points") is not None]
+        if not played:
+            continue
+
+        wins = collections.Counter()
+        for y, g in played:
+            hp, ap = g["home_points"], g["away_points"]
+            if hp == ap:
+                continue
+            wins[g["home"] if hp > ap else g["away"]] += 1
+        wa, wb = wins[a], wins[b]
+        lead = (f"{a} leads {wa}–{wb}" if wa > wb
+                else f"{b} leads {wb}–{wa}" if wb > wa
+                else f"they are level at {wa}–{wa}")
+        out.append(_fact(
+            f"{a} and {b} have met {_times(len(played))} since {first_year} "
+            f"in {name}. In those games {lead}."))
+
+        # The current run, which is the thing a rivalry is actually argued
+        # about. Counted from the most recent meeting backwards.
+        streak_team, streak = None, 0
+        for y, g in reversed(played):
+            hp, ap = g["home_points"], g["away_points"]
+            if hp == ap:
+                break
+            w = g["home"] if hp > ap else g["away"]
+            if streak_team is None:
+                streak_team, streak = w, 1
+            elif w == streak_team:
+                streak += 1
+            else:
+                break
+        if streak >= 2:
+            last = played[-1][0]
+            out.append(_fact(
+                f"{streak_team} has won the last {streak} meetings in "
+                f"{name}, most recently in {last}."))
+
+        if r.get("trophy"):
+            holder = streak_team or (a if wa > wb else b)
+            last = played[-1][0]
+            # "Has it" is only true while the series is live. Colorado and
+            # Nebraska last played in 2019; claiming somebody currently holds
+            # a trophy contested six years ago is the sort of sentence that
+            # is right once and wrong forever after.
+            stale = TB_LAST - last > 1
+            out.append(_fact(
+                f"{a} and {b} play for {r['trophy']}. "
+                + (f"{holder} won it last, in {last}." if stale
+                   else f"{holder} holds it, on the {last} result.")))
+
+        biggest = max(played, key=lambda t: abs(
+            t[1]["home_points"] - t[1]["away_points"]))
+        y, g = biggest
+        m = abs(g["home_points"] - g["away_points"])
+        if m >= 14:
+            w = g["home"] if g["home_points"] > g["away_points"] else g["away"]
+            l = g["away"] if w == g["home"] else g["home"]
+            out.append(_fact(
+                f"The most one-sided meeting in {name} since {first_year} was "
+                f"{y}: {w} by {m} over {l}."))
+    return out
+
+
+def rivalry_schedule_facts(games_by_year, year):
+    """Which named games are on this year's card, and which are not.
+
+    The second half is the interesting one and the reason this lives with the
+    schedule rather than with the history. An unbalanced nine-game conference
+    schedule means a rivalry can simply not be played, and realignment means
+    several of these are not Big 12 games at all any more — neither of which
+    is visible on a page that only lists the games that ARE happening.
+    """
+    out = []
+    games = games_by_year.get(year) or []
+    on, off = [], []
+    for r in load_rivalries():
+        a, b = r["teams"]
+        hit = next((g for g in games
+                    if {g.get("home"), g.get("away")} == {a, b}), None)
+        (on if hit else off).append((r, hit))
+
+    for r, g in on:
+        where = (f"at {g.get('venue')}" if g.get("neutral_site")
+                 and g.get("venue") else
+                 f"at {g['home']}")
+        out.append(_fact(
+            f"{_cap(r.get('name') or '–'.join(r['teams']))} is on the "
+            f"{year} card, {where}."))
+
+    missing = [r for r, _ in off if r.get("conference")]
+    for r in missing:
+        a, b = r["teams"]
+        out.append(_fact(
+            f"{_cap(r.get('name') or a + '–' + b)} is not played in {year}: "
+            f"nine conference games out of fifteen possible opponents means "
+            f"the rotation can leave a rivalry out."))
+
+    gone = [r for r, _ in off if not r.get("conference")]
+    if gone:
+        names = [x.get("name") or "–".join(x["teams"]) for x in gone[:4]]
+        out.append(_fact(
+            f"Realignment left several of these outside the league: "
+            f"{_list(names)} are not Big 12 games, and are not on the {year} "
+            f"conference schedule at all."))
+    return out
+
+
 # ---------------------------------------------------------------- schedule
 
 def schedule_facts(year, games, teams, history_years, rotation_mod):
@@ -335,7 +490,7 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
         if opps:
             out.append(_fact(
                 f"{t}'s {year} non-conference schedule is "
-                f"{_series(opps)}."))
+                f"{_list(opps)}."))
 
     # --- who the league plays when it is not playing itself -----------------
     outside = collections.Counter()
@@ -361,7 +516,7 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
         miss = [m["opponent"] for m in r["missing"]]
         if miss:
             out.append(_fact(
-                f"{r['team']} does not play {_series(miss)} in {year}."))
+                f"{r['team']} does not play {_list(miss)} in {year}."))
 
     # --- first meetings -----------------------------------------------------
     # The league has only been at sixteen since 2023, so "never met before" is
@@ -402,7 +557,7 @@ def _times(n):
     return _WORDS.get(n) or f"{n} times"
 
 
-def _series(items):
+def _list(items):
     """a, b and c — the Oxford comma is not the house style elsewhere here."""
     items = list(items)
     if len(items) == 1:
@@ -525,7 +680,7 @@ def tiebreaker_facts(games_by_year):
                 if (w - l) == (best[1][0] - best[1][1])]
         if len(tied) > 1:
             out.append(_fact(
-                f"{y} finished with {_series(sorted(tied))} level at the top "
+                f"{y} finished with {_list(sorted(tied))} level at the top "
                 f"on {best[1][0]}–{best[1][1]}. That is what the seven steps "
                 f"are for."))
         else:
@@ -674,12 +829,17 @@ def pools_facts(year, lines_count):
 
 def build(year, games_by_year, teams, lines, rotation_mod, out_path):
     """Write facts.json, and return the per-section counts for the log."""
+    hist = {y: g for y, g in games_by_year.items() if y <= TB_LAST}
     sections = {
-        "tiebreaker": tiebreaker_facts(
-            {y: g for y, g in games_by_year.items() if y <= TB_LAST}),
+        # Rivalries are split across two sections deliberately: what the
+        # series has done is league history, and whether it is being played
+        # this year is a fact about the rotation.
+        "tiebreaker": tiebreaker_facts(hist)
+                      + rivalry_facts(hist, year, TB_FIRST),
         "schedule": schedule_facts(
             year, games_by_year.get(year, []), teams,
-            range(TB_FIRST, TB_LAST + 1), rotation_mod),
+            range(TB_FIRST, TB_LAST + 1), rotation_mod)
+            + rivalry_schedule_facts(games_by_year, year),
         "attendance": attendance_facts(),
         "pools": pools_facts(year, len(lines or {})),
     }
