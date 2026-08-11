@@ -224,6 +224,11 @@ e = html.escape
 nxt = hub.get("next") or {}
 ccg = hub.get("ccg") or []
 counts = hub.get("counts") or {}
+att = hub.get("attendance") or {}
+
+
+def millions(n):
+    return f"{n / 1_000_000:.1f}M" if n else ""
 
 
 def line(sp):
@@ -269,6 +274,9 @@ tok = {
     "HUB_SEASON": str(hub.get("season") or ""),
     "HUB_TEAMS": str(counts.get("teams") or ""),
     "HUB_GAMES": str(counts.get("games") or ""),
+    "HUB_ATT_SEASONS": str(att.get("seasons") or ""),
+    "HUB_ATT_GAMES": f"{att['games']:,}" if att.get("games") else "",
+    "HUB_ATT_FANS": millions(att.get("fans")),
 }
 
 s = open(page, encoding="utf-8").read()
@@ -299,6 +307,7 @@ for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          tiebreaker/index.html tiebreaker/how.html tiebreaker/history.html \
          tiebreaker/draw.html tiebreaker/rotation.html tiebreaker/cutline.html tiebreaker/ladder.html \
          tiebreaker/app.js tiebreaker/engine.js tiebreaker/feed.xml \
+         tiebreaker/hub.json tiebreaker/facts.json \
          schedule/index.html schedule/draw.html schedule/rotation.html \
          schedule/sitemap.xml \
          attendance/index.html attendance/site/app.js \

@@ -20,6 +20,7 @@ import zoneinfo
 import chaos as chaos_mod
 import clinch as clinch_mod
 import feed as feed_mod
+import facts as facts_mod
 import fetch as fetcher
 import odds as odds_mod
 import pickem as pickem_mod
@@ -4610,6 +4611,15 @@ def write_hub(year, games, lines, sims_race):
         "games": len(games),
         "scheduled": len(live),
     }
+
+    # The attendance figures the hub card prints. Derived here rather than
+    # typed into index.html, because they were typed in once and immediately
+    # disagreed with the generated facts on the same page — the card counted
+    # every row in the CSV and the fact counted the rows that carry a figure.
+    # One definition, used by both: a home game this tracker has a crowd for.
+    att = facts_mod.attendance_totals()
+    if att:
+        hub["attendance"] = att
     # No timestamp in it, so an unchanged season rewrites nothing at all.
     write_if_unchanged_skip(os.path.join(SITE, "hub.json"),
                             json.dumps(hub, indent=1, sort_keys=True))
@@ -5060,6 +5070,22 @@ def main():
             write_hub(year, games, load_lines(year), json.load(f).get("race"))
     except OSError as e:
         print(f"::warning::hub numbers not written: {e}")
+
+    # And a few hundred true things about the four sections, for the hub to
+    # rotate through. Generated on every build for the reason the rest of this
+    # file is: a hand-written list of interesting facts goes quietly stale a
+    # season after it is written.
+    try:
+        counts = facts_mod.build(
+            year, {y: load_games(y) for y in
+                   range(facts_mod.TB_FIRST, facts_mod.TB_LAST + 1)}
+                  | {year: games},
+            load_teams(), load_lines(year), rotation_mod,
+            os.path.join(SITE, "facts.json"))
+        print("built facts -> " + ", ".join(
+            f"{k} {v}" for k, v in sorted(counts.items())))
+    except Exception as e:                       # never fatal to a deploy
+        print(f"::warning::facts not written: {e}")
 
     # The pick'em, which is the one part of this build that writes down a fact
     # instead of deriving one. The slate is published on the weekly refresh —

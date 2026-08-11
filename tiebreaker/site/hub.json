@@ -1,4 +1,10 @@
 {
+ "attendance": {
+  "fans": 62688999,
+  "first": 2012,
+  "games": 1377,
+  "seasons": 14
+ },
  "ccg": [
   {
    "p": 0.5721,
