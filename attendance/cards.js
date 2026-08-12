@@ -80,7 +80,15 @@
         var btn = document.createElement("button");
         btn.type = "button";
         btn.className = "cardtoggle";
-        while (h2.firstChild) btn.appendChild(h2.firstChild);
+        // The heading's parts go into a span, not straight into the button.
+        // The button is a flex row so the chevron can sit at the far end,
+        // and a heading made of several nodes — "What if… " plus a dim
+        // subtitle, "Conference standings" plus a count — became flex ITEMS
+        // and laid out side by side in columns.
+        var label = document.createElement("span");
+        label.className = "cardlabel";
+        while (h2.firstChild) label.appendChild(h2.firstChild);
+        btn.appendChild(label);
         btn.insertAdjacentHTML("beforeend", CHEV);
         h2.appendChild(btn);
 

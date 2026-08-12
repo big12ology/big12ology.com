@@ -129,9 +129,13 @@ def load_lines(year):
 
 
 MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS"]
-# The average of all four, and the name the Lab shows for it. Kept as a
-# constant because it is both a key in `favorites` and a label on a control.
-BLEND = "Blend of all four"
+# The four rating systems averaged, and the name the Lab shows for it. Kept
+# as a constant because it is both a key in `favorites` and a label on three
+# controls. Named rather than described because the list it sits in reads as
+# a matchup — the nerds against Vegas — and because the optgroup directly
+# beneath it says "In the blend" and lists the four, so the mechanic is still
+# on screen for anyone who wants it.
+BLEND = "The Nerds"
 
 
 def model_year(name, systems):
@@ -147,6 +151,32 @@ def model_label(name, systems):
     2026 schedule reads as a 2026 number, and in August it is not one."""
     y = model_year(name, systems)
     return f"{name} ({y})" if y else name
+
+
+def market_favorites(games):
+    """The market as a model: whoever the spread makes the favorite.
+
+    The Lab was offering four ratings and no line, which is the one opinion
+    the site treats as the benchmark everywhere else — the model card scores
+    itself against it, the scorecard calls it Vegas, and a reader picking
+    winners had no way to say "just take the chalk". The lines are already on
+    disk for the slate and the what-if models; this costs nothing to add.
+
+    A pick'em has no favorite to name and is left out, exactly as the
+    handicap's pickable_favourite leaves it out.
+    """
+    out = {}
+    for g in games:
+        if g.get("ccg") or g["completed"]:
+            continue
+        sp = (g.get("line") or {}).get("spread")
+        if sp is None or sp == 0:
+            continue
+        out[str(g["id"])] = {
+            "team": g["home"] if sp < 0 else g["away"],
+            "margin": round(abs(sp), 1),
+        }
+    return out
 
 
 def blend_favorites(favorites, games):
@@ -985,6 +1015,30 @@ def pad_standings(rows, games):
         "overall_w": tally[t]["ow"], "overall_l": tally[t]["ol"],
         "tie_group": None, "log": None, "events": None, "resolved": True,
     } for t in missing]
+
+
+def tie_headline(group):
+    """"How the three-way tie breaks — Arizona State, BYU and Texas Tech".
+
+    The names used to sit in front of the noun as a compound modifier: "How
+    the Arizona State, BYU, Texas Tech tie breaks", which is not a sentence
+    anybody says. A comma list cannot modify a noun — it has to be apposed to
+    it. Saying how MANY first is also the more useful word, because a
+    three-way tie and a two-way tie break by different steps.
+
+    No serial comma, which is what the rest of the site's prose does.
+    """
+    names = [n for n in group.split("+") if n]
+    words = {2: "two", 3: "three", 4: "four", 5: "five",
+             6: "six", 7: "seven", 8: "eight"}
+    kind = f"{words.get(len(names), len(names))}-way"
+    if len(names) < 2:
+        joined = esc(names[0]) if names else ""
+        return f"How {joined} is placed"
+    listed = [esc(n) for n in names]
+    joined = (" and ".join(listed) if len(listed) == 2
+              else ", ".join(listed[:-1]) + " and " + listed[-1])
+    return f"How the {kind} tie breaks &mdash; {joined}"
 
 
 def official_board(games, overrides, display_rows):
@@ -3223,7 +3277,15 @@ def render(year, games):
     sims = (odds_mod.simulate(games, systems, overrides, track=track)
             if systems else {})
     favorites = favorites_for(games, systems)
-    models = [{"name": n, "year": systems[n].get("year")}
+    # `kind` is load-bearing, not documentation. payload.favorites is the
+    # pick source for the UI and now holds three different things — the four
+    # ratings, the blend of them, and the market — while race.js's
+    # ensembleMargins averaged EVERY key it found. Adding the blend and Vegas
+    # therefore averaged six opinions, double-weighting the blend (which is
+    # already their mean) and folding in a line that is not a rating at all,
+    # silently moving every probability the Lab draws. Consumers filter on
+    # this rather than guessing from a name.
+    models = [{"name": n, "year": systems[n].get("year"), "kind": "rating"}
               for n in MODEL_ORDER if n in favorites]
     # The blend goes FIRST, which makes it the default: app.js opens on
     # models[0]. A reader arriving from the race card should see the Lab
@@ -3231,7 +3293,16 @@ def render(year, games):
     # only when they want that system's opinion specifically.
     if len(favorites) > 1:
         favorites[BLEND] = blend_favorites(favorites, games)
-        models.insert(0, {"name": BLEND, "year": None})
+        models.insert(0, {"name": BLEND, "year": None, "kind": "blend"})
+    # AFTER the blend, deliberately. The blend is the four rating systems,
+    # because that is what the race board averages (odds.ensemble_margin) and
+    # the whole point of it is to agree with the board. Folding the market in
+    # would make the Lab's default disagree with every other number on the
+    # site while looking like it had been made more accurate.
+    mkt = market_favorites(games)
+    if mkt:
+        favorites["Vegas"] = mkt
+        models.append({"name": "Vegas", "year": None, "kind": "market"})
     rows = tb.standings(games, overrides)
     display_rows = pad_standings(rows, games)
     ccg = tb.championship(games, overrides)
@@ -3303,13 +3374,13 @@ def render(year, games):
     for r in rows:
         if r["log"] is not None:
             n += 1
-            tie_names = r["tie_group"].replace("+", ", ")
+            tie_names = tie_headline(r["tie_group"])
             lines = "".join(
                 f"<li class=seeded>{esc(x)}</li>" if "seeded." in x
                 else f"<li>{esc(x)}</li>" for x in r["log"])
             stories.append(
                 f"<details {'open' if n == 1 else ''}><summary><sup>{n}</sup> "
-                f"How the {esc(tie_names)} tie breaks</summary>"
+                f"{tie_names}</summary>"
                 f"<ol class=steps>{lines}</ol></details>")
     stories = "".join(stories) or "<p class=dim>No ties in the standings.</p>"
 
@@ -3355,12 +3426,24 @@ def render(year, games):
     n_remaining = len([g for g in games
                        if not g.get("ccg")
                        and (unlocked or not g["completed"])])
-    # The blend has no single season behind it, so it carries no year in
-    # parentheses rather than an empty pair of them.
+    # Grouped, because the list contains three different KINDS of thing and
+    # looked like one: the blend, the four ratings it is made of, and the
+    # market, which is not in it. An optgroup is the accessible way to draw
+    # that line — a screen reader announces the group, where a horizontal
+    # rule would be silent decoration.
+    def _opt(m):
+        year = f" ({esc(m['year'])})" if m.get("year") else ""
+        return f"<option value='{esc(m['name'])}'>{esc(m['name'])}{year}</option>"
+
+    rated = [m for m in models if m.get("kind") == "rating"]
     model_opts = "".join(
-        f"<option value='{esc(m['name'])}'>{esc(m['name'])}"
-        + (f" ({esc(m['year'])})" if m.get("year") else "")
-        + "</option>" for m in models)
+        [_opt(m) for m in models if m.get("kind") == "blend"]
+        + ([f"<optgroup label='In the blend'>"
+            + "".join(_opt(m) for m in rated) + "</optgroup>"] if rated else [])
+        + ([f"<optgroup label='Not in the blend'>"
+            + "".join(_opt(m) for m in models if m.get("kind") == "market")
+            + "</optgroup>"]
+           if any(m.get("kind") == "market" for m in models) else []))
     whatif = "" if not n_remaining else WHATIF_CARD.format(
         n=n_remaining, model_opts=model_opts,
         blurb=("rewrite any of the {n} games this season and watch the "
@@ -3449,6 +3532,7 @@ WHATIF_CARD = """<div class=card id=whatif>
     {modelrow}
     <button id=w-clear class=wbtn>{clearlabel}</button>
     <button id=w-weeks class=wbtn>Expand all weeks</button>
+    <button id=w-conf class=wbtn aria-pressed=false>Conference only</button>
     <span id=w-count class=dim></span>
   </div>
   <div id=wgames></div>
@@ -3643,6 +3727,7 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 .wkfav:hover {{ color:var(--accent); border-color:var(--accent) }}
 .wkfav:focus-visible {{ outline:2px solid var(--accent);
   outline-offset:2px }}
+.wkstar {{ color: var(--warn); margin-right: 4px; }}
 main > *, .duo > *, .cols > * {{ min-width: 0; }}
 .tablescroll {{ overflow-x: auto; position: relative; }}
 .scrollbox {{ position: relative; }}
@@ -3664,6 +3749,26 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 .wgame .pick .nm {{ overflow: hidden; text-overflow: ellipsis;
   white-space: nowrap; }}
 .wgame .at, .wgame .wdate, .wgame .nctag {{ flex: 0 0 auto; }}
+/* The per-game peek. A dotted handle at the end of the row, quiet until
+   wanted — 120 of these must not read as 120 buttons. */
+.wpeek {{ flex: 0 0 auto; background: none; border: 0; padding: 0 2px;
+  cursor: pointer; color: var(--dim); font-size: var(--t-label);
+  line-height: 1; border-radius: 4px; }}
+.wpeek:hover {{ color: var(--accent); }}
+.wpeek:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
+/* One line, wrapping only when it must. Each entry is the model's name in
+   small caps and what it makes the game — no bars, no colour, nothing that
+   competes with the picker above it. */
+.wmodels {{ display: flex; flex-wrap: wrap; gap: 3px 12px;
+  margin: -2px 0 6px; padding: 5px 8px; font-size: var(--t-meta);
+  color: var(--dim); background: var(--bg); border-radius: 6px;
+  font-variant-numeric: tabular-nums; }}
+/* display:flex on the element beats the hidden attribute's UA display:none,
+   so every unopened strip was drawing its padding and background as an empty
+   grey bar under all 120 rows. */
+.wmodels[hidden] {{ display: none; }}
+.wm i {{ font-style: normal; text-transform: uppercase; letter-spacing: .04em;
+  opacity: .7; margin-right: 5px; }}
 .wgame:last-child {{ border-bottom: none; }}
 .wgame .at {{ color: var(--dim); font-size: var(--t-meta); }}
 .wgame .wdate {{ color: var(--dim); font-size: var(--t-meta); margin-left: auto; }}

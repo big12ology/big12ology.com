@@ -17,7 +17,7 @@ import os
 
 import fetch as fetcher
 import tiebreaker as tb
-from build import esc, logo_img
+from build import esc, logo_img, tie_headline
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HIST = os.path.join(HERE, "history")
@@ -148,8 +148,10 @@ def season_section(year, games):
     parts.append("</tbody></table>")
     for tg, members in groups.items():
         first = next(r for r in members if r["log"] is not None)
-        names = tg.replace("+", ", ")
-        parts.append(f"<details><summary>How the {esc(names)} tie breaks"
+        # The same sentence build.py and app.js produce. It was written out
+        # three times independently and read differently in the third: a
+        # comma list stacked in front of "tie" is not English anybody says.
+        parts.append(f"<details><summary>{tie_headline(tg)}"
                      f"</summary><ol class=steps>")
         for line in first["log"]:
             cls = " class=seeded" if "seeded." in line else ""

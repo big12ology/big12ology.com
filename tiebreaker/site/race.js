@@ -203,7 +203,21 @@
     payload.games.forEach(function (g) { byId[String(g.id)] = g; });
     var sum = {}, n = {};
     var fav = payload.favorites || {};
-    Object.keys(fav).forEach(function (model) {
+    // THE RATING SYSTEMS ONLY. payload.favorites also carries their blend
+    // and the market, which are not opinions to average: the blend IS this
+    // average, so including it weights the four twice over, and a betting
+    // line is not a rating system. payload.models says which is which; a
+    // payload without kinds is older than that distinction and had only
+    // ratings in it.
+    var kinds = payload.models || [];
+    var rating = {};
+    var typed = false;
+    kinds.forEach(function (m) {
+      if (m && m.kind) { typed = true; if (m.kind === "rating") rating[m.name] = 1; }
+    });
+    Object.keys(fav).filter(function (name) {
+      return !typed || rating[name];
+    }).forEach(function (model) {
       var picks = fav[model];
       Object.keys(picks).forEach(function (gid) {
         var g = byId[gid];

@@ -240,9 +240,8 @@
     rows.forEach(function (r) {
       if (r.log === null) return;
       n += 1;
-      var names = r.tie_group.split("+").join(", ");
       html += "<details" + (n === 1 ? " open" : "") + "><summary><sup>" + n +
-        "</sup> How the " + esc(names) + " tie breaks</summary>" +
+        "</sup> " + tieHeadline(r.tie_group) + "</summary>" +
         "<ol class=steps>" +
         r.log.map(function (x) {
           return x.indexOf("seeded.") >= 0
@@ -578,10 +577,94 @@
     btn.textContent = anyShut ? "Expand all weeks" : "Collapse all weeks";
   }
 
+  // One line: every model that has an opinion on this game, in the order the
+  // selector lists them — the blend first, the four ratings, then the market.
+  // The selected model, short enough to sit on a button. The buttons that
+  // apply favorites now say WHOSE favorites they are — "favorites" alone was
+  // silent about the fact that the model selector changes what it does.
+  function modelShort() {
+    if (!model) return "favorites";
+    return model.replace(/\s*\(\d{4}\)\s*$/, "").replace(/^The\s+/, "");
+  }
+
+  function syncFavLabels() {
+    var all = document.getElementById("w-fav");
+    if (all) all.textContent = "Use " + modelShort() + " favorites for all";
+  }
+
+  // Mirrors build.py's tie_headline. A comma list cannot modify a noun, so
+  // the names are apposed after it rather than stacked in front: "How the
+  // three-way tie breaks — Arizona State, BYU and Texas Tech".
+  var TIE_WORDS = { 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
+                    7: "seven", 8: "eight" };
+
+  function tieHeadline(group) {
+    var names = String(group || "").split("+").filter(Boolean);
+    if (names.length < 2) {
+      return names.length ? "How " + esc(names[0]) + " is placed" : "";
+    }
+    var kind = (TIE_WORDS[names.length] || names.length) + "-way";
+    var listed = names.map(esc);
+    var joined = listed.length === 2
+      ? listed.join(" and ")
+      : listed.slice(0, -1).join(", ") + " and " + listed[listed.length - 1];
+    return "How the " + kind + " tie breaks \u2014 " + joined;
+  }
+
+  function modelStrip(id) {
+    var out = [];
+    (payload.models || []).forEach(function (m) {
+      var f = (payload.favorites[m.name] || {})[id];
+      if (!f) return;
+      out.push("<span class=wm><i>" +
+        esc(m.name.replace(/^The\s+/, "")) + "</i>" +
+        esc(f.team) + " " + f.margin + "</span>");
+    });
+    return out.length ? out.join("")
+      : "<span class=dim>No model rates this game.</span>";
+  }
+
+  // A view filter, not a reset: picks already made on non-conference games
+  // stay made and keep feeding the simulation, they are simply not listed.
+  // Both fill buttons follow it, because filling games a reader has hidden
+  // is the sort of surprise that makes a control untrustworthy.
+  var confOnly = false;
+
+  function visible() {
+    return pickable().filter(function (g) {
+      return !confOnly || g.conference_game;
+    });
+  }
+
+  /**
+   * Fill a set of games with the selected model's favorites.
+   *
+   * CLEARS FIRST, and that is the whole point. These buttons only ever added
+   * picks, so applying a second model left the first one's picks standing
+   * wherever the new one had no opinion — and Vegas has no opinion on a game
+   * with no posted line. "Use Vegas favorites for all" therefore produced a
+   * board that was part Vegas and part whatever it happened to be before,
+   * with nothing on screen saying so. A fill is now exactly the model's
+   * answer for these games, and running it twice changes nothing.
+   *
+   * A game the model does not rate is left unpicked rather than guessed at:
+   * no opinion is a real answer, and inventing one would put the reader back
+   * where this started.
+   */
+  function applyFavs(list) {
+    var f = favs();
+    list.forEach(function (g) {
+      var id = String(g.id);
+      delete picks[id];
+      if (f[id]) picks[id] = f[id].team;
+    });
+    refresh();
+  }
+
   function renderPickList() {
     var box = document.getElementById("wgames");
     if (!box) return;
-    var games = pickable();
+    var games = visible();
     var byWeek = {};
     var weeks = [];
     games.forEach(function (g) {
@@ -621,7 +704,15 @@
           (g.conference_game
             ? (anyNc ? "<span class='nctag ghost'>non-conf</span>" : "")
             : "<span class=nctag>non-conf</span>") +
-          "<span class=wdate>" + date + "</span></div>";
+          "<span class=wdate>" + date + "</span>" +
+          // What every model makes of THIS game, one tap away. The model
+          // selector above picks which opinion fills the stars; this says
+          // what the other five thought, which is the question a reader has
+          // at the moment they disagree with the star.
+          "<button type=button class=wpeek data-id=\"" + id + "\"" +
+          " aria-expanded=false title=\"What each model makes of this" +
+          " game\">&#8942;</button>" +
+          "</div><div class=wmodels hidden data-for=\"" + id + "\"></div>";
       }).join("");
       var picked = byWeek[wk].filter(function (g) {
         return picks[String(g.id)];
@@ -635,13 +726,32 @@
         wk + " <span class=dim>(" + picked + "/" + byWeek[wk].length +
         (unlocked ? " changed" : " picked") + ")</span>" +
         "<button type=button class=wkfav data-wk=\"" + wk +
-        "\" title=\"Pick the favourite in every " + wk +
-        " game\">favorites</button>" +
+        "\" title=\"Pick the " + modelShort() + " favorite in every " + wk +
+        " game\"><span class=wkstar>&#9733;</span>" + esc(modelShort()) +
+        "</button>" +
         "</summary>" + inner + "</details>";
     }).join("");
     box.innerHTML = html;
-    updateCount(games.length);
+    // The season, not the filtered view: the scenario still contains 120
+    // games however many are on screen.
+    updateCount(pickable().length);
     syncWeeksBtn();
+    // Filled on first open rather than up front: 120 games times six
+    // opinions is 720 spans nobody has asked to see yet.
+    box.querySelectorAll(".wpeek").forEach(function (btn) {
+      btn.onclick = function () {
+        var id = btn.dataset.id;
+        var strip = box.querySelector('.wmodels[data-for="' + id + '"]');
+        if (!strip) return;
+        var opening = strip.hidden;
+        if (opening && !strip.dataset.filled) {
+          strip.innerHTML = modelStrip(id);
+          strip.dataset.filled = "1";
+        }
+        strip.hidden = !opening;
+        btn.setAttribute("aria-expanded", opening ? "true" : "false");
+      };
+    });
     box.querySelectorAll(".wkfav").forEach(function (btn) {
       btn.onclick = function (ev) {
         // The button lives inside <summary>, whose default action is to
@@ -649,12 +759,7 @@
         // shut it.
         ev.preventDefault();
         ev.stopPropagation();
-        var wk = btn.dataset.wk;
-        (byWeek[wk] || []).forEach(function (g) {
-          var f = favs()[String(g.id)];
-          if (f) picks[String(g.id)] = f.team;
-        });
-        refresh();
+        applyFavs(byWeek[btn.dataset.wk] || []);
       };
     });
     box.querySelectorAll(".pick").forEach(function (btn) {
@@ -751,13 +856,7 @@
     var clearBtn = document.getElementById("w-clear");
     var sel = document.getElementById("w-model");
     if (favBtn) {
-      favBtn.onclick = function () {
-        pickable().forEach(function (g) {
-          var f = favs()[String(g.id)];
-          if (f) picks[String(g.id)] = f.team;
-        });
-        refresh();
-      };
+      favBtn.onclick = function () { applyFavs(visible()); };
     }
     if (clearBtn) clearBtn.onclick = function () { picks = {}; refresh(); };
     // One switch for all thirteen weeks. Only the next week opens on load,
@@ -765,6 +864,21 @@
     // to run the whole season in one pass — and opening twelve summaries by
     // hand to do it is the kind of small tax nobody pays twice. The label
     // says which way the switch will throw, not which state it is in.
+    var confBtn = document.getElementById("w-conf");
+    if (confBtn) {
+      confBtn.onclick = function () {
+        confOnly = !confOnly;
+        confBtn.textContent = confOnly ? "All games" : "Conference only";
+        confBtn.setAttribute("aria-pressed", confOnly ? "true" : "false");
+        confBtn.title = confOnly
+          ? "Showing conference games only; non-conference picks you have "
+            + "already made still count"
+          : "Show only the games that decide the conference race";
+        renderPickList();
+      };
+      confBtn.title = "Show only the games that decide the conference race";
+    }
+
     var weeksBtn = document.getElementById("w-weeks");
     if (weeksBtn) {
       weeksBtn.onclick = function () {
@@ -789,11 +903,13 @@
       sel.onchange = function () {
         model = sel.value;
         updateNote();
+        syncFavLabels();
         renderPickList();
       };
       if (model) sel.value = model;
     }
     updateNote();
+    syncFavLabels();
   })();
 
   renderPickList();

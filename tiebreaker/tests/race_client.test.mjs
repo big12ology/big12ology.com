@@ -203,10 +203,22 @@ test("the ensemble margin is the mean of the published favourites", () => {
   const api = loadClient();
   const payload = payloadFor(null);
   const margins = api.B12Race.ensembleMargins(payload);
-  const models = Object.keys(payload.favorites);
+  // The RATING systems, not every key in payload.favorites — that object
+  // also holds their blend and the market, and neither belongs in a mean of
+  // the four. This is the contract ensembleMargins now filters on, and the
+  // reason it has to: without it the blend was averaged in with the systems
+  // it is made of.
+  const models = (payload.models || [])
+    .filter((m) => m.kind === "rating").map((m) => m.name);
   assert.ok(models.length > 1, "expected several rating systems");
+  assert.ok(Object.keys(payload.favorites).length > models.length,
+            "expected the blend and the market alongside the ratings");
 
-  const g = payload.games.find((x) => x.conference_game && !x.completed);
+  // A game every rating has an opinion on. The market skips a pick'em and
+  // any game with no posted line, so "every model rates this" is not a
+  // property every fixture has.
+  const g = payload.games.find((x) => x.conference_game && !x.completed &&
+    models.every((m) => payload.favorites[m][String(x.id)]));
   const each = models.map((mName) => {
     const e = payload.favorites[mName][String(g.id)];
     return e.team === g.home ? e.margin : -e.margin;

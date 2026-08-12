@@ -103,6 +103,7 @@
   outline: 2px solid var(--b12-accent); outline-offset: 3px;
   border-radius: 3px;
 }
+.cardlabel { min-width: 0; }
 .cardchev {
   width: 15px; height: 15px; flex: none; margin-left: auto;
   opacity: .55; transition: transform .15s ease;
