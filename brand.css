@@ -163,6 +163,25 @@
 .forkgrid.compact .forkhead { font-size:var(--t-fine); margin-bottom:4px }
 .forkgrid.compact .forkcell { font-size:var(--t-meta); margin:3px 0 }
 .forkgrid.compact .forkp { font-size:var(--t-row) }
+/* WHO ELSE THE RESULT TOUCHES, at the same list density. The game page draws
+   these as bars on their own rows, which a week of five to eight games
+   cannot afford — so they run inline under the fork instead, one line per
+   game. The label repeats on every row for the same reason the two column
+   heads do: a row has to be readable where the eye lands on it, not only
+   after reading the row above.
+
+   No label on the pair, because it sits directly under a fork that is
+   already labelled and reads in its order — left then right above 560px,
+   top then bottom below it, where the grid collapses to one column. That
+   borrowing is the whole design, so this must stay a sibling of .forkgrid:
+   moved out from under it, the two numbers lose the only thing on the page
+   that says which of them is which. */
+.levelse { display:flex; flex-wrap:wrap; align-items:baseline; gap:3px 12px;
+  margin:6px 0 2px; font-size:var(--t-meta) }
+.levelselab { font-size:var(--t-fine); text-transform:uppercase;
+  letter-spacing:.05em; color:var(--dim) }
+.levwho { display:inline-flex; align-items:center; gap:5px; min-width:0;
+  white-space:nowrap; font-variant-numeric:tabular-nums }
 @media (max-width:560px) { .forkgrid { grid-template-columns:1fr } }
 
 /* ==== display face ======================================================= */

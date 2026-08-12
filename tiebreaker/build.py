@@ -761,6 +761,46 @@ def fork_block(g, lev, sims, teams, compact=False):
     return f"<div class='{cls}'>{''.join(cols)}</div>"
 
 
+def else_line(g, lev, limit=3, floor=0.01):
+    """Who the result touches BESIDES the two playing, at list density.
+
+    The game page answers this with bars — a track spanning the two futures
+    and a tick where today sits inside it — which is the right shape for one
+    game on a page of its own. This card carries a week, and a week that
+    matters is five to eight games; eight rows of four bars is a different
+    card. So the same facts go on one line: the team, and where it lands in
+    each of the two futures.
+
+    The pair reads in THE ORDER THE FORK IS IN, home win first — two columns
+    on a wide screen, two stacked panels under 560px, the same order either
+    way. That is the only reason two bare numbers are legible here: there is
+    no room to label them, so they borrow the labels the fork already wrote.
+    It is also why this is not the game page's renderer with a class on it:
+    that one sorts each team's endpoints high-to-low for its bar, which
+    throws away which result produced which, a trade a bar can afford and a
+    number cannot.
+
+    THE FLOOR IS THE POINT OF IT. odds.leverage keeps anything moving half a
+    point, because on a game page a fourth small bar costs nothing. Here
+    every name is a name in a list, and in a live week most of the league
+    clears half a point on any game — seven teams did on the only game of
+    week 2, none of them by a point and a half. A team earns its place by
+    moving a full point, and a row whose story really is just the two teams
+    playing says so by printing nothing.
+    """
+    playing = {g["home"], g["away"]}
+    others = [m for m in lev["movers"]
+              if m[0] not in playing and abs(m[1]) >= floor][:limit]
+    if not others:
+        return ""
+    items = "".join(
+        f"<span class=levwho>{logo_img(t, 14)}{esc(t)} "
+        f"<b>{pw * 100:.0f}%</b><span class=dim>/{pl * 100:.0f}%</span>"
+        f"</span>" for t, _d, pw, pl in others)
+    return (f"<div class=levelse><span class=levelselab>Who else it moves"
+            f"</span>{items}</div>")
+
+
 def leverage_card(games, sims, teams=None):
     lev = odds_mod.leverage(sims, games)
     if not lev:
@@ -775,6 +815,13 @@ def leverage_card(games, sims, teams=None):
         # made every game on this list look like it was about whoever the
         # sentence happened to lead with.
         mover_txt = fork_block(g, e, sims, teams or {}, compact=True)
+        # And the teams that are not playing. On the games at the top of this
+        # list the fork is the story and this is a footnote; on the ones at
+        # the bottom it is the other way round. A week-11 rewind of 2025 has
+        # Houston at UCF moving neither team off zero and moving BYU four and
+        # a half points — a row that, without this line, prints four numbers
+        # that are all zero and no reason it was ranked above nothing.
+        else_txt = else_line(g, e)
         pct = min(e["total"] * 100, 100)
         # Same column treatment as the race card: matchup, bar, number,
         # then the swing note on its own line. Run inline it wrapped through
@@ -789,7 +836,7 @@ def leverage_card(games, sims, teams=None):
             f"background:{winpct_color(min(e['total'], 1.0))}'></i></span>"
             f"</span>"
             f"<b class=opct>{e['total'] * 100:.0f}</b>"
-            f"</div>{mover_txt}</div>")
+            f"</div>{mover_txt}{else_txt}</div>")
     return (f"<div class=card id=levcard><h2>Games that matter · week {wk}"
             f"</h2>{''.join(rows)}"
             "<p class=note>Two teams reach the championship game &mdash; "
@@ -800,7 +847,10 @@ def leverage_card(games, sims, teams=None):
             "seat</b>, 0 would mean the result decides nothing. "
             "Percentages are how often that team reaches the title game "
             "across those simulated seasons, and the arrow is the move from "
-            "where they stand today. From the same simulations as "
+            "where they stand today. Where a result also swings a team that "
+            "is not playing, it is named underneath with its chance in each "
+            "of those two futures &mdash; in the order the two panels above "
+            "are in, the home win first. From the same simulations as "
             "the race card. 100 = a full berth's worth of probability "
             "moves on this game.</p></div>")
 
