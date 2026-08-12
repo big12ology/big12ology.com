@@ -54,6 +54,30 @@ migrations_dir = "migrations"
 binding = "SESSIONS"
 id = "c26df5e7e0904d1db35a4b2131b51a05"
 
+# Where the publisher's scores land. Written by /api/ingest/scores, read by the
+# scoring sweep — see src/scoring.js's fetchScores for why there are two
+# channels and which one wins.
+#
+# ITS OWN NAMESPACE, not a key prefix inside SESSIONS. Those two have nothing
+# in common but the word "KV": sessions are per-person, revocable, and the
+# hottest reads on the site; this is one key per season, written a few times an
+# hour by one caller. Sharing would mean a namespace that cannot be cleared
+# without signing everybody out, and a blast radius that spans both.
+#
+# NOT BACKED UP, and it does not need to be. backup.yml exists for the one
+# thing that cannot be rebuilt — accounts and picks. Scores are derived: the
+# publisher regenerates this file from committed data on its next run, and
+# until it does, fetchScores falls back to the Pages copy.
+#
+# THE ID BELOW MUST BE REAL BEFORE THIS DEPLOYS. Create it once with:
+#   cd worker && npx wrangler kv namespace create SCORES
+# then paste the id here. worker.yml refuses to deploy while the placeholder
+# is still in place, because a deploy that silently lost this binding would
+# fall back to Pages and look exactly like everything working.
+[[kv_namespaces]]
+binding = "SCORES"
+id = "PLACEHOLDER_RUN_WRANGLER_KV_NAMESPACE_CREATE"
+
 # Where /api/e writes. No id to create and nothing to provision: naming a
 # dataset here is what brings it into existence, and it is queried by name
 # over the SQL API — see tools/events-report.sh.
@@ -90,20 +114,31 @@ dataset = "b12_events"
 #
 # The times are UTC. A US Saturday runs from Saturday noon UTC into Sunday
 # morning UTC, which is why the sweep covers both days.
-# THE SWEEPS RUN AT :30, AND THE HALF HOUR IS THE POINT. This Worker holds no
-# CFBD key and never will, so it does not learn a result from the provider —
-# it grades from tiebreaker/pickem-scores.json, which pages.yml publishes on
-# its own hourly cron at :00. Both were set to :00, which meant the sweep
-# almost always read the file the publisher had written an HOUR earlier: a
-# game final at 20:05 was published at 21:00 and graded at 22:00, so a board
-# could sit two hours behind a result that was on every television.
+# THE SWEEPS ARE A BACKSTOP NOW, NOT THE PATH.
 #
-# Half an hour after the publisher costs nothing — no extra CFBD call, no
-# extra Worker invocation — and turns that two hours into one. Anything
-# faster is not a scheduling problem: it means publishing scores more often,
-# and every extra pages.yml run spends a call against a 1,000-a-month cap.
+# They used to be how a final reached a board, and the :30 offset was load
+# bearing: this Worker holds no CFBD key, so it graded from a file pages.yml
+# published at :00, and running the sweep at :00 too meant usually reading the
+# copy written an hour earlier. A game final at 20:05 was published at 21:00
+# and graded at 22:00 — two hours behind a result that was on every
+# television. Half an hour after the publisher turned that into one.
 #
-# If pages.yml's hourly crons ever move off :00, move these with them.
+# scores.yml now POSTs to /api/ingest/scores, which verifies, stores and
+# grades in the same request. A final is on the board within seconds of the
+# publisher learning it, and no cron is involved in the ordinary case.
+#
+# So what is left for these to do:
+#
+#   * import slates, which still arrive as files on the Pages origin and are
+#     still walked by the cron. That is the Tuesday trigger below, and the
+#     reason the weekend sweeps have not simply been deleted.
+#   * grade anything the ingest missed — a run that failed, a signature that
+#     was refused, a week that locked with nobody publishing.
+#   * carry the heartbeat.
+#
+# The :30 is kept because it costs nothing and the ordering argument above is
+# still true of the fallback path. It is no longer what decides how fast a
+# board moves, so it no longer has to be kept in step with pages.yml.
 crons = [
   "30 * * 8-12 1,7",       # hourly Sat + Sun UTC — the score sweep
   "30 0-8/2 * 8-12 2,6,7", # Mon/Fri/Sat UTC, small hours: Sun/Thu/Fri

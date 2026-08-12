@@ -55,15 +55,42 @@ async function hashOf(obj) {
     .map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+/** Where a season's scores live in KV. The publisher and the reader agree here. */
+export function scoresKey(season) {
+  return `scores:${season}`;
+}
+
 /**
- * Pull the scores file the tiebreaker build writes on every run.
+ * Pull the scores the tiebreaker build produced.
  *
  * Shape: {season, games: {"401756846": [home, away, completed], ...}}.
- * The Worker holds no CFBD key and never will; this file is the only score
- * source, and it costs the project nothing because the build already had the
- * data in hand.
+ * The Worker holds no CFBD key and never will; this is the only score source,
+ * and it costs the project nothing because the build already had the data in
+ * hand.
+ *
+ * TWO CHANNELS, AND THE ORDER MATTERS. Scores used to arrive only as a file on
+ * the Pages origin, which meant publishing one changed number was a rebuild
+ * and redeploy of all 415 files on the domain — the reason pages.yml's cron
+ * had to stay clear of Pages' deployment rate limiting, and the reason a final
+ * could sit an hour before it was graded. Now the publisher POSTs them to
+ * /api/ingest/scores, which writes them here.
+ *
+ * The Pages fetch stays as a fallback and is not dead code: it is what runs if
+ * the ingest secret is ever unset, if a KV namespace is lost, or on the very
+ * first deploy after this change, when nothing has been posted yet. It is also
+ * what the tests exercise, since makeEnv binds no SCORES namespace. When both
+ * channels have been live for a season and the logs show no fallback, this
+ * half can go and PAGES_ORIGIN with it.
  */
-export async function fetchScores(env) {
+export async function fetchScores(env, season) {
+  if (env.SCORES && season != null) {
+    // "json" rather than parsing here: the runtime does it, and a value that
+    // somehow is not JSON comes back null instead of throwing, which lands on
+    // the fallback below rather than failing the whole sweep.
+    const cached = await env.SCORES.get(scoresKey(season), "json");
+    if (cached && cached.games) return cached;
+    console.log(`scores: KV miss for ${scoresKey(season)}, asking Pages`);
+  }
   const r = await fetch(`${env.PAGES_ORIGIN}/tiebreaker/pickem-scores.json`, {
     headers: { Accept: "application/json" }, cf: { cacheTtl: 0 },
   });
@@ -726,9 +753,20 @@ async function roomHistory(env, season, weeks) {
   });
 }
 
-/** Every locked week of a season, scored oldest first. */
-export async function scoreAll(env, season, now = Math.floor(Date.now() / 1000)) {
-  const scores = await fetchScores(env);
+/**
+ * Every locked week of a season, scored oldest first.
+ *
+ * `scores` may be supplied by the caller, and the ingest endpoint does supply
+ * it: it has just been handed the file and grades from the bytes it verified
+ * rather than reading back what it wrote. KV is eventually consistent, so a
+ * read-back inside the same request can legitimately return the PREVIOUS
+ * value — which would grade the new final against the old numbers and report
+ * success. The cron passes nothing and reads normally, which is correct for
+ * it, because by then the write has had a whole cron interval to propagate.
+ */
+export async function scoreAll(env, season, now = Math.floor(Date.now() / 1000),
+                               { scores: given = null } = {}) {
+  const scores = given || await fetchScores(env, season);
   const { results } = await env.DB.prepare(
     `SELECT week FROM weeks
       WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?

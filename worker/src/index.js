@@ -9,6 +9,7 @@
 
 import * as api from "./api.js";
 import * as events from "./events.js";
+import * as ingest from "./ingest.js";
 import * as oauth from "./oauth.js";
 import * as ratelimit from "./ratelimit.js";
 import * as session from "./session.js";
@@ -242,6 +243,40 @@ async function handle(req, env, ctx) {
     if (!csrfOk(req, env)) return new Response(null, { status: 204 });
     if (events.burst(clientIp(req))) events.record(env, req, await body(req));
     return new Response(null, { status: 204 });
+  }
+
+  // The publisher's channel, and the only route on this Worker that is not
+  // driven by a browser.
+  //
+  // NO csrfOk HERE, and its absence is deliberate rather than forgotten. That
+  // check requires an Origin header equal to SITE_ORIGIN, which is exactly
+  // what a browser sends and exactly what a GitHub Actions runner does not.
+  // The protection is the signature in ingest.js, which is strictly stronger:
+  // it authenticates the bytes rather than the tab they came from.
+  //
+  // Grades in the same request, from the body it just verified. That is the
+  // point of the whole exercise — a final used to wait for the next :30 sweep
+  // to be noticed, and now the board moves while the publisher is still
+  // watching its own workflow log.
+  if (path === "/api/ingest/scores" && req.method === "POST") {
+    const got = await ingest.receiveScores(req, env);
+    if (!got.ok) return fail(got.error, got.status);
+    // Never let grading failure lose the scores. They are in KV by now, so the
+    // next cron will grade them; reporting a 500 to the publisher when the
+    // publish itself succeeded would send somebody looking in the wrong place.
+    let report = [], graded = null;
+    try {
+      report = await scoreAll(env, got.season, undefined, { scores: got.scores });
+    } catch (e) {
+      graded = `failed: ${e && (e.message || e)}`;
+      console.error("ingest grade", e && (e.stack || e.message || e));
+    }
+    const moved = report.filter((r) => r.changed).length;
+    if (moved) console.log(`ingest: ${got.games} games, ${moved} weeks moved`);
+    return json({
+      ok: true, season: got.season, games: got.games,
+      weeks_changed: moved, graded: graded || "ok",
+    });
   }
 
   if (path === "/api/health") return api.getHealth(env);

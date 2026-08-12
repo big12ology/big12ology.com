@@ -87,6 +87,13 @@ jobs:
                       "workers_dev = true"):
               if bad in cfg:
                   sys.exit(f"REFUSING TO DEPLOY: found {bad!r}")
+          # A binding whose id was never filled in. wrangler would reject this
+          # anyway, but the error it gives is about an unknown namespace rather
+          # than about the line somebody forgot to edit.
+          if "PLACEHOLDER_" in cfg:
+              sys.exit("REFUSING TO DEPLOY: a binding still has a placeholder "
+                       "id. Create the namespace and paste the real one in — "
+                       "wrangler.toml says which command.")
           print(f"routes ok: {patterns}")
           PY
 

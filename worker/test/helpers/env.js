@@ -74,7 +74,16 @@ class D1 {
 
 class KV {
   constructor() { this.map = new Map(); }
-  async get(k) { return this.map.has(k) ? this.map.get(k) : null; }
+  // The real binding takes a type: get(key, "json") parses, and returns null
+  // rather than throwing when the value will not parse. Worth mirroring — the
+  // scores reader depends on that null to fall back to the Pages copy, and a
+  // mock that threw instead would make the fallback untestable.
+  async get(k, type) {
+    if (!this.map.has(k)) return null;
+    const v = this.map.get(k);
+    if (type !== "json") return v;
+    try { return JSON.parse(v); } catch { return null; }
+  }
   async put(k, v) { this.map.set(k, v); }
   async delete(k) { this.map.delete(k); }
 }

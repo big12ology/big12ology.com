@@ -1,0 +1,108 @@
+name: Scores
+
+# Learn what finished, and tell the Worker. Nothing here deploys.
+#
+# THE SPLIT THIS IS HALF OF. pages.yml used to do both jobs on one dense cron:
+# ask CFBD whether anything had finished, and — because the Worker could only
+# read scores as a file on the Pages origin — redeploy all 415 files of the
+# domain so that one JSON file would be readable. That coupling set the cadence
+# for everything. Three runs an hour was not a choice about how often scores
+# are worth checking; it was the most Pages' deployment rate limiting would
+# tolerate, and it still left a final sitting up to an hour before a board
+# moved.
+#
+# The Worker now takes scores directly, signed, at /api/ingest/scores, and
+# grades them in the same request. So polling and publishing cost one HTTP
+# request instead of a deploy, and this workflow can run as often as it is
+# worth running.
+#
+# WHAT IT STILL COSTS. build.py --fetch is a full site build as a side effect,
+# because that is how build.py is shaped and carving a scores-only path out of
+# six thousand lines is a bigger change than this. That build is thrown away
+# here. It costs a minute of free CI and NO CFBD quota unless a game has
+# actually finished — the affordability trick pages.yml already relies on.
+#
+# WHAT IT DOES NOT DO. It does not rebuild the site. The tiebreaker's standings
+# and history pages are static and still go stale until pages.yml deploys; this
+# only moves the pick'em boards, which are served live by the Worker. If a
+# result needs to appear on a static page promptly, that is pages.yml's cron
+# and the Worker's deploy trigger, not this.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # The game windows pages.yml used to carry, unchanged. They can be denser
+    # now — nothing here is rate limited and a quiet run spends no quota — but
+    # denser has not been shown to be worth anything yet, and a schedule is
+    # easier to loosen once it has been watched than to explain after it has
+    # been guessed at.
+    - cron: "*/20 * * 8-12 6,0"     # every 20 min Sat + Sun, Aug–Dec
+    - cron: "*/20 0-8 * 8-12 1,5,6" # every 20 min, small hours Mon/Fri/Sat
+    # Deliberately NOT 18:00, which is pages.yml's. Both workflows commit
+    # forecasts and games_<year>.json back to main, and two runs doing that in
+    # the same minute is a push race that resolves into a rebase retry at best.
+    # Half an hour apart costs nothing and keeps them out of each other's way.
+    - cron: "30 17 * 8-12 *"        # daily catch-all, Aug–Dec
+
+concurrency:
+  # Cancel freely. Unlike a deploy or a migration, an interrupted run here
+  # loses nothing that the next one will not learn again in twenty minutes.
+  group: scores
+  cancel-in-progress: true
+
+permissions:
+  contents: write   # the commit-back below
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      # No --refresh. Ratings and lines are the Tuesday job and they still
+      # belong to pages.yml, which is the workflow that publishes the slate
+      # those lines become. This one only ever asks for scores.
+      - name: Fetch results
+        working-directory: tiebreaker
+        env:
+          CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+        run: python3 build.py --fetch
+
+      # Same reasoning as pages.yml's copy, and the same one-run-teaches-the-
+      # next trick: games_<year>.json is what lets a later run see that a game
+      # already has a result, so a quiet week produces neither a commit nor a
+      # CFBD call. Without it every run starts from the committed copy and
+      # asks again.
+      #
+      # Never fails the run. Losing a commit is bad; not publishing the scores
+      # that were just fetched is worse, and the publish step is below this.
+      - name: Keep what was learned
+        continue-on-error: true
+        run: |
+          git config user.name "tiebreaker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add tiebreaker/forecasts tiebreaker/pickem \
+                  tiebreaker/data/games_*.json
+          if git diff --cached --quiet; then
+            echo "nothing new."
+          else
+            git commit -m "Scores: $(date -u +'%Y-%m-%d %H:%M')"
+            git push || {
+              git pull --rebase --autostash origin "${{ github.ref_name }}"
+              git push
+            }
+          fi
+
+      # The point of the whole workflow. Signed, verified, stored and graded
+      # inside one request — see tools/publish-scores.sh.
+      #
+      # This is the step that must not fail silently, so it is the one step
+      # here with no continue-on-error: a red run is how anybody finds out
+      # that the boards have stopped moving.
+      - name: Publish to the Worker
+        env:
+          SCORES_INGEST_KEY: ${{ secrets.SCORES_INGEST_KEY }}
+        run: tools/publish-scores.sh

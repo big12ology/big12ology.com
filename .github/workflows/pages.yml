@@ -30,18 +30,28 @@ on:
     # 16:00 Sat – 08:00 Sun UTC; Thu/Fri/Sun night games end in the next
     # UTC day's early hours. Aug included — the season opens Aug 29.
     #
-    # DENSE ON PURPOSE, and affordable because build.py now asks the provider
-    # nothing unless a game has actually finished. A run that learns nothing
-    # costs a minute of free CI and no quota, so the schedule is aimed at
-    # covering GitHub's own unreliability rather than at being frugal:
-    # measured on this repo, scheduled runs land a median 19 minutes late,
-    # 130 at the 90th percentile, and one slot in ten never fires at all.
-    # Every twenty minutes means something lands inside half an hour anyway.
+    # THINNED, BECAUSE THIS IS NO LONGER THE SCORE CHANNEL. It used to run
+    # every twenty minutes in a game window, and the reason was never that the
+    # SITE needed rebuilding that often — it was that the Worker could only
+    # read scores as a file on the Pages origin, so publishing a score meant
+    # redeploying the domain. scores.yml now hands them to the Worker directly
+    # and the pick'em boards move within seconds of a final, without a deploy.
     #
-    # Three an hour also keeps clear of Pages' deployment rate limiting,
-    # which an every-five-minutes schedule would not.
-    - cron: "*/20 * * 8-12 6,0"    # every 20 min Sat + Sun, Aug–Dec
-    - cron: "*/20 0-8 * 8-12 1,5,6" # every 20 min, small hours Mon/Fri/Sat
+    # What is left here is static-page freshness: the tiebreaker's standings,
+    # history and lab pages are built, not served, and they do go stale
+    # between deploys. Hourly in a game window keeps that within an hour,
+    # which is what the old schedule actually delivered anyway once GitHub's
+    # drift is counted — measured on this repo, scheduled runs land a median
+    # 19 minutes late, 130 at the 90th percentile, and one slot in ten never
+    # fires at all.
+    #
+    # AND THE WORKER STILL TRIGGERS THIS. index.js's triggerDeploy dispatches
+    # this workflow on Cloudflare's punctual clock, which is the path that
+    # actually keeps the site current; these crons are the belt to that
+    # braces, for when the token expires or the Worker is broken. That is why
+    # thinning them is safe and why removing them would not be.
+    - cron: "0 * * 8-12 6,0"       # hourly Sat + Sun, Aug–Dec
+    - cron: "0 0-8/2 * 8-12 1,5,6" # every 2h, small hours Mon/Fri/Sat
                                    # (Thu, Fri, and Sun night games)
     - cron: "0 18 * 8-12 *"        # daily catch-all, Aug–Dec
     - cron: "0 12 * 8-12 2"        # Tue — the weekly ratings/lines refresh
@@ -170,6 +180,23 @@ jobs:
                     "the weekly refresh may have failed, and the game has no "
                     "week until it succeeds")
           PY
+
+      # This workflow also runs build.py --fetch, so it can be the run that
+      # learns a final — and without this step that score would sit until
+      # scores.yml next fired, which on a Tuesday is hours. Whoever learns it
+      # publishes it. Posting an unchanged file is cheap and idempotent: the
+      # Worker recomputes, finds nothing moved, and says so.
+      #
+      # continue-on-error, unlike the same step in scores.yml, and the
+      # asymmetry is the point. There, publishing IS the job and a failure
+      # must be loud. Here it is a bonus on top of a deploy, and taking the
+      # domain's deploy down over it would be the tail wagging the dog.
+      - name: Publish scores to the Worker
+        if: github.event_name != 'workflow_dispatch' || inputs.deploy
+        continue-on-error: true
+        env:
+          SCORES_INGEST_KEY: ${{ secrets.SCORES_INGEST_KEY }}
+        run: tools/publish-scores.sh
 
       - name: Assemble the three sites
         env:
