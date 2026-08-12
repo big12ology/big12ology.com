@@ -122,21 +122,43 @@
 
   var urlHold = false;
 
+  // AND A COPY IN STORAGE, which is not a second home for the scenario but a
+  // way back to this one. The URL stays the scenario: it is the thing you can
+  // send, and everything above about fingerprints is about making a sent link
+  // safe. What the URL cannot survive is the site's own navigation — the
+  // subnav's "The Lab" points at lab.html with no hash, so a reader who
+  // looked at the standings and came back found the board wiped. Back
+  // restored it, which is to say the state was never lost, only unreachable
+  // by the one route a reader is most likely to take.
+  //
+  // So the last scenario is kept, and a hash-less arrival offers it. A link
+  // still wins outright when there is one — somebody opening a scenario
+  // somebody else sent must see that scenario and not their own.
+  var STORE_KEY = "lab";
+
   function syncUrl() {
     if (urlHold || !window.B12State) return;
     var ids = pickOrder();
     if (!Object.keys(picks).length) {
       B12State.hashWrite(URL_KEY, "");
+      // Clearing is a decision, so it clears the copy too. Otherwise "Clear
+      // picks" would empty the board and the next visit would put it back.
+      B12State.set(STORE_KEY, null);
       return;
     }
-    B12State.hashWrite(URL_KEY, [payload.year, fingerprint(ids),
-      modelSlug(model), encodePicks(ids)].join("."));
+    var raw = [payload.year, fingerprint(ids),
+      modelSlug(model), encodePicks(ids)].join(".");
+    B12State.hashWrite(URL_KEY, raw);
+    B12State.set(STORE_KEY, raw);
   }
 
-  /** Returns a message when a link could not be honoured, else null. */
   function restoreFromUrl() {
-    if (!window.B12State) return null;
-    var raw = B12State.hashRead(URL_KEY);
+    return window.B12State
+      ? applyScenario(B12State.hashRead(URL_KEY)) : null;
+  }
+
+  /** Returns a message when a scenario could not be honoured, else null. */
+  function applyScenario(raw) {
     if (!raw) return null;
     var bits = raw.split(".");
     if (bits.length < 4) return "That link is not a scenario this page reads.";
@@ -1113,7 +1135,23 @@
   urlHold = true;
   var arrivedWithScenario = !!(window.B12State && B12State.hashRead(URL_KEY));
   var urlProblem = restoreFromUrl();
+  // Only with no link to honour. A stored scenario that no longer fits the
+  // schedule is dropped rather than explained: the paragraph below exists
+  // for a link somebody was sent and is owed an answer about, whereas this
+  // is the reader's own board going quietly out of date, and telling them
+  // their invisible saved copy expired is a notice about nothing they did.
+  var resumed = false;
+  if (!arrivedWithScenario && window.B12State) {
+    var kept = B12State.get(STORE_KEY, null);
+    if (kept) {
+      if (applyScenario(kept)) B12State.set(STORE_KEY, null);
+      else resumed = true;
+    }
+  }
   urlHold = false;
+  // Put it back on the URL, so Copy link works on a resumed board without
+  // touching anything first, and so the address bar and the page agree.
+  if (resumed) syncUrl();
   // The one measurement that justifies the sharing feature, and the one that
   // says when it is broken. `stale` means a link arrived and the page refused
   // it — a schedule that moved under a scenario somebody sent last week. That
@@ -1121,11 +1159,19 @@
   // and the recipient sees a polite paragraph, and nobody reports it.
   if (arrivedWithScenario && M) {
     M.send("scenario", urlProblem ? "stale" : "opened");
+  } else if (resumed && M) {
+    // Its own value, not folded into "opened". Those two count different
+    // things — one says the sharing feature is used, the other says people
+    // leave this page and come back to it — and a single number that could
+    // mean either answers neither.
+    M.send("scenario", "resumed");
   }
-  if (urlProblem) {
+  if (urlProblem || resumed) {
     var warn = document.createElement("p");
     warn.className = "note wurlwarn";
-    warn.textContent = urlProblem + " Showing the season as it stands.";
+    warn.textContent = urlProblem
+      ? urlProblem + " Showing the season as it stands."
+      : "Picked up where you left off. Clear picks starts over.";
     var host = document.getElementById("wgames");
     if (host && host.parentNode) host.parentNode.insertBefore(warn, host);
   }

@@ -79,13 +79,17 @@ and only if you choose to sign in.</p>
   <li><b>No cookies there.</b> Interactive features (like the tiebreaker what-if
   simulator) run entirely in your browser&rsquo;s memory and forget everything
   when you close the tab.</li>
-  <li><b>One thing in local storage, and it is your setting.</b> If you pick
-  light or dark mode, that choice is saved in your browser under
-  <code>b12-theme</code> so the page does not flash the wrong theme next time.
-  It never leaves your device and it is not sent to us. Clearing your browser
-  data removes it. The pick&rsquo;em adds no second key &mdash;
-  <code>b12-theme</code> is still the only thing this domain stores in your
-  browser besides the sign-in cookie described below.</li>
+  <li><b>Three things in local storage, and all three are yours.</b> If you
+  pick light or dark mode, that choice is saved under <code>b12-theme</code>
+  so the page does not flash the wrong theme next time. If you collapse a
+  card, which cards you closed is saved under <code>b12-cards</code>, per
+  page. And if you pick winners in the tiebreaker&rsquo;s Lab, that scenario
+  is saved under <code>b12-lab</code> so leaving the page and coming back does
+  not wipe the board &mdash; the same picks that are already in the address
+  bar, kept because the site&rsquo;s own navigation drops them. None of the
+  three leaves your device, none is sent to us, and clearing your browser data
+  removes all of them. The pick&rsquo;em adds no key of its own beyond the
+  sign-in cookie described below.</li>
 </ul>
 
 <h2>Signing in to the pick&rsquo;em</h2>
@@ -209,20 +213,25 @@ features get used, anonymously and with no identifier of any kind;
   <li><b>No cookies.</b> Interactive features (like the tiebreaker what-if
   simulator) run entirely in your browser&rsquo;s memory and forget everything
   when you close the tab.</li>
-  <li><b>Two things in local storage, and both are your settings.</b> If you
+  <li><b>Three things in local storage, and all three are yours.</b> If you
   pick light or dark mode, that choice is saved under <code>b12-theme</code>
   so the page does not flash the wrong theme next time. If you collapse a
   card, which cards you closed is saved under <code>b12-cards</code>, per
-  page, so the layout you chose is still there when you come back. Neither
-  leaves your device, neither is sent to us, and clearing your browser data
-  removes both.</li>
+  page, so the layout you chose is still there when you come back. And a
+  what-if scenario is saved under <code>b12-lab</code>, described next.
+  None of the three leaves your device, none is sent to us, and clearing
+  your browser data removes all of them.</li>
   <li><b>A what-if scenario lives in the address bar.</b> Picking winners in
   the tiebreaker&rsquo;s Lab writes those picks into the page&rsquo;s own URL,
   after the <code>#</code>, so you can bookmark a scenario or send it to
   somebody. The part after a <code>#</code> is never transmitted to a server
   &mdash; not to us, not to our host &mdash; so those picks stay on your
   device unless you choose to share the link. If you do share it, the person
-  you send it to sees the picks it contains, which is the point of it.</li>
+  you send it to sees the picks it contains, which is the point of it. The
+  same picks are kept under <code>b12-lab</code> as well, because a link in
+  the address bar does not survive clicking through to another page and back;
+  it is the identical string, held so the board is still there when you
+  return. &ldquo;Clear picks&rdquo; deletes it.</li>
 </ul>
 
 <!-- /PICKEM-OFF -->

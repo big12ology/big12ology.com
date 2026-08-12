@@ -250,6 +250,18 @@ def line(sp):
     return f"{nxt.get('home') if sp < 0 else nxt.get('away')} −{n}"
 
 
+def standing(spot):
+    """"BYU 23% and Arizona 12%" — the two teams as the season has them.
+
+    Home first, matching the fork's left-hand column, so the eye reads the
+    same order twice rather than being asked to map one onto the other.
+    """
+    now = spot.get("now") or {}
+    return " and ".join(
+        f"{e(t)} {round((now.get(t) or 0) * 100)}%"
+        for t in (spot.get("home"), spot.get("away")) if t in now)
+
+
 def when(iso):
     """A readable UTC instant, for before the script runs and instead of it.
 
@@ -294,7 +306,17 @@ tok = {
         f"<p class=stat>Biggest swing this week: <b>{e(spot['away'])}</b> at "
         f"<b>{e(spot['home'])}</b> &middot; {e(spot['when'])} &middot; "
         f"{spot['total']} of a title-game seat changes hands</p>"
-        + spot["html"] if spot else ""),
+        + spot["html"]
+        # The baseline the arrows are measured from, and whose opinion any
+        # of this is. Both are on the race page already — the first as the
+        # list of sixteen beside the fork, the second in the paragraph under
+        # it — and neither travelled with the component to a card that has
+        # no room for either. Four bare percentages and an arrow from
+        # nowhere is not a number a stranger can read.
+        + (f"<p class=spotnote>As things stand {standing(spot)}. Ensemble of "
+           f"four public rating models, ten thousand simulated seasons.</p>"
+           if spot.get("now") else "")
+        if spot else ""),
     "HUB_CCG_CARD": (
         f"<p class=stat>Projected title game: <b>{e(ccg[0]['team'])}</b> vs "
         f"<b>{e(ccg[1]['team'])}</b> · {round(ccg[0]['p'] * 100)}% and "

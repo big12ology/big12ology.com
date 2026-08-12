@@ -125,6 +125,11 @@ a.card:hover { border-color: var(--accent); }
    generated. Hidden until it has something to say, so a reader with no
    JavaScript — or a Pages deploy that has not written facts.json yet — sees a
    card that simply does not have this line rather than an empty rule. */
+/* Provenance for the fork above it: where its arrows are measured from,
+   and whose opinion the percentages are. Not .fact — that one is the rotating
+   trivia line and carries a rule above it, and two rules inside one card
+   reads as two sections rather than a block and its footnote. */
+.spotnote { margin: 6px 0 0; font-size: var(--t-meta); color: var(--dim); }
 .fact { margin: 12px 0 0; padding-top: 10px;
   border-top: 1px solid var(--line); font-size: var(--t-row); color: var(--dim); }
 .fact[hidden] { display: none; }
@@ -214,6 +219,13 @@ a.card:hover { border-color: var(--accent); }
     <h2>Tiebreaker Tracker <span class="tag live">live</span></h2>
     <p class=stat><b>{{HUB_TEAMS}}</b> teams · <b>7</b> tiebreak steps · <b>3</b> seasons, replayable</p>
     {{HUB_CCG_CARD}}
+    <!-- The week's biggest game, which sat on the Schedule card until it was
+         read carefully. Everything in it is championship probability — the
+         seat, the two branches, the arrows — and the Schedule card is about
+         the unbalanced schedule: nine opponents out of fifteen, the draw,
+         the rotation. It was the right block filed under the wrong heading,
+         and this card's own prose already promises exactly what it shows. -->
+    {{HUB_SPOTLIGHT}}
     <p>The official Big 12 tiebreaking procedures applied to live results
     after every game — projected championship matchup, step-by-step tie
     narratives, clinch and elimination proofs, and a what-if simulator with
@@ -257,7 +269,6 @@ a.card:hover { border-color: var(--accent); }
   <a class=card href="/schedule/">
     <h2>Schedule <span class="tag live">live</span></h2>
     <p class=stat><b>9</b> of <b>15</b> possible opponents · <b>{{HUB_GAMES}}</b> games on the card</p>
-    {{HUB_SPOTLIGHT}}
     <p>Sixteen teams play nine conference games out of a possible fifteen, so
     nobody plays everybody and two teams on the same record did not attempt
     the same thing. The head-to-head grid for the season, <b>the draw</b> —

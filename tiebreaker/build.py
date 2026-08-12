@@ -5649,6 +5649,14 @@ def write_hub(year, games, lines, sims_race, lev_top=None):
             "away": lev_top["away"], "home": lev_top["home"],
             "when": pretty_date(lev_top.get("start")),
             "total": round((lev_top.get("total") or 0) * 100),
+            # WHERE THE ARROWS POINT FROM. Every cell in the fork prints a
+            # move from today, and on the race page today is the list of
+            # sixteen numbers sitting beside it. The hub has no such list —
+            # its only probabilities are the top two in the hero, which are
+            # rarely the two teams playing — so on the front page each arrow
+            # was a delta from a figure that appeared nowhere on the page.
+            "now": {t: round((sims.get(t) or {}).get("p_ccg") or 0.0, 4)
+                    for t in (lev_top["home"], lev_top["away"])},
             "html": fork,
         }
 
