@@ -2137,7 +2137,7 @@ def build_subpage(title, active, body, year, matchcard,
 <link rel=icon type=image/png sizes=32x32 href="{BASE}favicon-32.png">
 <link rel=apple-touch-icon href="{BASE}favicon-180.png">
 <script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
-<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
+<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{BASE}{asset_v("brand.css")}">
 <script defer src="{BASE}{asset_v("theme.js")}"></script>
 <script src="{BASE}{asset_v("state.js")}"></script>
@@ -3533,7 +3533,7 @@ TEMPLATE = """<!doctype html>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
 <script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
-<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
+<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
 <script src="{base}{v_state}"></script>
@@ -3891,7 +3891,7 @@ EXPLAINER = """<!doctype html>
 <link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
 <link rel=apple-touch-icon href="{base}favicon-180.png">
 <script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
-<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
+<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
 <script src="{base}{v_state}"></script>

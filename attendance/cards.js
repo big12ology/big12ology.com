@@ -128,11 +128,57 @@
     }
   }
 
+  /**
+   * Retire the pre-paint stylesheet, now that the classes say the same thing.
+   *
+   * THE BUG THIS FIXES. Each page head carries a tiny script that reads the
+   * saved list before anything paints and writes a stylesheet for it —
+   * `#thatcard > *:not(h2):not(h3) { display:none }` — so a card the reader
+   * closed last time does not flash open first. That is worth having, and it
+   * worked. What it also did was outlive its job: the rule keys on the card's
+   * ID, not on the class, so when this file later removed `is-collapsed` the
+   * stylesheet went on hiding the contents anyway.
+   *
+   * The card opened. The chevron turned, the class came off, the padding
+   * changed, and the inside stayed display:none — 9,000 characters of race
+   * board sitting there at zero height. It only ever bit a card that was
+   * ALREADY closed when the page loaded, which is why closing and reopening
+   * one in the same visit always looked fine, and why this survived: you had
+   * to leave and come back to see it.
+   *
+   * Removed rather than overridden. The obvious alternative — a louder rule
+   * for the open state — would have to out-!important a selector written by
+   * another file, and it would also un-hide children that are meant to be
+   * hidden for their own reasons, like the fact lines on the hub that carry a
+   * `hidden` attribute until something fills them.
+   *
+   * By id first, then by shape. New pages mark the tag; a page still serving
+   * the older head script does not, and matching the rule text catches those
+   * until the HTML catches up. Both are cheap and neither can fire twice.
+   */
+  function dropPrepaint() {
+    var s = document.getElementById("b12-precollapse");
+    if (s && s.parentNode) s.parentNode.removeChild(s);
+    var all = document.head ? document.head.getElementsByTagName("style") : [];
+    for (var i = all.length - 1; i >= 0; i--) {
+      if (/:not\(h2\):not\(h3\)\s*\{\s*display:\s*none\s*\}/.test(all[i].textContent)) {
+        all[i].parentNode.removeChild(all[i]);
+      }
+    }
+  }
+
   // The attendance tracker and the pools app build their cards after load, so
   // one pass at DOMContentLoaded would find half a page. Re-running is safe:
   // a card that already carries a toggle is skipped.
   function watch() {
     setup();
+    // After the first pass, never before it: every card that existed at parse
+    // time now carries its own class, so the stylesheet has nothing left to
+    // say. A card built later — the Lab's, the pools app's — is handled by
+    // the observer below, and the worst it can now do is appear open for one
+    // frame before its class lands. A frame of flash beats a card that never
+    // opens again.
+    dropPrepaint();
     if (!window.MutationObserver) return;
     var due = null;
     new MutationObserver(function () {
