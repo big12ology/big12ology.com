@@ -2141,6 +2141,7 @@ def build_subpage(title, active, body, year, matchcard,
 <link rel=stylesheet href="{BASE}{asset_v("brand.css")}">
 <script defer src="{BASE}{asset_v("theme.js")}"></script>
 <script src="{BASE}{asset_v("state.js")}"></script>
+<script src="{BASE}{asset_v("metrics.js")}"></script>
 <script defer src="{BASE}{asset_v("cards.js")}"></script>
 {rss}
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
@@ -3439,6 +3440,7 @@ def render(year, games):
         v_theme=asset_v("theme.js"),
         v_cards=asset_v("cards.js"),
         v_state=asset_v("state.js"),
+        v_metrics=asset_v("metrics.js"),
         v_app=asset_v("app.js"),
         canon=(f"{site_url}lab.html" if year == LIVE_YEAR
                else f"{site_url}{year}/lab.html"),
@@ -3535,6 +3537,7 @@ TEMPLATE = """<!doctype html>
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
 <script src="{base}{v_state}"></script>
+<script src="{base}{v_metrics}"></script>
 <script defer src="{base}{v_cards}"></script>
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href={base}feed.xml>
 <style>
@@ -3892,6 +3895,7 @@ EXPLAINER = """<!doctype html>
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
 <script src="{base}{v_state}"></script>
+<script src="{base}{v_metrics}"></script>
 <script defer src="{base}{v_cards}"></script>
 <meta property=og:type content=article>
 <meta property=og:site_name content=Big12ology>
@@ -4176,6 +4180,7 @@ def build_explainer(year, matchcard, outdir=None):
             v_theme=asset_v("theme.js"),
         v_cards=asset_v("cards.js"),
         v_state=asset_v("state.js"),
+        v_metrics=asset_v("metrics.js"),
             topbar=topbar("tiebreaker", year, BASE),
             footer=footer(),
             top=tracker_top(year, "how", matchcard, page="how.html")))

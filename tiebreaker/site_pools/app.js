@@ -571,6 +571,24 @@
     // reader who bookmarks the URL does not get welcomed forever.
     var first = !!me && me.needs_name;
     show($("signin"), !me);
+    // The top of the funnel, and the only two steps of it the database cannot
+    // see. Everything after a provider hands us a subject is a row in D1 and
+    // is counted there instead — see tools/pool-report.sh. What is missing
+    // without this is the denominator: how many people reached the page that
+    // offers a sign-in and did not press anything.
+    if (!me && window.B12Metrics) {
+      window.B12Metrics.send("pool", "signin_shown");
+      document.querySelectorAll("#signin a[href^='/api/auth/login/']")
+        .forEach(function (a) {
+          a.addEventListener("click", function () {
+            // A navigation is about to tear the page down, so this cannot
+            // wait for the ordinary end-of-visit batch. sendBeacon survives
+            // the unload; that is the whole reason flush() is public.
+            window.B12Metrics.send("pool", "signin_click");
+            window.B12Metrics.flush();
+          });
+        });
+    }
     show($("welcome"), first);
     show($("named"), !!me);
     show($("acctinfo"), !!me);

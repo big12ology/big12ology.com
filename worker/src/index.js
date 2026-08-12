@@ -8,6 +8,7 @@
 // to any page on the internet.
 
 import * as api from "./api.js";
+import * as events from "./events.js";
 import * as oauth from "./oauth.js";
 import * as ratelimit from "./ratelimit.js";
 import * as session from "./session.js";
@@ -226,6 +227,22 @@ async function handle(req, env, ctx) {
   }
 
   // ------------------------------------------------------ public, no session
+
+  // Counted, not identified. This route sits above every line that reads a
+  // session on purpose: the browser sends the session cookie with the beacon
+  // because it is same-origin and cannot be told otherwise, and the answer to
+  // that is that nothing here ever looks at it. See worker/src/events.js.
+  //
+  // The same CSRF check as every other write, for a different reason than the
+  // others. There is nothing to forge into — the endpoint has no side effect
+  // worth causing — but the Origin check is what keeps somebody else's page
+  // from posting counts into our numbers, and a measurement anybody can write
+  // to is not a measurement.
+  if (path === "/api/e" && req.method === "POST") {
+    if (!csrfOk(req, env)) return new Response(null, { status: 204 });
+    if (events.burst(clientIp(req))) events.record(env, req, await body(req));
+    return new Response(null, { status: 204 });
+  }
 
   if (path === "/api/health") return api.getHealth(env);
   if (path === "/api/season/current") return api.getSeasonCurrent(env);

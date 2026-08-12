@@ -54,6 +54,25 @@ migrations_dir = "migrations"
 binding = "SESSIONS"
 id = "c26df5e7e0904d1db35a4b2131b51a05"
 
+# Where /api/e writes. No id to create and nothing to provision: naming a
+# dataset here is what brings it into existence, and it is queried by name
+# over the SQL API — see tools/events-report.sh.
+#
+# NOT D1, and the reason is the write pattern rather than a preference. Every
+# interesting event on this site happens dozens of times per reader per visit,
+# and a row per event in a relational database is a table that has to be
+# indexed, pruned and paid for, on a Worker whose entire job elsewhere is to
+# avoid writes. Analytics Engine is write-only, sampled, aggregated at query
+# time and expires on its own after ninety days, which is the correct set of
+# properties for a counter and the wrong one for a pick.
+#
+# It also cannot be joined to anything. That is a feature here: the privacy
+# page promises there is no identifier to join on, and a store with no primary
+# key makes the promise structural rather than something to remember.
+[[analytics_engine_datasets]]
+binding = "EVENTS"
+dataset = "b12_events"
+
 # Times are UTC, and chosen to mirror pages.yml's game windows so a final is
 # picked up within about an hour of being posted.
 [triggers]
