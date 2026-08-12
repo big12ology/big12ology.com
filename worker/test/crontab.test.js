@@ -55,8 +55,8 @@ test("the schedules land on the days the comments claim", () => {
   // Written out rather than computed, so the assertion is a statement of
   // intent that a future edit has to disagree with out loud.
   const want = {
-    "0 * * 8-12 1,7": ["Sun", "Sat"],          // the weekend score sweep
-    "0 0-8/2 * 8-12 2,6,7": ["Mon", "Fri", "Sat"], // US night finals, UTC
+    "30 * * 8-12 1,7": ["Sun", "Sat"],          // the weekend score sweep
+    "30 0-8/2 * 8-12 2,6,7": ["Mon", "Fri", "Sat"], // US night finals, UTC
     "0 13 * 8-12 3": ["Tue"],                  // the slate import
     "0 12 * * *": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   };
@@ -65,6 +65,24 @@ test("the schedules land on the days the comments claim", () => {
     assert.ok(want[c.trim()], `unrecognised schedule ${c} — update this test`);
     assert.deepEqual(named, [...want[c.trim()]].sort(),
       `${c} runs on ${named.join(", ")}`);
+  }
+});
+
+test("the score sweeps run after the publisher, not alongside it", () => {
+  // Same failure as the Tuesday import, an hour at a time instead of a day.
+  // This Worker holds no CFBD key: it grades from pickem-scores.json, which
+  // pages.yml publishes on its own hourly cron at :00. A sweep at :00 reads
+  // whatever the publisher wrote an HOUR ago, so a result could sit two
+  // hours behind the television. The minute is the whole fix, and it is
+  // worth an assertion because ":00 like everything else" is exactly what a
+  // future tidy-up would restore.
+  const sweeps = crons.filter((c) => daysOf(c).length > 1
+                                  && c.trim() !== "0 12 * * *");
+  assert.ok(sweeps.length >= 2, "expected the weekend and night sweeps");
+  for (const c of sweeps) {
+    const minute = Number(c.trim().split(/\s+/)[0]);
+    assert.ok(minute > 0 && minute < 60,
+      `${c} sweeps at :${minute} — it must run after pages.yml's :00 publish`);
   }
 });
 

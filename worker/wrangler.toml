@@ -71,9 +71,23 @@ id = "c26df5e7e0904d1db35a4b2131b51a05"
 #
 # The times are UTC. A US Saturday runs from Saturday noon UTC into Sunday
 # morning UTC, which is why the sweep covers both days.
+# THE SWEEPS RUN AT :30, AND THE HALF HOUR IS THE POINT. This Worker holds no
+# CFBD key and never will, so it does not learn a result from the provider —
+# it grades from tiebreaker/pickem-scores.json, which pages.yml publishes on
+# its own hourly cron at :00. Both were set to :00, which meant the sweep
+# almost always read the file the publisher had written an HOUR earlier: a
+# game final at 20:05 was published at 21:00 and graded at 22:00, so a board
+# could sit two hours behind a result that was on every television.
+#
+# Half an hour after the publisher costs nothing — no extra CFBD call, no
+# extra Worker invocation — and turns that two hours into one. Anything
+# faster is not a scheduling problem: it means publishing scores more often,
+# and every extra pages.yml run spends a call against a 1,000-a-month cap.
+#
+# If pages.yml's hourly crons ever move off :00, move these with them.
 crons = [
-  "0 * * 8-12 1,7",        # hourly Sat + Sun UTC — the score sweep
-  "0 0-8/2 * 8-12 2,6,7",  # Mon/Fri/Sat UTC, small hours: Sun/Thu/Fri
+  "30 * * 8-12 1,7",       # hourly Sat + Sun UTC — the score sweep
+  "30 0-8/2 * 8-12 2,6,7", # Mon/Fri/Sat UTC, small hours: Sun/Thu/Fri
                            # night finals in the US
   "0 13 * 8-12 3",         # Tue UTC — import the week's slate, an hour after
                            # pages.yml's 12:00 refresh has published it
