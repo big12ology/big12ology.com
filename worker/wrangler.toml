@@ -43,6 +43,8 @@ PAGES_ORIGIN = "https://big12ology.github.io"
 SURVIVOR_RANKED_ENTRY_BY = "6"
 GOOGLE_CLIENT_ID = "1029553052112-5db59l7pljf20ovi2913lghhv7n9rvgm.apps.googleusercontent.com"
 GITHUB_CLIENT_ID = "Ov23lioQoMOhhs5h5Cs7"
+GITHUB_REPO = "big12ology/big12ology.com"
+DEPLOY_CRONS = "30 * * 8-12 1,7|30 0-8/2 * 8-12 2,6,7"
 
 [[d1_databases]]
 binding = "DB"
@@ -69,14 +71,13 @@ id = "c26df5e7e0904d1db35a4b2131b51a05"
 # publisher regenerates this file from committed data on its next run, and
 # until it does, fetchScores falls back to the Pages copy.
 #
-# THE ID BELOW MUST BE REAL BEFORE THIS DEPLOYS. Create it once with:
-#   cd worker && npx wrangler kv namespace create SCORES
-# then paste the id here. worker.yml refuses to deploy while the placeholder
-# is still in place, because a deploy that silently lost this binding would
-# fall back to Pages and look exactly like everything working.
+# Created 2026-08-12 with `wrangler kv namespace create SCORES`. worker.yml
+# refuses to deploy while a binding still carries a PLACEHOLDER_ id, because a
+# deploy that silently lost this binding would fall back to Pages and look
+# exactly like everything working.
 [[kv_namespaces]]
 binding = "SCORES"
-id = "PLACEHOLDER_RUN_WRANGLER_KV_NAMESPACE_CREATE"
+id = "062b6400bca24a0a99dec72d2010dea5"
 
 # Where /api/e writes. No id to create and nothing to provision: naming a
 # dataset here is what brings it into existence, and it is queried by name
