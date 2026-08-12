@@ -100,10 +100,11 @@ rsync -a "${COMMON[@]}" "$ROOT/attendance/" "$DIST/attendance/"
 # pct.js rather than carrying a second copy of them. Its pages are shells:
 # everything a reader sees arrives from /api/* at runtime.
 #
-# Gated on B12_PICKEM, the same flag build.py reads. The Worker behind
-# /api/* does not exist yet, so every page of this section renders an error
-# and privacy.html still promises "no accounts, no cookies". Off by default,
-# which is what CI gets; nothing is deleted, it is simply not published.
+# Gated on B12_PICKEM, the same flag build.py reads. pages.yml sets it from
+# the date — the section opens on 2026-08-20 and every deploy after that
+# ships it — so the flag is a schedule rather than something anybody has to
+# remember to push. Off by default, which is what a local build and CI get;
+# nothing is deleted, it is simply not published.
 if [ "${B12_PICKEM:-}" = "1" ]; then
   # Both games and the account they share. soon.html and _moved/ are build
   # scaffolding and have no business in the published tree.

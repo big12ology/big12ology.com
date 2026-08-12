@@ -85,7 +85,10 @@ POOLS_UP = "../"          # from /pools/x/ back up to /pools/
 # datetime for the same reason the site never prints a deadline without a
 # timezone: "Wednesday" is a promise anyone can keep, and 9am somewhere is
 # not.
-POOLS_OPEN = datetime.date(2026, 8, 19)
+# The day the pools section opens. Every date the teaser prints is derived
+# from this, and pages.yml gates B12_PICKEM on the same day, so moving the
+# launch is this line and the one in that workflow — not a hunt through copy.
+POOLS_OPEN = datetime.date(2026, 8, 20)
 
 # team -> logo file key (assets in site/logos/, sourced from Wikimedia; BYU is png)
 TEAM_KEY = {

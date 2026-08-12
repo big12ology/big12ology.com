@@ -60,10 +60,32 @@ jobs:
       # list cost nothing. Ratings and lines are worth nine more calls once
       # a week, not every hour. If the API refuses, the build says so and
       # falls back to the committed data rather than failing the deploy.
+      # THE POOLS SWITCH, ON A DATE RATHER THAN A DEPLOY. The section opens
+      # on 2026-08-20 and every deploy after that ships it; before then the
+      # cron keeps publishing the teaser. The alternative was remembering to
+      # push something on the morning of launch day, which is a plan that
+      # depends on somebody being awake.
+      #
+      # Compared as an integer so there is no timezone argument: the crons
+      # are UTC and so is this. Keep the date in step with POOLS_OPEN in
+      # tiebreaker/build.py — that constant decides what the teaser says the
+      # date IS, and this decides when the section actually appears.
+      - name: Decide whether the pools section ships
+        id: pools
+        run: |
+          if [ "$(date -u +%Y%m%d)" -ge 20260820 ]; then
+            echo "on=1" >> "$GITHUB_OUTPUT"
+            echo "pools: open"
+          else
+            echo "on=" >> "$GITHUB_OUTPUT"
+            echo "pools: teaser until 2026-08-20"
+          fi
+
       - name: Fetch results and build the tiebreaker
         working-directory: tiebreaker
         env:
           CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+          B12_PICKEM: ${{ steps.pools.outputs.on }}
         run: >-
           python3 build.py --fetch
           ${{ (github.event.schedule == '0 12 * 8-12 2' || inputs.refresh)
@@ -132,6 +154,8 @@ jobs:
           PY
 
       - name: Assemble the three sites
+        env:
+          B12_PICKEM: ${{ steps.pools.outputs.on }}
         run: tools/assemble.sh dist
 
       # Dry run only: prove the assembled output is the site that is live.
