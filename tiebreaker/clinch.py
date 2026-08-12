@@ -68,7 +68,14 @@ def cut_membership(games, overrides, ncf_teams):
 
     Only the placement group that straddles the cut needs tie-breaking;
     groups fully above the cut are in, fully below are out."""
-    groups = tb.placement_groups(games)
+    # ONE FILTER FOR THE WHOLE EVALUATION. This function is the floor of
+    # exact()'s enumeration — called once per completion of the remaining
+    # schedule, ~143,000 times in a build — and everything under it wanted
+    # the same list of completed conference games. Derived here and handed
+    # down, it is computed once per call instead of once per tiebreak step
+    # per elimination round. See tb.conf_games for the measurement.
+    cg = tb.conf_games(games)
+    groups = tb.placement_groups(games, cg)
     sure, maybe = set(), set()
     seats = 2
     for grp in groups:
@@ -79,7 +86,8 @@ def cut_membership(games, overrides, ncf_teams):
             seats -= len(grp)
             continue
         # straddling group: tie order decides which members cross
-        order, _log, resolved, events = tb.break_tie(grp, games, overrides)
+        order, _log, resolved, events = tb.break_tie(
+            grp, games, overrides, cg)
         risky = (not resolved) or any(
             e["step"] in ("e", "f", "g") and
             any(t in ncf_teams for t in grp)

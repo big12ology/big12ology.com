@@ -385,13 +385,25 @@
     return Math.max(0, Math.min(1, (h - lo) / (hi - lo)));
   }
 
+  /* A team with no conference result is tied with every other such team, and
+     counting them is the whole of this function's early-season correctness.
+     The standings rank only teams there is evidence for, so in September
+     `rows` is two or four teams while n stays sixteen, and the dozen still on
+     0-0 — the largest tie on the board — were falling out of the numerator.
+     Mirrors chaos.tangle_component; the long version of why is there. */
   function tangleComponent(rows, statuses, n) {
-    if (!rows.length) return 1;  // nobody has played: one sixteen-way tie
+    if (!n) return 1;
+    var listed = {};
+    rows.forEach(function (r) { listed[r.team] = 1; });
+    var unplayed = Object.keys(statuses).filter(function (t) {
+      return !listed[t] && statuses[t] === "alive";
+    });
     var tangled = 0;
     rows.forEach(function (r) {
       if (r.tie_group && statuses[r.team] === "alive") tangled += 1;
     });
-    return tangled / n;
+    if (unplayed.length > 1) tangled += unplayed.length;
+    return Math.min(1, tangled / n);
   }
 
   function breadthComponent(statuses) {

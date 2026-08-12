@@ -171,12 +171,41 @@ progress { width: 100%; height: 6px; accent-color: var(--accent); }
 .wchip { background: var(--accent2); color: #fff; font-size: var(--t-fine);
   border-radius: 20px; padding: 2px 9px; font-weight: 600;
   letter-spacing: .03em; vertical-align: 1px; text-transform: none; }
-.wcontrols { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  margin-bottom: 10px; }
-.wbtn { font: inherit; font-size: var(--t-label); border: 1px solid var(--line);
-  background: var(--panel); color: var(--ink); border-radius: 8px;
-  padding: 6px 14px; cursor: pointer; }
-.wbtn:hover { border-color: var(--accent); }
+/* Three jobs, three groups: lay the model's chalk down, change what is on
+   screen, do something with the board. Groups wrap as units, so a narrow
+   window breaks the row where the meaning already breaks. The gap between
+   groups is the wider one. */
+.wcontrols { display: flex; align-items: center; gap: 8px 16px;
+  flex-wrap: wrap; margin-bottom: 10px; }
+/* A group is atomic: no shrinking, so a row too narrow to hold everything
+   breaks between groups rather than through the middle of one. Below the
+   phone breakpoint that stops being true — three buttons of chalk do not fit
+   in 375px however they are grouped — and it goes back to wrapping freely. */
+.wgroup { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+@media (max-width: 520px) {
+  .wgroup { flex-wrap: wrap; flex-shrink: 1; }
+}
+/* Same rule as the subpages'. Denser than it was and pressable rather than
+   merely bordered: a smaller label, a tighter box, a hairline of lift, and a
+   press that actually moves. Flex is scoped to button/a because a <select>
+   wears this class too and has to keep its native control box. */
+.wbtn { font: inherit; font-size: var(--t-row); font-weight: 600;
+  line-height: 1.5; border: 1px solid var(--line); background: var(--panel);
+  color: var(--ink); border-radius: 7px; padding: 5px 11px; cursor: pointer;
+  white-space: nowrap; }
+button.wbtn, a.wbtn { display: inline-flex; align-items: center; gap: 6px;
+  text-decoration: none; box-shadow: 0 1px 0 rgba(0,0,0,.05); }
+.wbtn:hover { border-color: var(--accent); background: var(--bg); }
+button.wbtn:active { transform: translateY(1px); box-shadow: none; }
+.wbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Decorative like .gi, but sized to the button and coloured by the job the
+   button does rather than by what it depicts: chalk the model lays down is
+   warn — the same colour as the ★ beside a favorite in the list — anything
+   that only changes the view is accent2, and anything that acts on the board
+   itself is accent. Three colours, three meanings. */
+.bi { width: 14px; height: 14px; flex: 0 0 14px; color: var(--accent); }
+.bi-chalk { color: var(--warn); }
+.bi-view { color: var(--accent2); }
 #wgames details { padding: 8px 12px; }
 #wgames summary { font-size: var(--t-label); }
 /* The week's own chalk button, in its summary. Quiet until you are on it —
@@ -333,7 +362,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 </header>
 <nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=off>The Standings</a><a href=lab.html class=on>The Lab</a><a href=cutline.html class=off>The Cut Line</a><a href=ladder.html class=off>The Ladder</a><a href=how.html class=off>The Rules</a><a href=history.html class=off>The Archive</a></nav>
 <main id=main tabindex="-1">
-<svg class=sprite width=0 height=0 aria-hidden=true style='position:absolute'><symbol id='i-clock' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/></symbol><symbol id='i-pin' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/><path d='M17.657 16.657 13.414 20.9a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z'/></symbol><symbol id='i-tv' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='7' width='18' height='13' rx='2'/><path d='M16 3l-4 4l-4 -4'/></symbol><symbol id='i-roof' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 21h18'/><path d='M4 21v-10a8 8 0 0 1 16 0v10'/><path d='M9 21v-9a3 3 0 0 1 6 0v9'/></symbol><symbol id='i-temp' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5'/><path d='M10 9h4'/></symbol><symbol id='i-sun' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='4'/><path d='M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7'/></symbol><symbol id='i-wind' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24'/><path d='M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24'/><path d='M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24'/></symbol><symbol id='i-rain' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M11 20v1m4 -3v1m-8 -1v1'/></symbol><symbol id='i-history' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 8v4l3 3'/><path d='M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5'/></symbol><symbol id='i-chart' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 20h18'/><rect x='5' y='12' width='4' height='8'/><rect x='10' y='8' width='4' height='12'/><rect x='15' y='4' width='4' height='16'/></symbol><symbol id='i-note' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='4' width='16' height='16' rx='2'/><path d='M9 8h6M9 12h6M9 16h3'/></symbol><symbol id='i-out' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 6H6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6'/><path d='M11 13l9 -9'/><path d='M15 4h5v5'/></symbol></svg>
+<svg class=sprite width=0 height=0 aria-hidden=true style='position:absolute'><symbol id='i-clock' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/></symbol><symbol id='i-pin' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/><path d='M17.657 16.657 13.414 20.9a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z'/></symbol><symbol id='i-tv' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='7' width='18' height='13' rx='2'/><path d='M16 3l-4 4l-4 -4'/></symbol><symbol id='i-roof' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 21h18'/><path d='M4 21v-10a8 8 0 0 1 16 0v10'/><path d='M9 21v-9a3 3 0 0 1 6 0v9'/></symbol><symbol id='i-temp' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5'/><path d='M10 9h4'/></symbol><symbol id='i-sun' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='4'/><path d='M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7'/></symbol><symbol id='i-wind' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24'/><path d='M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24'/><path d='M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24'/></symbol><symbol id='i-rain' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M11 20v1m4 -3v1m-8 -1v1'/></symbol><symbol id='i-history' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 8v4l3 3'/><path d='M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5'/></symbol><symbol id='i-chart' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 20h18'/><rect x='5' y='12' width='4' height='8'/><rect x='10' y='8' width='4' height='12'/><rect x='15' y='4' width='4' height='16'/></symbol><symbol id='i-note' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='4' width='16' height='16' rx='2'/><path d='M9 8h6M9 12h6M9 16h3'/></symbol><symbol id='i-out' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 6H6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6'/><path d='M11 13l9 -9'/><path d='M15 4h5v5'/></symbol><symbol id='i-star' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1.002l3.086 -6.253l3.086 6.253l6.9 1.002l-5 4.867l1.179 6.873z'/></symbol><symbol id='i-spark' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z'/><path d='M16 6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z'/><path d='M9 18a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z'/></symbol><symbol id='i-chevdown' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 7l5 5l5 -5'/><path d='M7 13l5 5l5 -5'/></symbol><symbol id='i-chevup' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 11l5 -5l5 5'/><path d='M7 17l5 -5l5 5'/></symbol><symbol id='i-filter' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z'/></symbol><symbol id='i-filteroff' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M8 4h12v2.172a2 2 0 0 1 -.586 1.414l-3.914 3.914m-.5 3.5v4l-6 2v-8.5l-4.489 -4.923a2 2 0 0 1 -.511 -1.34v-2.237'/><path d='M3 3l18 18'/></symbol><symbol id='i-share' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M8.7 10.7l6.6 -3.4'/><path d='M8.7 13.3l6.6 3.4'/></symbol><symbol id='i-check' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12l5 5l10 -10'/></symbol><symbol id='i-eraser' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3'/><path d='M18 13.3l-6.3 -6.3'/></symbol></svg>
 
 
 <div class=duo>
@@ -342,11 +371,15 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 <div class=card id=whatif>
   <h2>What if&hellip; <span class=dim style="text-transform:none">pick winners for the 120 remaining games, conference and non-conference</span></h2>
   <div class=wcontrols>
-    <label class=dim for=w-model>Model</label><select id=w-model class=wbtn><option value='The Nerds'>The Nerds</option><optgroup label='In the blend'><option value='SP+'>SP+ (2025)</option><option value='FPI'>FPI (2026)</option><option value='Elo'>Elo (2025)</option><option value='SRS'>SRS (2025)</option></optgroup><optgroup label='Not in the blend'><option value='Vegas'>Vegas</option></optgroup></select><button id=w-fav class=wbtn>Use favorites for all</button>
-    <button id=w-clear class=wbtn>Clear picks</button>
-    <button id=w-weeks class=wbtn>Expand all weeks</button>
-    <button id=w-conf class=wbtn aria-pressed=false>Conference only</button>
-    <button id=w-link class=wbtn title="Copy a link to this scenario">Copy link</button>
+    <div class=wgroup><label class=dim for=w-model>Model</label><select id=w-model class=wbtn><option value='The Nerds'>The Nerds</option><optgroup label='In the blend'><option value='SP+'>SP+ (2025)</option><option value='FPI'>FPI (2026)</option><option value='Elo'>Elo (2025)</option><option value='SRS'>SRS (2025)</option></optgroup><optgroup label='Not in the blend'><option value='Vegas'>Vegas</option></optgroup></select><button id=w-fav class=wbtn title="Pick every game shown the way this model would, replacing what is there"><svg class='bi bi-chalk' aria-hidden=true><use href='#i-star'/></svg><span class=blab>Use favorites for all</span></button><button id=w-favun class=wbtn title="Fill in only the games with no pick yet, and leave your own picks alone"><svg class='bi bi-chalk' aria-hidden=true><use href='#i-spark'/></svg><span class=blab>Use favorites for unpicked</span></button></div>
+    <div class=wgroup>
+      <button id=w-weeks class=wbtn><svg class='bi bi-view' aria-hidden=true><use href='#i-chevdown'/></svg><span class=blab>Expand all weeks</span></button>
+      <button id=w-conf class=wbtn aria-pressed=false title="Show only the games that decide the conference race"><svg class='bi bi-view' aria-hidden=true><use href='#i-filter'/></svg><span class=blab>Conference only</span></button>
+    </div>
+    <div class=wgroup>
+      <button id=w-link class=wbtn title="Copy a link to this scenario"><svg class='bi' aria-hidden=true><use href='#i-share'/></svg><span class=blab>Share link</span></button>
+      <button id=w-clear class=wbtn><svg class='bi' aria-hidden=true><use href='#i-eraser'/></svg><span class=blab>Clear picks</span></button>
+    </div>
     <span id=w-count class=dim></span>
   </div>
   <div id=wgames></div>
@@ -395,8 +428,8 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 <script src=engine.js?v=c2ba5c63></script>
 <script defer src=scrollcue.js?v=57795f5d></script>
 <script src=pct.js?v=9b775f7b></script>
-<script src=race.js?v=3a835811></script>
-<script src=app.js?v=f8740c39></script>
+<script src=race.js?v=ab5b8257></script>
+<script src=app.js?v=838070da></script>
 <footer class=b12-footer>Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> · procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · updated {{BUILD_STAMP}}.<br>Not affiliated with the Big 12 Conference; marks belong to their owners, shown for identification only. · <a href="/privacy">Privacy</a> · <a href="mailto:dept@big12ology.com">dept@big12ology.com</a></footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
 </body>

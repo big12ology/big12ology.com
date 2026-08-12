@@ -57,6 +57,26 @@ def main():
     ok &= check(pre["components"]["tangle"] == 1.0,
                 "preseason tangle is the sixteen-way 0-0 tie")
 
+    # THE FIRST CONFERENCE GAME MUST NOT EMPTY THE BOARD. tb.standings ranks
+    # only teams with a conference result, so one game in, fourteen teams are
+    # absent from `rows` while n_teams is still sixteen — and they are the
+    # biggest tie on the board, all level at 0-0. Counting only what was
+    # ranked read 0.00 here, a quarter of the index falling off a cliff
+    # because a game was played. The invariants above could not see it: the
+    # score stayed in range and the season still ended calmer than it began.
+    teams = {f"T{i}": "alive" for i in range(16)}
+    rows_one = [{"team": "T0", "tie_group": None},
+                {"team": "T1", "tie_group": None}]
+    one = chaos.tangle_component(rows_one, teams, 16)
+    ok &= check(one > 0.8,
+                f"one game played leaves the rest tied, not untangled ({one:.2f})")
+    ok &= check(chaos.tangle_component([], teams, 16) == 1.0,
+                "nothing played is still a sixteen-way tie")
+    # Alone at 0-0 is tied with nobody.
+    solo = {"T0": "alive"}
+    ok &= check(chaos.tangle_component([], solo, 1) == 0.0,
+                "a single unplayed team is not a tie")
+
     print("OK" if ok else "FAILURES")
     sys.exit(0 if ok else 1)
 

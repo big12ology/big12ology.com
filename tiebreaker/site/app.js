@@ -718,6 +718,21 @@
     return "Week " + g.week;
   }
 
+  // Every control in this row carries a glyph now, so its words live in a
+  // span and its glyph in a <use>. Writing to textContent would take out
+  // both: the button would relabel itself once and lose its icon for good.
+  // The glyph is optional here — most buttons never change theirs — but a
+  // toggle passes one, because a control whose word says "collapse" over an
+  // arrow pointing down is worse than no arrow at all.
+  function setBtn(btn, text, glyph) {
+    if (!btn) return;
+    var lab = btn.querySelector(".blab");
+    if (lab) lab.textContent = text;
+    else btn.textContent = text;
+    var use = glyph && btn.querySelector("use");
+    if (use) use.setAttribute("href", "#i-" + glyph);
+  }
+
   // The weeks switch describes what it will do, so it has to be re-read
   // after anything that rebuilds the list — a pick preserves whichever weeks
   // were open, and the button would otherwise still offer the throw it made
@@ -728,7 +743,8 @@
     if (!btn || !box) return;
     var all = box.querySelectorAll("details");
     var anyShut = [].some.call(all, function (d) { return !d.open; });
-    btn.textContent = anyShut ? "Expand all weeks" : "Collapse all weeks";
+    setBtn(btn, anyShut ? "Expand all weeks" : "Collapse all weeks",
+           anyShut ? "chevdown" : "chevup");
   }
 
   // One line: every model that has an opinion on this game, in the order the
@@ -742,8 +758,9 @@
   }
 
   function syncFavLabels() {
-    var all = document.getElementById("w-fav");
-    if (all) all.textContent = "Use " + modelShort() + " favorites for all";
+    setBtn(document.getElementById("w-fav"), "Use " + modelShort() + " for all");
+    setBtn(document.getElementById("w-favun"),
+           "Use " + modelShort() + " for unpicked");
   }
 
   // Mirrors build.py's tie_headline. A comma list cannot modify a noun, so
@@ -811,11 +828,18 @@
    * A game the model does not rate is left unpicked rather than guessed at:
    * no opinion is a real answer, and inventing one would put the reader back
    * where this started.
+   *
+   * `onlyBlank` is the other question, and it is deliberately the only way to
+   * keep what is on the board: fill the games nobody has answered yet and
+   * step over the ones the reader has. Somebody who has worked down three
+   * weeks by hand and wants chalk for the rest of the season should not have
+   * to choose between their own picks and the model's.
    */
-  function applyFavs(list) {
+  function applyFavs(list, onlyBlank) {
     var f = favs();
     list.forEach(function (g) {
       var id = String(g.id);
+      if (onlyBlank && picks[id]) return;
       delete picks[id];
       if (f[id]) picks[id] = f[id].team;
     });
@@ -1040,10 +1064,17 @@
 
   (function bindControls() {
     var favBtn = document.getElementById("w-fav");
+    var gapBtn = document.getElementById("w-favun");
     var clearBtn = document.getElementById("w-clear");
     var sel = document.getElementById("w-model");
     if (favBtn) {
       favBtn.onclick = function () { count("fill"); applyFavs(visible()); };
+    }
+    // Both count as one event. The vocabulary in worker/src/events.js is a
+    // closed list on purpose, and the question these buttons answer together
+    // — is the model worth maintaining — does not need them told apart.
+    if (gapBtn) {
+      gapBtn.onclick = function () { count("fill"); applyFavs(visible(), true); };
     }
     if (clearBtn) {
       clearBtn.onclick = function () { count("clear"); picks = {}; refresh(); };
@@ -1064,8 +1095,10 @@
         count("share");
         var url = location.href;
         var done = function (ok) {
-          linkBtn.textContent = ok ? "Link copied" : "Press \u2318C to copy";
-          setTimeout(function () { linkBtn.textContent = "Copy link"; }, 2200);
+          setBtn(linkBtn, ok ? "Link copied" : "Press \u2318C to copy",
+                 ok ? "check" : "share");
+          setTimeout(function () { setBtn(linkBtn, "Share link", "share"); },
+                     2200);
         };
         // The modern path needs a secure context and a permission that a
         // reader may have refused. Falling back to selecting the URL is the
@@ -1083,7 +1116,8 @@
     if (confBtn) {
       confBtn.onclick = function () {
         confOnly = !confOnly;
-        confBtn.textContent = confOnly ? "All games" : "Conference only";
+        setBtn(confBtn, confOnly ? "All games" : "Conference only",
+               confOnly ? "filteroff" : "filter");
         confBtn.setAttribute("aria-pressed", confOnly ? "true" : "false");
         confBtn.title = confOnly
           ? "Showing conference games only; non-conference picks you have "
@@ -1105,8 +1139,8 @@
         // control called "expand all" is asking for.
         var expand = [].some.call(all, function (d) { return !d.open; });
         [].forEach.call(all, function (d) { d.open = expand; });
-        weeksBtn.textContent = expand ? "Collapse all weeks"
-                                      : "Expand all weeks";
+        setBtn(weeksBtn, expand ? "Collapse all weeks" : "Expand all weeks",
+               expand ? "chevup" : "chevdown");
       };
       // Opening one week by hand counts too. `toggle` does not bubble, so
       // this listens in the capture phase; the container element survives
@@ -1149,7 +1183,7 @@
     }
   }
   urlHold = false;
-  // Put it back on the URL, so Copy link works on a resumed board without
+  // Put it back on the URL, so Share link works on a resumed board without
   // touching anything first, and so the address bar and the page agree.
   if (resumed) syncUrl();
   // The one measurement that justifies the sharing feature, and the one that

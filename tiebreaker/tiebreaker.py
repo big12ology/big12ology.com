@@ -39,6 +39,25 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # ---------------------------------------------------------------- basic records
 
 def conf_games(games):
+    """The completed conference games, which is nearly every question here.
+
+    THREADED RATHER THAN MEMOISED, and the `cg` argument that now runs
+    through this module is why. This filter is O(the whole season) and it was
+    being run from the bottom of a very deep loop: clinch.exact enumerates
+    every completion of the remaining schedule, each one calls cut_membership,
+    and each of those walks a tie procedure whose every step re-derived this
+    list from scratch. A profile of one build counted 2.1 million calls
+    costing 15 seconds of a 46-second run — more than every Monte Carlo
+    simulation on the site put together.
+
+    A cache is the obvious fix and the wrong one: clinch._apply and
+    odds.simulate both mutate the games in place and restore them, so a memo
+    keyed on the list would answer with the previous combination's results
+    and there is no cheap key that notices. So the callers that know the
+    games are not changing under them filter once and pass `cg` down. Every
+    signature keeps its old shape with cg=None meaning "derive it", so
+    nothing outside this module has to know.
+    """
     return [g for g in games if g["conference_game"] and g["completed"]
             and g["home_points"] is not None and not g.get("ccg")]
 
@@ -49,10 +68,10 @@ def winner(g):
     return g["home"] if g["home_points"] > g["away_points"] else g["away"]
 
 
-def conf_records(games):
+def conf_records(games, cg=None):
     """{team: [wins, losses]} over completed conference games."""
     rec = {}
-    for g in conf_games(games):
+    for g in (conf_games(games) if cg is None else cg):
         w = winner(g)
         for t in (g["home"], g["away"]):
             rec.setdefault(t, [0, 0])
@@ -72,10 +91,10 @@ def team_pct(rec, t):
     return pct(w, l)
 
 
-def opponents(team, games):
+def opponents(team, games, cg=None):
     """Conference opponents this team has played (completed games)."""
     out = set()
-    for g in conf_games(games):
+    for g in (conf_games(games) if cg is None else cg):
         if g["home"] == team:
             out.add(g["away"])
         elif g["away"] == team:
@@ -83,10 +102,10 @@ def opponents(team, games):
     return out
 
 
-def record_vs(team, others, games):
+def record_vs(team, others, games, cg=None):
     """(wins, losses) for team against a set of opponents, conference games."""
     w = l = 0
-    for g in conf_games(games):
+    for g in (conf_games(games) if cg is None else cg):
         if g["home"] == team and g["away"] in others:
             other = g["away"]
         elif g["away"] == team and g["home"] in others:
@@ -102,11 +121,11 @@ def record_vs(team, others, games):
 
 # ------------------------------------------------------------- standings groups
 
-def placement_groups(games):
+def placement_groups(games, cg=None):
     """Standings as a list of groups, each a list of teams sharing a conference
     win%. Groups ordered best to worst. Used for step (c)'s 'proceeding through
     the standings' and its collective-group rule."""
-    rec = conf_records(games)
+    rec = conf_records(games, cg)
     by_pct = {}
     for t, (w, l) in rec.items():
         by_pct.setdefault(pct(w, l) if (w + l) else -1, []).append(t)
@@ -130,10 +149,10 @@ def best_unique(vals, higher_better=True):
     return leaders[0] if len(leaders) == 1 else None
 
 
-def step_h2h(tied, games, log):
+def step_h2h(tied, games, log, cg=None):
     """Two-team step (a)."""
     a, b = tied
-    w, l = record_vs(a, {b}, games)
+    w, l = record_vs(a, {b}, games, cg)
     if w > l:
         log.append(f"(a) Head-to-head: {a} defeated {b}.")
         return a
@@ -144,11 +163,11 @@ def step_h2h(tied, games, log):
     return None
 
 
-def step_among_tied(tied, games, log):
+def step_among_tied(tied, games, log, cg=None):
     """Multi-team step (a): win% in games among the tied teams, with the
     incomplete-round-robin sub-rules."""
     pairs_played = {t: set() for t in tied}
-    for g in conf_games(games):
+    for g in (conf_games(games) if cg is None else cg):
         if g["home"] in tied and g["away"] in tied:
             pairs_played[g["home"]].add(g["away"])
             pairs_played[g["away"]].add(g["home"])
@@ -158,7 +177,7 @@ def step_among_tied(tied, games, log):
         # sub-rule 1: a team that defeated every other tied team is seeded
         for t in tied:
             others = set(tied) - {t}
-            w, l = record_vs(t, others, games)
+            w, l = record_vs(t, others, games, cg)
             if w == len(others) and l == 0:
                 log.append(f"(a) Not all tied teams played each other, but "
                            f"{t} defeated every other tied team — seeded.")
@@ -169,7 +188,7 @@ def step_among_tied(tied, games, log):
 
     vals = {}
     for t in tied:
-        w, l = record_vs(t, set(tied) - {t}, games)
+        w, l = record_vs(t, set(tied) - {t}, games, cg)
         vals[t] = pct(w, l)
     detail = ", ".join(f"{t} {fmt_pct(vals[t])}" for t in sorted(tied))
     win = best_unique(vals)
@@ -180,18 +199,18 @@ def step_among_tied(tied, games, log):
     return win
 
 
-def step_common_opponents(tied, games, log):
+def step_common_opponents(tied, games, log, cg=None):
     """Step (b): win% vs conference opponents common to all tied teams."""
     common = None
     for t in tied:
-        opp = opponents(t, games) - set(tied)
+        opp = opponents(t, games, cg) - set(tied)
         common = opp if common is None else common & opp
     if not common:
         log.append("(b) Common conference opponents: none — proceed.")
         return None
     vals = {}
     for t in tied:
-        w, l = record_vs(t, common, games)
+        w, l = record_vs(t, common, games, cg)
         vals[t] = pct(w, l)
     detail = ", ".join(f"{t} {fmt_pct(vals[t])}" for t in sorted(tied))
     win = best_unique(vals)
@@ -203,18 +222,18 @@ def step_common_opponents(tied, games, log):
     return win
 
 
-def step_next_highest_common(tied, games, log):
+def step_next_highest_common(tied, games, log, cg=None):
     """Step (c): walk the standings top to bottom; at each placement group that
     every tied team has played (at least one game against, for tied groups —
     exactly the common opponent, for solo slots), compare win% vs that
     group collectively. Skip the tied teams' own group."""
-    groups = placement_groups(games)
+    groups = placement_groups(games, cg)
     for grp in groups:
         grp_set = set(grp) - set(tied)
         if not grp_set:
             continue
         # every tied team must have at least one game vs the group ("common")
-        recs = {t: record_vs(t, grp_set, games) for t in tied}
+        recs = {t: record_vs(t, grp_set, games, cg) for t in tied}
         if any(w + l == 0 for w, l in recs.values()):
             continue
         vals = {t: pct(*recs[t]) for t in tied}
@@ -234,15 +253,15 @@ def step_next_highest_common(tied, games, log):
     return None
 
 
-def step_sos(tied, games, log):
+def step_sos(tied, games, log, cg=None):
     """Step (d): combined conference win% of each team's conference opponents
     (schedule-weighted: an opponent played counts its full conference record;
     repeat opponents would count twice, which cannot happen in Big 12 play)."""
-    rec = conf_records(games)
+    rec = conf_records(games, cg)
     vals, detail_parts = {}, []
     for t in sorted(tied):
         w = l = 0
-        for opp in opponents(t, games):
+        for opp in opponents(t, games, cg):
             ow, ol = rec.get(opp, [0, 0])
             w, l = w + ow, l + ol
         vals[t] = pct(w, l)
@@ -312,7 +331,7 @@ def step_coin_toss(tied, overrides, log):
 
 # ------------------------------------------------------------------ tie breaking
 
-def break_tie(tied, games, overrides=None):
+def break_tie(tied, games, overrides=None, cg=None):
     """Order a group of tied teams per the official procedure.
 
     Returns (ordered_teams, log, resolved, events). events records which step
@@ -322,6 +341,11 @@ def break_tie(tied, games, overrides=None):
     appended in alphabetical order and resolved=False.
     """
     tied = sorted(tied)
+    # Once, here, rather than once per step per elimination round. Callers
+    # already holding the filtered list pass it in; clinch.cut_membership is
+    # the one that matters, being the floor of the enumeration loop.
+    if cg is None:
+        cg = conf_games(games)
     log = []
     order = []
     events = []
@@ -330,9 +354,9 @@ def break_tie(tied, games, overrides=None):
     while len(remaining) > 1:
         n0 = len(remaining)
         if len(remaining) == 2:
-            seeded = _run_two_team(remaining, games, overrides, log)
+            seeded = _run_two_team(remaining, games, overrides, log, cg)
         else:
-            seeded = _run_multi_team(remaining, games, overrides, log)
+            seeded = _run_multi_team(remaining, games, overrides, log, cg)
         if seeded is None:
             log.append(f"UNRESOLVED: {', '.join(remaining)} cannot be "
                        f"separated with available data.")
@@ -350,12 +374,14 @@ def break_tie(tied, games, overrides=None):
     return order, log, True, events
 
 
-def _run_two_team(tied, games, overrides, log):
+def _run_two_team(tied, games, overrides, log, cg=None):
     for step in (
-        lambda: step_h2h(tied, games, log),
-        lambda: step_common_opponents(tied, games, log),
-        lambda: step_next_highest_common(tied, games, log),
-        lambda: step_sos(tied, games, log),
+        lambda: step_h2h(tied, games, log, cg),
+        lambda: step_common_opponents(tied, games, log, cg),
+        lambda: step_next_highest_common(tied, games, log, cg),
+        lambda: step_sos(tied, games, log, cg),
+        # Step (e) counts the whole twelve-game season, non-conference and
+        # all, so it is the one step that must have the unfiltered list.
         lambda: step_total_wins(tied, games, log),
         lambda: step_sportsource(tied, overrides, log),
         lambda: step_coin_toss(tied, overrides, log),
@@ -366,12 +392,13 @@ def _run_two_team(tied, games, overrides, log):
     return None
 
 
-def _run_multi_team(tied, games, overrides, log):
+def _run_multi_team(tied, games, overrides, log, cg=None):
     for step in (
-        lambda: step_among_tied(tied, games, log),
-        lambda: step_common_opponents(tied, games, log),
-        lambda: step_next_highest_common(tied, games, log),
-        lambda: step_sos(tied, games, log),
+        lambda: step_among_tied(tied, games, log, cg),
+        lambda: step_common_opponents(tied, games, log, cg),
+        lambda: step_next_highest_common(tied, games, log, cg),
+        lambda: step_sos(tied, games, log, cg),
+        # See _run_two_team: (e) is a whole-season step.
         lambda: step_total_wins(tied, games, log),
         lambda: step_sportsource(tied, overrides, log),
         lambda: step_coin_toss(tied, overrides, log),
@@ -389,7 +416,8 @@ def standings(games, overrides=None):
     {rank, team, conf_w, conf_l, overall_w, overall_l, tie_group, log,
      resolved}. Official policy governs seeds 1-2; lower placements use the
     same procedure for display purposes."""
-    rec = conf_records(games)
+    cg = conf_games(games)
+    rec = conf_records(games, cg)
     if not rec:
         return []
     overall = {}
@@ -415,11 +443,11 @@ def standings(games, overrides=None):
 
     rows = []
     rank = 1
-    for grp in placement_groups(games):
+    for grp in placement_groups(games, cg):
         if len(grp) == 1:
             ordered, log, resolved, tie_id, events = grp, None, True, None, None
         else:
-            ordered, log, resolved, events = break_tie(grp, games, overrides)
+            ordered, log, resolved, events = break_tie(grp, games, overrides, cg)
             tie_id = "+".join(sorted(grp))
         for i, t in enumerate(ordered):
             w, l = rec[t]
@@ -447,12 +475,13 @@ def championship(games, overrides=None):
     if len(rows) < 2:
         return None
     note = None
-    groups = placement_groups(games)
+    cg = conf_games(games)
+    groups = placement_groups(games, cg)
     top = groups[0]
     if len(top) == 2:
         a, b = top
-        w, _ = record_vs(a, {b}, games)
-        l, _ = record_vs(b, {a}, games)
+        w, _ = record_vs(a, {b}, games, cg)
+        l, _ = record_vs(b, {a}, games, cg)
         if w or l:
             one = a if w else b
             two = b if w else a

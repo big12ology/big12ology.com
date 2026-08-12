@@ -41,13 +41,38 @@ def entropy_component(p_ccg):
 
 
 def tangle_component(rows, statuses, n_teams):
-    """rows: engine standings rows; statuses: {team: clinched/eliminated/alive}."""
-    if not rows:
-        return 1.0  # nobody has played: one sixteen-way tie at 0-0
+    """rows: engine standings rows; statuses: {team: clinched/eliminated/alive}.
+
+    A TEAM WITH NO CONFERENCE RESULT IS TIED WITH EVERY OTHER SUCH TEAM, and
+    counting it is the whole of this function's early-season correctness.
+    tb.standings ranks only teams it has evidence for — that is why
+    pad_standings exists — so `rows` in September is two or four teams, not
+    sixteen, while n_teams stays sixteen. The dozen still on 0-0 are the
+    largest tie on the board and they were falling out of the numerator
+    entirely: measured on 2025 this read 0.00 through the first two weeks
+    where it should have read 0.88, and 0.25 in week three where the whole
+    league was still level. A quarter of the index, so the published score
+    was low by up to twenty-five points for the first month.
+
+    This used to be a special case for the empty list — "nobody has played:
+    one sixteen-way tie" — which was the right instinct applied only at the
+    one moment it was not needed yet. Now it falls out: with nothing played
+    every team is unlisted, unlisted teams count, and the answer is 1.0
+    without a branch saying so.
+
+    One team alone at 0-0 is tied with nobody, so it takes two.
+    """
+    if not n_teams:
+        return 1.0
+    listed = {r["team"] for r in rows}
+    unplayed = [t for t, s in statuses.items()
+                if t not in listed and s == "alive"]
     tangled = sum(
         1 for r in rows
         if r["tie_group"] and statuses.get(r["team"]) == "alive")
-    return tangled / n_teams
+    if len(unplayed) > 1:
+        tangled += len(unplayed)
+    return min(1.0, tangled / n_teams)
 
 
 def breadth_component(statuses):

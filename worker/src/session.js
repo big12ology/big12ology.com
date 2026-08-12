@@ -20,6 +20,33 @@ export const RENEW_WITHIN = 7 * 86400;
 
 const kvKey = (h) => `sess:${h}`;
 
+// WHAT THE CACHE HOLDS: "<user id>:<expiry>". It used to hold the id alone,
+// and the sliding expiry below was dead code because of it — read() returned
+// no expiresAt on the cached path, index.js guards the renewal on exactly
+// that field, and the cache answers every authenticated request. So `stale`
+// was never consulted with a real number and `extend` never ran: somebody
+// using the pick'em daily was signed out at thirty days flat, which is the
+// behaviour the renewal exists to prevent.
+//
+// A delimiter rather than JSON because ids are ULIDs — Crockford base32,
+// which has no colon in its alphabet — so this cannot be ambiguous, and a
+// session read is the hottest thing in the Worker.
+//
+// Entries written by the old code are a bare id with no colon. They read as
+// "expiry unknown", which is exactly the behaviour they have today, and they
+// age out on their own within the TTL.
+const packCache = (userId, expires) => `${userId}:${expires}`;
+
+function unpackCache(v) {
+  const i = v.indexOf(":");
+  if (i < 0) return { userId: v, expiresAt: null };
+  const n = Number(v.slice(i + 1));
+  return {
+    userId: v.slice(0, i),
+    expiresAt: Number.isFinite(n) ? n : null,
+  };
+}
+
 /**
  * Mint a session. Returns the raw cookie value, which is the only time it
  * exists in plaintext anywhere — only its hash is stored, so a database dump
@@ -36,7 +63,8 @@ export async function create(env, userId, { ua, ip } = {}) {
                            ua_hash, ip_hash)
      VALUES (?, ?, ?, ?, ?, ?)`)
     .bind(h, userId, now, expires, ua || null, ip || null).run();
-  await env.SESSIONS.put(kvKey(h), userId, { expirationTtl: TTL });
+  await env.SESSIONS.put(kvKey(h), packCache(userId, expires),
+                         { expirationTtl: TTL });
 
   return { raw, hash: h, expires };
 }
@@ -54,7 +82,10 @@ export async function read(env, raw, { strict = false } = {}) {
 
   if (!strict) {
     const cached = await env.SESSIONS.get(kvKey(h));
-    if (cached) return { userId: cached, hash: h };
+    if (cached) {
+      const { userId, expiresAt } = unpackCache(cached);
+      return { userId, hash: h, expiresAt };
+    }
   }
 
   const row = await env.DB.prepare(
@@ -77,7 +108,7 @@ export async function extend(env, hash) {
     .bind(expires, hash).run();
   const uid = await env.DB.prepare(
     `SELECT user_id FROM sessions WHERE sid_hash = ?`).bind(hash).first();
-  if (uid) await env.SESSIONS.put(kvKey(hash), uid.user_id,
+  if (uid) await env.SESSIONS.put(kvKey(hash), packCache(uid.user_id, expires),
                                   { expirationTtl: TTL });
   return expires;
 }

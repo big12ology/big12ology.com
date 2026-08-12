@@ -2204,11 +2204,32 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .teamcell.st-in { font-weight:700 }
 .teamcell.st-top { font-style:italic }
 
-/* the replay's own controls, same chrome as the Lab's */
-.wbtn { font:inherit; font-size:var(--t-label); border:1px solid var(--line);
-  background:var(--panel); color:var(--ink); border-radius:8px;
-  padding:6px 14px; cursor:pointer }
-.wbtn:hover { border-color:var(--accent) }
+/* the replay's own controls, same chrome as the Lab's — one rule, two pages,
+   so a control never looks like two different kinds of thing on a site where
+   the reader crosses between them in a click. Denser than it was and pressable
+   rather than merely bordered: a smaller label, a tighter box, a hairline of
+   lift, and a press that actually moves. Flex is scoped to button/a because a
+   <select> wears this class too and has to keep its native control box. */
+.wbtn { font:inherit; font-size:var(--t-row); font-weight:600; line-height:1.5;
+  border:1px solid var(--line); background:var(--panel); color:var(--ink);
+  border-radius:7px; padding:5px 11px; cursor:pointer; white-space:nowrap }
+button.wbtn, a.wbtn { display:inline-flex; align-items:center; gap:6px;
+  text-decoration:none; box-shadow:0 1px 0 rgba(0,0,0,.05) }
+.wbtn:hover { border-color:var(--accent); background:var(--bg) }
+button.wbtn:active { transform:translateY(1px); box-shadow:none }
+.wbtn:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+/* Decorative like .gi, but sized to the button and coloured by the job the
+   button does rather than by what it depicts: chalk the model lays down is
+   warn, anything that only changes the view is accent2, and anything that
+   acts on the board itself is accent. Three colours, three meanings. */
+.bi { width:14px; height:14px; flex:0 0 14px; color:var(--accent) }
+.bi-chalk { color:var(--warn) }
+.bi-view { color:var(--accent2) }
+/* Related controls sit closer to each other than to the next group, and a
+   group is atomic: no shrinking, so a row too narrow to hold everything
+   breaks between groups rather than through the middle of one. */
+.wgroup { display:flex; align-items:center; gap:6px; flex:0 0 auto }
+@media (max-width:520px) { .wgroup { flex-wrap:wrap; flex-shrink:1 } }
 
 /* ---- how the season moved ---- */
 .bumpwrap { overflow-x:auto }
@@ -2325,9 +2346,9 @@ LOCAL_TIME_JS = """<script>
 </script>"""
 
 
-# Eight glyphs, drawn once per page and referenced by <use>. A webfont for
-# eight icons is absurd — this is under a kilobyte, needs no request, and
-# inherits currentColor, so both themes and the warning color come free.
+# The glyph set, drawn once per page and referenced by <use>. A webfont for
+# two dozen icons is absurd — this is a couple of kilobytes, needs no request,
+# and inherits currentColor, so both themes and the accent colors come free.
 # Paths from Tabler Icons (MIT, https://tabler.io/icons); the same treatment
 # the Archivo license gets in fonts/OFL.txt.
 ICONS = {
@@ -2363,6 +2384,35 @@ ICONS = {
              "<path d='M9 8h6M9 12h6M9 16h3'/>"),
     "out": ("<path d='M12 6H6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2"
             " -2v-6'/><path d='M11 13l9 -9'/><path d='M15 4h5v5'/>"),
+    # The Lab's controls. Every one of them is paired with a word, so they are
+    # decoration in the same sense the slate's are — but they carry the colour
+    # that says which of three jobs a button does, and the ones on a toggle
+    # flip with the label so the glyph never contradicts the word beside it.
+    "star": ("<path d='M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9"
+             " -1.002l3.086 -6.253l3.086 6.253l6.9 1.002l-5 4.867l1.179"
+             " 6.873z'/>"),
+    # Tabler's "sparkles", for filling in only the gaps: the same chalk as the
+    # star, applied where the reader has not spoken.
+    "spark": ("<path d='M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2"
+              " 2 0 0 1 -2 2z'/><path d='M16 6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2"
+              " 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z'/><path d='M9 18a6 6 0 0 1 6"
+              " -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z'/>"),
+    "chevdown": "<path d='M7 7l5 5l5 -5'/><path d='M7 13l5 5l5 -5'/>",
+    "chevup": "<path d='M7 11l5 -5l5 5'/><path d='M7 17l5 -5l5 5'/>",
+    "filter": ("<path d='M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414"
+               " 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52"
+               " -1.345v-2.227z'/>"),
+    "filteroff": ("<path d='M8 4h12v2.172a2 2 0 0 1 -.586 1.414l-3.914"
+                  " 3.914m-.5 3.5v4l-6 2v-8.5l-4.489 -4.923a2 2 0 0 1 -.511"
+                  " -1.34v-2.237'/><path d='M3 3l18 18'/>"),
+    "share": ("<path d='M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/>"
+              "<path d='M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/>"
+              "<path d='M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/>"
+              "<path d='M8.7 10.7l6.6 -3.4'/><path d='M8.7 13.3l6.6 3.4'/>"),
+    "check": "<path d='M5 12l5 5l10 -10'/>",
+    "eraser": ("<path d='M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1"
+               " 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3'/>"
+               "<path d='M18 13.3l-6.3 -6.3'/>"),
 }
 
 
@@ -3213,21 +3263,25 @@ def build_game_page(g, ctx):
               f"<div class=slatelinks>{espn_link(g)}</div></div>")
 
 
-_SERIES_CACHE = {}
-
-
 def series_records(year, teams, games):
-    """Every pairing's record as conference opponents, computed once.
+    """Every pairing's record as conference opponents.
 
-    Reads fifteen seasons out of history/, so the rotation page and the
-    game pages share one result rather than each paying for it.
+    Reads fifteen seasons out of history/, so it is worth computing once a
+    season and handing round — which is now what happens: render() puts it in
+    ctx and the two readers take it from there.
+
+    IT USED TO MEMOISE ITSELF, on (year, id(games)), and that key was wrong in
+    two ways at once. It left out `teams`, which the two callers passed
+    differently — one a sorted list, the other the raw dict — so the second
+    caller silently received whatever the first had computed, and the code was
+    correct only because all_time_records sorts its argument and could not
+    tell them apart. And id() is an address, which CPython reuses after a
+    collection, so a freed season's games could hand its record to a later
+    one. Neither had bitten. Both were waiting on a caller being added or
+    reordered, which is a poor thing to leave in a cache nobody needed.
     """
-    key = (year, id(games))
-    if key not in _SERIES_CACHE:
-        seasons = fetcher.usable_seasons(range(2011, year))
-        _SERIES_CACHE[key] = rotation_mod.all_time_records(
-            seasons, teams, current=games)
-    return _SERIES_CACHE[key]
+    seasons = fetcher.usable_seasons(range(2011, year))
+    return rotation_mod.all_time_records(seasons, teams, current=games)
 
 
 def build_matrix_page(ctx):
@@ -3533,10 +3587,31 @@ def render(year, games):
                "tiebreakers answer" if unlocked else
                "pick winners for the {n} remaining games, conference and "
                "non-conference").format(n=n_remaining),
+        # Two fills, because they answer two different questions. "All" is the
+        # model's whole season and overwrites anything already on the board;
+        # "unpicked" fills the gaps around picks the reader has made, which is
+        # what somebody who has worked through three weeks by hand and wants
+        # the rest as chalk is actually asking for. The labels name whose
+        # favorites these are — app.js rewrites them when the model changes.
         modelrow=("" if not models else
+                  '<div class=wgroup>'
                   '<label class=dim for=w-model>Model</label>'
                   f'<select id=w-model class=wbtn>{model_opts}</select>'
-                  '<button id=w-fav class=wbtn>Use favorites for all</button>'),
+                  '<button id=w-fav class=wbtn title="Pick every game shown'
+                  ' the way this model would, replacing what is there">'
+                  f'{icon("star", "bi bi-chalk")}'
+                  '<span class=blab>Use favorites for all</span></button>'
+                  '<button id=w-favun class=wbtn title="Fill in only the games'
+                  ' with no pick yet, and leave your own picks alone">'
+                  f'{icon("spark", "bi bi-chalk")}'
+                  '<span class=blab>Use favorites for unpicked</span></button>'
+                  '</div>'),
+        i_chev=icon("chevdown", "bi bi-view"),
+        i_filter=icon("filter", "bi bi-view"),
+        i_share=icon("share", "bi"),
+        # The finished season resets to history rather than to nothing, and
+        # the glyph says which of the two this page is doing.
+        i_clear=icon("history" if unlocked else "eraser", "bi"),
         clearlabel=("Reset to what happened" if unlocked else "Clear picks"))
 
     standcard = STAND_CARD.format(
@@ -3594,7 +3669,7 @@ def render(year, games):
         "leverage": {str(e["game"]["id"]): e for e in leverage_of(sims)},
         # The same games read the other way, for the preview pages.
         "leverage_cond": leverage_cond_of(sims),
-        "series": series_records(year, sorted(teams), games),
+        "series": series_records(year, teams, games),
     }
     return page, ctx
 
@@ -3612,14 +3687,22 @@ STAND_CARD = """<div class="card standcard">
 </div>"""
 
 
+# Three groups, in the order the work happens: lay the model's chalk down,
+# change what you are looking at, then do something with the board you built.
+# The label of a button that toggles lives in its own span, because app.js has
+# to rewrite the word without throwing away the glyph beside it.
 WHATIF_CARD = """<div class=card id=whatif>
   <h2>What if&hellip; <span class=dim style="text-transform:none">{blurb}</span></h2>
   <div class=wcontrols>
     {modelrow}
-    <button id=w-clear class=wbtn>{clearlabel}</button>
-    <button id=w-weeks class=wbtn>Expand all weeks</button>
-    <button id=w-conf class=wbtn aria-pressed=false>Conference only</button>
-    <button id=w-link class=wbtn title="Copy a link to this scenario">Copy link</button>
+    <div class=wgroup>
+      <button id=w-weeks class=wbtn>{i_chev}<span class=blab>Expand all weeks</span></button>
+      <button id=w-conf class=wbtn aria-pressed=false title="Show only the games that decide the conference race">{i_filter}<span class=blab>Conference only</span></button>
+    </div>
+    <div class=wgroup>
+      <button id=w-link class=wbtn title="Copy a link to this scenario">{i_share}<span class=blab>Share link</span></button>
+      <button id=w-clear class=wbtn>{i_clear}<span class=blab>{clearlabel}</span></button>
+    </div>
     <span id=w-count class=dim></span>
   </div>
   <div id=wgames></div>
@@ -3800,12 +3883,41 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 .wchip {{ background: var(--accent2); color: #fff; font-size: var(--t-fine);
   border-radius: 20px; padding: 2px 9px; font-weight: 600;
   letter-spacing: .03em; vertical-align: 1px; text-transform: none; }}
-.wcontrols {{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  margin-bottom: 10px; }}
-.wbtn {{ font: inherit; font-size: var(--t-label); border: 1px solid var(--line);
-  background: var(--panel); color: var(--ink); border-radius: 8px;
-  padding: 6px 14px; cursor: pointer; }}
-.wbtn:hover {{ border-color: var(--accent); }}
+/* Three jobs, three groups: lay the model's chalk down, change what is on
+   screen, do something with the board. Groups wrap as units, so a narrow
+   window breaks the row where the meaning already breaks. The gap between
+   groups is the wider one. */
+.wcontrols {{ display: flex; align-items: center; gap: 8px 16px;
+  flex-wrap: wrap; margin-bottom: 10px; }}
+/* A group is atomic: no shrinking, so a row too narrow to hold everything
+   breaks between groups rather than through the middle of one. Below the
+   phone breakpoint that stops being true — three buttons of chalk do not fit
+   in 375px however they are grouped — and it goes back to wrapping freely. */
+.wgroup {{ display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }}
+@media (max-width: 520px) {{
+  .wgroup {{ flex-wrap: wrap; flex-shrink: 1; }}
+}}
+/* Same rule as the subpages'. Denser than it was and pressable rather than
+   merely bordered: a smaller label, a tighter box, a hairline of lift, and a
+   press that actually moves. Flex is scoped to button/a because a <select>
+   wears this class too and has to keep its native control box. */
+.wbtn {{ font: inherit; font-size: var(--t-row); font-weight: 600;
+  line-height: 1.5; border: 1px solid var(--line); background: var(--panel);
+  color: var(--ink); border-radius: 7px; padding: 5px 11px; cursor: pointer;
+  white-space: nowrap; }}
+button.wbtn, a.wbtn {{ display: inline-flex; align-items: center; gap: 6px;
+  text-decoration: none; box-shadow: 0 1px 0 rgba(0,0,0,.05); }}
+.wbtn:hover {{ border-color: var(--accent); background: var(--bg); }}
+button.wbtn:active {{ transform: translateY(1px); box-shadow: none; }}
+.wbtn:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
+/* Decorative like .gi, but sized to the button and coloured by the job the
+   button does rather than by what it depicts: chalk the model lays down is
+   warn — the same colour as the ★ beside a favorite in the list — anything
+   that only changes the view is accent2, and anything that acts on the board
+   itself is accent. Three colours, three meanings. */
+.bi {{ width: 14px; height: 14px; flex: 0 0 14px; color: var(--accent); }}
+.bi-chalk {{ color: var(--warn); }}
+.bi-view {{ color: var(--accent2); }}
 #wgames details {{ padding: 8px 12px; }}
 #wgames summary {{ font-size: var(--t-label); }}
 /* The week's own chalk button, in its summary. Quiet until you are on it —
@@ -4469,7 +4581,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          "12 team's expected conference record on every other team's slate.",
          ""),
         ("rotation.html", "The Rotation", "rotation",
-         build_rotation_page(year, games, ctx["teams"]),
+         build_rotation_page(year, games, ctx["teams"], ctx["series"]),
          f"Who each Big 12 team misses in {yr}, the last time they met as "
          "conference opponents, and every pairing's all-time conference "
          "record — 48 of the 120 pairings sit out a season.",
@@ -4683,7 +4795,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     print(f"built {year} -> {outdir}")
 
 
-def alltime_h2h_card(year, games, teams):
+def alltime_h2h_card(year, games, teams, series=None):
     """Every pairing's all-time record as conference opponents.
 
     This grid belongs on the rotation page because the rotation is what
@@ -4697,7 +4809,10 @@ def alltime_h2h_card(year, games, teams):
     than a second look for the same kind of table.
     """
     seasons = fetcher.usable_seasons(range(2011, year))
-    wl = series_records(year, teams, games)
+    # Handed down from render() so fifteen seasons are read once a build.
+    # Optional, because this card is legible on its own and the tests call it
+    # that way; absent, it pays for itself.
+    wl = series_records(year, teams, games) if series is None else series
     # In August the live season has no results in it, and dating the grid
     # through a season nobody has played yet is a claim about games that do
     # not exist.
@@ -4768,7 +4883,7 @@ realignment for you.</p>
 </div>"""
 
 
-def build_rotation_page(year, games, teams):
+def build_rotation_page(year, games, teams, series=None):
     """Who each team misses, and when they last met in conference play.
 
     Nine games among sixteen teams leaves 48 of the 120 pairings unplayed
@@ -4826,7 +4941,7 @@ bowls for decades, so "never" here is a fact about the league, not about the
 two schools. A Utah–Baylor game in 2015 was not a Big 12 meeting — Utah was
 in the Pac-12.</p>
 </div>
-{alltime_h2h_card(year, games, teams)}"""
+{alltime_h2h_card(year, games, teams, series)}"""
 
 
 def draw_color(d, span):
