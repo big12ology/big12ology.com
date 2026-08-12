@@ -28,6 +28,113 @@
     return (model && payload.favorites[model]) || {};
   }
 
+  // ------------------------------------------------------- the shareable URL
+  //
+  // A what-if belongs in the address bar, not in storage. "Here is how BYU
+  // gets in" is the most sendable thing on this site, and a copy kept in
+  // localStorage can be neither linked nor shown to anybody. The hash carries
+  // it: never sent to the server, never a second URL for the same page.
+  //
+  // Shape:  #lab=<season>.<fingerprint>.<model>.<packed picks>
+  //
+  // THE FINGERPRINT IS THE POINT. Picks are packed by POSITION in the
+  // season's id-sorted game list, which is compact — two bits a game, 120
+  // games in 40 characters — and silently catastrophic if that list ever
+  // shifts: CFBD adds a game, every position moves by one, and an old link
+  // restores somebody else's scenario while looking perfectly fine. So the
+  // list is fingerprinted and the link refuses rather than guesses. A link
+  // that says it is out of date beats a board that is quietly wrong.
+  var URL_KEY = "lab";
+  var B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
+  function pickOrder() {
+    return pickable().map(function (g) { return String(g.id); }).sort();
+  }
+
+  /** FNV-1a over the ordered ids. Short, stable, and not a security claim. */
+  function fingerprint(ids) {
+    var h = 0x811c9dc5;
+    var s = ids.join(",");
+    for (var i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+    }
+    return h.toString(16).slice(0, 6);
+  }
+
+  function modelSlug(name) {
+    return String(name || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  }
+
+  function encodePicks(ids) {
+    var out = "", acc = 0, n = 0;
+    for (var i = 0; i < ids.length; i++) {
+      var g = byId[ids[i]];
+      var w = picks[ids[i]];
+      var v = !w ? 0 : (w === g.home ? 1 : 2);
+      acc = (acc << 2) | v;
+      n += 1;
+      if (n === 3) { out += B64[acc]; acc = 0; n = 0; }
+    }
+    if (n) out += B64[acc << (2 * (3 - n))];
+    return out;
+  }
+
+  function decodePicks(ids, packed) {
+    var got = {};
+    for (var i = 0; i < ids.length; i++) {
+      var ch = packed[Math.floor(i / 3)];
+      if (ch === undefined) break;
+      var byte = B64.indexOf(ch);
+      if (byte < 0) return null;
+      var v = (byte >> (2 * (2 - (i % 3)))) & 3;
+      if (v === 1 || v === 2) {
+        var g = byId[ids[i]];
+        if (g) got[ids[i]] = v === 1 ? g.home : g.away;
+      }
+    }
+    return got;
+  }
+
+  var urlHold = false;
+
+  function syncUrl() {
+    if (urlHold || !window.B12State) return;
+    var ids = pickOrder();
+    if (!Object.keys(picks).length) {
+      B12State.hashWrite(URL_KEY, "");
+      return;
+    }
+    B12State.hashWrite(URL_KEY, [payload.year, fingerprint(ids),
+      modelSlug(model), encodePicks(ids)].join("."));
+  }
+
+  /** Returns a message when a link could not be honoured, else null. */
+  function restoreFromUrl() {
+    if (!window.B12State) return null;
+    var raw = B12State.hashRead(URL_KEY);
+    if (!raw) return null;
+    var bits = raw.split(".");
+    if (bits.length < 4) return "That link is not a scenario this page reads.";
+    var ids = pickOrder();
+    if (String(payload.year) !== bits[0]) {
+      return "That scenario is from the " + esc(bits[0]) + " season.";
+    }
+    if (fingerprint(ids) !== bits[1]) {
+      return "That scenario was made before the schedule changed, so it " +
+        "cannot be applied to these games.";
+    }
+    var got = decodePicks(ids, bits[3] || "");
+    if (!got) return "That scenario could not be read.";
+    models.forEach(function (m) {
+      if (modelSlug(m.name) === bits[2]) model = m.name;
+    });
+    picks = got;
+    return null;
+  }
+
+
+
   function modelYear(name) {
     for (var i = 0; i < models.length; i++) {
       if (models[i].name === name) return models[i].year;
@@ -265,6 +372,7 @@
   var lastCcg = actualCcg;
 
   function refresh() {
+    syncUrl();
     syncPicks();
     if (!active()) {
       if (matchcard) matchcard.innerHTML = orig.match;
@@ -616,9 +724,16 @@
     (payload.models || []).forEach(function (m) {
       var f = (payload.favorites[m.name] || {})[id];
       if (!f) return;
+      // "by", not a sign. Every number in this row is the same quantity —
+      // a predicted margin for the named team — including Vegas's, which is
+      // the spread with its sign taken off. Printing "TCU -7" here beside
+      // "TCU 12.2" would put two different conventions in one line and make
+      // identical quantities look like opposites. A margin has no sign by
+      // nature: it is who, and by how much. The minus belongs on the market
+      // card, where the number really is a price.
       out.push("<span class=wm><i>" +
         esc(m.name.replace(/^The\s+/, "")) + "</i>" +
-        esc(f.team) + " " + f.margin + "</span>");
+        esc(f.team) + " by " + f.margin + "</span>");
     });
     return out.length ? out.join("")
       : "<span class=dim>No model rates this game.</span>";
@@ -842,8 +957,33 @@
       note.textContent = "No rating models available — pick every game by hand.";
       return;
     }
-    note.textContent = "★ marks the " + model + " (" + modelYear(model) +
-      " ratings) favorite; hover for the projected margin in points, " +
+    // How much of the season this model actually has an opinion on. Vegas
+    // rates only the games a book has posted a line on, which in August is a
+    // handful — so "Use Vegas favorites for all" correctly fills seven games
+    // and looks broken unless the page says why first.
+    var all = pickable();
+    var rated = 0;
+    var f = favs();
+    all.forEach(function (g) { if (f[String(g.id)]) rated += 1; });
+    if (all.length && rated < all.length * 0.75) {
+      note.textContent = modelShort() + " has an opinion on " + rated +
+        " of the " + all.length + " games left — " +
+        (rated === 0
+          ? "nothing to fill in yet."
+          : "filling in with it picks those and leaves the rest alone.") +
+        " Lines are posted a week or two out, so this grows as the season " +
+        "goes on. The rating systems cover every game.";
+      return;
+    }
+    // The blend and the market have no single season behind them, so the
+    // "(2025 ratings)" parenthesis is only true of the four. Written blind it
+    // produced "the The Nerds (null ratings) favorite" — a definite article
+    // doubled by a name that already carries one, and a year that does not
+    // exist.
+    var yr = modelYear(model);
+    note.textContent = "★ marks the " + modelShort() +
+      (yr ? " (" + yr + " ratings)" : "") +
+      " favorite; hover for the projected margin in points, " +
       "home field included. Picks re-run the full official tiebreaker " +
       "instantly — the matchup, standings, and tie narratives update to " +
       "the simulated season. Non-conference games don't move the " +
@@ -864,6 +1004,27 @@
     // to run the whole season in one pass — and opening twelve summaries by
     // hand to do it is the kind of small tax nobody pays twice. The label
     // says which way the switch will throw, not which state it is in.
+    var linkBtn = document.getElementById("w-link");
+    if (linkBtn) {
+      linkBtn.onclick = function () {
+        syncUrl();
+        var url = location.href;
+        var done = function (ok) {
+          linkBtn.textContent = ok ? "Link copied" : "Press \u2318C to copy";
+          setTimeout(function () { linkBtn.textContent = "Copy link"; }, 2200);
+        };
+        // The modern path needs a secure context and a permission that a
+        // reader may have refused. Falling back to selecting the URL is the
+        // difference between "copy failed" and a button that does nothing.
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(function () { done(true); },
+            function () { done(false); });
+        } else {
+          done(false);
+        }
+      };
+    }
+
     var confBtn = document.getElementById("w-conf");
     if (confBtn) {
       confBtn.onclick = function () {
@@ -912,5 +1073,25 @@
     syncFavLabels();
   })();
 
+  urlHold = true;
+  var urlProblem = restoreFromUrl();
+  urlHold = false;
+  if (urlProblem) {
+    var warn = document.createElement("p");
+    warn.className = "note wurlwarn";
+    warn.textContent = urlProblem + " Showing the season as it stands.";
+    var host = document.getElementById("wgames");
+    if (host && host.parentNode) host.parentNode.insertBefore(warn, host);
+  }
+
   renderPickList();
+  if (Object.keys(picks).length) {
+    // A link that arrived with picks on it has to run them through the
+    // engine, not just draw the stars.
+    var msel = document.getElementById("w-model");
+    if (msel) msel.value = model;
+    syncFavLabels();
+    updateNote();
+    refresh();
+  }
 })();

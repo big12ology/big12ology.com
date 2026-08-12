@@ -17,9 +17,11 @@
 <link rel=icon type=image/png sizes=32x32 href="../../tiebreaker/favicon-32.png">
 <link rel=apple-touch-icon href="../../tiebreaker/favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
-<link rel=stylesheet href="../../tiebreaker/brand.css?v=7845ccad">
+<script>(function(){try{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){return /^[A-Za-z][\w-]*$/.test(k)}).map(function(k){return"#"+k+">*:not(h2):not(h3){display:none}#"+k+"{padding-bottom:8px}"}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}catch(e){}})();</script>
+<link rel=stylesheet href="../../tiebreaker/brand.css?v=14b902b0">
 <script defer src="../../tiebreaker/theme.js?v=ab3fca05"></script>
-<script defer src="../../tiebreaker/cards.js?v=dfb3dc37"></script>
+<script src="../../tiebreaker/state.js?v=f7c7de71"></script>
+<script defer src="../../tiebreaker/cards.js?v=35f2f6ab"></script>
 <link rel=alternate type=application/rss+xml href=../../tiebreaker/feed.xml>
 <style>
 .matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
@@ -409,43 +411,6 @@ h3.wkhead { font-size:var(--t-row); text-transform:uppercase; letter-spacing:.05
   white-space:nowrap }
 .swnums .dim { font-size:var(--t-meta) }
 .swkey { margin-top:10px }
-/* THE FORK: two results side by side, each holding both teams. The column
-   carries the winning side's colour as a top rule, so which branch you are
-   reading is answered before you read a word of it — and the two columns are
-   the same shape, because the whole point is that they are comparable. */
-.forkgrid { display:grid; grid-template-columns:1fr 1fr; gap:12px;
-  margin:12px 0 4px }
-.forkcol { border:1px solid var(--line); border-radius:9px; padding:10px 12px;
-  border-top:3px solid var(--fc, var(--accent)); min-width:0 }
-.forkhead { font-size:var(--t-meta); text-transform:uppercase;
-  letter-spacing:.05em; color:var(--dim); margin-bottom:7px;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
-.forkcell { display:grid; grid-template-columns:minmax(0,1fr) auto auto;
-  align-items:baseline; gap:8px; margin:5px 0; font-size:var(--t-row) }
-.forkteam { display:flex; align-items:center; gap:6px; min-width:0;
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
-.forkp { font-size:var(--t-subhead); font-variant-numeric:tabular-nums }
-/* The move, not the level. Colour is never the only signal — the arrow says
-   the same thing, which is the rule the pools board already follows. */
-.forkd { font-size:var(--t-meta); font-variant-numeric:tabular-nums;
-  white-space:nowrap; color:var(--dim) }
-.forkd.up { color:#136536 }
-.forkd.down { color:var(--warn) }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .forkd.up { color:#4ade80 }
-}
-:root[data-theme="dark"] .forkd.up { color:#4ade80 }
-.forkelse { font-size:var(--t-meta); text-transform:uppercase;
-  letter-spacing:.05em; color:var(--dim); margin:14px 0 2px }
-/* List density. Same component, tighter: eight of these stack under one
-   heading on the race page, where the game page shows exactly one. */
-.forkgrid.compact { gap:8px; margin:6px 0 2px }
-.forkgrid.compact .forkcol { padding:7px 9px; border-radius:7px;
-  border-top-width:2px }
-.forkgrid.compact .forkhead { font-size:var(--t-fine); margin-bottom:4px }
-.forkgrid.compact .forkcell { font-size:var(--t-meta); margin:3px 0 }
-.forkgrid.compact .forkp { font-size:var(--t-row) }
-@media (max-width:560px) { .forkgrid { grid-template-columns:1fr } }
 @media (max-width:560px) {
   .swrow { grid-template-columns:minmax(0,1fr) 72px }
   .swrow .swtrack { grid-column:1 / -1; order:3 }

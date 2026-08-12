@@ -122,6 +122,49 @@
 .card.is-collapsed > h2, .chart-card.is-collapsed > h3 { margin-bottom: 0; }
 @media (prefers-reduced-motion: reduce) { .cardchev { transition: none; } }
 
+/* ==== the fork ==========================================================
+   Two results, two teams, four numbers. Defined here rather than in the
+   tiebreaker section because the hub shows the same component for the
+   week's biggest game, and one stylesheet is the only way the two can be
+   the same thing rather than two things that look alike. */
+/* THE FORK: two results side by side, each holding both teams. The column
+   carries the winning side's colour as a top rule, so which branch you are
+   reading is answered before you read a word of it — and the two columns are
+   the same shape, because the whole point is that they are comparable. */
+.forkgrid { display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  margin:12px 0 4px }
+.forkcol { border:1px solid var(--line); border-radius:9px; padding:10px 12px;
+  border-top:3px solid var(--fc, var(--accent)); min-width:0 }
+.forkhead { font-size:var(--t-meta); text-transform:uppercase;
+  letter-spacing:.05em; color:var(--dim); margin-bottom:7px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.forkcell { display:grid; grid-template-columns:minmax(0,1fr) auto auto;
+  align-items:baseline; gap:8px; margin:5px 0; font-size:var(--t-row) }
+.forkteam { display:flex; align-items:center; gap:6px; min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.forkp { font-size:var(--t-subhead); font-variant-numeric:tabular-nums }
+/* The move, not the level. Colour is never the only signal — the arrow says
+   the same thing, which is the rule the pools board already follows. */
+.forkd { font-size:var(--t-meta); font-variant-numeric:tabular-nums;
+  white-space:nowrap; color:var(--dim) }
+.forkd.up { color:#136536 }
+.forkd.down { color:var(--warn) }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .forkd.up { color:#4ade80 }
+}
+:root[data-theme="dark"] .forkd.up { color:#4ade80 }
+.forkelse { font-size:var(--t-meta); text-transform:uppercase;
+  letter-spacing:.05em; color:var(--dim); margin:14px 0 2px }
+/* List density. Same component, tighter: eight of these stack under one
+   heading on the race page, where the game page shows exactly one. */
+.forkgrid.compact { gap:8px; margin:6px 0 2px }
+.forkgrid.compact .forkcol { padding:7px 9px; border-radius:7px;
+  border-top-width:2px }
+.forkgrid.compact .forkhead { font-size:var(--t-fine); margin-bottom:4px }
+.forkgrid.compact .forkcell { font-size:var(--t-meta); margin:3px 0 }
+.forkgrid.compact .forkp { font-size:var(--t-row) }
+@media (max-width:560px) { .forkgrid { grid-template-columns:1fr } }
+
 /* ==== display face ======================================================= */
 /* Archivo, the face the mark is set in. SIL Open Font License 1.1
    (Copyright 2020 The Archivo Project Authors) — self-hosting is expressly

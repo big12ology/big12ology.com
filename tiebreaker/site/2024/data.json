@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-09T22:26:15+00:00",
+ "generated": "2026-08-12T04:09:11+00:00",
  "season": 2024,
  "standings": [
   {
@@ -267,6 +267,7 @@
   "note": null,
   "resolved": true
  },
+ "leverage_top": null,
  "race": {
   "Arizona": {
    "status": "eliminated",

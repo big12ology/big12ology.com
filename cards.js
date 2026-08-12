@@ -21,12 +21,16 @@
 (function () {
   "use strict";
 
-  var KEY = "b12-cards";
+  // Storage, versioning and the fact that localStorage throws in private
+  // mode all belong to state.js. If it is missing this degrades to cards
+  // that collapse but do not remember, which is the right way round.
+  var S = window.B12State;
 
   // Cards keyed by page and by their own id where they have one. A heading
-  // slug is the fallback, and it is a weaker promise: rewrite the copy and
-  // the reader's choice for that card is quietly forgotten. Ids are worth
-  // adding to any card whose collapsed state should outlive an edit.
+  // slug is the fallback, and it is a weaker promise on two counts: rewrite
+  // the copy and the reader's choice is forgotten, and the pre-paint restore
+  // in the page head cannot match it, so a slug-keyed card flashes open
+  // before it closes. Give a card an id and it gets both.
   function keyFor(card, h2) {
     if (card.id) return card.id;
     return (h2.textContent || "").trim().toLowerCase()
@@ -34,25 +38,12 @@
   }
 
   function load() {
-    try {
-      var raw = localStorage.getItem(KEY);
-      var all = raw ? JSON.parse(raw) : {};
-      var mine = all && all[location.pathname];
-      return Array.isArray(mine) ? mine : [];
-    } catch (e) { return []; }
+    var mine = S ? S.getPage("cards", []) : [];
+    return Array.isArray(mine) ? mine : [];
   }
 
   function save(list) {
-    try {
-      var raw = localStorage.getItem(KEY);
-      var all = raw ? JSON.parse(raw) : {};
-      if (!all || typeof all !== "object") all = {};
-      // An empty list is the default, so it is removed rather than stored —
-      // otherwise every page a reader visits leaves a row behind for ever.
-      if (list.length) all[location.pathname] = list;
-      else delete all[location.pathname];
-      localStorage.setItem(KEY, JSON.stringify(all));
-    } catch (e) { /* private mode, quota, disabled — not worth a failure */ }
+    if (S) S.setPage("cards", list);
   }
 
   var CHEV = "<svg class='cardchev' viewBox='0 0 24 24' aria-hidden='true'" +

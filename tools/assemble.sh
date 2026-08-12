@@ -43,8 +43,13 @@ COMMON=(--exclude=.DS_Store --exclude=__pycache__ --exclude=node_modules
         --exclude=wrangler.toml --exclude=.wrangler --exclude='*.sql'
         --exclude='client_secret*.json' --exclude='*credentials*.json')
 
-rm -rf "$DIST"
+# Empty it, do not remove it. `rm -rf "$DIST"` deletes the directory itself,
+# which pulls the ground out from under anything serving it — a local preview
+# pointed at dist/ dies mid-session and looks like the site crashed. Emptying
+# leaves the inode alone, so a server holding it open simply sees the files
+# come back a second later.
 mkdir -p "$DIST"
+find "$DIST" -mindepth 1 -delete
 
 echo "assembling into $DIST"
 
@@ -225,6 +230,7 @@ nxt = hub.get("next") or {}
 ccg = hub.get("ccg") or []
 counts = hub.get("counts") or {}
 att = hub.get("attendance") or {}
+spot = hub.get("spotlight")
 
 
 def millions(n):
@@ -279,6 +285,15 @@ tok = {
     # sentence: before the first simulation there are no two teams to name,
     # and a half-filled line reading "vs" with two blanks either side is
     # worse than no line. The card's other stat row stands on its own.
+    # The week's biggest conference game, as a whole block or nothing at all.
+    # Before the season, and once every conference game is played, there is
+    # no next game to spotlight, and a heading with an empty body under it is
+    # worse than no heading.
+    "HUB_SPOTLIGHT": (
+        f"<p class=stat>Biggest swing this week: <b>{e(spot['away'])}</b> at "
+        f"<b>{e(spot['home'])}</b> &middot; {e(spot['when'])} &middot; "
+        f"{spot['total']} of a title-game seat changes hands</p>"
+        + spot["html"] if spot else ""),
     "HUB_CCG_CARD": (
         f"<p class=stat>Projected title game: <b>{e(ccg[0]['team'])}</b> vs "
         f"<b>{e(ccg[1]['team'])}</b> · {round(ccg[0]['p'] * 100)}% and "
@@ -332,7 +347,7 @@ done < <(grep -rlE '\{\{(BUILD_STAMP|HUB_[A-Z_]+|FACTS:[a-z]+)\}\}' "$DIST" \
 # a pair of braces in the middle of the attendance page.
 
 for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
-         brand.css tokens.css theme.js cards.js \
+         brand.css tokens.css theme.js cards.js state.js \
          tiebreaker/index.html tiebreaker/how.html tiebreaker/history.html \
          tiebreaker/draw.html tiebreaker/rotation.html tiebreaker/cutline.html tiebreaker/ladder.html \
          tiebreaker/app.js tiebreaker/engine.js tiebreaker/feed.xml \
@@ -369,6 +384,32 @@ else
                 ! -path "*/shots/*" 2>/dev/null)
 fi
 
+# --- the privacy page names every key we store ----------------------------
+# privacy.html enumerates local storage by name, which is only a promise
+# worth making if it stays true. A feature that starts storing something is
+# one line of JavaScript and no reason to remember a legal page exists, so
+# this is the reminder: every b12- key the shipped site reads or writes must
+# appear on the privacy page, or the build fails and says which one does not.
+# `|| true` on both: grep exits 1 when it matches nothing, and under
+# `set -euo pipefail` that failure propagates out of the command
+# substitution and kills the build — a gate that finds nothing to complain
+# about must not be the thing that fails.
+KEYS=$( { grep -rhoE 'localStorage\.(get|set|remove)Item\(\s*"b12-[a-z-]+"' \
+            "$DIST" --include='*.js' --include='*.html' 2>/dev/null \
+          | grep -oE '"b12-[a-z-]+"' | tr -d '"' | sort -u; } || true)
+# state.js addresses its namespaces through a prefix, so the literal keys
+# never appear beside localStorage. Collect those too.
+KEYS="$KEYS
+$( { grep -rhoE 'B12State\.(get|set)Page?\(\s*"[a-z-]+"' "$DIST" \
+       --include='*.js' 2>/dev/null | grep -oE '"[a-z-]+"' | tr -d '"' \
+     | sed 's/^/b12-/' | sort -u; } || true)"
+for k in $(echo "$KEYS" | sort -u); do
+  [ -n "$k" ] || continue
+  grep -q "$k" "$DIST/privacy.html" || {
+    echo "  UNDISCLOSED  $k is stored but is not named on privacy.html"
+    fail=1; }
+done
+
 [ -s "$DIST/CNAME" ] && grep -qx "big12ology.com" "$DIST/CNAME" || {
   echo "  CNAME does not say big12ology.com"; fail=1; }
 
@@ -381,7 +422,7 @@ fi
 #
 # Found the hard way: a masthead fix landed in the root copy and changed
 # nothing on /tiebreaker/, because that page reads its own.
-for shared in brand.css tokens.css theme.js cards.js; do
+for shared in brand.css tokens.css theme.js cards.js state.js; do
   a="$ROOT/$shared"
   for b in "$ROOT/attendance/$shared" "$ROOT/tiebreaker/site/$shared"; do
     [ -f "$a" ] && [ -f "$b" ] || continue
@@ -393,7 +434,7 @@ done
 
 # Cache-busting is not optional (HANDOFF.md). Every reference to one of the
 # shared, mutable assets must carry a query string.
-BUSTED='brand\.css|tokens\.css|theme\.js|cards\.js|app\.js|engine\.js|pct\.js|replay\.js|scrollcue\.js|styles\.css|charts\.js|gametip\.js|stats\.js'
+BUSTED='brand\.css|tokens\.css|theme\.js|cards\.js|state\.js|app\.js|engine\.js|pct\.js|replay\.js|scrollcue\.js|styles\.css|charts\.js|gametip\.js|stats\.js'
 
 while IFS= read -r page; do
   # Both quoting styles: the hub writes href="…", build.py emits some

@@ -7,8 +7,10 @@
 <link rel=canonical href="https://big12ology.com/privacy">
 <link rel=icon type=image/svg+xml href=/favicon.svg>
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
+<script>(function(){try{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){return /^[A-Za-z][\w-]*$/.test(k)}).map(function(k){return"#"+k+">*:not(h2):not(h3){display:none}#"+k+"{padding-bottom:8px}"}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}catch(e){}})();</script>
 <link rel=stylesheet href="brand.css?v=5">
 <script defer src="theme.js?v=1"></script>
+<script src="state.js?v=1"></script>
 <script defer src="cards.js?v=1"></script>
 <style>
 :root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#6b7280;
@@ -43,10 +45,10 @@ a { color:var(--accent2); }
 <main id=main tabindex="-1">
 <h1>Privacy</h1>
 <!-- PICKEM-ONLY -->
-<p class=updated>Last updated: August 9, 2026</p>
+<p class=updated>Last updated: August 12, 2026</p>
 <!-- /PICKEM-ONLY -->
 <!-- PICKEM-OFF -->
-<p class=updated>Last updated: August 7, 2026</p>
+<p class=updated>Last updated: August 12, 2026</p>
 <!-- /PICKEM-OFF -->
 
 <!-- PICKEM-ONLY -->
@@ -205,6 +207,13 @@ anything, and as close to no data as a website can get.</p>
   page, so the layout you chose is still there when you come back. Neither
   leaves your device, neither is sent to us, and clearing your browser data
   removes both.</li>
+  <li><b>A what-if scenario lives in the address bar.</b> Picking winners in
+  the tiebreaker&rsquo;s Lab writes those picks into the page&rsquo;s own URL,
+  after the <code>#</code>, so you can bookmark a scenario or send it to
+  somebody. The part after a <code>#</code> is never transmitted to a server
+  &mdash; not to us, not to our host &mdash; so those picks stay on your
+  device unless you choose to share the link. If you do share it, the person
+  you send it to sees the picks it contains, which is the point of it.</li>
 </ul>
 
 <!-- /PICKEM-OFF -->

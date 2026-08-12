@@ -2001,43 +2001,6 @@ h3.wkhead { font-size:var(--t-row); text-transform:uppercase; letter-spacing:.05
   white-space:nowrap }
 .swnums .dim { font-size:var(--t-meta) }
 .swkey { margin-top:10px }
-/* THE FORK: two results side by side, each holding both teams. The column
-   carries the winning side's colour as a top rule, so which branch you are
-   reading is answered before you read a word of it — and the two columns are
-   the same shape, because the whole point is that they are comparable. */
-.forkgrid { display:grid; grid-template-columns:1fr 1fr; gap:12px;
-  margin:12px 0 4px }
-.forkcol { border:1px solid var(--line); border-radius:9px; padding:10px 12px;
-  border-top:3px solid var(--fc, var(--accent)); min-width:0 }
-.forkhead { font-size:var(--t-meta); text-transform:uppercase;
-  letter-spacing:.05em; color:var(--dim); margin-bottom:7px;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
-.forkcell { display:grid; grid-template-columns:minmax(0,1fr) auto auto;
-  align-items:baseline; gap:8px; margin:5px 0; font-size:var(--t-row) }
-.forkteam { display:flex; align-items:center; gap:6px; min-width:0;
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
-.forkp { font-size:var(--t-subhead); font-variant-numeric:tabular-nums }
-/* The move, not the level. Colour is never the only signal — the arrow says
-   the same thing, which is the rule the pools board already follows. */
-.forkd { font-size:var(--t-meta); font-variant-numeric:tabular-nums;
-  white-space:nowrap; color:var(--dim) }
-.forkd.up { color:#136536 }
-.forkd.down { color:var(--warn) }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .forkd.up { color:#4ade80 }
-}
-:root[data-theme="dark"] .forkd.up { color:#4ade80 }
-.forkelse { font-size:var(--t-meta); text-transform:uppercase;
-  letter-spacing:.05em; color:var(--dim); margin:14px 0 2px }
-/* List density. Same component, tighter: eight of these stack under one
-   heading on the race page, where the game page shows exactly one. */
-.forkgrid.compact { gap:8px; margin:6px 0 2px }
-.forkgrid.compact .forkcol { padding:7px 9px; border-radius:7px;
-  border-top-width:2px }
-.forkgrid.compact .forkhead { font-size:var(--t-fine); margin-bottom:4px }
-.forkgrid.compact .forkcell { font-size:var(--t-meta); margin:3px 0 }
-.forkgrid.compact .forkp { font-size:var(--t-row) }
-@media (max-width:560px) { .forkgrid { grid-template-columns:1fr } }
 @media (max-width:560px) {
   .swrow { grid-template-columns:minmax(0,1fr) 72px }
   .swrow .swtrack { grid-column:1 / -1; order:3 }
@@ -2171,8 +2134,10 @@ def build_subpage(title, active, body, year, matchcard,
 <link rel=icon type=image/png sizes=32x32 href="{BASE}favicon-32.png">
 <link rel=apple-touch-icon href="{BASE}favicon-180.png">
 <script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
+<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{BASE}{asset_v("brand.css")}">
 <script defer src="{BASE}{asset_v("theme.js")}"></script>
+<script src="{BASE}{asset_v("state.js")}"></script>
 <script defer src="{BASE}{asset_v("cards.js")}"></script>
 {rss}
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
@@ -3470,6 +3435,7 @@ def render(year, games):
         v_brand=asset_v("brand.css"),
         v_theme=asset_v("theme.js"),
         v_cards=asset_v("cards.js"),
+        v_state=asset_v("state.js"),
         v_app=asset_v("app.js"),
         canon=(f"{site_url}lab.html" if year == LIVE_YEAR
                else f"{site_url}{year}/lab.html"),
@@ -3533,6 +3499,7 @@ WHATIF_CARD = """<div class=card id=whatif>
     <button id=w-clear class=wbtn>{clearlabel}</button>
     <button id=w-weeks class=wbtn>Expand all weeks</button>
     <button id=w-conf class=wbtn aria-pressed=false>Conference only</button>
+    <button id=w-link class=wbtn title="Copy a link to this scenario">Copy link</button>
     <span id=w-count class=dim></span>
   </div>
   <div id=wgames></div>
@@ -3561,8 +3528,10 @@ TEMPLATE = """<!doctype html>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
 <script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
+<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
+<script src="{base}{v_state}"></script>
 <script defer src="{base}{v_cards}"></script>
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href={base}feed.xml>
 <style>
@@ -3728,6 +3697,10 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 .wkfav:focus-visible {{ outline:2px solid var(--accent);
   outline-offset:2px }}
 .wkstar {{ color: var(--warn); margin-right: 4px; }}
+/* A link that could not be applied. Stated where the picks would have been,
+   because the alternative is a board that silently is not what was sent. */
+.wurlwarn {{ border-left: 3px solid var(--warn); padding-left: 10px;
+  margin: 0 0 10px; }}
 main > *, .duo > *, .cols > * {{ min-width: 0; }}
 .tablescroll {{ overflow-x: auto; position: relative; }}
 .scrollbox {{ position: relative; }}
@@ -3912,8 +3885,10 @@ EXPLAINER = """<!doctype html>
 <link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
 <link rel=apple-touch-icon href="{base}favicon-180.png">
 <script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
+<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
+<script src="{base}{v_state}"></script>
 <script defer src="{base}{v_cards}"></script>
 <meta property=og:type content=article>
 <meta property=og:site_name content=Big12ology>
@@ -4197,6 +4172,7 @@ def build_explainer(year, matchcard, outdir=None):
             v_brand=asset_v("brand.css"),
             v_theme=asset_v("theme.js"),
         v_cards=asset_v("cards.js"),
+        v_state=asset_v("state.js"),
             topbar=topbar("tiebreaker", year, BASE),
             footer=footer(),
             top=tracker_top(year, "how", matchcard, page="how.html")))
@@ -4471,6 +4447,18 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
         "standings": [{k: v for k, v in r.items() if k != "log"}
                       for r in rows],
         "championship": ccg,
+        # The single game that moves the title race most in the next week
+        # that HAS a conference game — next_conf_week_ids already skips
+        # ahead over a week with none, so this needs no calendar logic of
+        # its own. Written here because write_hub runs after this file and
+        # reads it; recomputing ten thousand seasons to put one game on the
+        # front page would be a poor trade.
+        "leverage_top": (lambda L: {
+            "away": L[0]["away"], "home": L[0]["home"],
+            "start": L[0]["game"].get("start"),
+            "total": L[0]["total"],
+            "pair": {t: list(v) for t, v in (L[0].get("pair") or {}).items()},
+        } if L else None)(odds_mod.leverage(sims, games) if sims else []),
         "race": {t: {"status": i["status"], "destiny": i["destiny"],
                      "p_ccg": (sims.get(t, {}) or {}).get("p_ccg"),
                      "exp_conf_wins": (sims.get(t, {}) or {}).get("exp_w")}
@@ -5389,7 +5377,7 @@ def season_opener(games):
     return t.astimezone(datetime.timezone.utc)
 
 
-def write_hub(year, games, lines, sims_race):
+def write_hub(year, games, lines, sims_race, lev_top=None):
     """The numbers the hand-written hub puts in its hero and on its cards.
 
     index.html is not generated — it is hand-written at the repo root and has
@@ -5453,6 +5441,28 @@ def write_hub(year, games, lines, sims_race):
     if att:
         hub["attendance"] = att
     # No timestamp in it, so an unchanged season rewrites nothing at all.
+    # The week's biggest game, drawn with the same component the section
+    # pages use. Rendered here rather than in assemble.sh because the fork
+    # needs team marks and team colours, and this is the only side that has
+    # them — the shell script gets finished HTML and substitutes it.
+    if lev_top and lev_top.get("pair") and len(lev_top["pair"]) == 2:
+        g = {"home": lev_top["home"], "away": lev_top["away"],
+             "start": lev_top.get("start"), "neutral_site": False}
+        lev = {"pair": {t: tuple(v) for t, v in lev_top["pair"].items()}}
+        sims = {t: {"p_ccg": (v or {}).get("p_ccg")}
+                for t, v in (sims_race or {}).items()}
+        was, globals()["BASE"] = BASE, "/tiebreaker/"
+        try:
+            fork = fork_block(g, lev, sims, load_teams())
+        finally:
+            globals()["BASE"] = was
+        hub["spotlight"] = {
+            "away": lev_top["away"], "home": lev_top["home"],
+            "when": pretty_date(lev_top.get("start")),
+            "total": round((lev_top.get("total") or 0) * 100),
+            "html": fork,
+        }
+
     write_if_unchanged_skip(os.path.join(SITE, "hub.json"),
                             json.dumps(hub, indent=1, sort_keys=True))
     print(f"built hub numbers -> {SITE}/hub.json")
@@ -5914,7 +5924,9 @@ def main():
     # would be a poor trade.
     try:
         with open(os.path.join(SITE, "data.json"), encoding="utf-8") as f:
-            write_hub(year, games, load_lines(year), json.load(f).get("race"))
+            blob = json.load(f)
+            write_hub(year, games, load_lines(year), blob.get("race"),
+                      blob.get("leverage_top"))
     except OSError as e:
         print(f"::warning::hub numbers not written: {e}")
 

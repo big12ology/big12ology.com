@@ -1,8 +1,24 @@
 {
- "generated": "2026-08-09T22:25:50+00:00",
+ "generated": "2026-08-12T04:08:46+00:00",
  "season": 2026,
  "standings": [],
  "championship": null,
+ "leverage_top": {
+  "away": "Arizona",
+  "home": "BYU",
+  "start": "2026-09-12T19:30:00.000Z",
+  "total": 0.27118209469962845,
+  "pair": {
+   "BYU": [
+    0.3328810853950519,
+    0.06639892904953146
+   ],
+   "Arizona": [
+    0.04549082202713488,
+    0.2570281124497992
+   ]
+  }
+ },
  "race": {
   "Arizona": {
    "status": "alive",

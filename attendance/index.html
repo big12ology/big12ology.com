@@ -28,8 +28,10 @@
   <link rel="alternate" type="application/json" href="data/teams.json"
         title="Teams, stadiums and capacities by year (JSON)" />
   <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
+<script>(function(){try{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){return /^[A-Za-z][\w-]*$/.test(k)}).map(function(k){return"#"+k+">*:not(h2):not(h3){display:none}#"+k+"{padding-bottom:8px}"}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}catch(e){}})();</script>
   <link rel="stylesheet" href="brand.css?v=43" />
   <script defer src="theme.js?v=1"></script>
+  <script src="state.js?v=1"></script>
   <script defer src="cards.js?v=1"></script>
   <link rel="stylesheet" href="site/styles.css?v=42" />
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","creator":{"@type":"Organization","name":"Big12ology","url":"https://big12ology.com/"},"description":"Weekly home-game attendance for all sixteen Big 12 football teams from 2012 onward: crowd, published stadium capacity, percent of capacity, opponent, venue, date and whether the game was a conference game. Hand-verified where the public feeds fall short.","distribution":[{"@type":"DataDownload","contentUrl":"https://big12ology.com/attendance/data/attendance.csv","encodingFormat":"text/csv"}],"isAccessibleForFree":true,"keywords":["Big 12","college football","attendance","stadium capacity","NCAA"],"license":"https://creativecommons.org/licenses/by/4.0/","name":"Big 12 home football attendance, 2012 to date","temporalCoverage":"2012/..","url":"https://big12ology.com/attendance/"}</script>

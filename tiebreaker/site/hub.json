@@ -27,5 +27,12 @@
   "neutral": true,
   "spread": -7.0
  },
- "season": 2026
+ "season": 2026,
+ "spotlight": {
+  "away": "Arizona",
+  "home": "BYU",
+  "html": "<div class='forkgrid'><div class=forkcol style='--fc:#003da5'><div class=forkhead>If BYU wins</div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</span><b class=forkp>33%</b><span class='forkd up'>&#9650;10</span></div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona</span><b class=forkp>5%</b><span class='forkd down'>&#9660;8</span></div></div><div class=forkcol style='--fc:#0c234b'><div class=forkhead>If Arizona wins</div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</span><b class=forkp>7%</b><span class='forkd down'>&#9660;17</span></div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona</span><b class=forkp>26%</b><span class='forkd up'>&#9650;13</span></div></div></div>",
+  "total": 27,
+  "when": "Sat, Sep 12"
+ }
 }

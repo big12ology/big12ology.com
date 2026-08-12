@@ -19,9 +19,11 @@
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
-<link rel=stylesheet href="../brand.css?v=7845ccad">
+<script>(function(){try{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){return /^[A-Za-z][\w-]*$/.test(k)}).map(function(k){return"#"+k+">*:not(h2):not(h3){display:none}#"+k+"{padding-bottom:8px}"}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}catch(e){}})();</script>
+<link rel=stylesheet href="../brand.css?v=14b902b0">
 <script defer src="../theme.js?v=ab3fca05"></script>
-<script defer src="../cards.js?v=dfb3dc37"></script>
+<script src="../state.js?v=f7c7de71"></script>
+<script defer src="../cards.js?v=35f2f6ab"></script>
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href=../feed.xml>
 <style>
 :root {
@@ -186,6 +188,10 @@ progress { width: 100%; height: 6px; accent-color: var(--accent); }
 .wkfav:focus-visible { outline:2px solid var(--accent);
   outline-offset:2px }
 .wkstar { color: var(--warn); margin-right: 4px; }
+/* A link that could not be applied. Stated where the picks would have been,
+   because the alternative is a board that silently is not what was sent. */
+.wurlwarn { border-left: 3px solid var(--warn); padding-left: 10px;
+  margin: 0 0 10px; }
 main > *, .duo > *, .cols > * { min-width: 0; }
 .tablescroll { overflow-x: auto; position: relative; }
 .scrollbox { position: relative; }
@@ -339,6 +345,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
     <button id=w-clear class=wbtn>Reset to what happened</button>
     <button id=w-weeks class=wbtn>Expand all weeks</button>
     <button id=w-conf class=wbtn aria-pressed=false>Conference only</button>
+    <button id=w-link class=wbtn title="Copy a link to this scenario">Copy link</button>
     <span id=w-count class=dim></span>
   </div>
   <div id=wgames></div>
@@ -388,7 +395,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 <script defer src=../scrollcue.js?v=57795f5d></script>
 <script src=../pct.js?v=9b775f7b></script>
 <script src=../race.js?v=3a835811></script>
-<script src=../app.js?v=1b23672e></script>
+<script src=../app.js?v=562bee05></script>
 <footer class=b12-footer>Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> · procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · updated {{BUILD_STAMP}}.<br>Not affiliated with the Big 12 Conference; marks belong to their owners, shown for identification only. · <a href="/privacy">Privacy</a> · <a href="mailto:dept@big12ology.com">dept@big12ology.com</a></footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
 </body>

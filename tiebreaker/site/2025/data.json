@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-09T22:25:59+00:00",
+ "generated": "2026-08-12T04:08:55+00:00",
  "season": 2025,
  "standings": [
   {
@@ -262,6 +262,7 @@
   "note": "Two teams tied for first: both play in the championship game; Texas Tech is the #1 seed by head-to-head win.",
   "resolved": true
  },
+ "leverage_top": null,
  "race": {
   "Arizona": {
    "status": "eliminated",
