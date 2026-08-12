@@ -50,8 +50,21 @@ on:
     # actually keeps the site current; these crons are the belt to that
     # braces, for when the token expires or the Worker is broken. That is why
     # thinning them is safe and why removing them would not be.
+    # THE SMALL HOURS STAY HOURLY, and they are the exception worth stating.
+    #
+    # The Worker's trigger is every TWO hours in this window, not every hour —
+    # DEPLOY_CRONS is "30 0-8/2 ..." there. So thinning this side to match it
+    # interleaved as 00:00, 00:30, 02:00, 02:30 and left a NINETY MINUTE gap
+    # between the pair, against sixty on a Saturday. That window is not idle
+    # time: 00:00–08:00 UTC is exactly when Thursday, Friday and Sunday night
+    # games finish in the US, so the widest gap in the schedule sat directly
+    # under the results most likely to move the championship pages.
+    #
+    # Hourly here costs one rebuild an hour across eight hours on three nights
+    # a week, which is still half the old rate and nowhere near Pages'
+    # deployment limiting. It buys back the sixty-minute worst case.
     - cron: "0 * * 8-12 6,0"       # hourly Sat + Sun, Aug–Dec
-    - cron: "0 0-8/2 * 8-12 1,5,6" # every 2h, small hours Mon/Fri/Sat
+    - cron: "0 0-8 * 8-12 1,5,6"   # hourly, small hours Mon/Fri/Sat
                                    # (Thu, Fri, and Sun night games)
     - cron: "0 18 * 8-12 *"        # daily catch-all, Aug–Dec
     - cron: "0 12 * 8-12 2"        # Tue — the weekly ratings/lines refresh
