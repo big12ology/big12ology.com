@@ -79,6 +79,25 @@ def _comma(v):
     return f"{int(round(v)):,}"
 
 
+_NUMBERS = ("zero one two three four five six seven eight nine ten eleven "
+            "twelve thirteen fourteen fifteen sixteen seventeen eighteen "
+            "nineteen twenty").split()
+
+
+def _num(n):
+    """A count as a word up to twenty, digits above it.
+
+    Not decoration. These sentences put counts next to years constantly, and
+    two numerals with only a space between them read as one token: "5 of its
+    9 2026 conference games" stops the eye dead at "9 2026". A word cannot
+    collide with a year, so every count that sits near one goes through here.
+    Measurements do not — a crowd, a score, a margin and a percentage stay in
+    digits, because those are read as quantities rather than counted off.
+    """
+    n = int(n)
+    return _NUMBERS[n] if 0 <= n <= 20 else f"{n:,}"
+
+
 def _fact(text, on=None):
     f = {"t": " ".join(text.split())}
     if on:
@@ -172,6 +191,9 @@ def attendance_facts():
                 f"that can say it."))
         elif full:
             color = f", {where}" if where else ""
+            # Digits on both sides here, against the house rule, because the
+            # two counts are a ratio the reader is meant to hold together —
+            # "nineteen times in 87 home games" makes them look unrelated.
             out.append(_fact(
                 f"{team} has filled its stadium {len(full)} times in "
                 f"{len(with_pct)} home games since {ATT_FIRST} — "
@@ -200,8 +222,10 @@ def attendance_facts():
         where = _rank(avgs[team], list(avgs.values()))
         color = f" — {where}" if where else ""
         S = _subj(team, "avg", opener=True)
+        # Perfect, not present: "averages 51,619 since 2012" puts a present
+        # tense against a window that starts in the past and does not close.
         out.append(_fact(
-            f"{S['n']} average{S['v']} {_comma(avgs[team])} a home game "
+            f"{S['n']} {S['has']} averaged {_comma(avgs[team])} a home game "
             f"since {ATT_FIRST}, over {len(rs)} games{color}."))
 
     # --- one per season ----------------------------------------------------
@@ -216,7 +240,7 @@ def attendance_facts():
         when = ""
         try:
             d = datetime.date.fromisoformat(big["date"][:10])
-            when = d.strftime(" on %-d %B")
+            when = d.strftime(" on %B %-d")
         except (TypeError, ValueError):
             pass
         out.append(_fact(
@@ -238,12 +262,16 @@ def attendance_facts():
                 for s, rs in by_season.items()}
         best_s = max(avgs, key=lambda s: avgs[s])
         worst_s = min(avgs, key=lambda s: avgs[s])
+        # Neither of these opens on a bare year any more. A sentence that
+        # starts "2023 was" and one that starts "1,377 home games" both make
+        # the reader decide whether the digits are a label or a count before
+        # they have a verb to go on.
         out.append(_fact(
-            f"{best_s} was the best-attended season here at "
-            f"{_comma(avgs[best_s])} a game; {worst_s} the thinnest at "
+            f"The best-attended season here is {best_s} at "
+            f"{_comma(avgs[best_s])} a game; the thinnest is {worst_s} at "
             f"{_comma(avgs[worst_s])}, leaving {COVID} out of it."))
         out.append(_fact(
-            f"{len(rows):,} home games are in this tracker, back to "
+            f"This tracker holds {len(rows):,} home games, back to "
             f"{ATT_FIRST} — {_comma(sum(r['att'] for r in rows))} people "
             f"through the gates."))
 
@@ -281,7 +309,7 @@ def attendance_facts():
 # ---------------------------------------------------------------- rivalries
 
 def _cap(text):
-    """Capitalise a sentence opener without touching the rest.
+    """Capitalize a sentence opener without touching the rest.
 
     Rivalry names are stored the way they read mid-sentence — "the Holy War" —
     because that is how they appear in most of these facts. str.capitalize()
@@ -399,7 +427,7 @@ def rivalry_facts(games_by_year, year, first_year):
         if streak >= 2:
             last = played[-1][0]
             out.append(_fact(
-                f"{streak_team} has won the last {streak} meetings in "
+                f"{streak_team} has won the last {_num(streak)} meetings in "
                 f"{name}, most recently in {last}."))
 
         if r.get("trophy"):
@@ -422,9 +450,11 @@ def rivalry_facts(games_by_year, year, first_year):
         if m >= 14:
             w = g["home"] if g["home_points"] > g["away_points"] else g["away"]
             l = g["away"] if w == g["home"] else g["home"]
+            # "came in 2011", not "was 2011". A meeting is not a year, and
+            # "since 2011 was 2011" is a stutter on top of the category error.
             out.append(_fact(
-                f"The most one-sided meeting in {name} since {first_year} was "
-                f"{y}: {w} by {m} over {l}."))
+                f"The most one-sided meeting in {name} since {first_year} "
+                f"came in {y}: {w} by {m} over {l}."))
     return out
 
 
@@ -465,8 +495,11 @@ def rivalry_schedule_facts(games_by_year, year):
     gone = [r for r, _ in off if not r.get("conference")]
     if gone:
         names = [x.get("name") or "–".join(x["teams"]) for x in gone[:4]]
+        # "several of these" had nothing to point at. Every fact is rendered
+        # alone on a card, so a deictic that leans on the fact next to it is
+        # leaning on something the reader cannot see.
         out.append(_fact(
-            f"Realignment left several of these outside the league: "
+            f"Realignment put several old rivalries outside the league: "
             f"{_list(names)} are not Big 12 games, and are not on the {year} "
             f"conference schedule at all."))
     return out
@@ -500,8 +533,8 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
     if fives and fours:
         out.append(_fact(
             f"Nine conference games will not split evenly, so in {year} "
-            f"{len(fives)} teams get five home games and the other "
-            f"{len(fours)} get four."))
+            f"{_num(len(fives))} teams get five home games and the other "
+            f"{_num(len(fours))} get four."))
     for t in names:
         h, a = home.get(t, 0), away.get(t, 0)
         if not h + a:
@@ -511,16 +544,27 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
         # other fifteen: an odd number of games has to fall somewhere, and
         # which side of it you land on is the closest thing the schedule has
         # to luck.
+        #
+        # Three separate repairs in here, and the sentence needed all of them.
+        # The year moved to the end, because "its 9 2026 conference games"
+        # ran two numerals together. The comma after the dashed phrase is
+        # gone, because it cut "the extra home date" loose from the clause
+        # that explains it and left an appositive renaming nothing the
+        # sentence had named. And the clause is now introduced by "where",
+        # because a bare relative on "a season" put a numeral straight after
+        # the head noun — "a season 8 teams" reads as a season numbered 8
+        # until the verb arrives and forces a re-parse.
         if h > a and fours:
-            color = (f" — the extra home date, in a season {len(fours)} "
-                      f"teams finish a game short")
+            color = (f" — the extra home date in a season where "
+                     f"{_num(len(fours))} teams get only four")
         elif a > h and fives:
-            color = (f" — the short straw, while {len(fives)} teams get five")
+            color = (f" — the short straw in a season where "
+                     f"{_num(len(fives))} teams get five")
         else:
             color = ""
         out.append(_fact(
-            f"{S['n']} play{S['v']} {h} of {S['its']} {h + a} {year} "
-            f"conference games at home{color}."))
+            f"{S['n']} play{S['v']} {_num(h)} of {S['its']} {_num(h + a)} "
+            f"conference games at home in {year}{color}."))
 
     # --- the games that are not in Texas, or America ------------------------
     for g in games:
@@ -545,8 +589,12 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
     for t, opps in sorted(nonconf.items()):
         if opps:
             S = _subj(t, "nonconf", opener=True)
+            # play{S['v']}, not a bare "play". A school is singular here —
+            # this family was the one place that forgot to ask, and printed
+            # "Colorado play Georgia Tech" for every team not using a
+            # nickname.
             out.append(_fact(
-                f"{S['n']} play {_list(opps)} out of conference in "
+                f"{S['n']} play{S['v']} {_list(opps)} out of conference in "
                 f"{year}."))
 
     # --- who the league plays when it is not playing itself -----------------
@@ -560,7 +608,7 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
             outside[g.get("home_conf") or "an FCS conference"] += 1
     for cname, n in outside.most_common(10):
         out.append(_fact(
-            f"The Big 12 plays {n} non-conference game"
+            f"The Big 12 plays {_num(n)} non-conference game"
             f"{'' if n == 1 else 's'} against the {cname} in {year}."))
 
     try:
@@ -578,8 +626,8 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
             # leaving a reader to count the list.
             out.append(_fact(
                 f"{S['n']} {S['does']} not play {_list(miss)} in {year} — "
-                f"{len(miss)} of the {len(names) - 1} teams {S['they']} could "
-                f"have drawn."))
+                f"{_num(len(miss))} of the {_num(len(names) - 1)} teams "
+                f"{S['they']} could have drawn."))
 
     # --- first meetings -----------------------------------------------------
     # The league has only been at sixteen since 2023, so "never met before" is
@@ -617,7 +665,7 @@ _WORDS = {1: "once", 2: "twice"}
 
 def _times(n):
     """"once", "twice", "three times" — never "1 time"."""
-    return _WORDS.get(n) or f"{n} times"
+    return _WORDS.get(n) or f"{_num(n)} times"
 
 
 def _list(items):
@@ -743,9 +791,9 @@ def tiebreaker_facts(games_by_year):
                 if (w - l) == (best[1][0] - best[1][1])]
         if len(tied) > 1:
             out.append(_fact(
-                f"{y} finished with {_list(sorted(tied))} level at the top "
-                f"on {best[1][0]}–{best[1][1]}. That is what the seven steps "
-                f"are for."))
+                f"The {y} season finished with {_list(sorted(tied))} level at "
+                f"the top on {best[1][0]}–{best[1][1]}. That is what the "
+                f"seven steps are for."))
         else:
             out.append(_fact(
                 f"{best[0]} took the {y} conference season outright at "
@@ -783,9 +831,13 @@ def tiebreaker_facts(games_by_year):
         color = f" — {where}" if where else ""
         S = _subj(team, "record", opener=True)
         verb = (S["is"] if _was(team, played) == "is" else S["was"])
+        # "winning 59%", not a bare ", 59%" — the span ends in a year, and a
+        # percentage dropped straight after it read as a second number in a
+        # list rather than as a gloss on the record.
         out.append(_fact(
             f"{S['n']} {verb} {w}–{l} in Big 12 conference games "
-            f"{_span(team, played)}, {w / (w + l) * 100:.0f}%{color}."))
+            f"{_span(team, played)}, winning {w / (w + l) * 100:.0f}%"
+            f"{color}."))
     for y, (margin, w, l, hi, lo) in sorted(biggest.items()):
         out.append(_fact(
             f"The most lopsided conference game of {y} was {w} {hi}, "
@@ -818,10 +870,14 @@ def tiebreaker_facts(games_by_year):
         # How many seasons that is "best of" is the whole of whether it
         # impresses. Three is a note; fifteen is a record.
         n = len(played.get(team) or seasons)
+        # "the best of the three seasons it has played", not "the best of the
+        # 3 they have played": the count needs its head noun back, and the
+        # pronoun has to agree with the school name that opens the sentence.
         out.append(_fact(
             f"{team}'s best Big 12 season is {best_y}, at {w}–{l} — the best "
-            f"of the {n} {'they have' if _was(team, played) == 'is' else 'they'} "
-            f"played {_span(team, played)}."))
+            f"of the {_num(n)} seasons "
+            f"{'it has' if _was(team, played) == 'is' else 'it'} played "
+            f"{_span(team, played)}."))
 
     runs = {}
     for team, results in sorted(order.items()):
@@ -849,7 +905,7 @@ def tiebreaker_facts(games_by_year):
         color = f" — {where}" if where else ""
         out.append(_fact(
             f"{team}'s longest run of Big 12 wins {_span(team, played)} "
-            f"{_was(team, played)} {best} in a row, {when}{color}."))
+            f"{_was(team, played)} {_num(best)} in a row, {when}{color}."))
 
     out.append(_fact(
         "The Big 12 tiebreaker runs seven steps. The last two are a "
@@ -865,7 +921,7 @@ def tiebreaker_facts(games_by_year):
 def pools_facts(year, lines_count):
     out = [
         _fact("One line for the whole room, frozen the moment the week is "
-              "published. Whatever the market does afterwards, everybody is "
+              "published. Whatever the market does afterward, everybody is "
               "still playing the number you saw."),
         _fact("A push is a push. Land exactly on the number and it counts as "
               "neither a win nor a loss, and it stays out of your percentage "
@@ -885,8 +941,9 @@ def pools_facts(year, lines_count):
     ]
     if lines_count:
         out.append(_fact(
-            f"The {year} market has opened on {lines_count} games so far. "
-            f"Games without a posted line are shown, and are not pickable."))
+            f"The {year} market has opened on {_num(lines_count)} game"
+            f"{'' if lines_count == 1 else 's'} so far. Games without a "
+            f"posted line are shown, and are not pickable."))
     return out
 
 
@@ -932,7 +989,7 @@ def _subj(team, family, opener=False):
     "the Bearcats" in every sentence on the page.
     """
     m = _mascots().get(team)
-    # hashlib, NOT hash(): Python randomises string hashing per process, so
+    # hashlib, NOT hash(): Python randomizes string hashing per process, so
     # hash() here would pick different wording on every build and
     # verify-deterministic.sh would start failing at random.
     d = hashlib.sha256(f"{team}|{family}".encode()).digest()[0]

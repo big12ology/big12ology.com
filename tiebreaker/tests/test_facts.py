@@ -183,6 +183,29 @@ for f in every:
     check("{" not in f["t"] and "}" not in f["t"],
           f"an unformatted brace survived: {f['t']!r}")
 
+# --- two numerals may not touch --------------------------------------------
+# These sentences are assembled from counts, years, records and crowd figures,
+# and nothing in the templates stopped two of them landing side by side. The
+# front page carried "5 of its 9 2026 conference games" and "in 2026 8 teams
+# get five home games" for a while: both arithmetically right, both unreadable,
+# because the eye takes "9 2026" as one token and has to back up.
+#
+# The fix is facts._num(), which spells counts up to twenty out; this is what
+# keeps a new family from skipping it. Digits separated by a word or any
+# punctuation are fine — "66, Texas Tech 6" and "8–1 — the best" both read.
+COLLIDE = re.compile(r"\d[\d,]*\s+\d")
+collisions = [f["t"] for f in every if COLLIDE.search(f["t"])]
+check(not collisions,
+      f"{len(collisions)} fact(s) put two numerals side by side, which reads "
+      f"as one number until it does not: {collisions[:2]}")
+
+# And none of them opens on one. "2023 was the best-attended season" and
+# "1,377 home games are in this tracker" both make the reader decide whether
+# the digits are a label or a count before there is a verb to go on.
+opens_digit = [f["t"] for f in every if f["t"][:1].isdigit()]
+check(not opens_digit,
+      f"{len(opens_digit)} fact(s) open on a numeral: {opens_digit[:2]}")
+
 seen = {}
 for f in every:
     seen.setdefault(f["t"], 0)
@@ -197,7 +220,7 @@ check(not dupes, f"{len(dupes)} fact(s) generated more than once: {dupes[:2]}")
 totals = facts.attendance_totals()
 if totals:
     line = [f["t"] for f in sections["attendance"]
-            if "home games are in this tracker" in f["t"]]
+            if "through the gates" in f["t"]]
     check(len(line) == 1, "the tracker-size fact is missing or duplicated")
     if line:
         check(f"{totals['games']:,}" in line[0],

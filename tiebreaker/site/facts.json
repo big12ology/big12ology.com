@@ -3,14 +3,8 @@
  "sections": {
   "attendance": [
    {
-    "t": "1,377 home games are in this tracker, back to 2012 \u2014 62,688,999 people through the gates."
-   },
-   {
-    "t": "2023 was the best-attended season here at 49,103 a game; 2021 the thinnest at 45,075, leaving 2020 out of it."
-   },
-   {
     "s": "Arizona State",
-    "t": "Arizona State averages 51,619 a home game since 2012, over 87 games.",
+    "t": "Arizona State has averaged 51,619 a home game since 2012, over 87 games.",
     "w": [
      "Arizona State"
     ]
@@ -24,7 +18,7 @@
    },
    {
     "s": "Arizona",
-    "t": "Arizona averages 45,396 a home game since 2012, over 86 games.",
+    "t": "Arizona has averaged 45,396 a home game since 2012, over 86 games.",
     "w": [
      "Arizona"
     ]
@@ -38,7 +32,7 @@
    },
    {
     "s": "BYU",
-    "t": "BYU averages 59,569 a home game since 2012, over 76 games \u2014 the best in the league.",
+    "t": "BYU has averaged 59,569 a home game since 2012, over 76 games \u2014 the best in the league.",
     "w": [
      "BYU"
     ]
@@ -73,7 +67,7 @@
    },
    {
     "s": "Houston",
-    "t": "Houston averages 29,953 a home game since 2012, over 81 games \u2014 the lowest in the league.",
+    "t": "Houston has averaged 29,953 a home game since 2012, over 81 games \u2014 the lowest in the league.",
     "w": [
      "Houston"
     ]
@@ -87,7 +81,7 @@
    },
    {
     "s": "Arizona State",
-    "t": "In 2012 the league averaged 46,933 a home game. The biggest single crowd was 71,004, Arizona State against Oregon on 18 October.",
+    "t": "In 2012 the league averaged 46,933 a home game. The biggest single crowd was 71,004, Arizona State against Oregon on October 18.",
     "w": [
      "Arizona State",
      "Oregon"
@@ -95,7 +89,7 @@
    },
    {
     "s": "Arizona State",
-    "t": "In 2013 the league averaged 47,636 a home game. The biggest single crowd was 72,542, Arizona State against Arizona on 30 November.",
+    "t": "In 2013 the league averaged 47,636 a home game. The biggest single crowd was 72,542, Arizona State against Arizona on November 30.",
     "w": [
      "Arizona",
      "Arizona State"
@@ -103,7 +97,7 @@
    },
    {
     "s": "Arizona State",
-    "t": "In 2014 the league averaged 46,269 a home game. The biggest single crowd was 65,870, Arizona State against Notre Dame on 8 November.",
+    "t": "In 2014 the league averaged 46,269 a home game. The biggest single crowd was 65,870, Arizona State against Notre Dame on November 8.",
     "w": [
      "Arizona State",
      "Notre Dame"
@@ -111,7 +105,7 @@
    },
    {
     "s": "Arizona State",
-    "t": "In 2015 the league averaged 46,691 a home game. The biggest single crowd was 64,885, Arizona State against Arizona on 21 November.",
+    "t": "In 2015 the league averaged 46,691 a home game. The biggest single crowd was 64,885, Arizona State against Arizona on November 21.",
     "w": [
      "Arizona",
      "Arizona State"
@@ -119,7 +113,7 @@
    },
    {
     "s": "BYU",
-    "t": "In 2016 the league averaged 46,814 a home game. The biggest single crowd was 62,904, BYU against UCLA on 17 September.",
+    "t": "In 2016 the league averaged 46,814 a home game. The biggest single crowd was 62,904, BYU against UCLA on September 17.",
     "w": [
      "BYU",
      "UCLA"
@@ -127,7 +121,7 @@
    },
    {
     "s": "BYU",
-    "t": "In 2017 the league averaged 45,626 a home game. The biggest single crowd was 63,470, BYU against Utah on 9 September.",
+    "t": "In 2017 the league averaged 45,626 a home game. The biggest single crowd was 63,470, BYU against Utah on September 9.",
     "w": [
      "BYU",
      "Utah"
@@ -135,7 +129,7 @@
    },
    {
     "s": "West Virginia",
-    "t": "In 2018 the league averaged 45,224 a home game. The biggest single crowd was 60,713, West Virginia against Oklahoma on 23 November.",
+    "t": "In 2018 the league averaged 45,224 a home game. The biggest single crowd was 60,713, West Virginia against Oklahoma on November 23.",
     "w": [
      "Oklahoma",
      "West Virginia"
@@ -143,7 +137,7 @@
    },
    {
     "s": "BYU",
-    "t": "In 2019 the league averaged 46,789 a home game. The biggest single crowd was 62,546, BYU against USC on 14 September.",
+    "t": "In 2019 the league averaged 46,789 a home game. The biggest single crowd was 62,546, BYU against USC on September 14.",
     "w": [
      "BYU",
      "USC"
@@ -154,7 +148,7 @@
    },
    {
     "s": "BYU",
-    "t": "In 2021 the league averaged 45,075 a home game. The biggest single crowd was 63,470, BYU against Utah on 11 September.",
+    "t": "In 2021 the league averaged 45,075 a home game. The biggest single crowd was 63,470, BYU against Utah on September 11.",
     "w": [
      "BYU",
      "Utah"
@@ -162,7 +156,7 @@
    },
    {
     "s": "BYU",
-    "t": "In 2022 the league averaged 46,999 a home game. The biggest single crowd was 63,470, BYU against Baylor on 10 September.",
+    "t": "In 2022 the league averaged 46,999 a home game. The biggest single crowd was 63,470, BYU against Baylor on September 10.",
     "w": [
      "BYU",
      "Baylor"
@@ -170,7 +164,7 @@
    },
    {
     "s": "BYU",
-    "t": "In 2023 the league averaged 49,103 a home game. The biggest single crowd was 63,834, BYU against Cincinnati on 29 September.",
+    "t": "In 2023 the league averaged 49,103 a home game. The biggest single crowd was 63,834, BYU against Cincinnati on September 29.",
     "w": [
      "BYU",
      "Cincinnati"
@@ -178,7 +172,7 @@
    },
    {
     "s": "BYU",
-    "t": "In 2024 the league averaged 48,314 a home game. The biggest single crowd was 64,420, BYU against Arizona on 12 October.",
+    "t": "In 2024 the league averaged 48,314 a home game. The biggest single crowd was 64,420, BYU against Arizona on October 12.",
     "w": [
      "Arizona",
      "BYU"
@@ -186,7 +180,7 @@
    },
    {
     "s": "BYU",
-    "t": "In 2025 the league averaged 47,792 a home game. The biggest single crowd was 64,794, BYU against Utah on 18 October.",
+    "t": "In 2025 the league averaged 47,792 a home game. The biggest single crowd was 64,794, BYU against Utah on October 18.",
     "w": [
      "BYU",
      "Utah"
@@ -201,7 +195,7 @@
    },
    {
     "s": "Kansas State",
-    "t": "Kansas State averages 51,066 a home game since 2012, over 89 games.",
+    "t": "Kansas State has averaged 51,066 a home game since 2012, over 89 games.",
     "w": [
      "Kansas State"
     ]
@@ -215,7 +209,7 @@
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State averages 54,176 a home game since 2012, over 86 games \u2014 the fifth-best in the league.",
+    "t": "Oklahoma State has averaged 54,176 a home game since 2012, over 86 games \u2014 the fifth-best in the league.",
     "w": [
      "Oklahoma State"
     ]
@@ -243,52 +237,55 @@
    },
    {
     "s": "Cincinnati",
-    "t": "The Bearcats average 34,053 a home game since 2012, over 83 games \u2014 the third-lowest in the league.",
+    "t": "The Bearcats have averaged 34,053 a home game since 2012, over 83 games \u2014 the third-lowest in the league.",
     "w": [
      "Cincinnati"
     ]
    },
    {
     "s": "Baylor",
-    "t": "The Bears average 43,926 a home game since 2012, over 81 games \u2014 the fifth-lowest in the league.",
+    "t": "The Bears have averaged 43,926 a home game since 2012, over 81 games \u2014 the fifth-lowest in the league.",
     "w": [
      "Baylor"
     ]
    },
    {
     "s": "Colorado",
-    "t": "The Buffaloes average 45,870 a home game since 2012, over 79 games.",
+    "t": "The Buffaloes have averaged 45,870 a home game since 2012, over 79 games.",
     "w": [
      "Colorado"
     ]
    },
    {
     "s": "Iowa State",
-    "t": "The Cyclones average 57,062 a home game since 2012, over 84 games \u2014 the second-best in the league.",
+    "t": "The Cyclones have averaged 57,062 a home game since 2012, over 84 games \u2014 the second-best in the league.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "TCU",
-    "t": "The Horned Frogs average 44,410 a home game since 2012, over 82 games.",
+    "t": "The Horned Frogs have averaged 44,410 a home game since 2012, over 82 games.",
     "w": [
      "TCU"
     ]
    },
    {
     "s": "Kansas",
-    "t": "The Jayhawks average 33,870 a home game since 2012, over 83 games \u2014 the second-lowest in the league.",
+    "t": "The Jayhawks have averaged 33,870 a home game since 2012, over 83 games \u2014 the second-lowest in the league.",
     "w": [
      "Kansas"
     ]
    },
    {
     "s": "Texas Tech",
-    "t": "The Red Raiders average 56,663 a home game since 2012, over 80 games \u2014 the third-best in the league.",
+    "t": "The Red Raiders have averaged 56,663 a home game since 2012, over 80 games \u2014 the third-best in the league.",
     "w": [
      "Texas Tech"
     ]
+   },
+   {
+    "t": "The best-attended season here is 2023 at 49,103 a game; the thinnest is 2021 at 45,075, leaving 2020 out of it."
    },
    {
     "s": "Arizona State",
@@ -435,8 +432,11 @@
     ]
    },
    {
+    "t": "This tracker holds 1,377 home games, back to 2012 \u2014 62,688,999 people through the gates."
+   },
+   {
     "s": "UCF",
-    "t": "UCF averages 39,927 a home game since 2012, over 84 games \u2014 the fourth-lowest in the league.",
+    "t": "UCF has averaged 39,927 a home game since 2012, over 84 games \u2014 the fourth-lowest in the league.",
     "w": [
      "UCF"
     ]
@@ -450,7 +450,7 @@
    },
    {
     "s": "Utah",
-    "t": "Utah averages 48,375 a home game since 2012, over 83 games.",
+    "t": "Utah has averaged 48,375 a home game since 2012, over 83 games.",
     "w": [
      "Utah"
     ]
@@ -464,7 +464,7 @@
    },
    {
     "s": "West Virginia",
-    "t": "West Virginia averages 54,299 a home game since 2012, over 82 games \u2014 the fourth-best in the league.",
+    "t": "West Virginia has averaged 54,299 a home game since 2012, over 82 games \u2014 the fourth-best in the league.",
     "w": [
      "West Virginia"
     ]
@@ -1424,7 +1424,7 @@
     "t": "Nobody sees anybody else's picks until the slate locks. The consensus is withheld for the same reason: it would be worth following."
    },
    {
-    "t": "One line for the whole room, frozen the moment the week is published. Whatever the market does afterwards, everybody is still playing the number you saw."
+    "t": "One line for the whole room, frozen the moment the week is published. Whatever the market does afterward, everybody is still playing the number you saw."
    },
    {
     "t": "Signing in asks your provider for one thing \u2014 that you are you. No email address, no name, no picture."
@@ -1433,7 +1433,7 @@
     "t": "Survivor gives you one team a week and never the same team twice. Sixteen teams, and the season is longer than that."
    },
    {
-    "t": "The 2026 market has opened on 7 games so far. Games without a posted line are shown, and are not pickable."
+    "t": "The 2026 market has opened on seven games so far. Games without a posted line are shown, and are not pickable."
    },
    {
     "t": "The board shows the chalk: what simply taking every favorite would have scored. In 2025 that was 56.5%, and most people do not beat it."
@@ -1458,7 +1458,7 @@
    },
    {
     "s": "Arizona State",
-    "t": "Arizona State does not play Cincinnati, Houston, Iowa State, TCU, Utah and West Virginia in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "Arizona State does not play Cincinnati, Houston, Iowa State, TCU, Utah and West Virginia in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "Arizona State",
      "Cincinnati",
@@ -1487,7 +1487,7 @@
    },
    {
     "s": "Arizona",
-    "t": "Arizona does not play UCF, Baylor, Colorado, Houston, Kansas and Oklahoma State in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "Arizona does not play UCF, Baylor, Colorado, Houston, Kansas and Oklahoma State in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "Arizona",
      "Baylor",
@@ -1500,7 +1500,7 @@
    },
    {
     "s": "Arizona",
-    "t": "Arizona play Northern Arizona, Northern Illinois and Washington State out of conference in 2026.",
+    "t": "Arizona plays Northern Arizona, Northern Illinois and Washington State out of conference in 2026.",
     "w": [
      "Arizona",
      "Northern Arizona",
@@ -1510,7 +1510,7 @@
    },
    {
     "s": "Arizona",
-    "t": "Arizona plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
+    "t": "Arizona plays five of its nine conference games at home in 2026 \u2014 the extra home date in a season where eight teams get only four.",
     "w": [
      "Arizona"
     ]
@@ -1541,7 +1541,7 @@
    },
    {
     "s": "BYU",
-    "t": "BYU does not play Houston, Kansas State, Oklahoma State, Colorado, Texas Tech and West Virginia in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "BYU does not play Houston, Kansas State, Oklahoma State, Colorado, Texas Tech and West Virginia in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "BYU",
      "Colorado",
@@ -1554,7 +1554,7 @@
    },
    {
     "s": "BYU",
-    "t": "BYU play Utah Tech, Colorado State and Notre Dame out of conference in 2026.",
+    "t": "BYU plays Utah Tech, Colorado State and Notre Dame out of conference in 2026.",
     "w": [
      "BYU",
      "Colorado State",
@@ -1564,7 +1564,7 @@
    },
    {
     "s": "BYU",
-    "t": "BYU plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
+    "t": "BYU plays five of its nine conference games at home in 2026 \u2014 the extra home date in a season where eight teams get only four.",
     "w": [
      "BYU"
     ]
@@ -1587,7 +1587,7 @@
    },
    {
     "s": "Baylor",
-    "t": "Baylor does not play West Virginia, Arizona, Cincinnati, Kansas State, Oklahoma State and Utah in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "Baylor does not play West Virginia, Arizona, Cincinnati, Kansas State, Oklahoma State and Utah in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "Arizona",
      "Baylor",
@@ -1600,7 +1600,7 @@
    },
    {
     "s": "Baylor",
-    "t": "Baylor play Auburn, Prairie View A&M and Louisiana Tech out of conference in 2026.",
+    "t": "Baylor plays Auburn, Prairie View A&M and Louisiana Tech out of conference in 2026.",
     "w": [
      "Auburn",
      "Baylor",
@@ -1610,7 +1610,7 @@
    },
    {
     "s": "Cincinnati",
-    "t": "Cincinnati does not play Arizona State, Baylor, Kansas, Oklahoma State, TCU and UCF in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "Cincinnati does not play Arizona State, Baylor, Kansas, Oklahoma State, TCU and UCF in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "Arizona State",
      "Baylor",
@@ -1631,7 +1631,7 @@
    },
    {
     "s": "Colorado",
-    "t": "Colorado play Georgia Tech, Weber State and Northwestern out of conference in 2026.",
+    "t": "Colorado plays Georgia Tech, Weber State and Northwestern out of conference in 2026.",
     "w": [
      "Colorado",
      "Georgia Tech",
@@ -1641,7 +1641,7 @@
    },
    {
     "s": "Colorado",
-    "t": "Colorado plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
+    "t": "Colorado plays five of its nine conference games at home in 2026 \u2014 the extra home date in a season where eight teams get only four.",
     "w": [
      "Colorado"
     ]
@@ -1663,7 +1663,7 @@
    },
    {
     "s": "Houston",
-    "t": "Houston does not play BYU, Iowa State, Kansas, Arizona, Arizona State and TCU in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "Houston does not play BYU, Iowa State, Kansas, Arizona, Arizona State and TCU in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "Arizona",
      "Arizona State",
@@ -1676,7 +1676,7 @@
    },
    {
     "s": "Houston",
-    "t": "Houston play Oregon State, Southern and Georgia Southern out of conference in 2026.",
+    "t": "Houston plays Oregon State, Southern and Georgia Southern out of conference in 2026.",
     "w": [
      "Georgia Southern",
      "Houston",
@@ -1686,14 +1686,14 @@
    },
    {
     "s": "Houston",
-    "t": "Houston plays 4 of its 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
+    "t": "Houston plays four of its nine conference games at home in 2026 \u2014 the short straw in a season where eight teams get five.",
     "w": [
      "Houston"
     ]
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State does not play Houston, Texas Tech, Arizona State, Colorado, Kansas and TCU in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "Iowa State does not play Houston, Texas Tech, Arizona State, Colorado, Kansas and TCU in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "Arizona State",
      "Colorado",
@@ -1706,7 +1706,7 @@
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State play Southeast Missouri State, Iowa and Bowling Green out of conference in 2026.",
+    "t": "Iowa State plays Southeast Missouri State, Iowa and Bowling Green out of conference in 2026.",
     "w": [
      "Bowling Green",
      "Iowa",
@@ -1716,14 +1716,14 @@
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
+    "t": "Iowa State plays five of its nine conference games at home in 2026 \u2014 the extra home date in a season where eight teams get only four.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "Kansas State",
-    "t": "Kansas State does not play BYU, West Virginia, Baylor, Texas Tech, UCF and Utah in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "Kansas State does not play BYU, West Virginia, Baylor, Texas Tech, UCF and Utah in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "BYU",
      "Baylor",
@@ -1736,7 +1736,7 @@
    },
    {
     "s": "Kansas State",
-    "t": "Kansas State play Nicholls, Washington State and Tulane out of conference in 2026.",
+    "t": "Kansas State plays Nicholls, Washington State and Tulane out of conference in 2026.",
     "w": [
      "Kansas State",
      "Nicholls",
@@ -1746,14 +1746,14 @@
    },
    {
     "s": "Kansas State",
-    "t": "Kansas State plays 4 of its 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
+    "t": "Kansas State plays four of its nine conference games at home in 2026 \u2014 the short straw in a season where eight teams get five.",
     "w": [
      "Kansas State"
     ]
    },
    {
     "s": "Kansas",
-    "t": "Kansas does not play Colorado, Houston, Arizona, Cincinnati, Iowa State and Texas Tech in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "Kansas does not play Colorado, Houston, Arizona, Cincinnati, Iowa State and Texas Tech in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "Arizona",
      "Cincinnati",
@@ -1766,7 +1766,7 @@
    },
    {
     "s": "Kansas",
-    "t": "Kansas play Long Island University, Missouri and Middle Tennessee out of conference in 2026.",
+    "t": "Kansas plays Long Island University, Missouri and Middle Tennessee out of conference in 2026.",
     "w": [
      "Kansas",
      "Long Island University",
@@ -1775,7 +1775,7 @@
     ]
    },
    {
-    "t": "Nine conference games will not split evenly, so in 2026 8 teams get five home games and the other 8 get four."
+    "t": "Nine conference games will not split evenly, so in 2026 eight teams get five home games and the other eight get four."
    },
    {
     "s": "North Carolina",
@@ -1790,7 +1790,7 @@
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State does not play BYU, TCU, Utah, Arizona, Baylor and Cincinnati in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "Oklahoma State does not play BYU, TCU, Utah, Arizona, Baylor and Cincinnati in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "Arizona",
      "BYU",
@@ -1803,7 +1803,7 @@
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State play Tulsa, Oregon and Murray State out of conference in 2026.",
+    "t": "Oklahoma State plays Tulsa, Oregon and Murray State out of conference in 2026.",
     "w": [
      "Murray State",
      "Oklahoma State",
@@ -1813,20 +1813,20 @@
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State plays 4 of its 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
+    "t": "Oklahoma State plays four of its nine conference games at home in 2026 \u2014 the short straw in a season where eight teams get five.",
     "w": [
      "Oklahoma State"
     ]
    },
    {
-    "t": "Realignment left several of these outside the league: the Backyard Brawl, the Iron Skillet game, the Bayou Bucket game and the War on I-4 are not Big 12 games, and are not on the 2026 conference schedule at all."
+    "t": "Realignment put several old rivalries outside the league: the Backyard Brawl, the Iron Skillet game, the Bayou Bucket game and the War on I-4 are not Big 12 games, and are not on the 2026 conference schedule at all."
    },
    {
     "t": "Sixteen teams, fifteen possible conference opponents, nine games. Nobody plays everybody, so two teams finishing on the same record did not attempt the same schedule."
    },
    {
     "s": "TCU",
-    "t": "TCU play North Carolina, Grambling and Arkansas State out of conference in 2026.",
+    "t": "TCU plays North Carolina, Grambling and Arkansas State out of conference in 2026.",
     "w": [
      "Arkansas State",
      "Grambling",
@@ -1836,14 +1836,14 @@
    },
    {
     "s": "TCU",
-    "t": "TCU plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
+    "t": "TCU plays five of its nine conference games at home in 2026 \u2014 the extra home date in a season where eight teams get only four.",
     "w": [
      "TCU"
     ]
    },
    {
     "s": "Texas Tech",
-    "t": "Texas Tech play Abilene Christian, Oregon State and Sam Houston out of conference in 2026.",
+    "t": "Texas Tech plays Abilene Christian, Oregon State and Sam Houston out of conference in 2026.",
     "w": [
      "Abilene Christian",
      "Oregon State",
@@ -1870,13 +1870,6 @@
    },
    {
     "s": "Cincinnati",
-    "t": "The Bearcats play 4 of their 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
-    "w": [
-     "Cincinnati"
-    ]
-   },
-   {
-    "s": "Cincinnati",
     "t": "The Bearcats play Boston College, Western Carolina and Miami (OH) out of conference in 2026.",
     "w": [
      "Boston College",
@@ -1886,45 +1879,52 @@
     ]
    },
    {
+    "s": "Cincinnati",
+    "t": "The Bearcats play four of their nine conference games at home in 2026 \u2014 the short straw in a season where eight teams get five.",
+    "w": [
+     "Cincinnati"
+    ]
+   },
+   {
     "s": "Baylor",
-    "t": "The Bears play 4 of their 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
+    "t": "The Bears play four of their nine conference games at home in 2026 \u2014 the short straw in a season where eight teams get five.",
     "w": [
      "Baylor"
     ]
    },
    {
-    "t": "The Big 12 plays 2 non-conference games against the American Athletic in 2026."
+    "t": "The Big 12 plays five non-conference games against the ACC in 2026."
    },
    {
-    "t": "The Big 12 plays 2 non-conference games against the Big South-OVC in 2026."
+    "t": "The Big 12 plays five non-conference games against the Sun Belt in 2026."
    },
    {
-    "t": "The Big 12 plays 2 non-conference games against the Mid-American in 2026."
+    "t": "The Big 12 plays four non-conference games against the Big Sky in 2026."
    },
    {
-    "t": "The Big 12 plays 3 non-conference games against the Big Ten in 2026."
+    "t": "The Big 12 plays four non-conference games against the SEC in 2026."
    },
    {
-    "t": "The Big 12 plays 4 non-conference games against the Big Sky in 2026."
+    "t": "The Big 12 plays four non-conference games against the SWAC in 2026."
    },
    {
-    "t": "The Big 12 plays 4 non-conference games against the SEC in 2026."
+    "t": "The Big 12 plays six non-conference games against the Pac-12 in 2026."
    },
    {
-    "t": "The Big 12 plays 4 non-conference games against the SWAC in 2026."
+    "t": "The Big 12 plays three non-conference games against the Big Ten in 2026."
    },
    {
-    "t": "The Big 12 plays 5 non-conference games against the ACC in 2026."
+    "t": "The Big 12 plays two non-conference games against the American Athletic in 2026."
    },
    {
-    "t": "The Big 12 plays 5 non-conference games against the Sun Belt in 2026."
+    "t": "The Big 12 plays two non-conference games against the Big South-OVC in 2026."
    },
    {
-    "t": "The Big 12 plays 6 non-conference games against the Pac-12 in 2026."
+    "t": "The Big 12 plays two non-conference games against the Mid-American in 2026."
    },
    {
     "s": "Colorado",
-    "t": "The Buffaloes do not play Kansas, Arizona, BYU, Iowa State, TCU and West Virginia in 2026 \u2014 6 of the 15 teams they could have drawn.",
+    "t": "The Buffaloes do not play Kansas, Arizona, BYU, Iowa State, TCU and West Virginia in 2026 \u2014 six of the fifteen teams they could have drawn.",
     "w": [
      "Arizona",
      "BYU",
@@ -1951,7 +1951,7 @@
    },
    {
     "s": "TCU",
-    "t": "The Horned Frogs do not play Oklahoma State, Arizona State, Cincinnati, Colorado, Houston and Iowa State in 2026 \u2014 6 of the 15 teams they could have drawn.",
+    "t": "The Horned Frogs do not play Oklahoma State, Arizona State, Cincinnati, Colorado, Houston and Iowa State in 2026 \u2014 six of the fifteen teams they could have drawn.",
     "w": [
      "Arizona State",
      "Cincinnati",
@@ -1964,14 +1964,14 @@
    },
    {
     "s": "Kansas",
-    "t": "The Jayhawks play 4 of their 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
+    "t": "The Jayhawks play four of their nine conference games at home in 2026 \u2014 the short straw in a season where eight teams get five.",
     "w": [
      "Kansas"
     ]
    },
    {
     "s": "UCF",
-    "t": "The Knights do not play Arizona, Utah, Cincinnati, Kansas State, Texas Tech and West Virginia in 2026 \u2014 6 of the 15 teams they could have drawn.",
+    "t": "The Knights do not play Arizona, Utah, Cincinnati, Kansas State, Texas Tech and West Virginia in 2026 \u2014 six of the fifteen teams they could have drawn.",
     "w": [
      "Arizona",
      "Cincinnati",
@@ -1984,7 +1984,7 @@
    },
    {
     "s": "West Virginia",
-    "t": "The Mountaineers do not play Baylor, Kansas State, Arizona State, BYU, Colorado and UCF in 2026 \u2014 6 of the 15 teams they could have drawn.",
+    "t": "The Mountaineers do not play Baylor, Kansas State, Arizona State, BYU, Colorado and UCF in 2026 \u2014 six of the fifteen teams they could have drawn.",
     "w": [
      "Arizona State",
      "BYU",
@@ -1997,7 +1997,7 @@
    },
    {
     "s": "Texas Tech",
-    "t": "The Red Raiders do not play Iowa State, BYU, Kansas, Kansas State, UCF and Utah in 2026 \u2014 6 of the 15 teams they could have drawn.",
+    "t": "The Red Raiders do not play Iowa State, BYU, Kansas, Kansas State, UCF and Utah in 2026 \u2014 six of the fifteen teams they could have drawn.",
     "w": [
      "BYU",
      "Iowa State",
@@ -2010,7 +2010,7 @@
    },
    {
     "s": "Texas Tech",
-    "t": "The Red Raiders play 5 of their 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
+    "t": "The Red Raiders play five of their nine conference games at home in 2026 \u2014 the extra home date in a season where eight teams get only four.",
     "w": [
      "Texas Tech"
     ]
@@ -2031,19 +2031,19 @@
    },
    {
     "s": "Arizona State",
-    "t": "The Sun Devils play 4 of their 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
-    "w": [
-     "Arizona State"
-    ]
-   },
-   {
-    "s": "Arizona State",
     "t": "The Sun Devils play Morgan State, Texas A&M and Hawai'i out of conference in 2026.",
     "w": [
      "Arizona State",
      "Hawai'i",
      "Morgan State",
      "Texas A&M"
+    ]
+   },
+   {
+    "s": "Arizona State",
+    "t": "The Sun Devils play four of their nine conference games at home in 2026 \u2014 the short straw in a season where eight teams get five.",
+    "w": [
+     "Arizona State"
     ]
    },
    {
@@ -2070,14 +2070,14 @@
    },
    {
     "s": "Utah",
-    "t": "The Utes play 4 of their 9 2026 conference games at home \u2014 the short straw, while 8 teams get five.",
+    "t": "The Utes play four of their nine conference games at home in 2026 \u2014 the short straw in a season where eight teams get five.",
     "w": [
      "Utah"
     ]
    },
    {
     "s": "UCF",
-    "t": "UCF play Bethune-Cookman, Pittsburgh and Georgia State out of conference in 2026.",
+    "t": "UCF plays Bethune-Cookman, Pittsburgh and Georgia State out of conference in 2026.",
     "w": [
      "Bethune-Cookman",
      "Georgia State",
@@ -2087,14 +2087,14 @@
    },
    {
     "s": "UCF",
-    "t": "UCF plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
+    "t": "UCF plays five of its nine conference games at home in 2026 \u2014 the extra home date in a season where eight teams get only four.",
     "w": [
      "UCF"
     ]
    },
    {
     "s": "Utah",
-    "t": "Utah does not play Oklahoma State, UCF, Arizona State, Baylor, Kansas State and Texas Tech in 2026 \u2014 6 of the 15 teams it could have drawn.",
+    "t": "Utah does not play Oklahoma State, UCF, Arizona State, Baylor, Kansas State and Texas Tech in 2026 \u2014 six of the fifteen teams it could have drawn.",
     "w": [
      "Arizona State",
      "Baylor",
@@ -2107,7 +2107,7 @@
    },
    {
     "s": "Utah",
-    "t": "Utah play Idaho, Arkansas and Utah State out of conference in 2026.",
+    "t": "Utah plays Idaho, Arkansas and Utah State out of conference in 2026.",
     "w": [
      "Arkansas",
      "Idaho",
@@ -2125,7 +2125,7 @@
    },
    {
     "s": "West Virginia",
-    "t": "West Virginia play Coastal Carolina, UT Martin and Virginia out of conference in 2026.",
+    "t": "West Virginia plays Coastal Carolina, UT Martin and Virginia out of conference in 2026.",
     "w": [
      "Coastal Carolina",
      "UT Martin",
@@ -2135,39 +2135,13 @@
    },
    {
     "s": "West Virginia",
-    "t": "West Virginia plays 5 of its 9 2026 conference games at home \u2014 the extra home date, in a season 8 teams finish a game short.",
+    "t": "West Virginia plays five of its nine conference games at home in 2026 \u2014 the extra home date in a season where eight teams get only four.",
     "w": [
      "West Virginia"
     ]
    }
   ],
   "tiebreaker": [
-   {
-    "s": "Baylor",
-    "t": "2014 finished with Baylor and TCU level at the top on 8\u20131. That is what the seven steps are for.",
-    "w": [
-     "Baylor",
-     "TCU"
-    ]
-   },
-   {
-    "s": "Arizona State",
-    "t": "2024 finished with Arizona State, BYU, Colorado and Iowa State level at the top on 7\u20132. That is what the seven steps are for.",
-    "w": [
-     "Arizona State",
-     "BYU",
-     "Colorado",
-     "Iowa State"
-    ]
-   },
-   {
-    "s": "BYU",
-    "t": "2025 finished with BYU and Texas Tech level at the top on 8\u20131. That is what the seven steps are for.",
-    "w": [
-     "BYU",
-     "Texas Tech"
-    ]
-   },
    {
     "s": "Arizona State",
     "t": "Arizona State beat Iowa State 45\u201319 in the 2024 Big 12 championship game.",
@@ -2185,14 +2159,14 @@
    },
    {
     "s": "Arizona State",
-    "t": "Arizona State's longest run of Big 12 wins since joining in 2024 is 7 in a row, across 2024 and 2025.",
+    "t": "Arizona State's longest run of Big 12 wins since joining in 2024 is seven in a row, across 2024 and 2025.",
     "w": [
      "Arizona State"
     ]
    },
    {
     "s": "Arizona",
-    "t": "Arizona and Arizona State have met 15 times since 2011 in the Territorial Cup. In those games Arizona State leads 9\u20136.",
+    "t": "Arizona and Arizona State have met fifteen times since 2011 in the Territorial Cup. In those games Arizona State leads 9\u20136.",
     "w": [
      "Arizona",
      "Arizona State"
@@ -2208,14 +2182,14 @@
    },
    {
     "s": "Arizona",
-    "t": "Arizona's longest run of Big 12 wins since joining in 2024 is 5 in a row, in 2025.",
+    "t": "Arizona's longest run of Big 12 wins since joining in 2024 is five in a row, in 2025.",
     "w": [
      "Arizona"
     ]
    },
    {
     "s": "BYU",
-    "t": "BYU and Utah State have met 11 times since 2011 in the Old Wagon Wheel game. In those games BYU leads 8\u20133.",
+    "t": "BYU and Utah State have met eleven times since 2011 in the Old Wagon Wheel game. In those games BYU leads 8\u20133.",
     "w": [
      "BYU",
      "Utah State"
@@ -2231,7 +2205,7 @@
    },
    {
     "s": "BYU",
-    "t": "BYU and Utah have met 10 times since 2011 in the Holy War. In those games Utah leads 7\u20133.",
+    "t": "BYU and Utah have met ten times since 2011 in the Holy War. In those games Utah leads 7\u20133.",
     "w": [
      "BYU",
      "Utah"
@@ -2246,60 +2220,45 @@
    },
    {
     "s": "BYU",
-    "t": "BYU has won the last 3 meetings in the Holy War, most recently in 2025.",
+    "t": "BYU has won the last three meetings in the Holy War, most recently in 2025.",
     "w": [
      "BYU"
     ]
    },
    {
     "s": "BYU",
-    "t": "BYU has won the last 3 meetings in the Old Wagon Wheel game, most recently in 2022.",
+    "t": "BYU has won the last three meetings in the Old Wagon Wheel game, most recently in 2022.",
     "w": [
      "BYU"
     ]
    },
    {
     "s": "BYU",
-    "t": "BYU is 17\u201310 in Big 12 conference games since joining in 2023, 63% \u2014 the second-best in the league.",
+    "t": "BYU is 17\u201310 in Big 12 conference games since joining in 2023, winning 63% \u2014 the second-best in the league.",
     "w": [
      "BYU"
     ]
    },
    {
     "s": "BYU",
-    "t": "BYU's best Big 12 season is 2025, at 8\u20131 \u2014 the best of the 3 they have played since joining in 2023.",
+    "t": "BYU's best Big 12 season is 2025, at 8\u20131 \u2014 the best of the three seasons it has played since joining in 2023.",
     "w": [
      "BYU"
     ]
    },
    {
     "s": "BYU",
-    "t": "BYU's longest run of Big 12 wins since joining in 2023 is 6 in a row, in 2024.",
+    "t": "BYU's longest run of Big 12 wins since joining in 2023 is six in a row, in 2024.",
     "w": [
      "BYU"
     ]
    },
    {
     "s": "Baylor",
-    "t": "Baylor and TCU have met 15 times since 2011 in the Revivalry. In those games TCU leads 10\u20135.",
+    "t": "Baylor and TCU have met fifteen times since 2011 in the Revivalry. In those games TCU leads 10\u20135.",
     "w": [
      "Baylor",
      "TCU"
-    ]
-   },
-   {
-    "s": "Baylor",
-    "t": "Baylor beat Oklahoma State 21\u201316 in the 2021 Big 12 championship game.",
-    "w": [
-     "Baylor",
-     "Oklahoma State"
-    ]
-   },
-   {
-    "s": "Baylor",
-    "t": "Baylor has won the Big 12 championship game once since the game returned in 2017.",
-    "w": [
-     "Baylor"
     ]
    },
    {
@@ -2311,28 +2270,21 @@
    },
    {
     "s": "Baylor",
-    "t": "Baylor took the 2019 conference season outright at 8\u20131.",
+    "t": "Baylor's best Big 12 season is 2013, at 8\u20131 \u2014 the best of the fifteen seasons it has played since 2011.",
     "w": [
      "Baylor"
     ]
    },
    {
     "s": "Baylor",
-    "t": "Baylor's best Big 12 season is 2013, at 8\u20131 \u2014 the best of the 15 they have played since 2011.",
-    "w": [
-     "Baylor"
-    ]
-   },
-   {
-    "s": "Baylor",
-    "t": "Baylor's longest run of Big 12 wins since 2011 is 10 in a row, across 2014 and 2015 \u2014 the third-best in the league.",
+    "t": "Baylor's longest run of Big 12 wins since 2011 is ten in a row, across 2014 and 2015 \u2014 the third-best in the league.",
     "w": [
      "Baylor"
     ]
    },
    {
     "s": "Cincinnati",
-    "t": "Cincinnati and Louisville have met 3 times since 2011 in the Keg of Nails game. In those games Louisville leads 2\u20131.",
+    "t": "Cincinnati and Louisville have met three times since 2011 in the Keg of Nails game. In those games Louisville leads 2\u20131.",
     "w": [
      "Cincinnati",
      "Louisville"
@@ -2348,7 +2300,7 @@
    },
    {
     "s": "Cincinnati",
-    "t": "Cincinnati and Miami (OH) have met 13 times since 2011 in the Battle for the Victory Bell. In those games Cincinnati leads 12\u20131.",
+    "t": "Cincinnati and Miami (OH) have met thirteen times since 2011 in the Battle for the Victory Bell. In those games Cincinnati leads 12\u20131.",
     "w": [
      "Cincinnati",
      "Miami (OH)"
@@ -2364,21 +2316,21 @@
    },
    {
     "s": "Cincinnati",
-    "t": "Cincinnati's best Big 12 season is 2025, at 5\u20134 \u2014 the best of the 3 they have played since joining in 2023.",
+    "t": "Cincinnati's best Big 12 season is 2025, at 5\u20134 \u2014 the best of the three seasons it has played since joining in 2023.",
     "w": [
      "Cincinnati"
     ]
    },
    {
     "s": "Cincinnati",
-    "t": "Cincinnati's longest run of Big 12 wins since joining in 2023 is 5 in a row, in 2025.",
+    "t": "Cincinnati's longest run of Big 12 wins since joining in 2023 is five in a row, in 2025.",
     "w": [
      "Cincinnati"
     ]
    },
    {
     "s": "Colorado",
-    "t": "Colorado and Colorado State have met 11 times since 2011 in the Rocky Mountain Showdown. In those games Colorado leads 9\u20132.",
+    "t": "Colorado and Colorado State have met eleven times since 2011 in the Rocky Mountain Showdown. In those games Colorado leads 9\u20132.",
     "w": [
      "Colorado",
      "Colorado State"
@@ -2386,7 +2338,7 @@
    },
    {
     "s": "Colorado",
-    "t": "Colorado and Utah have met 15 times since 2011 in the Rumble in the Rockies. In those games Utah leads 12\u20133.",
+    "t": "Colorado and Utah have met fifteen times since 2011 in the Rumble in the Rockies. In those games Utah leads 12\u20133.",
     "w": [
      "Colorado",
      "Utah"
@@ -2394,14 +2346,14 @@
    },
    {
     "s": "Colorado",
-    "t": "Colorado has won the last 7 meetings in the Rocky Mountain Showdown, most recently in 2024.",
+    "t": "Colorado has won the last seven meetings in the Rocky Mountain Showdown, most recently in 2024.",
     "w": [
      "Colorado"
     ]
    },
    {
     "s": "Colorado",
-    "t": "Colorado's longest run of Big 12 wins since joining in 2024 is 4 in a row, in 2024 \u2014 the second-lowest in the league.",
+    "t": "Colorado's longest run of Big 12 wins since joining in 2024 is four in a row, in 2024 \u2014 the second-lowest in the league.",
     "w": [
      "Colorado"
     ]
@@ -2411,7 +2363,7 @@
    },
    {
     "s": "Houston",
-    "t": "Houston and Rice have met 10 times since 2011 in the Bayou Bucket game. In those games Houston leads 9\u20131.",
+    "t": "Houston and Rice have met ten times since 2011 in the Bayou Bucket game. In those games Houston leads 9\u20131.",
     "w": [
      "Houston",
      "Rice"
@@ -2427,28 +2379,28 @@
    },
    {
     "s": "Houston",
-    "t": "Houston has won the last 2 meetings in the Bayou Bucket game, most recently in 2025.",
+    "t": "Houston has won the last two meetings in the Bayou Bucket game, most recently in 2025.",
     "w": [
      "Houston"
     ]
    },
    {
     "s": "Houston",
-    "t": "Houston is 11\u201316 in Big 12 conference games since joining in 2023, 41% \u2014 the fourth-lowest in the league.",
+    "t": "Houston is 11\u201316 in Big 12 conference games since joining in 2023, winning 41% \u2014 the fourth-lowest in the league.",
     "w": [
      "Houston"
     ]
    },
    {
     "s": "Houston",
-    "t": "Houston's best Big 12 season is 2025, at 6\u20133 \u2014 the best of the 3 they have played since joining in 2023.",
+    "t": "Houston's best Big 12 season is 2025, at 6\u20133 \u2014 the best of the three seasons it has played since joining in 2023.",
     "w": [
      "Houston"
     ]
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State and Iowa have met 14 times since 2011 in the Cy-Hawk game. In those games Iowa leads 8\u20136.",
+    "t": "Iowa State and Iowa have met fourteen times since 2011 in the Cy-Hawk game. In those games Iowa leads 8\u20136.",
     "w": [
      "Iowa",
      "Iowa State"
@@ -2464,7 +2416,7 @@
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State and Kansas State have met 15 times since 2011 in Farmageddon. In those games Kansas State leads 9\u20136.",
+    "t": "Iowa State and Kansas State have met fifteen times since 2011 in Farmageddon. In those games Kansas State leads 9\u20136.",
     "w": [
      "Iowa State",
      "Kansas State"
@@ -2472,42 +2424,42 @@
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State has reached the Big 12 championship game twice without winning it.",
+    "t": "Iowa State has reached the Big 12 championship game once without winning it.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State has won the last 2 meetings in the Cy-Hawk game, most recently in 2025.",
+    "t": "Iowa State has won the last three meetings in Farmageddon, most recently in 2025.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State has won the last 3 meetings in Farmageddon, most recently in 2025.",
+    "t": "Iowa State has won the last two meetings in the Cy-Hawk game, most recently in 2025.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State took the 2020 conference season outright at 8\u20131.",
+    "t": "Iowa State took the 2020 conference season outright at 8\u20132.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State's best Big 12 season is 2020, at 8\u20131 \u2014 the best of the 15 they have played since 2011.",
+    "t": "Iowa State's best Big 12 season is 2020, at 8\u20132 \u2014 the best of the fifteen seasons it has played since 2011.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State's longest run of Big 12 wins since 2011 is 5 in a row, in 2018.",
+    "t": "Iowa State's longest run of Big 12 wins since 2011 is five in a row, in 2018.",
     "w": [
      "Iowa State"
     ]
@@ -2529,14 +2481,14 @@
    },
    {
     "s": "Kansas State",
-    "t": "Kansas State has won the last 15 meetings in the Sunflower Showdown, most recently in 2025.",
+    "t": "Kansas State has won the last fifteen meetings in the Sunflower Showdown, most recently in 2025.",
     "w": [
      "Kansas State"
     ]
    },
    {
     "s": "Kansas State",
-    "t": "Kansas State is 80\u201355 in Big 12 conference games since 2011, 59% \u2014 the fourth-best in the league.",
+    "t": "Kansas State is 80\u201355 in Big 12 conference games since 2011, winning 59% \u2014 the fourth-best in the league.",
     "w": [
      "Kansas State"
     ]
@@ -2550,21 +2502,21 @@
    },
    {
     "s": "Kansas State",
-    "t": "Kansas State's best Big 12 season is 2012, at 8\u20131 \u2014 the best of the 15 they have played since 2011.",
+    "t": "Kansas State's best Big 12 season is 2012, at 8\u20131 \u2014 the best of the fifteen seasons it has played since 2011.",
     "w": [
      "Kansas State"
     ]
    },
    {
     "s": "Kansas State",
-    "t": "Kansas State's longest run of Big 12 wins since 2011 is 10 in a row, across 2011 and 2012 \u2014 the third-best in the league.",
+    "t": "Kansas State's longest run of Big 12 wins since 2011 is ten in a row, across 2011 and 2012 \u2014 the third-best in the league.",
     "w": [
      "Kansas State"
     ]
    },
    {
     "s": "Kansas",
-    "t": "Kansas and Kansas State have met 15 times since 2011 in the Sunflower Showdown. In those games Kansas State leads 15\u20130.",
+    "t": "Kansas and Kansas State have met fifteen times since 2011 in the Sunflower Showdown. In those games Kansas State leads 15\u20130.",
     "w": [
      "Kansas",
      "Kansas State"
@@ -2580,28 +2532,28 @@
    },
    {
     "s": "Kansas",
-    "t": "Kansas's best Big 12 season is 2023, at 5\u20134 \u2014 the best of the 15 they have played since 2011.",
+    "t": "Kansas's best Big 12 season is 2023, at 5\u20134 \u2014 the best of the fifteen seasons it has played since 2011.",
     "w": [
      "Kansas"
     ]
    },
    {
     "s": "Louisville",
-    "t": "Louisville has won the last 2 meetings in the Keg of Nails game, most recently in 2013.",
+    "t": "Louisville has won the last two meetings in the Keg of Nails game, most recently in 2013.",
     "w": [
      "Louisville"
     ]
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State has reached the Big 12 championship game twice without winning it.",
+    "t": "Oklahoma State has reached the Big 12 championship game once without winning it.",
     "w": [
      "Oklahoma State"
     ]
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State is 77\u201358 in Big 12 conference games since 2011, 57% \u2014 the fifth-best in the league.",
+    "t": "Oklahoma State is 77\u201359 in Big 12 conference games since 2011, winning 57% \u2014 the fifth-best in the league.",
     "w": [
      "Oklahoma State"
     ]
@@ -2615,28 +2567,21 @@
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State took the 2021 conference season outright at 8\u20131.",
+    "t": "Oklahoma State's best Big 12 season is 2011, at 8\u20131 \u2014 the best of the fifteen seasons it has played since 2011.",
     "w": [
      "Oklahoma State"
     ]
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State's best Big 12 season is 2011, at 8\u20131 \u2014 the best of the 15 they have played since 2011.",
-    "w": [
-     "Oklahoma State"
-    ]
-   },
-   {
-    "s": "Oklahoma State",
-    "t": "Oklahoma State's longest run of Big 12 wins since 2011 is 8 in a row, across 2014 and 2015.",
+    "t": "Oklahoma State's longest run of Big 12 wins since 2011 is eight in a row, across 2014 and 2015.",
     "w": [
      "Oklahoma State"
     ]
    },
    {
     "s": "TCU",
-    "t": "TCU and SMU have met 14 times since 2011 in the Iron Skillet game. In those games TCU leads 10\u20134.",
+    "t": "TCU and SMU have met fourteen times since 2011 in the Iron Skillet game. In those games TCU leads 10\u20134.",
     "w": [
      "SMU",
      "TCU"
@@ -2652,14 +2597,14 @@
    },
    {
     "s": "TCU",
-    "t": "TCU has reached the Big 12 championship game twice without winning it.",
+    "t": "TCU has reached the Big 12 championship game once without winning it.",
     "w": [
      "TCU"
     ]
    },
    {
     "s": "TCU",
-    "t": "TCU is 70\u201356 in Big 12 conference games since joining in 2012, 56%.",
+    "t": "TCU is 70\u201357 in Big 12 conference games since joining in 2012, winning 55%.",
     "w": [
      "TCU"
     ]
@@ -2673,21 +2618,21 @@
    },
    {
     "s": "TCU",
-    "t": "TCU's best Big 12 season is 2022, at 9\u20130 \u2014 the best of the 14 they have played since joining in 2012.",
+    "t": "TCU's best Big 12 season is 2022, at 9\u20130 \u2014 the best of the fourteen seasons it has played since joining in 2012.",
     "w": [
      "TCU"
     ]
    },
    {
     "s": "TCU",
-    "t": "TCU's longest run of Big 12 wins since joining in 2012 is 12 in a row, across 2014 and 2015 \u2014 the second-best in the league.",
+    "t": "TCU's longest run of Big 12 wins since joining in 2012 is twelve in a row, across 2014 and 2015 \u2014 the second-best in the league.",
     "w": [
      "TCU"
     ]
    },
    {
     "s": "Texas Tech",
-    "t": "Texas Tech and Baylor have met 14 times since 2011 in the Texas Tech\u2013Baylor rivalry. In those games Baylor leads 10\u20134.",
+    "t": "Texas Tech and Baylor have met fourteen times since 2011 in the Texas Tech\u2013Baylor rivalry. In those games Baylor leads 10\u20134.",
     "w": [
      "Baylor",
      "Texas Tech"
@@ -2710,35 +2655,69 @@
    },
    {
     "s": "Texas Tech",
-    "t": "Texas Tech is 57\u201378 in Big 12 conference games since 2011, 42% \u2014 the fifth-lowest in the league.",
+    "t": "Texas Tech is 57\u201378 in Big 12 conference games since 2011, winning 42% \u2014 the fifth-lowest in the league.",
     "w": [
      "Texas Tech"
     ]
    },
    {
     "s": "Texas Tech",
-    "t": "Texas Tech's best Big 12 season is 2025, at 8\u20131 \u2014 the best of the 15 they have played since 2011.",
+    "t": "Texas Tech's best Big 12 season is 2025, at 8\u20131 \u2014 the best of the fifteen seasons it has played since 2011.",
     "w": [
      "Texas Tech"
     ]
    },
    {
     "s": "Texas Tech",
-    "t": "Texas Tech's longest run of Big 12 wins since 2011 is 5 in a row, across 2024 and 2025.",
+    "t": "Texas Tech's longest run of Big 12 wins since 2011 is five in a row, across 2024 and 2025.",
     "w": [
+     "Texas Tech"
+    ]
+   },
+   {
+    "s": "Baylor",
+    "t": "The 2014 season finished with Baylor and TCU level at the top on 8\u20131. That is what the seven steps are for.",
+    "w": [
+     "Baylor",
+     "TCU"
+    ]
+   },
+   {
+    "s": "Baylor",
+    "t": "The 2021 season finished with Baylor and Oklahoma State level at the top on 8\u20132. That is what the seven steps are for.",
+    "w": [
+     "Baylor",
+     "Oklahoma State"
+    ]
+   },
+   {
+    "s": "Arizona State",
+    "t": "The 2024 season finished with Arizona State, BYU, Colorado and Iowa State level at the top on 7\u20132. That is what the seven steps are for.",
+    "w": [
+     "Arizona State",
+     "BYU",
+     "Colorado",
+     "Iowa State"
+    ]
+   },
+   {
+    "s": "BYU",
+    "t": "The 2025 season finished with BYU and Texas Tech level at the top on 8\u20131. That is what the seven steps are for.",
+    "w": [
+     "BYU",
      "Texas Tech"
     ]
    },
    {
     "s": "Cincinnati",
-    "t": "The Bearcats are 9\u201318 in Big 12 conference games since joining in 2023, 33% \u2014 the third-lowest in the league.",
+    "t": "The Bearcats are 9\u201318 in Big 12 conference games since joining in 2023, winning 33% \u2014 the third-lowest in the league.",
     "w": [
      "Cincinnati"
     ]
    },
    {
     "s": "Baylor",
-    "t": "The Bears are 72\u201363 in Big 12 conference games since 2011, 53%.",
+    "t": "The Bears are 73\u201364 in Big 12 conference games since 2011, winning 53%.",
     "w": [
      "Baylor"
     ]
@@ -2748,28 +2727,28 @@
    },
    {
     "s": "Iowa State",
-    "t": "The Cyclones are 60\u201375 in Big 12 conference games since 2011, 44%.",
+    "t": "The Cyclones are 60\u201376 in Big 12 conference games since 2011, winning 44%.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "Kansas",
-    "t": "The Jayhawks are 21\u2013113 in Big 12 conference games since 2011, 16% \u2014 the lowest in the league.",
+    "t": "The Jayhawks are 21\u2013113 in Big 12 conference games since 2011, winning 16% \u2014 the lowest in the league.",
     "w": [
      "Kansas"
     ]
    },
    {
     "s": "UCF",
-    "t": "The Knights are 7\u201320 in Big 12 conference games since joining in 2023, 26% \u2014 the second-lowest in the league.",
+    "t": "The Knights are 7\u201320 in Big 12 conference games since joining in 2023, winning 26% \u2014 the second-lowest in the league.",
     "w": [
      "UCF"
     ]
    },
    {
     "s": "West Virginia",
-    "t": "The Mountaineers are 60\u201365 in Big 12 conference games since joining in 2012, 48%.",
+    "t": "The Mountaineers are 60\u201365 in Big 12 conference games since joining in 2012, winning 48%.",
     "w": [
      "West Virginia"
     ]
@@ -2880,7 +2859,7 @@
    },
    {
     "s": "Iowa State",
-    "t": "The most one-sided meeting in Farmageddon since 2011 was 2020: Iowa State by 45 over Kansas State.",
+    "t": "The most one-sided meeting in Farmageddon since 2011 came in 2020: Iowa State by 45 over Kansas State.",
     "w": [
      "Iowa State",
      "Kansas State"
@@ -2888,7 +2867,7 @@
    },
    {
     "s": "Cincinnati",
-    "t": "The most one-sided meeting in the Battle for the Victory Bell since 2011 was 2012: Cincinnati by 38 over Miami (OH).",
+    "t": "The most one-sided meeting in the Battle for the Victory Bell since 2011 came in 2012: Cincinnati by 38 over Miami (OH).",
     "w": [
      "Cincinnati",
      "Miami (OH)"
@@ -2896,7 +2875,7 @@
    },
    {
     "s": "Utah",
-    "t": "The most one-sided meeting in the Battle of the Brothers since 2011 was 2024: Utah by 17 over Utah State.",
+    "t": "The most one-sided meeting in the Battle of the Brothers since 2011 came in 2024: Utah by 17 over Utah State.",
     "w": [
      "Utah",
      "Utah State"
@@ -2904,7 +2883,7 @@
    },
    {
     "s": "Houston",
-    "t": "The most one-sided meeting in the Bayou Bucket game since 2011 was 2011: Houston by 39 over Rice.",
+    "t": "The most one-sided meeting in the Bayou Bucket game since 2011 came in 2011: Houston by 39 over Rice.",
     "w": [
      "Houston",
      "Rice"
@@ -2912,7 +2891,7 @@
    },
    {
     "s": "Iowa",
-    "t": "The most one-sided meeting in the Cy-Hawk game since 2011 was 2016: Iowa by 39 over Iowa State.",
+    "t": "The most one-sided meeting in the Cy-Hawk game since 2011 came in 2016: Iowa by 39 over Iowa State.",
     "w": [
      "Iowa",
      "Iowa State"
@@ -2920,7 +2899,7 @@
    },
    {
     "s": "Utah",
-    "t": "The most one-sided meeting in the Holy War since 2011 was 2011: Utah by 44 over BYU.",
+    "t": "The most one-sided meeting in the Holy War since 2011 came in 2011: Utah by 44 over BYU.",
     "w": [
      "BYU",
      "Utah"
@@ -2928,7 +2907,7 @@
    },
    {
     "s": "TCU",
-    "t": "The most one-sided meeting in the Iron Skillet game since 2011 was 2014: TCU by 56 over SMU.",
+    "t": "The most one-sided meeting in the Iron Skillet game since 2011 came in 2014: TCU by 56 over SMU.",
     "w": [
      "SMU",
      "TCU"
@@ -2936,7 +2915,7 @@
    },
    {
     "s": "BYU",
-    "t": "The most one-sided meeting in the Old Wagon Wheel game since 2011 was 2019: BYU by 28 over Utah State.",
+    "t": "The most one-sided meeting in the Old Wagon Wheel game since 2011 came in 2019: BYU by 28 over Utah State.",
     "w": [
      "BYU",
      "Utah State"
@@ -2944,7 +2923,7 @@
    },
    {
     "s": "TCU",
-    "t": "The most one-sided meeting in the Revivalry since 2011 was 2016: TCU by 40 over Baylor.",
+    "t": "The most one-sided meeting in the Revivalry since 2011 came in 2016: TCU by 40 over Baylor.",
     "w": [
      "Baylor",
      "TCU"
@@ -2952,7 +2931,7 @@
    },
    {
     "s": "Colorado",
-    "t": "The most one-sided meeting in the Rocky Mountain Showdown since 2011 was 2016: Colorado by 37 over Colorado State.",
+    "t": "The most one-sided meeting in the Rocky Mountain Showdown since 2011 came in 2016: Colorado by 37 over Colorado State.",
     "w": [
      "Colorado",
      "Colorado State"
@@ -2960,7 +2939,7 @@
    },
    {
     "s": "Utah",
-    "t": "The most one-sided meeting in the Rumble in the Rockies since 2011 was 2025: Utah by 46 over Colorado.",
+    "t": "The most one-sided meeting in the Rumble in the Rockies since 2011 came in 2025: Utah by 46 over Colorado.",
     "w": [
      "Colorado",
      "Utah"
@@ -2968,7 +2947,7 @@
    },
    {
     "s": "Kansas State",
-    "t": "The most one-sided meeting in the Sunflower Showdown since 2011 was 2020: Kansas State by 41 over Kansas.",
+    "t": "The most one-sided meeting in the Sunflower Showdown since 2011 came in 2020: Kansas State by 41 over Kansas.",
     "w": [
      "Kansas",
      "Kansas State"
@@ -2976,7 +2955,7 @@
    },
    {
     "s": "Arizona State",
-    "t": "The most one-sided meeting in the Territorial Cup since 2011 was 2020: Arizona State by 63 over Arizona.",
+    "t": "The most one-sided meeting in the Territorial Cup since 2011 came in 2020: Arizona State by 63 over Arizona.",
     "w": [
      "Arizona",
      "Arizona State"
@@ -2984,7 +2963,7 @@
    },
    {
     "s": "Texas Tech",
-    "t": "The most one-sided meeting in the Texas Tech\u2013Baylor rivalry since 2011 was 2013: Baylor by 29 over Texas Tech.",
+    "t": "The most one-sided meeting in the Texas Tech\u2013Baylor rivalry since 2011 came in 2013: Baylor by 29 over Texas Tech.",
     "w": [
      "Baylor",
      "Texas Tech"
@@ -2992,7 +2971,7 @@
    },
    {
     "s": "South Florida",
-    "t": "The most one-sided meeting in the War on I-4 since 2011 was 2015: South Florida by 41 over UCF.",
+    "t": "The most one-sided meeting in the War on I-4 since 2011 came in 2015: South Florida by 41 over UCF.",
     "w": [
      "South Florida",
      "UCF"
@@ -3000,7 +2979,7 @@
    },
    {
     "s": "UCF",
-    "t": "UCF and South Florida have met 10 times since 2011 in the War on I-4. In those games UCF leads 8\u20132.",
+    "t": "UCF and South Florida have met ten times since 2011 in the War on I-4. In those games UCF leads 8\u20132.",
     "w": [
      "South Florida",
      "UCF"
@@ -3008,21 +2987,21 @@
    },
    {
     "s": "UCF",
-    "t": "UCF has won the last 6 meetings in the War on I-4, most recently in 2022.",
+    "t": "UCF has won the last six meetings in the War on I-4, most recently in 2022.",
     "w": [
      "UCF"
     ]
    },
    {
     "s": "UCF",
-    "t": "UCF's best Big 12 season is 2023, at 3\u20136 \u2014 the best of the 3 they have played since joining in 2023.",
+    "t": "UCF's best Big 12 season is 2023, at 3\u20136 \u2014 the best of the three seasons it has played since joining in 2023.",
     "w": [
      "UCF"
     ]
    },
    {
     "s": "Utah",
-    "t": "Utah and Utah State have met 4 times since 2011 in the Battle of the Brothers. In those games Utah leads 3\u20131.",
+    "t": "Utah and Utah State have met four times since 2011 in the Battle of the Brothers. In those games Utah leads 3\u20131.",
     "w": [
      "Utah",
      "Utah State"
@@ -3030,21 +3009,21 @@
    },
    {
     "s": "Utah",
-    "t": "Utah has won the last 3 meetings in the Battle of the Brothers, most recently in 2024.",
+    "t": "Utah has won the last three meetings in the Battle of the Brothers, most recently in 2024.",
     "w": [
      "Utah"
     ]
    },
    {
     "s": "Utah",
-    "t": "Utah's longest run of Big 12 wins since joining in 2024 is 5 in a row, in 2025.",
+    "t": "Utah's longest run of Big 12 wins since joining in 2024 is five in a row, in 2025.",
     "w": [
      "Utah"
     ]
    },
    {
     "s": "West Virginia",
-    "t": "West Virginia and Pittsburgh have met 5 times since 2011 in the Backyard Brawl. In those games West Virginia leads 3\u20132.",
+    "t": "West Virginia and Pittsburgh have met five times since 2011 in the Backyard Brawl. In those games West Virginia leads 3\u20132.",
     "w": [
      "Pittsburgh",
      "West Virginia"
@@ -3052,14 +3031,14 @@
    },
    {
     "s": "West Virginia",
-    "t": "West Virginia's best Big 12 season is 2016, at 7\u20132 \u2014 the best of the 14 they have played since joining in 2012.",
+    "t": "West Virginia's best Big 12 season is 2016, at 7\u20132 \u2014 the best of the fourteen seasons it has played since joining in 2012.",
     "w": [
      "West Virginia"
     ]
    },
    {
     "s": "West Virginia",
-    "t": "West Virginia's longest run of Big 12 wins since joining in 2012 is 4 in a row, in 2014 \u2014 the second-lowest in the league.",
+    "t": "West Virginia's longest run of Big 12 wins since joining in 2012 is four in a row, in 2014 \u2014 the second-lowest in the league.",
     "w": [
      "West Virginia"
     ]
