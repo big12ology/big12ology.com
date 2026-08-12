@@ -62,6 +62,25 @@
         // h3 as well: the chart panels head themselves one level down,
         // which is right for their place in the document and irrelevant to
         // whether the panel can be closed.
+        // A CARD THAT IS ITSELF A LINK CANNOT BE COLLAPSIBLE, and the reason
+        // is the anchor rather than anything about the card.
+        //
+        // The hub's four cards and the two on /pools/ are written as
+        // <a class=card href=...> — the whole panel is the link. Put a button
+        // inside one and a press does both things: the card collapses and the
+        // browser follows the href. So the reader lands on another page with
+        // the state already saved, comes back, and finds a card showing its
+        // heading and nothing else — with no way to reopen it, because every
+        // attempt navigates away again. It reads as a card that has gone
+        // blank, which is exactly what it is.
+        //
+        // Detected rather than declared. An opt-out class would work until
+        // somebody adds the seventh link-card and does not know to write it;
+        // this asks the question that actually decides the answer. closest()
+        // returns the card itself when the card IS the anchor, so one call
+        // covers both shapes.
+        if (card.closest("a")) return;
+
         var h2 = card.querySelector(":scope > h2, :scope > h3");
         if (!h2 || h2.querySelector(".cardtoggle")) return;
 
