@@ -90,9 +90,18 @@ jobs:
           # A binding whose id was never filled in. wrangler would reject this
           # anyway, but the error it gives is about an unknown namespace rather
           # than about the line somebody forgot to edit.
-          if "PLACEHOLDER_" in cfg:
-              sys.exit("REFUSING TO DEPLOY: a binding still has a placeholder "
-                       "id. Create the namespace and paste the real one in — "
+          #
+          # THE ID VALUES, NOT THE WHOLE FILE. The first version of this asked
+          # `"PLACEHOLDER_" in cfg`, and the comment in wrangler.toml that
+          # explains this very check contains the word — so the config that
+          # had just been filled in correctly was refused, with an error
+          # insisting it still had a placeholder in it. A guard that reads
+          # prose will eventually be tripped by prose about the guard.
+          bad = [v for v in re.findall(r'^\s*id\s*=\s*"([^"]+)"', cfg, re.M)
+                 if v.startswith("PLACEHOLDER_")]
+          if bad:
+              sys.exit(f"REFUSING TO DEPLOY: placeholder id {bad!r}. Create "
+                       "the namespace and paste the real one in — "
                        "wrangler.toml says which command.")
           print(f"routes ok: {patterns}")
           PY
