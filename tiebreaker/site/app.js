@@ -1166,15 +1166,60 @@
     // mean either answers neither.
     M.send("scenario", "resumed");
   }
-  if (urlProblem || resumed) {
-    var warn = document.createElement("p");
-    warn.className = "note wurlwarn";
-    warn.textContent = urlProblem
-      ? urlProblem + " Showing the season as it stands."
-      : "Picked up where you left off. Clear picks starts over.";
+  notice(urlProblem
+    ? urlProblem + " Showing the season as it stands."
+    : (resumed ? "Picked up where you left off. Clear picks starts over."
+       : ""));
+
+  /** The one line above the game list. Replaces rather than appends, because
+      the hash can change more than once without the page reloading. */
+  function notice(text) {
+    var old = document.querySelector(".wurlwarn");
+    if (old && old.parentNode) old.parentNode.removeChild(old);
+    if (!text) return;
+    var p = document.createElement("p");
+    p.className = "note wurlwarn";
+    p.textContent = text;
     var host = document.getElementById("wgames");
-    if (host && host.parentNode) host.parentNode.insertBefore(warn, host);
+    if (host && host.parentNode) host.parentNode.insertBefore(p, host);
   }
+
+  // A SCENARIO PASTED INTO A LAB THAT IS ALREADY OPEN. Changing the fragment
+  // does not reload the document, so nothing read it and the board went on
+  // showing whatever it already had — the reader's own picks under somebody
+  // else's URL, which is worse than ignoring the paste, because the address
+  // bar now describes a board that is not on the screen.
+  //
+  // Our own writes cannot land here: syncUrl goes through replaceState, and
+  // replaceState does not fire this event. Anything arriving is the reader —
+  // a paste, or Back onto a hash they typed themselves.
+  window.addEventListener("hashchange", function () {
+    if (!window.B12State) return;
+    var raw = B12State.hashRead(URL_KEY);
+    // A scenario that cannot be read must not take the stored board down
+    // with it. On arrival a bad link leaves storage alone; pasting one is
+    // the same event later, and someone else's stale URL is no reason to
+    // lose the season you built.
+    var keep = B12State.get(STORE_KEY, null);
+    urlHold = true;
+    picks = {};
+    var problem = raw ? applyScenario(raw) : null;
+    if (problem) picks = {};
+    urlHold = false;
+    var msel = document.getElementById("w-model");
+    if (msel) msel.value = model;
+    renderPickList();
+    syncFavLabels();
+    updateNote();
+    refresh();
+    if (problem && keep) B12State.set(STORE_KEY, keep);
+    notice(problem ? problem + " Showing the season as it stands." : "");
+    // Its own pair of values. "stale" already counts links that failed ON
+    // ARRIVAL, which is the measurement that says the sharing feature is
+    // broken; a paste failing later is a different event and folding them
+    // together would make the first number impossible to read.
+    if (M) M.send("scenario", problem ? "pasted-stale" : "pasted");
+  });
 
   renderPickList();
   if (Object.keys(picks).length) {

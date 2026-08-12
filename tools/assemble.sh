@@ -250,6 +250,40 @@ def line(sp):
     return f"{nxt.get('home') if sp < 0 else nxt.get('away')} −{n}"
 
 
+WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
+
+
+def count_word(n):
+    return WORDS.get(n, str(n))
+
+
+def ensemble(spot):
+    """Whose opinion the percentages are, including how current it is.
+
+    In August most systems have not published for the new season and the
+    build regresses last year's finals toward the mean rather than trusting
+    them. That is the right handling, and on the section pages it is stated;
+    on the front page "an ensemble of four public rating models" reads as
+    four opinions about this year's teams, which in week two it is not.
+
+    Counted from the data, so the qualifier deletes itself the week the last
+    system publishes rather than waiting for somebody to notice.
+    """
+    m = spot.get("models") or {}
+    total, stale = m.get("total") or 0, m.get("stale") or 0
+    if not total:
+        return "Ten thousand simulated seasons."
+    lead = (f"Ensemble of {count_word(total)} public rating "
+            f"{'model' if total == 1 else 'models'}")
+    if not stale:
+        return f"{lead}, ten thousand simulated seasons."
+    which = "both" if total == 2 and stale == 2 else (
+        "all " + count_word(stale) if stale == total else count_word(stale))
+    return (f"{lead} &mdash; {which} still on last season's numbers, pulled "
+            f"toward the mean until they publish &mdash; over ten thousand "
+            f"simulated seasons.")
+
+
 def standing(spot):
     """"BYU 23% and Arizona 12%" — the two teams as the season has them.
 
@@ -313,9 +347,8 @@ tok = {
         # it — and neither travelled with the component to a card that has
         # no room for either. Four bare percentages and an arrow from
         # nowhere is not a number a stranger can read.
-        + (f"<p class=spotnote>As things stand {standing(spot)}. Ensemble of "
-           f"four public rating models, ten thousand simulated seasons.</p>"
-           if spot.get("now") else "")
+        + (f"<p class=spotnote>As things stand {standing(spot)}. "
+           f"{ensemble(spot)}</p>" if spot.get("now") else "")
         if spot else ""),
     "HUB_CCG_CARD": (
         f"<p class=stat>Projected title game: <b>{e(ccg[0]['team'])}</b> vs "

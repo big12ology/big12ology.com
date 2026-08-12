@@ -5635,6 +5635,10 @@ def write_hub(year, games, lines, sims_race, lev_top=None):
     # needs team marks and team colours, and this is the only side that has
     # them — the shell script gets finished HTML and substitutes it.
     if lev_top and lev_top.get("pair") and len(lev_top["pair"]) == 2:
+        # Read back through load_ratings, so `regressed` here means what it
+        # means to the simulation — the flag regress_stale actually set, not
+        # a second guess at staleness from the raw file.
+        systems_ = load_ratings(year).get("systems", {})
         g = {"home": lev_top["home"], "away": lev_top["away"],
              "start": lev_top.get("start"), "neutral_site": False}
         lev = {"pair": {t: tuple(v) for t, v in lev_top["pair"].items()}}
@@ -5657,6 +5661,15 @@ def write_hub(year, games, lines, sims_race, lev_top=None):
             # was a delta from a figure that appeared nowhere on the page.
             "now": {t: round((sims.get(t) or {}).get("p_ccg") or 0.0, 4)
                     for t in (lev_top["home"], lev_top["away"])},
+            # HOW MUCH OF THE ENSEMBLE IS THIS SEASON'S. In August most
+            # systems have not published yet and load_ratings regresses last
+            # year's finals toward the mean rather than trusting them — which
+            # is the right handling and invisible from the front page, where
+            # "an ensemble of four public rating models" reads as four
+            # opinions about the 2026 teams. Counted rather than described,
+            # so the sentence stops apologising on its own once they publish.
+            "models": {"total": len(systems_), "stale": sum(
+                1 for s in systems_.values() if s.get("regressed"))},
             "html": fork,
         }
 
