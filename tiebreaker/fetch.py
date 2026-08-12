@@ -55,8 +55,32 @@ def key():
     return k
 
 
+# Calls made by hand, so tools/api-budget.py can add them to what it derives
+# from the workflow history. Gitignored: it is a local fact about this laptop,
+# not a property of the project, and committing it would put a write in the
+# path of every scheduled build for no gain.
+USAGE_LOG = os.path.join(DATA, ".api-local.log")
+
+
+def _note_call(path):
+    """Record one call. Never raises: a ledger is not worth a failed fetch."""
+    try:
+        os.makedirs(DATA, exist_ok=True)
+        stamp = datetime.datetime.now(datetime.timezone.utc).isoformat(
+            timespec="seconds")
+        with open(USAGE_LOG, "a", encoding="utf-8") as f:
+            f.write(f"{stamp} {path.split('?')[0]}\n")
+    except OSError:
+        pass
+
+
 def get(path, k):
-    """One GET. curl rather than urllib so the key never lands in a URL log."""
+    """One GET. curl rather than urllib so the key never lands in a URL log.
+
+    Every CFBD call in this project comes through here, which is what makes
+    the budget knowable: one choke point to count at.
+    """
+    _note_call(path)
     r = subprocess.run(
         ["curl", "-sS", "-m", "60", "-H", f"Authorization: Bearer {k}",
          f"{API}/{path}"],

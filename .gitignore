@@ -27,3 +27,6 @@ PLAN.md
 TODO.md
 SCRATCH.md
 *.wip.md
+
+# Calls made by hand, counted by tools/api-budget.py. A local fact.
+tiebreaker/data/.api-local.log

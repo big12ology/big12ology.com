@@ -40,6 +40,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read      # api-budget.py reads the run history to derive spend
 
 jobs:
   check:
@@ -56,6 +57,21 @@ jobs:
             [ "$c" = "200" ] || { echo "::error::$p answered $c"; fail=1; }
           done
           exit $fail
+
+      # BETTER TO KNOW ON THE 4TH THAN THE 28TH. The CFBD plan is a hard
+      # 1,000 calls a month and there is no topping it up, so the failure
+      # mode is the site quietly falling back to committed data for the last
+      # week of a month. This compares spend against what the cron schedule
+      # alone should cost and warns on the RATE, not the total — a total
+      # only trips once it is too late to change anything.
+      #
+      # Warns, never fails: this job also watches whether the site is up, and
+      # a workflow that cries about a budget is a workflow somebody mutes.
+      - uses: actions/checkout@v7
+      - name: The CFBD budget is on track
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/api-budget.py --check
 
       - name: The API is up, and doing its job
         run: |
