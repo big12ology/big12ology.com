@@ -80,6 +80,7 @@ jobs:
       # Never fails the run. Losing a commit is bad; not publishing the scores
       # that were just fetched is worse, and the publish step is below this.
       - name: Keep what was learned
+        id: keep
         continue-on-error: true
         run: |
           git config user.name "tiebreaker-bot"
@@ -113,3 +114,13 @@ jobs:
         env:
           SCORES_INGEST_KEY: ${{ secrets.SCORES_INGEST_KEY }}
         run: tools/publish-scores.sh
+
+      # The commit-back above is allowed to fail so that a lost commit cannot
+      # stop the publish below it. Allowed to fail is not the same as allowed
+      # to be quiet — see the long note on the same pair in pages.yml.
+      - name: Say so if the commit-back failed
+        if: always() && steps.keep.outcome == 'failure'
+        run: |
+          echo "::warning::what this run learned was NOT committed. The next"
+          echo "::warning::run starts from the same copy and asks CFBD the"
+          echo "::warning::same questions again."

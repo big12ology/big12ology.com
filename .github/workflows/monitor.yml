@@ -115,3 +115,67 @@ jobs:
             echo "::error::/api/<nonsense> answered $code, expected 404"
             exit 1
           }
+
+      # THE PUBLISHER IS STILL REMEMBERING WHAT IT LEARNED.
+      #
+      # This exists because the commit-back in pages.yml was broken for the
+      # whole of its life and nothing said so. `git add` was handed a pathspec
+      # that did not exist, failed the whole invocation, staged nothing, and
+      # died under `bash -e` — and continue-on-error turned that into a green
+      # run. Two bot commits in the repo's history was the only symptom, and
+      # nobody counts commits.
+      #
+      # It cannot be caught from the outside by reading step results: a step
+      # allowed to fail reports conclusion=success, and the REST API does not
+      # expose `outcome` at all. The failure is only visible inside the job
+      # that produced it. So this watches the CONSEQUENCE instead — if the
+      # publisher is working, tiebreaker-bot commits when a score moves, and
+      # in season it moves most weeks.
+      #
+      # Warns, never fails, and only in season. Out of season no games finish,
+      # nothing changes, and no commit is the correct behaviour rather than a
+      # fault — failing on it all winter is how an alarm gets muted.
+      - name: The publisher is still committing what it learns
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          month=$(date -u +%m)
+          if [ "$month" -lt 8 ] || [ "$month" -gt 12 ]; then
+            echo "out of season (month $month) — nothing is expected to move."
+            exit 0
+          fi
+
+          # By author NAME, not the GitHub `author` filter: the bot commits as
+          # actions@users.noreply.github.com, which belongs to no account, so
+          # the API's author query matches nothing and would report a healthy
+          # publisher as silent forever.
+          last=$(gh api "repos/${GITHUB_REPOSITORY}/commits?per_page=100" \
+                   --jq '[.[] | select(.commit.author.name == "tiebreaker-bot")
+                          | .commit.author.date] | first // empty')
+
+          if [ -z "$last" ]; then
+            # August before the opener is the one time "no commits ever" is
+            # the truth rather than a fault: 2026 opens on the 29th, so there
+            # is nothing to have learned yet. Warning through the whole of
+            # August would train somebody to skip these runs by September,
+            # which is the fortnight this check exists for.
+            if [ "$month" = "08" ]; then
+              echo "no bot commits yet, and the season has not opened."
+              exit 0
+            fi
+            echo "::warning::no tiebreaker-bot commit in the last 100, in"
+            echo "::warning::month ${month}. The commit-back is failing, or the"
+            echo "::warning::publisher is not running. Check a recent Scores or"
+            echo "::warning::Pages run for a 'commit-back failed' warning."
+            exit 0
+          fi
+
+          age=$(( ( $(date -u +%s) - $(date -u -d "$last" +%s) ) / 86400 ))
+          echo "last tiebreaker-bot commit: $last (${age} days ago)"
+          if [ "$age" -gt 8 ]; then
+            echo "::warning::the publisher has not committed in ${age} days."
+            echo "::warning::In season that usually means the commit-back is"
+            echo "::warning::failing quietly, and every run is re-asking CFBD"
+            echo "::warning::for results it already had."
+          fi

@@ -125,6 +125,7 @@ jobs:
       # on every refresh, so if a published week is not committed here, the
       # line it was played on is gone and the week cannot be graded at all.
       - name: Keep the week's forecast and slate
+        id: keep
         if: github.event_name != 'workflow_dispatch' || inputs.deploy
         continue-on-error: true
         run: |
@@ -170,6 +171,7 @@ jobs:
       # finds out until someone goes to pick. Say it out loud instead, without
       # failing the deploy: the site not being down is still the priority.
       - name: Warn if the week has no slate
+        id: slate_warn
         if: github.event_name != 'workflow_dispatch' || inputs.deploy
         continue-on-error: true
         working-directory: tiebreaker
@@ -207,11 +209,39 @@ jobs:
       # must be loud. Here it is a bonus on top of a deploy, and taking the
       # domain's deploy down over it would be the tail wagging the dog.
       - name: Publish scores to the Worker
+        id: publish
         if: github.event_name != 'workflow_dispatch' || inputs.deploy
         continue-on-error: true
         env:
           SCORES_INGEST_KEY: ${{ secrets.SCORES_INGEST_KEY }}
         run: tools/publish-scores.sh
+
+      # SAY WHAT IT MEANT, not just that something failed.
+      #
+      # continue-on-error does two jobs and only one of them is wanted: it
+      # keeps the run going, which is right, and it hides the failure, which is
+      # not. A step's CONCLUSION is set to success when it is allowed to fail —
+      # so the API, the green tick and every check that reads either of them
+      # say the run was fine. Only `outcome` remembers, and only in here.
+      #
+      # Both of the bugs that shipped today were sitting in this blind spot for
+      # runs on end. These two lines are the difference between a log somebody
+      # has to go and read and a warning with words on it.
+      - name: Say so if the commit-back failed
+        if: always() && steps.keep.outcome == 'failure'
+        run: |
+          echo "::warning::the forecast and slate were NOT committed. Whatever"
+          echo "::warning::this run learned is lost when the runner goes away —"
+          echo "::warning::and games_<year>.json not landing means the next run"
+          echo "::warning::asks CFBD the same questions again."
+
+      - name: Say so if the publish failed
+        if: always() && steps.publish.outcome == 'failure'
+        run: |
+          echo "::warning::the scores were NOT published to the Worker. The"
+          echo "::warning::boards will wait for the next cron sweep rather than"
+          echo "::warning::moving now, which is slow but not wrong. If this"
+          echo "::warning::repeats, check SCORES_INGEST_KEY on both ends."
 
       - name: Assemble the three sites
         env:
@@ -237,6 +267,40 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.deploy
         with:
           path: dist
+
+      # THE CATCH-ALL, so the next one does not need a step written for it.
+      #
+      # The two warnings above name a specific failure and say what it costs.
+      # This one needs no foreknowledge: it walks every step that has an id and
+      # reports any whose outcome was failure, including ones added after this
+      # was written.
+      #
+      # toJSON(steps) only sees steps that carry an `id`, which is the one
+      # thing to remember — a continue-on-error step with no id is invisible
+      # here as well as everywhere else. Giving it an id is the whole cost of
+      # being covered.
+      #
+      # Warns rather than fails, deliberately. A quiet failure is worth
+      # knowing about; it is not worth turning a deploy that otherwise worked
+      # into a red run somebody learns to ignore. Making it fail is a one-word
+      # change if that judgement turns out to be wrong.
+      - name: Report any step that failed quietly
+        if: always()
+        env:
+          STEPS: ${{ toJSON(steps) }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          steps = json.loads(os.environ["STEPS"])
+          bad = [k for k, v in steps.items() if v.get("outcome") == "failure"]
+          if bad:
+              print("::warning::these steps failed without stopping the run: "
+                    + ", ".join(sorted(bad)))
+              print("::warning::the run is green because they are "
+                    "continue-on-error. They still did not do their job.")
+          else:
+              print(f"no quiet failures ({len(steps)} steps with an id checked)")
+          PY
 
   deploy:
     needs: build
