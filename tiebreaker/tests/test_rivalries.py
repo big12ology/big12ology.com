@@ -16,6 +16,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import facts  # noqa: E402
+import fetch as fetcher  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(os.path.dirname(HERE), "data")
@@ -95,12 +96,14 @@ for r in rivalries:
           f"generator capitalises it where a sentence needs it")
     check("conference" in r, f"{r['name']!r} does not say if it is a Big 12 game")
 
-# And the facts actually come out.
+# And the facts actually come out. Through mark_ccg, the way build.py loads
+# it — a championship game between two rivals counts in the series otherwise,
+# and the 2017-2021 ones are only tagged by that repair.
 by_year = {}
 for y in range(facts.TB_FIRST, facts.TB_LAST + 1):
     p = os.path.join(DATA, f"games_{y}.json")
     if os.path.exists(p):
-        by_year[y] = json.load(open(p))
+        by_year[y] = fetcher.mark_ccg(json.load(open(p)))
 got = facts.rivalry_facts(by_year, 2026, facts.TB_FIRST)
 check(len(got) >= 30,
       f"only {len(got)} rivalry facts generated from {len(rivalries)} "

@@ -2263,7 +2263,29 @@
    },
    {
     "s": "Baylor",
+    "t": "Baylor beat Oklahoma State 21\u201316 in the 2021 Big 12 championship game.",
+    "w": [
+     "Baylor",
+     "Oklahoma State"
+    ]
+   },
+   {
+    "s": "Baylor",
+    "t": "Baylor has won the Big 12 championship game once since the game returned in 2017.",
+    "w": [
+     "Baylor"
+    ]
+   },
+   {
+    "s": "Baylor",
     "t": "Baylor took the 2013 conference season outright at 8\u20131.",
+    "w": [
+     "Baylor"
+    ]
+   },
+   {
+    "s": "Baylor",
+    "t": "Baylor took the 2019 conference season outright at 8\u20131.",
     "w": [
      "Baylor"
     ]
@@ -2424,7 +2446,7 @@
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State has reached the Big 12 championship game once without winning it.",
+    "t": "Iowa State has reached the Big 12 championship game twice without winning it.",
     "w": [
      "Iowa State"
     ]
@@ -2445,14 +2467,14 @@
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State took the 2020 conference season outright at 8\u20132.",
+    "t": "Iowa State took the 2020 conference season outright at 8\u20131.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "Iowa State",
-    "t": "Iowa State's best Big 12 season is 2020, at 8\u20132 \u2014 the best of the fifteen seasons it has played since 2011.",
+    "t": "Iowa State's best Big 12 season is 2020, at 8\u20131 \u2014 the best of the fifteen seasons it has played since 2011.",
     "w": [
      "Iowa State"
     ]
@@ -2546,14 +2568,14 @@
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State has reached the Big 12 championship game once without winning it.",
+    "t": "Oklahoma State has reached the Big 12 championship game twice without winning it.",
     "w": [
      "Oklahoma State"
     ]
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State is 77\u201359 in Big 12 conference games since 2011, winning 57% \u2014 the fifth-best in the league.",
+    "t": "Oklahoma State is 77\u201358 in Big 12 conference games since 2011, winning 57% \u2014 the fifth-best in the league.",
     "w": [
      "Oklahoma State"
     ]
@@ -2561,6 +2583,13 @@
    {
     "s": "Oklahoma State",
     "t": "Oklahoma State took the 2011 conference season outright at 8\u20131.",
+    "w": [
+     "Oklahoma State"
+    ]
+   },
+   {
+    "s": "Oklahoma State",
+    "t": "Oklahoma State took the 2021 conference season outright at 8\u20131.",
     "w": [
      "Oklahoma State"
     ]
@@ -2597,14 +2626,14 @@
    },
    {
     "s": "TCU",
-    "t": "TCU has reached the Big 12 championship game once without winning it.",
+    "t": "TCU has reached the Big 12 championship game twice without winning it.",
     "w": [
      "TCU"
     ]
    },
    {
     "s": "TCU",
-    "t": "TCU is 70\u201357 in Big 12 conference games since joining in 2012, winning 55%.",
+    "t": "TCU is 70\u201356 in Big 12 conference games since joining in 2012, winning 56%.",
     "w": [
      "TCU"
     ]
@@ -2683,14 +2712,6 @@
     ]
    },
    {
-    "s": "Baylor",
-    "t": "The 2021 season finished with Baylor and Oklahoma State level at the top on 8\u20132. That is what the seven steps are for.",
-    "w": [
-     "Baylor",
-     "Oklahoma State"
-    ]
-   },
-   {
     "s": "Arizona State",
     "t": "The 2024 season finished with Arizona State, BYU, Colorado and Iowa State level at the top on 7\u20132. That is what the seven steps are for.",
     "w": [
@@ -2717,7 +2738,7 @@
    },
    {
     "s": "Baylor",
-    "t": "The Bears are 73\u201364 in Big 12 conference games since 2011, winning 53%.",
+    "t": "The Bears are 72\u201363 in Big 12 conference games since 2011, winning 53%.",
     "w": [
      "Baylor"
     ]
@@ -2727,7 +2748,7 @@
    },
    {
     "s": "Iowa State",
-    "t": "The Cyclones are 60\u201376 in Big 12 conference games since 2011, winning 44%.",
+    "t": "The Cyclones are 60\u201375 in Big 12 conference games since 2011, winning 44%.",
     "w": [
      "Iowa State"
     ]

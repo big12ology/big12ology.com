@@ -27,6 +27,7 @@ import tempfile
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import facts  # noqa: E402
+import fetch as fetcher  # noqa: E402
 import rotation as rotation_mod  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -42,8 +43,17 @@ def check(cond, msg):
 
 
 def load(year):
+    """Through mark_ccg, exactly as build.py's load_games does.
+
+    Not a detail. CFBD never tagged the 2017-2021 championship games, and
+    build.py repairs that on load rather than on fetch — so a test that reads
+    data/ raw is grading a season the deploy never sees. Five conference
+    records, three championship facts and a tie at the top of 2021 differed
+    between the two, and the suite had no way to notice: it was internally
+    consistent with the wrong input.
+    """
     p = os.path.join(DATA, f"games_{year}.json")
-    return json.load(open(p)) if os.path.exists(p) else []
+    return fetcher.mark_ccg(json.load(open(p))) if os.path.exists(p) else []
 
 
 def teams():
