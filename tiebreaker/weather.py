@@ -91,6 +91,12 @@ def in_range(games, now=None):
     for g in games:
         if g.get("completed"):
             continue
+        # A roof settles it. Nothing renders a dome's forecast, so fetching
+        # one buys a column of numbers no page will ever print — and the
+        # request is shared with every other venue in range, so leaving it in
+        # makes the whole batch wider for nothing.
+        if g.get("dome"):
+            continue
         when = _parse(g.get("start"))
         if when and now - datetime.timedelta(hours=6) <= when <= edge:
             out.append((g, when))
@@ -184,6 +190,12 @@ def normal_for(g, normals):
     because it is a fact about the place and not a claim about the day.
     """
     if not normals or g.get("weather"):
+        return None
+    # Same rule as the forecast: a ten-year average for a roofed stadium is
+    # a fact about the city, not about the game, and the line says "Indoors"
+    # instead. Guarded here as well as in the renderer so the average cannot
+    # reappear through the other door.
+    if g.get("dome"):
         return None
     when = _parse(g.get("start"))
     if not when:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""What the weather is usually like, per venue, per fortnight of the season.
+"""What the weather is usually like, per venue, per half-month of the season.
 
     python3 normals.py            # build data/normals.json (skips if present)
     python3 normals.py --force    # rebuild from scratch
@@ -7,7 +7,7 @@
 
 A forecast reaches sixteen days. A season is four months. For most of the
 schedule the honest thing to show is not a blank but the climate: this venue,
-this fortnight, ten years of history. It is not a prediction and the page
+this two-week window, ten years of history. It is not a prediction and the page
 never dresses it as one — it is a fact about the place.
 
 Open-Meteo's archive is keyless and unmetered, and the attendance tracker
@@ -17,7 +17,7 @@ the file and calls nothing. Re-run it when new venues appear in the schedule,
 the way `fetch.py --venues` works.
 
 Only the venues a tracked season actually uses are asked about — the
-catalogue holds 800 and the schedules touch a tenth of that — and only the
+catalog holds 800 and the schedules touch a tenth of that — and only the
 months a game is played in.
 """
 import datetime
@@ -48,7 +48,7 @@ PACE = 0.8               # seconds between requests
 def bucket(d):
     """Half-month key: '10a' is the first of October, '10b' the second.
 
-    A fortnight is the resolution the underlying thing actually has. A
+    A half-month is the resolution the underlying thing actually has. A
     single calendar day of history is thirty-odd observations of noise;
     a month spans the whole of November, which in Morgantown is two
     different climates.
@@ -76,7 +76,7 @@ def _get(url, retried=False):
 def venues_in_play():
     """venue_id -> venue record, for venues a tracked season actually uses.
 
-    The catalogue holds 800; the schedules touch a tenth of that. Asking
+    The catalog holds 800; the schedules touch a tenth of that. Asking
     about the rest would be ten times the work for pages nobody can reach.
     """
     import fetch as fetcher

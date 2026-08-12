@@ -7,7 +7,7 @@ import { ats, outcome, displaySpread, pct } from "../src/ats.js";
 //
 // spreadX2 is the HOME spread doubled. -14 means the home team is laying 7.
 
-test("the favourite covers only by more than the number", () => {
+test("the favorite covers only by more than the number", () => {
   // Home laying 7 (spreadX2 -14), wins by 10 -> covered.
   assert.equal(ats(31, 21, -14), "home");
   // Wins by 7 exactly -> push, not a win.

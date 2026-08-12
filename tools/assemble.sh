@@ -238,7 +238,7 @@ def line(sp):
     if sp == 0:
         return "pick'em"
     n = f"{abs(sp):g}"
-    # U+2212, and the favourite named rather than a bare sign, because the
+    # U+2212, and the favorite named rather than a bare sign, because the
     # hero has room to say it and "-7" alone means nothing at a glance.
     return f"{nxt.get('home') if sp < 0 else nxt.get('away')} −{n}"
 
@@ -332,7 +332,7 @@ done < <(grep -rlE '\{\{(BUILD_STAMP|HUB_[A-Z_]+|FACTS:[a-z]+)\}\}' "$DIST" \
 # a pair of braces in the middle of the attendance page.
 
 for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
-         brand.css tokens.css theme.js \
+         brand.css tokens.css theme.js cards.js \
          tiebreaker/index.html tiebreaker/how.html tiebreaker/history.html \
          tiebreaker/draw.html tiebreaker/rotation.html tiebreaker/cutline.html tiebreaker/ladder.html \
          tiebreaker/app.js tiebreaker/engine.js tiebreaker/feed.xml \
@@ -381,7 +381,7 @@ fi
 #
 # Found the hard way: a masthead fix landed in the root copy and changed
 # nothing on /tiebreaker/, because that page reads its own.
-for shared in brand.css tokens.css theme.js; do
+for shared in brand.css tokens.css theme.js cards.js; do
   a="$ROOT/$shared"
   for b in "$ROOT/attendance/$shared" "$ROOT/tiebreaker/site/$shared"; do
     [ -f "$a" ] && [ -f "$b" ] || continue
@@ -393,7 +393,7 @@ done
 
 # Cache-busting is not optional (HANDOFF.md). Every reference to one of the
 # shared, mutable assets must carry a query string.
-BUSTED='brand\.css|tokens\.css|theme\.js|app\.js|engine\.js|pct\.js|replay\.js|scrollcue\.js|styles\.css|charts\.js|gametip\.js|stats\.js'
+BUSTED='brand\.css|tokens\.css|theme\.js|cards\.js|app\.js|engine\.js|pct\.js|replay\.js|scrollcue\.js|styles\.css|charts\.js|gametip\.js|stats\.js'
 
 while IFS= read -r page; do
   # Both quoting styles: the hub writes href="…", build.py emits some

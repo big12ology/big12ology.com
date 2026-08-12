@@ -10,7 +10,7 @@ Costs no CFBD quota — this talks to Wikipedia, and reads the schedule from
 the committed data/games_<year>.json.
 
 Every mark lands in site/logos/ with a matching entry in
-site/logos/SOURCES.json recording where it came from and under what licence.
+site/logos/SOURCES.json recording where it came from and under what license.
 That file is the point of this script: a logo with no provenance is a
 liability, and the sixteen conference marks have carried one from the start.
 
@@ -68,9 +68,9 @@ OVERRIDES = {
     "Hawai'i": "Hawaii Rainbow Warriors football",
 }
 
-# A software licence on an "image" means the lead image was a template icon,
+# A software license on an "image" means the lead image was a template icon,
 # not a mark. Caught on Georgia Southern, which came back LGPL.
-SOFTWARE_LICENCE = re.compile(r"\b(GPL|LGPL|MIT|BSD|Apache)\b", re.I)
+SOFTWARE_LICENSE = re.compile(r"\b(GPL|LGPL|MIT|BSD|Apache)\b", re.I)
 
 # "<School> University" is the institution, whose lead image is a seal or an
 # academic wordmark. We want the athletics programme, whose lead image is
@@ -201,9 +201,9 @@ def main():
             print(f"  {i:2}/{len(todo)}  {team:28} {article:32} NO IMAGE")
             continue
         info = image_info(f)
-        # A software licence means we picked up a template icon. Try the
+        # A software license means we picked up a template icon. Try the
         # article's own images instead before giving up.
-        if info and SOFTWARE_LICENCE.search(
+        if info and SOFTWARE_LICENSE.search(
                 strip_html(meta(info, "LicenseShortName"))):
             alt = any_logo_image(article, team)
             if alt and alt != f:
@@ -212,7 +212,7 @@ def main():
             flagged.append((team, f"no imageinfo for {f}"))
             continue
 
-        licence = strip_html(meta(info, "LicenseShortName")) or "UNKNOWN"
+        license = strip_html(meta(info, "LicenseShortName")) or "UNKNOWN"
         # Some URLs carry tracking parameters, and splitext on the whole URL
         # then returns ".org&utm_campaign=..." as the extension. Take the
         # extension from the path only.
@@ -225,31 +225,31 @@ def main():
             "requested": f.replace("File:", ""),
             "file": f.replace("File:", "").replace(" ", "_"),
             "url": info["url"], "mime": info.get("mime", ""),
-            "bytes": info.get("size", 0), "ext": ext, "licence": licence,
+            "bytes": info.get("size", 0), "ext": ext, "license": license,
             "credit": strip_html(meta(info, "Credit"))[:200],
             "artist": strip_html(meta(info, "Artist"))[:200],
             "restrictions": strip_html(meta(info, "Restrictions")),
             "file_page": info.get("descriptionurl", ""),
         }
         # No freely-licensed mark exists for this team on Wikipedia — what
-        # is there is a template icon under a software licence. Record the
+        # is there is a template icon under a software license. Record the
         # fact and download nothing; the site shows a marker and explains
         # itself rather than displaying something that is not the team's
         # mark, or a silent gap.
-        if SOFTWARE_LICENCE.search(licence):
+        if SOFTWARE_LICENSE.search(license):
             entry.update(usable=False, file="", url="", bytes=0, ext="",
                          note=f"no freely-licensed mark found; the article's "
-                              f"image is {licence}-licensed template art, "
+                              f"image is {license}-licensed template art, "
                               f"not the team's mark")
             print(f"  {i:2}/{len(todo)}  {team:28} {article:32} "
-                  f"{licence:22} !! NO USABLE MARK")
+                  f"{license:22} !! NO USABLE MARK")
             added.append(entry)
             continue
         entry["usable"] = True
 
-        mark = "  " if licence.lower().startswith(("public", "cc")) else "!!"
+        mark = "  " if license.lower().startswith(("public", "cc")) else "!!"
         print(f"  {i:2}/{len(todo)}  {team:28} {article:32} "
-              f"{licence:22} {mark}")
+              f"{license:22} {mark}")
 
         if not dry:
             req = urllib.request.Request(info["url"],
@@ -268,10 +268,10 @@ def main():
         json.dump(sources + added, open(SOURCES, "w"), indent=1)
 
     print(f"\n{'would add' if dry else 'added'}: {len(added)}")
-    by_licence = {}
+    by_license = {}
     for e in added:
-        by_licence.setdefault(e["licence"], []).append(e["team"])
-    for lic, teams in sorted(by_licence.items(),
+        by_license.setdefault(e["license"], []).append(e["team"])
+    for lic, teams in sorted(by_license.items(),
                              key=lambda kv: -len(kv[1])):
         print(f"  {len(teams):3}  {lic}")
     if flagged:

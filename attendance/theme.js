@@ -57,7 +57,7 @@
     if (!host) return;
     var current = stored();
     host.setAttribute("role", "group");
-    host.setAttribute("aria-label", "Colour theme");
+    host.setAttribute("aria-label", "Color theme");
     host.innerHTML = ["light", "system", "dark"].map(function (m) {
       return '<button type="button" data-mode="' + m + '" title="' +
         LABEL[m] + ' theme" aria-label="' + LABEL[m] + ' theme" ' +

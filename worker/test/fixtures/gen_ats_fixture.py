@@ -79,10 +79,10 @@ def build():
             "spread_raw": spread_raw,
             "spread_x2": spread_x2,
             # Independent statement of the sign convention, taken from
-            # scorecard.py:tally — the favourite is the home team when the
+            # scorecard.py:tally — the favorite is the home team when the
             # spread is negative. This is the assertion that catches an
             # inverted sign even if the arithmetic happens to agree.
-            "favourite": (None if spread_raw == 0 else
+            "favorite": (None if spread_raw == 0 else
                           g["home"] if spread_raw < 0 else g["away"]),
             "ats": expected,
         })

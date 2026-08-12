@@ -268,7 +268,7 @@ def cutline_section(all_games):
         ccg = next((g for g in games if g.get("ccg") and g["completed"]), None)
         if not ccg:
             continue                      # 2011-2016 had no championship game
-        # conf_records hands back lists; normalise, or a tuple-to-list
+        # conf_records hands back lists; normalize, or a tuple-to-list
         # comparison below is false for every season and the whole point of
         # the page silently disappears.
         rec = {t: tuple(v) for t, v in tb.conf_records(games).items()}

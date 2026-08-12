@@ -24,7 +24,7 @@ MARGIN_SIGMA = 13.5  # std dev of scoring margin vs the spread
 
 # A published rating is an estimate of a team's strength, not a measurement
 # of it, and simulating as though it were exact is what produced a 92%
-# per-game favourite nine times over in August 2026 — Texas Tech at 88% to
+# per-game favorite nine times over in August 2026 — Texas Tech at 88% to
 # reach the championship game with a 47% chance of running the table.
 # Each simulated season now draws one strength offset per team, held across
 # all of that team's games: if a team is really worse than its rating, it
@@ -44,7 +44,7 @@ STALE_KEEP = 0.65
 def regress_stale(systems, season):
     """Pull any system still on last season's numbers toward its own mean.
 
-    Call this once, at load, so odds, favourites and strength of schedule
+    Call this once, at load, so odds, favorites and strength of schedule
     all describe the same teams — Rule 6 in the README. Returns a new dict;
     the caller's copy is untouched."""
     out = {}
@@ -236,8 +236,22 @@ def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED, track=None):
 
 def leverage(sims, games):
     """Per tracked game: each team's P(CCG | home wins) - P(| home loses),
-    plus the total absolute swing. Returns [{game, home, away, total,
-    movers: [(team, delta), ...]}], biggest total first."""
+    plus how much championship probability changes hands on the result.
+
+    `total` is HALVED, and that is the whole of it. Every point one team
+    gains, another loses, so summing the absolute changes counts each point
+    twice: a game moving 27 points of probability summed to 54. That made the
+    scale's own anchor wrong — a championship-game seat is 100 points of
+    probability, so "100 means a full berth" was true of 200, and the bar,
+    capped at 100, filled at half a seat. Halved, 1.0 is one seat and the
+    number is a thing you can say in a sentence. Returns [{game, home, away, total,
+    movers: [(team, delta, p_if_home_wins, p_if_home_loses), ...]}],
+    biggest total first.
+
+    delta is a gap between two conditional worlds, NOT a move from the team's
+    current probability — that number is a blend of both worlds weighted by
+    who is likely to win. Callers that print one signed figure will be read
+    as the second thing; print the endpoints."""
     cond = sims.get("_cond", {})
     n = sims.get("_n", 0)
     by_id = {g["id"]: g for g in games}
@@ -250,13 +264,30 @@ def leverage(sims, games):
         movers = []
         total = 0.0
         for t, (sw, sl) in c["in"].items():
-            d = sw / nh - sl / nl
-            total += abs(d)
+            pw, pl = sw / nh, sl / nl
+            d = pw - pl
+            total += abs(d) / 2
             if abs(d) >= 0.005:
-                movers.append((t, d))
+                # Both endpoints, not just the gap between them. A single
+                # signed number here reads as a change from where the team
+                # stands today — "+27% if BYU wins" against a board showing
+                # 23% invites 23+27 — when it is actually the distance
+                # between two futures, neither of which is today. The caller
+                # can print the two probabilities and let the gap be seen.
+                movers.append((t, d, pw, pl))
         movers.sort(key=lambda x: -abs(x[1]))
         g = by_id[gid]
+        # The two teams playing, always, and whatever the threshold above
+        # decided. A game page is ABOUT these two: "the result barely moves
+        # you" is an answer, and dropping the row because the swing came in
+        # under half a point leaves the card silent on the only question it
+        # was opened to ask.
+        pair = {}
+        for t in (g["home"], g["away"]):
+            if t in c["in"]:
+                sw, sl = c["in"][t]
+                pair[t] = (sw / nh, sl / nl)
         out.append({"game": g, "home": g["home"], "away": g["away"],
-                    "total": total, "movers": movers})
+                    "total": total, "movers": movers, "pair": pair})
     out.sort(key=lambda x: -x["total"])
     return out

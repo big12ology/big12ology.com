@@ -90,7 +90,7 @@ function buildSeason(r) {
   return weeks;
 }
 
-/** Legal client behaviour: conference side, has a line, never reused. */
+/** Legal client behavior: conference side, has a line, never reused. */
 function buildPicks(r, weeks) {
   const players = [];
   const n = int(r, 1, 10);
@@ -142,7 +142,41 @@ function buildScores(r, weeks) {
  * applies the three sentences of the rules — a loss ends it, a locked week
  * with no pick ends it, everything before that counts.
  */
-function expectedRuns(env, lockedWeeks) {
+/**
+ * How many teams a player was allowed to pick in one week.
+ *
+ * Read off the slate and the picks, never off survivor_stranded — that table
+ * is the thing under test, and an oracle that consults it proves nothing.
+ * Spent is the no-reuse rule: the chalk they arrived having burned, plus
+ * every earlier pick whose week was not scored void.
+ *
+ * buildPicks skips a week when it finds no legal option, so the generator
+ * produces this case on its own; a season with one game a week and a quarter
+ * of games lineless produces it often.
+ */
+function usableAt(env, uid, week, chalkTeams) {
+  const spent = new Set(chalkTeams);
+  for (const p of env.raw.prepare(
+    `SELECT p.team FROM survivor_picks p
+      WHERE p.user_id = ? AND p.season = ? AND p.week < ?
+        AND NOT EXISTS (SELECT 1 FROM survivor_scores s
+                         WHERE s.user_id = p.user_id AND s.season = p.season
+                           AND s.week = p.week AND s.outcome = 'void')`)
+    .all(uid, SEASON, week)) spent.add(p.team);
+
+  let n = 0;
+  for (const g of env.raw.prepare(
+    `SELECT home, away, b12 FROM slate_games
+      WHERE season = ? AND week = ? AND spread_x2 IS NOT NULL`)
+    .all(SEASON, week)) {
+    for (const t of [g.home, g.away]) {
+      if (isPickable(g, t) && !spent.has(t)) n++;
+    }
+  }
+  return n;
+}
+
+async function expectedRuns(env, lockedWeeks) {
   const picks = env.raw.prepare(
     `SELECT user_id, week, team FROM survivor_picks WHERE season = ?
       ORDER BY user_id, week`).all(SEASON);
@@ -161,10 +195,16 @@ function expectedRuns(env, lockedWeeks) {
   const out = new Map();
   for (const [uid, u] of byUser) {
     const entered = Math.min(...u.picks.keys());
+    const chalk = (await chalkRoster(env, SEASON, entered)).map((b) => b.team);
     let outWeek = null, outReason = null, wins = 0;
     for (const w of lockedWeeks) {
       if (w < entered) continue;                 // never happened for them
-      if (!u.picks.has(w)) { outWeek = w; outReason = "missed"; break; }
+      if (!u.picks.has(w)) {
+        // A week with nothing on it they were allowed to pick does not end
+        // a run — it does not happen for them at all, like a void.
+        if (usableAt(env, uid, w, chalk) === 0) continue;
+        outWeek = w; outReason = "missed"; break;
+      }
       const o = outcome.get(`${uid}|${w}`);
       if (o === "loss") { outWeek = w; outReason = "loss"; break; }
       if (o === "win") wins++;
@@ -226,7 +266,7 @@ async function runOne(seed) {
   const board = env.raw.prepare(
     `SELECT * FROM survivor_board WHERE season = ? ORDER BY rank, user_id`)
     .all(SEASON);
-  const expect = expectedRuns(env, locked);
+  const expect = await expectedRuns(env, locked);
 
   // --- an open week is never scored
   const openScored = env.raw.prepare(
@@ -240,7 +280,7 @@ async function runOne(seed) {
   //
   // scoreWeek refuses an open week before it reaches the rebuild, so a season
   // where nothing has locked yet has no standings at all — not a table of
-  // everyone on nought. Worth pinning: the board appearing early would mean
+  // everyone on zero. Worth pinning: the board appearing early would mean
   // the entrant list was readable before the first deadline.
   if (!locked.length) {
     assert.equal(board.length, 0, "a board existed before any week locked");

@@ -39,7 +39,7 @@ check(rivalries, "no rivalries loaded at all")
 # --- nobody who left ------------------------------------------------------
 # Editorial, and enforced: a Big 12 site does not print the series record
 # against the schools that walked out. Opponents who were never in the
-# conference are fine — Iowa and Pitt are just neighbours.
+# conference are fine — Iowa and Pitt are just neighbors.
 gone = facts.departed(by_year_all)
 check("Oklahoma" in gone and "Texas" in gone and "Nebraska" in gone,
       f"departed() no longer sees the obvious leavers: {sorted(gone)}")

@@ -132,7 +132,7 @@ function randomTeams(r) {
     if (r() < 0.3) continue;                     // a team the map has never heard of
     t[n] = {
       color: pick(r, ["#e00122", "#002855", "#fff", "#000", "", null,
-                      "not-a-colour", "#12345", "rgb(1,2,3)"]),
+                      "not-a-color", "#12345", "rgb(1,2,3)"]),
       logo: r() < 0.5 ? `logos/${n.slice(0, 3)}.svg` : null,
     };
   }
@@ -146,7 +146,7 @@ function runOne(seed, cover) {
   for (let i = int(r, 0, 12); i > 0; i--) games.push(randomGame(r, week));
   const teams = randomTeams(r);
 
-  // ------------------------------------------------------------ pure maths
+  // ------------------------------------------------------------ pure math
   for (const g of games) {
     if (g.spread_x2 == null) continue;
     const h = P.spreadText(g.spread_x2, "home");
@@ -168,18 +168,18 @@ function runOne(seed, cover) {
       assert.equal(num(h), -num(a),
         `sides disagree: ${h} / ${a} from ${g.spread_x2}`);
       assert.ok((h.startsWith("−")) !== (a.startsWith("−")),
-        `both sides favoured: ${h} / ${a}`);
+        `both sides favored: ${h} / ${a}`);
     }
     const said = P.spreadSaid(g.spread_x2, "home");
     assert.ok(!/NaN|undefined/.test(said), `spreadSaid produced ${said}`);
   }
 
-  // Contrast: whatever colour a team supplies, the text on it is legible.
+  // Contrast: whatever color a team supplies, the text on it is legible.
   for (const [name, t] of Object.entries(teams)) {
     const fg = P.textOn(t.color);
     assert.ok(fg === "#fff" || fg === "#000" || /^#|^rgb/.test(String(fg)),
       `textOn(${t.color}) for ${name} returned ${fg}`);
-    cover.colours++;
+    cover.colors++;
   }
 
   // ------------------------------------------------------------- ordering
@@ -388,7 +388,7 @@ function runOne(seed, cover) {
 }
 
 test("the client survives ten thousand hostile payloads", (t) => {
-  const cover = { spreads: 0, pickems: 0, colours: 0, ordered: 0, chips: 0,
+  const cover = { spreads: 0, pickems: 0, colors: 0, ordered: 0, chips: 0,
                   rows: 0, unpickable: 0, svrows: 0, outside: 0, bars: 0,
                   cards: 0, thin: 0, standing: 0, errors: 0, ordinals: 0 };
   for (let i = 0; i < RUNS; i++) {

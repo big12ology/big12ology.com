@@ -5,7 +5,7 @@
 // simulation. That is worth saying plainly, because it bounds what these
 // tests prove: they exercise the actual SQL — the triggers, the window
 // functions, the ON CONFLICT clauses — and they do not exercise D1's network
-// behaviour or its statement limits. The things most likely to be wrong here
+// behavior or its statement limits. The things most likely to be wrong here
 // are the queries, and the queries are real.
 //
 // miniflare is in node_modules and would be closer. It is also a Worker

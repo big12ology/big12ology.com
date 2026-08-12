@@ -194,7 +194,7 @@ async function handle(req, env, ctx) {
     // appear on the board, so returning it to the slate drops somebody who
     // just signed up onto a page that looks identical to the one they left —
     // which is exactly what it did. Send them to the page that finishes the
-    // job instead, and only then honour return_to.
+    // job instead, and only then honor return_to.
     const named = await env.DB.prepare(
       `SELECT display_name FROM users WHERE id = ?`).bind(res.userId).first();
     const dest = (named && named.display_name)

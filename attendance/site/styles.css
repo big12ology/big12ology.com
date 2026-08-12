@@ -11,13 +11,13 @@
   /* Contrast-driven: 32% left the mid-scale ambers at 3.5:1,
      under the 4.5:1 WCAG AA floor. Hue carries the meaning. */
   --pctl: 27%;
-  /* --dim is the tiebreaker's name for this colour, and rules copied across
+  /* --dim is the tiebreaker's name for this color, and rules copied across
      brought the name with them. Five of them — the weather table's headers,
      the ledger's counts and team lists, the est badge — asked for a token
      this sheet never defined and silently inherited full-strength text
      instead of dimming. One alias, resolved per theme at the use site. */
   --dim: var(--muted);
-  font-size: 15px;
+  font-size: var(--t-copy);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -66,7 +66,7 @@ body {
    too, not inherited: the h1 is the condensed display face now, and a year
    is a control — it reads like the tiebreaker's year pills, which reset to
    the body face for the same reason. */
-.dimyear select { font-size: 15px; font-weight: 700;
+.dimyear select { font-size: var(--t-copy); font-weight: 700;
   font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-variation-settings: normal; letter-spacing: 0;
   line-height: 1.2; color: var(--text); cursor: pointer;
@@ -169,7 +169,7 @@ td.team { font-weight: 600; box-shadow: inset 3px 0 0 var(--tc, transparent); }
 td.team .team-name { display: inline-block; vertical-align: middle; }
 td.team .stadium { display: block; font-weight: 400; font-size: 0.72rem; color: var(--muted); }
 /* Several marks carry a white plate inside the artwork itself, so on a dark
-   page they read as stray white cards. CSS cannot recolour what is baked
+   page they read as stray white cards. CSS cannot recolor what is baked
    into the file — what it can do is make the plate look intended: one tile,
    same in both themes, that the artwork's own white sits flush against.
    Matches the tiebreaker's .mark exactly. */
@@ -202,9 +202,9 @@ footer { padding-bottom: 1.5rem; }
 .chart-card h2 { margin: 0; font-size: 0.95rem; letter-spacing: -0.01em; }
 .chart-sub { margin: 0.15rem 0 0.6rem; color: var(--muted); font-size: 0.76rem; }
 .chart-card svg { width: 100%; height: auto; display: block; }
-.chart-card .tick { font-size: 10px; fill: var(--muted); font-variant-numeric: tabular-nums; }
-.chart-card .lbl { font-size: 11px; fill: var(--text); }
-.chart-card .val { font-size: 10px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.chart-card .tick { font-size: var(--t-micro); fill: var(--muted); font-variant-numeric: tabular-nums; }
+.chart-card .lbl { font-size: var(--t-fine); fill: var(--text); }
+.chart-card .val { font-size: var(--t-micro); fill: var(--muted); font-variant-numeric: tabular-nums; }
 .chart-empty { color: var(--muted); font-size: 0.82rem; }
 .chart-legend { display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem;
   align-items: center; margin: 0.1rem 0 0.4rem; font-size: 0.75rem;
@@ -391,7 +391,7 @@ svg text.val-in {
 
 /* A capacity carried forward because the school has not published one. */
 .estmark {
-  font-size: 10px; font-weight: 700; letter-spacing: .4px;
+  font-size: var(--t-micro); font-weight: 700; letter-spacing: .4px;
   text-transform: uppercase; text-decoration: none;
   border: 1px solid var(--line); border-radius: 4px;
   padding: 0 4px; margin-left: 5px; color: var(--dim);
@@ -401,7 +401,7 @@ svg text.val-in {
 
 /* A capacity the school publishes but the attendance record contradicts. */
 .capmark {
-  font-size: 13px; font-weight: 700; text-decoration: none;
+  font-size: var(--t-row); font-weight: 700; text-decoration: none;
   margin-left: 3px; color: var(--muted); cursor: help; vertical-align: 1px;
 }
 .capmark:hover { color: var(--accent); }
@@ -414,7 +414,7 @@ svg text.val-in {
 /* Weather effects and the membership ledger — both are tables rather than
    charts, because seven rows and fifteen rows of text are not a shape. */
 .weather-effects, .ledger { border-collapse: collapse; width: 100%;
-  font-size: 14px; margin-top: 4px; }
+  font-size: var(--t-label); margin-top: 4px; }
 .weather-effects th, .weather-effects td, .ledger td { padding: 6px 8px;
   border-bottom: 1px solid var(--line); text-align: left;
   /* Same trap the records table hit: cells inherit nowrap from the week
@@ -422,7 +422,7 @@ svg text.val-in {
      sixteen-team membership list then ran past the card it sits in and over
      the panel beside it. Prose in a card wraps. */
   white-space: normal; }
-.weather-effects th { font-weight: 600; font-size: 12px; color: var(--dim); }
+.weather-effects th { font-weight: 600; font-size: var(--t-meta); color: var(--dim); }
 .weather-effects td.num, .weather-effects th:not(:first-child) {
   text-align: right; font-variant-numeric: tabular-nums; }
 .weather-effects td.dim { color: var(--dim); }
@@ -434,4 +434,4 @@ svg text.val-in {
 .ledger .lgname { font-weight: 600; }
 .ledger .lg.b12 .lgname { color: var(--accent); }
 .ledger .lgn { color: var(--dim); font-variant-numeric: tabular-nums; }
-.ledger .lgteams { color: var(--dim); font-size: 13px; }
+.ledger .lgteams { color: var(--dim); font-size: var(--t-row); }

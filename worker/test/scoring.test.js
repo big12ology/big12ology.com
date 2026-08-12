@@ -143,7 +143,7 @@ test("a game still to be played is not voided for being absent", async () => {
   assert.deepEqual(rows.map((x) => x.game_id), [1103],
     "only the 40-hours-stale game should have a result row");
   // The card says WAITING off the missing row; a void would have said the
-  // game was cancelled.
+  // game was canceled.
   assert.equal(env.raw.prepare(
     "SELECT COUNT(*) c FROM pick_scores WHERE user_id='u1'").get().c, 0);
 });
@@ -323,12 +323,12 @@ test("the room is null before anything is graded", async () => {
   assert.equal(await room(env, 2026, 3), null);
 });
 
-test("the chalk takes the favourite, and skips pick'ems", async () => {
+test("the chalk takes the favorite, and skips pick'ems", async () => {
   const env = makeEnv();
   seedWeek(env, { games: [
-    { game_id: 801, home: "Fav", away: "Dog", spread_x2: -14 },   // home favoured
-    { game_id: 802, home: "Dog", away: "Fav", spread_x2: 14 },    // away favoured
-    { game_id: 803, home: "Even", away: "Even2", spread_x2: 0 },  // no favourite
+    { game_id: 801, home: "Fav", away: "Dog", spread_x2: -14 },   // home favored
+    { game_id: 802, home: "Dog", away: "Fav", spread_x2: 14 },    // away favored
+    { game_id: 803, home: "Even", away: "Even2", spread_x2: 0 },  // no favorite
   ] });
   lock(env);
   await scoreWeek(env, 2026, 3, { games: {

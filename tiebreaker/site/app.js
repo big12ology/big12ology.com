@@ -56,7 +56,7 @@
       .replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
   }
 
-  // The sixteen carry colour and abbreviation; everyone else on the schedule
+  // The sixteen carry color and abbreviation; everyone else on the schedule
   // carries only a mark. Both draw the same logo — a game row shows two
   // teams and should not present them two ways.
   function mark(team, size) {
@@ -144,7 +144,7 @@
 
   // -------------------------------------------------------------- rendering
 
-  // Win-percentage colour curve and formatting live in pct.js, so this file
+  // Win-percentage color curve and formatting live in pct.js, so this file
   // and the server render the same standings row.
   var fmtPct = window.B12PCT.fmt;
   var winPctColor = window.B12PCT.color;
@@ -259,7 +259,8 @@
 
   // Current-state cache for the team explainer: actual season at load,
   // replaced by the simulated season while what-if picks are active.
-  var actualRows = B12Engine.standings(payload.games, payload.overrides || {});
+  var actualRows = B12Engine.pad(
+    B12Engine.standings(payload.games, payload.overrides || {}), payload.games);
   var actualCcg = B12Engine.championship(payload.games, payload.overrides || {});
   var lastRows = actualRows;
   var lastCcg = actualCcg;
@@ -281,7 +282,12 @@
       return;
     }
     var games = simGames();
-    var rows = B12Engine.standings(games, payload.overrides || {});
+    // Padded, like the server. Without it a non-conference pick changed
+    // nothing on the board: standings() ranks only teams with a conference
+    // result, so before the first conference game it returned nothing at all
+    // and the table the note promises would move sat at 0–0.
+    var rows = B12Engine.pad(
+      B12Engine.standings(games, payload.overrides || {}), games);
     var ccg = B12Engine.championship(games, payload.overrides || {});
     var nLeft = pickable().length - Object.keys(picks).length;
     if (matchcard) matchcard.innerHTML = renderMatch(ccg, nLeft);
@@ -621,14 +627,36 @@
         return picks[String(g.id)];
       }).length;
       var open = anyOpen ? wasOpen[wk] : wk === openWeek;
+      // Favorites for THIS week only. "Use favorites for all" fills in
+      // thirteen weeks at once, which answers a different question — the
+      // reader working down the season a week at a time wants the chalk for
+      // the week in front of them and their own opinion after that.
       return "<details" + (open ? " open" : "") + "><summary>" +
         wk + " <span class=dim>(" + picked + "/" + byWeek[wk].length +
-        (unlocked ? " changed" : " picked") + ")</span></summary>" +
-        inner + "</details>";
+        (unlocked ? " changed" : " picked") + ")</span>" +
+        "<button type=button class=wkfav data-wk=\"" + wk +
+        "\" title=\"Pick the favourite in every " + wk +
+        " game\">favorites</button>" +
+        "</summary>" + inner + "</details>";
     }).join("");
     box.innerHTML = html;
     updateCount(games.length);
     syncWeeksBtn();
+    box.querySelectorAll(".wkfav").forEach(function (btn) {
+      btn.onclick = function (ev) {
+        // The button lives inside <summary>, whose default action is to
+        // open or close the disclosure. Filling a week in should not also
+        // shut it.
+        ev.preventDefault();
+        ev.stopPropagation();
+        var wk = btn.dataset.wk;
+        (byWeek[wk] || []).forEach(function (g) {
+          var f = favs()[String(g.id)];
+          if (f) picks[String(g.id)] = f.team;
+        });
+        refresh();
+      };
+    });
     box.querySelectorAll(".pick").forEach(function (btn) {
       btn.onclick = function () {
         var id = btn.dataset.id, team = btn.dataset.team;

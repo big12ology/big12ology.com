@@ -234,7 +234,7 @@ test("signing in again returns to the same account, not a second one",
     assert.equal(s.n, 3, "each sign-in should mint its own session");
   });
 
-test("a named account skips the welcome and honours where it came from",
+test("a named account skips the welcome and honors where it came from",
   async () => {
     const env = makeEnv();
     const b1 = await begin(env);

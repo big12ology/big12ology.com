@@ -381,6 +381,58 @@
     return { order: order, log: log, resolved: true, events: events };
   }
 
+  // Every conference team, whether or not it has a conference result yet.
+  // confRecords only knows teams it has evidence for, which is right for
+  // ranking and wrong for a table: before the first conference game it knows
+  // nobody, so standings() returned an empty list and the Lab's board simply
+  // stopped responding — including to the non-conference picks whose whole
+  // job is to feed the Non-conf and Overall columns.
+  //
+  // This is build.py's pad_standings, ported. Same split as the server: the
+  // engine ranks only what it can justify, and padding happens at display.
+  function confTeams(games) {
+    var seen = {};
+    games.forEach(function (g) {
+      if (!g.conference_game || g.ccg) return;
+      seen[g.home] = 1;
+      seen[g.away] = 1;
+    });
+    return Object.keys(seen);
+  }
+
+  function pad(rows, games) {
+    var listed = {};
+    rows.forEach(function (r) { listed[r.team] = 1; });
+    var missing = confTeams(games).filter(function (t) { return !listed[t]; })
+      .sort();
+    if (!missing.length) return rows;
+
+    var tally = {};
+    missing.forEach(function (t) { tally[t] = [0, 0, 0, 0]; });  // nw nl ow ol
+    games.forEach(function (g) {
+      if (!g.completed || g.ccg) return;
+      if (g.home_points === null || g.home_points === undefined) return;
+      var w = winner(g);
+      if (!w) return;
+      var loser = w === g.home ? g.away : g.home;
+      [[w, true], [loser, false]].forEach(function (pair) {
+        var t = pair[0], won = pair[1];
+        if (!tally[t]) return;
+        tally[t][won ? 2 : 3] += 1;
+        if (!g.conference_game) tally[t][won ? 0 : 1] += 1;
+      });
+    });
+
+    return rows.concat(missing.map(function (t) {
+      return {
+        rank: null, team: t, conf_w: 0, conf_l: 0,
+        nonconf_w: tally[t][0], nonconf_l: tally[t][1],
+        overall_w: tally[t][2], overall_l: tally[t][3],
+        tie_group: null, log: null, events: null, resolved: true,
+      };
+    }));
+  }
+
   function standings(games, overrides) {
     var rec = confRecords(games);
     if (Object.keys(rec).length === 0) return [];
@@ -470,6 +522,7 @@
     placementGroups: placementGroups,
     breakTie: breakTie,
     standings: standings,
+    pad: pad,
     championship: championship,
     pct: pct,
     winner: winner,

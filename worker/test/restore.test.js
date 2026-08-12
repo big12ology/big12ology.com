@@ -29,7 +29,7 @@ import { makeEnv, seedWeek, seedUser, seedPick, seedSurvivorPick, forceLock }
  * Not a mock of the wrangler command — a dump taken from the same node:sqlite
  * database the rest of the suite runs against, so what is restored here is
  * what the real schema does, and the assertions below are about SQLite's
- * behaviour rather than about a fixture somebody wrote.
+ * behavior rather than about a fixture somebody wrote.
  */
 function dump(db, { triggers = true } = {}) {
   const out = ["PRAGMA defer_foreign_keys=TRUE;"];

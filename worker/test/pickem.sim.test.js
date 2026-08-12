@@ -80,7 +80,7 @@ function buildSeason(r) {
       // A fifth of games carry no line. They are unpickable, they never get a
       // result row, and they must not reach any total.
       const hasLine = r() > 0.2;
-      // A pick'em line (0) is a real thing and has no favourite, so the chalk
+      // A pick'em line (0) is a real thing and has no favorite, so the chalk
       // has to leave it alone. One game in ten.
       const sx = r() < 0.1 ? 0 : int(r, -30, 30);
       games.push({
@@ -367,7 +367,7 @@ async function runOne(seed) {
       if (g.status === "void") { cv++; continue; }
       const c = covered(g.home_points, g.away_points, g.spread_x2);
       if (c === "push") { cp++; continue; }
-      // The chalk always takes the favourite: home when the home spread is
+      // The chalk always takes the favorite: home when the home spread is
       // negative, away when it is positive.
       c === (g.spread_x2 < 0 ? "home" : "away") ? cw++ : cl++;
     }

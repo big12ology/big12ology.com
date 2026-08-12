@@ -9,6 +9,7 @@
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
 <link rel=stylesheet href="brand.css?v=5">
 <script defer src="theme.js?v=1"></script>
+<script defer src="cards.js?v=1"></script>
 <style>
 :root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#6b7280;
   --line:#e2ddd2; --accent:#0B6E77; --accent2:#003087; }
@@ -20,12 +21,12 @@
     --line:#2e323a; --accent:#3FC7CE; --accent2:#7aa2ff; }
 * { box-sizing: border-box; }
 body { margin:0; background:var(--bg); color:var(--ink);
-  font:17px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  font: var(--t-subhead)/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
 main { max-width:720px; margin:0 auto; padding:28px 20px 56px; }
-h1 { font-size:30px; margin:0 0 4px; }
-.updated { color:var(--dim); font-size:14px; margin-bottom:24px; }
-h2 { font-size:19px; margin:28px 0 8px; }
-p, li { color:var(--ink); font-size:16px; }
+h1 { font-size:var(--t-title); margin:0 0 4px; }
+.updated { color:var(--dim); font-size: var(--t-label); margin-bottom:24px; }
+h2 { font-size:var(--t-subhead); margin:28px 0 8px; }
+p, li { color:var(--ink); font-size: var(--t-body); }
 a { color:var(--accent2); }
 </style>
 </head>
@@ -197,11 +198,13 @@ anything, and as close to no data as a website can get.</p>
   <li><b>No cookies.</b> Interactive features (like the tiebreaker what-if
   simulator) run entirely in your browser&rsquo;s memory and forget everything
   when you close the tab.</li>
-  <li><b>One thing in local storage, and it is your setting.</b> If you pick
-  light or dark mode, that choice is saved in your browser under
-  <code>b12-theme</code> so the page does not flash the wrong theme next time.
-  It never leaves your device and it is not sent to us. Clearing your browser
-  data removes it.</li>
+  <li><b>Two things in local storage, and both are your settings.</b> If you
+  pick light or dark mode, that choice is saved under <code>b12-theme</code>
+  so the page does not flash the wrong theme next time. If you collapse a
+  card, which cards you closed is saved under <code>b12-cards</code>, per
+  page, so the layout you chose is still there when you come back. Neither
+  leaves your device, neither is sent to us, and clearing your browser data
+  removes both.</li>
 </ul>
 
 <!-- /PICKEM-OFF -->

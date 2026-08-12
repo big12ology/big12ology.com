@@ -225,7 +225,7 @@ def fetch_lines(year):
 
     Writes data/lines_<year>.json = {game_id: {spread, spread_open,
     over_under, over_under_open, home_ml, away_ml, books}}. Older files hold
-    a bare spread number; load_lines normalises both shapes.
+    a bare spread number; load_lines normalizes both shapes.
     """
     os.makedirs(DATA, exist_ok=True)
     raw = get(f"lines?year={year}", key())
@@ -353,7 +353,7 @@ def load_venues():
 def fetch_venues(force=False):
     """Every venue's coordinates -> data/venues.json.
 
-    One call, once, for the whole catalogue — stadiums do not move, and the
+    One call, once, for the whole catalog — stadiums do not move, and the
     handful that open or get renamed each year arrive with the next
     --venues run rather than with every build. The build never calls this;
     it reads the committed file and shows no forecast for a venue it has
@@ -372,11 +372,18 @@ def fetch_venues(force=False):
         lat, lon = v.get("latitude"), v.get("longitude")
         if vid is None or lat is None or lon is None:
             continue
-        out[str(vid)] = {"name": v.get("name"), "city": v.get("city"),
-                         "state": v.get("state"),
-                         "lat": round(float(lat), 4),
-                         "lon": round(float(lon), 4),
-                         "tz": v.get("timezone")}
+        rec = {"name": v.get("name"), "city": v.get("city"),
+               "state": v.get("state"),
+               "lat": round(float(lat), 4),
+               "lon": round(float(lon), 4),
+               "tz": v.get("timezone")}
+        # Only when true, so the file does not carry 800 "dome": false lines
+        # to say the ordinary thing. A roof means the forecast is not about
+        # the game — see weather.py — and it is a property of the building,
+        # which is exactly the kind of fact this cached catalog is for.
+        if v.get("dome"):
+            rec["dome"] = True
+        out[str(vid)] = rec
     with open(VENUES, "w") as f:
         json.dump(out, f, indent=1, sort_keys=True)
     print(f"venues: {len(out)} with coordinates -> {VENUES}")

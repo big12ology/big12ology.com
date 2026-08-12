@@ -5,7 +5,7 @@
 // is not playing the same game: they pick the best team on the board every
 // week while the August players work around five they have already spent.
 //
-// So a joiner entering at week N starts with the biggest favourite of every
+// So a joiner entering at week N starts with the biggest favorite of every
 // week they missed already spent. Not the most popular team (with a dozen
 // players that is one person's opinion), not the best team by some rating
 // (publish a rating and every argument about the handicap becomes an argument
@@ -32,10 +32,10 @@ export function isPickable(game, team) {
 }
 
 /**
- * The favourite of a game, but only if it is one that can be picked.
+ * The favorite of a game, but only if it is one that can be picked.
  *
- * A game where the non-conference side is favoured has no chalk for survivor
- * purposes — the favourite is unpickable and the underdog is not the chalk.
+ * A game where the non-conference side is favored has no chalk for survivor
+ * purposes — the favorite is unpickable and the underdog is not the chalk.
  */
 function pickableFavourite(g) {
   const fav = g.spread_x2 < 0 ? g.home : g.away;
@@ -48,10 +48,10 @@ export const MIN_USABLE = 4;
 /**
  * The teams a player entering at `entryWeek` starts with already spent.
  *
- * One per missed week: that week's largest favourite, and where that team is
+ * One per missed week: that week's largest favorite, and where that team is
  * already spent by an earlier week, the next largest. So the burned set is
  * always exactly as many teams as there are weeks missed — a handicap that
- * quietly shrank because two weeks shared a favourite would be a discount
+ * quietly shrank because two weeks shared a favorite would be a discount
  * for joining after a bye.
  */
 export async function chalkRoster(env, season, entryWeek) {
@@ -67,7 +67,7 @@ export async function chalkRoster(env, season, entryWeek) {
   for (const g of results || []) {
     if (g.spread_x2 === 0) continue;            // a pick'em is not chalk
     // Only a team somebody could have picked can have been spent. Burning a
-    // visiting non-conference favourite would take away nothing and leave the
+    // visiting non-conference favorite would take away nothing and leave the
     // handicap a team short.
     const team = pickableFavourite(g);
     if (!team) continue;
@@ -80,7 +80,7 @@ export async function chalkRoster(env, season, entryWeek) {
   const burned = [];
   const taken = new Set();
   for (const week of [...byWeek.keys()].sort((a, b) => a - b)) {
-    // Biggest favourite first; game_id breaks a tie so the answer is the same
+    // Biggest favorite first; game_id breaks a tie so the answer is the same
     // every time it is computed.
     const games = byWeek.get(week)
       .sort((a, b) => b.margin - a.margin || a.game_id - b.game_id);
@@ -143,4 +143,84 @@ export async function rosterFor(env, season, userId, thisWeek) {
     usable: usable.size,
     closed: usable.size < MIN_USABLE,
   };
+}
+
+/**
+ * The weeks a player could not have picked in, whatever they intended.
+ *
+ * A locked week, after they entered, with no pick on it — and no Big 12 team
+ * left that they were allowed to choose. Every unspent side is on a bye, or
+ * is in a game with no posted line, so the card had nothing pickable on it.
+ * Scoring treats these as neither a loss nor a miss.
+ *
+ * Spent means the same thing the no-reuse trigger means, and is derived the
+ * same way, so the two can never disagree about what a player was holding:
+ * the chalk they arrived having burned, plus every earlier pick whose week
+ * was not scored void. Earlier picks only — at the moment a week locked, a
+ * pick saved for some later week was a pick the player could still have
+ * withdrawn, so counting it against them here would excuse a week they could
+ * in fact have played.
+ *
+ * Returns one row per stranded (user, week). The common answer is none, and
+ * the query stops early when nobody is missing a locked week at all.
+ */
+export async function strandedWeeks(env, season) {
+  const { results: gaps } = await env.DB.prepare(
+    `WITH entrants AS (
+       SELECT user_id, MIN(week) AS entered
+         FROM survivor_picks WHERE season = ? GROUP BY user_id)
+     SELECT e.user_id, e.entered, w.week
+       FROM entrants e
+       JOIN weeks w ON w.season = ? AND w.lock_at IS NOT NULL
+                   AND w.lock_at <= unixepoch() AND w.week >= e.entered
+       LEFT JOIN survivor_picks p
+         ON p.user_id = e.user_id AND p.season = ? AND p.week = w.week
+      WHERE p.user_id IS NULL
+      ORDER BY e.user_id, w.week`).bind(season, season, season).all();
+  if (!gaps || !gaps.length) return [];
+
+  // Only the weeks somebody actually skipped need a board, and a season has
+  // few enough of those to fetch one week at a time rather than the slate.
+  const slates = new Map();
+  const slateFor = async (week) => {
+    if (!slates.has(week)) {
+      const { results } = await env.DB.prepare(
+        `SELECT home, away, b12 FROM slate_games
+          WHERE season = ? AND week = ? AND spread_x2 IS NOT NULL`)
+        .bind(season, week).all();
+      const teams = new Set();
+      for (const g of results || []) {
+        for (const t of [g.home, g.away]) if (isPickable(g, t)) teams.add(t);
+      }
+      slates.set(week, teams);
+    }
+    return slates.get(week);
+  };
+
+  // The chalk burn is a function of the entry week alone, so it is computed
+  // once per player however many weeks they skipped.
+  const burnedFor = new Map();
+  const out = [];
+  for (const gap of gaps) {
+    if (!burnedFor.has(gap.user_id)) {
+      const chalk = await chalkRoster(env, season, gap.entered);
+      burnedFor.set(gap.user_id, new Set(chalk.map((b) => b.team)));
+    }
+    const spent = new Set(burnedFor.get(gap.user_id));
+    const { results: prior } = await env.DB.prepare(
+      `SELECT p.team FROM survivor_picks p
+        WHERE p.user_id = ? AND p.season = ? AND p.week < ?
+          AND NOT EXISTS (
+            SELECT 1 FROM survivor_scores s
+             WHERE s.user_id = p.user_id AND s.season = p.season
+               AND s.week = p.week AND s.outcome = 'void')`)
+      .bind(gap.user_id, season, gap.week).all();
+    for (const r of prior || []) spent.add(r.team);
+
+    const playing = await slateFor(gap.week);
+    let usable = 0;
+    for (const t of playing) if (!spent.has(t)) usable++;
+    if (usable === 0) out.push({ user_id: gap.user_id, week: gap.week });
+  }
+  return out;
 }

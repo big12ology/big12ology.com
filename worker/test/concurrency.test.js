@@ -187,7 +187,7 @@ test("two names claimed at once cannot both be taken", async () => {
 test("a burst never gets more through than the limit allows", async () => {
   // take() increments in one statement and reads back in another. Arriving
   // together, several callers can read the same count — which must never
-  // round in the caller's favour.
+  // round in the caller's favor.
   const env = makeEnv();
   const max = LIMITS.picks.max;
   const res = await Promise.all(

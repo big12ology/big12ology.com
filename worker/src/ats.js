@@ -3,7 +3,7 @@
 //
 // The convention is CFBD's, which the rest of this repo already speaks:
 // the number is the HOME team's spread, and negative means the home team is
-// favoured. tiebreaker/fetch.py:fetch_lines writes it that way,
+// favored. tiebreaker/fetch.py:fetch_lines writes it that way,
 // tiebreaker/scorecard.py scores it that way, tiebreaker/pickem.py freezes it
 // that way. A sign error here is the single most dangerous bug in the feature:
 // it would not crash, it would not look wrong, it would just quietly grade
@@ -17,7 +17,7 @@ export const UNPICKABLE = null;
  * Which side covered.
  *
  * spreadX2 is the frozen home spread times two — see migrations/0001_init.sql
- * for why the doubling is not an optimisation. Because it is an integer and
+ * for why the doubling is not an optimization. Because it is an integer and
  * the points are integers, `adj` is exact, and a push is a real equality
  * rather than a float comparison that happens to land.
  *
@@ -72,7 +72,7 @@ export function displaySpread(spreadX2, side) {
  *
  * Pushes and voids leave both terms alone: they are not wins and they are not
  * losses, and counting them in the denominator would punish a player for a
- * cancelled game. Returns null rather than 0 when nothing has been decided —
+ * canceled game. Returns null rather than 0 when nothing has been decided —
  * a player with one push is not a 0% player.
  *
  * @param {{w:number,l:number}} rec

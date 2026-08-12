@@ -45,39 +45,39 @@ test("every graded game agrees, Python float vs Worker integer", () => {
 
 test("the sign convention matches scorecard.py's, independently", () => {
   // The arithmetic above could agree while the whole convention is inverted —
-  // both sides would simply be wrong together. `favourite` in the fixture
-  // comes from scorecard.py's rule (home is favoured when the spread is
+  // both sides would simply be wrong together. `favorite` in the fixture
+  // comes from scorecard.py's rule (home is favored when the spread is
   // negative), which was written years before any of this and is used to
   // score the market on the tiebreaker's model card.
   //
-  // Derive the favourite from the Worker instead: give that side an
+  // Derive the favorite from the Worker instead: give that side an
   // implausible blowout and see who covers.
   const wrong = [];
   for (const g of FIX.games) {
-    if (g.favourite === null) continue;          // a pick'em has no favourite
+    if (g.favorite === null) continue;          // a pick'em has no favorite
     const homeIsFav = ats(200, 0, g.spread_x2) === "home"
                    && ats(0, 200, g.spread_x2) === "away";
     assert.ok(homeIsFav, "a 200-point win must cover any line");
     // Whoever is laying points sees a negative number.
     const fav = displaySpread(g.spread_x2, "home") < 0 ? g.home : g.away;
-    if (fav !== g.favourite) {
+    if (fav !== g.favorite) {
       wrong.push(`${g.away} at ${g.home} line ${g.spread_x2 / 2}: ` +
-                 `scorecard.py says ${g.favourite}, worker says ${fav}`);
+                 `scorecard.py says ${g.favorite}, worker says ${fav}`);
     }
   }
   assert.deepEqual(wrong, []);
 });
 
-test("the favourite loses often enough that the test could fail", () => {
-  // A guard on the guard. If favourites covered every game, the assertions
+test("the favorite loses often enough that the test could fail", () => {
+  // A guard on the guard. If favorites covered every game, the assertions
   // above would pass on a broken implementation.
   const covers = FIX.games.filter(
-    (g) => g.favourite !== null && g.ats !== "push" &&
-      g.favourite === (g.ats === "home" ? g.home : g.away)).length;
+    (g) => g.favorite !== null && g.ats !== "push" &&
+      g.favorite === (g.ats === "home" ? g.home : g.away)).length;
   const decided = FIX.games.filter(
-    (g) => g.favourite !== null && g.ats !== "push").length;
+    (g) => g.favorite !== null && g.ats !== "push").length;
   assert.ok(covers > decided * 0.3 && covers < decided * 0.7,
-    `favourites covered ${covers}/${decided} — too lopsided to be a real ` +
+    `favorites covered ${covers}/${decided} — too lopsided to be a real ` +
     `test of the convention`);
 });
 

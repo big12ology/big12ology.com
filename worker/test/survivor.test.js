@@ -190,6 +190,83 @@ test("a missed week after entry is an out; weeks before entry are not",
     assert.equal(rows.u2.entered_week, 4);
   });
 
+test("a week with nothing left to pick is not a miss, and a week with " +
+  "something left still is", async () => {
+    const env = makeEnv();
+    // Week 3 offers two Big 12 sides. Week 4 offers exactly one, and it is
+    // the team u1 spent in week 3 — every other team is on a bye, which is
+    // the whole shape of the trap. u2 spent a different team, so the same
+    // empty-looking week was a choice for them and a dead end for u1.
+    seedWeek(env, { week: 3, games: [
+      { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13 },
+      { game_id: 402, home: "Baylor", away: "Houston", spread_x2: -7 },
+    ] });
+    seedWeek(env, { week: 4, games: [
+      { game_id: 411, home: "Iowa State", away: "Duke", spread_x2: -7,
+        b12: "home" },
+    ] });
+    seedUser(env, "u1", { name: "Stuck" });
+    seedUser(env, "u2", { name: "Idle" });
+    seedSurvivorPick(env, "u1", 2026, 3, 401, "Iowa State");
+    seedSurvivorPick(env, "u2", 2026, 3, 402, "Baylor");
+    forceLock(env, 2026, 3);
+    await scoreWeek(env, 2026, 3,
+      { games: { "401": [24, 21, true], "402": [30, 17, true] } });
+    forceLock(env, 2026, 4);
+    await scoreWeek(env, 2026, 4, { games: { "411": [30, 3, true] } });
+
+    const rows = Object.fromEntries(env.raw.prepare(
+      `SELECT user_id, wins, alive, out_week, out_reason
+         FROM survivor_board`).all().map((r) => [r.user_id, { ...r }]));
+    assert.equal(rows.u1.alive, 1,
+      "eliminated for a week whose card held nothing they could pick");
+    assert.equal(rows.u1.out_week, null);
+    assert.equal(rows.u1.wins, 1, "the stranded week ate an earlier win");
+    assert.equal(rows.u2.alive, 0,
+      "a skipped week with a team still on the board must stay an out");
+    assert.equal(rows.u2.out_week, 4);
+    assert.equal(rows.u2.out_reason, "missed");
+
+    const stranded = env.raw.prepare(
+      `SELECT user_id, week, usable FROM survivor_stranded`).all();
+    assert.deepEqual(stranded.map((r) => ({ ...r })),
+      [{ user_id: "u1", week: 4, usable: 0 }]);
+  });
+
+test("the stranded week hands nothing back, because nothing was spent",
+  async () => {
+    const env = makeEnv();
+    // Iowa State is spent in week 3; week 4 strands u1; week 5 offers Iowa
+    // State again. It must still be refused — a week nobody could play is
+    // not a refund.
+    seedWeek(env, { week: 3, games: [
+      { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13 },
+    ] });
+    seedWeek(env, { week: 4, games: [
+      { game_id: 411, home: "Iowa State", away: "Duke", spread_x2: -7,
+        b12: "home" },
+    ] });
+    seedWeek(env, { week: 5, games: [
+      { game_id: 421, home: "Iowa State", away: "Rice", spread_x2: -21,
+        b12: "home" },
+    ] });
+    seedUser(env, "u1", { name: "Stuck" });
+    seedSurvivorPick(env, "u1", 2026, 3, 401, "Iowa State");
+    forceLock(env, 2026, 3);
+    await scoreWeek(env, 2026, 3, { games: { "401": [24, 21, true] } });
+    forceLock(env, 2026, 4);
+    await scoreWeek(env, 2026, 4, { games: { "411": [30, 3, true] } });
+
+    assert.throws(
+      () => seedSurvivorPick(env, "u1", 2026, 5, 421, "Iowa State"),
+      /survivor_team_reused/,
+      "a stranded week returned a team that was never given up");
+
+    const stranded = env.raw.prepare(
+      `SELECT week FROM survivor_stranded`).all().map((r) => r.week);
+    assert.deepEqual(stranded, [4]);
+  });
+
 test("a locked week with no result yet neither counts nor eliminates",
   async () => {
     const env = makeEnv();

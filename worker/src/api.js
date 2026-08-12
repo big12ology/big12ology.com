@@ -338,7 +338,7 @@ export async function getSurvivor(env, user, url) {
 
   // The chalk a late joiner starts without, and whether joining is still a
   // game at all. Live like `used`, and for the same reason: it decides what
-  // the picker greys out, so it cannot come from a materialised row.
+  // the picker grays out, so it cannot come from a materialised row.
   const roster = await handicap.rosterFor(env, s, user.userId, week);
 
   return json({

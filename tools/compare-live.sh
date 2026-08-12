@@ -16,7 +16,7 @@
 #               never match byte for byte — they were stamped at different
 #               minutes, and against a site deployed yesterday they differ by
 #               a day. These are compared again with the stamp, dates, times
-#               and ?v= hashes normalised away; if they match after that, the
+#               and ?v= hashes normalized away; if they match after that, the
 #               difference is only the stamp.
 #   missing     not served live. Expect a short list, and know each entry.
 #
@@ -47,7 +47,7 @@ BASE="${2:-https://big12ology.com}"
 # file this build just changed, and any body-rewriting feature (email
 # obfuscation, script injection) mutates the HTML on the way out. Both show up
 # here as DIFFERS on a file that is actually correct, and the byte-exact bucket
-# has no normalisation to absorb it.
+# has no normalization to absorb it.
 #
 # --connect-to dials GitHub Pages directly while leaving Host and SNI as
 # big12ology.com, so Pages serves the custom-domain site (no redirect) and TLS
@@ -128,7 +128,7 @@ while IFS=$'\t' read -r code rel; do
   fi
 
   # Every HTML page carries the footer's build stamp, and the tiebreaker's
-  # data exports carry their own; compare all of them normalised.
+  # data exports carry their own; compare all of them normalized.
   case "$rel" in
     # */sitemap.xml catches the schedule section's own generated sitemap, whose
     # <lastmod> moves with every build. The root sitemap.xml is hand-maintained,
@@ -165,7 +165,7 @@ edge_canary() {
   head=$(curl -sSI --max-time 20 "$BASE/") || {
     echo "  CANARY  cannot reach $BASE/"; return 1; }
 
-  # Is Cloudflare actually in front? While the DNS records are grey the apex
+  # Is Cloudflare actually in front? While the DNS records are gray the apex
   # answers from GitHub directly, and every edge assertion below would be a
   # false alarm — there is no cf-cache-status to find because there is no edge.
   # Skipping keeps this script honest before the proxy is switched on, which is
@@ -215,7 +215,7 @@ fi
 
 echo
 echo "identical .......... $same"
-echo "stamp-only ......... $stamped   (generated, normalises equal)"
+echo "stamp-only ......... $stamped   (generated, normalizes equal)"
 echo "differ ............. $differ"
 echo "not served live .... $missing"
 
@@ -225,7 +225,7 @@ for r in "${differ_list[@]:-}"; do [ -n "$r" ] && echo "  DIFFERS     $r"; done
 
 if [ -s "$TMP/diffs" ]; then
   echo
-  echo "=== differences (normalised, first 20 lines each) ==="
+  echo "=== differences (normalized, first 20 lines each) ==="
   cat "$TMP/diffs"
 fi
 

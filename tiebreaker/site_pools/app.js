@@ -52,10 +52,10 @@
     return teamsP;
   }
 
-  // The colour to tint a viewer's own rows with. A real team gets its own; the
+  // The color to tint a viewer's own rows with. A real team gets its own; the
   // two generic answers get the brand accent, which is chrome and allowed on a
   // row that is chrome rather than data.
-  function myColour(me, teams) {
+  function myColor(me, teams) {
     if (!me || !me.team) return null;
     if (me.team === TEAM_B12 || me.team === TEAM_CFB) return "var(--accent)";
     return (teams[me.team] && teams[me.team].color) || null;
@@ -137,8 +137,8 @@
     return (v < 0 ? "giving " : "getting ") + Math.floor(n) + half + " points";
   }
 
-  // Readable text on a team's own colour. Selected picks fill with the team
-  // colour rather than the brand teal (teal is chrome only), which means the
+  // Readable text on a team's own color. Selected picks fill with the team
+  // color rather than the brand teal (teal is chrome only), which means the
   // foreground has to be computed rather than chosen.
   // The same shape the rest of the site uses — tiebreaker/site/app.js:mark().
   // A team with no freely-licensed mark gets nothing rather than a stand-in;
@@ -167,7 +167,7 @@
     // 0.179 is where white and black draw level against a background: below
     // it white wins, above it black does. The first version used 0.45, which
     // is intuitive and wrong — it put white on UCF's gold (#ba9b37) at about
-    // 2.5:1, and would have done the same to every light team colour in the
+    // 2.5:1, and would have done the same to every light team color in the
     // conference. Against #16181A rather than pure black, since that is the
     // ink this site actually uses.
     return L > 0.179 ? "#16181A" : "#ffffff";
@@ -290,7 +290,7 @@
         ? " — no spread available, this game cannot be picked"
         : why === "kickoff_tbd"
           ? " — kickoff time not announced, this game cannot be picked"
-          : " — " + (g.spread_x2 < 0 ? g.home : g.away) + " favoured by " +
+          : " — " + (g.spread_x2 < 0 ? g.home : g.away) + " favored by " +
             Math.abs(g.spread_x2 / 2)));
     fs.appendChild(lg);
 
@@ -314,10 +314,10 @@
 
       var lab = el("label", "pk-side");
       lab.setAttribute("for", id);
-      var colour = (teams[team] && teams[team].color) || "";
-      if (colour) {
-        lab.style.setProperty("--tc", colour);
-        lab.style.setProperty("--tfg", textOn(colour));
+      var color = (teams[team] && teams[team].color) || "";
+      if (color) {
+        lab.style.setProperty("--tc", color);
+        lab.style.setProperty("--tfg", textOn(color));
       }
       var mk = mark(teams, team, 18);
       if (mk) lab.appendChild(mk);
@@ -337,9 +337,9 @@
     fs.appendChild(sides);
 
     // The outcome goes in its own column, NOT inside the selected label. In
-    // the label it sits on the team's own fill, and the three chip colours
+    // the label it sits on the team's own fill, and the three chip colors
     // were chosen against the panel: LOSS is #c0392b, which on Houston's
-    // #c92a39 is invisible, and the greens and greys fared no better on a
+    // #c92a39 is invisible, and the greens and grays fared no better on a
     // dark fill. Out here they are always on the background they were
     // designed for, and the result reads as a property of the pick rather
     // than of the team.
@@ -516,7 +516,7 @@
     }).catch(function (err) {
       var n = $("slateload");
       if (!n) return;
-      // 404 here is not an error to apologise for: it is the ordinary state
+      // 404 here is not an error to apologize for: it is the ordinary state
       // of a week that has not been published. The generic handler said "the
       // server said no (404)", which tells a player nothing they can act on
       // and reads like a fault. Slates go up on the Tuesday refresh.
@@ -644,8 +644,8 @@
   }
 
   // Chips with marks, not a <select>. A native option list can render neither
-  // a logo nor a colour, and this is the one question on the site whose
-  // answers a reader recognises by sight before they have read them. It is
+  // a logo nor a color, and this is the one question on the site whose
+  // answers a reader recognizes by sight before they have read them. It is
   // also the same control the slate already uses — hidden radio, styled
   // label — so it keeps native checked state, native keyboard handling and a
   // single tab stop for the whole group, with no ARIA to get wrong.
@@ -683,10 +683,10 @@
         var lab = el("label", "pk-teamopt" + (o.team ? "" : " pk-teamopt-any"));
         lab.setAttribute("for", id);
         if (o.team) {
-          var colour = (teams[o.v] && teams[o.v].color) || "";
-          if (colour) {
-            lab.style.setProperty("--tc", colour);
-            lab.style.setProperty("--tfg", textOn(colour));
+          var color = (teams[o.v] && teams[o.v].color) || "";
+          if (color) {
+            lab.style.setProperty("--tc", color);
+            lab.style.setProperty("--tfg", textOn(color));
           }
           // No stand-in when a team has no freely-licensed mark; the slot
           // still holds its width so the names stay in one column.
@@ -782,7 +782,7 @@
       var tr2 = el("tr");
       if (meId && r.user_id === meId) {
         tr2.className = "you";
-        // Your row in your own team's colour rather than the house accent.
+        // Your row in your own team's color rather than the house accent.
         // A wash, not a fill: it has to sit beside the ATS% ramp without
         // competing with it, and at this strength it reads as "this one is
         // yours" without claiming to mean anything about the numbers.
@@ -830,7 +830,7 @@
     // already makes for the models on the race card, presented the same way.
     var BENCH = [
       {data: chalk, label: "The chalk",
-       why: "Not a player: what taking the favourite in every game would "
+       why: "Not a player: what taking the favorite in every game would "
           + "have scored. Nothing to do with anyone's picks."},
       {data: room, label: "The room",
        why: "Not a player: the side most people took, on every game, scored "
@@ -920,7 +920,7 @@
     if (!note) return;
     meId = me && me.user_id;
     loadTeams().then(function (teams) {
-      myTint = myColour(me, teams);
+      myTint = myColor(me, teams);
       boardTeams = teams;
       // The season's shape, alongside the table rather than instead of it.
       // Its own request because it is its own question, and because a board
@@ -960,7 +960,7 @@
     return n;
   }
 
-  /** #rrggbb -> "r, g, b", so a colour can be reused at several alphas. */
+  /** #rrggbb -> "r, g, b", so a color can be reused at several alphas. */
   function rgbOf(hex) {
     var h = String(hex || "").replace("#", "");
     if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
@@ -970,14 +970,14 @@
   }
 
   /**
-   * A team colour dark enough to be a 2.5px line on the light theme.
+   * A team color dark enough to be a 2.5px line on the light theme.
    *
    * Colorado's gold and UCF's are legible as a filled chip with dark text on
    * them — which is what textOn() is for — and nearly invisible as a hairline
    * on cream. Mixed toward black only as far as it has to be, so the line is
    * still recognisably the team's.
    */
-  function lineColour(hex, dark) {
+  function lineColor(hex, dark) {
     var rgb = rgbOf(hex);
     if (!rgb) return null;
     var p = rgb.split(",").map(Number);
@@ -993,7 +993,7 @@
    * The season, week by week: you against the shape of the field.
    *
    * A band rather than a line per player. At a hundred players the lines are
-   * a grey mass — you can see you are above it and nothing else — where the
+   * a gray mass — you can see you are above it and nothing else — where the
    * band answers the questions actually being asked: how far above the
    * middle, and is the field tightening. The leader and the room are drawn
    * because they are the two lines worth chasing.
@@ -1012,10 +1012,10 @@
        window.matchMedia &&
        window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-    // The reader's own team colours the line, and the band is the same hue
+    // The reader's own team colors the line, and the band is the same hue
     // behind it — so the figure is about them without a legend saying so.
     var tc = (me && me.team && teams[me.team] && teams[me.team].color) || null;
-    var you = lineColour(tc, dark) || (dark ? "#3FC7CE" : "#0B6E77");
+    var you = lineColor(tc, dark) || (dark ? "#3FC7CE" : "#0B6E77");
     var rgb = rgbOf(tc) || (dark ? "63, 199, 206" : "11, 110, 119");
 
     // Sized for the column it lives in, not the page. An SVG scales its
@@ -1090,7 +1090,7 @@
 
     // aria-label rather than a <title> child. A <title> is the accessible
     // name AND the browser's native tooltip, so hovering anywhere on the plot
-    // popped a grey box over the middle of the chart — on top of the readout
+    // popped a gray box over the middle of the chart — on top of the readout
     // it was competing with.
     var svg = sv("svg", {viewBox: "0 0 " + W + " " + H, class: "pk-hist",
                          role: "img", "aria-label":
@@ -1125,7 +1125,7 @@
         fill: "none", class: "pk-hmed"}));
     }
 
-    // Dashes as well as colour, so the three are told apart without it.
+    // Dashes as well as color, so the three are told apart without it.
     if (h.room && h.room.length) {
       svg.appendChild(sv("path", {d: line(h.room), fill: "none",
                                   class: "pk-hroom"}));
@@ -1246,16 +1246,16 @@
     // and dotted and nothing else, so the chalk's dash-dot was drawn as
     // plain dashes and the leader's long dashes as short ones. A legend that
     // is only approximately the chart is worse than none.
-    function chip(cls, label, colour) {
+    function chip(cls, label, color) {
       var sp = el("span", "pk-hchip " + cls);
-      if (colour) sp.style.setProperty("--k", colour);
+      if (color) sp.style.setProperty("--k", color);
       if (cls.indexOf("band") === 0) {
         sp.appendChild(el("span", "pk-hblock"));
       } else {
         var sw = sv("svg", {class: "pk-hswatch", viewBox: "0 0 20 6",
                             "aria-hidden": "true"});
         var ln = sv("line", {x1: 0, y1: 3, x2: 20, y2: 3, class: cls});
-        if (colour) ln.setAttribute("stroke", colour);
+        if (color) ln.setAttribute("stroke", color);
         sw.appendChild(ln);
         sp.appendChild(sw);
       }
@@ -1271,7 +1271,7 @@
     if (h.leader) chip("pk-hlead", "The leader");
     if (h.room && h.room.length) chip("pk-hroom", "The room");
     if (h.chalk && h.chalk.length) chip("pk-hchalk", "The chalk");
-    // The swatch takes the band's own colour. It was the house accent while
+    // The swatch takes the band's own color. It was the house accent while
     // the band itself is the reader's team, so the two disagreed on every
     // page where somebody had chosen one.
     chip("band", "Middle half of the field", "rgba(" + rgb + ", .20)");
@@ -1386,7 +1386,7 @@
     // it after put the chip in the gauge's slot and squeezed the gauge into
     // the chip's.
     //
-    // A bar running from one team's colour to the other with a marker where
+    // A bar running from one team's color to the other with a marker where
     // the split falls and each side's number at its own end: the question is
     // which way the room leaned and how hard, and that is a position rather
     // than a digit.
@@ -1702,10 +1702,10 @@
       var lab = el("label", "pk-side" +
         (sp || outside ? " pk-svspent" : ""));
       lab.setAttribute("for", id);
-      var colour = (teams[team] && teams[team].color) || "";
-      if (colour) {
-        lab.style.setProperty("--tc", colour);
-        lab.style.setProperty("--tfg", textOn(colour));
+      var color = (teams[team] && teams[team].color) || "";
+      if (color) {
+        lab.style.setProperty("--tc", color);
+        lab.style.setProperty("--tfg", textOn(color));
       }
       var mk = mark(teams, team, 18);
       if (mk) lab.appendChild(mk);
@@ -2128,7 +2128,7 @@
           show($("svusedcard"), true);
         }
 
-        loadTeams().then(function (tm) { myTint = myColour(me, tm); });
+        loadTeams().then(function (tm) { myTint = myColor(me, tm); });
         svDrawBoard(board, teams, me);
       })
       .catch(function (err) {
@@ -2192,7 +2192,7 @@
   // publicly.
   window.B12POOLS = {
     spreadText: spreadText, spreadSaid: spreadSaid, textOn: textOn,
-    rgbOf: rgbOf, lineColour: lineColour, ordinal: ordinal,
+    rgbOf: rgbOf, lineColor: lineColor, ordinal: ordinal,
     inPlayOrder: inPlayOrder, gameStatus: gameStatus, shortWhen: shortWhen,
     fmtWhen: fmtWhen, svSpent: svSpent, svInConference: svInConference,
     svSplit: svSplit, resultChip: resultChip, svOutcomeChip: svOutcomeChip,

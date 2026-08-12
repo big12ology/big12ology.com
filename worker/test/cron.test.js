@@ -312,7 +312,7 @@ test("a week 0 slate is imported like any other", async () => {
     one(env, `SELECT COUNT(*) n FROM slate_games WHERE season = ? AND week = 0`,
         SEASON).n, 1, "week 0's game did not land");
   // And it grades, so an opener is a real week rather than a decorative one.
-  // TCU by 7, winning by 11: the favourite covers.
+  // TCU by 7, winning by 11: the favorite covers.
   assert.equal(
     one(env, `SELECT ats FROM results WHERE season = ? AND week = 0`, SEASON).ats,
     "home", "week 0 was imported but never scored");

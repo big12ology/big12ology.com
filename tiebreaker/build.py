@@ -108,7 +108,7 @@ def load_ratings(year):
     In August most systems have not published for the new season yet and
     fetch falls back to last year's finals — three of four did in 2026.
     Regressing once, at load, is what keeps the odds, the what-if
-    favourites and the strength-of-schedule card describing the same teams:
+    favorites and the strength-of-schedule card describing the same teams:
     Rule 6, the same quantity presented the same way everywhere."""
     p = os.path.join(HERE, "data", f"ratings_{year}.json")
     raw = json.load(open(p)) if os.path.exists(p) else {"systems": {}}
@@ -117,7 +117,7 @@ def load_ratings(year):
 
 
 def load_lines(year):
-    """{game_id: {spread, over_under, ...}}, normalising both file shapes.
+    """{game_id: {spread, over_under, ...}}, normalizing both file shapes.
 
     Files written before the market capture hold a bare spread number.
     Rather than migrate them — they would have to be refetched, and the
@@ -129,6 +129,9 @@ def load_lines(year):
 
 
 MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS"]
+# The average of all four, and the name the Lab shows for it. Kept as a
+# constant because it is both a key in `favorites` and a label on a control.
+BLEND = "Blend of all four"
 
 
 def model_year(name, systems):
@@ -144,6 +147,38 @@ def model_label(name, systems):
     2026 schedule reads as a 2026 number, and in August it is not one."""
     y = model_year(name, systems)
     return f"{name} ({y})" if y else name
+
+
+def blend_favorites(favorites, games):
+    """The four systems averaged into one, the way the race board averages
+    them.
+
+    The Lab ran a single rating at a time while the race card and every
+    leverage figure on the site run odds.ensemble_margin — an average across
+    all four. So the same team's championship chance was quoted twice, from
+    two different models, with nothing saying they were different questions:
+    23% on the race board and whatever SP+ alone made of it in the Lab.
+
+    Averaging the per-system point margins is exactly what ensemble_margin
+    does, so this reproduces the board rather than approximating it.
+    favorites_for has already divided each system by its own per_pt scale and
+    dropped the sign in favour of naming a team, so the sign is put back
+    before averaging and taken off again after.
+    """
+    by_id = {str(g["id"]): g for g in games}
+    out = {}
+    for gid, g in by_id.items():
+        signed = []
+        for m in favorites.values():
+            f = m.get(gid)
+            if f:
+                signed.append(f["margin"] if f["team"] == g["home"]
+                              else -f["margin"])
+        if signed:
+            d = sum(signed) / len(signed)
+            out[gid] = {"team": g["home"] if d >= 0 else g["away"],
+                        "margin": round(abs(d), 1)}
+    return out
 
 
 def favorites_for(games, systems):
@@ -257,7 +292,7 @@ def footer():
     committed site/ output from churning on a timestamp every build.
 
     Two rows, and it takes editing to keep them at two. Every clause here is
-    load-bearing — the data licence, the policy the whole tracker implements,
+    load-bearing — the data license, the policy the whole tracker implements,
     the mark provenance, the non-affiliation — so the length is spent on
     wording rather than on dropping one: "provenance in SOURCES.json" became
     the link alone, "A Big12ology project" went because the domain already
@@ -385,7 +420,7 @@ def team_color(teams, team, fallback="#888888"):
     return c
 
 
-# Reaching the championship game is not a win percentage, and colouring it
+# Reaching the championship game is not a win percentage, and coloring it
 # with one said something false. Two teams out of sixteen play in it, so the
 # BASELINE is 2/16 — 12.5%, not 50%. A team sitting on 12.4% is exactly
 # average and was being painted the same deep red as a team on 1%, while
@@ -402,7 +437,7 @@ CCG_ANCHORS = [(0.0, 0), (0.35, 12), (0.7, 30), (1.0, 45), (1.6, 72),
 
 
 def ccg_color(p, teams, spots=2):
-    """Colour for a probability of reaching a `spots`-team game from `teams`."""
+    """Color for a probability of reaching a `spots`-team game from `teams`."""
     if not teams:
         return winpct_color(p)
     base = spots / float(teams)
@@ -649,7 +684,51 @@ def next_conf_week_ids(games):
     return [g["id"] for g in rem if g["week"] == wk], wk
 
 
-def leverage_card(games, sims):
+def fork_block(g, lev, sims, teams, compact=False):
+    """THE FORK. Two results, two teams, four numbers — the shape of the
+    question a preview is actually asked.
+
+    ONE renderer for both places this appears. The race page's leverage list
+    and the game page's race card were describing the same four numbers two
+    different ways: a sentence carrying two of them there, this grid here.
+    Same data, same design, one function — a reader who learns to read it on
+    one page has learned to read it on the other.
+
+    Each cell says what the result MOVES as well as where it lands, because
+    a probability with no baseline is a number without a verb: 33% means
+    nothing until you know they were on 23%.
+    """
+    pair = lev.get("pair") or {}
+    if len(pair) != 2:
+        return ""
+    cols = []
+    for side in (g["home"], g["away"]):
+        branch = 0 if side == g["home"] else 1
+        cells = []
+        for t in (g["home"], g["away"]):
+            p = pair[t][branch]
+            now = (sims.get(t) or {}).get("p_ccg")
+            delta = ""
+            if now is not None:
+                dv = (p - now) * 100
+                way = "up" if dv > 0 else ("down" if dv < 0 else "flat")
+                arrow = ("&#9650;" if dv > 0
+                         else ("&#9660;" if dv < 0 else "&mdash;"))
+                delta = (f"<span class='forkd {way}'>{arrow}"
+                         f"{abs(dv):.0f}</span>")
+            cells.append(
+                f"<div class=forkcell><span class=forkteam>"
+                f"{logo_img(t, 16)}{esc(t)}</span>"
+                f"<b class=forkp>{p * 100:.0f}%</b>{delta}</div>")
+        cols.append(
+            f"<div class=forkcol style='--fc:{team_color(teams, side)}'>"
+            f"<div class=forkhead>If {esc(side)} wins</div>"
+            f"{''.join(cells)}</div>")
+    cls = "forkgrid compact" if compact else "forkgrid"
+    return f"<div class='{cls}'>{''.join(cols)}</div>"
+
+
+def leverage_card(games, sims, teams=None):
     lev = odds_mod.leverage(sims, games)
     if not lev:
         return ""
@@ -658,14 +737,11 @@ def leverage_card(games, sims):
     for e in lev[:8]:
         g = e["game"]
         date = pretty_date(g["start"])
-        mover_txt = ""
-        if e["movers"]:
-            t, d = e["movers"][0]
-            gain = "+" if d > 0 else ""
-            side = g["home"] if d > 0 else g["away"]
-            mover_txt = (f"<div class='dim levswing'>Biggest swing: "
-                         f"{esc(t)} {gain}{d * 100:.0f}% if "
-                         f"{esc(side)} wins</div>")
+        # The same fork the game page draws, at list density. It replaced a
+        # sentence that named one team and two of the four numbers, which
+        # made every game on this list look like it was about whoever the
+        # sentence happened to lead with.
+        mover_txt = fork_block(g, e, sims, teams or {}, compact=True)
         pct = min(e["total"] * 100, 100)
         # Same column treatment as the race card: matchup, bar, number,
         # then the swing note on its own line. Run inline it wrapped through
@@ -673,7 +749,7 @@ def leverage_card(games, sims):
         rows.append(
             f"<div class=clrow><div class=levmain>"
             f"<span class=levgame>{logo_img(g['away'], 16)}{esc(g['away'])} "
-            f"<span class=dim>at</span> {logo_img(g['home'], 16)}"
+            f"<span class=dim>{joiner(g)}</span> {logo_img(g['home'], 16)}"
             f"{esc(g['home'])}</span>"
             f"<span class=levdate>{date}</span>"
             f"<span class=levbar><span class=obar><i style='width:{pct:.0f}%;"
@@ -683,9 +759,15 @@ def leverage_card(games, sims):
             f"</div>{mover_txt}</div>")
     return (f"<div class=card id=levcard><h2>Games that matter · week {wk}"
             f"</h2>{''.join(rows)}"
-            "<p class=note>Title-race leverage: the total swing in "
-            "championship-game probability across all sixteen teams between "
-            "the two outcomes of each game, from the same simulations as "
+            "<p class=note>Two teams reach the championship game &mdash; "
+            "think of that as two seats. The rest of the season is played "
+            "out ten thousand times; change who wins one game and different "
+            "teams end up in those seats. The number beside each game is how "
+            "much of a seat changes hands on it: <b>100 would be a whole "
+            "seat</b>, 0 would mean the result decides nothing. "
+            "Percentages are how often that team reaches the title game "
+            "across those simulated seasons, and the arrow is the move from "
+            "where they stand today. From the same simulations as "
             "the race card. 100 = a full berth's worth of probability "
             "moves on this game.</p></div>")
 
@@ -1312,15 +1394,15 @@ CLINCH_TAIL_LAB = ("Reflects real results until you pick a game; from then on "
 BRIEF_CSS = """
 .matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
   flex-wrap:wrap }
-.side { display:flex; align-items:center; gap:12px; font-size:24px;
+.side { display:flex; align-items:center; gap:12px; font-size:var(--t-headline);
   font-weight:700; border-bottom:4px solid var(--line);
   padding:6px 10px 10px 2px }
 .tname { letter-spacing:-.01em }
-.vs { color:var(--dim); font-weight:400; font-size:18px; padding:0 6px }
+.vs { color:var(--dim); font-weight:400; font-size:var(--t-subhead); padding:0 6px }
 .seed { display:inline-block; background:var(--accent); color:#fff;
-  border-radius:6px; font-size:14px; width:22px; height:22px;
+  border-radius:6px; font-size:var(--t-label); width:22px; height:22px;
   line-height:22px; text-align:center; vertical-align:3px; margin-right:4px }
-.badge { font-size:11px; border-radius:20px; padding:2px 9px;
+.badge { font-size:var(--t-fine); border-radius:20px; padding:2px 9px;
   vertical-align:1px; font-weight:600; letter-spacing:.03em }
 .badge.ok { background:#13653626; color:#136536 }
 .badge.warn { background:#b4530926; color:var(--warn) }
@@ -1338,20 +1420,20 @@ BRIEF_CSS = """
   --warn:#fbbf24; --pctl:63%; }
 * { box-sizing:border-box }
 body { margin:0; background:var(--bg); color:var(--ink);
-  font:16px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif }
+  font:var(--t-body)/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif }
 header { border-bottom:4px solid var(--accent); padding:22px 20px;
   background:var(--panel) }
-header h1 { margin:0; font-size:22px } header p { margin:3px 0 0;
-  color:var(--dim); font-size:14px } header a { color:var(--accent2);
+header h1 { margin:0; font-size:var(--t-headline) } header p { margin:3px 0 0;
+  color:var(--dim); font-size:var(--t-label) } header a { color:var(--accent2);
   text-decoration:none }
 main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
   display:grid; gap:18px }
 .card { background:var(--panel); border:1px solid var(--line);
   border-radius:10px; padding:16px 18px }
-.card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
+.card h2 { margin:0 0 8px; font-size:var(--t-label); text-transform:uppercase;
   letter-spacing:.06em; color:var(--dim) }
 /* A link written into a sentence, rather than one of the components that
-   carries its own colour. There was no rule for these, so the browser's
+   carries its own color. There was no rule for these, so the browser's
    #0000EE and its underline were shipping on the two prose pages in this
    section — the only blue on the domain. The Rules page has always said
    accent2 for exactly this; so does the hub. Classless on purpose: every
@@ -1360,14 +1442,14 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .card p a:not([class]), .card li a:not([class]) { color:var(--accent2);
   text-decoration:underline; text-underline-offset:2px;
   text-decoration-thickness:1px }
-.dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
+.dim { color:var(--dim) } .note { color:var(--dim); font-size:var(--t-row) }
 /* Several marks carry a white plate inside the artwork itself, so on a dark
-   page they read as stray white cards. CSS cannot recolour what is baked
+   page they read as stray white cards. CSS cannot recolor what is baked
    into the file — what it can do is make the plate look intended: one tile,
    same in both themes, that the artwork's own white sits flush against. */
 .mark { vertical-align:-3px; margin-right:6px;
   background:#f0ede6; border-radius:4px; padding:2px }
-.clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:14.5px }
+.clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:var(--t-copy) }
 .movemain { display:grid; align-items:center; gap:0 10px;
   grid-template-columns:22px minmax(110px,148px) 62px auto }
 .movepts { text-align:right; font-variant-numeric:tabular-nums }
@@ -1379,7 +1461,7 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .levgame { min-width:0; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap }
 .levdate { color:var(--dim); white-space:nowrap }
-.levswing { font-size:13px; margin-top:2px }
+.levswing { font-size:var(--t-row); margin-top:2px }
 @media (max-width:640px) {
   .levmain { grid-template-columns:minmax(0,1fr) auto; row-gap:3px }
   .levbar { display:none }
@@ -1399,27 +1481,27 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .obar { display:inline-block; width:100px; height:8px; background:var(--line);
   border-radius:4px; overflow:hidden; vertical-align:1px; margin:0 6px 0 8px }
 .obar i { display:block; height:100%; border-radius:4px }
-.opct { font-variant-numeric:tabular-nums; font-size:13.5px }
+.opct { font-variant-numeric:tabular-nums; font-size:var(--t-row) }
 .chaosband { display:flex; align-items:center; gap:14px; border:1px solid
   var(--line); border-radius:8px; padding:10px 14px; margin-bottom:10px;
-  font-size:13.5px }
-.chaosscale { color:var(--dim); font-size:12.5px; margin-top:2px }
-.chaosparts { color:var(--dim); font-size:12.5px; margin-top:3px;
+  font-size:var(--t-row) }
+.chaosscale { color:var(--dim); font-size:var(--t-meta); margin-top:2px }
+.chaosparts { color:var(--dim); font-size:var(--t-meta); margin-top:3px;
   font-variant-numeric:tabular-nums }
-.cnum { font-size:36px; font-weight:800; line-height:1 }
-.tag { font-size:10.5px; border-radius:20px; padding:2px 8px; font-weight:700 }
+.cnum { font-size:var(--t-hero); font-weight:800; line-height:1 }
+.tag { font-size:var(--t-micro); border-radius:20px; padding:2px 8px; font-weight:700 }
 .tag.live { background:#13653626; color:#136536 }
 .tag.destiny { background:#b4530926; color:var(--warn) }
-.scen { margin:5px 0 2px; padding-left:20px; font-size:13px; color:var(--dim) }
-.elim { font-size:13px } ul.games { list-style:none; padding:0; margin:0 }
+.scen { margin:5px 0 2px; padding-left:20px; font-size:var(--t-row); color:var(--dim) }
+.elim { font-size:var(--t-row) } ul.games { list-style:none; padding:0; margin:0 }
 ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
-  font-size:14px } .ccgtag { color:var(--accent); font-weight:700;
-  font-size:11px; text-transform:uppercase }
+  font-size:var(--t-label) } .ccgtag { color:var(--accent); font-weight:700;
+  font-size:var(--t-fine); text-transform:uppercase }
 /* One non-conference marker for the whole site. It was a pill in the Lab's
    own stylesheet and bare parenthetical text everywhere else, so the same
    fact about the same game looked like two different things depending on
    which page you read it on. Lives here now, where every page can see it. */
-.nctag { color:var(--dim); font-size:10.5px; border:1px solid var(--line);
+.nctag { color:var(--dim); font-size:var(--t-micro); border:1px solid var(--line);
   border-radius:20px; padding:1px 7px; text-transform:uppercase;
   letter-spacing:.04em; white-space:nowrap }
 @media (prefers-color-scheme: dark) {
@@ -1580,8 +1662,8 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
         items = "".join(
             f"<li>{logo_img(e['away'], 14)}{esc(e['away'])} at "
             f"{logo_img(e['home'], 14)}{esc(e['home'])} <span class=dim>"
-            f"&mdash; {e['total'] * 100:.0f} points of championship "
-            f"probability in play</span></li>" for e in lev[:3])
+            f"&mdash; {e['total'] * 100:.0f} of a title-game seat "
+            f"changes hands</span></li>" for e in lev[:3])
         parts.append(f"<div class=card><h2>What to watch next</h2>"
                      f"<ul>{items}</ul><p class=note>Full board on "
                      f"<a href=race.html>The Race</a>.</p></div>")
@@ -1599,13 +1681,13 @@ SUBPAGE_EXTRA_CSS = """
 .drawchart { width:100%; min-width:660px; height:auto; display:block;
   margin:12px 0 2px }
 .drawchart .dgrid { stroke:var(--line); stroke-width:1 }
-.drawchart .dlabel { font-size:11px; font-weight:600; fill:var(--ink) }
-.drawchart .dval { font-size:11px; font-weight:600;
+.drawchart .dlabel { font-size:var(--t-fine); font-weight:600; fill:var(--ink) }
+.drawchart .dval { font-size:var(--t-fine); font-weight:600;
   font-variant-numeric:tabular-nums }
-.drawchart .dtick { fill:var(--dim); font-size:11px }
+.drawchart .dtick { fill:var(--dim); font-size:var(--t-fine) }
 /* No hover-dim here. The bump chart fades its other lines because sixteen
    of them overlap and you need to follow one; sixteen separate bars do not
-   overlap, so the same rule just greys out the chart you are reading. */
+   overlap, so the same rule just grays out the chart you are reading. */
 .drawkey { margin: 6px 0 12px; padding-left: 20px; }
 .drawkey li { margin: 6px 0; }
 .drawgridtable td.dcell { text-align: right;
@@ -1621,7 +1703,7 @@ SUBPAGE_EXTRA_CSS = """
 .stepdepth { max-width: 34rem; }
 .stepdepth th:last-child, .stepdepth td:last-child { text-align: right;
   font-variant-numeric: tabular-nums; }
-.samerec { color: var(--warn); font-weight: 600; font-size: 12px; }
+.samerec { color: var(--warn); font-weight: 600; font-size: var(--t-meta); }
 .misslist { list-style:none; margin:0; padding:0; display:flex;
   flex-wrap:wrap; gap:3px 0 }
 /* Each entry is its own little grid too, so the marks, the abbreviations
@@ -1636,23 +1718,34 @@ SUBPAGE_EXTRA_CSS = """
 .misslist li .myr { color:var(--dim); font-variant-numeric:tabular-nums;
   padding-left:5px }
 
-.firstlist { list-style: none; margin: 8px 0; padding: 0; font-size: 18px; }
+.firstlist { list-style: none; margin: 8px 0; padding: 0; font-size: var(--t-subhead); }
 .rotationtable { width:100% }
 .rotationtable td { vertical-align:middle }
 .rotationtable td:first-child { white-space:nowrap }
-.warnpill { color: var(--warn); font-weight: 600; font-size: 12px; }
+.warnpill { color: var(--warn); font-weight: 600; font-size: var(--t-meta); }
 .drawsum td.num, .drawgridtable td { text-align: right;
   font-variant-numeric: tabular-nums; }
+/* A HEADER ALIGNS WITH THE COLUMN IT LABELS. The figures in this table are
+   right-aligned and every th was inheriting the table default of left, so
+   "vs average" sat a full column-width away from the numbers it named and
+   read as the label for whatever was to its left. .stbl and .stepdepth
+   already pair their th with their td; this table was the one that did not.
+   The spanning headers are centred because each covers a right-aligned
+   figure and the team abbreviation beside it, and the pair reads as one
+   thing. */
+.drawsum th { text-align: right; }
+.drawsum th:first-child { text-align: left; }
+.drawsum th[colspan] { text-align: center; }
 .drawsum td.dim, .drawgridtable td.dim { color: var(--dim); }
-.drawgridtable th { font-weight: 600; font-size: 12px; }
-table { border-collapse:collapse; width:100%; font-size:14px }
+.drawgridtable th { font-weight: 600; font-size: var(--t-meta); }
+table { border-collapse:collapse; width:100%; font-size:var(--t-label) }
 th, td { text-align:left; padding:6px 9px; border-bottom:1px solid
   var(--line); font-variant-numeric:tabular-nums }
-th { font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+th { font-size:var(--t-fine); text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim) }
 thead tr th { border-bottom:2px solid var(--line) }
 .teamcell { white-space:nowrap }
-.briefstamp { color:var(--dim); font-size:13px; text-align:center; margin:-4px 0 2px }
+.briefstamp { color:var(--dim); font-size:var(--t-row); text-align:center; margin:-4px 0 2px }
 tr.grpend td { border-bottom:2px solid var(--line) }
 .stbl td:last-child, .stbl th:last-child { text-align:right }
 .stbl td { height:38px }
@@ -1660,7 +1753,7 @@ tr.grpend td { border-bottom:2px solid var(--line) }
 .duo.even > .stack { align-content:stretch }
 .duo.even .card { height:100% }
 .posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
-h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
+h3.wkhead { font-size:var(--t-row); text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
 /* The week, as cards rather than rows. Sixteen one-line rows read as an
    index of games; the week deserves to look like the week. Two up, not
@@ -1670,14 +1763,14 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
 /* Same reasoning as the game page: auto-fit columns are still rows, and a
    game with a forecast, a broadcast and a line sat beside one with none left
    the short card padded out to match. column-width keeps the "two up at the
-   chrome width, one on a phone" behaviour the repeat(auto-fit, minmax(...))
+   chrome width, one on a phone" behavior the repeat(auto-fit, minmax(...))
    was chosen for, without pairing the cards into rows. */
 .slatelist { columns:30rem; column-gap:10px; margin-top:2px }
 .slate { background:var(--bg); border:1px solid var(--line);
   border-radius:10px; padding:11px 13px; min-width:0;
   break-inside:avoid; margin-bottom:10px }
-.slateteams { font-size:15px; margin-bottom:8px }
-.slatemeta { font-size:12.5px; color:var(--dim); display:grid; gap:4px }
+.slateteams { font-size:var(--t-copy); margin-bottom:8px }
+.slatemeta { font-size:var(--t-meta); color:var(--dim); display:grid; gap:4px }
   /* Two columns of facts once the card is wide enough for them. Five
      single-line facts stacked made a tall card that was mostly one short
      phrase per row, and the week is sixteen of these. Below 520px the card is
@@ -1706,7 +1799,14 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
 .gi { width:15px; height:15px; flex:0 0 15px; color:var(--dim);
   opacity:.85 }
 .slatelinks { display:flex; gap:16px; margin-top:9px; padding-top:8px;
-  border-top:1px solid var(--line); font-size:12.5px }
+  border-top:1px solid var(--line); font-size:var(--t-meta) }
+/* On a slate card that rule separates the links from five rows of facts
+   above them. In the Elsewhere card there is nothing above them but the
+   heading, which already does the separating — so the rule read as a second
+   divider and the extra 17px above it made the card look like it had been
+   padded differently from every other card on the page. It had not; it had
+   an internal border nobody else had. */
+#elsewhere .slatelinks { margin-top:0; padding-top:0; border-top:0 }
 .slatelink { display:inline-flex; align-items:center; gap:5px;
   font-weight:600; white-space:nowrap; color:var(--accent);
   text-decoration:none }
@@ -1733,35 +1833,89 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
    Flowing them down columns lets each one end where its content ends.
    attendance/site/styles.css does the same thing for its chart panels. */
 @media (min-width: 900px) {
-  main:has(#gamehead) { display:block; columns:2; column-gap:14px }
+  /* 18px, the same rhythm as every other page in the section: main is a
+     grid with gap:18px everywhere else, and .duo uses 18 as well. This page
+     is the one that reaches for columns instead of a grid, and it arrived
+     carrying its own 14 — close enough to look like a mistake rather than a
+     choice, which is exactly what it was. */
+  main:has(#gamehead) { display:block; columns:2; column-gap:18px }
   /* A card must not be split down the middle of a column break. */
-  main:has(#gamehead) > .card { break-inside:avoid; margin-bottom:14px }
+  main:has(#gamehead) > .card { break-inside:avoid; margin-bottom:18px }
   /* The header spans, the way it did when this was a grid. */
   main:has(#gamehead) > .gameback,
   main:has(#gamehead) > #gamehead { column-span:all }
+  /* And the links row, at the other end. A multi-column flow fills in
+     source order and cannot be told where to put a given card, so on a page
+     with three cards the short one landed underneath the tall one — the
+     market alone in a column, the models and the links stacked beside it.
+     Spanning both takes it out of the balancing entirely: it reads as the
+     foot of the page, which is what it is, and the two columns above it hold
+     only the cards that are actually being compared. */
+  main:has(#gamehead) > #elsewhere { column-span:all; margin-top:0 }
 }
-.gameback { margin:2px 0 12px; font-size:13px }
+.gameback { margin:2px 0 12px; font-size:var(--t-row) }
 .gameback a { color:var(--accent); text-decoration:none }
 .gameback a:hover { text-decoration:underline }
-.gamematch { font-size:19px; margin-bottom:9px }
-#gamehead .slatemeta { font-size:13.5px }
+/* THE PAGE'S TYPE SCALE, in one place, because it went wrong by being in
+   several. The matchup is what this page is ABOUT, and it was 19px at weight
+   400 — smaller and lighter than a figure inside a card below it (.mkval,
+   20/600), so the eye landed on a spread rather than on the game. The order
+   now runs: the matchup, then the figures, then the stadium, then the card
+   labels, then the rows.
+     matchup   24 / 700    the subject
+     figures   20 / 600    .mkval, in the market and venue cards
+     stadium   17 / 600    .venname, a name inside a card
+     labels    14 / 700    the uppercase h2s
+     rows    13.5 / 400    everything else
+   Anything added here should be placed against that list rather than sized
+   to look right on its own. */
+.gamematch { font-size:var(--t-headline); font-weight:700; letter-spacing:-.01em;
+  margin-bottom:11px; line-height:1.25 }
+/* The joiner carries none of that weight — it is the quietest word in the
+   line and was inheriting 24px along with the team names. */
+.gamematch .dim { font-size:.7em; font-weight:400 }
+.gamematch .nctag, .gamematch .ccgtag { vertical-align:4px }
+#gamehead .slatemeta { font-size:var(--t-row) }
+/* The stadium, at the weight it deserves on a page about one game. The city
+   sits beside it rather than under it: together they are one answer to one
+   question, and stacked they read as two facts. */
+.venname { font-size:var(--t-subhead); font-weight:600; margin:0 0 12px;
+  line-height:1.35 }
+.vencity { color:var(--dim); font-weight:400 }
+.venname .nctag { vertical-align:2px }
+/* Glyphs on the label line rather than beside the figure. The figure is the
+   thing being read; a mark next to it competes with it, and the label is
+   where a reader goes when the number alone is ambiguous — which is exactly
+   when "is that wind or rain?" gets asked. Muted, and never the only signal:
+   the words are still there. */
+.vengi { color:var(--dim); margin-right:5px; vertical-align:-2px }
+.venname .vengi { color:var(--dim); vertical-align:-1px }
+#venuecard .mkgrid .dim { display:flex; align-items:center; gap:0 }
 /* The market is four figures, and figures want columns rather than a
    paragraph: the number first, what it is underneath. */
+/* 150, not 120: at 120 a favourite with a long name broke across two lines
+   ("West Virginia" / "-19.5"), which reads as two figures rather than one. */
 .mkgrid { display:grid; gap:12px;
-  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
   font-variant-numeric:tabular-nums }
-.mkval { font-size:20px; font-weight:600 }
-.mkgrid .dim { font-size:12.5px }
+.mkval { font-size:var(--t-lead); font-weight:600 }
+.mkgrid .dim { font-size:var(--t-meta) }
 /* Model against market: the same bar the race card uses, so a reader who
    knows one knows the other. */
-.mline { display:grid; grid-template-columns:44px minmax(0,1fr);
-  align-items:center; gap:10px; margin:6px 0; font-size:13.5px }
-.msys { color:var(--dim); font-size:12px; text-transform:uppercase;
-  letter-spacing:.04em }
+/* 58px, not 44. The label track was cut to fit SP+, FPI, ELO and SRS, and
+   then the market row arrived with a six-letter word in it: "MARKET" is wider
+   than the column, so it ran straight into the team name and printed
+   "MARKETTCU". Fixed rather than max-content, because each row is its own
+   grid — a track that sizes to its own content stops the bars lining up down
+   the card, which is the only reason this is a grid at all. */
+.mline { display:grid; grid-template-columns:58px minmax(0,1fr);
+  align-items:center; gap:10px; margin:6px 0; font-size:var(--t-row) }
+.msys { color:var(--dim); font-size:var(--t-meta); text-transform:uppercase;
+  letter-spacing:.04em; overflow:hidden; text-overflow:ellipsis }
 /* The season the rating comes from, under its name. Preseason these are last
    year's numbers, and the row has to say so where the name is — the caveat in
    the note below is read after the bars, if at all. */
-.msys i { display:block; font-style:normal; font-size:10px; opacity:.75;
+.msys i { display:block; font-style:normal; font-size:var(--t-micro); opacity:.75;
   letter-spacing:0; font-variant-numeric:tabular-nums }
 .mrow { display:grid; align-items:center; gap:10px;
   grid-template-columns:minmax(0,140px) minmax(0,1fr) 42px }
@@ -1772,8 +1926,69 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
 .mrow.market .mbar i { background:var(--dim) }
 .mval { text-align:right; font-variant-numeric:tabular-nums }
 .mmarket { border-top:1px solid var(--line); padding-top:8px; margin-top:8px }
-.levtotal { margin-bottom:10px; font-size:14px }
-.levtotal b { font-size:22px; font-variant-numeric:tabular-nums }
+.levtotal { margin-bottom:10px; font-size:var(--t-label) }
+/* The swing bar: a span between two futures with today marked inside it.
+   Not a progress bar — nothing is filling up — so it is a floating segment
+   on a track rather than a bar anchored at zero. */
+.swrow { display:grid; align-items:center; gap:10px; margin:7px 0;
+  grid-template-columns:minmax(0,130px) minmax(0,1fr) 72px;
+  font-size:var(--t-row) }
+.swteam { display:flex; align-items:center; gap:6px; min-width:0 }
+.swteam { overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.swtrack { position:relative; height:10px; border-radius:5px;
+  background:var(--line) }
+.swspan { position:absolute; top:0; bottom:0; border-radius:5px;
+  background:var(--accent); opacity:.85 }
+/* Today, as a notch that reads against both the span and the empty track —
+   so it stays visible whether it lands inside the span or at its edge. */
+.swnow { position:absolute; top:-3px; bottom:-3px; width:2px;
+  margin-left:-1px; background:var(--ink); border-radius:1px }
+.swnums { text-align:right; font-variant-numeric:tabular-nums;
+  white-space:nowrap }
+.swnums .dim { font-size:var(--t-meta) }
+.swkey { margin-top:10px }
+/* THE FORK: two results side by side, each holding both teams. The column
+   carries the winning side's colour as a top rule, so which branch you are
+   reading is answered before you read a word of it — and the two columns are
+   the same shape, because the whole point is that they are comparable. */
+.forkgrid { display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  margin:12px 0 4px }
+.forkcol { border:1px solid var(--line); border-radius:9px; padding:10px 12px;
+  border-top:3px solid var(--fc, var(--accent)); min-width:0 }
+.forkhead { font-size:var(--t-meta); text-transform:uppercase;
+  letter-spacing:.05em; color:var(--dim); margin-bottom:7px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.forkcell { display:grid; grid-template-columns:minmax(0,1fr) auto auto;
+  align-items:baseline; gap:8px; margin:5px 0; font-size:var(--t-row) }
+.forkteam { display:flex; align-items:center; gap:6px; min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.forkp { font-size:var(--t-subhead); font-variant-numeric:tabular-nums }
+/* The move, not the level. Colour is never the only signal — the arrow says
+   the same thing, which is the rule the pools board already follows. */
+.forkd { font-size:var(--t-meta); font-variant-numeric:tabular-nums;
+  white-space:nowrap; color:var(--dim) }
+.forkd.up { color:#136536 }
+.forkd.down { color:var(--warn) }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .forkd.up { color:#4ade80 }
+}
+:root[data-theme="dark"] .forkd.up { color:#4ade80 }
+.forkelse { font-size:var(--t-meta); text-transform:uppercase;
+  letter-spacing:.05em; color:var(--dim); margin:14px 0 2px }
+/* List density. Same component, tighter: eight of these stack under one
+   heading on the race page, where the game page shows exactly one. */
+.forkgrid.compact { gap:8px; margin:6px 0 2px }
+.forkgrid.compact .forkcol { padding:7px 9px; border-radius:7px;
+  border-top-width:2px }
+.forkgrid.compact .forkhead { font-size:var(--t-fine); margin-bottom:4px }
+.forkgrid.compact .forkcell { font-size:var(--t-meta); margin:3px 0 }
+.forkgrid.compact .forkp { font-size:var(--t-row) }
+@media (max-width:560px) { .forkgrid { grid-template-columns:1fr } }
+@media (max-width:560px) {
+  .swrow { grid-template-columns:minmax(0,1fr) 72px }
+  .swrow .swtrack { grid-column:1 / -1; order:3 }
+}
+.levtotal b { font-size:var(--t-lead); font-variant-numeric:tabular-nums }
 @media (max-width:560px) {
   .mrow { grid-template-columns:minmax(0,1fr) 42px }
   .mrow .mbar { display:none }
@@ -1801,18 +2016,18 @@ h3.wkhead { font-size:13px; text-transform:uppercase; letter-spacing:.05em;
    phone instead of scrolling inside its own box. */
 main > * { min-width:0 }
 table.h2h { width:100%; table-layout:auto }
-.h2h th, .h2h td { padding:6px 4px; font-size:13px; white-space:nowrap;
+.h2h th, .h2h td { padding:6px 4px; font-size:var(--t-row); white-space:nowrap;
   text-align:center }
 .h2h td.teamcell, .h2h thead th:first-child { text-align:left;
   padding-left:2px }
-.h2h thead th { font-size:12px; letter-spacing:.02em }
+.h2h thead th { font-size:var(--t-meta); letter-spacing:.02em }
 .hatag { display:inline-block; min-width:11px; margin-right:4px;
-  font-size:10px; font-weight:700; color:var(--dim); vertical-align:1px }
+  font-size:var(--t-micro); font-weight:700; color:var(--dim); vertical-align:1px }
 /* The empty cells carry meaning — a third of this grid is pairs the
    schedule never makes — so they need to be visible, not ghosts. */
 .selfcell { color:var(--dim); opacity:.75;
   background:color-mix(in srgb, var(--dim) 12%, transparent) }
-.nomeet { color:var(--dim); opacity:.75; font-size:15px; line-height:1 }
+.nomeet { color:var(--dim); opacity:.75; font-size:var(--t-copy); line-height:1 }
 
 /* ---- season replay ---- */
 #replaybar .rpline { display:flex; align-items:center; gap:10px;
@@ -1823,12 +2038,12 @@ table.h2h { width:100%; table-layout:auto }
   #replaybar #rp-label { flex:1 0 100%; min-width:0 !important; order:9 }
   #replaybar #rp-now { order:8 }
 }
-#replaybar #rp-label { font-size:14px; color:var(--dim) }
+#replaybar #rp-label { font-size:var(--t-label); color:var(--dim) }
 #replaybar #rp-prev, #replaybar #rp-next { padding:6px 10px }
 #replaycard.scrubbed { border-color:var(--accent) }
 /* keeps its space so the slider never changes width */
 #rp-now.invis { visibility:hidden }
-.mv { font-size:11px; margin-left:5px; font-weight:600 }
+.mv { font-size:var(--t-fine); margin-left:5px; font-weight:600 }
 .mv.up { color:hsl(140 60% var(--pctl)) }
 .mv.down { color:hsl(6 70% var(--pctl)) }
 tr.moved.up td { animation:flashup 900ms ease-out }
@@ -1848,7 +2063,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .teamcell.st-top { font-style:italic }
 
 /* the replay's own controls, same chrome as the Lab's */
-.wbtn { font:inherit; font-size:14px; border:1px solid var(--line);
+.wbtn { font:inherit; font-size:var(--t-label); border:1px solid var(--line);
   background:var(--panel); color:var(--ink); border-radius:8px;
   padding:6px 14px; cursor:pointer }
 .wbtn:hover { border-color:var(--accent) }
@@ -1857,10 +2072,10 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .bumpwrap { overflow-x:auto }
 .bump { width:100%; min-width:660px; height:auto; display:block }
 .bump .bgrid { stroke:var(--line); stroke-width:1 }
-.bump .btick { fill:var(--dim); font-size:11px }
+.bump .btick { fill:var(--dim); font-size:var(--t-fine) }
 .bump .bnum { text-anchor:end }
 .bump .bwk { text-anchor:middle }
-.bump .blabel { font-size:11px; font-weight:600 }
+.bump .blabel { font-size:var(--t-fine); font-weight:600 }
 .bump .bteam { transition:opacity .12s ease }
 .bumpwrap:hover .bteam { opacity:.22 }
 .bumpwrap .bteam:hover { opacity:1 }
@@ -1904,6 +2119,7 @@ def build_subpage(title, active, body, year, matchcard,
 <script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{BASE}{asset_v("brand.css")}">
 <script defer src="{BASE}{asset_v("theme.js")}"></script>
+<script defer src="{BASE}{asset_v("cards.js")}"></script>
 {rss}
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
@@ -1966,9 +2182,9 @@ LOCAL_TIME_JS = """<script>
 
 # Eight glyphs, drawn once per page and referenced by <use>. A webfont for
 # eight icons is absurd — this is under a kilobyte, needs no request, and
-# inherits currentColor, so both themes and the warning colour come free.
+# inherits currentColor, so both themes and the warning color come free.
 # Paths from Tabler Icons (MIT, https://tabler.io/icons); the same treatment
-# the Archivo licence gets in fonts/OFL.txt.
+# the Archivo license gets in fonts/OFL.txt.
 ICONS = {
     "clock": "<circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/>",
     "pin": ("<path d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/>"
@@ -1976,6 +2192,15 @@ ICONS = {
             " -4.243a8 8 0 1 1 11.314 0z'/>"),
     "tv": ("<rect x='3' y='7' width='18' height='13' rx='2'/>"
            "<path d='M16 3l-4 4l-4 -4'/>"),
+    # A roof over a floor, for the games where the sky is not part of the
+    # story. Tabler's "building-arch", same license as the rest.
+    "roof": ("<path d='M3 21h18'/><path d='M4 21v-10a8 8 0 0 1 16 0v10'/>"
+             "<path d='M9 21v-9a3 3 0 0 1 6 0v9'/>"),
+    # Tabler's "temperature". The sun glyph already means "fine weather" on
+    # the slate, so it cannot also mean "this is the temperature" on a card
+    # that prints wind and rain beside it.
+    "temp": ("<path d='M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5'/>"
+             "<path d='M10 9h4'/>"),
     "sun": ("<circle cx='12' cy='12' r='4'/><path d='M3 12h1m8 -9v1m8 8h1m-9"
             " 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7"
             " .7'/>"),
@@ -2076,7 +2301,7 @@ def kickoff(g):
         tzname, zone = "America/New_York", zoneinfo.ZoneInfo("America/New_York")
     local = when.astimezone(zone)
     # %Z gives the zone the venue actually keeps — MST for Arizona in
-    # September, where its neighbours are on MDT. That distinction is the
+    # September, where its neighbors are on MDT. That distinction is the
     # whole reason a kickoff gets misread by an hour.
     label = local.strftime("%Z") or "local"
     stamp = (f'<time data-kick datetime="{esc(iso)}" '
@@ -2090,16 +2315,30 @@ def where(g):
     """Venue and city, once the season's data carries them. Fetches before
     the venue fields existed simply have nothing to say here."""
     bits = [g.get("venue"), g.get("venue_city")]
+    plain = " · ".join(b for b in bits if b)
     line = " · ".join(esc(b) for b in bits if b)
     if not line:
         return ""
     if g.get("neutral_site"):
         line += " <span class=dim>(neutral)</span>"
-    return f"<div class=slatewhere>{icon('pin')}{line}</div>"
+        plain += " (neutral)"
+    # Wrapped, and this is not decoration. The card's two-column row clips
+    # long lines with .slatemeta > div > :not(svg), which is an ELEMENT
+    # selector — a bare text node matches nothing, so the venue never
+    # truncated and "Bill Snyder Family Stadium · Manhattan, KS" ran straight
+    # out of its column and under the broadcast beside it.
+    #
+    # The title carries the whole string, because the fix that stopped the
+    # collision is also what hides the end of the longest names. A tooltip on
+    # text that happens to fit is harmless; a stadium a reader cannot finish
+    # reading is not. Plain text, assembled separately — the visible line has
+    # a span in it by then.
+    return (f"<div class=slatewhere>{icon('pin')}"
+            f"<span title=\"{esc(plain)}\">{line}</span></div>")
 
 
 # Above these it stops being weather and starts being a factor in the game,
-# so the number takes the warning colour and the glyph changes with it. A
+# so the number takes the warning color and the glyph changes with it. A
 # reader scanning sixteen cards should find the miserable one without
 # reading a single figure.
 WIND_WARN = 20      # mph
@@ -2114,6 +2353,21 @@ def weather_line(g):
     it is a fact about the place, not a claim about the day, and it must
     never be mistakable for one.
     """
+    # Indoors, the line has nothing to report. A dome's forecast is a
+    # statement about the parking lot: it does not move a ball, a kicker or a
+    # crowd, and printed in the same slot as Lubbock in a crosswind it reads
+    # as though it might. Say where the game is instead — which is the one
+    # fact the weather line was standing in for.
+    #
+    # CFBD's flag does not separate a fixed roof from a retractable one, and
+    # nothing published says in August whether Mercedes-Benz will be open in
+    # September. "Indoors" is what is true of the building either way; a
+    # temperature would be a guess about a roof nobody has decided yet.
+    if g.get("dome"):
+        return (f"<div class='slatewx dim' title='A domed or roofed stadium. "
+                f"The forecast is left off because it is not about the "
+                f"game.'>{icon('roof')}<span>Indoors</span></div>")
+
     w = g.get("weather")
     if w:
         wind = w.get("windMph")
@@ -2129,8 +2383,8 @@ def weather_line(g):
             parts.append(f"<span class=wxwarn>{pct}</span>" if wet else pct)
         glyph = "rain" if wet else ("wind" if windy else "sun")
         cls = "gi wxwarn" if wet or windy else "gi"
-        return (f"<div class=slatewx>{icon(glyph, cls)}"
-                + ", ".join(parts) + "</div>")
+        return (f"<div class=slatewx>{icon(glyph, cls)}<span>"
+                + ", ".join(parts) + "</span></div>")
 
     n = g.get("normal")
     if not n:
@@ -2144,9 +2398,11 @@ def weather_line(g):
     # chance of rain at kickoff — Miami in September reads 93% and is not
     # wrong. Say which one it is, because the two look identical.
     return (f"<div class='slatewx dim' title='Ten seasons at this venue for "
-            f"this fortnight: mean temperature and wind, and the share of "
+            f"this two-week window: mean temperature and wind, and the share "
+            f"of "
             f"days with measurable rain. Not a forecast.'>"
-            f"{icon('history')}Average " + ", ".join(parts) + "</div>")
+            f"{icon('history')}<span>Average " + ", ".join(parts)
+            + "</span></div>")
 
 
 def broadcast(g):
@@ -2163,7 +2419,9 @@ def broadcast(g):
     # distinction, and the outlet's own name already says which it is —
     # nobody mistakes ESPN+ for a channel. TV first, streams after.
     names = list(dict.fromkeys(tv + web))
-    return f"<div class=slatetv>{icon('tv')}{esc(' / '.join(names))}</div>"
+    joined = " / ".join(names)
+    return (f"<div class=slatetv>{icon('tv')}"
+            f"<span title=\"{esc(joined)}\">{esc(joined)}</span></div>")
 
 
 def market(g):
@@ -2171,7 +2429,7 @@ def market(g):
 
     CFBD stores the home spread — negative means the home team is favored —
     which is a convention, not a sentence. A reader wants a team and a
-    number, so name the favourite. A pick'em game has no favourite to name,
+    number, so name the favorite. A pick'em game has no favorite to name,
     so it says so."""
     ln = g.get("line") or {}
     spread, total = ln.get("spread"), ln.get("over_under")
@@ -2188,10 +2446,10 @@ def market(g):
         # A card is a fixed shape; a row is not. Saying nothing here leaves
         # a hole that reads as a bug, so the card says what is true.
         return (f"<div class='slateline dim'>{icon('chart')}"
-                f"No line posted</div>")
+                f"<span>No line posted</span></div>")
     return (f"<div class=slateline title='Average of "
             f"{ln.get('books', 0)} book(s) via collegefootballdata.com'>"
-            f"{icon('chart')}" + " · ".join(bits) + "</div>")
+            f"{icon('chart')}<span>" + " · ".join(bits) + "</span></div>")
 
 
 def espn_link(g):
@@ -2219,6 +2477,19 @@ def game_slug(g):
     return f"{g['id']}-{part(g['away'])}-at-{part(g['home'])}.html"
 
 
+def joiner(g):
+    """"at" for a home game, "vs" for a neutral site.
+
+    A neutral-site game has no home team in the sense the word "at" carries —
+    Baylor did not travel to Auburn, they both traveled to Atlanta. The
+    data still labels one side home, because a feed needs a column for it,
+    and printing that as "at" tells the reader something untrue about who
+    had the crowd. The hub has said "vs" since it started showing the next
+    kickoff; this is the rest of the site agreeing with it.
+    """
+    return "vs" if g.get("neutral_site") else "at"
+
+
 def matchup(g, size=18):
     """Both teams with their marks, scored if it has been played."""
     hm, am = logo_img(g["home"], size), logo_img(g["away"], size)
@@ -2235,7 +2506,7 @@ def matchup(g, size=18):
         tag = " <span class=ccgtag>Championship</span>"
     elif not g["conference_game"]:
         tag = " <span class=nctag>non-conf</span>"
-    return f"{away} <span class=dim>at</span> {home}{tag}"
+    return f"{away} <span class=dim>{joiner(g)}</span> {home}{tag}"
 
 
 def when_line(g):
@@ -2398,10 +2669,26 @@ def model_card(g, ctx):
     if mkt:
         body += (f"<div class='mline mmarket'><span class=msys>Market</span>"
                  f"{bar(mkt[0], mkt[1], 'market')}</div>")
+    # The market row names its source here rather than borrowing the one on
+    # the card above it. The two cards are independent — a game page shows
+    # both, the slate shows neither in text — and a benchmark row every other
+    # row is being judged against is the last place to make a reader go
+    # looking for where a number came from.
+    #
+    # And it is only a CLOSING spread once there is nothing left to close.
+    # Before kickoff this is the current average, the same figure printed
+    # above as "opened -7" moved to -6.8; calling that a closing line
+    # described a number that does not exist yet on the one kind of page —
+    # a preview — where this card does its most useful work.
+    books = (g.get("line") or {}).get("books", 0)
+    src = (f"an average of {books} book(s) via collegefootballdata.com"
+           if books else "via collegefootballdata.com")
     note = ("Predicted margin in points, each system carrying its own "
             "home-field bump. The year under a name is the season those "
-            "ratings come from. The market row is the closing spread, for "
-            "comparison.")
+            "ratings come from. The market row is "
+            + (f"the closing spread, {src}."
+               if g.get("completed")
+               else f"the spread as it stands, {src}."))
     # Before a season starts, most of these are last year's numbers pulled
     # toward the mean. A reader comparing against published SP+ deserves to
     # know why ours is smaller rather than assuming one of us is wrong. The
@@ -2417,10 +2704,10 @@ def model_card(g, ctx):
     if mkt:
         agree = sum(1 for _, t, _ in rows if t == mkt[0])
         if agree == len(rows):
-            note += (f" All {len(rows)} systems side with the favourite.")
+            note += (f" All {len(rows)} systems side with the favorite.")
         elif agree == 0:
             note += " Every system takes the other side."
-    return (f"<div class=card><h2>What the models make it</h2>{body}"
+    return (f"<div class=card id=modelcard><h2>What the models make it</h2>{body}"
             f"<p class=note>{note}</p></div>")
 
 
@@ -2435,18 +2722,76 @@ def race_card(g, ctx):
     # a team that gains when the away side wins — not one that loses by
     # winning. Say the gain and the result that produces it, or the row
     # reads as nonsense: "Arizona -21% if Arizona wins".
-    movers = "".join(
-        f"<div class=clrow><span class=levgame>{logo_img(t, 16)}{esc(t)}"
-        f"</span><b class=opct>+{abs(d) * 100:.0f}%</b>"
-        f"<span class=dim>if {esc(g['home'] if d > 0 else g['away'])} wins"
-        f"</span></div>" for t, d in lev["movers"][:4])
-    return (f"<div class=card><h2>What it does to the race</h2>"
+    # THE GAP, DRAWN. Two conditional probabilities and the team's current
+    # one is three numbers about the same team, and a row of three figures
+    # makes the reader do the comparing. The bar does it: the span between
+    # the two futures, and a tick where today sits inside it.
+    #
+    # Today is never the midpoint, and that is the whole insight — it sits
+    # nearer whichever branch is likelier. BYU is 23% now, 33% if it wins and
+    # 7% if it loses, because it is expected to win: most of the winning
+    # branch is already priced in, so the game is worth +10 to BYU rather
+    # than the +27 the raw gap suggests.
+    sims = ctx.get("sims") or {}
+
+    def swing(t, pw, pl, span):
+        hi, lo = max(pw, pl), min(pw, pl)
+        now = (sims.get(t) or {}).get("p_ccg")
+        L, W = lo / span * 100, (hi - lo) / span * 100
+        tick = ""
+        if now is not None:
+            tick = (f"<i class=swnow style='left:{now / span * 100:.1f}%' "
+                    f"title='{now * 100:.0f}% as things stand'></i>")
+        return (f"<div class=swrow>"
+                f"<span class=swteam>{logo_img(t, 16)}{esc(t)}</span>"
+                f"<span class=swtrack><i class=swspan "
+                f"style='left:{L:.1f}%;width:{W:.1f}%'></i>{tick}</span>"
+                f"<span class=swnums><b>{hi * 100:.0f}%</b>"
+                f"<span class=dim>/{lo * 100:.0f}%</span></span></div>")
+
+    # THE FORK. Two results, two teams, four numbers — the shape of the
+    # question a preview is actually asked. A sentence could carry two of
+    # them ("33% if BYU wins, 7% if Arizona does") and was carrying exactly
+    # two, which made the game look like it was about one team. It is about
+    # both, and the other side's number is the half nobody was being shown.
+    #
+    # Each cell also says what the result MOVES, because a probability with
+    # no baseline is a number without a verb: 33% means nothing until you
+    # know they were on 23%.
+    teams_ = ctx.get("teams") or {}
+    fork = fork_block(g, lev, sims, teams_)
+
+    # The swing bars are for everybody ELSE the result touches — the two
+    # playing are answered above, and repeating them here would be the same
+    # four numbers twice.
+    playing = {g["home"], g["away"]}
+    others = [m for m in lev["movers"] if m[0] not in playing][:4]
+    # Scaled to the widest bar ACTUALLY DRAWN, not to the card's biggest
+    # number. Sized against the two teams in the fork, a third party sitting
+    # above them ran off the end of its own track — Texas Tech at 58% on a
+    # rail cut for BYU's 33%.
+    span = max([max(a, b) for _, _, a, b in others] + [0.01])
+    movers = "".join(swing(t, pw, pl, span) for t, _d, pw, pl in others)
+    if movers:
+        movers = (f"<div class=forkelse>Who else it moves</div>{movers}")
+    key = (f"<p class='note swkey'>Two teams reach the championship game "
+           f"&mdash; think of that as two seats. The rest of the season is "
+           f"played out ten thousand times; the percentages are how often "
+           f"each team ends up in one under that result, and the arrow is "
+           f"the move from where they stand today. <b>100 would be a whole "
+           f"seat</b> changing hands. Bars span the two futures, with a tick "
+           f"at today &mdash; which sits nearer the result that side is more "
+           f"likely to get.</p>")
+    return (f"<div class=card id=racecard><h2>What it does to the race</h2>"
             f"<div class=levtotal><b>{total:.0f}</b> "
-            f"<span class=dim>total swing in championship probability "
-            f"across all sixteen teams</span></div>{movers}"
+            f"<span class=dim>of a title-game seat changes hands on this "
+            f"result</span></div>{fork}{movers}{key}"
             f"<p class=note>From the same simulations the race card runs. "
             f"100 means a full berth's worth of probability moves on this "
-            f"result.</p></div>")
+            f"result. Each pair is that team's chance in the two futures, "
+            f"not a move from where it stands now &mdash; today's number "
+            f"already contains both, weighted by who is likely to "
+            f"win.</p></div>")
 
 
 def series_card(g, ctx):
@@ -2463,7 +2808,7 @@ def series_card(g, ctx):
     else:
         line = (f"<b>{esc(a)} {w}&ndash;{l} {esc(b)}</b> as conference "
                 f"opponents since 2011.")
-    return (f"<div class=card><h2>The series</h2><p>{line}</p>"
+    return (f"<div class=card id=seriescard><h2>The series</h2><p>{line}</p>"
             f"<p class=note>If these two finish level in the standings, "
             f"step (a) of the tiebreaker is head-to-head &mdash; which is "
             f"this game. It is the first thing that separates them, before "
@@ -2524,7 +2869,7 @@ def game_jsonld(g, year, url):
     ev = {
         "@context": "https://schema.org",
         "@type": "SportsEvent",
-        "name": f"{g['away']} at {g['home']}",
+        "name": f"{g['away']} {joiner(g)} {g['home']}",
         "sport": "American Football",
         "url": url,
         "competitor": [
@@ -2553,20 +2898,95 @@ def game_jsonld(g, year, url):
             {"@type": "ListItem", "position": 2, "name": f"{year} schedule",
              "item": "https://big12ology.com/schedule/"},
             {"@type": "ListItem", "position": 3,
-             "name": f"{g['away']} at {g['home']}"},
+             "name": f"{g['away']} {joiner(g)} {g['home']}"},
         ],
     }
     return jsonld(ev) + jsonld(crumbs)
+
+
+def venue_card(g):
+    """Where it is played and what it will be like there, at the size of a
+    card rather than the size of a row.
+
+    The slate says this in three muted words per line because sixteen of them
+    have to fit a week on one screen. A preview page has one game on it and
+    room to say the thing properly, so it borrows the market card's shape —
+    figure first, what it is underneath — and the two cards read as one
+    system instead of one card and one leftover.
+    """
+    name, city = g.get("venue"), g.get("venue_city")
+    if not name and not city:
+        return ""
+
+    tag = (" <span class=nctag>neutral site</span>"
+           if g.get("neutral_site") else "")
+    head = (f"<div class=venname>{icon('pin', 'gi vengi')}"
+            f"{esc(name or city)}"
+            f"{f' <span class=vencity>{esc(city)}</span>' if name and city else ''}"
+            f"{tag}</div>")
+
+    cells, note = [], ""
+    if g.get("dome"):
+        # A roofed stadium gets the headline to itself. There is no figure to
+        # print and inventing one — the forecast for the car park — is the
+        # thing this card exists to stop.
+        cells.append(("Indoors", "roof over the field", "roof"))
+        note = ("A domed or roofed stadium, so no forecast is shown: the "
+                "weather outside is not part of this game.")
+    elif g.get("weather"):
+        w = g["weather"]
+        wind, rain = w.get("windMph"), w.get("precipChance")
+        cells.append((f"{round(w['tempF'])}&deg;F", "at kickoff", "temp"))
+        if wind is not None:
+            windy = round(wind) >= WIND_WARN
+            cells.append((f"<span class=wxwarn>{round(wind)} mph</span>"
+                          if windy else f"{round(wind)} mph",
+                          "wind", "wind"))
+        if rain is not None:
+            wet = round(rain) >= RAIN_WARN
+            cells.append((f"<span class=wxwarn>{round(rain)}%</span>"
+                          if wet else f"{round(rain)}%",
+                          "chance of rain", "rain"))
+        note = "Forecast for the hour of kickoff, via Open-Meteo."
+    elif g.get("normal"):
+        n = g["normal"]
+        cells.append((f"{n['tempF']}&deg;F", "average temperature", "temp"))
+        if n.get("windMph") is not None:
+            cells.append((f"{n['windMph']} mph", "average wind", "wind"))
+        if n.get("rainPct") is not None:
+            # Said in full here, because the card has the room the slate's
+            # title attribute did not: this is the share of DAYS that saw
+            # rain, not a chance of rain at kickoff. Miami in September reads
+            # 93% and is not wrong.
+            cells.append((f"{n['rainPct']}%", "of days see rain", "rain"))
+        note = ("Ten seasons at this venue for this two-week window &mdash; "
+                "a fact about the place, not a forecast for the day.")
+
+    grid = "".join(f"<div><div class=mkval>{v}</div>"
+                   f"<div class=dim>{icon(ic, 'gi vengi')}{k}</div></div>"
+                   for v, k, ic in cells)
+    body = f"<div class=mkgrid>{grid}</div>" if grid else ""
+    tail = f"<p class=note>{note}</p>" if note else ""
+    return (f"<div class=card id=venuecard><h2>The venue</h2>"
+            f"{head}{body}{tail}</div>")
 
 
 def build_game_page(g, ctx):
     """One game, everything the build already knows about it."""
     back = (f"<div class=gameback><a href='../'>&#8592; Week "
             f"{g['week']}</a></div>")
+    # The head answers "which game, and when can I watch it" — the two things
+    # somebody arriving from a link wants in the first line. The stadium and
+    # what it will be like there is a different question, asked by somebody
+    # who has already decided to care, so it gets its own card rather than a
+    # fourth row of the banner. It also gives the short column something to
+    # hold: on a page with a market and a model card, the venue card is what
+    # stops the left column ending halfway up the right one.
     head = (back + f"<div class=card id=gamehead>"
             f"<div class=gamematch>{matchup(g, 22)}</div>"
-            f"<div class=slatemeta>{when_line(g)}{where(g)}"
-            f"{broadcast(g)}{weather_line(g)}</div></div>")
+            f"<div class=slatemeta>{when_line(g)}{broadcast(g)}</div></div>")
+
+    venue = venue_card(g)
 
     ln = g.get("line") or {}
     mk = ""
@@ -2585,11 +3005,43 @@ def build_game_page(g, ctx):
             cells.append((f"O/U {ln['over_under']:g}",
                           f"opened {op:g}"
                           if op not in (None, ln["over_under"]) else "total"))
-        if ln.get("home_ml") is not None:
-            cells.append((f"{ln['home_ml']:+g}",
-                          f"{esc(g['home'])} moneyline"))
-        if ln.get("away_ml") is not None:
-            cells.append((f"{ln['away_ml']:+g}", esc(g["away"])))
+        # A moneyline the book cannot have posted is dropped rather than
+        # printed. Coastal Carolina at West Virginia arrived carrying
+        # "-100000" for the +19.5 underdog — a price implying it wins 99.9%
+        # of the time, sitting in the same card as the spread saying the
+        # opposite. Two impossibilities, both structural rather than a
+        # judgement about how big a number is allowed to get:
+        #
+        #   |price| < 100 does not exist. American odds are a stake-to-win
+        #   ratio either side of even money, and ±100 IS even money.
+        #
+        #   The underdog cannot be priced as the favourite. The spread
+        #   already named which side is which, so a negative price on the
+        #   other one contradicts the number printed beside it. Both sides
+        #   negative is the same fault seen from the other end.
+        #
+        # No magnitude cap: a genuine forty-point favourite is legitimately
+        # in the thousands, and a threshold picked to catch this one row
+        # would quietly eat those.
+        def ml_ok(price, is_fav):
+            if price is None or abs(price) < 100:
+                return False
+            return (price < 0) if is_fav else (price > 0)
+
+        home_fav = spread is not None and spread < 0
+        away_fav = spread is not None and spread > 0
+        if spread is None or spread == 0:
+            # No favourite named, so there is nothing to contradict; only
+            # the even-money floor applies.
+            home_fav = away_fav = None
+        for team, price, label in (
+                (g["home"], ln.get("home_ml"), f"{esc(g['home'])} moneyline"),
+                (g["away"], ln.get("away_ml"), esc(g["away"]))):
+            fav = home_fav if team == g["home"] else away_fav
+            ok = (price is not None and abs(price) >= 100 if fav is None
+                  else ml_ok(price, fav))
+            if ok:
+                cells.append((f"{price:+g}", label))
         grid = "".join(f"<div><div class=mkval>{v}</div>"
                        f"<div class=dim>{k}</div></div>" for v, k in cells)
         mk = (f"<div class=card><h2>The market</h2>"
@@ -2602,7 +3054,7 @@ def build_game_page(g, ctx):
     # hidden otherwise — no slate, no lock, no Worker, no card. Placed after
     # the market because that is the number the public was reacting to.
     #
-    # Team colours are emitted here rather than fetched: the build already
+    # Team colors are emitted here rather than fetched: the build already
     # knows them, and a second request for sixteen hex values would be silly.
     teams_ = ctx.get("teams") or {}
     con = ""
@@ -2614,9 +3066,12 @@ def build_game_page(g, ctx):
                f"data-hc='{team_color(teams_, g['home'], '#252932')}'>"
                f"<h2>Pickem says</h2><div class=pcbody></div></div>")
 
-    return (head + mk + model_card(g, ctx) + con + race_card(g, ctx)
+    # Market first, then the venue, then the models. The column flow fills in
+    # source order, so this is also the balancing: two short cards on the left
+    # against the tall model card on the right.
+    return (head + mk + venue + model_card(g, ctx) + con + race_card(g, ctx)
             + series_card(g, ctx)
-            + f"<div class=card><h2>Elsewhere</h2>"
+            + f"<div class=card id=elsewhere><h2>Elsewhere</h2>"
               f"<div class=slatelinks>{espn_link(g)}</div></div>")
 
 
@@ -2691,11 +3146,12 @@ def game_row(g):
             else f"{esc(g['home'])} {g['home_points']}"
         away = f"<b>{esc(g['away'])} {g['away_points']}</b>" if not hw \
             else f"{esc(g['away'])} {g['away_points']}"
-        score = f"{am}{away} <span class=dim>at</span> {hm}{home}"
+        score = f"{am}{away} <span class=dim>{joiner(g)}</span> {hm}{home}"
         cls = "done"
     else:
         when = pretty_date(g["start"])
-        score = (f"{am}{esc(g['away'])} <span class=dim>at</span> "
+        score = (f"{am}{esc(g['away'])} "
+                 f"<span class=dim>{joiner(g)}</span> "
                  f"{hm}{esc(g['home'])} <span class=dim>({when})</span>")
         cls = "upcoming"
     tag = ("" if g["conference_game"]
@@ -2723,6 +3179,11 @@ def place_and_forecast(year, games):
                 x for x in (v.get("city"), v.get("state")) if x)
             if v.get("tz"):
                 g["venue_tz"] = v["tz"]
+            # Carried onto the game because that is where every renderer
+            # looks; weather.py reads it too, and declines to spend a
+            # forecast on a building with a roof.
+            if v.get("dome"):
+                g["dome"] = True
     # Both already on disk: the market is fetched for the what-if models and
     # the broadcast list on the weekly refresh. Reading them here spends
     # nothing and is the whole reason the slate can show them.
@@ -2764,6 +3225,13 @@ def render(year, games):
     favorites = favorites_for(games, systems)
     models = [{"name": n, "year": systems[n].get("year")}
               for n in MODEL_ORDER if n in favorites]
+    # The blend goes FIRST, which makes it the default: app.js opens on
+    # models[0]. A reader arriving from the race card should see the Lab
+    # agree with the number that sent them there, and reach for one system
+    # only when they want that system's opinion specifically.
+    if len(favorites) > 1:
+        favorites[BLEND] = blend_favorites(favorites, games)
+        models.insert(0, {"name": BLEND, "year": None})
     rows = tb.standings(games, overrides)
     display_rows = pad_standings(rows, games)
     ccg = tb.championship(games, overrides)
@@ -2887,9 +3355,12 @@ def render(year, games):
     n_remaining = len([g for g in games
                        if not g.get("ccg")
                        and (unlocked or not g["completed"])])
+    # The blend has no single season behind it, so it carries no year in
+    # parentheses rather than an empty pair of them.
     model_opts = "".join(
         f"<option value='{esc(m['name'])}'>{esc(m['name'])}"
-        f" ({esc(m['year'])})</option>" for m in models)
+        + (f" ({esc(m['year'])})" if m.get("year") else "")
+        + "</option>" for m in models)
     whatif = "" if not n_remaining else WHATIF_CARD.format(
         n=n_remaining, model_opts=model_opts,
         blurb=("rewrite any of the {n} games this season and watch the "
@@ -2915,6 +3386,7 @@ def render(year, games):
         v_scroll=asset_v("scrollcue.js"),
         v_brand=asset_v("brand.css"),
         v_theme=asset_v("theme.js"),
+        v_cards=asset_v("cards.js"),
         v_app=asset_v("app.js"),
         canon=(f"{site_url}lab.html" if year == LIVE_YEAR
                else f"{site_url}{year}/lab.html"),
@@ -2934,7 +3406,7 @@ def render(year, games):
     )
     ctx = {
         "clinchcard": clinch_card(games, overrides, systems, rows, sims),
-        "levcard": leverage_card(games, sims) if sims else "",
+        "levcard": leverage_card(games, sims, teams) if sims else "",
         "soscard": sos_card(games, systems),
         "modelcard": scorecard_card(games, systems, closing_lines),
         "h2hcard": h2h_card(games, teams, rows),
@@ -3007,6 +3479,7 @@ TEMPLATE = """<!doctype html>
 <script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
+<script defer src="{base}{v_cards}"></script>
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href={base}feed.xml>
 <style>
 :root {{
@@ -3027,28 +3500,28 @@ TEMPLATE = """<!doctype html>
 }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--bg); color: var(--ink);
-  font: 16px/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
+  font:var(--t-body)/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
 
 .whyout {{ margin-top: 6px; }}
-.whyout p {{ font-size: 15px; margin: 8px 0; }}
+.whyout p {{ font-size: var(--t-copy); margin: 8px 0; }}
 .whyhead {{ display: flex; align-items: center; gap: 4px; font-weight: 700;
-  font-size: 17px; margin: 6px 0; }}
+  font-size: var(--t-subhead); margin: 6px 0; }}
 .evline {{ display: block; background: var(--bg); border-left: 3px solid
   var(--accent); border-radius: 4px; padding: 6px 10px; margin: 6px 0;
-  font-size: 13.5px; color: var(--dim); }}
+  font-size: var(--t-row); color: var(--dim); }}
 .ladder {{ margin: 10px 0 4px; }}
-.roundhead {{ font-size: 13px; text-transform: uppercase; letter-spacing:
+.roundhead {{ font-size: var(--t-row); text-transform: uppercase; letter-spacing:
   .05em; color: var(--dim); font-weight: 600; margin: 16px 0 6px; }}
 .lstep {{ display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid
   var(--line); align-items: baseline; }}
 .lstep:last-child {{ border-bottom: none; }}
 .lstep.skip {{ opacity: .45; }}
 .lletter {{ flex: 0 0 22px; height: 22px; border-radius: 6px; background:
-  var(--line); color: var(--ink); font-size: 12px; font-weight: 700;
+  var(--line); color: var(--ink); font-size: var(--t-meta); font-weight: 700;
   text-align: center; line-height: 22px; align-self: flex-start; }}
 .lbody {{ flex: 1; min-width: 0; }}
-.lname {{ font-size: 14px; font-weight: 600; }}
-.lchip {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
+.lname {{ font-size: var(--t-label); font-weight: 600; }}
+.lchip {{ font-size: var(--t-fine); border-radius: 20px; padding: 2px 9px;
   font-weight: 700; letter-spacing: .03em; margin-left: 8px;
   vertical-align: 1px; white-space: nowrap; }}
 .lchip.win {{ background: color-mix(in srgb, var(--ok, #136536) 15%,
@@ -3081,7 +3554,7 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
   #whatif {{ order: 1; }}
   /* The race card answers the picker directly — "who reaches the title
      game" — so it follows it here as it sits above the standings on the
-     wide layout, rather than being read after the table it summarises. */
+     wide layout, rather than being read after the table it summarizes. */
   #clinchcard {{ order: 2; }}
   .standcard {{ order: 3; }}
   #teamwhy {{ order: 4; }}
@@ -3089,38 +3562,38 @@ main > .card, main > .cols {{ max-width: 880px; width: 100%;
 }}
 .card {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 18px 20px; }}
-.card h2 {{ margin: 0 0 10px; font-size: 15px; text-transform: uppercase;
+.card h2 {{ margin: 0 0 10px; font-size: var(--t-copy); text-transform: uppercase;
   letter-spacing: .06em; color: var(--dim); font-weight: 600; }}
 
 .matchup {{ display: flex; align-items: center; gap: 18px; margin: 10px 0 4px;
   flex-wrap: wrap; }}
-.side {{ display: flex; align-items: center; gap: 12px; font-size: 24px;
+.side {{ display: flex; align-items: center; gap: 12px; font-size: var(--t-headline);
   font-weight: 700; border-bottom: 4px solid var(--line);
   padding: 6px 10px 10px 2px; }}
 .tname {{ letter-spacing: -.01em; }}
-.vs {{ color: var(--dim); font-weight: 400; font-size: 18px; padding: 0 6px; }}
+.vs {{ color: var(--dim); font-weight: 400; font-size: var(--t-subhead); padding: 0 6px; }}
 /* One tile, both themes — see the note on .mark in the main sheet. */
 .mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain;
   background: #f0ede6; border-radius: 4px; padding: 2px; }}
 .nomark {{ display: inline-block; width: 16px; height: 16px;
   line-height: 16px; text-align: center; border-radius: 4px;
   background: color-mix(in srgb, var(--dim) 18%, transparent);
-  color: var(--dim); font-weight: 700; font-size: 12px; cursor: help; }}
+  color: var(--dim); font-weight: 700; font-size: var(--t-meta); cursor: help; }}
 .teamcell {{ white-space: nowrap; }}
 .cbar {{ display: inline-block; width: 4px; height: 16px; border-radius: 2px;
   margin-right: 8px; vertical-align: -2px; }}
 .seed {{ display: inline-block; background: var(--accent); color: #fff;
-  border-radius: 6px; font-size: 14px; width: 22px; height: 22px;
+  border-radius: 6px; font-size: var(--t-label); width: 22px; height: 22px;
   line-height: 22px; text-align: center; vertical-align: 3px; margin-right: 4px; }}
-.badge {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
+.badge {{ font-size: var(--t-fine); border-radius: 20px; padding: 2px 9px;
   vertical-align: 1px; font-weight: 600; letter-spacing: .03em; }}
 .badge.ok {{ background: color-mix(in srgb, var(--ok) 15%, transparent); color: var(--ok); }}
 .badge.warn {{ background: color-mix(in srgb, var(--warn) 15%, transparent); color: var(--warn); }}
-.note {{ color: var(--dim); font-size: 14px; margin: 6px 0 0; }}
+.note {{ color: var(--dim); font-size: var(--t-label); margin: 6px 0 0; }}
 table {{ border-collapse: collapse; width: 100%; }}
 th, td {{ text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line);
   font-variant-numeric: tabular-nums; }}
-th {{ font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
+th {{ font-size: var(--t-meta); text-transform: uppercase; letter-spacing: .05em;
   color: var(--dim); }}
 .dimcell {{ color: var(--dim); }}
 tr.tie0 td {{ background: var(--tie0); }}
@@ -3132,35 +3605,44 @@ details {{ border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px
   margin: 8px 0; background: var(--panel); }}
 summary {{ cursor: pointer; font-weight: 600; }}
 .steps {{ margin: 10px 0 4px; padding-left: 22px; }}
-.steps li {{ margin: 6px 0; font-size: 14px; }}
+.steps li {{ margin: 6px 0; font-size: var(--t-label); }}
 .steps li.seeded {{ font-weight: 700; }}
 .steps li.seeded::marker {{ font-weight: 700; }}
 .cols {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
 @media (max-width: 700px) {{ .cols {{ grid-template-columns: 1fr; }} }}
 ul.games {{ list-style: none; padding: 0; margin: 0; }}
-ul.games li {{ padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 14px; }}
+ul.games li {{ padding: 6px 0; border-bottom: 1px solid var(--line); font-size: var(--t-label); }}
 .dim {{ color: var(--dim); }}
-.ccgtag {{ color: var(--accent); font-weight: 700; font-size: 12px;
+.ccgtag {{ color: var(--accent); font-weight: 700; font-size: var(--t-meta);
   text-transform: uppercase; }}
-.rules ol {{ padding-left: 22px; }} .rules li {{ margin: 7px 0; font-size: 14px; }}
+.rules ol {{ padding-left: 22px; }} .rules li {{ margin: 7px 0; font-size: var(--t-label); }}
 progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
-.sorter {{ font-size: 13px; color: var(--dim); margin: 10px 0 6px; }}
+.sorter {{ font-size: var(--t-row); color: var(--dim); margin: 10px 0 6px; }}
 .sorter button {{ font: inherit; border: 1px solid var(--line); background: none;
   color: var(--dim); border-radius: 20px; padding: 3px 12px; margin-left: 6px;
   cursor: pointer; }}
 .sorter button.on {{ background: var(--accent); border-color: var(--accent);
   color: #fff; }}
-.wchip {{ background: var(--accent2); color: #fff; font-size: 11px;
+.wchip {{ background: var(--accent2); color: #fff; font-size: var(--t-fine);
   border-radius: 20px; padding: 2px 9px; font-weight: 600;
   letter-spacing: .03em; vertical-align: 1px; text-transform: none; }}
 .wcontrols {{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   margin-bottom: 10px; }}
-.wbtn {{ font: inherit; font-size: 14px; border: 1px solid var(--line);
+.wbtn {{ font: inherit; font-size: var(--t-label); border: 1px solid var(--line);
   background: var(--panel); color: var(--ink); border-radius: 8px;
   padding: 6px 14px; cursor: pointer; }}
 .wbtn:hover {{ border-color: var(--accent); }}
 #wgames details {{ padding: 8px 12px; }}
-#wgames summary {{ font-size: 14px; }}
+#wgames summary {{ font-size: var(--t-label); }}
+/* The week's own chalk button, in its summary. Quiet until you are on it —
+   sixteen of these down the card should not read as sixteen calls to action. */
+#wgames summary {{ display:flex; align-items:center; gap:8px }}
+.wkfav {{ margin-left:auto; font: inherit; font-size:var(--t-meta);
+  color:var(--dim); background:none; border:1px solid var(--line);
+  border-radius:999px; padding:1px 9px; cursor:pointer; line-height:1.6 }}
+.wkfav:hover {{ color:var(--accent); border-color:var(--accent) }}
+.wkfav:focus-visible {{ outline:2px solid var(--accent);
+  outline-offset:2px }}
 main > *, .duo > *, .cols > * {{ min-width: 0; }}
 .tablescroll {{ overflow-x: auto; position: relative; }}
 .scrollbox {{ position: relative; }}
@@ -3183,9 +3665,9 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
   white-space: nowrap; }}
 .wgame .at, .wgame .wdate, .wgame .nctag {{ flex: 0 0 auto; }}
 .wgame:last-child {{ border-bottom: none; }}
-.wgame .at {{ color: var(--dim); font-size: 12px; }}
-.wgame .wdate {{ color: var(--dim); font-size: 12px; margin-left: auto; }}
-.nctag {{ color: var(--dim); font-size: 10.5px; border: 1px solid var(--line);
+.wgame .at {{ color: var(--dim); font-size: var(--t-meta); }}
+.wgame .wdate {{ color: var(--dim); font-size: var(--t-meta); margin-left: auto; }}
+.nctag {{ color: var(--dim); font-size: var(--t-micro); border: 1px solid var(--line);
   border-radius: 20px; padding: 1px 7px; text-transform: uppercase;
   letter-spacing: .04em; }}
 /* Holds the chip's width open on a conference row so the dates in a mixed
@@ -3193,7 +3675,7 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
    while staying out of the accessibility tree, so nothing announces a
    "non-conf" that isn't there. */
 .nctag.ghost {{ visibility: hidden; }}
-.tag {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
+.tag {{ font-size: var(--t-fine); border-radius: 20px; padding: 2px 9px;
   font-weight: 700; letter-spacing: .03em; white-space: nowrap; }}
 .tag.live {{ background: color-mix(in srgb, var(--ok, #136536) 15%,
   transparent); color: #136536; }}
@@ -3220,7 +3702,7 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 .levgame {{ min-width:0; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap }}
 .levdate {{ color:var(--dim); white-space:nowrap }}
-.levswing {{ font-size:13px; margin-top:2px }}
+.levswing {{ font-size:var(--t-row); margin-top:2px }}
 @media (max-width:640px) {{
   .levmain {{ grid-template-columns:minmax(0,1fr) auto; row-gap:3px }}
   .levbar {{ display:none }}
@@ -3236,28 +3718,28 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
   .clbar, .clpct {{ display:none }}
 }}
 .clrow {{ padding: 8px 0; border-bottom: 1px solid var(--line);
-  font-size: 15px; }}
+  font-size: var(--t-copy); }}
 .obar {{ display: inline-block; width: 110px; height: 8px;
   background: var(--line); border-radius: 4px; overflow: hidden;
   vertical-align: 1px; margin: 0 6px 0 8px; }}
 .chaosband {{ display: flex; align-items: center; gap: 14px;
   border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;
-  margin-bottom: 12px; font-size: 14px; }}
-.cnum {{ font-size: 38px; font-weight: 800; line-height: 1;
+  margin-bottom: 12px; font-size: var(--t-label); }}
+.cnum {{ font-size: var(--t-hero); font-weight: 800; line-height: 1;
   font-variant-numeric: tabular-nums; }}
 .obar i {{ display: block; height: 100%; border-radius: 4px; }}
-.opct {{ font-variant-numeric: tabular-nums; font-size: 14px; }}
+.opct {{ font-variant-numeric: tabular-nums; font-size: var(--t-label); }}
 .clrow:last-of-type {{ border-bottom: none; }}
-.scen {{ margin: 6px 0 2px; padding-left: 22px; font-size: 13.5px;
+.scen {{ margin: 6px 0 2px; padding-left: 22px; font-size: var(--t-row);
   color: var(--dim); }}
 .scen li {{ margin: 3px 0; }}
-.elim {{ font-size: 13.5px; margin: 10px 0 0; }}
-.pick {{ font: inherit; font-size: 13.5px; display: inline-flex;
+.elim {{ font-size: var(--t-row); margin: 10px 0 0; }}
+.pick {{ font: inherit; font-size: var(--t-row); display: inline-flex;
   align-items: center; gap: 6px; border: 1px solid var(--line);
   background: var(--panel); color: var(--ink); border-radius: 8px;
   padding: 4px 10px; cursor: pointer; min-width: 150px; }}
 .pick img {{ margin: 0; }}
-.pick .star {{ color: var(--warn); font-size: 12px; margin-left: auto; }}
+.pick .star {{ color: var(--warn); font-size: var(--t-meta); margin-left: auto; }}
 .pick.sel {{ font-weight: 700; }}
 /* the result that actually happened, until you overrule it */
 .pick.stands {{ border-color: var(--dim); border-style: dashed;
@@ -3327,6 +3809,7 @@ EXPLAINER = """<!doctype html>
 <script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
+<script defer src="{base}{v_cards}"></script>
 <meta property=og:type content=article>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="How the Big 12 tiebreakers actually work">
@@ -3351,50 +3834,50 @@ EXPLAINER = """<!doctype html>
 }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--bg); color: var(--ink);
-  font: 17px/1.65 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
+  font:var(--t-subhead)/1.65 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
 
 main {{ max-width: var(--chrome-w); margin: 0 auto;
   padding: 26px 20px 48px; }}
 main > p, main > ol, main > ul, main > h2, main > h3, main > table,
 main > .aside, main > .worked, main > .backlink {{ max-width: 840px; }}
-h2 {{ font-size: 21px; margin: 34px 0 10px; }}
-h3 {{ font-size: 17px; margin: 22px 0 8px; }}
-p, li {{ font-size: 16.5px; }}
+h2 {{ font-size: var(--t-lead); margin: 34px 0 10px; }}
+h3 {{ font-size: var(--t-subhead); margin: 22px 0 8px; }}
+p, li {{ font-size: var(--t-subhead); }}
 a {{ color: var(--accent2); }}
-.lead {{ font-size: 18px; }}
+.lead {{ font-size: var(--t-subhead); }}
 ol.rules > li {{ margin: 10px 0; }}
 ol.rules b {{ color: var(--ink); }}
 .aside {{ background: var(--panel); border: 1px solid var(--line);
   border-left: 4px solid var(--accent); border-radius: 8px;
-  padding: 12px 16px; font-size: 15px; color: var(--dim); margin: 16px 0; }}
+  padding: 12px 16px; font-size: var(--t-copy); color: var(--dim); margin: 16px 0; }}
 .worked {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 18px 22px; margin: 16px 0; }}
 .worked ol {{ padding-left: 20px; }}
-.worked li {{ margin: 8px 0; font-size: 15px; }}
+.worked li {{ margin: 8px 0; font-size: var(--t-copy); }}
 .worked li.seeded {{ font-weight: 700; }}
-.worked .meta {{ color: var(--dim); font-size: 14px; margin: 0 0 10px; }}
+.worked .meta {{ color: var(--dim); font-size: var(--t-label); margin: 0 0 10px; }}
 table.models {{ border-collapse: collapse; width: 100%; margin: 12px 0; }}
 table.models th, table.models td {{ text-align: left; padding: 8px 10px;
-  border-bottom: 1px solid var(--line); font-size: 15px; vertical-align: top; }}
-table.models th {{ font-size: 12px; text-transform: uppercase;
+  border-bottom: 1px solid var(--line); font-size: var(--t-copy); vertical-align: top; }}
+table.models th {{ font-size: var(--t-meta); text-transform: uppercase;
   letter-spacing: .05em; color: var(--dim); }}
 .backlink {{ display: inline-block; margin-top: 8px; }}
 .card {{ background: var(--panel); border: 1px solid var(--line);
   border-radius: 10px; padding: 16px 20px; margin: 0 0 18px; }}
-.card h2 {{ margin: 0 0 8px; font-size: 14px; text-transform: uppercase;
+.card h2 {{ margin: 0 0 8px; font-size: var(--t-label); text-transform: uppercase;
   letter-spacing: .06em; color: var(--dim); }}
 .matchup {{ display: flex; align-items: center; gap: 18px;
   margin: 10px 0 4px; flex-wrap: wrap; }}
-.side {{ display: flex; align-items: center; gap: 12px; font-size: 24px;
+.side {{ display: flex; align-items: center; gap: 12px; font-size: var(--t-headline);
   font-weight: 700; border-bottom: 4px solid var(--line);
   padding: 6px 10px 10px 2px; }}
 .tname {{ letter-spacing: -.01em; }}
-.vs {{ color: var(--dim); font-weight: 400; font-size: 18px; padding: 0 6px; }}
+.vs {{ color: var(--dim); font-weight: 400; font-size: var(--t-subhead); padding: 0 6px; }}
 .seed {{ display: inline-block; background: var(--accent); color: #fff;
-  border-radius: 6px; font-size: 14px; width: 22px; height: 22px;
+  border-radius: 6px; font-size: var(--t-label); width: 22px; height: 22px;
   line-height: 22px; text-align: center; vertical-align: 3px;
   margin-right: 4px; }}
-.badge {{ font-size: 11px; border-radius: 20px; padding: 2px 9px;
+.badge {{ font-size: var(--t-fine); border-radius: 20px; padding: 2px 9px;
   vertical-align: 1px; font-weight: 600; letter-spacing: .03em; }}
 .badge.ok {{ background: #13653626; color: #136536; }}
 .badge.warn {{ background: #b4530926; color: #b45309; }}
@@ -3404,9 +3887,9 @@ table.models th {{ font-size: 12px; text-transform: uppercase;
 .nomark {{ display: inline-block; width: 16px; height: 16px;
   line-height: 16px; text-align: center; border-radius: 4px;
   background: color-mix(in srgb, var(--dim) 18%, transparent);
-  color: var(--dim); font-weight: 700; font-size: 12px; cursor: help; }}
+  color: var(--dim); font-weight: 700; font-size: var(--t-meta); cursor: help; }}
 .dim {{ color: var(--dim); }}
-.note {{ color: var(--dim); font-size: 13px; }}
+.note {{ color: var(--dim); font-size: var(--t-row); }}
 
 
 </style>
@@ -3608,6 +4091,7 @@ def build_explainer(year, matchcard, outdir=None):
             worked_2024=worked, base=BASE,
             v_brand=asset_v("brand.css"),
             v_theme=asset_v("theme.js"),
+        v_cards=asset_v("cards.js"),
             topbar=topbar("tiebreaker", year, BASE),
             footer=footer(),
             top=tracker_top(year, "how", matchcard, page="how.html")))
@@ -3818,9 +4302,11 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                 body = rebase_from(build_game_page(g, ctx), base, BASE)
                 with open(os.path.join(gdir, slug), "w") as f:
                     f.write(build_subpage(
-                        f"{g['away']} at {g['home']}", "schedule", body, year,
+                        f"{g['away']} {joiner(g)} {g['home']}",
+                        "schedule", body, year,
                         "", canon=f"{sched_canon}game/{slug}",
-                        desc=(f"{g['away']} at {g['home']}, week {g['week']} "
+                        desc=(f"{g['away']} {joiner(g)} {g['home']}, "
+                              f"week {g['week']} "
                               f"of the {year} Big 12 season: kickoff, venue, "
                               f"broadcast, the line, and what four rating "
                               f"models make of it."),
@@ -4062,10 +4548,10 @@ in the Pac-12.</p>
 
 
 def draw_color(d, span):
-    """The site's win-percentage ramp, re-centred on zero.
+    """The site's win-percentage ramp, re-centerd on zero.
 
     Same red-to-green anchors every other number here uses, so the page does
-    not introduce a second colour language — but mapped so that 0 sits at the
+    not introduce a second color language — but mapped so that 0 sits at the
     neutral middle, negative runs red and positive runs green. Green means an
     easier road than the same team would average, not a better team."""
     if not span:
@@ -4174,9 +4660,9 @@ def build_draw_page(year, games, systems, teams):
     for t in sorted(m):
         vals = [v for v in m[t].values() if v is not None]
         avg = sum(vals) / len(vals) if vals else 0
-        # Colour each cell against that team's OWN average, not against the
-        # whole grid. Coloured on raw wins the grid would just restate which
-        # teams are good, in colour, and the schedule question would vanish.
+        # Color each cell against that team's OWN average, not against the
+        # whole grid. Colored on raw wins the grid would just restate which
+        # teams are good, in color, and the schedule question would vanish.
         cells = []
         for owner in sorted(m):
             v = m[t][owner]
@@ -4238,9 +4724,9 @@ that would cost it least, with whose schedule it is.</li>
 <thead><tr><th></th>{head}</tr></thead>
 <tbody>{''.join(body)}</tbody></table></div>
 <p class=note>Read a row: that team's expected wins on each column's
-schedule. Colour is <em>within the row</em> — green where that schedule is
-easier than the row's own average, red where it is harder. Colouring by raw
-wins instead would have just restated which teams are good, in colour, and
+schedule. Color is <em>within the row</em> — green where that schedule is
+easier than the row's own average, red where it is harder. Coloring by raw
+wins instead would have just restated which teams are good, in color, and
 lost the question entirely. The outlined diagonal is the schedule each team
 actually drew.</p>
 <p class=note><b>A team cannot play itself.</b> Where a borrowed schedule
@@ -4255,7 +4741,7 @@ the championship odds.</p>
 
 def redirect_stub(to, title):
     """A page that moved. Meta-refresh plus a canonical, and a real link for
-    anything that honours neither."""
+    anything that honors neither."""
     return ('<!doctype html><meta charset=utf-8>'
             f'<meta http-equiv=refresh content="0; url={to}">'
             f'<link rel=canonical href="{to}">'
@@ -4496,7 +4982,7 @@ counted in neither half of your percentage. Whole-number lines are the only
 ones that can do this. Over the 2025 season five of 120 games would have
 pushed.</p>
 <h3>Games you cannot pick</h3>
-<p>A game with no posted line is shown and greyed out. So is one whose kickoff
+<p>A game with no posted line is shown and grayed out. So is one whose kickoff
 has not been announced — the lock is the first kickoff, and a time nobody has
 set cannot be part of that. If a line appears before the lock, the game opens
 up.</p>
@@ -4516,12 +5002,12 @@ throwaway account is not worth making, short enough that a real player waits
 once.</p>
 <h3>The chalk</h3>
 <p>The bottom row of the board, and <b>not a player</b>. It is what you would
-have scored by taking the favourite in every single game, every week, without
+have scored by taking the favorite in every single game, every week, without
 thinking about any of them. It has nothing to do with what anybody picked.</p>
 <p>It is there because finishing above the field only tells you the field had
 a bad week. Finishing above the chalk means your picks knew something the
 spread did not, which is the only version of this that is hard. Games with no
-favourite &mdash; a line of exactly zero &mdash; are skipped, because there is
+favorite &mdash; a line of exactly zero &mdash; are skipped, because there is
 nothing for it to take.</p>
 <h3>The room</h3>
 <p>The other bottom row, and also not a player. It is the side <em>most people
@@ -4530,7 +5016,7 @@ Where the chalk asks whether you beat the market, the room asks whether you
 beat everybody else put together &mdash; which is a real question, because a
 crowd is often better than the average person in it and occasionally much
 worse.</p>
-<p>Every card counts towards it, exactly as they count towards the split shown
+<p>Every card counts toward it, exactly as they count toward the split shown
 on each game, so you can add up what you can see and arrive at this row. A game
 where the picks land <b>exactly even</b> is left out: the room genuinely had no
 opinion, and inventing one for it would just make this a worse copy of the
@@ -4544,17 +5030,17 @@ your record. <a href="/privacy">What we store</a>.</p>
 
 PICKEM_SOON_CSS = """
   .soonhero { text-align:center; padding:6px 0 2px }
-  .soonkick { display:inline-block; font-size:12px; letter-spacing:.08em;
+  .soonkick { display:inline-block; font-size:var(--t-meta); letter-spacing:.08em;
     text-transform:uppercase; color:var(--accent); font-weight:700;
     border:1px solid var(--accent); border-radius:999px; padding:4px 13px }
-  /* The section's own h2 is a small uppercase grey label, which is right for
+  /* The section's own h2 is a small uppercase gray label, which is right for
      a card heading and wrong for the one line this page exists to say. */
   .soonhero h2 { font-size:clamp(25px,4.2vw,38px); line-height:1.14;
     margin:14px auto 10px; max-width:20ch; letter-spacing:-.01em;
     text-transform:none; color:var(--ink); font-weight:800 }
-  .soonhero p { max-width:56ch; margin:0 auto; font-size:16px;
+  .soonhero p { max-width:56ch; margin:0 auto; font-size:var(--t-body);
     color:var(--dim) }
-  .soonwhen { margin-top:18px; font-size:15px }
+  .soonwhen { margin-top:18px; font-size:var(--t-copy) }
   .soonwhen b { color:var(--ink) }
   .soonshot { margin:0; border:1px solid var(--line); border-radius:10px;
     overflow:hidden; background:var(--panel) }
@@ -4565,15 +5051,15 @@ PICKEM_SOON_CSS = """
   /* Above the fold on a phone, so it must not be lazy — but the tag is
      written once for all three, and the first is the one that matters. */
   .soonshot:first-child img { background:var(--bg) }
-  .soonshot figcaption { padding:10px 14px; font-size:13.5px;
+  .soonshot figcaption { padding:10px 14px; font-size:var(--t-row);
     color:var(--dim); border-top:1px solid var(--line) }
   .soonshot figcaption b { color:var(--ink); font-weight:600 }
   .soonrow { display:grid; gap:14px; margin:16px 0 }
   .soonwhat { display:grid; gap:14px; margin-top:4px;
     grid-template-columns:repeat(auto-fit,minmax(230px,1fr)) }
-  .soonwhat h3 { font-size:15px; margin:0 0 5px }
-  .soonwhat p { margin:0; font-size:14px; color:var(--dim) }
-  .soonfoot { text-align:center; color:var(--dim); font-size:14px;
+  .soonwhat h3 { font-size:var(--t-copy); margin:0 0 5px }
+  .soonwhat p { margin:0; font-size:var(--t-label); color:var(--dim) }
+  .soonfoot { text-align:center; color:var(--dim); font-size:var(--t-label);
     margin:22px 0 2px }
 """
 
@@ -4625,7 +5111,7 @@ cannot go on the board.</p>
     <table id=svboard></table>
   </div></div>
   <p class=note>One team a week, picked to win the game &mdash; the spread
-  plays no part. A team can be used once a season; a cancelled game hands it
+  plays no part. A team can be used once a season; a canceled game hands it
   back. Lose, or let a week lock without a pick, and your run is over. Rank
   is wins, with the living above the dead on a tie. You can join any week:
   the weeks before your first pick simply never happened for you.</p>
@@ -4702,13 +5188,13 @@ thin.</p>
 <h3>The spread plays no part</h3>
 <p>It is shown beside each game, because it is the best one-number guess at
 who wins and by how much, and you would want to know. It has nothing to do
-with whether your pick survives. A three-point favourite that wins by four is
-exactly as good as a thirty-point favourite that wins by four &mdash; one of
+with whether your pick survives. A three-point favorite that wins by four is
+exactly as good as a thirty-point favorite that wins by four &mdash; one of
 those covered and one did not, and the pool does not care which.</p>
 
 <h3>A team is used once a season</h3>
 <p>Once a week locks with your pick on it, that team is spent whether it won
-or lost. The one exception is a game that is never played: a cancelled or
+or lost. The one exception is a game that is never played: a canceled or
 abandoned game is void, and a voided week hands the team back for you to use
 again.</p>
 
@@ -4729,10 +5215,10 @@ things follow from joining late, and both are knowable before you sign up.</p>
 safe teams in September. Somebody walking in at week six with a completely
 fresh roster would not be playing the same game as the people who have been
 picking around five spent teams since August.</p>
-<p>So <b>you arrive having already spent the biggest favourite of every week
+<p>So <b>you arrive having already spent the biggest favorite of every week
 you missed</b>. Join at week six and the week one through five chalk is gone
 from your board &mdash; the same teams the careful players spent first. If two
-weeks shared a favourite, the second week costs you the next biggest instead,
+weeks shared a favorite, the second week costs you the next biggest instead,
 so the handicap is always exactly one team per week missed.</p>
 <p>It is worked out from the posted lines, which are frozen when the slate is
 published and never change afterwards. That means you can see the exact price
@@ -4944,7 +5430,7 @@ def build_pools_soon(year, games):
     prev, BASE = BASE, "../tiebreaker/"
     os.makedirs(POOLS_SITE, exist_ok=True)
 
-    # Two dates, and they are not the same one. The doors open a fortnight
+    # Two dates, and they are not the same one. The doors open two weeks
     # before there is anything to pick, which is deliberate: an account and a
     # display name are the two things nobody wants to be doing at 4:55 on the
     # Thursday the first slate locks.
@@ -4972,7 +5458,7 @@ def build_pools_soon(year, games):
          "saves as you go &mdash; there is no submit button to forget."),
         ("chart", "Week by week",
          "Your season against the shape of the field, drawn in your team's "
-         "colours. <b>The chalk</b> is what taking every favourite would have "
+         "colors. <b>The chalk</b> is what taking every favorite would have "
          "scored, and it is harder to beat than it sounds."),
         ("room", "The room",
          "What everybody else picked, on every game, scored as if one person "
@@ -5072,7 +5558,7 @@ def build_pickem(year):
     # styles.css after the inherited BRIEF_CSS so it can override; app.js is
     # one classic script with no imports, so this hash is the whole truth
     # about the code version. pct.js comes from the tiebreaker for the shared
-    # colour ramp rather than a second copy of the same curve.
+    # color ramp rather than a second copy of the same curve.
     # The stylesheet and the client live at /pools/, not inside either game:
     # both games share them, and a second copy is a second thing to keep in
     # step. POOLS_UP walks back out of the game's directory to reach them.
@@ -5082,7 +5568,7 @@ def build_pickem(year):
             f'<script defer '
             f'src="{POOLS_UP}{asset_v("app.js", POOLS_SITE)}"></script>')
 
-    # Colour, mark and abbreviation for every team the site knows, written as
+    # Color, mark and abbreviation for every team the site knows, written as
     # a real file rather than served from /api/*. The build already has all of
     # it, it never changes between deploys, and a page that must ask the Worker
     # before it can draw a logo is a page that loses its logos when the Worker

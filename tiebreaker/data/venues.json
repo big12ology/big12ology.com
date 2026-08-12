@@ -73,6 +73,7 @@
  },
  "1905": {
   "city": "Vermillion",
+  "dome": true,
   "lat": 42.7911,
   "lon": -96.9278,
   "name": "DakotaDome",
@@ -81,6 +82,7 @@
  },
  "1930": {
   "city": "Pocatello",
+  "dome": true,
   "lat": 42.8702,
   "lon": -112.4281,
   "name": "Holt Arena",
@@ -89,6 +91,7 @@
  },
  "1964": {
   "city": "Syracuse",
+  "dome": true,
   "lat": 43.0362,
   "lon": -76.1363,
   "name": "JMA Wireless Dome",
@@ -97,6 +100,7 @@
  },
  "2023": {
   "city": "Flagstaff",
+  "dome": true,
   "lat": 35.1805,
   "lon": -111.6528,
   "name": "Walkup Skydome",
@@ -177,6 +181,7 @@
  },
  "3493": {
   "city": "New Orleans",
+  "dome": true,
   "lat": 29.9508,
   "lon": -90.0811,
   "name": "Caesars Superdome",
@@ -185,6 +190,7 @@
  },
  "3494": {
   "city": "Saint Louis",
+  "dome": true,
   "lat": 38.6264,
   "lon": -90.1996,
   "name": "The Dome at America's Center",
@@ -273,6 +279,7 @@
  },
  "3604": {
   "city": "San Antonio",
+  "dome": true,
   "lat": 29.417,
   "lon": -98.4788,
   "name": "Alamodome",
@@ -281,6 +288,7 @@
  },
  "3605": {
   "city": "Grand Forks",
+  "dome": true,
   "lat": 47.9106,
   "lon": -97.091,
   "name": "Alerus Center",
@@ -881,6 +889,7 @@
  },
  "3687": {
   "city": "Arlington",
+  "dome": true,
   "lat": 32.7478,
   "lon": -97.0928,
   "name": "AT&T Stadium",
@@ -1073,6 +1082,7 @@
  },
  "3714": {
   "city": "Fargo",
+  "dome": true,
   "lat": 46.903,
   "lon": -96.8003,
   "name": "Fargodome",
@@ -1177,6 +1187,7 @@
  },
  "3727": {
   "city": "Detroit",
+  "dome": true,
   "lat": 42.34,
   "lon": -83.0456,
   "name": "Ford Field",
@@ -1601,6 +1612,7 @@
  },
  "3791": {
   "city": "Moscow",
+  "dome": true,
   "lat": 46.7263,
   "lon": -117.0174,
   "name": "Kibbie Dome",
@@ -1769,6 +1781,7 @@
  },
  "3812": {
   "city": "Indianapolis",
+  "dome": true,
   "lat": 39.7601,
   "lon": -86.1638,
   "name": "Lucas Oil Stadium",
@@ -2257,6 +2270,7 @@
  },
  "3891": {
   "city": "Houston",
+  "dome": true,
   "lat": 29.6847,
   "lon": -95.4108,
   "name": "NRG Stadium",
@@ -2721,6 +2735,7 @@
  },
  "3967": {
   "city": "Cedar Falls",
+  "dome": true,
   "lat": 42.5156,
   "lon": -92.4672,
   "name": "UNI-Dome",
@@ -2737,6 +2752,7 @@
  },
  "3970": {
   "city": "Glendale",
+  "dome": true,
   "lat": 33.5276,
   "lon": -112.2626,
   "name": "State Farm Stadium",
@@ -3041,6 +3057,7 @@
  },
  "4251": {
   "city": "Phoenix",
+  "dome": true,
   "lat": 33.4453,
   "lon": -112.0669,
   "name": "Chase Field",
@@ -3713,6 +3730,7 @@
  },
  "5348": {
   "city": "Atlanta",
+  "dome": true,
   "lat": 33.7556,
   "lon": -84.4009,
   "name": "Mercedes-Benz Stadium",
@@ -3761,6 +3779,7 @@
  },
  "5403": {
   "city": "Orlanda",
+  "dome": true,
   "lat": 26.3212,
   "lon": -81.693,
   "name": "Orlando City Stadium",
@@ -6257,6 +6276,7 @@
  },
  "6501": {
   "city": "Las Vegas",
+  "dome": true,
   "lat": 36.0907,
   "lon": -115.1837,
   "name": "Allegiant Stadium",
@@ -6297,6 +6317,7 @@
  },
  "7065": {
   "city": "Inglewood",
+  "dome": true,
   "lat": 33.9562,
   "lon": -118.3531,
   "name": "SoFi Stadium",

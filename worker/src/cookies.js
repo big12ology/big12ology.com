@@ -4,7 +4,7 @@
 // unless it is Secure, Path=/, and carries NO Domain attribute — which makes
 // the cookie host-only and, crucially, means no subdomain can overwrite it.
 // Without it, anything that could get a page onto a big12ology.com subdomain
-// could set a session cookie the apex would then honour.
+// could set a session cookie the apex would then honor.
 //
 // SameSite is Lax on both, and Strict would be a bug rather than an upgrade:
 // the OAuth callback is a cross-site top-level GET back from Google, and

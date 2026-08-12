@@ -31,16 +31,100 @@
 }
 
 /* TEAL IS CHROME ONLY. It never appears inside or beside a percentile-
-   coloured cell: brand teal and the ramp's greens sit at the same lightness
+   colored cell: brand teal and the ramp's greens sit at the same lightness
    and measure 1.00:1 against each other, separated by hue alone — a gap that
    narrows further under deuteranopia. Inside the data region carry emphasis
    with weight, a rule, or the mono/sans split. Never with hue. Full
    derivation in tokens.css. */
 
+/* ==== the type scale ======================================================
+   ONE scale, for every section. This file is the only stylesheet every page
+   on the domain loads — the hub, the tracker, the schedule, the attendance
+   tracker and the pools all link it — so it is the only place a rule about
+   type can actually be true everywhere.
+
+   It exists because there was no scale at all: 22 distinct sizes across 176
+   declarations, including six half-pixel values and the same chaos-index
+   number set at 36px on one page and 38px on another. Sizes were picked to
+   look right beside whatever was next to them, which is how a game page ends
+   up with its own subject (19px) smaller and lighter than a spread inside a
+   card below it (20px).
+
+   The steps, and what each one is FOR. Pick by role, never by how big it
+   needs to look:
+
+     --t-display   64   a single glyph that IS the page (the 404)
+     --t-hero      36   one number that is the whole point of its card
+     --t-title     26   the masthead: what site am I on
+     --t-headline  24   what this page is about
+     --t-lead      20   a primary figure inside a card
+     --t-subhead   17   a name or lead line inside a card
+     --t-body      16   body copy
+     --t-copy      15   secondary copy, dense body
+     --t-label     14   card labels, the uppercase h2s
+     --t-row       13   table and list rows
+     --t-meta      12   captions and sub-labels
+     --t-fine      11   chips and tags
+     --t-micro     10   the smallest marks
+
+   A size that is not on this list is a bug, not a decision. If something
+   genuinely needs a step that is not here, add it here and give it a role —
+   do not write the number at the call site. */
+:root {
+  --t-display:  64px;   /* a single glyph that IS the page: the 404 */
+  --t-hero:     36px;
+  --t-title:    26px;
+  --t-headline: 24px;
+  --t-lead:     20px;
+  --t-subhead:  17px;
+  --t-body:     16px;
+  --t-copy:     15px;
+  --t-label:    14px;
+  --t-row:      13px;
+  --t-meta:     12px;
+  --t-fine:     11px;
+  --t-micro:    10px;
+}
+
+/* ==== collapsible cards ==================================================
+   Every card on the domain opens expanded and closes if the reader says so;
+   cards.js does the wiring, this does the hiding. Defined here because this
+   is the one stylesheet every page loads, and the rule has to be true in all
+   five places cards are generated. */
+.card > h2 .cardtoggle,
+.chart-card > h3 .cardtoggle {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  background: none; border: 0; padding: 0; margin: 0; cursor: pointer;
+  font: inherit; color: inherit; letter-spacing: inherit;
+  text-transform: inherit; text-align: left;
+}
+.card > h2 .cardtoggle:focus-visible,
+.chart-card > h3 .cardtoggle:focus-visible {
+  outline: 2px solid var(--b12-accent); outline-offset: 3px;
+  border-radius: 3px;
+}
+.cardchev {
+  width: 15px; height: 15px; flex: none; margin-left: auto;
+  opacity: .55; transition: transform .15s ease;
+}
+.card > h2 .cardtoggle[aria-expanded="false"] .cardchev,
+.chart-card > h3 .cardtoggle[aria-expanded="false"] .cardchev {
+  transform: rotate(-90deg);
+}
+/* Everything but the heading. Not a wrapper — the card's children stay where
+   the scripts that fill them expect to find them. */
+.card.is-collapsed > *:not(h2),
+.chart-card.is-collapsed > *:not(h3) { display: none !important; }
+/* A collapsed card is a line, so it should not also carry the padding of a
+   full one. */
+.card.is-collapsed, .chart-card.is-collapsed { padding-bottom: 8px; }
+.card.is-collapsed > h2, .chart-card.is-collapsed > h3 { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) { .cardchev { transition: none; } }
+
 /* ==== display face ======================================================= */
 /* Archivo, the face the mark is set in. SIL Open Font License 1.1
    (Copyright 2020 The Archivo Project Authors) — self-hosting is expressly
-   permitted; the licence ships alongside at fonts/OFL.txt. Subset to the
+   permitted; the license ships alongside at fonts/OFL.txt. Subset to the
    glyphs the sites actually render, both axes intact. */
 @font-face {
   font-family: 'Archivo';
@@ -56,7 +140,7 @@
 .b12-topbar {
   display: flex; align-items: center; gap: 18px; padding: 7px 20px;
   background: #14161a;
-  font: 13.5px/1.4 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font:var(--t-row)/1.4 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 .b12-topbar .b12-brand { display: flex; align-items: center; flex: 0 0 auto; }
 /* The lockup is the wordmark. No text alongside it — that would set the name
@@ -117,7 +201,7 @@
   background: rgba(255,255,255,.07); border-radius: 999px;
 }
 .b12-theme button {
-  font: inherit; font-size: 12px; line-height: 1; cursor: pointer;
+  font: inherit; font-size: var(--t-meta); line-height: 1; cursor: pointer;
   background: none; border: 0; color: #9aa0aa; border-radius: 999px;
   padding: 5px 9px; display: inline-flex; align-items: center;
 }
@@ -136,11 +220,11 @@
    content width both rows land on one line each. */
 .b12-footer {
   max-width: var(--chrome-w); margin: 0 auto; padding: 14px 20px 44px;
-  color: #666d7b; font-size: 13px; line-height: 1.65; text-align: center;
+  color: #666d7b; font-size: var(--t-row); line-height: 1.65; text-align: center;
 }
 .b12-footer a { color: var(--b12-teal-text); }
 .b12-footer p { margin: 0 0 8px; }
-.b12-footer .srcnote { font-size: 12px; }
+.b12-footer .srcnote { font-size: var(--t-meta); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .b12-footer { color: #9aa0aa; }
   :root:not([data-theme="light"]) .b12-footer a { color: var(--b12-teal-lit); }
@@ -153,11 +237,11 @@
   background: #ffffff; }
 .b12-head .hwrap { display: flex; align-items: center; gap: 16px;
   max-width: var(--chrome-w); margin: 0 auto; }
-.b12-head h1 { margin: 0; font-size: 26px; letter-spacing: -.03em;
+.b12-head h1 { margin: 0; font-size: var(--t-title); letter-spacing: -.03em;
   color: #1a1c20; font-family: var(--b12-font-display);
   font-variation-settings: 'wdth' 85; font-weight: 800; }
 .b12-head h1 .yr { color: #666d7b; }
-.b12-head p { margin: 4px 0 0; color: #666d7b; font-size: 14px; }
+.b12-head p { margin: 4px 0 0; color: #666d7b; font-size: var(--t-label); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .b12-head { background: #1d2026;
     border-bottom-color: var(--b12-teal-lit); }
@@ -173,7 +257,7 @@
 
 /* season switcher — the live year plus the archived ones, in the header */
 .b12-head h1 .yrpills { display: inline-flex; gap: 6px; margin-left: 8px;
-  vertical-align: middle; font-size: 14px; font-weight: 600;
+  vertical-align: middle; font-size: var(--t-label); font-weight: 600;
   font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   letter-spacing: 0; }
 .b12-head h1 .yrpills a, .b12-head h1 .yrpills .yron {
@@ -206,7 +290,7 @@
   display: flex; gap: 8px; flex-wrap: wrap;
 }
 .subnav a {
-  font-size: 13px; text-decoration: none; color: #666d7b;
+  font-size: var(--t-row); text-decoration: none; color: #666d7b;
   border: 1px solid rgba(128,128,128,.35); border-radius: 20px;
   padding: 4px 13px; background: transparent;
 }
@@ -231,7 +315,7 @@
 .skip-link {
   position: absolute; left: -9999px; top: 0; z-index: 100;
   background: var(--b12-teal); color: #fff; padding: 10px 16px;
-  border-radius: 0 0 8px 0; font-size: 14px; font-weight: 600;
+  border-radius: 0 0 8px 0; font-size: var(--t-label); font-weight: 600;
   text-decoration: none;
 }
 .skip-link:focus { left: 0; }

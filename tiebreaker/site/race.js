@@ -17,13 +17,13 @@
  *     1.1 points, which a bar rounded to one decimal cannot show. The build
  *     is deciding what to publish and can afford to be sure; this is
  *     answering "what if" while someone waits.
- *   - The work is sliced across frames and cancelled the moment a new pick
+ *   - The work is sliced across frames and canceled the moment a new pick
  *     lands, so a run in progress never blocks the click that supersedes it.
  *
  * The seed is fixed, so the same picks always produce the same odds. Two
  * readers comparing the same scenario see the same number.
  *
- * Kept behaviourally aligned with clinch.py / odds.py / chaos.py. If you
+ * Kept behaviorally aligned with clinch.py / odds.py / chaos.py. If you
  * change the model on either side, change it on both.
  */
 (function (global) {
@@ -195,9 +195,9 @@
 
   /* Expected home margin per game, averaged over the rating systems.
      build.py already published each system's pick and margin for every game
-     to drive the ★ favourites, so the ensemble is rebuilt from that rather
+     to drive the ★ favorites, so the ensemble is rebuilt from that rather
      than shipping the raw ratings a second time. Margins include home field,
-     which is what the favourites tooltip documents. */
+     which is what the favorites tooltip documents. */
   function ensembleMargins(payload) {
     var byId = {};
     payload.games.forEach(function (g) { byId[String(g.id)] = g; });
@@ -532,7 +532,7 @@
   var job = null;   // cancellation token for the run in flight
 
   function cancel() {
-    if (job) { job.cancelled = true; job = null; }
+    if (job) { job.canceled = true; job = null; }
   }
 
   /* Slice a unit of work across frames until it is done, then hand back.
@@ -540,7 +540,7 @@
      instead of dropping frames. */
   function pump(token, step, isDone, onTick, onDone) {
     function slice() {
-      if (token.cancelled) return;
+      if (token.canceled) return;
       var t0 = (global.performance || Date).now();
       while (!isDone() && (global.performance || Date).now() - t0 < SLICE_MS) {
         step();
@@ -644,7 +644,7 @@
     var model = modelOf(p, { busy: true });
     paint(model);
 
-    var token = { cancelled: false };
+    var token = { canceled: false };
     job = token;
 
     var sim = makeSimContext(games, state.payload.games, state.margins,
@@ -652,7 +652,7 @@
     var ex = makeExactContext(games, overrides);
 
     function runSim() {
-      if (token.cancelled) return;
+      if (token.canceled) return;
       pump(token,
         function () { oneSim(sim); },
         function () { return sim.done >= N_SIMS; },
@@ -680,7 +680,7 @@
           paintProgress(model);
         },
         function () {
-          if (token.cancelled) return;
+          if (token.canceled) return;
           applyExact(p, ex);
           model.proof = "exact";
           model.nOutcomes = ex.total;

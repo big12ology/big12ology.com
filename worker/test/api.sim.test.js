@@ -143,7 +143,7 @@ async function invariants(env, world, seenNames) {
     `SELECT display_norm, COUNT(*) n FROM users
       WHERE display_norm IS NOT NULL GROUP BY display_norm HAVING n > 1`).all();
   assert.equal(norms.length, 0,
-    `two accounts share a normalised name: ${JSON.stringify(norms)}`);
+    `two accounts share a normalized name: ${JSON.stringify(norms)}`);
 
   // --- a rename is always recorded
   const renamed = env.raw.prepare(

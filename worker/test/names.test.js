@@ -131,7 +131,7 @@ test("validate is idempotent: its own output always revalidates", () => {
     if (!first.ok) continue;
     const second = validate(first.display);
     assert.equal(second.ok, true,
-      `${JSON.stringify(n)} normalised to ${JSON.stringify(first.display)}, ` +
+      `${JSON.stringify(n)} normalized to ${JSON.stringify(first.display)}, ` +
       `which then failed: ${second.error}`);
     assert.equal(second.display, first.display);
     assert.equal(second.norm, first.norm);

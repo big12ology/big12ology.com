@@ -131,10 +131,10 @@
     note.textContent = n + " card" + (n === 1 ? "" : "s") +
       ", counted after the week locked. " +
       (Math.max(hp, ap) >= 65
-        ? "A clear lean towards " + (hp > ap ? home : away) + "."
+        ? "A clear lean toward " + (hp > ap ? home : away) + "."
         : Math.max(hp, ap) <= 55
           ? "Close to an even split."
-          : "A modest lean towards " + (hp > ap ? home : away) + ".");
+          : "A modest lean toward " + (hp > ap ? home : away) + ".");
     body.appendChild(note);
     node.hidden = false;
   }

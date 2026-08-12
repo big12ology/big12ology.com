@@ -50,7 +50,7 @@ const CONFUSABLE = new Map(Object.entries({
   "ł": "l", "ø": "o", "đ": "d", "ı": "i",
 }));
 
-// Names nobody may take, in normalised form. Impersonation only. Profanity is
+// Names nobody may take, in normalized form. Impersonation only. Profanity is
 // a different problem with a different answer — it is subjective, it is
 // language-specific, and a hardcoded list of slurs in a public repository is
 // its own kind of bad. That is what the admin rename endpoint and a reported-

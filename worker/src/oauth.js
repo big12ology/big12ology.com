@@ -9,7 +9,7 @@
 // GITHUB IS NOT OIDC. It has no ID token, no nonce, and no PKCE support, and
 // pretending otherwise in the docs would be worse than saying so. What it has
 // is an authorization code exchanged with a client secret, which makes this a
-// confidential client, and for a confidential client PKCE is defence in depth
+// confidential client, and for a confidential client PKCE is defense in depth
 // rather than the load-bearing part. The `state` cookie still binds the
 // callback to the browser that started it.
 //

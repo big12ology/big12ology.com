@@ -4,13 +4,13 @@
 
    Three rules from tiebreaker/README.md govern most of what follows.
 
-   TEAL IS CHROME ONLY. A selected pick fills with the team's own colour, never
+   TEAL IS CHROME ONLY. A selected pick fills with the team's own color, never
    the brand teal, and on The Board nothing is filled at all — a team chip
    sitting beside the ATS% ramp would put brand teal next to the ramp's greens,
    which measure 1.00:1 against each other and are told apart by hue alone.
 
    GOOD-TO-BAD IS A GRADIENT — except here. A single pick is won, lost or
-   pushed: three categories, not a continuum, so they get three flat colours.
+   pushed: three categories, not a continuum, so they get three flat colors.
    The gradient rule still governs ATS%, which is continuous, on The Board.
 
    Dark is declared twice and kept adjacent, per brand.css. Change them
@@ -24,9 +24,9 @@
   --ok:  #136536;
   --bad: #c0392b;
   --push: var(--dim);
-  /* The fill for a team with no colour on file. teams.json holds the sixteen
+  /* The fill for a team with no color on file. teams.json holds the sixteen
      members and nothing else, so in a non-conference week half the board is
-     an opponent we have no colour for — and the first version of this fell
+     an opponent we have no color for — and the first version of this fell
      back to var(--accent), which put brand teal inside the data region on
      fifteen of thirty labels. Graphite is a brand neutral and unmistakably
      not the accent. */
@@ -53,22 +53,22 @@
    the slate does not get, and these are two short facts. */
 #lockcard { padding: 10px 14px; }
 .pk-lockline { margin: 0; display: flex; gap: 8px; flex-wrap: wrap;
-            align-items: baseline; font-size: 14px; }
+            align-items: baseline; font-size: var(--t-label); }
 .pk-lockline time { font-weight: 600; }
 .pk-cd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-variant-numeric: tabular-nums; color: var(--dim); font-size: 13px; }
-.pk-slatecount { margin: 2px 0 0; color: var(--dim); font-size: 13px; }
+      font-variant-numeric: tabular-nums; color: var(--dim); font-size: var(--t-row); }
+.pk-slatecount { margin: 2px 0 0; color: var(--dim); font-size: var(--t-row); }
 
 /* --- live regions ------------------------------------------------------- */
 
 /* One line, not a card. It sits between the reader and the thing they came
    for, and everything it has to say is one sentence. */
-.pk-signedout { margin: 0; font-size: 14px; color: var(--dim);
+.pk-signedout { margin: 0; font-size: var(--t-label); color: var(--dim);
                 border: 1px solid var(--line); border-radius: 8px;
                 padding: 8px 12px; background: var(--panel); }
 
 /* The link inside it had no rule at all, so it rendered in the browser's
-   default blue — the one colour on the page that belongs to no theme, sitting
+   default blue — the one color on the page that belongs to no theme, sitting
    in the one panel a signed-out visitor is meant to act on. It is the same
    treatment as .pk-onward: the section's accent, and weight to separate the
    thing you can do from the sentence explaining it. The underline stays, and
@@ -81,13 +81,13 @@
    text rather than a panel. A second bordered box above the slate would give
    a returning player the same visual weight as a call to action they have
    already answered. */
-.pk-hint { margin: 0 0 2px; font-size: 13px; color: var(--dim); }
+.pk-hint { margin: 0 0 2px; font-size: var(--t-row); color: var(--dim); }
 .pk-hint[hidden] { display: none; }
 
 /* Collapsed when empty so two idle live regions do not cost 40px above the
    slate. They still exist in the DOM the whole time — a live region created
    at the moment it has something to say is not announced. */
-.pk-savestate, .pk-alertstate { margin: 0; font-size: 14px; }
+.pk-savestate, .pk-alertstate { margin: 0; font-size: var(--t-label); }
 .pk-savestate:not(:empty) { min-height: 1.4em; }
 .pk-savestate { color: var(--dim); }
 .pk-alertstate:not(:empty) {
@@ -131,7 +131,7 @@
 }
 
 .pk-deadhead {
-  margin: 10px 0 2px; font-size: 12px; letter-spacing: .06em;
+  margin: 10px 0 2px; font-size: var(--t-meta); letter-spacing: .06em;
   text-transform: uppercase; color: var(--dim); font-weight: 600;
 }
 
@@ -141,18 +141,18 @@
   display: grid; gap: 0 8px; align-items: center;
 }
 .pk-slate-game legend { padding: 0; }
-.pk-when { color: var(--dim); font-size: 12.5px; white-space: nowrap;
+.pk-when { color: var(--dim); font-size: var(--t-meta); white-space: nowrap;
         font-variant-numeric: tabular-nums; }
 
 .pk-sides { display: grid; grid-template-columns: 1fr 1.3em 1fr; gap: 5px;
          align-items: stretch; min-width: 0; }
 .pk-at { align-self: center; justify-self: center; color: var(--dim);
-      font-size: 11px; }
+      font-size: var(--t-fine); }
 
 /* The input is hidden; the label is the control. */
 /* The same control The Lab already has, at slate density. Its .pick is
    inline-flex, 1px --line, 8px radius, a 6px gap and the mark first; keeping
-   that here means a reader who has used one recognises the other, which is
+   that here means a reader who has used one recognizes the other, which is
    the "same quantity presented the same way" rule in tiebreaker/README.md. */
 .pk-side {
   display: flex; align-items: center; gap: 5px; min-width: 0;
@@ -161,21 +161,21 @@
 }
 .pk-side img.mark { margin: 0; flex: none; }
 .pk-side .pk-tname { flex: 1; min-width: 0; overflow: hidden;
-               text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
-.pk-side .pk-num { font-variant-numeric: tabular-nums; font-size: 14px;
+               text-overflow: ellipsis; white-space: nowrap; font-size: var(--t-label); }
+.pk-side .pk-num { font-variant-numeric: tabular-nums; font-size: var(--t-label);
              font-weight: 600; }
 .pk-side img { flex: none; }
 
 .pk-slate-game input:checked + .pk-side {
-  /* --tc is the team's own colour, set inline from teams.json; --tfg is the
-     readable text colour computed against it. Neither ever falls back to the
+  /* --tc is the team's own color, set inline from teams.json; --tfg is the
+     readable text color computed against it. Neither ever falls back to the
      accent — see --tc-none above. */
   background: var(--tc, var(--tc-none));
   border-color: var(--tc, var(--tc-none));
   color: var(--tfg, #fff); font-weight: 700;
 }
 .pk-slate-game input:checked + .pk-side .pk-num { font-weight: 700; }
-/* Colour is never the only signal — WCAG 1.4.1. The tick and the weight carry
+/* Color is never the only signal — WCAG 1.4.1. The tick and the weight carry
    it for anyone who cannot see the fill. */
 .pk-slate-game input:checked + .pk-side::after { content: "\2713"; font-weight: 700; }
 
@@ -222,13 +222,13 @@
    the space back from the sides, where it costs nothing: the row cannot be
    picked, and the full name is still in the legend and the title. */
 .pk-slate-game[disabled] { grid-template-columns: 64px minmax(0, 1fr) auto; }
-.pk-nopick { margin: 0; font-size: 11px; padding: 1px 7px; white-space: nowrap;
+.pk-nopick { margin: 0; font-size: var(--t-fine); padding: 1px 7px; white-space: nowrap;
              justify-self: end; }
 
 /* --- graded --------------------------------------------------------------
    Flat, not a ramp: see the note at the top about categories. */
 
-.pk-res { font-size: 11px; font-weight: 700; letter-spacing: .04em;
+.pk-res { font-size: var(--t-fine); font-weight: 700; letter-spacing: .04em;
        border-radius: 99px; padding: 1px 7px; white-space: nowrap;
        justify-self: end; }
 .pk-res.win  { color: var(--ok);   background: color-mix(in srgb, var(--ok) 15%, transparent); }
@@ -238,7 +238,7 @@
 
 /* --- your team ------------------------------------------------------------
    The same control as the slate — hidden radio, styled label — because it is
-   the same act: one choice out of a set you recognise by its mark. */
+   the same act: one choice out of a set you recognize by its mark. */
 
 .pk-teamgrid {
   border: 0; padding: 0; margin: 0 0 12px;
@@ -249,7 +249,7 @@
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
 }
 .pk-teamgrid legend { grid-column: 1 / -1; padding: 0 0 6px;
-                      font-weight: 600; font-size: 14px; }
+                      font-weight: 600; font-size: var(--t-label); }
 /* The three answers that are not a team sit below the line and span it, so
    the sixteen above stay a single scannable block of marks. */
 .pk-teamsep { grid-column: 1 / -1; height: 0; margin: 5px 0 2px;
@@ -257,7 +257,7 @@
 .pk-teamopt {
   display: flex; align-items: center; gap: 7px; min-width: 0;
   border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px;
-  background: var(--panel); cursor: pointer; font-size: 13.5px;
+  background: var(--panel); cursor: pointer; font-size: var(--t-row);
   transition: border-color .12s ease, background-color .12s ease;
 }
 .pk-teamopt .pk-tname { flex: 1; min-width: 0; overflow: hidden;
@@ -274,7 +274,7 @@
   border-color: var(--tc, var(--accent));
   color: var(--tfg, #fff); font-weight: 700;
 }
-/* Colour is never the only signal — WCAG 1.4.1. */
+/* Color is never the only signal — WCAG 1.4.1. */
 .pk-teamgrid input:checked + .pk-teamopt::after {
   content: "\2713"; margin-left: auto; font-weight: 700;
 }
@@ -292,15 +292,15 @@
    browser draws for itself, and next to the pills and chips everything else
    is made of it read as something the page had forgotten to style. Same pill
    geometry as .yearpill, with the browser's arrow replaced by one that takes
-   its colour from the text, so it follows both themes without a second asset
+   its color from the text, so it follows both themes without a second asset
    or a data URI to keep in sync. */
-.pk-wksel { font-size: 13px; color: var(--dim); position: relative;
+.pk-wksel { font-size: var(--t-row); color: var(--dim); position: relative;
             display: inline-flex; align-items: center; gap: 7px; }
 /* display on the element beats the UA's [hidden] rule, and this label is
    hidden whenever there is only one week to offer. */
 .pk-wksel[hidden] { display: none; }
 .pk-wksel select {
-  font: inherit; font-size: 13px; font-weight: 600; color: var(--ink);
+  font: inherit; font-size: var(--t-row); font-weight: 600; color: var(--ink);
   background: var(--panel); border: 1px solid var(--line);
   border-radius: 999px; padding: 4px 27px 4px 12px; cursor: pointer;
   appearance: none; -webkit-appearance: none;
@@ -338,7 +338,7 @@
 #board th button:hover { color: var(--accent); }
 #board th button:focus-visible { outline: 3px solid var(--accent);
                                  outline-offset: 2px; }
-/* Your own row. --you is your team's colour, set inline from your profile;
+/* Your own row. --you is your team's color, set inline from your profile;
    the accent is the fallback for the two answers that are not a team. Kept to
    a wash: this sits directly beside the ATS% ramp, and anything stronger would
    read as a statement about the numbers rather than about whose row it is. */
@@ -348,7 +348,7 @@
 
 #teamform { display: flex; flex-direction: column; gap: 8px;
             align-items: flex-start; }
-#teamform label { font-weight: 600; font-size: 14px; }
+#teamform label { font-weight: 600; font-size: var(--t-label); }
 #teampick { font: inherit; padding: 7px 10px; border: 1px solid var(--line);
             border-radius: 8px; background: var(--bg); color: var(--ink);
             min-width: min(320px, 100%); }
@@ -359,7 +359,7 @@
 
 #nameform { display: flex; flex-direction: column; gap: 8px;
             align-items: flex-start; }
-#nameform label { font-weight: 600; font-size: 14px; }
+#nameform label { font-weight: 600; font-size: var(--t-label); }
 #nameform input {
   font: inherit; padding: 8px 10px; border: 1px solid var(--line);
   border-radius: 8px; background: var(--bg); color: var(--ink);
@@ -368,13 +368,13 @@
 #nameform input:focus-visible { outline: 3px solid var(--accent);
                                 outline-offset: 2px; }
 #nameform input[aria-invalid="true"] { border-color: var(--bad); }
-.pk-fielderr { margin: 0; color: var(--bad); font-size: 14px; font-weight: 600; }
+.pk-fielderr { margin: 0; color: var(--bad); font-size: var(--t-label); font-weight: 600; }
 .pk-signins { display: flex; gap: 10px; flex-wrap: wrap; }
 
 /* --- the account chip in the masthead ----------------------------------- */
 /* Chrome, so teal is allowed here. */
 
-.b12-acct { font-size: 13px; color: var(--b12-bone); opacity: .85;
+.b12-acct { font-size: var(--t-row); color: var(--b12-bone); opacity: .85;
             margin-right: 10px; white-space: nowrap; }
 .b12-acct a { color: inherit; text-underline-offset: 2px; }
 
@@ -447,7 +447,7 @@
    empty space rather than removing it: a 537px list sat in a 1330px panel and
    the void was simply outside the rows instead of inside them.
    fit-content, floored so the header does not crush and capped at the chrome
-   width, and centred. A locked week whose rows carry a gauge is wider, and
+   width, and centerd. A locked week whose rows carry a gauge is wider, and
    the same rule sizes to that without a second breakpoint. */
 @media (min-width: 900px) {
   /* Only when there is no gauge. fit-content shrinks to the smallest the
@@ -476,33 +476,33 @@
   border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
   padding: 4px 10px; min-width: 0;
 }
-/* The track is the widest matchup on the card; every shorter one centres
+/* The track is the widest matchup on the card; every shorter one centers
    inside it, so the column reads as one block rather than a ragged left edge
    of names that happen to differ in length. */
 .pk-cardmatch { min-width: 0; overflow: hidden; text-overflow: ellipsis;
-                white-space: nowrap; font-size: 14px;
+                white-space: nowrap; font-size: var(--t-label);
                 justify-self: center; }
-/* The side you took carries the team's colour as a chip. On the picker the
+/* The side you took carries the team's color as a chip. On the picker the
    whole control fills; here it is one word inside a sentence, so it takes the
    smaller treatment. Still never the accent. */
 .pk-took { background: var(--tc, var(--tc-none)); color: var(--tfg, #fff);
            font-weight: 700; border-radius: 4px; padding: 1px 5px; }
 /* A fill alone was not enough to read at a glance, and it could not be: on a
-   card of fifteen rows every row has some colour in it — the marks, the
-   result chips — so one more coloured thing is not a signal. The tick is,
+   card of fifteen rows every row has some color in it — the marks, the
+   result chips — so one more colored thing is not a signal. The tick is,
    and it is the same tick the picker uses on the side you chose, so the two
-   pages say "this one" the same way. Colour is never the only signal
+   pages say "this one" the same way. Color is never the only signal
    anyway — WCAG 1.4.1 — and this is the row that most needed the other one. */
 .pk-took::after { content: "\00a0\2713"; font-weight: 700; }
 /* And the side you did not take steps back, so the contrast is between two
    things rather than between one thing and the background. */
 .pk-nottook { color: var(--dim); }
 
-.pk-score { font-variant-numeric: tabular-nums; font-size: 13px;
+.pk-score { font-variant-numeric: tabular-nums; font-size: var(--t-row);
              color: var(--dim); white-space: nowrap; }
 
-.pk-cardrec { margin: 0 0 12px; font-size: 15px; }
-.pk-cardrec b { font-size: 17px; }
+.pk-cardrec { margin: 0 0 12px; font-size: var(--t-copy); }
+.pk-cardrec b { font-size: var(--t-subhead); }
 .pk-open { color: var(--warn); font-weight: 600; }
 
 /* A game whose result is not in yet. A dot, not an empty cell, so the row
@@ -513,7 +513,7 @@
 
 /* --- what the room did ---------------------------------------------------
    A single percentage beside a row never said what it was a percentage OF.
-   This runs from one team's colour to the other with each side's number at
+   This runs from one team's color to the other with each side's number at
    its own end, so the reading is positional: which way the room leaned, and
    how hard. Only ever rendered after the lock; the server withholds the field
    before it.
@@ -532,7 +532,7 @@
   position: relative; flex: 1; min-width: 40px; height: 7px;
   border-radius: 4px; overflow: hidden;
 }
-/* Sits ON the colour, so it needs to read against sixteen different ones:
+/* Sits ON the color, so it needs to read against sixteen different ones:
    a white bar with a dark outline is legible over every team in the
    conference and over the graphite an unknown opponent gets. */
 .pk-splitmark {
@@ -542,19 +542,19 @@
   border-radius: 1px;
 }
 .pk-splitpct {
-  font-size: 11px; color: var(--dim); font-variant-numeric: tabular-nums;
+  font-size: var(--t-fine); color: var(--dim); font-variant-numeric: tabular-nums;
   white-space: nowrap; min-width: 2.2em;
 }
 .pk-splitpct.pk-home { text-align: right; }
 /* Your side, in weight rather than hue — the crowd is not a verdict, and
-   colouring it would make it look like one. */
+   coloring it would make it look like one. */
 .pk-splitpct.pk-mine { color: var(--ink); font-weight: 700; }
 
-.pk-cardseason { margin: 0 0 10px; font-size: 13px; color: var(--dim);
+.pk-cardseason { margin: 0 0 10px; font-size: var(--t-row); color: var(--dim);
                  font-variant-numeric: tabular-nums; }
 
 /* Five states. A card read mid-afternoon is mostly games that have not
-   finished, and the two that are not outcomes get no colour: nothing has
+   finished, and the two that are not outcomes get no color: nothing has
    happened yet, and a chip that looks like a result would be a lie. */
 /* A picked game the scores have not caught up with holds the cell open so the
    rows stay aligned, and says nothing, because there is nothing yet to say. */
@@ -585,7 +585,7 @@
 /* A locked row is still a card, and stays --panel like every other one on the
    page. Dropping it to --bg was meant to make it recede; what it actually did
    was make the six playable games the only things on the page painted in the
-   page's own colour, so they read as holes in the panel rather than as rows
+   page's own color, so they read as holes in the panel rather than as rows
    that had closed. The stripped borders and the .6 opacity below already do
    the receding, and they do it without leaving the row a different object. */
 
@@ -603,7 +603,7 @@
 .pk-locked input:not(:checked) + .pk-side {
   border-color: transparent; background: none; color: var(--dim);
 }
-/* What you did take keeps its colour, because that is the record. */
+/* What you did take keeps its color, because that is the record. */
 .pk-locked input:checked + .pk-side { box-shadow: none; }
 /* --- signed out ----------------------------------------------------------
    .pk-locked is reused to switch the picking off, and then most of it has to
@@ -613,7 +613,7 @@
    and the lines are the entire reason the page is worth loading — dimming
    them to --dim washed out the one thing a new reader came to see, and left
    fifteen games looking broken rather than available.
-   Borders, fills and text colour all stay. Only the interactivity goes. */
+   Borders, fills and text color all stay. Only the interactivity goes. */
 .pk-readonly .pk-slate-game:not(:has(input:checked)) { opacity: 1; }
 .pk-readonly input:not(:checked) + .pk-side {
   border-color: var(--line);
@@ -637,7 +637,7 @@
 .pk-when.pk-st-final,
 .pk-when.pk-st-wait,
 .pk-when.pk-st-live {
-  font-size: 10.5px; font-weight: 700; letter-spacing: .05em;
+  font-size: var(--t-micro); font-weight: 700; letter-spacing: .05em;
   border-radius: 99px; padding: 2px 7px; text-align: center;
 }
 .pk-when.pk-st-final { color: var(--dim);
@@ -651,10 +651,10 @@
    Signing in used to drop a brand-new account back on the slate, where the
    only sign anything had happened was a chip reading "Choose a name" in the
    corner. These are the two steps that were implied and never asked for. */
-.pk-steps { margin: 6px 0 0; padding-left: 20px; font-size: 14px; }
+.pk-steps { margin: 6px 0 0; padding-left: 20px; font-size: var(--t-label); }
 .pk-steps li { margin-bottom: 6px; }
 .pk-steps li:last-child { margin-bottom: 0; }
-.pk-onward { margin: 14px 0 0; font-size: 14px; }
+.pk-onward { margin: 14px 0 0; font-size: var(--t-label); }
 .pk-onward a { color: var(--accent); font-weight: 600; }
 
 /* Holds a mark's width for a player whose answer has no logo — a team with no
@@ -670,12 +670,12 @@
 .pk-hist { width: 100%; height: auto; display: block; margin-top: 4px;
            overflow: visible; }
 .pk-hgrid { stroke: var(--line); stroke-width: 1; }
-.pk-haxis { fill: var(--dim); font-size: 11px;
+.pk-haxis { fill: var(--dim); font-size: var(--t-fine);
             font-variant-numeric: tabular-nums; }
-/* The three lines carry a dash pattern as well as a colour, so they are told
+/* The three lines carry a dash pattern as well as a color, so they are told
    apart without it — WCAG 1.4.1, and it also survives the reader's own team
-   colour landing near one of them. */
-/* Four lines over a band, so each needs a dash of its own — colour alone
+   color landing near one of them. */
+/* Four lines over a band, so each needs a dash of its own — color alone
    would not separate them and the reader's team can land on any hue. The
    median is the odd one out: it is context rather than a competitor, so it
    is a thin light solid that reads as part of the band it sits in. */
@@ -685,7 +685,7 @@
 /* --ink, not --fg. There is no --fg on this domain: the token is --ink, and
    `var(--fg)` resolved to nothing on all eleven of its uses in this file.
    Ten of them fed `color`, which INHERITS, so an invalid value quietly became
-   the parent's colour and every one of them looked correct. This one fed
+   the parent's color and every one of them looked correct. This one fed
    `stroke`, whose initial value is `none` — so the room simply had no line,
    while sitting in the legend claiming to. An undefined custom property fails
    invisibly on inheriting properties and completely on the rest. */
@@ -701,16 +701,16 @@
              pointer-events: none; }
 
 .pk-hkey { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 6px;
-           font-size: 12px; color: var(--dim); }
+           font-size: var(--t-meta); color: var(--dim); }
 .pk-hchip { display: inline-flex; align-items: center; gap: 6px; }
 /* A 20-unit line in a 20-unit box, so the dasharray on the shared class draws
    at the same scale it does on the chart. */
 .pk-hswatch { width: 20px; height: 6px; flex: none; overflow: visible; }
 /* The band is a block rather than a line, and takes its own fill because the
-   band is the reader's team colour and the accent is not. */
+   band is the reader's team color and the accent is not. */
 .pk-hblock { width: 16px; height: 9px; border-radius: 2px; flex: none;
              background: var(--k, var(--line)); }
-/* The "you" line has no class of its own on the chart — its colour is inline
+/* The "you" line has no class of its own on the chart — its color is inline
    because it comes from the reader's team — so the swatch is given the same
    weight here. */
 .pk-hyou { stroke-width: 2.5; stroke-linecap: round; }
@@ -719,10 +719,10 @@
 .pk-htip { position: absolute; z-index: 2; pointer-events: none;
            background: var(--panel); border: 1px solid var(--line);
            border-radius: 6px; padding: 5px 8px;
-           font-size: 11.5px; color: var(--ink); line-height: 1.35;
+           font-size: var(--t-fine); color: var(--ink); line-height: 1.35;
            font-variant-numeric: tabular-nums; white-space: nowrap; }
 .pk-htip[hidden] { display: none; }
-.pk-htipwk { font-size: 10.5px; letter-spacing: .05em; color: var(--dim);
+.pk-htipwk { font-size: var(--t-micro); letter-spacing: .05em; color: var(--dim);
              text-transform: uppercase; margin-bottom: 2px; }
 /* Name, number, and whatever else the row has — three columns rather than a
    sentence per line, which is what made the box wider than the plot. */
@@ -735,17 +735,17 @@
 .pk-htipk.chalk { color: var(--warn); }
 .pk-htipk.med   { color: var(--dim); font-weight: 400; }
 .pk-htipv { text-align: right; }
-.pk-htipx { color: var(--dim); font-size: 10.5px; }
+.pk-htipx { color: var(--dim); font-size: var(--t-micro); }
 
 /* --- the room, as a card ------------------------------------------------- */
 .pk-roomstats { display: grid; gap: 10px; margin-bottom: 10px;
                 grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
 .pk-stat { background: var(--bg); border-radius: 8px; padding: 8px 11px; }
-.pk-statv { font-size: 21px; font-weight: 700;
+.pk-statv { font-size: var(--t-lead); font-weight: 700;
             font-variant-numeric: tabular-nums; }
 .pk-statv.up   { color: var(--ok); }
 .pk-statv.down { color: var(--bad); }
-.pk-statl { font-size: 11.5px; color: var(--dim); letter-spacing: .03em;
+.pk-statl { font-size: var(--t-fine); color: var(--dim); letter-spacing: .03em;
             text-transform: uppercase; margin-top: 1px; }
 
 /* --- the board, beside its chart ------------------------------------------
@@ -775,13 +775,13 @@
 .pk-svspent .pk-tname { text-decoration: line-through;
                         text-decoration-color: var(--dim); }
 .pk-svspent:hover { border-color: var(--line); }
-.pk-svspent .pk-num { font-weight: 400; font-size: 11px; color: var(--dim); }
+.pk-svspent .pk-num { font-weight: 400; font-size: var(--t-fine); color: var(--dim); }
 
 /* Your run: one line per week, the same rhythm as the card's rows. */
 .pk-svrun { list-style: none; margin: 0; padding: 0; }
 .pk-svrunrow { display: flex; align-items: center; gap: 10px;
                padding: 5px 0; border-bottom: 1px solid var(--line);
-               font-size: 14px; }
+               font-size: var(--t-label); }
 .pk-svrunrow:last-child { border-bottom: none; }
 .pk-svrunrow .pk-when { min-width: 3.2em; }
 .pk-svrunrow img.mark { margin: 0; }
@@ -808,7 +808,7 @@
               display: grid; gap: 6px; }
 .pk-svgrave li { display: flex; align-items: center; gap: 7px;
                  background: var(--bg); border-radius: 8px;
-                 padding: 7px 11px; font-size: 14px; }
+                 padding: 7px 11px; font-size: var(--t-label); }
 .pk-svgrave img { flex: none; }
 .pk-svgrave b { color: var(--ink); }
 

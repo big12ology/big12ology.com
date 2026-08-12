@@ -4,7 +4,7 @@
 // leaderboards from `picks ⋈ slate_games ⋈ results`, which makes re-running it
 // definitionally a no-op and makes a corrected score propagate on its own. The
 // alternative — adjusting totals as results land — is how a board drifts from
-// the picks it claims to summarise, and a board nobody trusts is worse than no
+// the picks it claims to summarize, and a board nobody trusts is worse than no
 // board.
 //
 // Three rules that decide whether people believe the numbers:
@@ -23,6 +23,7 @@
 //   consensus would become visible. The guard is unconditional.
 
 import { ats } from "./ats.js";
+import { strandedWeeks } from "./handicap.js";
 
 const VOID_AFTER = 36 * 3600;
 
@@ -110,14 +111,14 @@ export async function scoreWeek(env, season, week, scores,
       finals++;
     } else if (now > g.kickoff_at + VOID_AFTER) {
       // Thirty-six hours past kickoff with no final: no result is coming,
-      // whether the game was cancelled or simply dropped out of the file.
+      // whether the game was canceled or simply dropped out of the file.
       //
       // Absence from the file is NOT its own trigger, though the plan said it
       // could be. The scores file lists every game of the season, finished or
       // not, so absence should mean "vanished" — but if it were ever
       // truncated or written half-way, treating absence as a void would void
       // an entire locked week of games that had not kicked off yet. The clock
-      // says the same thing about a genuinely cancelled game a day and a half
+      // says the same thing about a genuinely canceled game a day and a half
       // later, and cannot be wrong about one still to be played.
       status = "void"; atsValue = "void";
       voids++;
@@ -196,6 +197,10 @@ export async function scoreWeek(env, season, week, scores,
   await rebuildWeekBoard(env, season, week, now);
   await rebuildSeasonBoard(env, season, now);
   await rebuildSurvivorScores(env, season, week);
+  // Before the board, and after the scores: a week scored void hands its team
+  // back, which changes what a player was holding, which is what decides
+  // whether a later empty week was a choice or a dead end.
+  await rebuildSurvivorStranded(env, season, now);
   await rebuildSurvivorBoard(env, season, now);
 
   await env.DB.prepare(
@@ -208,7 +213,7 @@ export async function scoreWeek(env, season, week, scores,
 /**
  * One statement, derived. `pick_scores` is never written by a handler and
  * never adjusted — it is deleted and recreated from the join, so it cannot
- * disagree with the picks it summarises.
+ * disagree with the picks it summarizes.
  */
 /**
  * @param {number[]|null} games only these games, or all of the week's when
@@ -251,7 +256,7 @@ async function rebuildPickScores(env, season, week, games = null) {
  *
  * The spread is not consulted. A survivor pick is a team to win the game,
  * so the grading is points against points — with two escapes that both land
- * on 'void': a game scoring voided (cancelled, or vanished past the
+ * on 'void': a game scoring voided (canceled, or vanished past the
  * thirty-six-hour clock), and the theoretical tie, which modern overtime
  * rules should make impossible but which must not default to somebody's
  * elimination if it ever happens.
@@ -275,6 +280,23 @@ async function rebuildSurvivorScores(env, season, week) {
          JOIN results r ON r.season = p.season AND r.week = p.week
                        AND r.game_id = p.game_id
         WHERE p.season = ? AND p.week = ?`).bind(season, week),
+  ]);
+}
+
+/**
+ * The weeks nobody could have played, rebuilt wholesale like everything else
+ * here. Almost always empty, and cheap when it is: the driving query only
+ * returns weeks somebody actually skipped.
+ */
+async function rebuildSurvivorStranded(env, season, now) {
+  const rows = await strandedWeeks(env, season);
+  await env.DB.batch([
+    env.DB.prepare(`DELETE FROM survivor_stranded WHERE season = ?`)
+      .bind(season),
+    ...rows.map((r) => env.DB.prepare(
+      `INSERT INTO survivor_stranded (season, user_id, week, usable,
+                                      computed_at)
+       VALUES (?, ?, ?, 0, ?)`).bind(season, r.user_id, r.week, now)),
   ]);
 }
 
@@ -346,14 +368,25 @@ async function rebuildSurvivorBoard(env, season, now) {
                FROM survivor_picks WHERE season = ? GROUP BY user_id),
            walk AS (
              SELECT e.user_id, e.entered_week, l.week,
-                    CASE WHEN p.user_id IS NULL THEN 'missed'
+                    -- No pick is a miss unless there was nothing to pick.
+                    -- 'stranded' is in neither the out list nor the win
+                    -- count, so the week simply does not happen for that
+                    -- player — the same shape a void already has, and for
+                    -- the same reason: the pool must not eliminate somebody
+                    -- for a board it emptied itself.
+                    CASE WHEN p.user_id IS NULL
+                           THEN CASE WHEN st.user_id IS NULL THEN 'missed'
+                                     ELSE 'stranded' END
                          ELSE COALESCE(s.outcome, 'pending') END AS outcome
                FROM entrants e
                JOIN locked l ON l.week >= e.entered_week
                LEFT JOIN survivor_picks p
                  ON p.user_id = e.user_id AND p.season = ? AND p.week = l.week
                LEFT JOIN survivor_scores s
-                 ON s.user_id = e.user_id AND s.season = ? AND s.week = l.week)
+                 ON s.user_id = e.user_id AND s.season = ? AND s.week = l.week
+               LEFT JOIN survivor_stranded st
+                 ON st.user_id = e.user_id AND st.season = ?
+                AND st.week = l.week)
            SELECT e.user_id, e.entered_week,
                   (SELECT MIN(w.week) FROM walk w
                     WHERE w.user_id = e.user_id
@@ -376,13 +409,15 @@ async function rebuildSurvivorBoard(env, season, now) {
              FROM entrants e)`)
       // Text order, twice for the cutoff: the ranked flag and the partition
       // that ranks within it have to agree, so they read the same binding.
+      // The trailing seasons are, in text order: locked, entrants, picks,
+      // scores, stranded.
       .bind(season, cutoff, cutoff, now,
-            season, now, season, season, season),
+            season, now, season, season, season, season),
   ]);
 }
 
 // Only 'active' players appear. A provisional account's picks are scored and
-// counted towards becoming active — they are simply not published yet.
+// counted toward becoming active — they are simply not published yet.
 const PUBLISHABLE = `u.status = 'active'`;
 
 async function rebuildWeekBoard(env, season, week, now) {
@@ -469,7 +504,7 @@ export async function promoteProvisional(env, season, week) {
 }
 
 /**
- * The chalk: what always taking the favourite would have scored.
+ * The chalk: what always taking the favorite would have scored.
  *
  * A benchmark row, computed from the same results everyone else is measured
  * on. tiebreaker/scorecard.py already makes this comparison for the models;
@@ -520,7 +555,7 @@ export async function chalk(env, season, week = null) {
  *   would make the number correct by some measure and unverifiable by any.
  *
  *   A DEAD HEAT IS NOT A PICK. Split exactly down the middle, the room had no
- *   opinion, and inventing one — by falling back to the favourite, or to the
+ *   opinion, and inventing one — by falling back to the favorite, or to the
  *   home side — would quietly turn this into a worse copy of the chalk. Those
  *   games sit outside the record entirely and are counted separately.
  *

@@ -145,7 +145,7 @@ test("a name can be set once, then not again for a month", async () => {
   assert.equal((await again.json()).error, "rename_cooldown");
 });
 
-test("two people cannot hold names that normalise the same", async () => {
+test("two people cannot hold names that normalize the same", async () => {
   const env = makeEnv();
   seedUser(env, "u1"); seedUser(env, "u2");
   const a = await signedIn(env, "u1"), b = await signedIn(env, "u2");

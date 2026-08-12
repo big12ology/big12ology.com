@@ -1,4 +1,4 @@
-/* Win-percentage colour curve, shared by every page that draws a standings
+/* Win-percentage color curve, shared by every page that draws a standings
    row. Anchors are kept in sync with winpct_color in build.py — the Python
    side renders the first paint, this side renders everything after it, and
    they have to agree pixel for pixel. */
@@ -83,7 +83,7 @@
   /* Odds of reaching a two-team game out of sixteen, which is a third
      quantity again. Kept in sync with ccg_color in build.py: the race card
      is painted server-side on The Race and client-side on The Lab, and the
-     same probability has to come out the same colour on both.
+     same probability has to come out the same color on both.
 
      The curve is indexed on p / (spots / teams) — how many times a team's
      odds beat the flat 2-in-16 share — rather than on p itself, so "average"

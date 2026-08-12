@@ -171,11 +171,11 @@ def attendance_facts():
                 f"season, every opponent, and the only team in the league "
                 f"that can say it."))
         elif full:
-            colour = f", {where}" if where else ""
+            color = f", {where}" if where else ""
             out.append(_fact(
                 f"{team} has filled its stadium {len(full)} times in "
                 f"{len(with_pct)} home games since {ATT_FIRST} — "
-                f"{pct:.0f}%{colour}, against a league average of "
+                f"{pct:.0f}%{color}, against a league average of "
                 f"{league * 100:.0f}%."))
         else:
             best = max(with_pct, key=lambda r: r["pct"])
@@ -198,11 +198,11 @@ def attendance_facts():
             for t, rs in by_team.items()}
     for team, rs in sorted(by_team.items()):
         where = _rank(avgs[team], list(avgs.values()))
-        colour = f" — {where}" if where else ""
+        color = f" — {where}" if where else ""
         S = _subj(team, "avg", opener=True)
         out.append(_fact(
             f"{S['n']} average{S['v']} {_comma(avgs[team])} a home game "
-            f"since {ATT_FIRST}, over {len(rs)} games{colour}."))
+            f"since {ATT_FIRST}, over {len(rs)} games{color}."))
 
     # --- one per season ----------------------------------------------------
     by_season = collections.defaultdict(list)
@@ -322,7 +322,7 @@ def load_rivalries(games_by_year=None):
     real and all excluded. It is an editorial call and not a data one: a Big
     12 site printing the series record against the schools that walked out is
     not a fun fact for the people still here. Opponents who were never in the
-    conference are untouched — Iowa and Pitt are just neighbours.
+    conference are untouched — Iowa and Pitt are just neighbors.
 
     Enforced here as well as absent from the file, so that adding one back to
     the JSON in good faith does not quietly put it on the front page.
@@ -512,15 +512,15 @@ def schedule_facts(year, games, teams, history_years, rotation_mod):
         # which side of it you land on is the closest thing the schedule has
         # to luck.
         if h > a and fours:
-            colour = (f" — the extra home date, in a season {len(fours)} "
+            color = (f" — the extra home date, in a season {len(fours)} "
                       f"teams finish a game short")
         elif a > h and fives:
-            colour = (f" — the short straw, while {len(fives)} teams get five")
+            color = (f" — the short straw, while {len(fives)} teams get five")
         else:
-            colour = ""
+            color = ""
         out.append(_fact(
             f"{S['n']} play{S['v']} {h} of {S['its']} {h + a} {year} "
-            f"conference games at home{colour}."))
+            f"conference games at home{color}."))
 
     # --- the games that are not in Texas, or America ------------------------
     for g in games:
@@ -780,12 +780,12 @@ def tiebreaker_facts(games_by_year):
         if w + l < 20:                # too little to be a record
             continue
         where = _rank(pcts[team], list(pcts.values()))
-        colour = f" — {where}" if where else ""
+        color = f" — {where}" if where else ""
         S = _subj(team, "record", opener=True)
         verb = (S["is"] if _was(team, played) == "is" else S["was"])
         out.append(_fact(
             f"{S['n']} {verb} {w}–{l} in Big 12 conference games "
-            f"{_span(team, played)}, {w / (w + l) * 100:.0f}%{colour}."))
+            f"{_span(team, played)}, {w / (w + l) * 100:.0f}%{color}."))
     for y, (margin, w, l, hi, lo) in sorted(biggest.items()):
         out.append(_fact(
             f"The most lopsided conference game of {y} was {w} {hi}, "
@@ -846,10 +846,10 @@ def tiebreaker_facts(games_by_year):
 
     for team, (best, when) in sorted(runs.items()):
         where = _rank(best, [v[0] for v in runs.values()])
-        colour = f" — {where}" if where else ""
+        color = f" — {where}" if where else ""
         out.append(_fact(
             f"{team}'s longest run of Big 12 wins {_span(team, played)} "
-            f"{_was(team, played)} {best} in a row, {when}{colour}."))
+            f"{_was(team, played)} {best} in a row, {when}{color}."))
 
     out.append(_fact(
         "The Big 12 tiebreaker runs seven steps. The last two are a "
@@ -870,13 +870,13 @@ def pools_facts(year, lines_count):
         _fact("A push is a push. Land exactly on the number and it counts as "
               "neither a win nor a loss, and it stays out of your percentage "
               "entirely."),
-        _fact("The board shows the chalk: what simply taking every favourite "
+        _fact("The board shows the chalk: what simply taking every favorite "
               "would have scored. In 2025 that was 56.5%, and most people do "
               "not beat it."),
         _fact("Survivor gives you one team a week and never the same team "
               "twice. Sixteen teams, and the season is longer than that."),
         _fact("Join survivor late and you arrive having already spent the "
-              "biggest favourite of every week you missed."),
+              "biggest favorite of every week you missed."),
         _fact("Nobody sees anybody else's picks until the slate locks. The "
               "consensus is withheld for the same reason: it would be worth "
               "following."),

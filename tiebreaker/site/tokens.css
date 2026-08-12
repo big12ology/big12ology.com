@@ -82,7 +82,7 @@
 /* --------------------------------------------------------------------------
    SCOPING RULE — teal is CHROME ONLY.
      Allowed   — logo, nav, links, focus rings, borders, buttons, rules
-     Forbidden — inside or visually adjacent to any percentile-coloured cell
+     Forbidden — inside or visually adjacent to any percentile-colored cell
    Inside the data region, carry emphasis with weight, a rule, or the
    mono/sans split. Never with hue.
    -------------------------------------------------------------------------- */

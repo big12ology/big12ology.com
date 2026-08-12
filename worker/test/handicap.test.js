@@ -44,7 +44,7 @@ const call = (env, ...a) => worker.fetch(req(...a), env, {});
 /**
  * Four weeks whose chalk is known by construction.
  *
- * Week 1's biggest favourite is Texas Tech (-28), week 2's is Utah (-24),
+ * Week 1's biggest favorite is Texas Tech (-28), week 2's is Utah (-24),
  * week 3's is BYU (-20). Week 4 repeats Texas Tech as the biggest, which is
  * the case the "next largest" rule exists for.
  */
@@ -74,12 +74,12 @@ function season(env) {
 
 // ---------------------------------------------------------------- the chalk
 
-test("the burned set is the biggest favourite of every week missed",
+test("the burned set is the biggest favorite of every week missed",
   async () => {
     const env = makeEnv();
     season(env);
     // The sign convention is the home spread, so a positive number means the
-    // AWAY team is favoured — week 3's chalk is BYU, not Cincinnati.
+    // AWAY team is favored — week 3's chalk is BYU, not Cincinnati.
     assert.deepEqual((await chalkRoster(env, 2026, 4)).map((b) => b.team),
       ["Texas Tech", "Utah", "BYU"]);
     assert.deepEqual((await chalkRoster(env, 2026, 2)).map((b) => b.team),
@@ -92,10 +92,10 @@ test("week 1 entrants are handicapped not at all", async () => {
   assert.deepEqual(await chalkRoster(env, 2026, 1), []);
 });
 
-test("a repeated favourite falls through to the next biggest", async () => {
+test("a repeated favorite falls through to the next biggest", async () => {
   // Week 4's chalk is Texas Tech again, already spent by week 1. Taking the
   // next largest keeps the handicap exactly one team per week missed; without
-  // it, joining after a week whose favourite repeated would be a discount.
+  // it, joining after a week whose favorite repeated would be a discount.
   const env = makeEnv();
   season(env);
   const burned = (await chalkRoster(env, 2026, 5)).map((b) => b.team);
@@ -106,7 +106,7 @@ test("a repeated favourite falls through to the next biggest", async () => {
 
 test("a game with no line is never the chalk", async () => {
   // TCU–Utah in week 1 has no spread. An ungraded game cannot end a run, so
-  // spending its favourite would take a team for nothing.
+  // spending its favorite would take a team for nothing.
   const env = makeEnv();
   season(env);
   const w1 = await chalkRoster(env, 2026, 2);
@@ -145,7 +145,7 @@ test("entering fixes the handicap; it does not grow week by week",
   async () => {
     // Someone who entered in week 2 keeps a one-team handicap forever. If the
     // burned set were recomputed against the current week instead of the
-    // entry week, a loyal player would be penalised for every week they
+    // entry week, a loyal player would be penalized for every week they
     // played — the exact opposite of the intent.
     const env = makeEnv();
     season(env);
@@ -403,11 +403,11 @@ test("a non-conference team cannot be picked at all", async () => {
   assert.equal(ok.status, 200, await ok.text());
 });
 
-test("a game whose favourite is not in the conference has no chalk",
+test("a game whose favorite is not in the conference has no chalk",
   async () => {
     // The handicap must not burn a team nobody could have spent. Week 1's
-    // biggest favourite is a visitor, so the chalk is the biggest CONFERENCE
-    // favourite instead — and the underdog of that game is not it either.
+    // biggest favorite is a visitor, so the chalk is the biggest CONFERENCE
+    // favorite instead — and the underdog of that game is not it either.
     const env = makeEnv();
     seedWeek(env, { week: 1, games: [
       { game_id: 101, home: "Kansas", away: "Notre Dame", spread_x2: 30,

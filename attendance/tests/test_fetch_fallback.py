@@ -1,4 +1,4 @@
-"""The fetch's behaviour when CFBD is not there.
+"""The fetch's behavior when CFBD is not there.
 
 This path only runs during an outage or a spent monthly quota, which is
 exactly where a regression sits unnoticed until the day it costs a game.

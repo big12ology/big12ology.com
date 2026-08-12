@@ -92,7 +92,7 @@ export async function importWeek(env, season, week) {
                                 spread_x2, spread_raw, books, b12, frozen_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(season, week, game_id) DO UPDATE SET
-         -- The COALESCE argument order is the whole behaviour here, so:
+         -- The COALESCE argument order is the whole behavior here, so:
          --
          --   ours NULL, theirs 5   -> 5, and the trigger stays quiet because
          --                            nobody could have acted on a line that

@@ -65,7 +65,7 @@ echo "  assemble.sh: two runs at a fixed stamp, identical dist"
 # failure this whole script exists to name.
 unset B12_BUILD_STAMP
 B12_PICKEM=1 "$ROOT/tools/assemble.sh" "$TMP/dist3" >/dev/null
-# A changed line is allowed to be a build stamp, and the way to recognise one
+# A changed line is allowed to be a build stamp, and the way to recognize one
 # is the stamp's own shape — "August 10, 23:50 UTC" — not the words the footer
 # happens to put in front of it. This matched on "last updated" and started
 # reporting a second clock the day the footer copy dropped the "last": a
