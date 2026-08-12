@@ -6,9 +6,12 @@
 # every hourly score refresh, and — worst — let a cancelled run abort a
 # migration halfway through applying.
 #
-# This runs only when worker/ changes, and it pauses for a human before it
-# touches production, because `d1 migrations apply --remote` writes to the
-# live database.
+# This runs only when worker/ changes, and it runs unattended. It used to
+# pause for a required reviewer; that gate was removed on 2026-08-12, and what
+# it had really been guarding — `d1 migrations apply --remote` writing to the
+# live database — moved out to migrate.yml rather than losing its pause along
+# with it. A script this deploys can be rolled back in a minute and is, below,
+# automatically. A schema cannot.
 
 name: Worker
 
@@ -30,9 +33,18 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # A GitHub environment with a required reviewer. The gate is the point:
-    # everything above this line is safe to run unattended and everything
-    # below it writes to production.
+    # THIS ENVIRONMENT NO LONGER HAS A REQUIRED REVIEWER. It was removed on
+    # 2026-08-12, and this file used to claim otherwise in three places.
+    #
+    # Deploying unattended is the right call: the smoke test below catches a
+    # bad script and rolls it back on its own, faster than a person would.
+    # What the reviewer was really standing in front of was the migration
+    # step, which rollback cannot undo — so that moved to migrate.yml, which
+    # runs only by hand. See the header there.
+    #
+    # The environment stays for what it still does: it scopes the Cloudflare
+    # token and it records these deploys in GitHub's deployment history. It is
+    # a name, not a gate. Do not read it as one.
     environment: cloudflare
     steps:
       - uses: actions/checkout@v4
@@ -78,11 +90,91 @@ jobs:
           print(f"routes ok: {patterns}")
           PY
 
-      - name: Migrate
+      # MIGRATIONS ARE NOT APPLIED HERE ANY MORE. They live in migrate.yml,
+      # which runs only by hand — that file's header says why.
+      #
+      # This step is what makes the split safe rather than merely smaller. The
+      # failure a split introduces is the mirror image of the one it removes:
+      # code shipped ahead of the schema it expects, which is a Worker taking
+      # picks against a column that does not exist yet. So nothing deploys
+      # until every migration on disk is recorded in the database.
+      #
+      # It reads d1_migrations directly rather than parsing
+      # `wrangler d1 migrations list`, whose output is presentation and has
+      # changed between versions. d1_migrations is wrangler's default and
+      # wrangler.toml sets migrations_dir without overriding migrations_table
+      # — and if that ever stops being true this fails closed, which is the
+      # only safe direction for a check whose whole job is to say "yes, the
+      # database is ready".
+      - name: The schema is already where this code expects it
         working-directory: worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npx wrangler d1 migrations apply b12_pickem --remote
+        run: |
+          set -uo pipefail
+          if ! npx wrangler d1 execute b12_pickem --remote --json \
+                 --command "SELECT name FROM d1_migrations ORDER BY name" \
+                 > /tmp/applied.json 2>/tmp/applied.err; then
+            echo "::error::could not read d1_migrations:"
+            sed 's/^/::error::  /' /tmp/applied.err
+            echo "::error::REFUSING TO DEPLOY rather than guess whether the"
+            echo "::error::schema is current."
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json, pathlib, sys
+
+          raw = pathlib.Path("/tmp/applied.json").read_text()
+
+          # wrangler puts a banner in front of the JSON often enough that
+          # json.loads on the whole buffer is not reliable. Scan for the first
+          # position that decodes cleanly instead of trusting a fixed offset.
+          dec, doc = json.JSONDecoder(), None
+          for i, ch in enumerate(raw):
+              if ch in "[{":
+                  try:
+                      doc, _ = dec.raw_decode(raw[i:])
+                      break
+                  except ValueError:
+                      continue
+          if doc is None:
+              sys.exit("::error::REFUSING TO DEPLOY: no JSON in the d1 output")
+
+          if isinstance(doc, dict):
+              doc = [doc]
+          applied = {r["name"] for blk in doc for r in blk.get("results", [])}
+          if not applied:
+              sys.exit("::error::REFUSING TO DEPLOY: d1_migrations came back "
+                       "empty. 0001_init has been applied since the pool "
+                       "opened, so this is a query that did not work, not a "
+                       "database that is behind.")
+
+          on_disk = {p.name for p in pathlib.Path("migrations").glob("*.sql")}
+
+          missing = sorted(on_disk - applied)
+          if missing:
+              print("::error::REFUSING TO DEPLOY. These migrations are on "
+                    "disk but not in the database:")
+              for m in missing:
+                  print(f"::error::  {m}")
+              print("::error::Run the Migrate workflow (migrate.yml), then "
+                    "re-run this one from the Actions tab.")
+              sys.exit(1)
+
+          # Not fatal. The database being ahead of the code is what a revert
+          # looks like, and these migrations are additive by rule, so the old
+          # Worker can run against the newer schema. Worth saying, not worth
+          # blocking on.
+          extra = sorted(applied - on_disk)
+          if extra:
+              print("::warning::applied but not on disk (reverted code?): "
+                    + ", ".join(extra))
+
+          print(f"schema ok: {len(applied)} migrations applied, "
+                f"{len(on_disk)} on disk")
+          for m in sorted(on_disk):
+              print(f"  {m}")
+          PY
 
       - name: Deploy
         working-directory: worker
@@ -120,8 +212,13 @@ jobs:
       # NOT the migrations. Those are forward-only and this does not undo
       # them, which is the asymmetry worth knowing: a bad script is a minute's
       # outage, a bad migration is a restore from Time Travel or from the
-      # weekly snapshot. That is also why the environment gate sits in front
-      # of this job.
+      # weekly snapshot.
+      #
+      # That asymmetry is why migrating is no longer part of this workflow. If
+      # it still were, this step would be actively harmful: it would put the
+      # old script back on top of the new schema and call that a recovery.
+      # Migrations happen in migrate.yml, deliberately, with a restore point
+      # printed before anything is applied.
       - name: Roll back a bad deploy
         if: steps.smoke.outcome == 'failure'
         working-directory: worker
@@ -139,7 +236,8 @@ jobs:
           done
 
       # And still fail the run. A rollback is not a success; it is the site
-      # being where it was before somebody pressed approve.
+      # being back where it was before this push, with the change that was
+      # meant to ship not shipped and nobody told unless this run goes red.
       - name: Report the smoke result
         if: steps.smoke.outcome == 'failure'
         run: exit 1
