@@ -2227,8 +2227,13 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bi-view { color:var(--accent2) }
 /* Related controls sit closer to each other than to the next group, and a
    group is atomic: no shrinking, so a row too narrow to hold everything
-   breaks between groups rather than through the middle of one. */
-.wgroup { display:flex; align-items:center; gap:6px; flex:0 0 auto }
+   breaks between groups rather than through the middle of one. Stretch
+   rather than center, because a native <select> lays its text out on its own
+   terms and comes out three pixels shorter than the buttons beside it — a row
+   that reads as assembled rather than designed. Stretching lets the tallest
+   control set the height and the rest meet it. */
+.wgroup { display:flex; align-items:stretch; gap:6px; flex:0 0 auto }
+.wgroup > label { display:flex; align-items:center }
 @media (max-width:520px) { .wgroup { flex-wrap:wrap; flex-shrink:1 } }
 
 /* ---- how the season moved ---- */
@@ -3892,8 +3897,13 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
 /* A group is atomic: no shrinking, so a row too narrow to hold everything
    breaks between groups rather than through the middle of one. Below the
    phone breakpoint that stops being true — three buttons of chalk do not fit
-   in 375px however they are grouped — and it goes back to wrapping freely. */
-.wgroup {{ display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }}
+   in 375px however they are grouped — and it goes back to wrapping freely.
+   Stretch rather than center, because a native <select> lays its text out on
+   its own terms and comes out three pixels shorter than the buttons beside
+   it — a row that reads as assembled rather than designed. Stretching lets
+   the tallest control set the height and the rest meet it. */
+.wgroup {{ display: flex; align-items: stretch; gap: 6px; flex: 0 0 auto; }}
+.wgroup > label {{ display: flex; align-items: center; }}
 @media (max-width: 520px) {{
   .wgroup {{ flex-wrap: wrap; flex-shrink: 1; }}
 }}

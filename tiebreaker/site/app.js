@@ -802,6 +802,37 @@
       : "<span class=dim>No model rates this game.</span>";
   }
 
+  function peekStrip(id) {
+    var box = document.getElementById("wgames");
+    return box && box.querySelector('.wmodels[data-for="' + id + '"]');
+  }
+
+  function isPeekOpen(id) {
+    var strip = peekStrip(id);
+    return !!strip && !strip.hidden;
+  }
+
+  /**
+   * Show or hide one game's model strip, and return it.
+   *
+   * Filled on first open rather than up front: 120 games times six opinions
+   * is 720 spans nobody has asked to see yet. Both ways in — the ⋮ and the
+   * pointer — come through here, so there is one definition of what "open"
+   * means and the button's aria-expanded cannot drift from what is on screen.
+   */
+  function setPeek(id, on) {
+    var strip = peekStrip(id);
+    if (!strip) return null;
+    if (on && !strip.dataset.filled) {
+      strip.innerHTML = modelStrip(id);
+      strip.dataset.filled = "1";
+    }
+    strip.hidden = !on;
+    var btn = document.querySelector('.wpeek[data-id="' + id + '"]');
+    if (btn) btn.setAttribute("aria-expanded", on ? "true" : "false");
+    return strip;
+  }
+
   // A view filter, not a reset: picks already made on non-conference games
   // stay made and keep feeding the simulation, they are simply not listed.
   // Both fill buttons follow it, because filling games a reader has hidden
@@ -921,20 +952,24 @@
     // games however many are on screen.
     updateCount(pickable().length);
     syncWeeksBtn();
-    // Filled on first open rather than up front: 120 games times six
-    // opinions is 720 spans nobody has asked to see yet.
     box.querySelectorAll(".wpeek").forEach(function (btn) {
       btn.onclick = function () {
         var id = btn.dataset.id;
-        var strip = box.querySelector('.wmodels[data-for="' + id + '"]');
+        var strip = setPeek(id, isPeekOpen(id) ? false : true);
         if (!strip) return;
-        var opening = strip.hidden;
-        if (opening && !strip.dataset.filled) {
-          strip.innerHTML = modelStrip(id);
-          strip.dataset.filled = "1";
+        if (strip.hidden) {
+          // Closed by hand, with the pointer still sitting on the row that
+          // opens it on hover — so without this the strip comes straight back
+          // and the ⋮ looks broken. Muted until the pointer leaves the row.
+          delete strip.dataset.pin;
+          strip.dataset.mute = "1";
+        } else {
+          // Opened by hand: it stays until it is closed by hand. The pointer
+          // moving on is not an instruction to put away something somebody
+          // deliberately asked for.
+          strip.dataset.pin = "1";
+          delete strip.dataset.mute;
         }
-        strip.hidden = !opening;
-        btn.setAttribute("aria-expanded", opening ? "true" : "false");
       };
     });
     box.querySelectorAll(".wkfav").forEach(function (btn) {
@@ -1054,8 +1089,9 @@
     var yr = modelYear(model);
     note.textContent = "★ marks the " + modelShort() +
       (yr ? " (" + yr + " ratings)" : "") +
-      " favorite; hover for the projected margin in points, " +
-      "home field included. Picks re-run the full official tiebreaker " +
+      " favorite. Hover a game — or tap its ⋮ — for what every model makes " +
+      "of it: the projected margin in points, home field included. " +
+      "Picks re-run the full official tiebreaker " +
       "instantly — the matchup, standings, and tie narratives update to " +
       "the simulated season. Non-conference games don't move the " +
       "conference standings, but they feed the Non-conf and Overall " +
@@ -1164,6 +1200,85 @@
     }
     updateNote();
     syncFavLabels();
+  })();
+
+  // The card's note promises "hover for the projected margin", and what
+  // hovering actually got you was the ★'s native tooltip — one game, one
+  // model, and only if you found the star. The strip underneath a row says
+  // what all six make of it, and asking for it took a click on a ⋮ the width
+  // of three pixels. So on a pointer that can hover, the row opens its own
+  // strip and takes it back when the pointer leaves.
+  //
+  // Gated on (hover: hover): on a touch screen a hover is a tap that has not
+  // decided what it is yet, and unfolding a panel under the reader's thumb
+  // mid-pick is not a feature. The ⋮ stays for them, and for the keyboard,
+  // which cannot hover either.
+  //
+  // Delayed both ways, and that delay is the whole difference between this
+  // and a flicker: a pointer travelling from week three to the button row
+  // crosses eight games and is asking about none of them.
+  (function bindPeekHover() {
+    var box = document.getElementById("wgames");
+    if (!box || !window.matchMedia) return;
+    if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    var OPEN_MS = 160, SHUT_MS = 120;
+    var openTimer = null, shutTimer = null, shown = null, over = null;
+
+    // The mute a click leaves behind lasts exactly as long as the pointer
+    // stays on the row it was set for.
+    function unmute(id) {
+      var strip = id && peekStrip(id);
+      if (strip) delete strip.dataset.mute;
+    }
+
+    function hideShown() {
+      shutTimer = null;
+      if (!shown) return;
+      var strip = peekStrip(shown);
+      // Pinned by a click, or gone in a rebuild: either way, not ours to shut.
+      if (strip && !strip.dataset.pin) setPeek(shown, false);
+      shown = null;
+    }
+
+    function scheduleShut() {
+      if (openTimer) { clearTimeout(openTimer); openTimer = null; }
+      if (!shown || shutTimer) return;
+      shutTimer = setTimeout(hideShown, SHUT_MS);
+    }
+
+    box.addEventListener("mouseover", function (ev) {
+      // The strip counts as part of the row it belongs to — reading it means
+      // the pointer has left the row, and that must not close it.
+      var el = ev.target.closest && ev.target.closest(".wgame, .wmodels");
+      var id = null;
+      if (el && el.classList.contains("wmodels")) {
+        id = el.getAttribute("data-for");
+      } else if (el) {
+        var pk = el.querySelector(".wpeek");
+        id = pk && pk.getAttribute("data-id");
+      }
+      if (over !== id) { unmute(over); over = id; }
+      if (!id) { scheduleShut(); return; }
+      if (shutTimer) { clearTimeout(shutTimer); shutTimer = null; }
+      if (id === shown) return;
+      if (openTimer) clearTimeout(openTimer);
+      openTimer = setTimeout(function () {
+        openTimer = null;
+        var strip = peekStrip(id);
+        if (!strip || strip.dataset.mute) return;
+        // One at a time. Sixteen strips left open behind a pointer is the
+        // card unfolding itself, which is not what a hover asked for.
+        hideShown();
+        if (isPeekOpen(id)) return;
+        setPeek(id, true);
+        shown = id;
+      }, OPEN_MS);
+    });
+    box.addEventListener("mouseleave", function () {
+      unmute(over);
+      over = null;
+      scheduleShut();
+    });
   })();
 
   urlHold = true;

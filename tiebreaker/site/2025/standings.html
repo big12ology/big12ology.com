@@ -503,8 +503,16 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bi { width:14px; height:14px; flex:0 0 14px; color:var(--accent) }
 .bi-chalk { color:var(--warn) }
 .bi-view { color:var(--accent2) }
-/* Related controls sit closer to each other than to the next group. */
-.wgroup { display:flex; align-items:center; gap:6px; flex-wrap:wrap }
+/* Related controls sit closer to each other than to the next group, and a
+   group is atomic: no shrinking, so a row too narrow to hold everything
+   breaks between groups rather than through the middle of one. Stretch
+   rather than center, because a native <select> lays its text out on its own
+   terms and comes out three pixels shorter than the buttons beside it — a row
+   that reads as assembled rather than designed. Stretching lets the tallest
+   control set the height and the rest meet it. */
+.wgroup { display:flex; align-items:stretch; gap:6px; flex:0 0 auto }
+.wgroup > label { display:flex; align-items:center }
+@media (max-width:520px) { .wgroup { flex-wrap:wrap; flex-shrink:1 } }
 
 /* ---- how the season moved ---- */
 .bumpwrap { overflow-x:auto }
