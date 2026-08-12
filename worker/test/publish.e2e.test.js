@@ -67,9 +67,19 @@ async function serve(env) {
   return { server, seen, base: `http://127.0.0.1:${server.address().port}` };
 }
 
+/**
+ * Run it the way a workflow does, which is NOT `bash the-script`.
+ *
+ * pages.yml and scores.yml both invoke it as `tools/publish-scores.sh`, so the
+ * executable bit is part of the contract. This test used to prepend `bash`,
+ * which works on a file mode 100644 — and that is exactly how the first
+ * version shipped: green here, "Permission denied" and exit 126 in the run,
+ * hidden behind continue-on-error. Executing it directly is what makes the
+ * mode something the suite can fail on.
+ */
 function run(script, args, env) {
   return new Promise((ok) => {
-    execFile("bash", [script, ...args], { env: { ...process.env, ...env } },
+    execFile(script, args, { env: { ...process.env, ...env } },
              (err, stdout, stderr) => ok({ code: err ? err.code || 1 : 0,
                                            stdout, stderr }));
   });

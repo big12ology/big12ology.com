@@ -136,8 +136,23 @@ jobs:
           # again. Committed, one run can see what the last one learned — so
           # a commit happens exactly when a score changed, and a quiet week
           # produces neither a commit nor a call.
-          git add tiebreaker/forecasts tiebreaker/pickem \
-                  tiebreaker/data/games_*.json
+          # ONE AT A TIME, AND ONLY WHAT EXISTS. These were one `git add` with
+          # three pathspecs, and tiebreaker/pickem does not exist until a slate
+          # has been published — so out of season git failed the whole
+          # invocation with "pathspec did not match any files", staged NOTHING,
+          # and took the step down with it under `bash -e`. continue-on-error
+          # then turned that into a green run.
+          #
+          # The cost was not the missing slate directory, which had nothing in
+          # it. It was games_<year>.json, which exists and does change: it is
+          # what lets one run see what the last one learned, and without it
+          # every run starts from the same committed copy, sees the same games
+          # still missing a result, and asks CFBD again. The affordability
+          # argument this whole schedule rests on was quietly not holding.
+          for p in tiebreaker/forecasts tiebreaker/pickem \
+                   tiebreaker/data/games_*.json; do
+            [ -e "$p" ] && git add "$p"
+          done
           if git diff --cached --quiet; then
             echo "Forecast and slate unchanged."
           else
