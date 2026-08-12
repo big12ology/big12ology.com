@@ -2141,6 +2141,7 @@ def build_subpage(title, active, body, year, matchcard,
 <link rel=stylesheet href="{BASE}{asset_v("brand.css")}">
 <script defer src="{BASE}{asset_v("theme.js")}"></script>
 <script src="{BASE}{asset_v("state.js")}"></script>
+<script src="{BASE}{asset_v("metrics.js")}"></script>
 <script defer src="{BASE}{asset_v("cards.js")}"></script>
 {rss}
 <style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
@@ -3439,6 +3440,7 @@ def render(year, games):
         v_theme=asset_v("theme.js"),
         v_cards=asset_v("cards.js"),
         v_state=asset_v("state.js"),
+        v_metrics=asset_v("metrics.js"),
         v_app=asset_v("app.js"),
         canon=(f"{site_url}lab.html" if year == LIVE_YEAR
                else f"{site_url}{year}/lab.html"),
@@ -3535,6 +3537,7 @@ TEMPLATE = """<!doctype html>
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
 <script src="{base}{v_state}"></script>
+<script src="{base}{v_metrics}"></script>
 <script defer src="{base}{v_cards}"></script>
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href={base}feed.xml>
 <style>
@@ -3892,6 +3895,7 @@ EXPLAINER = """<!doctype html>
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
 <script src="{base}{v_state}"></script>
+<script src="{base}{v_metrics}"></script>
 <script defer src="{base}{v_cards}"></script>
 <meta property=og:type content=article>
 <meta property=og:site_name content=Big12ology>
@@ -4176,10 +4180,51 @@ def build_explainer(year, matchcard, outdir=None):
             v_theme=asset_v("theme.js"),
         v_cards=asset_v("cards.js"),
         v_state=asset_v("state.js"),
+        v_metrics=asset_v("metrics.js"),
             topbar=topbar("tiebreaker", year, BASE),
             footer=footer(),
             top=tracker_top(year, "how", matchcard, page="how.html")))
     print(f"built {out}")
+
+
+# A game is expected to be final about three and a half hours after kickoff.
+# Before that there is nothing to learn; long after it, a game still without a
+# result is not coming back and asking again every twenty minutes for the rest
+# of the season is how a quota disappears.
+SETTLES_AFTER = datetime.timedelta(hours=3, minutes=30)
+GIVE_UP_AFTER = datetime.timedelta(days=4)
+
+
+def pending_results(games, now=None):
+    """Games that should have finished by now and have no result on file.
+
+    THIS IS WHAT MAKES A RUN FREE. The scores file changes only when a game
+    ends, so a build that already holds every finished result has nothing to
+    ask the provider — and most builds are exactly that. Hourly all weekend
+    plus a daily catch-all is ~300 calls a month spent learning that nothing
+    happened.
+
+    Reading it the other way round is what makes it safe: this answers "could
+    the answer have changed", not "has it". A kickoff we do not know
+    (start_tbd carries a placeholder hour) counts as pending once that
+    placeholder passes, which errs toward asking. Erring toward asking costs
+    one call; erring toward silence costs a wrong scoreboard.
+    """
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    due = []
+    for g in games:
+        if g.get("completed") and g.get("home_points") is not None:
+            continue
+        start = g.get("start")
+        if not start:
+            continue
+        try:
+            t = datetime.datetime.fromisoformat(start.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if t + SETTLES_AFTER <= now <= t + GIVE_UP_AFTER:
+            due.append(g)
+    return due
 
 
 def load_games(year, refetch=False, refresh=False):
@@ -4193,6 +4238,25 @@ def load_games(year, refetch=False, refresh=False):
     they cannot change, and they are in the repo."""
     path = os.path.join(HERE, "data", f"games_{year}.json")
     if refetch:
+        # ASK ONLY WHEN THE ANSWER COULD HAVE MOVED. --refresh is exempt: the
+        # weekly run also pulls ratings and lines, which change on their own
+        # schedule rather than when a game ends, and it doubles as the
+        # guaranteed periodic full refresh that catches a correction to a
+        # game this would otherwise have stopped asking about.
+        if not refresh and os.path.exists(path):
+            try:
+                have = json.load(open(path))
+            except (OSError, ValueError):
+                have = None
+            if have is not None:
+                due = pending_results(have)
+                if not due:
+                    print(f"{year}: no game has finished since the last "
+                          f"fetch — no call made")
+                    return fetcher.mark_ccg(have)
+                print(f"{year}: {len(due)} game(s) due a result "
+                      f"({', '.join(g['away'] + ' at ' + g['home'] for g in due[:3])}"
+                      f"{'...' if len(due) > 3 else ''}) — fetching")
         try:
             # Explicit: --fetch is a request for fresh scores, and
             # fetch_season now reads its cache unless told otherwise.

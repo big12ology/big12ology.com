@@ -8,6 +8,7 @@
 // to any page on the internet.
 
 import * as api from "./api.js";
+import * as events from "./events.js";
 import * as oauth from "./oauth.js";
 import * as ratelimit from "./ratelimit.js";
 import * as session from "./session.js";
@@ -227,6 +228,22 @@ async function handle(req, env, ctx) {
 
   // ------------------------------------------------------ public, no session
 
+  // Counted, not identified. This route sits above every line that reads a
+  // session on purpose: the browser sends the session cookie with the beacon
+  // because it is same-origin and cannot be told otherwise, and the answer to
+  // that is that nothing here ever looks at it. See worker/src/events.js.
+  //
+  // The same CSRF check as every other write, for a different reason than the
+  // others. There is nothing to forge into — the endpoint has no side effect
+  // worth causing — but the Origin check is what keeps somebody else's page
+  // from posting counts into our numbers, and a measurement anybody can write
+  // to is not a measurement.
+  if (path === "/api/e" && req.method === "POST") {
+    if (!csrfOk(req, env)) return new Response(null, { status: 204 });
+    if (events.burst(clientIp(req))) events.record(env, req, await body(req));
+    return new Response(null, { status: 204 });
+  }
+
   if (path === "/api/health") return api.getHealth(env);
   if (path === "/api/season/current") return api.getSeasonCurrent(env);
   if (path === "/api/history" && req.method === "GET") {
@@ -335,6 +352,51 @@ async function handle(req, env, ctx) {
   return fail("not_found", 404);
 }
 
+/**
+ * Ask GitHub to build and deploy the site.
+ *
+ * THE CLOCK PROBLEM, AND WHY THIS EXISTS. GitHub's own scheduled workflows
+ * are best-effort, and measured on this repo they are worse than that phrase
+ * suggests: a median 19 minutes late, 130 at the 90th percentile, 210 at
+ * worst, and one slot in ten never fires at all. Cloudflare fires this
+ * Worker on a real schedule, so the punctual thing triggers the unpunctual
+ * one and GitHub stays what it is good at — building.
+ *
+ * BELT AND BRACES. pages.yml keeps its own crons. If this token expires, or
+ * the Worker breaks, or Cloudflare has a bad morning, the site still updates
+ * on GitHub's sloppy schedule instead of not at all. A duplicate build costs
+ * nothing now that build.py asks the provider nothing unless a game has
+ * finished, which is what makes redundant triggers affordable.
+ *
+ * Fire and forget, and never allowed to break scoring: a deploy that did not
+ * get triggered is a stale page, and throwing here would also skip the
+ * grading below it, which is worse.
+ */
+async function triggerDeploy(env) {
+  if (!env.GITHUB_DISPATCH_TOKEN || !env.GITHUB_REPO) return "not configured";
+  try {
+    const r = await fetch(
+      `https://api.github.com/repos/${env.GITHUB_REPO}` +
+      `/actions/workflows/pages.yml/dispatches`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${env.GITHUB_DISPATCH_TOKEN}`,
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+          // GitHub rejects an API call with no User-Agent.
+          "User-Agent": "big12ology-worker",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ref: "main", inputs: { deploy: "true" } }),
+      });
+    return r.status === 204 ? "dispatched" : `github ${r.status}`;
+  } catch (e) {
+    return `failed: ${e && (e.message || e)}`;
+  }
+}
+
+
 export default {
   async fetch(req, env, ctx) {
     try {
@@ -356,6 +418,23 @@ export default {
    */
   async scheduled(event, env, ctx) {
     const season = Number(env.SEASON || new Date().getUTCFullYear());
+
+    // WHAT TIME CLOUDFLARE ACTUALLY THINKS IT IS. event.scheduledTime is the
+    // slot this run was meant to occupy; Date.now() is when it started. The
+    // difference is this platform's punctuality, and writing it down is the
+    // only way to know whether moving the clock here was worth doing —
+    // GitHub's drift was measurable from its run history, and this has no
+    // equivalent until something records it.
+    const drift = Math.round((Date.now() - event.scheduledTime) / 1000);
+    console.log(`cron ${event.cron} fired ${drift}s after its slot`);
+
+    // The deploy trigger runs on its own schedule and does not wait for the
+    // scoring below it: publishing scores and grading them are two jobs, and
+    // the grading sweep deliberately runs half an hour behind the publish.
+    if (env.DEPLOY_CRONS && env.DEPLOY_CRONS.split("|").includes(event.cron)) {
+      console.log(`deploy trigger: ${await triggerDeploy(env)}`);
+    }
+
     try {
       // Walk forward from week one until the publisher runs out.
       //

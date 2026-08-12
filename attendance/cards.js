@@ -97,6 +97,13 @@
           if (on && at !== -1) closed.splice(at, 1);
           else if (!on && at === -1) closed.push(key);
           save(closed);
+          // Which way a card is thrown, and nothing about which card. The key
+          // above is a heading slug or an element id and would be perfectly
+          // good data — it is left out because the question this answers is
+          // whether the pages are too long, and that is answered by the count.
+          if (window.B12Metrics) {
+            window.B12Metrics.send("card", on ? "expand" : "collapse");
+          }
         });
       })(cards[i]);
     }

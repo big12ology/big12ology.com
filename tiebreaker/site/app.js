@@ -28,6 +28,30 @@
     return (model && payload.favorites[model]) || {};
   }
 
+  // ------------------------------------------------------------- counted use
+  //
+  // Whether anybody uses this thing. The Lab is the largest piece of client
+  // code on the domain and, until there was somewhere to put this, a pageview
+  // was the only evidence it existed — a number that looks exactly the same
+  // whether readers rewrite the season or bounce off the standings table.
+  //
+  // Nothing here identifies anybody and nothing is stored; see metrics.js. The
+  // scenario itself never leaves the page: it lives in the hash, and the hash
+  // is not in the Referer the beacon carries, which is what makes "was a
+  // shared link opened" answerable without anybody learning what was in it.
+  var M = window.B12Metrics;
+  function count(what, value) { if (M) M.send("whatif", what, value); }
+
+  // Individual picks are tallied rather than sent, because a reader running a
+  // whole season clicks sixty times and sixty events is sixty times the
+  // traffic for a number that only means anything summed.
+  var clicked = 0;
+  if (M) {
+    M.atEnd(function () {
+      if (clicked) count("pick", clicked);
+    });
+  }
+
   // ------------------------------------------------------- the shareable URL
   //
   // A what-if belongs in the address bar, not in storage. "Here is how BYU
@@ -885,6 +909,7 @@
         // A pick that agrees with the real result is not a what-if.
         var g = byId[id];
         if (g && picks[id] === actualWinner(g)) delete picks[id];
+        clicked += 1;
         refresh();
       };
     });
@@ -996,9 +1021,11 @@
     var clearBtn = document.getElementById("w-clear");
     var sel = document.getElementById("w-model");
     if (favBtn) {
-      favBtn.onclick = function () { applyFavs(visible()); };
+      favBtn.onclick = function () { count("fill"); applyFavs(visible()); };
     }
-    if (clearBtn) clearBtn.onclick = function () { picks = {}; refresh(); };
+    if (clearBtn) {
+      clearBtn.onclick = function () { count("clear"); picks = {}; refresh(); };
+    }
     // One switch for all thirteen weeks. Only the next week opens on load,
     // which is right for picking one game and wrong for the reader who wants
     // to run the whole season in one pass — and opening twelve summaries by
@@ -1008,6 +1035,11 @@
     if (linkBtn) {
       linkBtn.onclick = function () {
         syncUrl();
+        // Counted on the press, not on the copy succeeding. Somebody who
+        // reached for the button wanted to send this to a person, and whether
+        // the clipboard permission was granted is a different question from
+        // whether the feature is wanted.
+        count("share");
         var url = location.href;
         var done = function (ok) {
           linkBtn.textContent = ok ? "Link copied" : "Press \u2318C to copy";
@@ -1063,6 +1095,11 @@
     if (sel) {
       sel.onchange = function () {
         model = sel.value;
+        // Which model, deliberately not recorded. The question is whether the
+        // selector is used at all — it is the argument for maintaining five
+        // rating systems — and naming the choice would put a preference on a
+        // record that is otherwise about actions only.
+        count("model");
         updateNote();
         syncFavLabels();
         renderPickList();
@@ -1074,8 +1111,17 @@
   })();
 
   urlHold = true;
+  var arrivedWithScenario = !!(window.B12State && B12State.hashRead(URL_KEY));
   var urlProblem = restoreFromUrl();
   urlHold = false;
+  // The one measurement that justifies the sharing feature, and the one that
+  // says when it is broken. `stale` means a link arrived and the page refused
+  // it — a schedule that moved under a scenario somebody sent last week. That
+  // failure is invisible from here otherwise: the sender sees a working link
+  // and the recipient sees a polite paragraph, and nobody reports it.
+  if (arrivedWithScenario && M) {
+    M.send("scenario", urlProblem ? "stale" : "opened");
+  }
   if (urlProblem) {
     var warn = document.createElement("p");
     warn.className = "note wurlwarn";

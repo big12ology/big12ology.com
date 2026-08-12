@@ -11,6 +11,7 @@
 <link rel=stylesheet href="brand.css?v=5">
 <script defer src="theme.js?v=1"></script>
 <script src="state.js?v=1"></script>
+<script src="metrics.js?v=1"></script>
 <script defer src="cards.js?v=1"></script>
 <style>
 :root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#6b7280;
@@ -60,8 +61,10 @@ and only if you choose to sign in.</p>
 <h2>The short version</h2>
 <ul>
   <li>No ads, no trackers, nothing sold to anybody, ever.</li>
-  <li>The tiebreaker, the schedule and the attendance tracker collect nothing
-  and set no cookies. Read them signed out and there is nothing to say.</li>
+  <li>The tiebreaker, the schedule and the attendance tracker have no accounts
+  and set no cookies. They do count what gets used &mdash; anonymously, with
+  no identifier of any kind, so the counts cannot be tied to you or to each
+  other. <a href="#analytics">The details are below</a>.</li>
   <li>If you sign in to the pick&rsquo;em: one cookie, a display name you
   choose, and <b>we never receive your email address, your real name or your
   profile picture</b> &mdash; not from Google, not from GitHub, not at all.</li>
@@ -70,7 +73,9 @@ and only if you choose to sign in.</p>
 <h2>What the other sections collect</h2>
 <ul>
   <li><b>Nothing you type.</b> On the tiebreaker, the schedule and the
-  attendance tracker there are no forms, sign-ups, or comment boxes.</li>
+  attendance tracker there are no forms, sign-ups, or comment boxes. What we
+  do count is which features get used, with no identifier attached &mdash;
+  <a href="#analytics">Analytics</a> describes exactly what is sent.</li>
   <li><b>No cookies there.</b> Interactive features (like the tiebreaker what-if
   simulator) run entirely in your browser&rsquo;s memory and forget everything
   when you close the tab.</li>
@@ -121,8 +126,10 @@ started, and it is deleted the moment you land.</p>
 oversight.</b> Both cookies are strictly necessary to a service you asked for
 by pressing a sign-in button, which is the one category that does not require
 consent. We do not set any cookie for analytics, advertising or measurement,
-so there is nothing for a banner to ask you about. If that ever changes, this
-page changes first.</p>
+and the counting described under <a href="#analytics">Analytics</a> stores
+nothing on your device at all &mdash; no cookie, no local storage, no
+identifier &mdash; which is precisely why there is nothing for a banner to ask
+you about. If that ever changes, this page changes first.</p>
 <p>One honest limitation: signing out revokes your session immediately in our
 database, but the cached copy at Cloudflare&rsquo;s edge can take up to about a
 minute to catch up. Signing out on a shared computer is effective; it is not
@@ -191,7 +198,9 @@ believe a child has created an account, write to us and we will remove it.</p>
 <!-- PICKEM-OFF -->
 <p>Big12ology is a personal fan project &mdash; static websites about Big 12
 football. The short version: no accounts, no cookies, no ads, no selling of
-anything, and as close to no data as a website can get.</p>
+anything, and as close to no data as a website can get. We count which
+features get used, anonymously and with no identifier of any kind;
+<a href="#analytics">Analytics</a> says exactly what that means.</p>
 
 <h2>What these sites collect</h2>
 <ul>
@@ -236,13 +245,55 @@ a processor handling your account and your picks on our behalf, not merely a
 pipe.</p>
 <!-- /PICKEM-ONLY -->
 
-<h2>Analytics</h2>
-<p>These sites use (or may use) <a
+<h2 id=analytics>Analytics</h2>
+<p>Two things count what happens here, and neither of them counts
+<em>you</em>.</p>
+<p><b>Page views</b> come from <a
 href="https://www.cloudflare.com/web-analytics/">Cloudflare Web
 Analytics</a>, a privacy-first measurement tool: no cookies, no persistent
 identifiers, no fingerprinting, and no cross-site tracking. It gives us
 aggregate counts (page views, referrers, countries) and nothing about you as
 an individual.</p>
+<p><b>What happens on a page</b> is counted by us, on our own server, because
+a page view cannot tell us whether anybody actually used the thing the page is
+for. When you close a tab, your browser sends us a short list along these
+lines: <i>a page was read to 75% for 40 seconds; the what-if simulator was
+given 12 picks; a card was collapsed.</i> That is the whole of it. There is no
+identifier in that message &mdash; not a cookie, not a number stored in your
+browser, not one generated for the occasion &mdash; so two visits cannot be
+told apart from one, and nothing can be followed from one day to the next.
+We built it that way on purpose, and the honest consequence is that we cannot
+answer questions like &ldquo;how many people came back&rdquo; about anybody
+who is not signed in. We would rather not know.</p>
+<p>Four specifics, because vagueness here is how a promise stops meaning
+anything:</p>
+<ul>
+  <li><b>Which page it was, and nothing more of the address.</b> Each message
+  is filed under the page it came from &mdash; <code>/tiebreaker/lab.html</code>
+  &mdash; taken from the ordinary referring-page header your browser already
+  sends. Anything after a <code>?</code> is discarded, and any path that is not
+  a plain page on this site is recorded as the word <i>other</i> rather than
+  stored.</li>
+  <li><b>Your what-if picks are never sent.</b> They live after the
+  <code>#</code> in the address bar, and the part after a <code>#</code> is not
+  transmitted to a server &mdash; it is not in the header just described and it
+  is not in the message. That is exactly why we can tell that a shared scenario
+  was opened without ever learning what was in it.</li>
+  <li><b>Nothing free-form is accepted.</b> The server matches every message
+  against a short fixed list of permitted words &mdash; five kinds of event and
+  fifteen details between them &mdash; and throws away anything else, so there
+  is no field a search term, a name or a scenario could travel in.</li>
+  <li><b>Global Privacy Control is honored</b>, as is the older Do Not Track
+  header. Send either and nothing is counted at all. Every feature still
+  works; we simply do not learn that you used it.</li>
+</ul>
+<p>These counts are kept for 90 days and then expire on their own.
+<!-- PICKEM-ONLY -->
+They are never joined to your pool account, and they could not be: there is no
+identifier in them to join on.
+<!-- /PICKEM-ONLY -->
+There is no row belonging to you to ask us to delete, because there is no row
+that belongs to anybody.</p>
 
 <h2>External links and data sources</h2>
 <p>Links to other sites (GitHub, collegefootballdata.com, big12sports.com,
