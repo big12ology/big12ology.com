@@ -1901,14 +1901,23 @@ h3.wkhead { font-size:var(--t-row); text-transform:uppercase; letter-spacing:.05
   /* The header spans, the way it did when this was a grid. */
   main:has(#gamehead) > .gameback,
   main:has(#gamehead) > #gamehead { column-span:all }
-  /* And the links row, at the other end. A multi-column flow fills in
-     source order and cannot be told where to put a given card, so on a page
-     with three cards the short one landed underneath the tall one — the
-     market alone in a column, the models and the links stacked beside it.
-     Spanning both takes it out of the balancing entirely: it reads as the
-     foot of the page, which is what it is, and the two columns above it hold
-     only the cards that are actually being compared. */
-  main:has(#gamehead) > #elsewhere { column-span:all; margin-top:0 }
+  /* THE LINKS CARD DOES NOT SPAN, and used to. The argument for spanning was
+     balancing: a multi-column flow fills in source order and cannot be told
+     where to put a given card, so a short card could land under a tall one
+     and leave a column looking half-used. Taking it out of the flow entirely
+     avoided that.
+
+     What it bought instead was worse to look at. Every other card on the page
+     is one column wide; this one became a 907px band holding a single 40px
+     link, with the rest of the width empty. It was the only content card that
+     did not match its neighbors, and that is what a reader notices — not the
+     column balance, which they have nothing to compare against.
+
+     So it flows like everything else. Checked on both shapes this page comes
+     in: a non-conference game with three content cards, where it settles under
+     the models card, and a conference game with the series card as well, where
+     it settles under that. Both balance. The header above still spans, because
+     a header genuinely is the full width of the page. */
 }
 .gameback { margin:2px 0 12px; font-size:var(--t-row) }
 .gameback a { color:var(--accent); text-decoration:none }
