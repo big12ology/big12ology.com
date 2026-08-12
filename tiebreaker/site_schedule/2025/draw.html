@@ -17,7 +17,7 @@
 <link rel=icon type=image/png sizes=32x32 href="../../tiebreaker/favicon-32.png">
 <link rel=apple-touch-icon href="../../tiebreaker/favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
-<link rel=stylesheet href="../../tiebreaker/brand.css?v=82265aa0">
+<link rel=stylesheet href="../../tiebreaker/brand.css?v=b11cbb7b">
 <script defer src="../../tiebreaker/theme.js?v=9a8f53fd"></script>
 <link rel=alternate type=application/rss+xml href=../../tiebreaker/feed.xml>
 <style>
@@ -61,6 +61,16 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
   border-radius:10px; padding:16px 18px }
 .card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
   letter-spacing:.06em; color:var(--dim) }
+/* A link written into a sentence, rather than one of the components that
+   carries its own colour. There was no rule for these, so the browser's
+   #0000EE and its underline were shipping on the two prose pages in this
+   section — the only blue on the domain. The Rules page has always said
+   accent2 for exactly this; so does the hub. Classless on purpose: every
+   component link in this section carries a class, and a plain descendant
+   selector would out-specify all of them. */
+.card p a:not([class]), .card li a:not([class]) { color:var(--accent2);
+  text-decoration:underline; text-underline-offset:2px;
+  text-decoration-thickness:1px }
 .dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
 /* Several marks carry a white plate inside the artwork itself, so on a dark
    page they read as stray white cards. CSS cannot recolour what is baked

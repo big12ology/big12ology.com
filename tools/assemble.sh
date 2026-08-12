@@ -271,6 +271,19 @@ tok = {
     "HUB_CCG_B": e(ccg[1]["team"]) if len(ccg) > 1 else "",
     "HUB_CCG_A_PCT": f"{round(ccg[0]['p'] * 100)}%" if len(ccg) > 0 else "",
     "HUB_CCG_B_PCT": f"{round(ccg[1]['p'] * 100)}%" if len(ccg) > 1 else "",
+    # The same projection again, on the tiebreaker card, because the card is
+    # what somebody reads when deciding whether that section is worth a
+    # click and "projected championship matchup" is the thing it does.
+    #
+    # A whole element or nothing at all, rather than a token inside a
+    # sentence: before the first simulation there are no two teams to name,
+    # and a half-filled line reading "vs" with two blanks either side is
+    # worse than no line. The card's other stat row stands on its own.
+    "HUB_CCG_CARD": (
+        f"<p class=stat>Projected title game: <b>{e(ccg[0]['team'])}</b> vs "
+        f"<b>{e(ccg[1]['team'])}</b> · {round(ccg[0]['p'] * 100)}% and "
+        f"{round(ccg[1]['p'] * 100)}% to get there</p>"
+        if len(ccg) > 1 else ""),
     "HUB_SEASON": str(hub.get("season") or ""),
     "HUB_TEAMS": str(counts.get("teams") or ""),
     "HUB_GAMES": str(counts.get("games") or ""),
@@ -287,56 +300,18 @@ PY
   echo "hub numbers: next kickoff and the projected title game"
 fi
 
-# --- the facts, as crawlable text -----------------------------------------
-# The hub rotates one fact per card from JavaScript, which is right for the
-# hub and useless as content: a crawler sees an empty <p>, and even a renderer
-# that runs the script sees one of three hundred sentences chosen at random.
+# The facts were once also dumped out as a static "in figures" list at the
+# foot of three section pages, filled here from facts.json. They are gone:
+# 345 one-line sentences stacked in two columns buried the page they were
+# meant to support, and the archived-season copies of those pages were served
+# the live season's list because facts.json has one set of sections and no
+# year. The facts remain where they read as facts — one at a time, in the hub
+# rotator — and the generator that produces them is untouched.
 #
-# So every fact is also written out statically, on the section page it belongs
-# to. A page carrying {{FACTS:attendance}} gets the attendance list. That is
-# the whole mechanism, and it works the same for the pages build.py generates
-# and the hand-written one under /attendance/, which is why it lives here
-# rather than in either.
-#
-# Dated facts are included with their date spelled out. On the hub a dated
-# fact is only true on its day; in a list headed "in figures" it is a dated
-# record, and reads as one.
-FACTS_JSON="$DIST/tiebreaker/facts.json"
-if [ -f "$FACTS_JSON" ]; then
-  while IFS= read -r page; do
-    python3 - "$page" "$FACTS_JSON" <<'PY'
-import html, json, re, sys
-
-page, data = sys.argv[1], sys.argv[2]
-facts = json.load(open(data, encoding="utf-8"))["sections"]
-MONTH = ["", "January", "February", "March", "April", "May", "June", "July",
-         "August", "September", "October", "November", "December"]
-
-
-def when(on):
-    m, d = int(on[:2]), int(on[3:])
-    return f"{MONTH[m]} {d}: "
-
-
-def block(name):
-    rows = facts.get(name) or []
-    if not rows:
-        return ""
-    items = "".join(
-        "<li>" + (when(f["on"]) if f.get("on") else "")
-        + html.escape(f["t"]) + "</li>"
-        for f in sorted(rows, key=lambda f: (f.get("on") or "", f["t"])))
-    return f'<ul class=figures>{items}</ul>'
-
-
-s = open(page, encoding="utf-8").read()
-s = re.sub(r"\{\{FACTS:([a-z]+)\}\}", lambda m: block(m.group(1)), s)
-open(page, "w", encoding="utf-8").write(s)
-PY
-  done < <(grep -rl '{{FACTS:' "$DIST" --include='*.html' || true)
-  n=$(grep -rl 'class=figures' "$DIST" --include='*.html' 2>/dev/null | wc -l)
-  echo "facts rendered into ${n// /} page(s)"
-fi
+# There is no metadata substitute worth adding: keywords meta is ignored,
+# description is one truncated sentence, and hiding the list behind CSS is a
+# spam signal rather than a workaround. The pages carry real prose and real
+# JSON-LD, which is the part that was ever doing the work.
 
 # A missing page or a stale asset has shipped silently in this project
 # before. Both are cheap to catch here and expensive to notice in the wild.
@@ -352,6 +327,9 @@ while IFS= read -r page; do
   echo "  UNSTAMPED  ${page#"$DIST"/}"; fail=1
 done < <(grep -rlE '\{\{(BUILD_STAMP|HUB_[A-Z_]+|FACTS:[a-z]+)\}\}' "$DIST" \
            --include='*.html' || true)
+# FACTS: stays in that pattern deliberately. Nothing fills it any more, so a
+# token left behind in a hand-written page is now a build failure rather than
+# a pair of braces in the middle of the attendance page.
 
 for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          brand.css tokens.css theme.js \

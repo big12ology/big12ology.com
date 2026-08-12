@@ -1,6 +1,6 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=39";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=39";
-import { gameTooltipHTML } from "./gametip.js?v=39";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=43";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=43";
+import { gameTooltipHTML, setPreviewIndex } from "./gametip.js?v=43";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -385,7 +385,25 @@ function render(teamsData, season) {
   $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records). Click a column header to sort; game and season columns cycle raw attendance and percent full, descending then ascending. Team and conference marks via Wikimedia Commons (provenance in the repo); trademarks belong to their owners. An asterisk marks a published capacity this tracker does not trust as a denominator. Kansas State is the only one carrying it: the athletic department lists an official capacity of 50,000 that has not moved through seven stadium projects since 2013, while the same page claims a largest crowd of 53,811 — and K-State clears 100 percent in 72 of its 89 home games here. That gap is a stale published number, not proof of what any crowd actually was; several schools also sell standing room, so figures above 100 percent are expected league-wide.`;
 }
 
+// Which of these games the schedule section has a preview page for, so a
+// tooltip can offer ours instead of sending the reader out to ESPN. Written
+// by the schedule build for the live season only.
+//
+// Best-effort by design and deliberately not awaited: this tracker is served
+// on its own as well as under big12ology.com, the file is another section's,
+// and a tooltip that has to wait on a second origin's JSON is a worse tooltip
+// than one that links to ESPN. no-cache rather than no-store — it is 6KB and
+// revalidates in one round trip, and the answer changes when the season rolls
+// over, which is exactly the case a long-lived cached copy gets wrong.
+function loadPreviewIndex() {
+  fetch("/schedule/game/previews.json", { cache: "no-cache" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => d && setPreviewIndex(d.games))
+    .catch(() => {});
+}
+
 async function main() {
+  loadPreviewIndex();
   const [index, teamsData] = await Promise.all([
     loadJSON("data/seasons/index.json"),
     loadJSON("data/teams.json"),

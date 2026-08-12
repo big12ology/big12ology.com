@@ -17,7 +17,7 @@
 <link rel=icon type=image/png sizes=32x32 href="../../tiebreaker/favicon-32.png">
 <link rel=apple-touch-icon href="../../tiebreaker/favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
-<link rel=stylesheet href="../../tiebreaker/brand.css?v=82265aa0">
+<link rel=stylesheet href="../../tiebreaker/brand.css?v=b11cbb7b">
 <script defer src="../../tiebreaker/theme.js?v=9a8f53fd"></script>
 <link rel=alternate type=application/rss+xml href=../../tiebreaker/feed.xml>
 <style>
@@ -61,6 +61,16 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
   border-radius:10px; padding:16px 18px }
 .card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
   letter-spacing:.06em; color:var(--dim) }
+/* A link written into a sentence, rather than one of the components that
+   carries its own colour. There was no rule for these, so the browser's
+   #0000EE and its underline were shipping on the two prose pages in this
+   section — the only blue on the domain. The Rules page has always said
+   accent2 for exactly this; so does the hub. Classless on purpose: every
+   component link in this section carries a class, and a plain descendant
+   selector would out-specify all of them. */
+.card p a:not([class]), .card li a:not([class]) { color:var(--accent2);
+  text-decoration:underline; text-underline-offset:2px;
+  text-decoration-thickness:1px }
 .dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
 /* Several marks carry a white plate inside the artwork itself, so on a dark
    page they read as stray white cards. CSS cannot recolour what is baked
@@ -399,7 +409,45 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../../tiebreaker/scrollcue.js?v=5fef00f1"></script><script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","awayTeam":{"@type":"SportsTeam","name":"UCF"},"competitor":[{"@type":"SportsTeam","name":"UCF"},{"@type":"SportsTeam","name":"Houston"}],"eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","homeTeam":{"@type":"SportsTeam","name":"Houston"},"location":{"@type":"Place","name":"TDECU Stadium"},"name":"UCF at Houston","sport":"American Football","startDate":"2026-10-03","url":"https://big12ology.com/schedule/game/401856819-ucf-at-houston.html"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://big12ology.com/","name":"Big12ology","position":1},{"@type":"ListItem","item":"https://big12ology.com/schedule/","name":"2026 schedule","position":2},{"@type":"ListItem","name":"UCF at Houston","position":3}]}</script></head><body>
+<script defer src="../../tiebreaker/scrollcue.js?v=5fef00f1"></script><script>
+(function () {
+  // The server writes the kickoff in the venue's own zone, because that is
+  // how schools publish it and how a reader checks this page against
+  // theirs. This adds the reader's own clock beside it, and only when the
+  // two actually differ — telling somebody in Tucson that 7pm MST is 7pm
+  // their time is noise.
+  //
+  // It sits in <head>, so the rows do not exist yet; an inline script
+  // cannot be deferred, and waiting for the parser is the whole job.
+  function localize() {
+    var mine;
+    try { mine = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
+    document.querySelectorAll("time[data-kick]").forEach(function (el) {
+      var d = new Date(el.getAttribute("datetime"));
+      if (isNaN(d)) return;
+      var venue = el.getAttribute("data-tz");
+      if (!mine || !venue) return;
+      var fmt = function (tz) {
+        return new Intl.DateTimeFormat([], {
+          hour: "numeric", minute: "2-digit", timeZone: tz
+        }).format(d);
+      };
+      var here, there;
+      try { here = fmt(mine); there = fmt(venue); } catch (e) { return; }
+      if (here === there) return;
+      var span = document.createElement("span");
+      span.className = "yourtime";
+      span.textContent = " (" + here + " your time)";
+      el.insertAdjacentElement("afterend", span);
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", localize);
+  } else {
+    localize();
+  }
+})();
+</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","awayTeam":{"@type":"SportsTeam","name":"UCF"},"competitor":[{"@type":"SportsTeam","name":"UCF"},{"@type":"SportsTeam","name":"Houston"}],"eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","homeTeam":{"@type":"SportsTeam","name":"Houston"},"location":{"@type":"Place","name":"TDECU Stadium"},"name":"UCF at Houston","sport":"American Football","startDate":"2026-10-03","url":"https://big12ology.com/schedule/game/401856819-ucf-at-houston.html"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://big12ology.com/","name":"Big12ology","position":1},{"@type":"ListItem","item":"https://big12ology.com/schedule/","name":"2026 schedule","position":2},{"@type":"ListItem","name":"UCF at Houston","position":3}]}</script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a class=on href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a href="/pools/">Pools</a><span class=b12-right><span class=b12-theme></span></span></nav>
 <header class=b12-head>

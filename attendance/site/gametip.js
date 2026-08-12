@@ -8,6 +8,17 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
 
+// Which games have a preview page of ours, id -> filename, as published by
+// the schedule build at /schedule/game/previews.json. Empty until app.js
+// fills it, and empty for good if the fetch fails or this tracker is served
+// on its own — in which case a game links straight out to ESPN, exactly as
+// it did before there were preview pages to link to.
+let previews = {};
+
+export function setPreviewIndex(map) {
+  previews = map || {};
+}
+
 // Prose dates carry no year — the season is already on screen (selector,
 // chart title, or the weekLabel the caller passes for multi-season views).
 export function fmtDate(iso) {
@@ -81,11 +92,22 @@ export function gameTooltipHTML({ game, weekLabel, wk, cap, prefix }) {
 
   if (game.espnId) {
     const played = game.attendance != null || game.pointsFor != null;
-    const link = played
-      ? `https://www.espn.com/college-football/boxscore/_/gameId/${game.espnId}`
-      : `https://www.espn.com/college-football/game/_/gameId/${game.espnId}`;
-    lines.push(`<a href="${link}" target="_blank" rel="noopener">` +
-      `${played ? "Box score" : "Game preview"} ↗</a>`);
+    const ours = !played && previews[game.espnId];
+    if (ours) {
+      // Our own page for a game that has not happened: the kickoff, the
+      // line, what four rating models make of it, and the way out to ESPN
+      // among the rest. Sending a reader straight to ESPN from here skipped
+      // all of it. Same tab, because it is the same site.
+      lines.push(`<a href="/schedule/game/${ours}">Game preview →</a>`);
+    } else {
+      // A finished game, or a season with no game pages: the box score is
+      // what a reader wants and we do not publish one.
+      const link = played
+        ? `https://www.espn.com/college-football/boxscore/_/gameId/${game.espnId}`
+        : `https://www.espn.com/college-football/game/_/gameId/${game.espnId}`;
+      lines.push(`<a href="${link}" target="_blank" rel="noopener">` +
+        `${played ? "Box score" : "Game preview"} ↗</a>`);
+    }
   }
   return lines.join("");
 }

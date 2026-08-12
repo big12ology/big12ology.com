@@ -459,6 +459,30 @@ def fmt_prob(p):
 
 
 
+# The three pages the projected championship matchup belongs on. It used to
+# ride the shared top, which put it on the rules explainer, the tie archive,
+# the cut line, the ladder and the Lab — pages that are either about how the
+# procedure works or about a season other than this one. On those it is a
+# headline with no story under it, and it pushed each page's actual subject
+# below the fold.
+#
+# The Brief, The Race and The Standings are the three that are about who is
+# playing for the title, which is what the card says.
+MATCHCARD_PAGES = {"index.html", "race.html", "standings.html"}
+
+
+def matchcard_for(fname, year, ctx):
+    """The matchup card, on the pages that are about the matchup.
+
+    Live season only. An archived year's card is a settled fact wearing the
+    word "projected", and the season it describes finished months ago; the
+    archive pages that want that answer state it in their own prose.
+    """
+    if year != LIVE_YEAR or fname not in MATCHCARD_PAGES:
+        return ""
+    return ctx["matchcard"]
+
+
 def tracker_top(year, active, matchcard="", section="tiebreaker", page="",
                 up="", yearpills=True, subnavon=True):
     """The one top: header bar, pill row, matchup card. Styled entirely by
@@ -1326,6 +1350,16 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
   border-radius:10px; padding:16px 18px }
 .card h2 { margin:0 0 8px; font-size:14px; text-transform:uppercase;
   letter-spacing:.06em; color:var(--dim) }
+/* A link written into a sentence, rather than one of the components that
+   carries its own colour. There was no rule for these, so the browser's
+   #0000EE and its underline were shipping on the two prose pages in this
+   section — the only blue on the domain. The Rules page has always said
+   accent2 for exactly this; so does the hub. Classless on purpose: every
+   component link in this section carries a class, and a plain descendant
+   selector would out-specify all of them. */
+.card p a:not([class]), .card li a:not([class]) { color:var(--accent2);
+  text-decoration:underline; text-underline-offset:2px;
+  text-decoration-thickness:1px }
 .dim { color:var(--dim) } .note { color:var(--dim); font-size:13px }
 /* Several marks carry a white plate inside the artwork itself, so on a dark
    page they read as stray white cards. CSS cannot recolour what is baked
@@ -2455,25 +2489,6 @@ def png_size(path):
             int.from_bytes(head[20:24], "big"))
 
 
-def figures_block(section, heading, intro):
-    """A page's share of the generated facts, as crawlable text.
-
-    Emits the token rather than the list: tools/assemble.sh fills it from
-    facts.json, so there is one renderer for this and for the hand-written
-    attendance page, which build.py does not write.
-
-    Open, not a <details>. Collapsed content is indexed, but this is the part
-    of the page most likely to answer the question somebody actually typed,
-    and hiding it behind a summary to save scrolling is optimising for the
-    wrong reader.
-    """
-    return (f'<section class=card id=figures>'
-            f'<h2>{esc(heading)}</h2>'
-            f'<p class=note>{intro}</p>'
-            f'{{{{FACTS:{section}}}}}'
-            f'</section>')
-
-
 def jsonld(obj):
     """A JSON-LD block, escaped for the one thing that can break out of it.
 
@@ -2905,7 +2920,10 @@ def render(year, games):
                else f"{site_url}{year}/lab.html"),
         topbar=topbar("tiebreaker", year, BASE),
         footer=footer(),
-        top=tracker_top(year, "tracker", card, page="lab.html"),
+        # No matchup card. The Lab is a place you go to change the season,
+        # not to be told what it currently is — and the card is the one
+        # thing on the page that does not respond to a single pick.
+        top=tracker_top(year, "tracker", "", page="lab.html"),
         whatif=whatif,
         standcard=standcard,
         clinchcard=clinch_card(
@@ -2958,6 +2976,7 @@ WHATIF_CARD = """<div class=card id=whatif>
   <div class=wcontrols>
     {modelrow}
     <button id=w-clear class=wbtn>{clearlabel}</button>
+    <button id=w-weeks class=wbtn>Expand all weeks</button>
     <span id=w-count class=dim></span>
   </div>
   <div id=wgames></div>
@@ -3696,11 +3715,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          "12 team's expected conference record on every other team's slate.",
          ""),
         ("rotation.html", "The Rotation", "rotation",
-         build_rotation_page(year, games, ctx["teams"])
-         + figures_block(
-             "schedule", "The schedule, in figures",
-             "Generated from the committed schedule on every build, so a "
-             "line that stops being true stops being printed."),
+         build_rotation_page(year, games, ctx["teams"]),
          f"Who each Big 12 team misses in {yr}, the last time they met as "
          "conference opponents, and every pairing's all-time conference "
          "record — 48 of the 120 pairings sit out a season.",
@@ -3709,11 +3724,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     hist_frag = os.path.join(HERE, "history", "history_body.html")
     if os.path.exists(hist_frag):
         pages.append(("history.html", "The Archive", "history",
-                      rebase(open(hist_frag).read())
-                      + figures_block(
-                          "tiebreaker", "The league, in figures",
-                          "Fifteen seasons of conference results, "
-                          "recomputed on every build."),
+                      rebase(open(hist_frag).read()),
                       "Every Big 12 tie since 2017, what the tiebreakers "
                       "produced, and where a different reading of the rules "
                       "would have sent a different team to the title game.",
@@ -3777,8 +3788,8 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                                    out_name if schedule_page else fname),
                       "w") as f:
                 f.write(build_subpage(title, active, body, year,
-                                      ctx["matchcard"] if not schedule_page
-                                      else "", canon=cu, desc=desc,
+                                      matchcard_for(fname, year, ctx),
+                                      canon=cu, desc=desc,
                                       head=head, section=sect, page=pg))
         finally:
             if schedule_page:
@@ -3817,9 +3828,15 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                         # the schedule section touches /api/*. Deferred and
                         # entirely optional: it fills the consensus card or
                         # leaves it hidden.
-                        head=((f'<script defer '
-                               f'src="/tiebreaker/{asset_v("pickcon.js")}">'
-                               f'</script>' if PICKEM_ENABLED else "")
+                        # The same kickoff line as the slate, so it needs the
+                        # same script. Without it a game page printed the
+                        # venue's clock alone — "Sat 5:00 PM IST" on a page
+                        # whose whole job is telling you when to watch, with
+                        # the slate one click away answering it properly.
+                        head=(LOCAL_TIME_JS
+                              + (f'<script defer '
+                                 f'src="/tiebreaker/{asset_v("pickcon.js")}">'
+                                 f'</script>' if PICKEM_ENABLED else "")
                               + game_jsonld(g, year,
                                             f"{sched_canon}game/{slug}")),
                         section="schedule", page="", up="../"))
@@ -3827,7 +3844,26 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
             globals()["BASE"] = BASE_was
         print(f"built {len(games)} game pages -> {gdir}")
 
-    build_explainer(year, ctx["matchcard"], outdir)
+        # Which game has a page, keyed by the id everything else here is
+        # keyed by. The attendance tracker is the reader for this: it holds
+        # the same games and the same ids, but nothing that could reproduce a
+        # slug — the names in a slug are CFBD's spelling of them, and
+        # "Texas A&M" becomes "texas-a-m" by a rule that lives in this file
+        # and nowhere near that page. Publishing the answer beats publishing
+        # the rule twice.
+        #
+        # Live season only, because that is when game pages exist. A season
+        # roll therefore empties last year's entries out rather than leaving
+        # a map to 120 pages that have been deleted.
+        with open(os.path.join(gdir, "previews.json"), "w") as f:
+            json.dump({"season": year,
+                       "games": {str(g["id"]): game_slug(g)
+                                 for g in sorted(games,
+                                                 key=lambda g: g.get("id") or 0)
+                                 if g.get("id")}},
+                      f, separators=(",", ":"), sort_keys=True)
+
+    build_explainer(year, matchcard_for("how.html", year, ctx), outdir)
 
     if feed:
         write_if_unchanged_skip(
@@ -3863,9 +3899,10 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                     f"{r['nonconf_w']},{r['nonconf_l']},{r['overall_w']},"
                     f"{r['overall_l']},{p}\n")
 
-    # The Brief is the front door of every season.
+    # The Brief is the front door of every season. index.html is its file
+    # name, which is what MATCHCARD_PAGES names it by.
     brief = build_brief(year, games, overrides, systems, sims,
-                        ctx["matchcard"], canon=canon)
+                        matchcard_for("index.html", year, ctx), canon=canon)
     with open(os.path.join(outdir, "index.html"), "w") as f:
         f.write(brief)
     # brief.html was the Brief's address before it moved to the front door

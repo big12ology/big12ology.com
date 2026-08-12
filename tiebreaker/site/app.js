@@ -559,6 +559,19 @@
     return "Week " + g.week;
   }
 
+  // The weeks switch describes what it will do, so it has to be re-read
+  // after anything that rebuilds the list — a pick preserves whichever weeks
+  // were open, and the button would otherwise still offer the throw it made
+  // three picks ago.
+  function syncWeeksBtn() {
+    var btn = document.getElementById("w-weeks");
+    var box = document.getElementById("wgames");
+    if (!btn || !box) return;
+    var all = box.querySelectorAll("details");
+    var anyShut = [].some.call(all, function (d) { return !d.open; });
+    btn.textContent = anyShut ? "Expand all weeks" : "Collapse all weeks";
+  }
+
   function renderPickList() {
     var box = document.getElementById("wgames");
     if (!box) return;
@@ -615,6 +628,7 @@
     }).join("");
     box.innerHTML = html;
     updateCount(games.length);
+    syncWeeksBtn();
     box.querySelectorAll(".pick").forEach(function (btn) {
       btn.onclick = function () {
         var id = btn.dataset.id, team = btn.dataset.team;
@@ -718,6 +732,31 @@
       };
     }
     if (clearBtn) clearBtn.onclick = function () { picks = {}; refresh(); };
+    // One switch for all thirteen weeks. Only the next week opens on load,
+    // which is right for picking one game and wrong for the reader who wants
+    // to run the whole season in one pass — and opening twelve summaries by
+    // hand to do it is the kind of small tax nobody pays twice. The label
+    // says which way the switch will throw, not which state it is in.
+    var weeksBtn = document.getElementById("w-weeks");
+    if (weeksBtn) {
+      weeksBtn.onclick = function () {
+        var box = document.getElementById("wgames");
+        if (!box) return;
+        var all = box.querySelectorAll("details");
+        // Expand unless every week is already open. Any half-open state
+        // resolves toward open, which is what somebody reaching for a
+        // control called "expand all" is asking for.
+        var expand = [].some.call(all, function (d) { return !d.open; });
+        [].forEach.call(all, function (d) { d.open = expand; });
+        weeksBtn.textContent = expand ? "Collapse all weeks"
+                                      : "Expand all weeks";
+      };
+      // Opening one week by hand counts too. `toggle` does not bubble, so
+      // this listens in the capture phase; the container element survives
+      // every rebuild of its own innerHTML, so it is bound once.
+      var wbox = document.getElementById("wgames");
+      if (wbox) wbox.addEventListener("toggle", syncWeeksBtn, true);
+    }
     if (sel) {
       sel.onchange = function () {
         model = sel.value;
