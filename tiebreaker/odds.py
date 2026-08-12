@@ -161,7 +161,8 @@ def win_probs(games, systems):
     return out
 
 
-def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED, track=None):
+def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED, track=None,
+             sigma=None):
     """Returns {team: {"p_ccg": float, "exp_w": float}} plus {"_n": n}.
 
     p_ccg counts sure top-2 membership as 1 and ambiguous membership
@@ -180,7 +181,14 @@ def simulate(games, systems, overrides=None, n=N_SIMS, seed=SEED, track=None):
     rem = [g for g in base if not g["completed"] and not g.get("ccg")
            and g["id"] in margins]
     rng = random.Random(seed)
-    sigma_r = rating_sigma(games)
+    # PINNABLE, and causal_leverage is the reason. Asserting a result makes
+    # that game completed, which makes rating_sigma read the season as one
+    # game better understood — so both branches of a fork would tighten
+    # against a baseline drawn at the looser value, and every arrow on the
+    # card would carry a shift that has nothing to do with who won. The
+    # caller that is asking "what does this result do" holds the belief
+    # fixed and passes it in.
+    sigma_r = rating_sigma(games) if sigma is None else sigma
     # Every side of a remaining game, conference or not — a non-conference
     # opponent's strength is just as uncertain, and total wins is a tiebreak
     # step. Sorted, not a set: the draws below are pulled in iteration order,
@@ -287,6 +295,87 @@ def leverage(sims, games):
             if t in c["in"]:
                 sw, sl = c["in"][t]
                 pair[t] = (sw / nh, sl / nl)
+        out.append({"game": g, "home": g["home"], "away": g["away"],
+                    "total": total, "movers": movers, "pair": pair})
+    out.sort(key=lambda x: -x["total"])
+    return out
+
+
+def force_result(games, gid, home_wins):
+    """The season with one result asserted rather than simulated."""
+    out = []
+    for g in games:
+        if g["id"] == gid:
+            g = dict(g)
+            g["completed"] = True
+            g["home_points"], g["away_points"] = (
+                (28, 17) if home_wins else (17, 28))
+        out.append(g)
+    return out
+
+
+def causal_leverage(games, systems, overrides=None, gids=(), n=N_SIMS,
+                    seed=SEED):
+    """WHAT A RESULT DOES, which is not what leverage() measures.
+
+    leverage() conditions: it takes the one baseline run and filters it to
+    the seasons where the home side won. That is the cheap way to get every
+    game from a single simulation, and for a preview it answers a real
+    question — if BYU beats Arizona, the board on Sunday reads 33%.
+
+    It is the wrong number for a card that ranks games by how much they
+    matter. Every simulated season draws each team a strength offset and
+    holds it across all of that team's games, so filtering to the seasons
+    BYU won preferentially keeps the seasons where BYU was rolled strong —
+    and a stronger BYU also wins more of its other eight. The conditional
+    therefore carries the result AND the re-rating the result would justify,
+    and calling their sum "what changes hands on this game" overstates the
+    game by everything the game teaches. Measured at full preseason
+    uncertainty it was four points of BYU's ten.
+
+    So this asserts the result instead and runs the season around it, twice.
+    No filtering, nothing selected on: the two runs differ by the one fact
+    that was set. That is the number the Lab has always shown, which is why
+    the two pages disagreed.
+
+    TWO THINGS MAKE IT AFFORDABLE AND HONEST:
+
+    Both branches run on the SAME SEED. The forced game is completed in
+    both, so the remaining schedule is the same list in the same order and
+    the draws line up game for game — the same team strengths, the same coin
+    flips everywhere else. Only the asserted result differs. Run
+    independently the two would each carry their own noise, and `total` sums
+    sixteen absolute differences, so noise that averages to zero would not:
+    every team's jitter would add its own magnitude and a game that moves
+    nothing would report several points of movement.
+
+    And sigma is pinned to the pre-game value. See simulate().
+
+    Same shape leverage() returns, so the callers do not care which they
+    were handed. Cost is what it looks like: two full runs per game, against
+    one run for the whole week.
+    """
+    sigma = rating_sigma(games)
+    by_id = {g["id"]: g for g in games}
+    out = []
+    for gid in gids:
+        g = by_id.get(gid)
+        if g is None:
+            continue
+        sh = simulate(force_result(games, gid, True), systems, overrides,
+                      n=n, seed=seed, sigma=sigma)
+        sa = simulate(force_result(games, gid, False), systems, overrides,
+                      n=n, seed=seed, sigma=sigma)
+        movers, pair, total = [], {}, 0.0
+        for t in sorted(x for x in sh if not x.startswith("_")):
+            pw, pl = sh[t]["p_ccg"], sa[t]["p_ccg"]
+            d = pw - pl
+            total += abs(d) / 2
+            if abs(d) >= 0.005:
+                movers.append((t, d, pw, pl))
+            if t in (g["home"], g["away"]):
+                pair[t] = (pw, pl)
+        movers.sort(key=lambda x: -abs(x[1]))
         out.append({"game": g, "home": g["home"], "away": g["away"],
                     "total": total, "movers": movers, "pair": pair})
     out.sort(key=lambda x: -x["total"])

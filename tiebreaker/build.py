@@ -251,6 +251,17 @@ ARCHIVE_YEARS = [2025, 2024]
 BASE = ""      # "../" while writing an archived season, so assets resolve
 LIVE_YEAR = None
 
+# WHO THE FORK LISTS BESIDES THE TWO PLAYING. odds.leverage keeps any team
+# moving half a point, which is the right threshold for a module that cannot
+# know who is asking. A box on a page is a different budget: in a live week
+# most of the league clears half a point on any game — seven teams did on the
+# only game of week 2, none of them by a point and a half — so a floor that
+# low fills both columns with teams whose swing rounds to nothing. A point to
+# be listed, and three at most, which is what fits beside the two the box is
+# actually about.
+MOVER_FLOOR = 0.01
+MOVER_LIMIT = 3
+
 
 def asset_v(name, root=None):
     """Cache-bust by content. A browser that has app.js in cache will not ask
@@ -707,6 +718,39 @@ def subnav(active, section="tiebreaker", prefix=""):
     return f"<nav class=subnav>{links}</nav>"
 
 
+def simulate_week(games, systems, overrides, track):
+    """The baseline run, and two readings of every game it tracks.
+
+    WHAT A RESULT DOES and WHAT IT TEACHES are different numbers, and this
+    site needs both. `_lev` asserts each result and runs the season around
+    it — the honest answer to "how much does this game matter", and the
+    number the Lab has always shown. `_lev_cond` filters the baseline run to
+    the seasons the home side won, which folds in the re-rating a result
+    would justify — the honest answer to "what will the board say on Sunday".
+
+    Both ride on the sims dict because that is already threaded to every
+    caller that wants them, and everything walking it either checks shape or
+    skips the underscore keys. Same reason simulate() puts "_n" there.
+    """
+    sims = odds_mod.simulate(games, systems, overrides, track=track)
+    if track:
+        sims["_lev"] = odds_mod.causal_leverage(
+            games, systems, overrides, track)
+        sims["_lev_cond"] = odds_mod.leverage(sims, games)
+    return sims
+
+
+def leverage_of(sims):
+    """What the tracked games DO, biggest first."""
+    return (sims or {}).get("_lev") or []
+
+
+def leverage_cond_of(sims):
+    """What they would TEACH, keyed by game id. Preview pages only."""
+    return {str(e["game"]["id"]): e
+            for e in ((sims or {}).get("_lev_cond") or [])}
+
+
 def next_conf_week_ids(games):
     """Game ids for the next week that still has unplayed conference games."""
     rem = [g for g in games if g["conference_game"] and not g.get("ccg")
@@ -730,29 +774,52 @@ def fork_block(g, lev, sims, teams, compact=False):
     Each cell says what the result MOVES as well as where it lands, because
     a probability with no baseline is a number without a verb: 33% means
     nothing until you know they were on 23%.
+
+    THE REST OF THE LEAGUE IS IN THE SAME BOXES, under a rule. It was a line
+    of its own below the fork, which could give a third party its two
+    endpoints but not what either one MEANS: 11%/12% is a pair of numbers
+    with no verb, and the reader had to hold the column headings in their
+    head to work out which was which. Inside the branch it is asking about,
+    a team gets the same three things the two playing get — where it lands,
+    which way that is, and by how much — and nothing has to be remembered
+    from one line to the next. The rule is there because "playing" and
+    "watching" are different kinds of fact, not different amounts of one.
     """
     pair = lev.get("pair") or {}
     if len(pair) != 2:
         return ""
-    cols = []
-    for side in (g["home"], g["away"]):
-        branch = 0 if side == g["home"] else 1
-        cells = []
-        for t in (g["home"], g["away"]):
-            p = pair[t][branch]
-            now = (sims.get(t) or {}).get("p_ccg")
-            delta = ""
-            if now is not None:
-                dv = (p - now) * 100
-                way = "up" if dv > 0 else ("down" if dv < 0 else "flat")
-                arrow = ("&#9650;" if dv > 0
-                         else ("&#9660;" if dv < 0 else "&mdash;"))
-                delta = (f"<span class='forkd {way}'>{arrow}"
-                         f"{abs(dv):.0f}</span>")
-            cells.append(
-                f"<div class=forkcell><span class=forkteam>"
+    playing = (g["home"], g["away"])
+    rest = [m for m in (lev.get("movers") or [])
+            if m[0] not in playing and abs(m[1]) >= MOVER_FLOOR][:MOVER_LIMIT]
+
+    def cell(t, p):
+        now = (sims.get(t) or {}).get("p_ccg")
+        delta = ""
+        if now is not None:
+            dv = (p - now) * 100
+            # ROUNDED, THEN JUDGED. A third of a point is a move to the
+            # subtraction and not to a reader, and printing it as "up 0"
+            # reads as a bug in the page rather than as a small number. The
+            # dash is the honest glyph for it: the result touches this team,
+            # but not by anything worth a digit.
+            n = round(abs(dv))
+            way = "flat" if not n else ("up" if dv > 0 else "down")
+            arrow = ("&mdash;" if not n
+                     else ("&#9650;" if dv > 0 else "&#9660;"))
+            delta = (f"<span class='forkd {way}'>{arrow}"
+                     f"{n if n else ''}</span>")
+        return (f"<div class=forkcell><span class=forkteam>"
                 f"{logo_img(t, 16)}{esc(t)}</span>"
                 f"<b class=forkp>{p * 100:.0f}%</b>{delta}</div>")
+
+    cols = []
+    for side in playing:
+        branch = 0 if side == g["home"] else 1
+        cells = [cell(t, pair[t][branch]) for t in playing]
+        if rest:
+            cells.append("<div class=forkrest>" + "".join(
+                cell(t, pw if branch == 0 else pl)
+                for t, _d, pw, pl in rest) + "</div>")
         cols.append(
             f"<div class=forkcol style='--fc:{team_color(teams, side)}'>"
             f"<div class=forkhead>If {esc(side)} wins</div>"
@@ -761,48 +828,62 @@ def fork_block(g, lev, sims, teams, compact=False):
     return f"<div class='{cls}'>{''.join(cols)}</div>"
 
 
-def else_line(g, lev, limit=3, floor=0.01):
-    """Who the result touches BESIDES the two playing, at list density.
+def teach_block(g, lev, cond, teams):
+    """THE SECOND STEP, and only a preview page gets it.
 
-    The game page answers this with bars — a track spanning the two futures
-    and a tick where today sits inside it — which is the right shape for one
-    game on a page of its own. This card carries a week, and a week that
-    matters is five to eight games; eight rows of four bars is a different
-    card. So the same facts go on one line: the team, and where it lands in
-    each of the two futures.
+    The fork above asserts a result and runs the season around it, so it
+    answers what the game DOES. A reader on a preview page is also asking
+    something the fork cannot answer: what will this page say on Sunday?
+    Those differ, because a win is not only an event, it is evidence. Beat
+    Arizona and the model does not merely bank the win — it revises upward
+    how good it thinks BYU is, and a better BYU wins more of the eight games
+    after it.
 
-    The pair reads in THE ORDER THE FORK IS IN, home win first — two columns
-    on a wide screen, two stacked panels under 560px, the same order either
-    way. That is the only reason two bare numbers are legible here: there is
-    no room to label them, so they borrow the labels the fork already wrote.
-    It is also why this is not the game page's renderer with a class on it:
-    that one sorts each team's endpoints high-to-low for its bar, which
-    throws away which result produced which, a trade a bar can afford and a
-    number cannot.
+    That revision is exactly what leverage() measures and causal_leverage()
+    refuses to. So both are computed and both are shown: the fork for the
+    result, this for the belief, and the signed number between them for what
+    the game teaches, which is a quantity nothing on the site had a name for.
 
-    THE FLOOR IS THE POINT OF IT. odds.leverage keeps anything moving half a
-    point, because on a game page a fourth small bar costs nothing. Here
-    every name is a name in a list, and in a live week most of the league
-    clears half a point on any game — seven teams did on the only game of
-    week 2, none of them by a point and a half. A team earns its place by
-    moving a full point, and a row whose story really is just the two teams
-    playing says so by printing nothing.
+    IT DISAPPEARS WHEN IT IS NOTHING, which is most of the season. The gap
+    is a pure function of how unsure the ratings still are: worth four
+    points of BYU's swing in week 2 with nothing played, and under one by
+    November. A block explaining a difference of zero is a block explaining
+    nothing, so a tenth of a point of teaching is no block at all.
     """
-    playing = {g["home"], g["away"]}
-    others = [m for m in lev["movers"]
-              if m[0] not in playing and abs(m[1]) >= floor][:limit]
-    if not others:
+    pair = (lev or {}).get("pair") or {}
+    cpair = (cond or {}).get("pair") or {}
+    if len(pair) != 2 or len(cpair) != 2:
         return ""
-    items = "".join(
-        f"<span class=levwho>{logo_img(t, 14)}{esc(t)} "
-        f"<b>{pw * 100:.0f}%</b><span class=dim>/{pl * 100:.0f}%</span>"
-        f"</span>" for t, _d, pw, pl in others)
-    return (f"<div class=levelse><span class=levelselab>Who else it moves"
-            f"</span>{items}</div>")
+    playing = (g["home"], g["away"])
+    if max(abs(cpair[t][b] - pair[t][b])
+           for t in playing for b in (0, 1)) < 0.01:
+        return ""
+    cols = []
+    for side in playing:
+        branch = 0 if side == g["home"] else 1
+        cells = []
+        for t in playing:
+            p = cpair[t][branch]
+            dv = (p - pair[t][branch]) * 100
+            n = round(abs(dv))
+            way = "flat" if not n else ("up" if dv > 0 else "down")
+            sign = "&mdash;" if not n else ("+" if dv > 0 else "&minus;")
+            cells.append(
+                f"<div class=forkcell><span class=forkteam>"
+                f"{logo_img(t, 16)}{esc(t)}</span>"
+                f"<b class=forkp>{p * 100:.0f}%</b>"
+                f"<span class='forkd {way}'>{sign}{n if n else ''}</span>"
+                f"</div>")
+        cols.append(
+            f"<div class=forkcol style='--fc:{team_color(teams, side)}'>"
+            f"<div class=forkhead>If {esc(side)} wins</div>"
+            f"{''.join(cells)}</div>")
+    return (f"<div class=teachlab>And what the result would teach</div>"
+            f"<div class='forkgrid teach'>{''.join(cols)}</div>")
 
 
 def leverage_card(games, sims, teams=None):
-    lev = odds_mod.leverage(sims, games)
+    lev = leverage_of(sims)
     if not lev:
         return ""
     wk = lev[0]["game"]["week"]
@@ -814,14 +895,13 @@ def leverage_card(games, sims, teams=None):
         # sentence that named one team and two of the four numbers, which
         # made every game on this list look like it was about whoever the
         # sentence happened to lead with.
+        # The same fork carries the rest of the league, under a rule. On the
+        # games at the top of this list those are a footnote; on the ones at
+        # the bottom they are the story. A week-11 rewind of 2025 has Houston
+        # at UCF moving neither team off zero and moving BYU four and a half
+        # points — a row that, without them, prints four numbers that are all
+        # zero and no reason it was ranked above nothing.
         mover_txt = fork_block(g, e, sims, teams or {}, compact=True)
-        # And the teams that are not playing. On the games at the top of this
-        # list the fork is the story and this is a footnote; on the ones at
-        # the bottom it is the other way round. A week-11 rewind of 2025 has
-        # Houston at UCF moving neither team off zero and moving BYU four and
-        # a half points — a row that, without this line, prints four numbers
-        # that are all zero and no reason it was ranked above nothing.
-        else_txt = else_line(g, e)
         pct = min(e["total"] * 100, 100)
         # Same column treatment as the race card: matchup, bar, number,
         # then the swing note on its own line. Run inline it wrapped through
@@ -836,7 +916,7 @@ def leverage_card(games, sims, teams=None):
             f"background:{winpct_color(min(e['total'], 1.0))}'></i></span>"
             f"</span>"
             f"<b class=opct>{e['total'] * 100:.0f}</b>"
-            f"</div>{mover_txt}{else_txt}</div>")
+            f"</div>{mover_txt}</div>")
     return (f"<div class=card id=levcard><h2>Games that matter · week {wk}"
             f"</h2>{''.join(rows)}"
             "<p class=note>Two teams reach the championship game &mdash; "
@@ -847,12 +927,12 @@ def leverage_card(games, sims, teams=None):
             "seat</b>, 0 would mean the result decides nothing. "
             "Percentages are how often that team reaches the title game "
             "across those simulated seasons, and the arrow is the move from "
-            "where they stand today. Where a result also swings a team that "
-            "is not playing, it is named underneath with its chance in each "
-            "of those two futures &mdash; in the order the two panels above "
-            "are in, the home win first. From the same simulations as "
-            "the race card. 100 = a full berth's worth of probability "
-            "moves on this game.</p></div>")
+            "where they stand today. Under the rule in each box are the "
+            "teams that are not playing but whose own chance that result "
+            "moves by a point or more &mdash; same three things, read the "
+            "same way. From the same simulations as the race card. "
+            "100 = a full berth's worth of probability moves on this "
+            "game.</p></div>")
 
 
 def sos_card(games, systems):
@@ -1764,7 +1844,7 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
                      + "".join(game_row(g) for g in week_games[::-1])
                      + "</ul></div>")
 
-    lev = odds_mod.leverage(sims, games) if sims else []
+    lev = leverage_of(sims)
     if lev:
         items = "".join(
             f"<li>{logo_img(e['away'], 14)}{esc(e['away'])} at "
@@ -2043,30 +2123,13 @@ h3.wkhead { font-size:var(--t-row); text-transform:uppercase; letter-spacing:.05
 .mval { text-align:right; font-variant-numeric:tabular-nums }
 .mmarket { border-top:1px solid var(--line); padding-top:8px; margin-top:8px }
 .levtotal { margin-bottom:10px; font-size:var(--t-label) }
-/* The swing bar: a span between two futures with today marked inside it.
-   Not a progress bar — nothing is filling up — so it is a floating segment
-   on a track rather than a bar anchored at zero. */
-.swrow { display:grid; align-items:center; gap:10px; margin:7px 0;
-  grid-template-columns:minmax(0,130px) minmax(0,1fr) 72px;
-  font-size:var(--t-row) }
-.swteam { display:flex; align-items:center; gap:6px; min-width:0 }
-.swteam { overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
-.swtrack { position:relative; height:10px; border-radius:5px;
-  background:var(--line) }
-.swspan { position:absolute; top:0; bottom:0; border-radius:5px;
-  background:var(--accent); opacity:.85 }
-/* Today, as a notch that reads against both the span and the empty track —
-   so it stays visible whether it lands inside the span or at its edge. */
-.swnow { position:absolute; top:-3px; bottom:-3px; width:2px;
-  margin-left:-1px; background:var(--ink); border-radius:1px }
-.swnums { text-align:right; font-variant-numeric:tabular-nums;
-  white-space:nowrap }
-.swnums .dim { font-size:var(--t-meta) }
+/* The swing bars that used to sit under the fork are gone, and .swkey is
+   what is left of them — the note they were keyed to, which now explains the
+   fork instead. A bar sorted its two ends high to low and so could not say
+   which RESULT produced which end; inside the fork the branch is the box the
+   number stands in. The class name outlived the component and is kept only
+   because the note is still the note. */
 .swkey { margin-top:10px }
-@media (max-width:560px) {
-  .swrow { grid-template-columns:minmax(0,1fr) 72px }
-  .swrow .swtrack { grid-column:1 / -1; order:3 }
-}
 .levtotal b { font-size:var(--t-lead); font-variant-numeric:tabular-nums }
 @media (max-width:560px) {
   .mrow { grid-template-columns:minmax(0,1fr) 42px }
@@ -2804,32 +2867,13 @@ def race_card(g, ctx):
     # a team that gains when the away side wins — not one that loses by
     # winning. Say the gain and the result that produces it, or the row
     # reads as nonsense: "Arizona -21% if Arizona wins".
-    # THE GAP, DRAWN. Two conditional probabilities and the team's current
-    # one is three numbers about the same team, and a row of three figures
-    # makes the reader do the comparing. The bar does it: the span between
-    # the two futures, and a tick where today sits inside it.
-    #
-    # Today is never the midpoint, and that is the whole insight — it sits
-    # nearer whichever branch is likelier. BYU is 23% now, 33% if it wins and
-    # 7% if it loses, because it is expected to win: most of the winning
-    # branch is already priced in, so the game is worth +10 to BYU rather
-    # than the +27 the raw gap suggests.
+    # Today is never the midpoint between the two branches, and that is the
+    # whole insight — it sits nearer whichever branch is likelier. BYU is 23%
+    # now, 33% if it wins and 7% if it loses, because it is expected to win:
+    # most of the winning branch is already priced in, so the game is worth
+    # +10 to BYU rather than the +27 the raw gap suggests. Which is why every
+    # cell prints the move as well as the level.
     sims = ctx.get("sims") or {}
-
-    def swing(t, pw, pl, span):
-        hi, lo = max(pw, pl), min(pw, pl)
-        now = (sims.get(t) or {}).get("p_ccg")
-        L, W = lo / span * 100, (hi - lo) / span * 100
-        tick = ""
-        if now is not None:
-            tick = (f"<i class=swnow style='left:{now / span * 100:.1f}%' "
-                    f"title='{now * 100:.0f}% as things stand'></i>")
-        return (f"<div class=swrow>"
-                f"<span class=swteam>{logo_img(t, 16)}{esc(t)}</span>"
-                f"<span class=swtrack><i class=swspan "
-                f"style='left:{L:.1f}%;width:{W:.1f}%'></i>{tick}</span>"
-                f"<span class=swnums><b>{hi * 100:.0f}%</b>"
-                f"<span class=dim>/{lo * 100:.0f}%</span></span></div>")
 
     # THE FORK. Two results, two teams, four numbers — the shape of the
     # question a preview is actually asked. A sentence could carry two of
@@ -2841,33 +2885,45 @@ def race_card(g, ctx):
     # no baseline is a number without a verb: 33% means nothing until you
     # know they were on 23%.
     teams_ = ctx.get("teams") or {}
+    # Everybody the result touches, in one component. The teams that are not
+    # playing used to sit below this in bars of their own, spanning the two
+    # futures with a tick at today — a good drawing of a range, and the wrong
+    # answer to the question being asked. A bar sorts its ends high to low,
+    # so it could say Texas Tech lives between 57% and 58% and could not say
+    # WHICH result put it at which. In the fork the branch is the box the
+    # number is standing in, and that ambiguity cannot arise.
     fork = fork_block(g, lev, sims, teams_)
+    teach = teach_block(g, lev, (ctx.get("leverage_cond") or {}).get(
+        str(g.get("id"))), teams_)
 
-    # The swing bars are for everybody ELSE the result touches — the two
-    # playing are answered above, and repeating them here would be the same
-    # four numbers twice.
-    playing = {g["home"], g["away"]}
-    others = [m for m in lev["movers"] if m[0] not in playing][:4]
-    # Scaled to the widest bar ACTUALLY DRAWN, not to the card's biggest
-    # number. Sized against the two teams in the fork, a third party sitting
-    # above them ran off the end of its own track — Texas Tech at 58% on a
-    # rail cut for BYU's 33%.
-    span = max([max(a, b) for _, _, a, b in others] + [0.01])
-    movers = "".join(swing(t, pw, pl, span) for t, _d, pw, pl in others)
-    if movers:
-        movers = (f"<div class=forkelse>Who else it moves</div>{movers}")
     key = (f"<p class='note swkey'>Two teams reach the championship game "
            f"&mdash; think of that as two seats. The rest of the season is "
-           f"played out ten thousand times; the percentages are how often "
-           f"each team ends up in one under that result, and the arrow is "
-           f"the move from where they stand today. <b>100 would be a whole "
-           f"seat</b> changing hands. Bars span the two futures, with a tick "
-           f"at today &mdash; which sits nearer the result that side is more "
-           f"likely to get.</p>")
+           f"played out ten thousand times with this result set and the "
+           f"season played around it; the percentages are how often each "
+           f"team ends up in a seat, and the arrow is the move from where "
+           f"they stand today. <b>100 would be a whole seat</b> changing "
+           f"hands. Under the rule in each box are the teams that are not "
+           f"playing but whose own chance the result moves by a point or "
+           f"more.</p>")
+    # Only when the second block is there to be explained. Late in the
+    # season it is not, and a paragraph about a distinction the page is no
+    # longer drawing is worse than no paragraph.
+    why = (f"<p class=note>The second pair of boxes is those same two "
+           f"results read the other way. The first asks what the result "
+           f"DOES, holding fixed everything the model believes about these "
+           f"teams. The second asks what this page will actually say "
+           f"afterwards, which is more &mdash; because a win is not only an "
+           f"event, it is evidence. Beating a team rated this highly is a "
+           f"reason to think better of the winner, and a team thought "
+           f"better of wins more of what it plays next. The signed figure "
+           f"is that difference: what the game teaches, as against what it "
+           f"decides. It shrinks as the ratings settle, and by November "
+           f"there is little enough left that these boxes stop "
+           f"appearing.</p>") if teach else ""
     return (f"<div class=card id=racecard><h2>What it does to the race</h2>"
             f"<div class=levtotal><b>{total:.0f}</b> "
             f"<span class=dim>of a title-game seat changes hands on this "
-            f"result</span></div>{fork}{movers}{key}"
+            f"result</span></div>{fork}{teach}{key}{why}"
             f"<p class=note>From the same simulations the race card runs. "
             f"100 means a full berth's worth of probability moves on this "
             f"result. Each pair is that team's chance in the two futures, "
@@ -3302,8 +3358,7 @@ def render(year, games):
     systems = load_ratings(year).get("systems", {})
     closing_lines = load_lines(year)
     track, _wk = next_conf_week_ids(games)
-    sims = (odds_mod.simulate(games, systems, overrides, track=track)
-            if systems else {})
+    sims = simulate_week(games, systems, overrides, track) if systems else {}
     favorites = favorites_for(games, systems)
     # `kind` is load-bearing, not documentation. payload.favorites is the
     # pick source for the UI and now holds three different things — the four
@@ -3536,8 +3591,9 @@ def render(year, games):
         # cards; exposing them here is cheaper than recomputing per game —
         # the series in particular reads fifteen seasons off disk.
         "favorites": favorites,
-        "leverage": {str(e["game"]["id"]): e for e in
-                     (odds_mod.leverage(sims, games) if sims else [])},
+        "leverage": {str(e["game"]["id"]): e for e in leverage_of(sims)},
+        # The same games read the other way, for the preview pages.
+        "leverage_cond": leverage_cond_of(sims),
         "series": series_records(year, sorted(teams), games),
     }
     return page, ctx
@@ -4370,9 +4426,12 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
 
     overrides = tb.load_overrides()
     systems = load_ratings(year).get("systems", {})
-    track, _wk = next_conf_week_ids(games)
-    sims = (odds_mod.simulate(games, systems, overrides, track=track)
-            if systems else {})
+    # render() has just run exactly this, off the same games, the same
+    # ratings and a fixed seed, so a second run is guaranteed to produce the
+    # same numbers at full price. That was a wasted three seconds when the
+    # week cost one simulation; causal leverage buys two more per tracked
+    # game, so on an eight-game Saturday the duplicate is most of a minute.
+    sims = ctx.get("sims") or {}
     rows = tb.standings(games, overrides)
     display_rows = pad_standings(rows, games)
 
@@ -4588,7 +4647,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
             "start": L[0]["game"].get("start"),
             "total": L[0]["total"],
             "pair": {t: list(v) for t, v in (L[0].get("pair") or {}).items()},
-        } if L else None)(odds_mod.leverage(sims, games) if sims else []),
+        } if L else None)(leverage_of(sims)),
         "race": {t: {"status": i["status"], "destiny": i["destiny"],
                      "p_ccg": (sims.get(t, {}) or {}).get("p_ccg"),
                      "exp_conf_wins": (sims.get(t, {}) or {}).get("exp_w")}

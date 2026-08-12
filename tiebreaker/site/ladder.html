@@ -18,7 +18,7 @@
 <link rel=apple-touch-icon href="favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
 <script>(function(){try{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){return /^[A-Za-z][\w-]*$/.test(k)}).map(function(k){return"#"+k+">*:not(h2):not(h3){display:none}#"+k+"{padding-bottom:8px}"}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}catch(e){}})();</script>
-<link rel=stylesheet href="brand.css?v=dff3221b">
+<link rel=stylesheet href="brand.css?v=588aaa1e">
 <script defer src="theme.js?v=ab3fca05"></script>
 <script src="state.js?v=f7c7de71"></script>
 <script src="metrics.js?v=8a5fb0cb"></script>
@@ -401,30 +401,13 @@ h3.wkhead { font-size:var(--t-row); text-transform:uppercase; letter-spacing:.05
 .mval { text-align:right; font-variant-numeric:tabular-nums }
 .mmarket { border-top:1px solid var(--line); padding-top:8px; margin-top:8px }
 .levtotal { margin-bottom:10px; font-size:var(--t-label) }
-/* The swing bar: a span between two futures with today marked inside it.
-   Not a progress bar — nothing is filling up — so it is a floating segment
-   on a track rather than a bar anchored at zero. */
-.swrow { display:grid; align-items:center; gap:10px; margin:7px 0;
-  grid-template-columns:minmax(0,130px) minmax(0,1fr) 72px;
-  font-size:var(--t-row) }
-.swteam { display:flex; align-items:center; gap:6px; min-width:0 }
-.swteam { overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
-.swtrack { position:relative; height:10px; border-radius:5px;
-  background:var(--line) }
-.swspan { position:absolute; top:0; bottom:0; border-radius:5px;
-  background:var(--accent); opacity:.85 }
-/* Today, as a notch that reads against both the span and the empty track —
-   so it stays visible whether it lands inside the span or at its edge. */
-.swnow { position:absolute; top:-3px; bottom:-3px; width:2px;
-  margin-left:-1px; background:var(--ink); border-radius:1px }
-.swnums { text-align:right; font-variant-numeric:tabular-nums;
-  white-space:nowrap }
-.swnums .dim { font-size:var(--t-meta) }
+/* The swing bars that used to sit under the fork are gone, and .swkey is
+   what is left of them — the note they were keyed to, which now explains the
+   fork instead. A bar sorted its two ends high to low and so could not say
+   which RESULT produced which end; inside the fork the branch is the box the
+   number stands in. The class name outlived the component and is kept only
+   because the note is still the note. */
 .swkey { margin-top:10px }
-@media (max-width:560px) {
-  .swrow { grid-template-columns:minmax(0,1fr) 72px }
-  .swrow .swtrack { grid-column:1 / -1; order:3 }
-}
 .levtotal b { font-size:var(--t-lead); font-variant-numeric:tabular-nums }
 @media (max-width:560px) {
   .mrow { grid-template-columns:minmax(0,1fr) 42px }

@@ -153,8 +153,6 @@
   :root:not([data-theme="light"]) .forkd.up { color:#4ade80 }
 }
 :root[data-theme="dark"] .forkd.up { color:#4ade80 }
-.forkelse { font-size:var(--t-meta); text-transform:uppercase;
-  letter-spacing:.05em; color:var(--dim); margin:14px 0 2px }
 /* List density. Same component, tighter: eight of these stack under one
    heading on the race page, where the game page shows exactly one. */
 .forkgrid.compact { gap:8px; margin:6px 0 2px }
@@ -163,25 +161,28 @@
 .forkgrid.compact .forkhead { font-size:var(--t-fine); margin-bottom:4px }
 .forkgrid.compact .forkcell { font-size:var(--t-meta); margin:3px 0 }
 .forkgrid.compact .forkp { font-size:var(--t-row) }
-/* WHO ELSE THE RESULT TOUCHES, at the same list density. The game page draws
-   these as bars on their own rows, which a week of five to eight games
-   cannot afford — so they run inline under the fork instead, one line per
-   game. The label repeats on every row for the same reason the two column
-   heads do: a row has to be readable where the eye lands on it, not only
-   after reading the row above.
+/* THE REST OF THE LEAGUE, inside the branch that moves it. A rule rather
+   than a heading: "playing" and "watching" are two kinds of fact, not two
+   amounts of one, and a second label in a box this size competes with the
+   branch heading that gives every number in it its meaning.
 
-   No label on the pair, because it sits directly under a fork that is
-   already labelled and reads in its order — left then right above 560px,
-   top then bottom below it, where the grid collapses to one column. That
-   borrowing is the whole design, so this must stay a sibling of .forkgrid:
-   moved out from under it, the two numbers lose the only thing on the page
-   that says which of them is which. */
-.levelse { display:flex; flex-wrap:wrap; align-items:baseline; gap:3px 12px;
-  margin:6px 0 2px; font-size:var(--t-meta) }
-.levelselab { font-size:var(--t-fine); text-transform:uppercase;
-  letter-spacing:.05em; color:var(--dim) }
-.levwho { display:inline-flex; align-items:center; gap:5px; min-width:0;
-  white-space:nowrap; font-variant-numeric:tabular-nums }
+   Dimmer, but only by weight — the numbers keep their size and their arrow,
+   because the question these rows answer is the same question the two above
+   them answer, and a reader who has to squint at half of it will read the
+   fork as being about the two teams with a footnote attached. */
+.forkrest { border-top:1px solid var(--line); margin-top:8px; padding-top:6px }
+/* THE SECOND READING, on a preview page only. Same grid, same columns, same
+   two headings — because it is the same two results, and any other shape
+   would say it was a different question rather than a second answer to this
+   one. Set back from the first with a label, and the colour rule on top of
+   each column dropped to a hairline: this pair follows from the pair above
+   it rather than standing beside it. */
+.teachlab { font-size:var(--t-meta); text-transform:uppercase;
+  letter-spacing:.05em; color:var(--dim); margin:16px 0 0 }
+.forkgrid.teach { margin-top:4px }
+.forkgrid.teach .forkcol { border-top-width:1px; border-top-color:var(--line) }
+.forkrest .forkteam { color:var(--dim) }
+.forkgrid.compact .forkrest { margin-top:6px; padding-top:5px }
 @media (max-width:560px) { .forkgrid { grid-template-columns:1fr } }
 
 /* ==== display face ======================================================= */
