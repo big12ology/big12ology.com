@@ -86,6 +86,31 @@
   --t-micro:    10px;
 }
 
+/* ==== a card stays inside its column =====================================
+   Cards sit in grid tracks — the Lab and the race board run two columns of
+   them side by side — and a grid item's automatic minimum size is its
+   min-content width, not zero. So one thing inside a card that refused to
+   shrink (a control group set flex:0 0 auto, a line of text set nowrap)
+   made the whole CARD wider than the track it was handed. Nothing clipped
+   it: it drew straight across the gutter and the column beside it painted
+   over the top, which is why the symptom read as a card with no padding on
+   one side, sitting under its neighbor.
+
+   min-width:0 is the whole fix and it is structural. The card no longer
+   contributes a minimum to the track, so the track keeps the width the
+   layout meant it to have, and the card fits in it. max-width says the same
+   thing from the other side, for a card sized by something that is not a
+   track at all.
+
+   It moves the problem inward, which is the point: content that will not
+   fit now overflows its own card, visibly, instead of paving over the one
+   next to it. Anything that genuinely cannot shrink still has to be told
+   how to give — wrap, truncate, or scroll — where that content is defined.
+   Two were, when this landed: .wgroup on the Lab's control row, which now
+   breaks inside itself rather than never, and .clrec on the race rows,
+   which now wraps. */
+.card, .chart-card { min-width: 0; max-width: 100%; }
+
 /* ==== collapsible cards ==================================================
    Every card on the domain opens expanded and closes if the reader says so;
    cards.js does the wiring, this does the hiding. Defined here because this

@@ -913,9 +913,14 @@
         var fav = favs()[id];
         var date = (g.start || "").slice(5, 10).replace("-", "/");
         var was = actualWinner(g);
+        // "at" names a host, and a neutral-site game has none: Arizona State
+        // did not travel to Kansas, they both traveled to Wembley. The feed
+        // still fills in a home column because it needs one, so the flag is
+        // the only thing that knows. Same rule as joiner() in build.py — this
+        // list is the one place that was writing the word itself.
         return "<div class=wgame>" +
           pickBtn(id, g.away, fav, was) +
-          "<span class=at>at</span>" +
+          "<span class=at>" + (g.neutral_site ? "vs" : "at") + "</span>" +
           pickBtn(id, g.home, fav, was) +
           (g.conference_game
             ? (anyNc ? "<span class='nctag ghost'>non-conf</span>" : "")

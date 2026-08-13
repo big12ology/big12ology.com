@@ -181,6 +181,13 @@ def build_slate(season, games, lines, week=None):
             "home": g["home"],
             "away": g["away"],
             "b12": "both" if len(sides) == 2 else (sides[0] if sides else None),
+            # Carried for the same reason b12 is: the slate has to say in
+            # December what it said in August. It is here to be read, not
+            # scored — a neutral-site game has no host, so the row must join
+            # its two teams with "vs" rather than telling the reader that one
+            # of them was at home. The feed still fills a home column because
+            # it needs one; this is the only thing that knows better.
+            "neutral": bool(g.get("neutral_site")),
             "kickoff": g["start"],
             "kickoff_at": int(k.timestamp()) if k else None,
             "spread_x2": spread_x2,

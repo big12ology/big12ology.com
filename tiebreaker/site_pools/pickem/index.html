@@ -18,7 +18,7 @@
 <link rel=apple-touch-icon href="../../tiebreaker/favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
 <script>(function(){try{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){return /^[A-Za-z][\w-]*$/.test(k)}).map(function(k){return"#"+k+">*:not(h2):not(h3){display:none}#"+k+"{padding-bottom:8px}"}).join("");if(!s)return;var e=document.createElement("style");e.textContent=s;document.head.appendChild(e)}catch(e){}})();</script>
-<link rel=stylesheet href="../../tiebreaker/brand.css?v=14b902b0">
+<link rel=stylesheet href="../../tiebreaker/brand.css?v=beba0cc1">
 <script defer src="../../tiebreaker/theme.js?v=ab3fca05"></script>
 <script src="../../tiebreaker/state.js?v=f7c7de71"></script>
 <script src="../../tiebreaker/metrics.js?v=fe5d2c27"></script>
@@ -104,7 +104,13 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .clteam { min-width:0; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap }
 .clpct { text-align:right }
-.cltags, .clrec { white-space:nowrap }
+/* The chips hold their line — a "clinched" that breaks in half is not a
+   chip any more. The record after them does not: it is the longest thing on
+   the row and the least load-bearing, so when the row runs out of width it
+   is the one that gives. Set nowrap it did the opposite, holding the whole
+   card open past the column it was sitting in. */
+.cltags { white-space:nowrap }
+.clrec { min-width:0 }
 @media (max-width:640px) {
   .clmain { grid-template-columns:22px 1fr auto; row-gap:3px }
   .clbar, .clpct { display:none }
@@ -509,7 +515,7 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=66e96d84"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=5d50910e"></script></head><body>
+<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=66e96d84"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=462c4c1a"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pools/">Pools</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>

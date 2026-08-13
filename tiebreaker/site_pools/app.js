@@ -128,6 +128,18 @@
     return (v < 0 ? "−" : "+") + Math.abs(v);
   }
 
+  // The word between the two teams. "at" names a host — in "Arizona State at
+  // Kansas", Kansas had the crowd — and a neutral-site game has none: they
+  // both flew to Wembley. The slate labels a home side anyway because a
+  // schedule needs a column for it, so g.neutral is the only thing that
+  // knows better. Same rule as joiner() in build.py, and the reason it lives
+  // in one function here is that four rows across two games were writing the
+  // word themselves.
+  //
+  // A slate frozen before the field existed reads undefined, which is "at" —
+  // what those rows already said.
+  function joiner(g) { return g.neutral ? "vs" : "at"; }
+
   // What a screen reader hears instead of "minus six point five", which is
   // not what the number means to anybody.
   function spreadSaid(spreadX2, side) {
@@ -284,7 +296,7 @@
     // aria-hidden column so it is said once and shown once.
     var lg = el("legend", "sr-only");
     lg.appendChild(document.createTextNode(
-      g.away + " at " + g.home + ", " + fmtWhen(g.kickoff)));
+      g.away + " " + joiner(g) + " " + g.home + ", " + fmtWhen(g.kickoff)));
     lg.appendChild(document.createTextNode(
       why === "no_line"
         ? " — no spread available, this game cannot be picked"
@@ -301,7 +313,7 @@
 
     var sides = el("div", "pk-sides");
     ["away", "home"].forEach(function (side, i) {
-      if (i === 1) sides.appendChild(el("span", "pk-at", "at"));
+      if (i === 1) sides.appendChild(el("span", "pk-at", joiner(g)));
       var team = g[side];
       var id = "g" + g.game_id + "-" + side;
       var input = document.createElement("input");
@@ -1372,7 +1384,7 @@
 
     var m = el("span", "pk-cardmatch");
     ["away", "home"].forEach(function (s, i) {
-      if (i) m.appendChild(el("span", "pk-at", " at "));
+      if (i) m.appendChild(el("span", "pk-at", " " + joiner(g) + " "));
       var mk2 = mark(teams, g[s], 15);
       if (mk2) m.appendChild(mk2);
       var t = el("span",
@@ -1385,7 +1397,7 @@
     });
     li.appendChild(m);
 
-    // The score, in reading order: the row says "away at home", so the
+    // The score, in reading order: the row names the away team first, so the
     // figures do too. A card that says WIN without saying 31-21 is withholding
     // the thing anyone actually wants to look at.
     var sc = el("span", "pk-score");
@@ -1687,7 +1699,8 @@
     fs.dataset.gid = g.game_id;
 
     var lg = el("legend", "sr-only");
-    lg.textContent = g.away + " at " + g.home + ", " + fmtWhen(g.kickoff) +
+    lg.textContent = g.away + " " + joiner(g) + " " + g.home + ", " +
+      fmtWhen(g.kickoff) +
       " — pick a team to win the game outright";
     fs.appendChild(lg);
 
@@ -1698,7 +1711,7 @@
 
     var sides = el("div", "pk-sides");
     ["away", "home"].forEach(function (side, i) {
-      if (i === 1) sides.appendChild(el("span", "pk-at", "at"));
+      if (i === 1) sides.appendChild(el("span", "pk-at", joiner(g)));
       var team = g[side];
       var id = "sv" + g.game_id + "-" + side;
       var input = document.createElement("input");

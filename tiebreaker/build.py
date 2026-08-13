@@ -1083,26 +1083,37 @@ def h2h_card(games, teams, stand_rows):
                 cells.append("<td class=nomeet>&bull;</td>")
                 continue
             date = pretty_date(g["start"])
+            # The same distinction joiner() draws, in one letter. A neutral
+            # site has no host, so calling it H for one team and A for the
+            # other says something about the crowd that was not true —
+            # Kansas hosted Arizona State at Wembley only in the feed's
+            # home column.
+            where = ("N" if g.get("neutral_site")
+                     else "H" if g["home"] == a else "A")
+            place = {"N": "neutral site", "H": "home", "A": "away"}[where]
             if g["completed"] and g["home_points"] is not None:
                 mine = g["home_points"] if g["home"] == a else g["away_points"]
                 theirs = g["away_points"] if g["home"] == a else g["home_points"]
                 won = mine > theirs
                 color = winpct_color(1.0 if won else 0.0)
-                home_game = g["home"] == a
                 cells.append(
                     f"<td style='color:{color}' title='{esc(a)} "
                     f"{'def.' if won else 'lost to'} {esc(b)} "
-                    f"{mine}–{theirs} ({date}, "
-                    f"{'home' if home_game else 'away'})'>"
-                    f"<span class=hatag>{'H' if home_game else 'A'}</span>"
+                    f"{mine}–{theirs} ({date}, {place})'>"
+                    f"<span class=hatag>{where}</span>"
                     f"{'W' if won else 'L'} {mine}–{theirs}</td>")
             else:
-                home_game = g["home"] == a
-                at = "vs" if home_game else "at"
+                # Away team first, because that is the order "at" describes:
+                # the word names the host, so it can only follow the visitor.
+                # This used to read from the row team outwards — "Kansas vs
+                # Iowa State" for a home game — which spent "vs" on a home
+                # game and left nothing to say about a neutral site. joiner()
+                # is the one rule for that word; the cell already says which
+                # side of it this row's team is on.
                 cells.append(
-                    f"<td class=dim title='{esc(a)} {at} {esc(b)}, "
-                    f"{date}'><span class=hatag>{'H' if home_game else 'A'}"
-                    f"</span>wk {g['week']}</td>")
+                    f"<td class=dim title='{esc(g['away'])} {joiner(g)} "
+                    f"{esc(g['home'])}, {date}'>"
+                    f"<span class=hatag>{where}</span>wk {g['week']}</td>")
         body.append(f"<tr><td class=teamcell>{logo_img(a, 14)}"
                     f"{esc(a)}</td>{''.join(cells)}</tr>")
     return ("<div class=card id=h2hcard><h2>Head-to-head grid</h2>"
@@ -1111,8 +1122,8 @@ def h2h_card(games, teams, stand_rows):
             + head + "</tr></thead><tbody>" + "".join(body)
             + "</tbody></table></div>"
             "<p class=note>Every conference meeting this season, read "
-            "across: H marks a home game and A an away game, then the row "
-            "team's result or the scheduled week. A bullet "
+            "across: H marks a home game, A an away game and N a neutral "
+            "site, then the row team's result or the scheduled week. A bullet "
             "means the schedule never pairs them — in a nine-game draw "
             "that's more than a third of the grid, which is why the "
             "tiebreakers exist.</p></div>")
@@ -1658,7 +1669,13 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .clteam { min-width:0; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap }
 .clpct { text-align:right }
-.cltags, .clrec { white-space:nowrap }
+/* The chips hold their line — a "clinched" that breaks in half is not a
+   chip any more. The record after them does not: it is the longest thing on
+   the row and the least load-bearing, so when the row runs out of width it
+   is the one that gives. Set nowrap it did the opposite, holding the whole
+   card open past the column it was sitting in. */
+.cltags { white-space:nowrap }
+.clrec { min-width:0 }
 @media (max-width:640px) {
   .clmain { grid-template-columns:22px 1fr auto; row-gap:3px }
   .clbar, .clpct { display:none }
@@ -2226,15 +2243,24 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bi-chalk { color:var(--warn) }
 .bi-view { color:var(--accent2) }
 /* Related controls sit closer to each other than to the next group, and a
-   group is atomic: no shrinking, so a row too narrow to hold everything
-   breaks between groups rather than through the middle of one. Stretch
-   rather than center, because a native <select> lays its text out on its own
-   terms and comes out three pixels shorter than the buttons beside it — a row
-   that reads as assembled rather than designed. Stretching lets the tallest
-   control set the height and the rest meet it. */
-.wgroup { display:flex; align-items:stretch; gap:6px; flex:0 0 auto }
+   group is atomic: the row breaks between groups rather than through the
+   middle of one. Stretch rather than center, because a native <select> lays
+   its text out on its own terms and comes out three pixels shorter than the
+   buttons beside it — a row that reads as assembled rather than designed.
+   Stretching lets the tallest control set the height and the rest meet it.
+
+   ATOMIC UNTIL IT CANNOT BE. flex:0 0 auto said "never break", and never is
+   longer than the row: the chalk group is a select and two buttons that all
+   refuse to wrap, so in a card column it simply grew past the card and out
+   the side of it. Shrinking and wrapping are last resorts here rather than
+   defaults — a flex line takes whole items first, so a group only ever gets
+   squeezed once it is alone on its line and still too wide, which is the
+   case that used to overflow. That is also why the old max-width:520px rule
+   for this is gone: it said the same thing for phones only, and the width
+   that matters is the card's, not the window's. */
+.wgroup { display:flex; align-items:stretch; gap:6px; flex:0 1 auto;
+  flex-wrap:wrap; min-width:0 }
 .wgroup > label { display:flex; align-items:center }
-@media (max-width:520px) { .wgroup { flex-wrap:wrap; flex-shrink:1 } }
 
 /* ---- how the season moved ---- */
 .bumpwrap { overflow-x:auto }
@@ -3894,19 +3920,23 @@ progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
    groups is the wider one. */
 .wcontrols {{ display: flex; align-items: center; gap: 8px 16px;
   flex-wrap: wrap; margin-bottom: 10px; }}
-/* A group is atomic: no shrinking, so a row too narrow to hold everything
-   breaks between groups rather than through the middle of one. Below the
-   phone breakpoint that stops being true — three buttons of chalk do not fit
-   in 375px however they are grouped — and it goes back to wrapping freely.
-   Stretch rather than center, because a native <select> lays its text out on
-   its own terms and comes out three pixels shorter than the buttons beside
-   it — a row that reads as assembled rather than designed. Stretching lets
-   the tallest control set the height and the rest meet it. */
-.wgroup {{ display: flex; align-items: stretch; gap: 6px; flex: 0 0 auto; }}
+/* A group is atomic: the row breaks between groups rather than through the
+   middle of one. Stretch rather than center, because a native <select> lays
+   its text out on its own terms and comes out three pixels shorter than the
+   buttons beside it — a row that reads as assembled rather than designed.
+   Stretching lets the tallest control set the height and the rest meet it.
+
+   ATOMIC UNTIL IT CANNOT BE. flex:0 0 auto said "never break", and never is
+   longer than the row: the chalk group is a select and two buttons that all
+   refuse to wrap, and at 530px of card column it grew straight past the
+   card's right edge and under the race board beside it. Shrinking and
+   wrapping stay last resorts — a flex line takes whole items first, so a
+   group is only squeezed once it is alone on its line and still too wide.
+   The old max-width:520px rule said this for phones only, which was the
+   wrong measurement: what has to fit is the card, not the window. */
+.wgroup {{ display: flex; align-items: stretch; gap: 6px; flex: 0 1 auto;
+  flex-wrap: wrap; min-width: 0; }}
 .wgroup > label {{ display: flex; align-items: center; }}
-@media (max-width: 520px) {{
-  .wgroup {{ flex-wrap: wrap; flex-shrink: 1; }}
-}}
 /* Same rule as the subpages'. Denser than it was and pressable rather than
    merely bordered: a smaller label, a tighter box, a hairline of lift, and a
    press that actually moves. Flex is scoped to button/a because a <select>
@@ -4033,7 +4063,13 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 .clteam {{ min-width:0; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap }}
 .clpct {{ text-align:right }}
-.cltags, .clrec {{ white-space:nowrap }}
+/* The chips hold their line — a "clinched" that breaks in half is not a
+   chip any more. The record after them does not: it is the longest thing on
+   the row and the least load-bearing, so when the row runs out of width it
+   is the one that gives. Set nowrap it did the opposite, holding the whole
+   card open past the column it was sitting in. */
+.cltags {{ white-space:nowrap }}
+.clrec {{ min-width:0 }}
 @media (max-width:640px) {{
   .clmain {{ grid-template-columns:22px 1fr auto; row-gap:3px }}
   .clbar, .clpct {{ display:none }}

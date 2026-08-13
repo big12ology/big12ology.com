@@ -89,8 +89,9 @@ export async function importWeek(env, season, week) {
   for (const g of slate.games) {
     stmts.push(env.DB.prepare(
       `INSERT INTO slate_games (season, week, game_id, home, away, kickoff_at,
-                                spread_x2, spread_raw, books, b12, frozen_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                spread_x2, spread_raw, books, b12, neutral,
+                                frozen_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(season, week, game_id) DO UPDATE SET
          -- The COALESCE argument order is the whole behavior here, so:
          --
@@ -121,10 +122,16 @@ export async function importWeek(env, season, week) {
          -- Not COALESCEd toward what we already have: conference membership
          -- is a fact about the world, and a row imported before the publisher
          -- carried it has NULL here and must be allowed to learn.
-         b12        = COALESCE(excluded.b12, slate_games.b12)`)
+         b12        = COALESCE(excluded.b12, slate_games.b12),
+         -- Same reasoning as b12, and the same direction: where the game is
+         -- played is a fact about the world, and a row imported before the
+         -- publisher carried it reads NULL — "not neutral" — and must be
+         -- allowed to learn otherwise.
+         neutral    = COALESCE(excluded.neutral, slate_games.neutral)`)
       .bind(season, week, g.game_id, g.home, g.away, g.kickoff_at,
             g.spread_x2 ?? null, g.spread_raw ?? null, g.books ?? null,
-            g.b12 ?? null, now));
+            g.b12 ?? null, g.neutral == null ? null : (g.neutral ? 1 : 0),
+            now));
   }
 
   // A D1 batch is one implicit transaction: a trigger abort rolls back
@@ -177,6 +184,7 @@ export async function readSlate(env, season, week) {
 
   const { results: games } = await env.DB.prepare(
     `SELECT g.game_id, g.home, g.away, g.kickoff_at, g.spread_x2, g.b12,
+            g.neutral,
             r.home_points, r.away_points, r.status AS rstatus, r.ats
        FROM slate_games g
        LEFT JOIN results r
@@ -207,6 +215,10 @@ export async function readSlate(env, season, week) {
         // Which side the survivor pool will accept. The pick'em ignores it;
         // both sides of a game are equally pickable there.
         b12: g.b12 || null,
+        // Whether the game has a host, which decides whether the row reads
+        // "away at home" or "away vs home". NULL predates the column and
+        // reads as false, which is right for all but a few games a season.
+        neutral: g.neutral === 1,
         kickoff: new Date(g.kickoff_at * 1000).toISOString(),
         kickoff_at: g.kickoff_at,
         spread_x2: g.spread_x2,

@@ -292,3 +292,35 @@ test("no view reports an error against good data", async () => {
       `${id} says: ${h.byId[id].textContent}`);
   }
 });
+
+// "at" names a host, and a neutral-site game has none — Arizona State did not
+// travel to Kansas, they both travelled to Wembley. The rest of the domain has
+// drawn that distinction since the hub started showing the next kickoff; this
+// section wrote the word four times over and always wrote "at", which told
+// every reader of a London or Dublin game something untrue about who had the
+// crowd. The flag rides on the frozen slate, so a week frozen before the
+// column existed reads undefined and keeps saying "at".
+test("a neutral-site game joins its two teams with vs", async () => {
+  const home = { ...S.games[0] };
+  const away = { ...S.games[1], neutral: true };
+  const h = harness({
+    "/api/slate": { ...S, games: [home, away] },
+    "/api/picks": { season: 2026, week: 3, locked: false,
+                    lock_at: S.lock_at, picks: {} },
+  });
+  await h.fire();
+  await settle();
+
+  const joins = (n) => (n.className || "").split(" ").includes("pk-at")
+    ? [n] : (n.children || []).flatMap(joins);
+  const row = (nodes, g) => [...nodes].find(
+    (n) => n.textContent.includes(g.away) && n.textContent.includes(g.home));
+
+  for (const [g, want] of [[home, "at"], [away, "vs"]]) {
+    const r = row(h.byId.slate.children, g);
+    assert.ok(r, `no slate row for ${g.away} / ${g.home}`);
+    const words = joins(r).map((n) => n.textContent.trim());
+    assert.deepEqual(words, [want],
+      `${g.away} / ${g.home}: joined with ${JSON.stringify(words)}`);
+  }
+});
