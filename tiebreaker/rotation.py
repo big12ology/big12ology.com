@@ -93,7 +93,7 @@ def all_time_records(years, teams, current=None):
         for g in games:
             if not g.get("conference_game") or g.get("ccg"):
                 continue
-            if not g.get("completed") or g.get("home_points") is None:
+            if not g.get("completed") or not tb.has_score(g):
                 continue
             w = tb.winner(g)
             if w is None:

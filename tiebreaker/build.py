@@ -1091,7 +1091,7 @@ def h2h_card(games, teams, stand_rows):
             where = ("N" if g.get("neutral_site")
                      else "H" if g["home"] == a else "A")
             place = {"N": "neutral site", "H": "home", "A": "away"}[where]
-            if g["completed"] and g["home_points"] is not None:
+            if g["completed"] and tb.has_score(g):
                 mine = g["home_points"] if g["home"] == a else g["away_points"]
                 theirs = g["away_points"] if g["home"] == a else g["home_points"]
                 won = mine > theirs
@@ -1141,7 +1141,7 @@ def pad_standings(rows, games):
         return rows
     tally = {t: {"nw": 0, "nl": 0, "ow": 0, "ol": 0} for t in missing}
     for g in games:
-        if not g["completed"] or g.get("ccg") or g["home_points"] is None:
+        if not g["completed"] or g.get("ccg") or not tb.has_score(g):
             continue
         w = tb.winner(g)
         if not w:
@@ -1229,7 +1229,7 @@ def season_frames(games, overrides):
     client-side implementation would."""
     weeks = sorted({g["week"] for g in games
                     if g["completed"] and g["conference_game"]
-                    and not g.get("ccg") and g["home_points"] is not None})
+                    and not g.get("ccg") and tb.has_score(g)})
     everyone = sorted(clinch_mod.conf_teams(games))
     out = []
     for w in weeks:
@@ -1766,7 +1766,7 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
     """The Brief: what changed this week. Deliberately not a second copy of
     The Race — this page is movement, not reference."""
     done = [g for g in games if g["completed"] and not g.get("ccg")
-            and g["home_points"] is not None]
+            and tb.has_score(g)]
     stand_rows = tb.standings(games, overrides)
     cl = clinch_mod.analyze(games, overrides)
     cx = chaos_mod.index(stand_rows, cl, sims) if sims else None
@@ -2714,7 +2714,11 @@ def espn_link(g):
     gid = g.get("id")
     if not gid:
         return ""
-    played = g["completed"] and g["home_points"] is not None
+    # tb.has_score, like everywhere else, though nothing here can crash on a
+    # half-scored row: this one only chooses a destination. A game whose score
+    # is half in is a game ESPN has no box score for either, so it gets the
+    # preview link and the plain label until both numbers land.
+    played = g["completed"] and tb.has_score(g)
     kind = "boxscore" if played else "game"
     # Beside our own Preview link, "Game preview" twice would be two names
     # for two different things. The destination is the label.
@@ -2749,7 +2753,11 @@ def joiner(g):
 def matchup(g, size=18):
     """Both teams with their marks, scored if it has been played."""
     hm, am = logo_img(g["home"], size), logo_img(g["away"], size)
-    if g["completed"] and g["home_points"] is not None:
+    # The else branch already renders exactly what a half-scored game should
+    # look like — both names, no figures — so switching the test here does not
+    # need a new case, it just stops the comparison below from being reached
+    # with a None on one side of it.
+    if g["completed"] and tb.has_score(g):
         hw = g["home_points"] > g["away_points"]
         away = (f"{am}<b>{esc(g['away'])}</b> {g['away_points']}" if not hw
                 else f"{am}{esc(g['away'])} {g['away_points']}")
@@ -2875,7 +2883,7 @@ def build_schedule_page(games, ctx):
     upcard = (f"<div class=card><h2>The rest of the season</h2>{up}</div>"
               if up else "")
     done = [g for g in games if g["completed"]
-            and g["home_points"] is not None and g["week"] != wk]
+            and tb.has_score(g) and g["week"] != wk]
     done.sort(key=lambda g: g["start"] or "", reverse=True)
     rescard = ""
     if done:
@@ -3393,7 +3401,7 @@ def pretty_date(iso, style="short"):
 
 def game_row(g):
     hm, am = logo_img(g["home"], 16), logo_img(g["away"], 16)
-    if g["completed"] and g["home_points"] is not None:
+    if g["completed"] and tb.has_score(g):
         hw = g["home_points"] > g["away_points"]
         home = f"<b>{esc(g['home'])} {g['home_points']}</b>" if hw \
             else f"{esc(g['home'])} {g['home_points']}"
@@ -3505,9 +3513,9 @@ def render(year, games):
     display_rows = pad_standings(rows, games)
     ccg = tb.championship(games, overrides)
     reg = [g for g in games if g["conference_game"] and not g.get("ccg")]
-    played = [g for g in games if g["completed"] and g["home_points"] is not None]
+    played = [g for g in games if g["completed"] and tb.has_score(g)]
     remaining = [g for g in games if not g["completed"]]
-    reg_played = [g for g in reg if g["completed"] and g["home_points"] is not None]
+    reg_played = [g for g in reg if g["completed"] and tb.has_score(g)]
     now = datetime.datetime.now(datetime.timezone.utc)
 
     # -- matchup card -----------------------------------------------------
@@ -4592,7 +4600,16 @@ def pending_results(games, now=None):
     now = now or datetime.datetime.now(datetime.timezone.utc)
     due = []
     for g in games:
-        if g.get("completed") and g.get("home_points") is not None:
+        # tb.has_score, and of all the places that test was written the short
+        # way this is the one where it did real damage rather than merely
+        # risking a crash. A row holding one score and a null satisfied the
+        # old check, so this function called the game settled and skipped it —
+        # meaning the single row whose result is provably incomplete was the
+        # one row the build would never go back and ask about again. It stayed
+        # half-scored until some later game in the same file happened to
+        # trigger a fetch. That is precisely the "erring toward silence" the
+        # docstring above rules out, arrived at by accident.
+        if g.get("completed") and tb.has_score(g):
             continue
         start = g.get("start")
         if not start:

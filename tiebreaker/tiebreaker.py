@@ -38,6 +38,35 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 # ---------------------------------------------------------------- basic records
 
+def has_score(g):
+    """Both scores are present, which is not the same thing as the game being
+    over.
+
+    The obvious check is `g["home_points"] is not None`, and it is the one
+    this build used nearly everywhere. It is wrong in a way that only shows up
+    on a Saturday afternoon. The feed does not fill the two score fields in a
+    single write: a row can arrive carrying an int in home_points and a null
+    in away_points, for the seconds between the provider posting one side and
+    the other, and for as long as a stalled or reverted update leaves it that
+    way. Every caller of this idea compares the two numbers on the very next
+    line, so the half-filled row does not quietly produce a wrong winner —
+    it raises TypeError and takes the whole build down with it.
+
+    Checking both fields is therefore not defensive padding. `completed` is
+    the provider's opinion about the game; these two fields are the data the
+    arithmetic actually needs, and only the second thing can decide whether
+    the arithmetic is safe to run at all. Callers still test `completed`
+    separately where they care about the distinction, because a game can carry
+    scores it is not finished with.
+
+    `.get()` rather than subscripting, because the history files under
+    data/ predate some of the keys fetch.py writes today, and a caller reading
+    an old season should get "no result here" rather than a KeyError.
+    """
+    return (g.get("home_points") is not None
+            and g.get("away_points") is not None)
+
+
 def conf_games(games):
     """The completed conference games, which is nearly every question here.
 
@@ -59,7 +88,7 @@ def conf_games(games):
     nothing outside this module has to know.
     """
     return [g for g in games if g["conference_game"] and g["completed"]
-            and g["home_points"] is not None and not g.get("ccg")]
+            and has_score(g) and not g.get("ccg")]
 
 
 def winner(g):
