@@ -1,0 +1,22 @@
+-- Clear the plaintext addresses out of sessions.ip_hash.
+--
+-- The column was named for what it was supposed to hold and held the address
+-- itself: index.js passed clientIp(req) and session.create bound it straight
+-- through, so every sign-in since the table existed wrote an IP in the clear.
+-- The code side is fixed — create() now hashes with IDENTITY_PEPPER before the
+-- bind, the same way resolveIdentity always has for signup_ip_hash — but a
+-- code change only stops the next one. This is the thirty days already there.
+--
+-- NULL, NOT REHASHED, and that is the point rather than a shortcut. The rows
+-- hold addresses that should never have been stored, and hashing them in place
+-- would preserve exactly the linkability the hash exists to remove while
+-- letting the column look like it had always been right. Nothing reads this
+-- field: it exists for a person looking at a burst of signups, which is what
+-- users.signup_ip_hash is for, and that one is untouched.
+--
+-- ua_hash goes with it. It is written as NULL by every current code path and
+-- has the same name-versus-contents problem waiting in it.
+--
+-- Not reversible, and not meant to be.
+UPDATE sessions SET ip_hash = NULL, ua_hash = NULL
+ WHERE ip_hash IS NOT NULL OR ua_hash IS NOT NULL;

@@ -81,9 +81,24 @@ export async function patchMe(env, user, body) {
 
   // Team is a display preference, not an identity: no cooldown, no history,
   // no uniqueness. It only tints your own rows.
+  //
+  // Metered anyway, and it was not. This branch returns before the rename
+  // limiter below it, which made it the only write on the Worker that anybody
+  // signed in could repeat without bound — picks are 30/hr, renames 5/day,
+  // sign-ins 20/hr, and this was unlimited UPDATEs against a D1 whose daily
+  // write allowance is shared with the picks that are the actual product. The
+  // cost of abusing it was one sign-in.
+  //
+  // Its own bucket rather than borrowing "rename": a person genuinely does
+  // change their team a few times while looking at the colors, and spending
+  // the five-a-day rename budget on that would refuse them a NAME. Generous
+  // enough that nobody legitimate meets it, small enough that it is not a
+  // write amplifier.
   if ("team" in body && !("display_name" in body)) {
     const t = body.team == null || body.team === "" ? null : String(body.team);
     if (t && t.length > 60) return fail("team_unknown", 400);
+    const trl = await ratelimit.take(env, "team", user.userId);
+    if (!trl.ok) return fail("rate_limited", 429, { retry_after: trl.retryAfter });
     await env.DB.prepare(`UPDATE users SET team = ? WHERE id = ?`)
       .bind(t, user.userId).run();
     return json({ team: t });
@@ -147,6 +162,12 @@ export async function patchMe(env, user, body) {
  * worse than one with pseudonymous rows, and every other player's rank depends
  * on those games having been picked. This is a real limit on erasure and it is
  * stated plainly in privacy.html rather than left to be discovered.
+ *
+ * The sessions' own address hashes are cleared too, and that was missing. This
+ * function has always cleared users.signup_ip_hash — the one privacy.html
+ * names — while sessions carried up to thirty days of their own, keyed to a
+ * user_id that deliberately survives with its picks. "What is deleted is every
+ * link between those picks and you" has to include that one.
  */
 export async function deleteMe(env, user) {
   if (!user) return fail("unauthenticated", 401);
@@ -158,6 +179,9 @@ export async function deleteMe(env, user) {
       `UPDATE users SET display_name = ?, display_norm = ?, status = 'active',
                         signup_ip_hash = NULL, signup_asn = NULL
         WHERE id = ?`).bind(anon, anon, user.userId),
+    env.DB.prepare(
+      `UPDATE sessions SET ip_hash = NULL, ua_hash = NULL WHERE user_id = ?`)
+      .bind(user.userId),
     env.DB.prepare(
       `INSERT INTO audit_log (at, actor, action, subject)
        VALUES (?, ?, 'account_deleted', ?)`)

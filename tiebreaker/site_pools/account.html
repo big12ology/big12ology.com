@@ -530,9 +530,21 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
   email address, not your name, not your picture. What becomes public is the
   display name you choose and your record.
   <a href="/privacy">What we store</a>.</p>
+  <!-- Every provider the Worker knows how to talk to, in the order it lists
+       them. app.js asks /api/auth/providers and REMOVES the ones this deploy
+       has no credentials for, so turning a provider on is `wrangler secret
+       put` and nothing else — no edit here, no deploy, and no second list of
+       names to drift out of step with worker/src/oauth.js.
+
+       Kept in the HTML rather than built in script so that a reader with no
+       JavaScript still sees a way in. The cost is that such a reader may click
+       a provider that is dark and get an error page; the alternative is that
+       they see no sign-in at all, which is worse. -->
   <p class=pk-signins>
-    <a class=wbtn href="/api/auth/login/google?return_to=/pools/pickem/">Continue with Google</a>
-    <a class=wbtn href="/api/auth/login/github?return_to=/pools/pickem/">Continue with GitHub</a>
+    <a class=wbtn data-provider=google href="/api/auth/login/google?return_to=/pools/pickem/">Continue with Google</a>
+    <a class=wbtn data-provider=microsoft href="/api/auth/login/microsoft?return_to=/pools/pickem/">Continue with Microsoft</a>
+    <a class=wbtn data-provider=github href="/api/auth/login/github?return_to=/pools/pickem/">Continue with GitHub</a>
+    <a class=wbtn data-provider=amazon href="/api/auth/login/amazon?return_to=/pools/pickem/">Continue with Amazon</a>
   </p>
   <p class=note>Signing in sets one cookie. Nothing else.</p>
 </div>

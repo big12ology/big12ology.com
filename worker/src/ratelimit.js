@@ -16,6 +16,11 @@ export const LIMITS = {
   rename: { max: 5,  window: 86400 },
   login:  { max: 20, window: 3600 },
   signup: { max: 5,  window: 86400 },
+  // Picking a team is trying colors on, so this is deliberately loose — it
+  // exists to bound the writes, not to ration a preference. Its own bucket
+  // and not "rename": they are both PATCH /api/me, and sharing a budget
+  // would mean somebody who fiddled with the tint could not choose a name.
+  team:   { max: 60, window: 3600 },
 };
 
 /**

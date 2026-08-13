@@ -1,12 +1,13 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=43";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=43";
-import { gameTooltipHTML, setPreviewIndex } from "./gametip.js?v=43";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=44";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=44";
+import { gameTooltipHTML, setPreviewIndex } from "./gametip.js?v=44";
+// Was a local copy of `esc`, applied to four `title=` attributes and to none
+// of the cell text beside them. It is shared now so that charts.js and
+// gametip.js cannot go on not having one — see the header there.
+import { esc, escUrl } from "./html.js?v=44";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
-// Data-sourced strings land in attributes; keep quotes and angle brackets out.
-const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;")
-  .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const pct = (p) => (p * 100).toFixed(1) + "%";
 
 // Current view state: computed summary plus sort order. Default sort matches
@@ -166,7 +167,7 @@ function renderTable() {
       view.sort.key === key
         ? ` aria-sort="${view.sort.dir === "desc" ? "descending" : "ascending"}"`
         : ""
-    }${dualMetric(key) ? ' title="Click cycles: attendance ▾▴, then percent full ▾▴"' : ""}>${label}${arrow(key)}</th>`;
+    }${dualMetric(key) ? ' title="Click cycles: attendance ▾▴, then percent full ▾▴"' : ""}>${esc(label)}${arrow(key)}</th>`;
 
   const head = `<thead><tr>
       ${th("team", "Team", "team")}${th("games", "G")}${th("capacity", "Capacity")}
@@ -188,13 +189,13 @@ function renderTable() {
                   ? ` · <span class="${info.pointsFor > info.pointsAgainst ? "win" : "loss"}">${info.pointsFor > info.pointsAgainst ? "W" : "L"} ${info.pointsFor}–${info.pointsAgainst}</span>`
                   : "";
               sub = `<span class="sub" title="${esc(info.opponent)}">` +
-                `${info.opponent}${result}</span>`;
+                `${esc(info.opponent)}${result}</span>`;
             }
-            return `<td class="game" data-team="${row.team}" data-week="${w}">${num(g.attendance)}${pctSpan(g.pct)}${sub}</td>`;
+            return `<td class="game" data-team="${esc(row.team)}" data-week="${w}">${num(g.attendance)}${pctSpan(g.pct)}${sub}</td>`;
           }
           const s = scheduled.get(`${row.team}|${w}`);
           if (s)
-            return `<td class="game sched" data-team="${row.team}" data-week="${w}"><span class="opp" title="${esc(s.opponent ?? "TBD")}">${s.opponent ?? "TBD"}</span><span class="pct">${fmtDateShort(s.date)}</span></td>`;
+            return `<td class="game sched" data-team="${esc(row.team)}" data-week="${w}"><span class="opp" title="${esc(s.opponent ?? "TBD")}">${esc(s.opponent ?? "TBD")}</span><span class="pct">${fmtDateShort(s.date)}</span></td>`;
           const r = roadGames.get(`${row.team}|${w}`);
           if (r) {
             const at = r.role === "neutral" ? "vs" : "@";
@@ -202,7 +203,7 @@ function renderTable() {
               r.pointsFor != null
                 ? `${r.pointsFor > r.pointsAgainst ? "W" : "L"} ${r.pointsFor}–${r.pointsAgainst}`
                 : fmtDateShort(r.date);
-            return `<td class="game away" data-team="${row.team}" data-week="${w}"><span class="opp" title="${esc(at + " " + (r.opponent ?? "TBD"))}">${at} ${r.opponent ?? "TBD"}</span><span class="pct">${sub}</span></td>`;
+            return `<td class="game away" data-team="${esc(row.team)}" data-week="${w}"><span class="opp" title="${esc(at + " " + (r.opponent ?? "TBD"))}">${at} ${esc(r.opponent ?? "TBD")}</span><span class="pct">${sub}</span></td>`;
           }
           const tr = range[row.team];
           if (tr && w > tr.min && w < tr.max)
@@ -213,11 +214,11 @@ function renderTable() {
       const stadiumLabel = row.multiVenue
         ? [...new Set(row.weeks.map((w) => w.venue).filter(Boolean))].join(" / ")
         : row.stadium;
-      const logo = row.logo ? `<img class="team-logo" src="${row.logo}" alt="" loading="lazy" />` : "";
+      const logo = row.logo ? `<img class="team-logo" src="${escUrl(row.logo)}" alt="" loading="lazy" />` : "";
       const confTag = big12Era ? "" :
-        `<span class="conf">${confOf[row.team] ?? "—"}</span>`;
+        `<span class="conf">${esc(confOf[row.team] ?? "—")}</span>`;
       return `<tr>
-        <td class="team" style="--tc:${row.color ?? "transparent"}">${logo}<span class="team-name">${row.team}${confTag}<span class="stadium">${stadiumLabel}</span></span></td>
+        <td class="team" style="--tc:${esc(row.color ?? "transparent")}">${logo}<span class="team-name">${esc(row.team)}${confTag}<span class="stadium">${esc(stadiumLabel)}</span></span></td>
         <td>${row.games}</td><td>${row.capacity != null ? num(row.capacity) : "varies"}${row.capacityEstimate ? ` <abbr class=estmark title="${esc(row.capacityEstimate)}">est</abbr>` : ""}${row.capacityDisputed ? ` <abbr class=capmark title="${esc(row.capacityDisputed)}">*</abbr>` : ""}</td>${cells}
         <td class="season-total">${num(row.total)}${pctSpan(row.pct)}</td>
       </tr>`;
@@ -349,7 +350,7 @@ function render(teamsData, season) {
       `<div class="label">Before the current Big 12 composition</div>` +
       `<div class="era-text">The Big 12 existed in ${season.season}, with a ` +
       `different membership. These sixteen programs played in ` +
-      `${leagues.length} different conferences (${leagues.join(", ")}). ` +
+      `${leagues.length} different conferences (${esc(leagues.join(", "))}). ` +
       `Per-team figures below are accurate; conference totals and league-wide ` +
       `rankings don't apply to this season, so they aren't shown.</div></div>`;
   } else {
@@ -573,9 +574,9 @@ async function main() {
     const box = $("#team-chips");
     const teams = teamsForSeason(teamsData, Number(select.value));
     box.innerHTML = teams.map((t) =>
-      `<button data-team="${t.team}" class="${selectedTeams.has(t.team) ? "on" : ""}"
-        style="${selectedTeams.has(t.team) ? `background:${t.color};border-color:${t.color}` : ""}">
-        ${t.logo ? `<img src="${t.logo}" alt="">` : ""}${t.team}</button>`).join("");
+      `<button data-team="${esc(t.team)}" class="${selectedTeams.has(t.team) ? "on" : ""}"
+        style="${selectedTeams.has(t.team) ? `background:${esc(t.color)};border-color:${esc(t.color)}` : ""}">
+        ${t.logo ? `<img src="${escUrl(t.logo)}" alt="">` : ""}${esc(t.team)}</button>`).join("");
     box.querySelectorAll("button").forEach((b) => {
       b.onclick = () => {
         const team = b.dataset.team;

@@ -1,6 +1,12 @@
 // The one game tooltip. Every hover on this site — table cell, heatmap
 // cell, weather scatter dot, team-comparison point — renders this exact
 // card, so a game reads the same wherever you meet it.
+//
+// Which also made it the one place worth getting the escaping right: opponent,
+// venue and city arrive from CFBD unaltered, and every one of them was
+// interpolated raw into a string that becomes innerHTML at both call sites.
+
+import { esc, escUrl } from "./html.js?v=44";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
@@ -48,7 +54,7 @@ export function gameTooltipHTML({ game, weekLabel, wk, cap, prefix }) {
   const lines = [];
   const when = [fmtDate(game.date), fmtTime(game.time)].filter(Boolean).join(" · ");
   const head = [prefix, weekLabel, when].filter(Boolean).join(" · ");
-  lines.push(`<div class="tip-head">${head}</div>`);
+  lines.push(`<div class="tip-head">${esc(head)}</div>`);
 
   if (game.opponent) {
     let result = "";
@@ -58,7 +64,7 @@ export function gameTooltipHTML({ game, weekLabel, wk, cap, prefix }) {
         `${won ? "W" : "L"} ${game.pointsFor}–${game.pointsAgainst}</strong>`;
     }
     const prep = game.role === "away" ? "at" : "vs";
-    lines.push(`<div class="tip-opp">${prep} ${game.opponent}${result}</div>`);
+    lines.push(`<div class="tip-opp">${prep} ${esc(game.opponent)}${result}</div>`);
   }
 
   if (game.role) {
@@ -66,7 +72,7 @@ export function gameTooltipHTML({ game, weekLabel, wk, cap, prefix }) {
                    game.city ? `${game.city}, ${game.state ?? ""}`.replace(/, $/, "") : null]
       .filter(Boolean).join(" · ");
     if (where) {
-      lines.push(`<div>${where}${game.role === "neutral" ? " (neutral site)" : ""}</div>`);
+      lines.push(`<div>${esc(where)}${game.role === "neutral" ? " (neutral site)" : ""}</div>`);
     }
     if (game.attendance != null) {
       lines.push(`<div class="tip-wx">Attendance ${num(game.attendance)}</div>`);
@@ -75,7 +81,7 @@ export function gameTooltipHTML({ game, weekLabel, wk, cap, prefix }) {
     lines.push(
       `<div>${num(wk.attendance)} · ${pct(wk.pct)}` +
       `${cap ? ` of ${num(Math.round(cap))}` : ""}` +
-      `${game.venue ? ` · ${game.venue}` : ""}</div>`);
+      `${game.venue ? ` · ${esc(game.venue)}` : ""}</div>`);
   }
 
   if (game.weather) {
@@ -87,7 +93,7 @@ export function gameTooltipHTML({ game, weekLabel, wk, cap, prefix }) {
   }
 
   if (game.attendanceSource) {
-    lines.push(`<div class="tip-src">Attendance: ${game.attendanceSource}</div>`);
+    lines.push(`<div class="tip-src">Attendance: ${esc(game.attendanceSource)}</div>`);
   }
 
   if (game.espnId) {
@@ -98,13 +104,17 @@ export function gameTooltipHTML({ game, weekLabel, wk, cap, prefix }) {
       // line, what four rating models make of it, and the way out to ESPN
       // among the rest. Sending a reader straight to ESPN from here skipped
       // all of it. Same tab, because it is the same site.
-      lines.push(`<a href="/schedule/game/${ours}">Game preview →</a>`);
+      lines.push(`<a href="/schedule/game/${escUrl(ours)}">Game preview →</a>`);
     } else {
       // A finished game, or a season with no game pages: the box score is
       // what a reader wants and we do not publish one.
+      // The id is a number in every file we publish, and it is coerced here
+      // anyway: it is provider-supplied, it lands inside an href, and a string
+      // with a quote in it would close the attribute rather than 404.
+      const id = encodeURIComponent(game.espnId);
       const link = played
-        ? `https://www.espn.com/college-football/boxscore/_/gameId/${game.espnId}`
-        : `https://www.espn.com/college-football/game/_/gameId/${game.espnId}`;
+        ? `https://www.espn.com/college-football/boxscore/_/gameId/${id}`
+        : `https://www.espn.com/college-football/game/_/gameId/${id}`;
       lines.push(`<a href="${link}" target="_blank" rel="noopener">` +
         `${played ? "Box score" : "Game preview"} ↗</a>`);
     }

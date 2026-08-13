@@ -1,7 +1,13 @@
 // SVG charts for the tracker. No dependencies; theme-aware; every chart has a
 // hover layer, and the season table doubles as the accessible table view.
-import { seasonSummary, teamsForSeason } from "./stats.js?v=43";
-import { gameTooltipHTML } from "./gametip.js?v=43";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=44";
+import { gameTooltipHTML } from "./gametip.js?v=44";
+// Sixteen innerHTML assignments in this file and, until now, no escape in it
+// at all. Team names, venues and opponents come from CFBD; the SVG string
+// builders below are HTML the same as any other. showTip() and card() go
+// through textContent and are left alone deliberately — the escaping is on
+// the innerHTML paths, which is where it belongs.
+import { esc, escUrl } from "./html.js?v=44";
 
 const num = (n) => n.toLocaleString("en-US");
 const pct = (p) => (p * 100).toFixed(1) + "%";
@@ -203,10 +209,10 @@ function teamBars(cardEl, summary) {
     // Brand color is decoration here — identity rides the name label and logo.
     const fill = r.color ?? t.series[0];
     const logo = r.logo
-      ? `<image href="${r.logo}" x="${m.l - 24}" y="${yy - 1}" width="18" height="18"/>`
+      ? `<image href="${escUrl(r.logo)}" x="${m.l - 24}" y="${yy - 1}" width="18" height="18"/>`
       : "";
-    marks += `<text x="${m.l - 30}" y="${yy + 12}" text-anchor="end" class="lbl">${r.team}</text>` + logo +
-      `<path d="${roundedRightBar(m.l, yy, w, 16)}" fill="${fill}" data-i="${i}" class="hit"/>` +
+    marks += `<text x="${m.l - 30}" y="${yy + 12}" text-anchor="end" class="lbl">${esc(r.team)}</text>` + logo +
+      `<path d="${roundedRightBar(m.l, yy, w, 16)}" fill="${esc(fill)}" data-i="${i}" class="hit"/>` +
       `<text x="${m.l + w + 6}" y="${yy + 12}" class="val">${pct(r.pct)}</text>`;
   });
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -304,7 +310,7 @@ function heatmap(cardEl, summary, season) {
   });
   rows.forEach((r, i) => {
     const yy = m.t + i * (ch + gap);
-    marks += `<text x="${m.l - 8}" y="${yy + ch / 2 + 4}" text-anchor="end" class="lbl">${r.team}</text>`;
+    marks += `<text x="${m.l - 8}" y="${yy + ch / 2 + 4}" text-anchor="end" class="lbl">${esc(r.team)}</text>`;
     const byWeek = Object.fromEntries(r.weeks.map((w) => [w.week, w]));
     weeks.forEach((w, j) => {
       const g = byWeek[w];
@@ -378,9 +384,9 @@ function yoyLines(cardEl, seasonsData, teamsData) {
     marks += `<text x="${x(w)}" y="${H - 8}" text-anchor="middle" class="tick">${w}</text>`;
   for (const s of series) {
     const d = s.pts.map((p, i) => `${i ? "L" : "M"}${x(p.week)},${y(p.pct)}`).join("");
-    marks += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    marks += `<path d="${d}" fill="none" stroke="${esc(s.color)}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
     const last = s.pts[s.pts.length - 1];
-    marks += `<circle cx="${x(last.week)}" cy="${y(last.pct)}" r="4" fill="${s.color}" stroke="${t.surface}" stroke-width="2"/>` +
+    marks += `<circle cx="${x(last.week)}" cy="${y(last.pct)}" r="4" fill="${esc(s.color)}" stroke="${t.surface}" stroke-width="2"/>` +
       `<text x="${x(last.week) + 8}" y="${y(last.pct) + 4}" class="lbl">${s.year}</text>`;
   }
   const cross = `<line id="cross" x1="0" x2="0" y1="${m.t}" y2="${H - m.b}" stroke="${t.baseline}" stroke-width="1" opacity="0"/>`;
@@ -479,7 +485,7 @@ function yoyTeams(cardEl, seasonsData, teamsData) {
     // hover anywhere along the row, not only on a marker
     marks += `<rect x="${m.l}" y="${y - rowH / 2}" width="${W - m.l - m.r + 46}"
       height="${rowH}" fill="transparent" data-i="${i}" class="hit"/>`;
-    marks += `<text x="${m.l - 8}" y="${y + 4}" text-anchor="end" class="lbl">${r.team}</text>`;
+    marks += `<text x="${m.l - 8}" y="${y + 4}" text-anchor="end" class="lbl">${esc(r.team)}</text>`;
     marks += `<text x="${x(r.hi.pct) + 10}" y="${y + 4}" class="val">${pct(r.median)}</text>`;
   });
   // the newest season with games played, not merely the newest in the index
@@ -537,9 +543,9 @@ function membershipLedger(cardEl, seasonsData) {
       || b[1].length - a[1].length);
     const cells = leagues.map(([league, teams]) =>
       `<div class="lg${league === "Big 12" ? " b12" : ""}">` +
-      `<span class="lgname">${league}</span> ` +
+      `<span class="lgname">${esc(league)}</span> ` +
       `<span class="lgn">${teams.length}</span> ` +
-      `<span class="lgteams">${teams.sort().join(", ")}</span></div>`).join("");
+      `<span class="lgteams">${esc(teams.sort().join(", "))}</span></div>`).join("");
     return `<tr><td class="lgyear">${y}</td><td>${cells}</td></tr>`;
   }).join("");
   table.innerHTML = `<tbody>${body}</tbody>`;
@@ -715,12 +721,12 @@ function winElasticity(cardEl, seasonsData, teamsData) {
   rows.forEach((r, i) => {
     const y = m.t + i * (rowH + gap) + rowH / 2;
     marks += `<line x1="${x(r.lose)}" x2="${x(r.win)}" y1="${y}" y2="${y}"
-      stroke="${r.color}" stroke-width="5" stroke-linecap="round" opacity="0.42"/>`;
+      stroke="${esc(r.color)}" stroke-width="5" stroke-linecap="round" opacity="0.42"/>`;
     marks += `<circle cx="${x(r.lose)}" cy="${y}" r="5.5" fill="${divergeHSL(0.08)}"/>`;
     marks += `<circle cx="${x(r.win)}" cy="${y}" r="5.5" fill="${divergeHSL(0.95)}"/>`;
     marks += `<rect x="${m.l}" y="${y - rowH / 2}" width="${W - m.l - m.r + 58}"
       height="${rowH}" fill="transparent" data-i="${i}" class="hit"/>`;
-    marks += `<text x="${m.l - 8}" y="${y + 4}" text-anchor="end" class="lbl">${r.team}</text>`;
+    marks += `<text x="${m.l - 8}" y="${y + 4}" text-anchor="end" class="lbl">${esc(r.team)}</text>`;
     const sign = r.gap >= 0 ? "+" : "−";
     marks += `<text x="${W - m.r + 12}" y="${y + 4}" class="val">${sign}${Math.abs(Math.round(r.gap * 100))}</text>`;
   });
@@ -932,14 +938,14 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
           `game${s > 1 ? "s" : ""} active</span>` +
           (openEnded
             ? `<span class="rw-sub">every home game since ${first}</span>`
-            : (l ? `<span class="rw-sub">Last ${l.opp} ${recDate(l)}</span>` : ""));
+            : (l ? `<span class="rw-sub">Last ${esc(l.opp)} ${recDate(l)}</span>` : ""));
       } else if (ended.has(team)) {
         // "Last" always means the most recent sellout — not the game that
         // ended the run, which is a different (and confusing) thing.
         const e = ended.get(team);
         const l = lastSellout.get(team);
         cell = `<span class="rw-bad">ended after ${e.count}</span>` +
-          (l ? `<span class="rw-sub">Last ${l.opp} ${recDate(l)}</span>` : "");
+          (l ? `<span class="rw-sub">Last ${esc(l.opp)} ${recDate(l)}</span>` : "");
       } else {
         cell = `<span class="rw-dim">none</span>` +
           `<span class="rw-sub">no sellout since ${first}</span>`;
@@ -948,10 +954,13 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
       // name. It was the only table showing a bare name.
       const lg = logoOf.get(team);
       return `<tr><td class="rw-team">` +
-        (lg ? `<img class="team-logo" src="${lg}" alt="" width="20" height="20">` : "") +
-        `${team}</td>` +
-        `<td>${num(b.crowd)}<span class="rw-sub">vs ${b.crowdGame}</span></td>` +
-        `<td>${pct(b.pct)}<span class="rw-sub">vs ${b.pctGame}</span></td>` +
+        (lg ? `<img class="team-logo" src="${escUrl(lg)}" alt="" width="20" height="20">` : "") +
+        `${esc(team)}</td>` +
+        // crowdGame and pctGame are built above as "<opponent> <year> · <venue>"
+        // — two CFBD strings and a number — so they are escaped here rather
+        // than at the three places they are assembled.
+        `<td>${num(b.crowd)}<span class="rw-sub">vs ${esc(b.crowdGame)}</span></td>` +
+        `<td>${pct(b.pct)}<span class="rw-sub">vs ${esc(b.pctGame)}</span></td>` +
         `<td>${cell}</td></tr>`;
     }).join("");
   cardEl.classList.add("span-all");
@@ -1034,7 +1043,7 @@ function roadDraw(cardEl, seasonsData, teamsData) {
     // No truncation: the margin is sized for the longest Big 12 name, and a
     // cut label in an SVG has no tooltip to recover it from.
     marks += `<text x="${m.l - 8}" y="${y + rowH / 2 + 4}" text-anchor="end"
-      class="lbl">${r.team}` +
+      class="lbl">${esc(r.team)}` +
       `<tspan class="tick"> ${r.n}</tspan></text>`;
     // Long bars carry their value inside; short ones sit just outside, and
     // the outside placement is clamped so it never reaches back into the
@@ -1104,10 +1113,10 @@ function multiLine(cardEl, seriesList, xLabels, yFmt, yMinPad, yMaxPad) {
   seriesList.forEach((s) => {
     if (!s.pts.length) return;
     const d = s.pts.map((p, j) => `${j ? "L" : "M"}${x(p.i)},${y(p.y)}`).join(" ");
-    marks += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.5" opacity="0.9"/>`;
+    marks += `<path d="${d}" fill="none" stroke="${esc(s.color)}" stroke-width="2.5" opacity="0.9"/>`;
     s.pts.forEach((p) => {
       hits.push({ s, p });
-      marks += `<circle cx="${x(p.i)}" cy="${y(p.y)}" r="4" fill="${s.color}"
+      marks += `<circle cx="${x(p.i)}" cy="${y(p.y)}" r="4" fill="${esc(s.color)}"
         data-i="${hits.length - 1}" class="hit"/>`;
     });
   });
@@ -1250,7 +1259,7 @@ function teamWeather(cardEl, seasonsData, teamsData, sel) {
         const cl = (v) => Math.max(pmin, Math.min(pmax, v));
         marks += `<line x1="${x(tmin + 3)}" y1="${y(cl(icept + slope * (tmin + 3)))}"
           x2="${x(tmax - 3)}" y2="${y(cl(icept + slope * (tmax - 3)))}"
-          stroke="${color}" stroke-width="2" stroke-dasharray="6 4" opacity="0.85"/>`;
+          stroke="${esc(color)}" stroke-width="2" stroke-dasharray="6 4" opacity="0.85"/>`;
         const per10 = slope * 10 * 100;
         const hot = mine.filter((p) => p.temp >= 85);
         const cold = mine.filter((p) => p.temp <= 50);
@@ -1263,15 +1272,15 @@ function teamWeather(cardEl, seasonsData, teamsData, sel) {
           extra += ` · ${(avg(cold) * 100).toFixed(0)}% when ≤50°F`;
         }
         marks += `<text x="${legendX}" y="${m.t - 12}" class="tick"
-          fill="${color}">${team}: ${per10 >= 0 ? "+" : ""}${per10.toFixed(1)}/10°F${extra}</text>`;
+          fill="${esc(color)}">${esc(team)}: ${per10 >= 0 ? "+" : ""}${per10.toFixed(1)}/10°F${extra}</text>`;
         legendX += 250;
       }
     }
     mine.forEach((p) => {
       const i = pts.indexOf(p);
       marks += `<circle cx="${x(p.temp)}" cy="${y(p.pct)}" r="${p.rain ? 5.5 : 4}"
-        fill="${color}" fill-opacity="${p.rain ? 0.95 : 0.6}"
-        ${p.rain ? `stroke="${color}" stroke-width="1.5"` : ""}
+        fill="${esc(color)}" fill-opacity="${p.rain ? 0.95 : 0.6}"
+        ${p.rain ? `stroke="${esc(color)}" stroke-width="1.5"` : ""}
         data-i="${i}" class="hit"/>`;
     });
   });

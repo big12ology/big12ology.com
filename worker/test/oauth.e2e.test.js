@@ -465,6 +465,46 @@ test("linking attaches the second identity to the account already signed in",
     assert.deepEqual(ids, ["github", "google"]);
   });
 
+test("the link callback refuses a session revoked while it was away",
+  async () => {
+    // The window this closes: KV answers a revoked session for about a minute,
+    // and the link callback is destructive — resolveIdentity's absorb branch
+    // runs DELETE FROM users on the account being merged in. So this read has
+    // to be the D1 one, like deleteMe's and unlink's. It was not.
+    //
+    // Revoked AFTER the start on purpose. That is the real sequence — sign out
+    // on a shared machine while a provider's consent screen is still open in
+    // another tab — and it is the only way to reach the callback's own check
+    // now that the start is strict too.
+    const env = makeEnv();
+    const g = await begin(env, "google");
+    providers({ idToken: () => idToken(claims(env, { nonce: g.nonce })) });
+    const first = await callback(env, "google", g);
+    const sess = valueOf(cookies(first)[SESSION_COOKIE]);
+    const jar = `${SESSION_COOKIE}=${sess}`;
+
+    const start = await call(env, "/api/auth/link/github",
+                             { headers: { Cookie: jar } });
+    assert.equal(start.status, 302);
+    const dest = new URL(start.headers.get("Location"));
+    const stateCookie = `${STATE_COOKIE}=${valueOf(cookies(start)[STATE_COOKIE])}`;
+
+    // D1 only. KV keeps answering, which is the whole point of the test.
+    env.raw.prepare(`UPDATE sessions SET revoked_at = 1`).run();
+
+    providers({ githubUser: { id: 777 } });
+    const done = await call(env,
+      `/api/auth/callback/github?code=c&state=${dest.searchParams.get("state")}`,
+      { headers: { Cookie: `${jar}; ${stateCookie}` } });
+    assert.equal(done.status, 302);
+    assert.match(done.headers.get("Location") || "", /auth_error=unauthenticated/,
+      "a revoked session finished a link");
+
+    const ids = env.raw.prepare(`SELECT provider FROM identities`).all();
+    assert.deepEqual(ids.map((r) => r.provider), ["google"],
+      "the second identity was attached anyway");
+  });
+
 test("the JWKS is fetched once and cached, not on every sign-in", async () => {
   const env = makeEnv();
   let jwks = 0;

@@ -43,6 +43,35 @@ PAGES_ORIGIN = "https://big12ology.github.io"
 SURVIVOR_RANKED_ENTRY_BY = "6"
 GOOGLE_CLIENT_ID = "1029553052112-5db59l7pljf20ovi2913lghhv7n9rvgm.apps.googleusercontent.com"
 GITHUB_CLIENT_ID = "Ov23lioQoMOhhs5h5Cs7"
+# MICROSOFT AND AMAZON ARE WIRED AND DARK.
+#
+# src/oauth.js knows how to talk to both. `enabled(env)` offers a provider only
+# when its credentials are actually present, so an unconfigured one is a 404 at
+# /api/auth/login/<name> and its button is removed from the account page by
+# /api/auth/providers. Neither of these is a placeholder to be filled in "when
+# it works" — both code paths are tested and the secrets are the whole
+# remaining step.
+#
+# To turn one on, add its CLIENT_ID here and put the secret in with
+# `wrangler secret put`. No deploy is required for the button to appear.
+#
+#   MICROSOFT_CLIENT_ID = "..."     Entra app registration, "Personal Microsoft
+#                                   accounts only". Redirect URI:
+#                                   https://big12ology.com/api/auth/callback/microsoft
+#                                   secret: MICROSOFT_CLIENT_SECRET
+#
+#   AMAZON_CLIENT_ID = "amzn1.application-oa2-client...."
+#                                   Login with Amazon, Allowed Return URL:
+#                                   https://big12ology.com/api/auth/callback/amazon
+#                                   secret: AMAZON_CLIENT_SECRET
+#
+# NOT APPLE, and deliberately not. Sign in with Apple needs a paid developer
+# account, and the enrolment forces a choice this project has no good answer
+# to: an Individual account publishes a legal name, and an Organization one
+# needs a D-U-N-S registered to a real entity — Apple accepts no trade names.
+# The recurring fee bought a per-request ES256 client-secret JWT to maintain
+# and an identity decision nobody wanted. Adding it later is a row in REGISTRY
+# and a button; there is nothing else to undo.
 GITHUB_REPO = "big12ology/big12ology.com"
 DEPLOY_CRONS = "30 * * 8-12 1,7|30 0-8/2 * 8-12 2,6,7"
 

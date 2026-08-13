@@ -10,7 +10,7 @@
 // about a minute to propagate to another edge location. That is acceptable
 // for a pick'em and it is not acceptable silently, so it is in privacy.html.
 
-import { b64url, randomBytes, sha256 } from "./crypto.js";
+import { b64url, hmac, randomBytes, sha256 } from "./crypto.js";
 
 export const TTL_DAYS = 30;
 export const TTL = TTL_DAYS * 86400;
@@ -48,9 +48,36 @@ function unpackCache(v) {
 }
 
 /**
+ * The stored form of an address, and the reason this is a function here rather
+ * than something the caller does.
+ *
+ * The column is named ip_hash and held the ADDRESS ITSELF. index.js passed
+ * `clientIp(req)` and this function bound it straight through, so every
+ * sign-in wrote a plaintext IP into a column whose name said otherwise —
+ * for thirty days, into every weekly backup, and past account deletion, which
+ * clears users.signup_ip_hash and never touched this one. privacy.html
+ * promises "a keyed hash… never the address itself" and lists nothing of the
+ * kind under sessions at all.
+ *
+ * resolveIdentity had it right the whole time (api.js, signup_ip_hash) — the
+ * helper existed and this path simply did not call it. So the hashing moved
+ * INTO create() rather than into its caller: the column can now only ever
+ * receive a hash, whatever anybody passes.
+ *
+ * Same pepper, different prefix from the identity hashes, so the two spaces
+ * cannot be cross-matched.
+ */
+async function ipHash(env, ip) {
+  if (!ip) return null;
+  return hmac(env.IDENTITY_PEPPER, `ip|${ip}`);
+}
+
+/**
  * Mint a session. Returns the raw cookie value, which is the only time it
  * exists in plaintext anywhere — only its hash is stored, so a database dump
  * cannot be used to impersonate anyone.
+ *
+ * `ip` is the raw address and is hashed on the way in — see ipHash above.
  */
 export async function create(env, userId, { ua, ip } = {}) {
   const raw = b64url(randomBytes(32));
@@ -62,7 +89,7 @@ export async function create(env, userId, { ua, ip } = {}) {
     `INSERT INTO sessions (sid_hash, user_id, created_at, expires_at,
                            ua_hash, ip_hash)
      VALUES (?, ?, ?, ?, ?, ?)`)
-    .bind(h, userId, now, expires, ua || null, ip || null).run();
+    .bind(h, userId, now, expires, ua || null, await ipHash(env, ip)).run();
   await env.SESSIONS.put(kvKey(h), packCache(userId, expires),
                          { expirationTtl: TTL });
 

@@ -591,6 +591,59 @@
     chip.hidden = false;
   }
 
+  // How a provider is spelled to a person. The database stores the lowercase
+  // key, which is right for a key and wrong on a page — "Signed in with
+  // github" reads like a typo. Anything not listed falls back to the stored
+  // name capitalised, so a provider added to the Worker before this map is
+  // updated still reads sensibly instead of disappearing.
+  var PROVIDER_LABEL = {
+    google: "Google", github: "GitHub", microsoft: "Microsoft",
+    amazon: "Amazon"
+  };
+  function providerLabel(p) {
+    return PROVIDER_LABEL[p] || (String(p).charAt(0).toUpperCase() + String(p).slice(1));
+  }
+
+  // "Google", "Google and GitHub", "Google, Microsoft and GitHub".
+  //
+  // Was `.join(" and ")`, which was correct for the two providers that existed
+  // and produces "Google and Microsoft and GitHub" for the four that do now.
+  function joinNames(list) {
+    if (!list.length) return "no provider";
+    if (list.length === 1) return list[0];
+    return list.slice(0, -1).join(", ") + " and " + list[list.length - 1];
+  }
+
+  /**
+   * Take down the sign-in buttons this deploy cannot honor.
+   *
+   * account.html ships a button for every provider the Worker knows how to
+   * talk to; the Worker knows which ones actually have credentials. Asking it
+   * is what lets a provider be switched on with `wrangler secret put` and
+   * nothing else — no HTML edit, no deploy, and no list of provider names kept
+   * in two places waiting to disagree.
+   *
+   * FAILS OPEN, deliberately. If the call does not answer, every button stays.
+   * A reader who then picks a dark provider gets an error page they can back
+   * out of; a reader shown no way in at all because one fetch failed has been
+   * told the site is broken. The first is recoverable and the second is not.
+   */
+  function pruneProviders() {
+    var box = document.querySelector(".pk-signins");
+    if (!box) return;
+    fetch("/api/auth/providers", {credentials: "same-origin"})
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || !Array.isArray(d.providers)) return;
+        box.querySelectorAll("a[data-provider]").forEach(function (a) {
+          if (d.providers.indexOf(a.getAttribute("data-provider")) < 0) {
+            a.remove();
+          }
+        });
+      })
+      .catch(function () {});
+  }
+
   function initAccount(me) {
     var form = $("nameform");
     if (!form) return;
@@ -599,6 +652,7 @@
     // reader who bookmarks the URL does not get welcomed forever.
     var first = !!me && me.needs_name;
     show($("signin"), !me);
+    if (!me) pruneProviders();
     // The top of the funnel, and the only two steps of it the database cannot
     // see. Everything after a provider hands us a subject is a row in D1 and
     // is counted there instead — see tools/pool-report.sh. What is missing
@@ -631,8 +685,9 @@
       body.textContent = "";
       var p = el("p", "note");
       p.textContent = "Signed in with " +
-        (me.identities || []).map(function (i) { return i.provider; }).join(" and ") +
-        ".";
+        joinNames((me.identities || []).map(function (i) {
+          return providerLabel(i.provider);
+        })) + ".";
       body.appendChild(p);
       var out = document.createElement("form");
       out.addEventListener("submit", function (e) {

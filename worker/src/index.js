@@ -110,7 +110,7 @@ async function handle(req, env, ctx) {
   const login = path.match(/^\/api\/auth\/login\/(\w+)$/);
   if (login && req.method === "GET") {
     const provider = login[1];
-    if (!oauth.PROVIDERS.includes(provider)) return fail("unknown_provider", 404);
+    if (!oauth.enabled(env).includes(provider)) return fail("unknown_provider", 404);
     const rl = await ratelimit.take(env, "login", clientIp(req) || "anon");
     if (!rl.ok) return fail("rate_limited", 429, { retry_after: rl.retryAfter });
 
@@ -126,9 +126,15 @@ async function handle(req, env, ctx) {
   // knows which one it is finishing.
   const link = path.match(/^\/api\/auth\/link\/(\w+)$/);
   if (link && req.method === "GET") {
-    const user = await session.read(env, rawSession);
+    // Strict, matching the callback that finishes this. Not because starting
+    // a link does any harm — it redirects and nothing else — but because the
+    // callback refuses a stale session and this is where somebody finds out.
+    // Bouncing a signed-out reader to GitHub to tell them there a minute
+    // later is not a cheaper check, it is a worse one. A link start happens
+    // once or twice in an account's life; the D1 read is affordable.
+    const user = await session.read(env, rawSession, { strict: true });
     if (!user) return authFail(env, "unauthenticated");
-    if (!oauth.PROVIDERS.includes(link[1])) return fail("unknown_provider", 404);
+    if (!oauth.enabled(env).includes(link[1])) return fail("unknown_provider", 404);
     const { url: dest, cookie } = await oauth.begin(
       env, link[1], "/pools/account.html", "link");
     return redirect(dest, {
@@ -139,7 +145,7 @@ async function handle(req, env, ctx) {
   const cb = path.match(/^\/api\/auth\/callback\/(\w+)$/);
   if (cb && req.method === "GET") {
     const provider = cb[1];
-    if (!oauth.PROVIDERS.includes(provider)) return fail("unknown_provider", 404);
+    if (!oauth.enabled(env).includes(provider)) return fail("unknown_provider", 404);
 
     // The provider's own refusal — the reader pressed cancel, usually.
     if (url.searchParams.get("error")) {
@@ -161,7 +167,15 @@ async function handle(req, env, ctx) {
     const linking = state.mode === "link";
     let linkTo = null;
     if (linking) {
-      const me = await session.read(env, rawSession);
+      // STRICT, because linking is destructive and this read used to be the
+      // cached one. resolveIdentity's absorb branch runs DELETE FROM users on
+      // the account being merged in, and session.js says in as many words that
+      // the KV answer is not to be trusted for anything of that shape — a
+      // session revoked at another edge is still served here for about a
+      // minute. deleteMe and unlink already go through the confirmed read for
+      // exactly this reason; this was the third destructive path and the one
+      // that did not.
+      const me = await session.read(env, rawSession, { strict: true });
       if (!me) return authFail(env, "unauthenticated");
       linkTo = me.userId;
     }
@@ -188,6 +202,9 @@ async function handle(req, env, ctx) {
       }
     }
 
+    // The raw address goes in and a keyed hash comes out — session.create
+    // hashes it rather than trusting this call site to remember, because this
+    // call site did not.
     const s = await session.create(env, res.userId, {
       ua: null, ip: clientIp(req),
     });
@@ -276,6 +293,22 @@ async function handle(req, env, ctx) {
     return json({
       ok: true, season: got.season, games: got.games,
       weeks_changed: moved, graded: graded || "ok",
+    });
+  }
+
+  // Which sign-in buttons to draw.
+  //
+  // The account page ships a button for every provider this code knows, and
+  // removes the ones this answer does not list. That is what lets a provider
+  // be turned on by putting its secrets in place — no deploy, no edit, no
+  // second list of names in the HTML to keep in step with the registry.
+  //
+  // Public and cacheable: it is a list of companies, identical for every
+  // reader, and it changes about once a year.
+  if (path === "/api/auth/providers" && req.method === "GET") {
+    return json({ providers: oauth.enabled(env) }, 200, {
+      "Cache-Control": "public, max-age=0, s-maxage=300",
+      Vary: "",
     });
   }
 

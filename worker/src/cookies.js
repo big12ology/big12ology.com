@@ -16,7 +16,22 @@ import { hmac, hmacVerify } from "./crypto.js";
 export const SESSION_COOKIE = "__Host-b12s";
 export const STATE_COOKIE = "__Host-b12oauth";
 
-/** Parse a Cookie header. Returns {} for anything unparseable. */
+/**
+ * Parse a Cookie header. Returns {} for anything unparseable.
+ *
+ * THE try/catch IS THE WHOLE POINT OF THIS FUNCTION'S SECOND DRAFT.
+ * decodeURIComponent throws URIError on a malformed escape — "%zz" is enough —
+ * and this runs at the top of index.js before any route is matched, so one bad
+ * cookie in the header made EVERY /api/ request answer 500. Not the request
+ * that carried it: all of them, from that browser, including /api/health,
+ * which is what the monitoring reads. It would have looked like the Worker
+ * being down and been invisible from every other machine.
+ *
+ * A cookie we cannot decode is a cookie that is not ours — nothing this file
+ * writes contains a percent sign — so the raw value is kept and the caller's
+ * own check fails it. Skipping the entry would work equally well; keeping it
+ * means one less way for a value to silently disappear.
+ */
 export function parseCookies(header) {
   const out = {};
   if (!header) return out;
@@ -25,7 +40,12 @@ export function parseCookies(header) {
     if (i < 1) continue;
     const k = part.slice(0, i).trim();
     if (!k) continue;
-    out[k] = decodeURIComponent(part.slice(i + 1).trim());
+    const v = part.slice(i + 1).trim();
+    try {
+      out[k] = decodeURIComponent(v);
+    } catch {
+      out[k] = v;
+    }
   }
   return out;
 }
