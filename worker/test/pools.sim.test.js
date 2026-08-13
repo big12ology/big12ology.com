@@ -406,3 +406,56 @@ test("the client survives ten thousand hostile payloads", (t) => {
     assert.ok(cover[k] > 0, `no payload reached: ${k}`);
   }
 });
+
+// ------------------------------------------------- the waiting split
+
+// Below the threshold the split column used to be empty, which is right about
+// the number and wrong about the reader: in a young pool every row is blank,
+// and a blank reads as "broken" just as readily as "not enough people yet".
+// It says which now — but only after the lock, and that distinction is the
+// whole risk in the change.
+//
+// Deterministic rather than fuzzed. There are exactly three states and one of
+// them is a leak; random payloads would reach them eventually and say nothing
+// useful about which.
+const teamsFor = () => ({
+  Kansas: { color: "#0051BA" }, Baylor: { color: "#154734" },
+});
+const gameWith = (consensus) => ({
+  game_id: 1, home: "Kansas", away: "Baylor", spread_x2: -7,
+  kickoff: "2026-09-05T18:00:00.000Z", kickoff_at: 1788631200,
+  consensus,
+});
+const splitText = (row) => {
+  const el = row.querySelector(".pk-splitwait");
+  return el ? el.textContent : null;
+};
+
+test("a thin split says how thin, once the week has locked", () => {
+  const row = P.cardRow(gameWith({ home: 4, away: 2 }), "home", teamsFor(), true);
+  assert.equal(splitText(row), "6 of 10");
+});
+
+test("a locked game nobody picked counts from zero rather than going blank", () => {
+  // The server omits `consensus` entirely for a game with no picks, so this
+  // arrives looking exactly like an unlocked one. `locked` is the only thing
+  // that separates them.
+  const row = P.cardRow(gameWith(undefined), "home", teamsFor(), true);
+  assert.equal(splitText(row), "0 of 10");
+});
+
+test("BEFORE the lock it says nothing at all", () => {
+  // The count of who has picked is precisely what the lock exists to withhold.
+  // "0 of 10" on an unlocked slate would be both wrong and a leak.
+  for (const consensus of [undefined, { home: 4, away: 2 }]) {
+    const row = P.cardRow(gameWith(consensus), "home", teamsFor(), false);
+    assert.equal(splitText(row), "",
+      "an unlocked game advertised how many people had picked it");
+  }
+});
+
+test("above the threshold the bar replaces the wait, not joins it", () => {
+  const row = P.cardRow(gameWith({ home: 30, away: 12 }), "home", teamsFor(), true);
+  assert.equal(row.querySelector(".pk-splitwait"), null);
+  assert.ok(row.querySelectorAll(".pk-splitpct").length > 0, "no bar was drawn");
+});

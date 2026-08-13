@@ -256,6 +256,13 @@ tr.grpend td { border-bottom:2px solid var(--line) }
 .posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
 h3.wkhead { font-size:var(--t-row); text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
+/* The day a block of cards is on. Quieter than the week it sits under and
+   louder than the cards themselves, so the eye reads week, then day, then
+   games. The first one loses its top margin: it follows the card's own h2
+   directly and would otherwise open the week with a gap nothing is in. */
+h3.dayhead { font-size:var(--t-row); font-weight:600; color:var(--ink);
+  margin:14px 0 6px; padding-top:10px; border-top:1px solid var(--line) }
+h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
 /* The week, as cards rather than rows. Sixteen one-line rows read as an
    index of games; the week deserves to look like the week. Two up, not
    four: at the chrome width four columns leave a card too narrow for

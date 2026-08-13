@@ -539,6 +539,7 @@
         lt.setAttribute("datetime", new Date(slate.lock_at * 1000).toISOString());
         lt.textContent = fmtWhen(slate.lock_at * 1000);
         startCountdown(slate.lock_at);
+        lockSpanNote(slate);
       }
       renderSlate(r[2] || {});
     }).catch(function (err) {
@@ -553,6 +554,55 @@
           + "lines are in."
         : explain(err);
     });
+  }
+
+  /**
+   * Say so when the lock lands days before most of the week is played.
+   *
+   * "Locks at first kickoff" is the entire rule and it is stated above this
+   * line already. The trouble is that it is only surprising on the weeks where
+   * it costs something: a week played on one Saturday reads exactly as
+   * expected, and a week that opens with a Thursday game reads as though
+   * Thursday's kickoff locks Thursday's games. It does not — it locks all of
+   * them, and 2026 opens that way, with three Thursday games and eleven on
+   * Saturday.
+   *
+   * DAYS IN THE READER'S OWN ZONE, not Central and not the venue's. The time
+   * beside it is already shown in their clock, so a note that said "Thursday"
+   * about a Wednesday evening on their calendar would be answering a question
+   * nobody asked.
+   *
+   * Silent when the week is one day, which is most of them — a note that
+   * appears every week is a note nobody reads by October.
+   */
+  function lockSpanNote(slate) {
+    var el = $("lockspan");
+    if (!el || !slate.lock_at || !slate.games || !slate.games.length) return;
+    var DAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+               "Friday", "Saturday"];
+    var lockDay = new Date(slate.lock_at * 1000).toDateString();
+    var later = slate.games.filter(function (g) {
+      return g.kickoff_at &&
+        new Date(g.kickoff_at * 1000).toDateString() !== lockDay;
+    });
+    if (!later.length) return;
+
+    // The day the most of them are on, which is the one somebody is picturing
+    // when they assume they have until the weekend.
+    var tally = {};
+    later.forEach(function (g) {
+      var d = new Date(g.kickoff_at * 1000).getDay();
+      tally[d] = (tally[d] || 0) + 1;
+    });
+    var big = Object.keys(tally).sort(function (a, b) {
+      return tally[b] - tally[a];
+    })[0];
+    var n = tally[big];
+
+    el.textContent = "This week opens early, and the whole card locks with it "
+      + "— including the " + n + " game" + (n === 1 ? "" : "s")
+      + " played " + DAY[big] + ". Get your picks in before the first kickoff.";
+    el.hidden = false;
   }
 
   function initSlate() {
@@ -642,6 +692,68 @@
         });
       })
       .catch(function () {});
+  }
+
+  /**
+   * Share the pool.
+   *
+   * THE LINK IS THE SITE, and that is the whole design rather than a first
+   * version of something. Everybody plays in one pool, so there is no league
+   * to join, no code to redeem and nothing to attribute — which means no
+   * invite token to mint, no column to record who brought whom, and nothing
+   * stored on anybody's device. What is left is the only part that was ever
+   * actually hard on a phone: selecting a URL out of the address bar.
+   *
+   * NO COUNTER, EITHER. An anonymous "share pressed" tally would have been one
+   * line and is deliberately not here. The privacy page earns its missing
+   * consent banner on the claim that the only cookies are strictly necessary
+   * and that nothing is measured — and a share button that reports itself is
+   * measurement, however coarse. It is not worth the sentence it would cost.
+   *
+   * navigator.share where it exists, which on a phone is the native sheet and
+   * lands in the group chat where pools actually get organised. The clipboard
+   * otherwise. Both are ordinary browser APIs — no CSP change, no request, no
+   * third party.
+   */
+  function initShare() {
+    var btn = $("sharebtn");
+    if (!btn) return;
+    var msg = $("sharemsg");
+    // Absolute and canonical, not location.href: this button is reachable
+    // from a preview origin and from a URL carrying whatever query somebody
+    // arrived with, and neither belongs in a link somebody else opens.
+    var url = "https://big12ology.com/pools/";
+    var text = "Big 12 pick'em and survivor — one line for everyone, " +
+               "free, no email.";
+
+    function say(s) {
+      if (!msg) return;
+      msg.textContent = s;
+      // Cleared, so the confirmation does not sit there implying the last
+      // press is still happening.
+      setTimeout(function () { msg.textContent = ""; }, 4000);
+    }
+
+    btn.addEventListener("click", function () {
+      if (navigator.share) {
+        navigator.share({title: "Big 12 Pools", text: text, url: url})
+          // A dismissed share sheet rejects, and that is not an error worth
+          // reporting — the reader changed their mind.
+          .catch(function () {});
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url)
+          .then(function () { say("Link copied."); })
+          .catch(function () { say(url); });
+        return;
+      }
+      // Neither API. Show the link so it can be selected by hand rather than
+      // leaving a button that does nothing.
+      say(url);
+    });
+
+    show($("sharecard"), true);
   }
 
   function initAccount(me) {
@@ -1495,8 +1607,10 @@
     // Absent below MIN_CONSENSUS, and absent entirely before the lock — the
     // server does not send the field, so a late picker cannot follow the room.
     var shown = false;
+    var picked = 0;
     if (g.consensus) {
       var h = g.consensus.home || 0, a = g.consensus.away || 0, n = h + a;
+      picked = n;
       if (n >= MIN_CONSENSUS) {
         li.appendChild(consensusBar(g, side, teams, h, a, n));
         shown = true;
@@ -1504,7 +1618,29 @@
     }
     // The column exists either way, so rows stay aligned down the card
     // whether or not a given game reached the threshold.
-    if (!shown) li.appendChild(el("span", "pk-split"));
+    //
+    // BUT AN EMPTY COLUMN IS NOT AN ANSWER. Below the threshold this drew
+    // nothing at all, which is right about the number and wrong about the
+    // reader: in a young pool every row is blank, and a blank says "broken"
+    // just as readily as it says "not enough people yet". So it says which,
+    // and turns the wait into a count that visibly moves.
+    //
+    // ONLY ONCE LOCKED, and that distinction is not decorative. Before the
+    // lock the server does not send `consensus` at all — deliberately, so a
+    // late picker cannot follow the room — and a game nobody has picked after
+    // the lock ALSO arrives with the field absent. The two are identical from
+    // here, so `locked` is the only thing that can tell them apart. Without
+    // that check an unlocked slate would advertise "0 of 10 have picked",
+    // which is both wrong and the exact number the lock exists to withhold.
+    if (!shown) {
+      var gap = el("span", "pk-split pk-splitwait");
+      if (locked) {
+        gap.textContent = picked + " of " + MIN_CONSENSUS;
+        gap.title = "The room's split appears once " + MIN_CONSENSUS +
+          " people have picked this game. " + picked + " so far.";
+      }
+      li.appendChild(gap);
+    }
 
     var res = resultChip(g, side, locked, "card");
     if (res) li.appendChild(res);
@@ -2273,6 +2409,7 @@
       show($("needsname"), !!me && !ready && !!$("slateform"));
       show($("signedin"), ready && !!$("slateform"));
       initSlate();
+      initShare();
       initAccount(me);
       initBoard(me);
       initCard(me);

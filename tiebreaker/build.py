@@ -890,7 +890,7 @@ def leverage_card(games, sims, teams=None):
     rows = []
     for e in lev[:8]:
         g = e["game"]
-        date = pretty_date(g["start"])
+        date = game_date(g)
         # The same fork the game page draws, at list density. It replaced a
         # sentence that named one team and two of the four numbers, which
         # made every game on this list look like it was about whoever the
@@ -1082,7 +1082,7 @@ def h2h_card(games, teams, stand_rows):
             if g is None:
                 cells.append("<td class=nomeet>&bull;</td>")
                 continue
-            date = pretty_date(g["start"])
+            date = game_date(g)
             # The same distinction joiner() draws, in one letter. A neutral
             # site has no host, so calling it H for one team and A for the
             # other says something about the crowd that was not true —
@@ -1989,6 +1989,13 @@ tr.grpend td { border-bottom:2px solid var(--line) }
 .posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
 h3.wkhead { font-size:var(--t-row); text-transform:uppercase; letter-spacing:.05em;
   color:var(--dim); margin:16px 0 4px }
+/* The day a block of cards is on. Quieter than the week it sits under and
+   louder than the cards themselves, so the eye reads week, then day, then
+   games. The first one loses its top margin: it follows the card's own h2
+   directly and would otherwise open the week with a gap nothing is in. */
+h3.dayhead { font-size:var(--t-row); font-weight:600; color:var(--ink);
+  margin:14px 0 6px; padding-top:10px; border-top:1px solid var(--line) }
+h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
 /* The week, as cards rather than rows. Sixteen one-line rows read as an
    index of games; the week deserves to look like the week. Two up, not
    four: at the chrome width four columns leave a card too narrow for
@@ -2830,36 +2837,123 @@ def slate_card(g, pages=True):
             f"<div class=slatelinks>{ours}{espn_link(g)}</div></div>")
 
 
-def slate_week(games):
+def pk_week(g, season):
+    """The week this schedule groups a game under — the pick'em's, not CFBD's.
+
+    NOT g["week"], and the difference is visible rather than academic. CFBD's
+    week 1 in 2026 runs August 29 to September 6: nine days and sixteen games,
+    of which one is the Dublin opener and the other fifteen are the following
+    Thursday-to-Sunday. Grouping by that field put a lone game from the
+    previous month at the top of a card headed by its own date, so the header
+    was wrong about fifteen of the sixteen games under it.
+
+    pickem.week_of runs Tuesday to Monday off the kickoff's Central-local
+    date, which makes every week a single weekend — the same rule the pick'em
+    grades on, so the two sections now agree about what week a game is in.
+    """
+    return pickem_mod.week_of(g, season)
+
+
+def pk_day(g):
+    """The calendar day a game is shown under, or None if it has no kickoff.
+
+    The Central-local date, which is the same clock pk_week uses. Using the
+    venue's own zone would read more naturally for one game and would put a
+    late West Coast Saturday into Sunday's group on the odd week — a day
+    heading that disagreed with the week it sat inside.
+    """
+    k = pickem_mod.kickoff(g)
+    return None if k is None else k.astimezone(pickem_mod.CENTRAL).date()
+
+
+def game_date(g, style="short"):
+    """A game's date as a reader would say it.
+
+    pretty_date(g["start"]) was the old spelling and it is wrong for most of
+    the season: `start` is UTC, so any kickoff after 6pm Central falls on the
+    NEXT UTC day and printed as tomorrow. Eighty-five of 2026's hundred and
+    twenty games were listed a day late — "Northern Arizona at Arizona (Sun,
+    Sep 6)" for a Saturday night game, "Colorado at Georgia Tech (Fri, Sep 4)"
+    for a Thursday one. Nothing caught it because the wrong answer is a
+    plausible date next to a real matchup.
+
+    Central rather than the venue's own zone, deliberately: this is the date a
+    game is FILED under — the same one pk_week and pk_day use — so a row, its
+    day heading and its week can never disagree. The venue's clock is still
+    what the game cards print for the kickoff TIME, which is the question
+    "when do I watch this" rather than "which day is this on".
+    """
+    d = pk_day(g)
+    return pretty_date(d.isoformat(), style) if d else pretty_date(g.get("start"), style)
+
+
+def slate_week(games, season):
     """The week the page opens on: the one the next kickoff sits in, and
     once every game is played, the last week of the season."""
     ahead = [g for g in games if not g["completed"] and g.get("start")]
     if ahead:
-        return min(ahead, key=lambda g: g["start"])["week"]
-    unplayed = [g["week"] for g in games if not g["completed"]]
+        return pk_week(min(ahead, key=lambda g: g["start"]), season)
+    unplayed = [w for w in (pk_week(g, season) for g in games
+                            if not g["completed"]) if w is not None]
     if unplayed:
         return min(unplayed)
-    return max((g["week"] for g in games), default=None)
+    return max((w for w in (pk_week(g, season) for g in games)
+                if w is not None), default=None)
+
+
+def day_blocks(week_games, season, card):
+    """A week's games as one block per day, in order.
+
+    Games with no kickoff yet go last under their own heading rather than
+    being dropped or guessed at — a schedule that silently omits a game it
+    knows about is worse than one that says the time is not set.
+    """
+    by_day = {}
+    for g in week_games:
+        by_day.setdefault(pk_day(g), []).append(g)
+    # A week played on one day needs no day heading: the card's own header
+    # already carries that date, and repeating it reads as a subheading for a
+    # group that has nothing to be distinguished from. Week 0 is exactly this
+    # case — one game, one Saturday — so it is what the section looks like for
+    # the first nine days of the season rather than an edge case.
+    single = len(by_day) == 1 and None not in by_day
+    out = ""
+    for d in sorted(by_day, key=lambda x: (x is None, x)):
+        head = ""
+        if not single:
+            label = "Time to be announced" if d is None \
+                else pretty_date(d.isoformat(), "long")
+            head = f"<h3 class=dayhead>{esc(label)}</h3>"
+        out += (head + "<div class=slatelist>"
+                + "".join(card(g) for g in by_day[d]) + "</div>")
+    return out
 
 
 def build_schedule_page(games, ctx):
     """This week's games, in the order they kick off. The grid that used to
     open this page answers a different question — which pairings exist at
     all — and now has its own page; this one answers what is on today."""
-    wk = slate_week(games)
-    week_games = sorted((g for g in games if g["week"] == wk),
+    season = ctx.get("year")
+    wk = slate_week(games, season)
+    week_games = sorted((g for g in games if pk_week(g, season) == wk),
                         key=lambda g: (g.get("start") or "", g["home"]))
     if week_games:
-        first = next((g.get("start") for g in week_games if g.get("start")),
-                     None)
-        span = f" <span class=dim>&middot; {esc(pretty_date(first))}</span>" \
-            if first else ""
+        # The whole span, not the first kickoff. A week that opens Thursday
+        # and ends Sunday was being headed "Thu, Sep 3", which is the one date
+        # most of the games under it are not on.
+        days = sorted(d for d in (pk_day(g) for g in week_games) if d)
+        if days:
+            lo, hi = pretty_date(days[0].isoformat()), \
+                pretty_date(days[-1].isoformat())
+            span = f" <span class=dim>&middot; {esc(lo)}</span>" if lo == hi \
+                else f" <span class=dim>&middot; {esc(lo)} &ndash; {esc(hi)}</span>"
+        else:
+            span = ""
         slate = (f"<div class=card id=slate><h2>Week {wk}{span}</h2>"
-                 f"<div class=slatelist>"
-                 + "".join(slate_card(g, pages=bool(ctx.get("game_pages")))
-                            for g in week_games)
-                 + "</div>"
-                 "<p class=note>Kickoffs are in the venue's own time zone, "
+                 + day_blocks(week_games, season,
+                              lambda g: slate_card(
+                                  g, pages=bool(ctx.get("game_pages"))))
+                 + "<p class=note>Kickoffs are in the venue's own time zone, "
                  "the way a school publishes them, with your clock beside "
                  "it when the two differ. An asterisk marks a time the "
                  "school lists differently — hover it for both. A forecast "
@@ -2871,19 +2965,26 @@ def build_schedule_page(games, ctx):
                  "<p class=note>The season's schedule has not been "
                  "published yet.</p></div>")
 
-    rem = sorted((g for g in games if not g["completed"] and g["week"] != wk),
-                 key=lambda g: (g["week"], g["start"] or ""))
+    # Grouped by the same week rule as the card above, so a game does not
+    # appear under week 1 here and week 0 there. No day subheadings: unlike
+    # the cards, game_row already carries each game's date on its own row, and
+    # a heading per day would be a second copy of what every line already says.
+    rem = sorted((g for g in games
+                  if not g["completed"] and pk_week(g, season) != wk),
+                 key=lambda g: (pk_week(g, season) if pk_week(g, season)
+                                is not None else 99, g["start"] or ""))
     by_week = {}
     for g in rem:
-        by_week.setdefault(g["week"], []).append(g)
+        by_week.setdefault(pk_week(g, season), []).append(g)
     up = ""
-    for w in sorted(by_week):
-        up += (f"<h3 class=wkhead>Week {w}</h3><ul class=games>"
+    for w in sorted(by_week, key=lambda x: (x is None, x)):
+        head = "Week to be announced" if w is None else f"Week {w}"
+        up += (f"<h3 class=wkhead>{head}</h3><ul class=games>"
                + "".join(game_row(g) for g in by_week[w]) + "</ul>")
     upcard = (f"<div class=card><h2>The rest of the season</h2>{up}</div>"
               if up else "")
     done = [g for g in games if g["completed"]
-            and tb.has_score(g) and g["week"] != wk]
+            and tb.has_score(g) and pk_week(g, season) != wk]
     done.sort(key=lambda g: g["start"] or "", reverse=True)
     rescard = ""
     if done:
@@ -3230,8 +3331,13 @@ def venue_card(g):
 
 def build_game_page(g, ctx):
     """One game, everything the build already knows about it."""
-    back = (f"<div class=gameback><a href='../'>&#8592; Week "
-            f"{g['week']}</a></div>")
+    # The same week the schedule index files this game under. It read
+    # g["week"] — CFBD's — so a game the index listed under week 0 linked back
+    # to "Week 1", which is the sort of disagreement a reader assumes is their
+    # own mistake.
+    gw = pk_week(g, ctx.get("year"))
+    back = ("<div class=gameback><a href='../'>&#8592; "
+            + (f"Week {gw}" if gw is not None else "Schedule") + "</a></div>")
     # The head answers "which game, and when can I watch it" — the two things
     # somebody arriving from a link wants in the first line. The stadium and
     # what it will be like there is a different question, asked by somebody
@@ -3410,7 +3516,7 @@ def game_row(g):
         score = f"{am}{away} <span class=dim>{joiner(g)}</span> {hm}{home}"
         cls = "done"
     else:
-        when = pretty_date(g["start"])
+        when = game_date(g)
         score = (f"{am}{esc(g['away'])} "
                  f"<span class=dim>{joiner(g)}</span> "
                  f"{hm}{esc(g['home'])} <span class=dim>({when})</span>")
@@ -5413,6 +5519,13 @@ PICKEM_SLATE_BODY = f"""
   <p class=pk-lockline>Locks at first kickoff &mdash;
     <time id=lockat datetime=""></time>
     <span id=cd class=pk-cd aria-hidden=true></span></p>
+  <!-- Filled by app.js, and only when the week is not played on one day.
+       "Locks at first kickoff" is the whole rule and is already true, but on a
+       week that opens with a Thursday game it reads as though it applies to
+       Thursday's games — and week 1 of 2026 opens exactly that way, with three
+       Thursday non-conference games and eleven on Saturday. Somebody who
+       assumes Saturday's card is still open on Friday has lost the week. -->
+  <p class=pk-lockspan id=lockspan hidden></p>
   <p class=pk-slatecount id=slatecount></p>
 </div>
 {PICKEM_LIVE_REGIONS}
@@ -5441,6 +5554,15 @@ PICKEM_CARD_BODY = f"""
   <p class=pk-cardseason id=cardseason hidden></p>
   <p class=note id=cardnote>Loading&hellip;</p>
   <div id=card></div>
+  <!-- The split column explains itself here rather than in a tooltip on every
+       row. A `title` is invisible on a phone, which is most of the people
+       reading this, so "6 of 10" sitting in a narrow column was a number with
+       nothing to attach it to. Said once, under the card, it covers every row
+       including the ones showing a bar. -->
+  <p class=note>Once a week locks, each row shows how the whole room split on
+  that game. A handful of picks is not a room &mdash; three people leaning one
+  way would draw the same bar as three hundred &mdash; so the split waits for
+  ten and counts up to it until then.</p>
 </div>
 {PICKEM_NOSCRIPT}"""
 
@@ -5478,9 +5600,21 @@ PICKEM_ACCOUNT_BODY = f"""
   email address, not your name, not your picture. What becomes public is the
   display name you choose and your record.
   <a href="/privacy">What we store</a>.</p>
+  <!-- Every provider worker/src/oauth.js knows how to talk to, in the order
+       it lists them. app.js asks /api/auth/providers and REMOVES the ones this
+       deploy has no credentials for, so turning a provider on is
+       `wrangler secret put` and nothing else — no edit here, no deploy, and no
+       second list of names to drift out of step with the Worker's REGISTRY.
+
+       Kept in the markup rather than built in script so a reader with no
+       JavaScript still sees a way in. The cost is that such a reader may click
+       a provider that is dark and get an error page; the alternative is that
+       they see no sign-in at all, which is worse. -->
   <p class=pk-signins>
-    <a class=wbtn href="/api/auth/login/google?return_to=/pools/pickem/">Continue with Google</a>
-    <a class=wbtn href="/api/auth/login/github?return_to=/pools/pickem/">Continue with GitHub</a>
+    <a class=wbtn data-provider=google href="/api/auth/login/google?return_to=/pools/pickem/">Continue with Google</a>
+    <a class=wbtn data-provider=microsoft href="/api/auth/login/microsoft?return_to=/pools/pickem/">Continue with Microsoft</a>
+    <a class=wbtn data-provider=github href="/api/auth/login/github?return_to=/pools/pickem/">Continue with GitHub</a>
+    <a class=wbtn data-provider=amazon href="/api/auth/login/amazon?return_to=/pools/pickem/">Continue with Amazon</a>
   </p>
   <p class=note>Signing in sets one cookie. Nothing else.</p>
 </div>
@@ -5961,8 +6095,22 @@ def write_hub(year, games, lines, sims_race, lev_top=None):
 POOLS_HOME_BODY = """
 <div class=card>
   <h2>Two games, one account</h2>
-  <p class=note>Sign in once and you are in both. The same display name, the
-  same team beside it, one set of rules about what is public and when.</p>
+  <p class=note><b>Play either one, or both.</b> They are separate games and
+  neither needs the other &mdash; signing in gets you into whichever you want,
+  whenever you want, and skipping one costs you nothing in the other. One
+  display name, the same team beside it, one set of rules about what is public
+  and when.</p>
+</div>
+<!-- Hidden until app.js reveals it. A button that needs JavaScript should not
+     sit on a page whose JavaScript did not run — there is no invite code and
+     no league to create, so with the script off the address bar is already the
+     whole feature and a dead button would only be in the way. -->
+<div class=card id=sharecard hidden>
+  <h2>Bring somebody</h2>
+  <p class=note>Everybody plays in the same pool. There is no league to make
+  and no roster to keep &mdash; the link is the whole invitation.</p>
+  <p><button class=wbtn type=button id=sharebtn>Share the pool</button>
+  <span class=note id=sharemsg role=status aria-live=polite></span></p>
 </div>
 <div class=poolgrid>
   <a class="card poolcard" href="pickem/">
