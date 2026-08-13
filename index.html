@@ -42,100 +42,203 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink);
   font: var(--t-subhead)/1.6 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-header { border-bottom: 4px solid var(--accent); padding: 56px 20px 36px;
+/* --- the whole page is a first screen -------------------------------------
+   Every measurement in this file is spent on one requirement: all four
+   sections visible on landing, without scrolling, on a desktop and on a
+   phone. Where it currently lands, measured rather than hoped:
+
+     1280 x 720   fourth card ends at 597, the links row at 677
+      390 x 664   fourth card ends at 631   (a phone browser's real viewport
+                                             is its screen minus its chrome —
+                                             an iPhone 15 leaves about 660,
+                                             not the 812 a device preset says)
+      320 x 568   fourth card ends at 673 — does NOT fit. A 2016 SE is the
+                  floor this design gives up on; everything from ~675 up works.
+
+   What it cost, so nobody restores it by accident: the four cards used to
+   carry a paragraph each — around 1,200 words between them — and the
+   tiebreaker card carried the spotlight fork as well. On a phone that card
+   alone was 1,100px tall and the fourth card started 2,900px down the page.
+   Prose does not survive a budget like this, so the cards became instruments:
+   a name, a cluster of figures, and a sentence that a phone does not get. The
+   long copy lives on the section pages it describes, and the keyword-bearing
+   anchors moved to .deeper.
+
+   ADDING ANYTHING HERE COSTS SOMETHING ELSE. A new line in a card, a second
+   line in the subtitle, a third hero readout — each one pushes the bottom row
+   under the fold on the phone, which is the failure this layout exists to
+   fix. Measure before and after; do not eyeball it. */
+header { border-bottom: 4px solid var(--accent); padding: 13px 16px 10px;
   background: var(--panel); text-align: center; }
-header img { height: 64px; width: auto; margin-bottom: 14px; }
+@media (min-width: 700px) { header { padding: 22px 20px 16px; } }
+header img { height: 36px; width: auto; margin-bottom: 6px; }
+@media (min-width: 700px) { header img { height: 46px; margin-bottom: 8px; } }
 h1 { margin: 0; }
 /* The lockup carries the name in outlines; it is never rebuilt from text. */
-h1 .b12-logo--primary { width: min(340px, 78vw); margin: 0 auto; }
-/* Wider and a size down, so it settles into two lines instead of four. It is
-   a subtitle under a lockup, and at 520px it was a paragraph — four centerd
-   lines of gray standing between the name and the two things worth reading. */
-header p { margin: 10px auto 0; color: var(--dim); max-width: 700px;
-  font-size: var(--t-body); text-wrap: balance; }
+h1 .b12-logo--primary { width: min(250px, 62vw); margin: 0 auto; }
+/* Desktop only, and that is a budget decision rather than a judgement about
+   the sentence. Two lines of 13px tagline is 36px, which on a phone is a
+   third of a tile — and the four tiles underneath say what the site holds
+   more precisely than the tagline does. It stays in the DOM, so it is still
+   the first prose a crawler and a screen reader meet. */
+/* Wide enough for one line, because the second one is 22px and the desktop
+   first screen has about 40 to spare. The pick'em-on wording is the longer of
+   the two and is what this is measured against. */
+header p { margin: 0 auto; color: var(--dim); max-width: 840px;
+  font-size: var(--t-copy); line-height: 1.45; text-wrap: balance; }
+@media (max-width: 699px) {
+  header p { position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; }
+}
 
 /* --- the hero readouts ---------------------------------------------------
    The two facts that make the front page worth reloading during a season.
    Styled as instruments rather than cards: the label is the only teal on the
    page above the fold, the value is set in the masthead's own display face,
    and there is no fill — the panel behind them is already white, so a second
-   box inside it would read as a dialog. */
-.hero { margin: 26px auto 0; display: flex; flex-wrap: wrap; gap: 14px;
-  justify-content: center; }
-.readout { display: grid; gap: 1px; text-align: left; text-decoration: none;
+   box inside it would read as a dialog.
+
+   Two, and only two. The projected title game used to be printed again inside
+   the tiebreaker card, word for word; that duplicate is gone and this is now
+   the only place either fact appears. */
+.hero { margin: 9px auto 0; display: grid; gap: 6px;
+  max-width: 760px; }
+@media (min-width: 700px) {
+  .hero { margin-top: 12px; gap: 10px; grid-template-columns: 1fr 1fr; }
+}
+/* Two lines, not three: the label rides in on the same line as the teams
+   rather than sitting on a line of its own. It is a 10px word and it was
+   costing 15px of the phone's first screen twice over. */
+.readout { display: flex; flex-wrap: wrap; align-items: baseline;
+  column-gap: 8px; text-align: left; text-decoration: none;
   color: inherit; background: var(--bg); border: 1px solid var(--line);
   border-left: 3px solid var(--accent); border-radius: 10px;
-  padding: 11px 18px 12px; min-width: 290px;
+  padding: 6px 13px 7px; min-width: 0; max-width: 100%;
   transition: border-color .15s, transform .15s; }
 .readout:hover { border-color: var(--accent); }
 @media (prefers-reduced-motion: no-preference) {
   .readout:hover { transform: translateY(-2px); }
 }
-.rolabel { font-size: var(--t-fine); font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--accent); }
+.rolabel { font-size: var(--t-micro); font-weight: 700; letter-spacing: .08em;
+  line-height: 1.4; text-transform: uppercase; color: var(--accent);
+  flex: 0 0 auto; }
 .romain { font-family: var(--b12-font-display); font-weight: 800;
-  font-size: var(--t-lead); letter-spacing: -.02em; color: var(--ink);
-  font-variation-settings: 'wdth' 92; }
+  font-size: var(--t-subhead); line-height: 1.3; letter-spacing: -.02em;
+  color: var(--ink); font-variation-settings: 'wdth' 92; min-width: 0; }
 /* "at" and "vs" are joins, not teams. Held back so the two names read as the
    two names. */
-.romain i { font-style: normal; font-weight: 500; font-size: var(--t-copy);
+.romain i { font-style: normal; font-weight: 500; font-size: var(--t-row);
   color: var(--dim); padding: 0 2px; }
-.rosub { font-size: var(--t-row); color: var(--dim); }
+.rosub { flex: 0 0 100%; font-size: var(--t-meta); line-height: 1.4;
+  color: var(--dim); }
 .rosub b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
 /* Ticking digits, so they must not reflow the line every second. */
 .rocd { font-variant-numeric: tabular-nums; }
 .rocd:not(:empty)::before { content: " · "; }
-/* Four cards, so two rows of two rather than one column four deep. The pairing
-   is not incidental: the two long cards (Tiebreaker, Pools) sit on the top row
-   and the two shorter ones below, which is what keeps a grid row from
-   stretching one card to match a neighbor twice its length.
+/* Two by two on a desktop, one column of short rows on a phone.
 
-   Two, stated rather than inferred. An auto-fit track list gets the same
-   result at today's widths and would quietly become three columns the day
-   --chrome-w grew, which is not what "two by two" meant. One column is the
-   floor and stays the floor until there is room for two 400px cards side by
-   side; a bare minmax(400px, 1fr) would instead hold a 400px card open on a
-   375px phone and scroll the whole document sideways.
+   The phone case is the one that decides the sizes. Two columns there was
+   tried and it is worse than it sounds: at 375px each track is 160px, which
+   wraps "Attendance Tracker" onto two lines, drops its LIVE tag onto a third,
+   and breaks the figure cluster into two rows — a tile that is shorter in
+   theory and taller in practice. A full-width row is 335px, which holds the
+   name, its tag and three figures side by side in about 80px, and four of
+   those fit with the masthead still above them.
+
+   Stated rather than inferred. An auto-fit track list gets the same result at
+   today's widths and would quietly become three columns the day --chrome-w
+   grew, which is not what "two by two" means.
 
    The deeper line is a footnote to all four, so it spans. */
-main { max-width: var(--chrome-w); margin: 0 auto; padding: 28px 20px 40px;
-  display: grid; gap: 18px; grid-template-columns: 1fr; }
-@media (min-width: 860px) {
-  main { grid-template-columns: 1fr 1fr; }
+main { max-width: var(--chrome-w); margin: 0 auto; padding: 7px 14px 22px;
+  display: grid; gap: 7px; grid-template-columns: 1fr; }
+@media (min-width: 700px) {
+  main { padding: 16px 20px 30px; gap: 15px; grid-template-columns: 1fr 1fr; }
 }
 main > .deeper { grid-column: 1 / -1; }
 .card { background: var(--panel); border: 1px solid var(--line);
-  border-radius: 12px; padding: 22px 24px; display: block;
-  text-decoration: none; color: var(--ink); transition: border-color .15s; }
+  border-radius: 12px; padding: 8px 12px 9px; display: block;
+  min-width: 0; text-decoration: none; color: var(--ink);
+  transition: border-color .15s; }
+@media (min-width: 700px) { .card { padding: 16px 20px 17px; } }
 a.card:hover { border-color: var(--accent); }
-.card h2 { margin: 0 0 6px; font-size: var(--t-lead); display: flex;
-  align-items: center; gap: 10px; }
-.card p { margin: 0; color: var(--dim); font-size: var(--t-copy); }
-/* What each section holds, in figures, before the paragraph that describes
-   it. Four blocks of same-size gray prose gave the eye nowhere to land; this
-   is the entry point, and on a site about counting things it may as well
-   count them. */
-.stat { margin: 0 0 10px; padding-bottom: 10px;
-  border-bottom: 1px solid var(--line); font-size: var(--t-row); color: var(--dim);
-  letter-spacing: .01em; }
-.stat b { font-family: var(--b12-font-display); font-weight: 800;
-  font-size: var(--t-copy); color: var(--ink); font-variant-numeric: tabular-nums;
-  font-variation-settings: 'wdth' 92; }
-/* One true thing per section, picked at load from a few hundred the build
-   generated. Hidden until it has something to say, so a reader with no
-   JavaScript — or a Pages deploy that has not written facts.json yet — sees a
-   card that simply does not have this line rather than an empty rule. */
-/* Provenance for the fork above it: where its arrows are measured from,
-   and whose opinion the percentages are. Not .fact — that one is the rotating
-   trivia line and carries a rule above it, and two rules inside one card
-   reads as two sections rather than a block and its footnote. */
-.spotnote { margin: 6px 0 0; font-size: var(--t-meta); color: var(--dim); }
-.fact { margin: 12px 0 0; padding-top: 10px;
-  border-top: 1px solid var(--line); font-size: var(--t-row); color: var(--dim); }
+.card h2 { margin: 0 0 4px; font-size: var(--t-subhead);
+  font-family: var(--b12-font-display); font-weight: 800; letter-spacing: -.01em;
+  font-variation-settings: 'wdth' 92; line-height: 1.2;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+@media (min-width: 700px) { .card h2 { margin-bottom: 9px; font-size: var(--t-lead); } }
+.card p { margin: 0; color: var(--dim); font-size: var(--t-copy);
+  line-height: 1.5; }
+/* --- the sentence is desktop-only ----------------------------------------
+   The last cut, and the one that actually bought the phone its first screen.
+   Two lines of 13px is 38px, four of them is 152, and 152 is the difference
+   between a page whose fourth tile lands at 800px — inside the 812 of a
+   browser preset and outside the ~700 a real Safari leaves once its own
+   chrome is subtracted — and one that fits a phone somebody actually holds.
+
+   Hidden, not deleted: the sentences are in the DOM, in the markup order a
+   crawler and a screen reader read, and they come back the moment there is a
+   second column to put them in. What a phone gets instead is the name, the
+   tag and the figures, which is what a directory is for — nobody lands on a
+   hub on a phone to read four descriptions, they land to pick one of four
+   destinations. */
+@media (max-width: 699px) {
+  .card p.hook { position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+/* --- the figure cluster ---------------------------------------------------
+   What each section holds, counted, in the masthead's own display face — the
+   same instrument treatment as the hero readouts above, which is what makes
+   the two halves of the page read as one system rather than a banner and a
+   list.
+
+   It replaced the paragraph rather than joining it. Four blocks of same-size
+   gray prose gave the eye nowhere to land and cost 200px a card; a number
+   over a label costs 40 and is the thing a stranger is actually scanning for.
+   On a site about counting things this is also just what the page is.
+
+   Labels are one word wherever a word will do. Three of them share a row and
+   the row has to survive a 320px phone, so "STEPS" rather than "TIEBREAK
+   STEPS" and "GAMES" rather than "HOME GAMES"; where a word alone would be
+   ambiguous the sentence beside it on a desktop says which. */
+.figs { margin: 0 0 6px; display: flex; flex-wrap: wrap; gap: 5px 0;
+  align-items: flex-start; }
+@media (min-width: 700px) { .figs { margin-bottom: 8px; } }
+.figs > span { display: block; min-width: 0; padding: 0 9px;
+  border-left: 1px solid var(--line);
+  font-size: var(--t-micro); line-height: 1.25; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--dim); }
+.figs > span:first-child { padding-left: 0; border-left: 0; }
+@media (min-width: 700px) { .figs > span { padding: 0 12px; } }
+.figs b { display: block; font-family: var(--b12-font-display);
+  font-weight: 800; font-size: var(--t-subhead); line-height: 1.15;
+  letter-spacing: -.01em; color: var(--ink);
+  font-variant-numeric: tabular-nums; font-variation-settings: 'wdth' 92; }
+@media (min-width: 700px) { .figs b { font-size: var(--t-lead); } }
+/* "9 of 15" is one figure, not two: the denominator is the context that makes
+   the nine mean anything, so it rides along at the size of a label. */
+.figs b i { font-style: normal; font-weight: 600; font-size: var(--t-meta);
+  letter-spacing: 0; color: var(--dim); }
+.figs [hidden] { display: none; }
+/* One live line, on the one tile that has a live thing to say that the hero
+   is not already saying. A footnote to the tile rather than a fourth stacked
+   block of gray: the rule above it is what stops it and the sentence it
+   follows from reading as one paragraph broken in a strange place. */
+.live-line { margin: 6px 0 0; padding-top: 5px;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-meta); line-height: 1.4; color: var(--dim); }
+.live-line b { color: var(--ink); font-weight: 600; }
+/* One true thing, picked at load from the few hundred the build generated —
+   pooled across all four sections rather than one per card, because four fact
+   lines inside four tiles is 200px this page does not have. Hidden until it
+   has something to say, so a reader with no JavaScript, or a deploy that has
+   not written facts.json yet, sees a page missing this line rather than an
+   empty rule. */
+.fact { grid-column: 1 / -1; margin: 2px 0 0; font-size: var(--t-row);
+  line-height: 1.5; color: var(--dim); }
 .fact[hidden] { display: none; }
-.fact b { display: block; margin-bottom: 1px; font-size: var(--t-fine);
-  font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
-  color: var(--accent); }
+.fact b { font-size: var(--t-fine); font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--accent); margin-right: 6px; }
 .tag { font-size: var(--t-fine); border-radius: 20px; padding: 2px 10px;
   font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
 .tag.live { background: color-mix(in srgb, #15803d 15%, transparent); color: #15803d; }
@@ -152,11 +255,11 @@ a.card:hover { border-color: var(--accent); }
    charm — "tie archaeology" is a nice phrase and nothing anybody types into a
    search box. These say what the page is, which is both better signage and
    the only part of this line that was ever doing SEO work. */
-.deeper { margin: 4px 0 0; display: flex; flex-wrap: wrap;
-  align-items: baseline; gap: 8px; font-size: var(--t-row); color: var(--dim); }
+.deeper { margin: 2px 0 0; display: flex; flex-wrap: wrap;
+  align-items: baseline; gap: 6px; font-size: var(--t-meta); color: var(--dim); }
 .deeper span { font-weight: 600; color: var(--ink); }
 .deeper a { color: var(--accent); text-decoration: none;
-  border: 1px solid var(--line); border-radius: 20px; padding: 4px 12px;
+  border: 1px solid var(--line); border-radius: 20px; padding: 3px 10px;
   background: var(--panel); transition: border-color .15s; }
 .deeper a:hover { border-color: var(--accent); text-decoration: underline; }
 </style>
@@ -182,15 +285,12 @@ a.card:hover { border-color: var(--accent); }
          alt="" aria-hidden="true" width="503" height="144">
   </h1>
   <!-- PICKEM-ONLY -->
-  <p>The study of the Big 12. Unofficial fan-built tools and data projects
-  about the sixteen-team league — its standings math, its unbalanced
-  schedule, its stadiums, its chaos, and a weekly pick'em against the
-  spread.</p>
+  <p>The study of the Big 12 — standings math, the unbalanced schedule,
+  stadiums, chaos, and a pick'em against the spread.</p>
   <!-- /PICKEM-ONLY -->
   <!-- PICKEM-OFF -->
-  <p>The study of the Big 12. Unofficial fan-built tools and data projects
-  about the sixteen-team league — its standings math, its unbalanced
-  schedule, its stadiums, and its chaos.</p>
+  <p>The study of the Big 12 — standings math, the unbalanced
+  schedule, stadiums, and chaos.</p>
   <!-- /PICKEM-OFF -->
 
   <!-- Two things that are true right now, on a page that until this point
@@ -217,76 +317,66 @@ a.card:hover { border-color: var(--accent); }
 <main id=main tabindex="-1">
   <a class=card href="/tiebreaker/">
     <h2>Tiebreaker Tracker <span class="tag live">live</span></h2>
-    <p class=stat><b>{{HUB_TEAMS}}</b> teams · <b>7</b> tiebreak steps · <b>3</b> seasons, replayable</p>
-    {{HUB_CCG_CARD}}
-    <!-- The week's biggest game, which sat on the Schedule card until it was
-         read carefully. Everything in it is championship probability — the
-         seat, the two branches, the arrows — and the Schedule card is about
-         the unbalanced schedule: nine opponents out of fifteen, the draw,
-         the rotation. It was the right block filed under the wrong heading,
-         and this card's own prose already promises exactly what it shows. -->
+    <p class=figs>
+      <span><b>{{HUB_TEAMS}}</b>teams</span>
+      <span><b>7</b>steps</span>
+      <span><b>3</b>seasons</span>
+    </p>
+    <p class=hook>Official Big 12 procedure on live results — clinch proofs, tie
+    narratives, and a what-if simulator.</p>
+    <!-- The week's biggest game, as one line, under the sentence rather than
+         over it: what the section IS comes before what is true in it today.
+         The fork this used to carry — both branches, four percentages, the
+         arrows and the note explaining where they are measured from — is
+         200px of card, which is the whole bottom row of this page on a phone.
+         It is on /tiebreaker/ where it has the room, and this is the sentence
+         that makes somebody go there. -->
     {{HUB_SPOTLIGHT}}
-    <p>The official Big 12 tiebreaking procedures applied to live results
-    after every game — projected championship matchup, step-by-step tie
-    narratives, clinch and elimination proofs, and a what-if simulator with
-    four public rating models. Also <b>the cut line</b>, what a conference
-    record has actually been worth in nine title games, and <b>the ladder</b>,
-    how far down the seven steps a tie has ever walked. The 2024 and 2025
-    seasons are kept alongside the live one: replay a year week by week, or
-    rewrite a result and watch the rules answer.</p>
-    <p class=fact hidden data-facts=tiebreaker></p>
   </a>
   <!-- PICKEM-ONLY -->
   <a class=card href="/pools/">
     <h2>Pools <span class="tag new">new</span></h2>
-    <p class=stat><b>2</b> season-long games · <b>1</b> account<span class=players hidden></span></p>
-    <p>Two season-long games, one account. <b>The pick'em</b> takes every Big
-    12 game against the spread on one line for the whole room, frozen when the
-    week is published and never moved again. <b>Survivor</b> takes one team a
-    week and never the same team twice. Both lock at the first kickoff, and
-    what you picked becomes public then and not before. The boards rank the
-    season with pushes counted as pushes, next to <b>the chalk</b> — what
-    simply taking every favorite would have scored, which is a harder
-    benchmark than it sounds. Sign in with Google or GitHub; we never see your
-    email.</p>
-    <p class=fact hidden data-facts=pools></p>
+    <p class=figs>
+      <span><b>2</b>games</span>
+      <span><b>1</b>account</span>
+      <span class=players hidden></span>
+    </p>
+    <p class=hook>Pick'em against the spread and survivor, one account. Both lock at
+    first kickoff.</p>
   </a>
   <!-- /PICKEM-ONLY -->
   <!-- PICKEM-OFF -->
   <a class=card href="/pools/">
     <h2>Pools <span class="tag new">coming soon</span></h2>
-    <p class=stat><b>2</b> season-long games · <b>1</b> account<span class=players hidden></span></p>
-    <p>Two season-long games, one account. <b>The pick'em</b> takes every Big
-    12 game against the spread on one line for the whole room, frozen when the
-    week is published and never moved again. <b>Survivor</b> takes one team a
-    week and never the same team twice. Both lock at the first kickoff. The
-    boards rank the season next to <b>the chalk</b> — what simply taking every
-    favorite would have scored — and <b>the room</b>, which is what everyone
-    else picked. Have a look at what is coming.</p>
-    <p class=fact hidden data-facts=pools></p>
+    <p class=figs>
+      <span><b>2</b>games</span>
+      <span><b>1</b>account</span>
+      <span class=players hidden></span>
+    </p>
+    <p class=hook>Pick'em against the spread and survivor, one account. Both lock at
+    first kickoff.</p>
   </a>
   <!-- /PICKEM-OFF -->
   <a class=card href="/schedule/">
     <h2>Schedule <span class="tag live">live</span></h2>
-    <p class=stat><b>9</b> of <b>15</b> possible opponents · <b>{{HUB_GAMES}}</b> games on the card</p>
-    <p>Sixteen teams play nine conference games out of a possible fifteen, so
-    nobody plays everybody and two teams on the same record did not attempt
-    the same thing. The head-to-head grid for the season, <b>the draw</b> —
-    every team's expected wins on every other team's slate — and <b>the
-    rotation</b>: who you miss this year, and how long since you last met
-    them as conference opponents.</p>
-    <p class=fact hidden data-facts=schedule></p>
+    <p class=figs>
+      <span><b>9<i>&thinsp;of 15</i></b>opponents</span>
+      <span><b>{{HUB_GAMES}}</b>games</span>
+    </p>
+    <p class=hook>Nobody plays everybody, so two teams on the same record did not attempt
+    the same thing.</p>
   </a>
   <a class=card href="/attendance/">
     <h2>Attendance Tracker <span class="tag live">live</span></h2>
-    <p class=stat><b>{{HUB_ATT_SEASONS}}</b> seasons · <b>{{HUB_ATT_GAMES}}</b> home games · <b>{{HUB_ATT_FANS}}</b> through the gates</p>
-    <p>Weekly home-game attendance for all sixteen teams, back to 2012 —
-    capacity-sourced stadium data, fill rates, sellout streaks, kickoff-window
-    and weather effects, and hand-verified box scores where the feeds fall
-    short. Plus which crowds actually follow the record, and a flat CSV of
-    every home game if you would rather do your own arithmetic.</p>
-    <p class=fact hidden data-facts=attendance></p>
+    <p class=figs>
+      <span><b>{{HUB_ATT_SEASONS}}</b>seasons</span>
+      <span><b>{{HUB_ATT_GAMES}}</b>games</span>
+      <span><b>{{HUB_ATT_FANS}}</b>fans</span>
+    </p>
+    <p class=hook>Every home game back to 2012 — fill rates, sellout streaks, weather
+    effects, and a flat CSV.</p>
   </a>
+  <p class=fact hidden data-facts="*"></p>
   <p class=deeper>
     <span>Straight to it:</span>
     <a href="/tiebreaker/how.html">Big 12 tiebreaker rules</a>
@@ -357,12 +447,19 @@ a.card:hover { border-color: var(--accent); }
 })();
 </script>
 <script>
-/* One true thing per card, out of the few hundred build.py generated.
+/* One true thing, out of the few hundred build.py generated.
  *
  * The whole pool ships as one file — about 6KB over the wire — because every
  * section page can use the same one, and because picking on the client is
  * what lets the page differ between two readers and between two visits. A
  * fact chosen at build time would be the same sentence for a week.
+ *
+ * A slot asking for "*" draws from every section at once. The hub used to run
+ * four of these, one inside each card, and the no-repeated-team rule below
+ * existed because four independent picks landed on the same team often enough
+ * to look broken. There is one slot now — four fact lines is 200px the front
+ * page cannot spend — so the rule costs nothing and still holds if a page
+ * ever runs several again.
  *
  * The only rule that matters: a fact carrying `on` is a claim about a
  * calendar date, and outside that date it is simply false. So the dated ones
@@ -408,8 +505,21 @@ a.card:hover { border-color: var(--accent); }
       var claim = function (f) {
         (f.w || []).forEach(function (t) { used[t] = true; });
       };
+      var every = null;
+      var poolFor = function (name) {
+        if (name !== "*") return d.sections[name] || [];
+        if (!every) {
+          every = [];
+          for (var k in d.sections) {
+            if (Object.prototype.hasOwnProperty.call(d.sections, k)) {
+              every = every.concat(d.sections[k] || []);
+            }
+          }
+        }
+        return every;
+      };
       Array.prototype.forEach.call(slots, function (el) {
-        var pool = d.sections[el.getAttribute("data-facts")] || [];
+        var pool = poolFor(el.getAttribute("data-facts"));
         var dated = pool.filter(function (f) { return f.on === today; });
         var plain = pool.filter(function (f) { return !f.on; });
         // Prefer today's dated facts, but not at the price of the rule
@@ -459,7 +569,9 @@ a.card:hover { border-color: var(--accent); }
       var n = d && d.players;
       if (!n || n < MIN) return;
       Array.prototype.forEach.call(slots, function (el) {
-        el.innerHTML = " · <b></b> players";
+        // A third figure in the cluster, in the cluster's own shape — number
+        // over label — rather than a sentence tacked onto the end of one.
+        el.innerHTML = "<b></b>players";
         el.querySelector("b").textContent = n.toLocaleString();
         el.hidden = false;
       });

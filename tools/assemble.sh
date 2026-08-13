@@ -250,52 +250,6 @@ def line(sp):
     return f"{nxt.get('home') if sp < 0 else nxt.get('away')} −{n}"
 
 
-WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
-
-
-def count_word(n):
-    return WORDS.get(n, str(n))
-
-
-def ensemble(spot):
-    """Whose opinion the percentages are, including how current it is.
-
-    In August most systems have not published for the new season and the
-    build regresses last year's finals toward the mean rather than trusting
-    them. That is the right handling, and on the section pages it is stated;
-    on the front page "an ensemble of four public rating models" reads as
-    four opinions about this year's teams, which in week two it is not.
-
-    Counted from the data, so the qualifier deletes itself the week the last
-    system publishes rather than waiting for somebody to notice.
-    """
-    m = spot.get("models") or {}
-    total, stale = m.get("total") or 0, m.get("stale") or 0
-    if not total:
-        return "Ten thousand simulated seasons."
-    lead = (f"Ensemble of {count_word(total)} public rating "
-            f"{'model' if total == 1 else 'models'}")
-    if not stale:
-        return f"{lead}, ten thousand simulated seasons."
-    which = "both" if total == 2 and stale == 2 else (
-        "all " + count_word(stale) if stale == total else count_word(stale))
-    return (f"{lead} &mdash; {which} still on last season's numbers, pulled "
-            f"toward the mean until they publish &mdash; over ten thousand "
-            f"simulated seasons.")
-
-
-def standing(spot):
-    """"BYU 23% and Arizona 12%" — the two teams as the season has them.
-
-    Home first, matching the fork's left-hand column, so the eye reads the
-    same order twice rather than being asked to map one onto the other.
-    """
-    now = spot.get("now") or {}
-    return " and ".join(
-        f"{e(t)} {round((now.get(t) or 0) * 100)}%"
-        for t in (spot.get("home"), spot.get("away")) if t in now)
-
-
 def when(iso):
     """A readable UTC instant, for before the script runs and instead of it.
 
@@ -324,37 +278,25 @@ tok = {
     "HUB_CCG_B": e(ccg[1]["team"]) if len(ccg) > 1 else "",
     "HUB_CCG_A_PCT": f"{round(ccg[0]['p'] * 100)}%" if len(ccg) > 0 else "",
     "HUB_CCG_B_PCT": f"{round(ccg[1]['p'] * 100)}%" if len(ccg) > 1 else "",
-    # The same projection again, on the tiebreaker card, because the card is
-    # what somebody reads when deciding whether that section is worth a
-    # click and "projected championship matchup" is the thing it does.
+    # The week's biggest conference game, as ONE LINE, or nothing at all.
     #
-    # A whole element or nothing at all, rather than a token inside a
-    # sentence: before the first simulation there are no two teams to name,
-    # and a half-filled line reading "vs" with two blanks either side is
-    # worse than no line. The card's other stat row stands on its own.
-    # The week's biggest conference game, as a whole block or nothing at all.
-    # Before the season, and once every conference game is played, there is
-    # no next game to spotlight, and a heading with an empty body under it is
-    # worse than no heading.
+    # It used to be the line plus spot["html"] — the fork, both branches, four
+    # percentages and their arrows — plus a note saying where the arrows were
+    # measured from and whose opinion they are. All of that is right, and all
+    # of it is about 200px of card: on a phone it is the entire bottom row of
+    # a front page whose one job is to show all four sections at once. The
+    # fork is on /tiebreaker/ where it has the room. This is the sentence that
+    # makes somebody go there.
+    #
+    # Nothing at all, rather than a heading over a blank: before the season
+    # and once every conference game is played there is no next game to point
+    # at, and "Biggest swing this week:" followed by nothing is worse than a
+    # card that simply does not have the line.
     "HUB_SPOTLIGHT": (
-        f"<p class=stat>Biggest swing this week: <b>{e(spot['away'])}</b> at "
-        f"<b>{e(spot['home'])}</b> &middot; {e(spot['when'])} &middot; "
+        f"<p class=live-line>Biggest swing this week: <b>{e(spot['away'])}</b>"
+        f" at <b>{e(spot['home'])}</b> &middot; {e(spot['when'])} &middot; "
         f"{spot['total']} of a title-game seat changes hands</p>"
-        + spot["html"]
-        # The baseline the arrows are measured from, and whose opinion any
-        # of this is. Both are on the race page already — the first as the
-        # list of sixteen beside the fork, the second in the paragraph under
-        # it — and neither travelled with the component to a card that has
-        # no room for either. Four bare percentages and an arrow from
-        # nowhere is not a number a stranger can read.
-        + (f"<p class=spotnote>As things stand {standing(spot)}. "
-           f"{ensemble(spot)}</p>" if spot.get("now") else "")
         if spot else ""),
-    "HUB_CCG_CARD": (
-        f"<p class=stat>Projected title game: <b>{e(ccg[0]['team'])}</b> vs "
-        f"<b>{e(ccg[1]['team'])}</b> · {round(ccg[0]['p'] * 100)}% and "
-        f"{round(ccg[1]['p'] * 100)}% to get there</p>"
-        if len(ccg) > 1 else ""),
     "HUB_SEASON": str(hub.get("season") or ""),
     "HUB_TEAMS": str(counts.get("teams") or ""),
     "HUB_GAMES": str(counts.get("games") or ""),
@@ -383,6 +325,107 @@ fi
 # description is one truncated sentence, and hiding the list behind CSS is a
 # spam signal rather than a workaround. The pages carry real prose and real
 # JSON-LD, which is the part that was ever doing the work.
+
+# --- content security policy ----------------------------------------------
+# A budget on what a page is allowed to execute, so that a string which should
+# have been escaped and was not is a broken tooltip instead of a session.
+#
+# WHY HERE AND NOT IN THE PAGES. GitHub Pages serves whatever bytes it is
+# given and cannot set a header, so the only CSP this repo can deliver is a
+# <meta>. That is a real limit rather than a preference: a <meta> policy cannot
+# carry frame-ancestors and cannot carry HSTS, so clickjacking and the first
+# unencrypted request are still the zone's problem and belong in a Cloudflare
+# Transform Rule. What a <meta> DOES cover is script execution, which is the
+# part that matters here and the part this repo can test.
+#
+# LAST, AFTER EVERY OTHER REWRITE. The policy names the inline scripts by the
+# hash of their contents, so it has to be computed from the bytes that ship.
+# The pick'em switch, the footer stamp and the hub numbers all edit these files
+# above; computing this before any of them would name a script that no longer
+# exists and take the theme bootstrap down with it.
+#
+# FIRST IN THE HEAD, once written. A meta policy governs what comes after it,
+# so a policy placed below the theme bootstrap would let the very script it is
+# supposed to authorise run unchecked and then start enforcing. That also means
+# a wrong hash is a VISIBLE failure — the theme flashes and cards do not
+# pre-collapse — rather than a silent one, which is the right way round.
+#
+# THE HASHES ARE COMPUTED, NOT LISTED. A hand-maintained list of sha256- values
+# in this file would be wrong the first time somebody edited a bootstrap by a
+# character, and wrong in a way that only shows on the deployed site. So each
+# page is scanned for its own inline scripts and gets its own policy.
+echo "content-security-policy: hashing inline scripts"
+while IFS= read -r page; do
+  python3 - "$page" <<'PY'
+import base64, hashlib, re, sys
+
+p = sys.argv[1]
+s = open(p, encoding="utf-8").read()
+# No <head> means one of the redirect stubs — a doctype, a meta refresh and a
+# link, with no script of any kind on it. There is nothing for a policy to
+# govern and nowhere guaranteed to put it that precedes the content. The gate
+# below the loop is what makes that judgement safe rather than assumed: a
+# page carrying an inline script and no policy fails the build.
+if "<head" not in s or "Content-Security-Policy" in s:
+    sys.exit(0)
+
+# Executable inline scripts only. A <script type="application/ld+json"> block
+# is data — browsers do not execute it and CSP does not govern it — and
+# hashing those would add noise to every policy on the site for nothing.
+inline = re.compile(
+    r"<script(?![^>]*\bsrc=)([^>]*)>(.*?)</script\s*>", re.S | re.I)
+hashes = []
+for attrs, bodytext in inline.findall(s):
+    t = re.search(r'type\s*=\s*["\']?([^"\'\s>]+)', attrs, re.I)
+    if t and t.group(1).lower() not in ("text/javascript", "module",
+                                        "application/javascript"):
+        continue
+    # The hash is over the element's exact contents, byte for byte — no
+    # trimming. A stripped copy is a different script to the browser.
+    d = base64.b64encode(
+        hashlib.sha256(bodytext.encode("utf-8")).digest()).decode()
+    h = f"'sha256-{d}'"
+    if h not in hashes:
+        hashes.append(h)
+
+# style-src keeps 'unsafe-inline' and that is not an oversight to clean up
+# later. The charts set `style="--tc:…"` on generated rows and the
+# pre-collapse bootstrap builds a <style> element, both of which a strict
+# style-src blocks; hashing generated CSS is not possible and a nonce needs a
+# server. Inline STYLE is not how a page gets taken over — inline SCRIPT is,
+# and that is the one being locked down.
+#
+# connect-src names both Cloudflare hosts because the beacon posts to
+# /cdn-cgi/rum on this origin in some configurations and to
+# cloudflareinsights.com in others, and a policy that breaks analytics on a
+# config change would get deleted rather than fixed.
+#
+# NO frame-ancestors HERE. It is one of the directives a <meta> policy cannot
+# deliver — the browser parses it, ignores it, and logs an error on every page
+# for its trouble, which is how a policy starts looking broken to anybody who
+# opens the console. Clickjacking is real and unaddressed by this file; it is
+# the Transform Rule's job, along with HSTS, and saying so here beats shipping
+# a directive that does nothing.
+policy = "; ".join([
+    "default-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "form-action 'self'",
+    "img-src 'self' data:",
+    "font-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "connect-src 'self' https://cloudflareinsights.com "
+    "https://static.cloudflareinsights.com",
+    " ".join(["script-src 'self'", "https://static.cloudflareinsights.com",
+              *hashes]),
+])
+meta = f'<meta http-equiv="Content-Security-Policy" content="{policy}">\n'
+
+# Immediately after <head…>, so it precedes every script on the page.
+s = re.sub(r"(<head\b[^>]*>)", lambda m: m.group(1) + "\n" + meta, s, count=1)
+open(p, "w", encoding="utf-8").write(s)
+PY
+done < <(find "$DIST" -name '*.html')
 
 # A missing page or a stale asset has shipped silently in this project
 # before. Both are cheap to catch here and expensive to notice in the wild.
@@ -501,6 +544,38 @@ while IFS= read -r page; do
   echo "  NO CACHE-BUST  ${page#"$DIST"/}"
   echo "$refs" | sed 's/^/    /'
   fail=1
+done < <(find "$DIST" -name '*.html')
+
+# A page that runs script must have a policy governing it.
+#
+# The step that writes them skips anything with no <head>, which today is the
+# redirect stubs and nothing else. That is a judgement about the current
+# output, not a property of it — add a <script> to one of those stubs, or a
+# page shaped in some new way, and it would ship unprotected and pass every
+# other check on this list. So the exemption is stated as a rule and enforced:
+# no inline script without a policy naming its hash.
+# The same regex as the writer above, deliberately: a check that detects
+# inline script differently from the step that protects it will eventually
+# disagree with it, and the disagreement is silent in both directions. The
+# first draft of this used `grep -E '<script(?![^>]*src=)'`, which is a PCRE
+# lookahead that -E cannot parse — so it errored on every page, fell through
+# to a weaker pattern, and looked exactly like a check that was passing.
+while IFS= read -r page; do
+  python3 - "$page" <<'PY' || { echo "  NO CSP  ${page#"$DIST"/} runs inline script with no policy"; fail=1; }
+import re, sys
+s = open(sys.argv[1], encoding="utf-8").read()
+if "Content-Security-Policy" in s:
+    sys.exit(0)
+for attrs, body in re.findall(
+        r"<script(?![^>]*\bsrc=)([^>]*)>(.*?)</script\s*>", s, re.S | re.I):
+    t = re.search(r'type\s*=\s*["\']?([^"\'\s>]+)', attrs, re.I)
+    if t and t.group(1).lower() not in ("text/javascript", "module",
+                                        "application/javascript"):
+        continue
+    if body.strip():
+        sys.exit(1)
+sys.exit(0)
+PY
 done < <(find "$DIST" -name '*.html')
 
 # Every check above asks whether something is missing. None of them asks
