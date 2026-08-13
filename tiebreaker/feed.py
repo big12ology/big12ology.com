@@ -36,8 +36,14 @@ def sort_key(iso):
 
 def game_items(games):
     """One item per completed game, with records as of that game."""
+    # tb.has_score rather than a home_points check, because everything below
+    # this line assumes both numbers. tb.winner compares them, and the two
+    # title strings print them side by side; a row with one score filled in
+    # would reach all of that and raise. The feed is the worst place to learn
+    # that, too — it is regenerated on every build during the games, which is
+    # exactly when a half-written row is sitting in the data.
     done = sorted(
-        (g for g in games if g["completed"] and g["home_points"] is not None),
+        (g for g in games if g["completed"] and tb.has_score(g)),
         key=lambda g: sort_key(g["start"]))
     conf_rec = {}
     all_rec = {}

@@ -7,10 +7,25 @@
 (function (global) {
   "use strict";
 
+  /* Both scores present, which is not the same as the game being over. The
+   * port of tiebreaker.py's has_score, and see that docstring for why the
+   * feed hands out rows with one score filled and the other still null.
+   *
+   * The half-filled row fails differently on this side, and worse. Python
+   * compares the two numbers and raises TypeError, which stops a build and
+   * gets noticed. JavaScript coerces null to 0 in a relational compare, so
+   * `28 > null` is true and `null > 17` is false: winner() quietly hands the
+   * game to whichever team has a score posted, and the standings render as
+   * though that were a real result. Nothing throws and nobody finds out.
+   */
+  function hasScore(g) {
+    return g.home_points !== null && g.home_points !== undefined &&
+      g.away_points !== null && g.away_points !== undefined;
+  }
+
   function confGames(games) {
     return games.filter(function (g) {
-      return g.conference_game && g.completed &&
-        g.home_points !== null && g.home_points !== undefined && !g.ccg;
+      return g.conference_game && g.completed && hasScore(g) && !g.ccg;
     });
   }
 
@@ -411,7 +426,7 @@
     missing.forEach(function (t) { tally[t] = [0, 0, 0, 0]; });  // nw nl ow ol
     games.forEach(function (g) {
       if (!g.completed || g.ccg) return;
-      if (g.home_points === null || g.home_points === undefined) return;
+      if (!hasScore(g)) return;
       var w = winner(g);
       if (!w) return;
       var loser = w === g.home ? g.away : g.home;
@@ -526,6 +541,7 @@
     championship: championship,
     pct: pct,
     winner: winner,
+    hasScore: hasScore,
   };
 
   global.B12Engine = api;

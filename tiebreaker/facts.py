@@ -46,6 +46,13 @@ import json
 import os
 import re
 
+# The only non-stdlib import in this file, and it is here for one three-line
+# function. Worth it: what counts as a played game has to mean the same thing
+# in the facts as it does in the standings, or the hub publishes a sentence
+# the section it links to disagrees with. See tb.has_score for what the
+# hand-rolled version of that test kept getting wrong.
+import tiebreaker as tb
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 
@@ -391,8 +398,11 @@ def rivalry_facts(games_by_year, year, first_year):
         a, b = r["teams"]
         name = r.get("name") or f"{a}–{b}"
         met = _series(games_by_year, a, b)
-        played = [(y, g) for y, g in met
-                  if g.get("home_points") is not None]
+        # Both scores, not just the home one: the series record, the streak
+        # walk and the biggest-margin search below all subtract one number
+        # from the other, and a rivalry game with half a score posted would
+        # crash the build rather than merely skew a count.
+        played = [(y, g) for y, g in met if tb.has_score(g)]
         if not played:
             continue
 
@@ -775,9 +785,12 @@ def tiebreaker_facts(games_by_year):
 
     # --- the shape of a conference season ---------------------------------
     for y in sorted(games_by_year):
+        # Same test the standings use, for the same reason: the loop below
+        # compares the two scores to decide a winner, so a row holding only
+        # one of them has to be out before it gets there.
         conf = [g for g in games_by_year[y]
                 if g.get("conference_game") and not g.get("ccg")
-                and g.get("home_points") is not None]
+                and tb.has_score(g)]
         if not conf:
             continue
         rec = collections.defaultdict(lambda: [0, 0])
@@ -850,7 +863,7 @@ def tiebreaker_facts(games_by_year):
         rec = collections.defaultdict(lambda: [0, 0])
         graded = [g for g in games_by_year[y]
                   if g.get("conference_game") and not g.get("ccg")
-                  and g.get("home_points") is not None]
+                  and tb.has_score(g)]
         for g in sorted(graded, key=lambda x: (x.get("start") or "", x["id"])):
             hp, ap = g["home_points"], g["away_points"]
             w, l = ((g["home"], g["away"]) if hp > ap else (g["away"], g["home"]))

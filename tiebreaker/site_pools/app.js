@@ -140,6 +140,22 @@
   // what those rows already said.
   function joiner(g) { return g.neutral ? "vs" : "at"; }
 
+  // A result is a result only when both numbers are in it. The port of
+  // tiebreaker.py's has_score, kept local because this page does not load
+  // engine.js, and phrased against g.result because that is the shape the
+  // pools API hands back.
+  //
+  // Testing home_points alone is what the two call sites below used to do,
+  // and the feed does deliver rows with one score posted and the other still
+  // null. That combination gets a card labeled FINAL whose score reads
+  // "null-28", because a missing number does not stop string concatenation
+  // the way it stops arithmetic. The scoreboard is the one place on the site
+  // where being confidently wrong is worse than being blank.
+  function hasResult(g) {
+    return !!g.result && g.result.home_points != null &&
+      g.result.away_points != null;
+  }
+
   // What a screen reader hears instead of "minus six point five", which is
   // not what the number means to anybody.
   function spreadSaid(spreadX2, side) {
@@ -224,7 +240,7 @@
   var LIVE_WINDOW = 3 * 3600;
 
   function gameStatus(g) {
-    if (g.result && g.result.home_points != null) {
+    if (hasResult(g)) {
       return {kind: "final", text: "FINAL"};
     }
     var k = g.kickoff_at, now = Date.now() / 1000;
@@ -1401,7 +1417,7 @@
     // figures do too. A card that says WIN without saying 31-21 is withholding
     // the thing anyone actually wants to look at.
     var sc = el("span", "pk-score");
-    if (g.result && g.result.home_points != null) {
+    if (hasResult(g)) {
       sc.textContent = g.result.away_points + "\u2013" + g.result.home_points;
       sc.title = g.away + " " + g.result.away_points + ", " +
                  g.home + " " + g.result.home_points;

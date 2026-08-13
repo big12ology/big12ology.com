@@ -272,8 +272,12 @@
   }
 
   // What actually happened, for the games the user is allowed to rewrite.
+  // B12Engine.hasScore rather than a home_points test, so this page and the
+  // engine it renders cannot disagree about which games happened. The Lab
+  // shows the real standings beside the rewritten ones; if the two functions
+  // counted different games, the difference would read as the user's picks.
   function actualWinner(g) {
-    if (!g.completed || g.home_points === null) return null;
+    if (!g.completed || !B12Engine.hasScore(g)) return null;
     if (g.home_points === g.away_points) return null;
     return g.home_points > g.away_points ? g.home : g.away;
   }
@@ -339,7 +343,7 @@
     var tally = {};
     missing.forEach(function (t) { tally[t] = { nw: 0, nl: 0, ow: 0, ol: 0 }; });
     payload.games.forEach(function (g) {
-      if (!g.completed || g.ccg || g.home_points === null) return;
+      if (!g.completed || g.ccg || !B12Engine.hasScore(g)) return;
       var w = g.home_points > g.away_points ? g.home
         : g.away_points > g.home_points ? g.away : null;
       if (!w) return;
