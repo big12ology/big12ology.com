@@ -819,14 +819,20 @@
    * is 720 spans nobody has asked to see yet. Both ways in — the ⋮ and the
    * pointer — come through here, so there is one definition of what "open"
    * means and the button's aria-expanded cannot drift from what is on screen.
+   *
+   * Two shapes, same strip. The ⋮ opens it in the list, as a row: the list
+   * getting longer is what that press asked for. A hover opens it floating
+   * over the list, because a hover must not move the thing being pointed at
+   * — see bindPeekHover.
    */
-  function setPeek(id, on) {
+  function setPeek(id, on, floating) {
     var strip = peekStrip(id);
     if (!strip) return null;
     if (on && !strip.dataset.filled) {
       strip.innerHTML = modelStrip(id);
       strip.dataset.filled = "1";
     }
+    strip.classList.toggle("wfloat", !!(on && floating));
     strip.hidden = !on;
     var btn = document.querySelector('.wpeek[data-id="' + id + '"]');
     if (btn) btn.setAttribute("aria-expanded", on ? "true" : "false");
@@ -922,6 +928,11 @@
           pickBtn(id, g.away, fav, was) +
           "<span class=at>" + (g.neutral_site ? "vs" : "at") + "</span>" +
           pickBtn(id, g.home, fav, was) +
+          // The tag, the date and the ⋮ in one wrapper so a phone can put
+          // all three on a line of their own. It is display:contents on
+          // anything wider, so the row it makes there is the same flat row
+          // of six items it has always been.
+          "<span class=wmeta>" +
           (g.conference_game
             ? (anyNc ? "<span class='nctag ghost'>non-conf</span>" : "")
             : "<span class=nctag>non-conf</span>") +
@@ -933,6 +944,7 @@
           "<button type=button class=wpeek data-id=\"" + id + "\"" +
           " aria-expanded=false title=\"What each model makes of this" +
           " game\">&#8942;</button>" +
+          "</span>" +
           "</div><div class=wmodels hidden data-for=\"" + id + "\"></div>";
       }).join("");
       var picked = byWeek[wk].filter(function (g) {
@@ -960,7 +972,14 @@
     box.querySelectorAll(".wpeek").forEach(function (btn) {
       btn.onclick = function () {
         var id = btn.dataset.id;
-        var strip = setPeek(id, isPeekOpen(id) ? false : true);
+        // A hover already has it up, floating. The press is asking to keep
+        // it, not to put it away — so it comes down into the list and stays
+        // there. Without this the ⋮ is unreachable on a mouse: getting to it
+        // means hovering the row, which means the strip is already showing,
+        // which would make every press a close.
+        var up = peekStrip(id);
+        var floating = !!up && !up.hidden && up.classList.contains("wfloat");
+        var strip = setPeek(id, floating || !isPeekOpen(id), false);
         if (!strip) return;
         if (strip.hidden) {
           // Closed by hand, with the pointer still sitting on the row that
@@ -1219,9 +1238,19 @@
   // mid-pick is not a feature. The ⋮ stays for them, and for the keyboard,
   // which cannot hover either.
   //
-  // Delayed both ways, and that delay is the whole difference between this
-  // and a flicker: a pointer travelling from week three to the button row
-  // crosses eight games and is asking about none of them.
+  // Delayed on the way in, and that delay is the whole difference between
+  // this and a flicker: a pointer travelling from week three to the button
+  // row crosses eight games and is asking about none of them. The delay on
+  // the way out only covers leaving the list; moving to another game takes
+  // the old strip down at once, because it is sitting over that game.
+  //
+  // Floating, not folded into the list. As a row it pushed every game below
+  // it down by its own height, so a pointer moving down to the next game
+  // arrived, waited out the open delay, and then had the list yanked up from
+  // under it as the first strip closed — landing the pointer on a third game
+  // it never aimed at, which opened, which moved the list again. Strips are
+  // not all the same height, so where the pointer ended up was not even
+  // predictable. A layer changes nothing about where anything is.
   (function bindPeekHover() {
     var box = document.getElementById("wgames");
     if (!box || !window.matchMedia) return;
@@ -1252,8 +1281,9 @@
     }
 
     box.addEventListener("mouseover", function (ev) {
-      // The strip counts as part of the row it belongs to — reading it means
-      // the pointer has left the row, and that must not close it.
+      // A strip counts as part of the row it belongs to. A floating one is
+      // pointer-events:none and can never be the target; a pinned one is a
+      // row in the list, and reading it must not close it.
       var el = ev.target.closest && ev.target.closest(".wgame, .wmodels");
       var id = null;
       if (el && el.classList.contains("wmodels")) {
@@ -1267,15 +1297,17 @@
       if (shutTimer) { clearTimeout(shutTimer); shutTimer = null; }
       if (id === shown) return;
       if (openTimer) clearTimeout(openTimer);
+      // One at a time, and down before the next one is even considered: the
+      // layer covers the row below the game it belongs to, which is the game
+      // the pointer has just arrived on. Leaving it up for the open delay
+      // would hide the row being asked about.
+      hideShown();
       openTimer = setTimeout(function () {
         openTimer = null;
         var strip = peekStrip(id);
         if (!strip || strip.dataset.mute) return;
-        // One at a time. Sixteen strips left open behind a pointer is the
-        // card unfolding itself, which is not what a hover asked for.
-        hideShown();
         if (isPeekOpen(id)) return;
-        setPeek(id, true);
+        setPeek(id, true, true);
         shown = id;
       }, OPEN_MS);
     });

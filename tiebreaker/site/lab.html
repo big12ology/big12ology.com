@@ -84,6 +84,13 @@ body { margin: 0; background: var(--bg); color: var(--ink);
 :root[data-theme="dark"] .lchip.win { color: #4ade80;
   background: color-mix(in srgb, #4ade80 14%, transparent); }
 .lstep .evline { margin: 5px 0 0; }
+/* This page only. 1120 is a measure for prose and the Lab is not prose: it
+   is two columns of tables, one of them a list of 120 games that had 460px
+   to say "Long Island University at Kansas" in and truncated both ends of
+   it. The other tracker pages keep the site's width — several of them are
+   mostly words, and none of them cap a lone card the way the rule below
+   does, so widening them would just stretch the paragraphs. */
+:root { --chrome-w: 1320px }
 main { max-width: var(--chrome-w); margin: 0 auto; padding: 20px;
   display: grid; gap: 20px; }
 main > .card, main > .cols { max-width: 880px; width: 100%;
@@ -215,7 +222,9 @@ button.wbtn:active { transform: translateY(1px); box-shadow: none; }
 .bi { width: 14px; height: 14px; flex: 0 0 14px; color: var(--accent); }
 .bi-chalk { color: var(--warn); }
 .bi-view { color: var(--accent2); }
-#wgames details { padding: 8px 12px; }
+/* position, so a floating model strip is measured against the week it is in
+   and cannot run out to the window's edge. */
+#wgames details { padding: 8px 12px; position: relative; }
 #wgames summary { font-size: var(--t-label); }
 /* The week's own chalk button, in its summary. Quiet until you are on it —
    sixteen of these down the card should not read as sixteen calls to action. */
@@ -252,6 +261,10 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 .wgame .pick .nm { overflow: hidden; text-overflow: ellipsis;
   white-space: nowrap; }
 .wgame .at, .wgame .wdate, .wgame .nctag { flex: 0 0 auto; }
+/* Nothing of its own: the tag, the date and the ⋮ are items of the row,
+   exactly as they were before they had a wrapper. The wrapper exists for
+   the phone rule at the bottom of this sheet, which turns it back on. */
+.wmeta { display: contents; }
 /* The per-game peek. A dotted handle at the end of the row, quiet until
    wanted — 120 of these must not read as 120 buttons. */
 .wpeek { flex: 0 0 auto; background: none; border: 0; padding: 0 2px;
@@ -270,6 +283,22 @@ main > *, .duo > *, .cols > * { min-width: 0; }
    so every unopened strip was drawing its padding and background as an empty
    grey bar under all 120 rows. */
 .wmodels[hidden] { display: none; }
+/* The same strip, opened by a hover instead of by the ⋮: a layer over the
+   list rather than a row inside it. In the list it pushed every game below
+   it down by its own height, and the game a pointer was moving toward slid
+   away mid-move. Nothing here changes where anything is.
+
+   No offsets, so it keeps the static position — directly under its own row,
+   at the row's left edge — and shrink-to-fit takes the width, which is what
+   makes it read as an answer to one game rather than a band across the card.
+   pointer-events:none because it covers the next row: it must neither be
+   hoverable itself nor swallow a pick meant for the row underneath. The
+   right margin is the week's own padding: shrink-to-fit measures against the
+   padding box, so without it a six-model strip runs 12px past the end of the
+   row it belongs to. */
+.wmodels.wfloat { position: absolute; z-index: 5; margin: 0 12px 0 0;
+  pointer-events: none; border: 1px solid var(--line);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .35); }
 .wm i { font-style: normal; text-transform: uppercase; letter-spacing: .04em;
   opacity: .7; margin-right: 5px; }
 .wgame:last-child { border-bottom: none; }
@@ -327,9 +356,39 @@ main > *, .duo > *, .cols > * { min-width: 0; }
    card open past the column it was sitting in. */
 .cltags { white-space:nowrap }
 .clrec { min-width:0 }
+/* A row is as wide as the column it sits in, not as wide as the window: in
+   the Lab this table is a 530px card on a 1280px screen. Keyed to the window,
+   the narrow layout below only ever fired on a phone — so the moment a
+   "controls own destiny" chip claimed 135px of a 488px row, the record gave
+   the way min-width:0 lets it give, collapsing its track to nothing and
+   spilling one word per line down the outside of the card. Ask the row how
+   wide it actually is. */
+.clrow { container-type:inline-size }
+/* A phone, which is a different layout rather than a smaller one. */
 @media (max-width:640px) {
   .clmain { grid-template-columns:22px 1fr auto; row-gap:3px }
   .clbar, .clpct { display:none }
+  /* The record's own line, under the team. Auto-placed it wrapped onto the
+     next row into column 1 — a 22px track cut for a logo — and rendered one
+     word per line, 250px of it, on every row of the table. */
+  .clrec { grid-column:2/-1 }
+}
+/* Anything wider than a phone, in a card too narrow for six columns. Only
+   the chips move, and only down: the bar, the percentage and the record keep
+   their columns. Nested, so a phone gets exactly one of the two rules. */
+@media (min-width:641px) {
+  @container (max-width:620px) {
+    .clmain { row-gap:2px;
+      grid-template-columns:22px minmax(90px,148px) 112px 46px minmax(0,1fr) }
+    .clmain > .mark { grid-area:1/1 }
+    .clteam { grid-area:1/2 }
+    .clbar { grid-area:1/3 }
+    .clpct { grid-area:1/4 }
+    .clrec { grid-area:1/5 }
+    .cltags { grid-row:2; grid-column:2/-1 }
+    /* Most rows carry no chip, and none of them should pay for the row. */
+    .cltags:empty { display:none }
+  }
 }
 .clrow { padding: 8px 0; border-bottom: 1px solid var(--line);
   font-size: var(--t-copy); }
@@ -361,6 +420,19 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 @media (max-width: 700px) {
   .pick { flex: 1 1 40%; min-width: 0; }
   .wgame .wdate { margin-left: 0; }
+}
+/* A phone cannot hold a game on one line. Six items across 331px left each
+   team button 75px, and a button is a logo plus 6px of gap plus padding
+   before a letter of the name gets a look in — so the list read "N at T",
+   "E at U", every row a pair of initials. The two buttons take the line and
+   the tag, the date and the ⋮ take the next one, which is 200px a name
+   instead of 35. */
+@media (max-width: 520px) {
+  .wgame { flex-wrap: wrap; row-gap: 4px; }
+  .wmeta { display: flex; align-items: center; gap: 8px; flex: 1 0 100%; }
+  /* It held a column open on a row that no longer has one to line up with. */
+  .wmeta .nctag.ghost { display: none; }
+  .wgame .wdate { margin-left: auto; }
 }
 </style>
 </head>
@@ -444,7 +516,7 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 <script defer src=scrollcue.js?v=57795f5d></script>
 <script src=pct.js?v=9b775f7b></script>
 <script src=race.js?v=ab5b8257></script>
-<script src=app.js?v=538a5735></script>
+<script src=app.js?v=b1ec99d4></script>
 <footer class=b12-footer>Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> · procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · updated {{BUILD_STAMP}}.<br>Not affiliated with the Big 12 Conference; marks belong to their owners, shown for identification only. · <a href="/privacy">Privacy</a> · <a href="mailto:dept@big12ology.com">dept@big12ology.com</a></footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
 </body>
