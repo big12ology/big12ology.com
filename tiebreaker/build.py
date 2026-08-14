@@ -50,6 +50,35 @@ SITE = os.path.join(HERE, "site")
 # class of silent bug, and it deduplicates the three that were pasted into
 # three templates. See inline() below.
 INLINE_DIR = os.path.join(HERE, "inline")
+
+def inline(name):
+    """A head fragment read from inline/, to be embedded verbatim in a page.
+
+    THIS IS WHY THEY ARE NOT IN THIS FILE. build.py writes markup three ways
+    — .format() templates, f-strings, and constants interpolated into an
+    f-string as a value — and the three disagree about braces. In the first
+    two a literal brace is written "{{"; in the third it must be single,
+    because nothing ever collapses it. CSS and minified JS are almost nothing
+    but braces, so a block that moves between the two conventions ships as
+    "{{ ... }}", which no browser parses. The page looks built and the
+    styling, or the script, is simply absent.
+
+    Text that arrives as a *value* is never re-scanned by either mechanism,
+    so a file has no convention at all and cannot be moved into the wrong
+    one. tools/verify-dist.py still greps the built pages for an uncollapsed
+    brace; after this it should never find one.
+
+    The three script tags were also pasted into three templates apiece, which
+    is how a pre-paint bootstrap gets fixed in two places out of three.
+
+    Read at import, not per page: 185 pages inline the same bytes.
+    """
+    with open(os.path.join(INLINE_DIR, name)) as f:
+        text = f.read()
+    # Drop only the newline the file ends with, so a block that deliberately
+    # ends in blank lines still round-trips byte for byte.
+    return text[:-1] if text.endswith("\n") else text
+
 # The schedule section is a sibling of /tiebreaker/ on the
 # domain, so its pages reach shared assets through ../tiebreaker/.
 SCHEDULE_SITE = os.path.join(HERE, "site_schedule")
@@ -1629,160 +1658,7 @@ CLINCH_TAIL_LAB = ("Reflects real results until you pick a game; from then on "
 
 
 
-BRIEF_CSS = """
-.matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
-  flex-wrap:wrap }
-.side { display:flex; align-items:center; gap:12px; font-size:var(--t-headline);
-  font-weight:700; border-bottom:4px solid var(--line);
-  padding:6px 10px 10px 2px }
-.tname { letter-spacing:-.01em }
-.vs { color:var(--dim); font-weight:400; font-size:var(--t-subhead); padding:0 6px }
-.seed { display:inline-block; background:var(--accent); color:#fff;
-  border-radius:6px; font-size:var(--t-label); width:22px; height:22px;
-  line-height:22px; text-align:center; vertical-align:3px; margin-right:4px }
-.badge { font-size:var(--t-fine); border-radius:20px; padding:2px 9px;
-  vertical-align:1px; font-weight:600; letter-spacing:.03em }
-.badge.ok { background:#13653626; color:#136536 }
-.badge.warn { background:#b4530926; color:var(--warn) }
-:root { --bg:#f6f4ef; --panel:#fff; --ink:#1a1c20; --dim:#666d7b;
-  --line:#e2ddd2; --accent:#0B6E77; --accent2:#003087; --warn:#b45309;
-  --pctl:27%; }  /* lightness set by contrast, not taste: 32%
-  put the mid-scale ambers at 3.5:1, below the 4.5:1 WCAG AA
-  floor for body text. Hue still carries the meaning. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg:#14161a; --panel:#1d2026;
-    --ink:#e8e6e1; --dim:#9aa0aa; --line:#2e323a; --accent:#3FC7CE;
-    --accent2:#7aa2ff; --warn:#fbbf24; --pctl:63%; } }
-:root[data-theme="dark"] { --bg:#14161a; --panel:#1d2026; --ink:#e8e6e1;
-  --dim:#9aa0aa; --line:#2e323a; --accent:#3FC7CE; --accent2:#7aa2ff;
-  --warn:#fbbf24; --pctl:63%; }
-* { box-sizing:border-box }
-body { margin:0; background:var(--bg); color:var(--ink);
-  font:var(--t-body)/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif }
-header { border-bottom:4px solid var(--accent); padding:22px 20px;
-  background:var(--panel) }
-header h1 { margin:0; font-size:var(--t-headline) } header p { margin:3px 0 0;
-  color:var(--dim); font-size:var(--t-label) } header a { color:var(--accent2);
-  text-decoration:none }
-main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
-  display:grid; gap:18px }
-.card { background:var(--panel); border:1px solid var(--line);
-  border-radius:10px; padding:16px 18px }
-.card h2 { margin:0 0 8px; font-size:var(--t-label); text-transform:uppercase;
-  letter-spacing:.06em; color:var(--dim) }
-/* A link written into a sentence, rather than one of the components that
-   carries its own color. There was no rule for these, so the browser's
-   #0000EE and its underline were shipping on the two prose pages in this
-   section — the only blue on the domain. The Rules page has always said
-   accent2 for exactly this; so does the hub. Classless on purpose: every
-   component link in this section carries a class, and a plain descendant
-   selector would out-specify all of them. */
-.card p a:not([class]), .card li a:not([class]) { color:var(--accent2);
-  text-decoration:underline; text-underline-offset:2px;
-  text-decoration-thickness:1px }
-.dim { color:var(--dim) } .note { color:var(--dim); font-size:var(--t-row) }
-/* Several marks carry a white plate inside the artwork itself, so on a dark
-   page they read as stray white cards. CSS cannot recolor what is baked
-   into the file — what it can do is make the plate look intended: one tile,
-   same in both themes, that the artwork's own white sits flush against. */
-.mark { vertical-align:-3px; margin-right:6px;
-  background:#f0ede6; border-radius:4px; padding:2px }
-.clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:var(--t-copy) }
-.movemain { display:grid; align-items:center; gap:0 10px;
-  grid-template-columns:22px minmax(110px,148px) 62px auto }
-.movepts { text-align:right; font-variant-numeric:tabular-nums }
-@media (max-width:640px) {
-  .movemain { grid-template-columns:22px 1fr auto; row-gap:2px }
-}
-.levmain { display:grid; align-items:center; gap:0 10px;
-  grid-template-columns:minmax(0,1fr) auto 112px 34px }
-.levgame { min-width:0; overflow:hidden; text-overflow:ellipsis;
-  white-space:nowrap }
-.levdate { color:var(--dim); white-space:nowrap }
-.levswing { font-size:var(--t-row); margin-top:2px }
-@media (max-width:640px) {
-  .levmain { grid-template-columns:minmax(0,1fr) auto; row-gap:3px }
-  .levbar { display:none }
-}
-.clmain { display:grid; align-items:center; gap:0 10px;
-  grid-template-columns:22px minmax(110px,148px) 112px 46px auto 1fr }
-.clteam { min-width:0; overflow:hidden; text-overflow:ellipsis;
-  white-space:nowrap }
-.clpct { text-align:right }
-/* The chips hold their line — a "clinched" that breaks in half is not a
-   chip any more. The record after them does not: it is the longest thing on
-   the row and the least load-bearing, so when the row runs out of width it
-   is the one that gives. Set nowrap it did the opposite, holding the whole
-   card open past the column it was sitting in. */
-.cltags { white-space:nowrap }
-.clrec { min-width:0 }
-/* A row is as wide as the column it sits in, not as wide as the window: in
-   the Lab this table is a 530px card on a 1280px screen. Keyed to the window,
-   the narrow layout below only ever fired on a phone — so the moment a
-   "controls own destiny" chip claimed 135px of a 488px row, the record gave
-   the way min-width:0 lets it give, collapsing its track to nothing and
-   spilling one word per line down the outside of the card. Ask the row how
-   wide it actually is. */
-.clrow { container-type:inline-size }
-/* A phone, which is a different layout rather than a smaller one. */
-@media (max-width:640px) {
-  .clmain { grid-template-columns:22px 1fr auto; row-gap:3px }
-  .clbar, .clpct { display:none }
-  /* The record's own line, under the team. Auto-placed it wrapped onto the
-     next row into column 1 — a 22px track cut for a logo — and rendered one
-     word per line, 250px of it, on every row of the table. */
-  .clrec { grid-column:2/-1 }
-}
-/* Anything wider than a phone, in a card too narrow for six columns. Only
-   the chips move, and only down: the bar, the percentage and the record keep
-   their columns. Nested, so a phone gets exactly one of the two rules. */
-@media (min-width:641px) {
-  @container (max-width:620px) {
-    .clmain { row-gap:2px;
-      grid-template-columns:22px minmax(90px,148px) 112px 46px minmax(0,1fr) }
-    .clmain > .mark { grid-area:1/1 }
-    .clteam { grid-area:1/2 }
-    .clbar { grid-area:1/3 }
-    .clpct { grid-area:1/4 }
-    .clrec { grid-area:1/5 }
-    .cltags { grid-row:2; grid-column:2/-1 }
-    /* Most rows carry no chip, and none of them should pay for the row. */
-    .cltags:empty { display:none }
-  }
-}
-
-.clrow:last-of-type { border-bottom:none }
-.obar { display:inline-block; width:100px; height:8px; background:var(--line);
-  border-radius:4px; overflow:hidden; vertical-align:1px; margin:0 6px 0 8px }
-.obar i { display:block; height:100%; border-radius:4px }
-.opct { font-variant-numeric:tabular-nums; font-size:var(--t-row) }
-.chaosband { display:flex; align-items:center; gap:14px; border:1px solid
-  var(--line); border-radius:8px; padding:10px 14px; margin-bottom:10px;
-  font-size:var(--t-row) }
-.chaosscale { color:var(--dim); font-size:var(--t-meta); margin-top:2px }
-.chaosparts { color:var(--dim); font-size:var(--t-meta); margin-top:3px;
-  font-variant-numeric:tabular-nums }
-.cnum { font-size:var(--t-hero); font-weight:800; line-height:1 }
-.tag { font-size:var(--t-micro); border-radius:20px; padding:2px 8px; font-weight:700 }
-.tag.live { background:#13653626; color:#136536 }
-.tag.destiny { background:#b4530926; color:var(--warn) }
-.scen { margin:5px 0 2px; padding-left:20px; font-size:var(--t-row); color:var(--dim) }
-.elim { font-size:var(--t-row) } ul.games { list-style:none; padding:0; margin:0 }
-ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
-  font-size:var(--t-label) } .ccgtag { color:var(--accent); font-weight:700;
-  font-size:var(--t-fine); text-transform:uppercase }
-/* One non-conference marker for the whole site. It was a pill in the Lab's
-   own stylesheet and bare parenthetical text everywhere else, so the same
-   fact about the same game looked like two different things depending on
-   which page you read it on. Lives here now, where every page can see it. */
-.nctag { color:var(--dim); font-size:var(--t-micro); border:1px solid var(--line);
-  border-radius:20px; padding:1px 7px; text-transform:uppercase;
-  letter-spacing:.04em; white-space:nowrap }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .tag.live { color:#4ade80;
-    background:#4ade8024 } }
-:root[data-theme="dark"] .tag.live { color:#4ade80; background:#4ade8024 }
-"""
+BRIEF_CSS = inline("brief.css")
 
 
 def _prev_week_state(games, systems, overrides, last_week):
@@ -1950,408 +1826,7 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
               "tiebreaking procedures applied to live results."))
 
 
-SUBPAGE_EXTRA_CSS = """
-.drawwrap { overflow-x:auto }
-.drawchart { width:100%; min-width:660px; height:auto; display:block;
-  margin:12px 0 2px }
-.drawchart .dgrid { stroke:var(--line); stroke-width:1 }
-.drawchart .dlabel { font-size:var(--t-fine); font-weight:600; fill:var(--ink) }
-.drawchart .dval { font-size:var(--t-fine); font-weight:600;
-  font-variant-numeric:tabular-nums }
-.drawchart .dtick { fill:var(--dim); font-size:var(--t-fine) }
-/* No hover-dim here. The bump chart fades its other lines because sixteen
-   of them overlap and you need to follow one; sixteen separate bars do not
-   overlap, so the same rule just grays out the chart you are reading. */
-.drawkey { margin: 6px 0 12px; padding-left: 20px; }
-.drawkey li { margin: 6px 0; }
-.drawgridtable td.dcell { text-align: right;
-  font-variant-numeric: tabular-nums; }
-.drawgridtable td.dcell.own { outline: 2px solid var(--ink);
-  outline-offset: -2px; font-weight: 700; }
-.laddertable td, .cuttable td { vertical-align: middle; }
-/* Seven rows of "(a) head-to-head — 28". Stretched across the full chrome
-   the count drifted most of a page away from the step it counts, and the
-   head was a cell short of the body, so the numbers ran under no header at
-   all. Two columns of prose, one of figures, at a width you can read across
-   in one go. */
-.stepdepth { max-width: 34rem; }
-.stepdepth th:last-child, .stepdepth td:last-child { text-align: right;
-  font-variant-numeric: tabular-nums; }
-.samerec { color: var(--warn); font-weight: 600; font-size: var(--t-meta); }
-.misslist { list-style:none; margin:0; padding:0; display:flex;
-  flex-wrap:wrap; gap:3px 0 }
-/* Each entry is its own little grid too, so the marks, the abbreviations
-   and the years each line up in a column rather than sitting wherever the
-   previous word ended. */
-.misslist li { display:grid; grid-template-columns:19px 44px auto;
-  align-items:center; white-space:nowrap; width:144px;
-  padding-right:12px; box-sizing:border-box }
-.misslist li .mabbr { font-weight:600 }
-/* Left, not right: pushed to the far edge of its own cell the year lands
-   against the NEXT team's mark, and the row reads "UCF 2024BAY". */
-.misslist li .myr { color:var(--dim); font-variant-numeric:tabular-nums;
-  padding-left:5px }
-
-.firstlist { list-style: none; margin: 8px 0; padding: 0; font-size: var(--t-subhead); }
-.rotationtable { width:100% }
-.rotationtable td { vertical-align:middle }
-.rotationtable td:first-child { white-space:nowrap }
-.warnpill { color: var(--warn); font-weight: 600; font-size: var(--t-meta); }
-.drawsum td.num, .drawgridtable td { text-align: right;
-  font-variant-numeric: tabular-nums; }
-/* A HEADER ALIGNS WITH THE COLUMN IT LABELS. The figures in this table are
-   right-aligned and every th was inheriting the table default of left, so
-   "vs average" sat a full column-width away from the numbers it named and
-   read as the label for whatever was to its left. .stbl and .stepdepth
-   already pair their th with their td; this table was the one that did not.
-   The spanning headers are centred because each covers a right-aligned
-   figure and the team abbreviation beside it, and the pair reads as one
-   thing. */
-.drawsum th { text-align: right; }
-.drawsum th:first-child { text-align: left; }
-.drawsum th[colspan] { text-align: center; }
-.drawsum td.dim, .drawgridtable td.dim { color: var(--dim); }
-.drawgridtable th { font-weight: 600; font-size: var(--t-meta); }
-table { border-collapse:collapse; width:100%; font-size:var(--t-label) }
-th, td { text-align:left; padding:6px 9px; border-bottom:1px solid
-  var(--line); font-variant-numeric:tabular-nums }
-th { font-size:var(--t-fine); text-transform:uppercase; letter-spacing:.05em;
-  color:var(--dim) }
-thead tr th { border-bottom:2px solid var(--line) }
-.teamcell { white-space:nowrap }
-.briefstamp { color:var(--dim); font-size:var(--t-row); text-align:center; margin:-4px 0 2px }
-tr.grpend td { border-bottom:2px solid var(--line) }
-.stbl td:last-child, .stbl th:last-child { text-align:right }
-.stbl td { height:38px }
-.duo.even { grid-template-columns:minmax(0,1fr) minmax(0,1fr) }
-.duo.even > .stack { align-content:stretch }
-.duo.even .card { height:100% }
-.posc { white-space:nowrap; vertical-align:top; color:var(--dim); font-variant-numeric:tabular-nums }
-h3.wkhead { font-size:var(--t-row); text-transform:uppercase; letter-spacing:.05em;
-  color:var(--dim); margin:16px 0 4px }
-/* The day a block of cards is on. Quieter than the week it sits under and
-   louder than the cards themselves, so the eye reads week, then day, then
-   games. The first one loses its top margin: it follows the card's own h2
-   directly and would otherwise open the week with a gap nothing is in. */
-h3.dayhead { font-size:var(--t-row); font-weight:600; color:var(--ink);
-  margin:14px 0 6px; padding-top:10px; border-top:1px solid var(--line) }
-h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
-/* The week, as cards rather than rows. Sixteen one-line rows read as an
-   index of games; the week deserves to look like the week. Two up, not
-   four: at the chrome width four columns leave a card too narrow for
-   "Bill Snyder Family Stadium", and every line inside a card is written to
-   hold one fact and stay on one line. */
-/* Same reasoning as the game page: auto-fit columns are still rows, and a
-   game with a forecast, a broadcast and a line sat beside one with none left
-   the short card padded out to match. column-width keeps the "two up at the
-   chrome width, one on a phone" behavior the repeat(auto-fit, minmax(...))
-   was chosen for, without pairing the cards into rows. */
-.slatelist { columns:30rem; column-gap:10px; margin-top:2px }
-.slate { background:var(--bg); border:1px solid var(--line);
-  border-radius:10px; padding:11px 13px; min-width:0;
-  break-inside:avoid; margin-bottom:10px }
-.slateteams { font-size:var(--t-copy); margin-bottom:8px }
-.slatemeta { font-size:var(--t-meta); color:var(--dim); display:grid; gap:4px }
-  /* Two columns of facts once the card is wide enough for them. Five
-     single-line facts stacked made a tall card that was mostly one short
-     phrase per row, and the week is sixteen of these. Below 520px the card is
-     already narrow enough that a second column would only truncate. */
-  @media (min-width:520px) {
-    .slatemeta { grid-template-columns:1fr 1fr; gap:4px 14px }
-    /* The kickoff spans. It carries two clocks — the venue's and the
-       reader's — and is the longest line on the card by some way; halved it
-       lost the zone off the end, which is the part that makes it a time
-       rather than a number. The other four facts pair up beneath it. */
-    .slatemeta > .slatewhen { grid-column:1 / -1 }
-  }
-.slatemeta > div { display:flex; align-items:center; gap:7px;
-  min-width:0; white-space:nowrap }
-.slatemeta > div > :not(svg) { overflow:hidden; text-overflow:ellipsis }
-.slatewhen time, .slatetv { color:var(--ink) }
-.slatewhen time { font-variant-numeric:tabular-nums; font-weight:600 }
-.yourtime { color:var(--dim); font-weight:400 }
-/* A kickoff a school publishes differently. Marked, not overwritten. */
-.timeflag { color:var(--warn); text-decoration:none; cursor:help;
-  font-weight:700; margin-left:2px }
-.slatewx, .slateline { font-variant-numeric:tabular-nums }
-.wxwarn { color:var(--warn) }
-/* Decorative, and sized to the line rather than to the icon: they should
-   read as marginalia, never as buttons. */
-.gi { width:15px; height:15px; flex:0 0 15px; color:var(--dim);
-  opacity:.85 }
-.slatelinks { display:flex; gap:16px; margin-top:9px; padding-top:8px;
-  border-top:1px solid var(--line); font-size:var(--t-meta) }
-/* On a slate card that rule separates the links from five rows of facts
-   above them. In the Elsewhere card there is nothing above them but the
-   heading, which already does the separating — so the rule read as a second
-   divider and the extra 17px above it made the card look like it had been
-   padded differently from every other card on the page. It had not; it had
-   an internal border nobody else had. */
-#elsewhere .slatelinks { margin-top:0; padding-top:0; border-top:0 }
-.slatelink { display:inline-flex; align-items:center; gap:5px;
-  font-weight:600; white-space:nowrap; color:var(--accent);
-  text-decoration:none }
-.slatelink.dim { color:var(--dim); font-weight:400 }
-.slatelink:hover { text-decoration:underline }
-.slatelink:visited { color:var(--accent) }
-.slatelink.dim:visited { color:var(--dim) }
-
-/* ---- one game ---- */
-/* Two columns once there is room. None of these cards needs the full 1120px:
-   the market is four short figures and the pick'em split is a single bar, so
-   at full width each was mostly gutter and the reader scrolled past
-   whitespace to reach the next fact. The back link and the matchup stay full
-   width, being the page's heading rather than one of its panels.
-
-   main:has() rather than a class, because build_subpage owns the <main> and
-   #gamehead is on every game page and nothing else. Where :has is missing the
-   page simply stays one column, which is what it already was. */
-/* Columns, not a grid, and the difference is the whole point. A grid puts
-   these cards in ROWS, and a row is as tall as its tallest member — so a
-   short market card beside a tall model card leaves a hole the height of the
-   difference, and the page reads as broken rather than dense. Nothing here
-   is a row: the cards are independent and their only relationship is order.
-   Flowing them down columns lets each one end where its content ends.
-   attendance/site/styles.css does the same thing for its chart panels. */
-@media (min-width: 900px) {
-  /* 18px, the same rhythm as every other page in the section: main is a
-     grid with gap:18px everywhere else, and .duo uses 18 as well. This page
-     is the one that reaches for columns instead of a grid, and it arrived
-     carrying its own 14 — close enough to look like a mistake rather than a
-     choice, which is exactly what it was. */
-  main:has(#gamehead) { display:block; columns:2; column-gap:18px }
-  /* A card must not be split down the middle of a column break. */
-  main:has(#gamehead) > .card { break-inside:avoid; margin-bottom:18px }
-  /* The header spans, the way it did when this was a grid. */
-  main:has(#gamehead) > .gameback,
-  main:has(#gamehead) > #gamehead { column-span:all }
-  /* THE LINKS CARD DOES NOT SPAN, and used to. The argument for spanning was
-     balancing: a multi-column flow fills in source order and cannot be told
-     where to put a given card, so a short card could land under a tall one
-     and leave a column looking half-used. Taking it out of the flow entirely
-     avoided that.
-
-     What it bought instead was worse to look at. Every other card on the page
-     is one column wide; this one became a 907px band holding a single 40px
-     link, with the rest of the width empty. It was the only content card that
-     did not match its neighbors, and that is what a reader notices — not the
-     column balance, which they have nothing to compare against.
-
-     So it flows like everything else. Checked on both shapes this page comes
-     in: a non-conference game with three content cards, where it settles under
-     the models card, and a conference game with the series card as well, where
-     it settles under that. Both balance. The header above still spans, because
-     a header genuinely is the full width of the page. */
-}
-.gameback { margin:2px 0 12px; font-size:var(--t-row) }
-.gameback a { color:var(--accent); text-decoration:none }
-.gameback a:hover { text-decoration:underline }
-/* THE PAGE'S TYPE SCALE, in one place, because it went wrong by being in
-   several. The matchup is what this page is ABOUT, and it was 19px at weight
-   400 — smaller and lighter than a figure inside a card below it (.mkval,
-   20/600), so the eye landed on a spread rather than on the game. The order
-   now runs: the matchup, then the figures, then the stadium, then the card
-   labels, then the rows.
-     matchup   24 / 700    the subject
-     figures   20 / 600    .mkval, in the market and venue cards
-     stadium   17 / 600    .venname, a name inside a card
-     labels    14 / 700    the uppercase h2s
-     rows    13.5 / 400    everything else
-   Anything added here should be placed against that list rather than sized
-   to look right on its own. */
-.gamematch { font-size:var(--t-headline); font-weight:700; letter-spacing:-.01em;
-  margin-bottom:11px; line-height:1.25 }
-/* The joiner carries none of that weight — it is the quietest word in the
-   line and was inheriting 24px along with the team names. */
-.gamematch .dim { font-size:.7em; font-weight:400 }
-.gamematch .nctag, .gamematch .ccgtag { vertical-align:4px }
-#gamehead .slatemeta { font-size:var(--t-row) }
-/* The stadium, at the weight it deserves on a page about one game. The city
-   sits beside it rather than under it: together they are one answer to one
-   question, and stacked they read as two facts. */
-.venname { font-size:var(--t-subhead); font-weight:600; margin:0 0 12px;
-  line-height:1.35 }
-.vencity { color:var(--dim); font-weight:400 }
-.venname .nctag { vertical-align:2px }
-/* Glyphs on the label line rather than beside the figure. The figure is the
-   thing being read; a mark next to it competes with it, and the label is
-   where a reader goes when the number alone is ambiguous — which is exactly
-   when "is that wind or rain?" gets asked. Muted, and never the only signal:
-   the words are still there. */
-.vengi { color:var(--dim); margin-right:5px; vertical-align:-2px }
-.venname .vengi { color:var(--dim); vertical-align:-1px }
-#venuecard .mkgrid .dim { display:flex; align-items:center; gap:0 }
-/* The market is four figures, and figures want columns rather than a
-   paragraph: the number first, what it is underneath. */
-/* 150, not 120: at 120 a favourite with a long name broke across two lines
-   ("West Virginia" / "-19.5"), which reads as two figures rather than one. */
-.mkgrid { display:grid; gap:12px;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  font-variant-numeric:tabular-nums }
-.mkval { font-size:var(--t-lead); font-weight:600 }
-.mkgrid .dim { font-size:var(--t-meta) }
-/* Model against market: the same bar the race card uses, so a reader who
-   knows one knows the other. */
-/* 58px, not 44. The label track was cut to fit SP+, FPI, ELO and SRS, and
-   then the market row arrived with a six-letter word in it: "MARKET" is wider
-   than the column, so it ran straight into the team name and printed
-   "MARKETTCU". Fixed rather than max-content, because each row is its own
-   grid — a track that sizes to its own content stops the bars lining up down
-   the card, which is the only reason this is a grid at all. */
-.mline { display:grid; grid-template-columns:58px minmax(0,1fr);
-  align-items:center; gap:10px; margin:6px 0; font-size:var(--t-row) }
-.msys { color:var(--dim); font-size:var(--t-meta); text-transform:uppercase;
-  letter-spacing:.04em; overflow:hidden; text-overflow:ellipsis }
-/* The season the rating comes from, under its name. Preseason these are last
-   year's numbers, and the row has to say so where the name is — the caveat in
-   the note below is read after the bars, if at all. */
-.msys i { display:block; font-style:normal; font-size:var(--t-micro); opacity:.75;
-  letter-spacing:0; font-variant-numeric:tabular-nums }
-.mrow { display:grid; align-items:center; gap:10px;
-  grid-template-columns:minmax(0,140px) minmax(0,1fr) 42px }
-.mname { overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
-.mbar { background:var(--line); border-radius:4px; height:8px;
-  overflow:hidden }
-.mbar i { display:block; height:100%; background:var(--accent) }
-.mrow.market .mbar i { background:var(--dim) }
-.mval { text-align:right; font-variant-numeric:tabular-nums }
-.mmarket { border-top:1px solid var(--line); padding-top:8px; margin-top:8px }
-.levtotal { margin-bottom:10px; font-size:var(--t-label) }
-/* The swing bars that used to sit under the fork are gone, and .swkey is
-   what is left of them — the note they were keyed to, which now explains the
-   fork instead. A bar sorted its two ends high to low and so could not say
-   which RESULT produced which end; inside the fork the branch is the box the
-   number stands in. The class name outlived the component and is kept only
-   because the note is still the note. */
-.swkey { margin-top:10px }
-.levtotal b { font-size:var(--t-lead); font-variant-numeric:tabular-nums }
-@media (max-width:560px) {
-  .mrow { grid-template-columns:minmax(0,1fr) 42px }
-  .mrow .mbar { display:none }
-}
-.duo { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
-  gap:18px; align-items:start }
-.duo > .stack { display:grid; gap:18px; align-content:start; min-width:0 }
-@media (max-width: 900px) {
-  /* .duo.even is more specific than .duo, so it has to be named here too or
-     the two boards stay side by side at 166px each on a phone. */
-  .duo, .duo.even { grid-template-columns:1fr }
-  .duo > .stack, .duo.even > .stack { display:contents }
-  .duo.even .card { height:auto }
-}
-.tablescroll, .tablewrap { overflow-x:auto; position:relative }
-/* Same cue as the attendance tracker's season grid: a fade at the live edge
-   so a table that runs past the card does not look like it stops there. */
-.scrollbox { position:relative }
-.scrollbox::after { content:""; position:absolute; top:0; right:0; bottom:0;
-  width:38px; pointer-events:none; opacity:1; transition:opacity .18s ease;
-  background:linear-gradient(to right, transparent, var(--panel)) }
-.scrollbox.at-end::after { opacity:0 }
-/* Grid items default to min-width:auto, so a wide child — the
-   movement chart, a table — pushes the whole page sideways on a
-   phone instead of scrolling inside its own box. */
-main > * { min-width:0 }
-table.h2h { width:100%; table-layout:auto }
-.h2h th, .h2h td { padding:6px 4px; font-size:var(--t-row); white-space:nowrap;
-  text-align:center }
-.h2h td.teamcell, .h2h thead th:first-child { text-align:left;
-  padding-left:2px }
-.h2h thead th { font-size:var(--t-meta); letter-spacing:.02em }
-.hatag { display:inline-block; min-width:11px; margin-right:4px;
-  font-size:var(--t-micro); font-weight:700; color:var(--dim); vertical-align:1px }
-/* The empty cells carry meaning — a third of this grid is pairs the
-   schedule never makes — so they need to be visible, not ghosts. */
-.selfcell { color:var(--dim); opacity:.75;
-  background:color-mix(in srgb, var(--dim) 12%, transparent) }
-.nomeet { color:var(--dim); opacity:.75; font-size:var(--t-copy); line-height:1 }
-
-/* ---- season replay ---- */
-#replaybar .rpline { display:flex; align-items:center; gap:10px;
-  flex-wrap:wrap }
-#replaybar input[type=range] { flex:1 1 200px; min-width:140px;
-  accent-color:var(--accent) }
-@media (max-width:640px) {
-  #replaybar #rp-label { flex:1 0 100%; min-width:0 !important; order:9 }
-  #replaybar #rp-now { order:8 }
-}
-#replaybar #rp-label { font-size:var(--t-label); color:var(--dim) }
-#replaybar #rp-prev, #replaybar #rp-next { padding:6px 10px }
-#replaycard.scrubbed { border-color:var(--accent) }
-/* keeps its space so the slider never changes width */
-#rp-now.invis { visibility:hidden }
-.mv { font-size:var(--t-fine); margin-left:5px; font-weight:600 }
-.mv.up { color:hsl(140 60% var(--pctl)) }
-.mv.down { color:hsl(6 70% var(--pctl)) }
-tr.moved.up td { animation:flashup 900ms ease-out }
-tr.moved.down td { animation:flashdown 900ms ease-out }
-@keyframes flashup { from { background:rgba(22,140,80,.16) }
-                     to { background:transparent } }
-@keyframes flashdown { from { background:rgba(200,16,46,.13) }
-                       to { background:transparent } }
-@media (prefers-reduced-motion:reduce) {
-  tr.moved.up td, tr.moved.down td { animation:none }
-}
-
-/* where a team stands in the championship race, at this point in the year */
-.st-out, .teamcell.st-out { text-decoration:line-through;
-  text-decoration-color:var(--dim); opacity:.62 }
-.teamcell.st-in { font-weight:700 }
-.teamcell.st-top { font-style:italic }
-
-/* the replay's own controls, same chrome as the Lab's — one rule, two pages,
-   so a control never looks like two different kinds of thing on a site where
-   the reader crosses between them in a click. Denser than it was and pressable
-   rather than merely bordered: a smaller label, a tighter box, a hairline of
-   lift, and a press that actually moves. Flex is scoped to button/a because a
-   <select> wears this class too and has to keep its native control box. */
-.wbtn { font:inherit; font-size:var(--t-row); font-weight:600; line-height:1.5;
-  border:1px solid var(--line); background:var(--panel); color:var(--ink);
-  border-radius:7px; padding:5px 11px; cursor:pointer; white-space:nowrap }
-button.wbtn, a.wbtn { display:inline-flex; align-items:center; gap:6px;
-  text-decoration:none; box-shadow:0 1px 0 rgba(0,0,0,.05) }
-.wbtn:hover { border-color:var(--accent); background:var(--bg) }
-button.wbtn:active { transform:translateY(1px); box-shadow:none }
-.wbtn:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
-/* Decorative like .gi, but sized to the button and coloured by the job the
-   button does rather than by what it depicts: chalk the model lays down is
-   warn, anything that only changes the view is accent2, and anything that
-   acts on the board itself is accent. Three colours, three meanings. */
-.bi { width:14px; height:14px; flex:0 0 14px; color:var(--accent) }
-.bi-chalk { color:var(--warn) }
-.bi-view { color:var(--accent2) }
-/* Related controls sit closer to each other than to the next group, and a
-   group is atomic: the row breaks between groups rather than through the
-   middle of one. Stretch rather than center, because a native <select> lays
-   its text out on its own terms and comes out three pixels shorter than the
-   buttons beside it — a row that reads as assembled rather than designed.
-   Stretching lets the tallest control set the height and the rest meet it.
-
-   ATOMIC UNTIL IT CANNOT BE. flex:0 0 auto said "never break", and never is
-   longer than the row: the chalk group is a select and two buttons that all
-   refuse to wrap, so in a card column it simply grew past the card and out
-   the side of it. Shrinking and wrapping are last resorts here rather than
-   defaults — a flex line takes whole items first, so a group only ever gets
-   squeezed once it is alone on its line and still too wide, which is the
-   case that used to overflow. That is also why the old max-width:520px rule
-   for this is gone: it said the same thing for phones only, and the width
-   that matters is the card's, not the window's. */
-.wgroup { display:flex; align-items:stretch; gap:6px; flex:0 1 auto;
-  flex-wrap:wrap; min-width:0 }
-.wgroup > label { display:flex; align-items:center }
-
-/* ---- how the season moved ---- */
-.bumpwrap { overflow-x:auto }
-.bump { width:100%; min-width:660px; height:auto; display:block }
-.bump .bgrid { stroke:var(--line); stroke-width:1 }
-.bump .btick { fill:var(--dim); font-size:var(--t-fine) }
-.bump .bnum { text-anchor:end }
-.bump .bwk { text-anchor:middle }
-.bump .blabel { font-size:var(--t-fine); font-weight:600 }
-.bump .bteam { transition:opacity .12s ease }
-.bumpwrap:hover .bteam { opacity:.22 }
-.bumpwrap .bteam:hover { opacity:1 }
-.bumpwrap .bteam:hover polyline { stroke-width:3.6 }
-"""
+SUBPAGE_EXTRA_CSS = inline("subpage.css")
 
 
 def build_subpage(title, active, body, year, matchcard,
@@ -2395,7 +1870,11 @@ def build_subpage(title, active, body, year, matchcard,
 <script src="{BASE}{asset_v("metrics.js")}"></script>
 <script defer src="{BASE}{asset_v("cards.js")}"></script>
 {rss}
-<style>{BRIEF_CSS}{SUBPAGE_EXTRA_CSS}</style>
+<style>
+{BRIEF_CSS}
+
+{SUBPAGE_EXTRA_CSS}
+</style>
 <script defer src="{BASE}{asset_v("scrollcue.js")}"></script>{head}</head><body>
 <a class=skip-link href="#main">Skip to content</a>
 {topbar(section, year, BASE, acct=section in POOL_SECTIONS)}
@@ -3957,33 +3436,6 @@ WHATIF_CARD = """<div class=card id=whatif>
 </div>"""
 
 
-def inline(name):
-    """A head fragment read from inline/, to be embedded verbatim in a page.
-
-    THIS IS WHY THEY ARE NOT IN THIS FILE. build.py writes markup three ways
-    — .format() templates, f-strings, and constants interpolated into an
-    f-string as a value — and the three disagree about braces. In the first
-    two a literal brace is written "{{"; in the third it must be single,
-    because nothing ever collapses it. CSS and minified JS are almost nothing
-    but braces, so a block that moves between the two conventions ships as
-    "{{ ... }}", which no browser parses. The page looks built and the
-    styling, or the script, is simply absent.
-
-    Text that arrives as a *value* is never re-scanned by either mechanism,
-    so a file has no convention at all and cannot be moved into the wrong
-    one. tools/verify-dist.py still greps the built pages for an uncollapsed
-    brace; after this it should never find one.
-
-    The three script tags were also pasted into three templates apiece, which
-    is how a pre-paint bootstrap gets fixed in two places out of three.
-
-    Read at import, not per page: 185 pages inline the same bytes.
-    """
-    with open(os.path.join(INLINE_DIR, name)) as f:
-        text = f.read()
-    # Drop only the newline the file ends with, so a block that deliberately
-    # ends in blank lines still round-trips byte for byte.
-    return text[:-1] if text.endswith("\n") else text
 
 
 LAB_CSS = inline("lab.css")

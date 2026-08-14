@@ -43,6 +43,11 @@
   var SLICE_MS = 12;        // work per frame; one frame at 60Hz is 16.7
 
   var CHAOS_WEIGHTS = { entropy: 0.60, tangle: 0.25, breadth: 0.15 };
+  /* Ceiling and name, in order. Annotated because the literal on its own
+     infers as (string|number)[][], which makes `score < CHAOS_LABELS[i][0]`
+     a comparison between a number and a string-or-number: true at runtime,
+     unprovable without saying so. */
+  /** @type {Array<[number, string]>} */
   var CHAOS_LABELS = [[15, "Settled"], [35, "Orderly"], [55, "Simmering"],
                       [75, "Chaotic"], [101, "Pandemonium"]];
 

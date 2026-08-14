@@ -1,0 +1,33 @@
+{
+  "//": "Type-checks the rules engine. The Big 12 procedure lives in JavaScript now, so this is the only static analysis the site's most correctness-critical code can have. checkJs on plain .js with JSDoc: no build step, no transpile, nothing emitted, and the files stay the files the browser loads.",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "../worker/node_modules/@types"
+    ]
+  },
+  "include": [
+    "engine/**/*.js",
+    "site/engine.js",
+    "site/race.js"
+  ],
+  "//typeRoots": "The only node_modules in the repo is the Worker's, and the engine is not part of it. Pointed at rather than duplicated: one npm tree, not two.",
+  "//lib": "DOM because these two files genuinely run in a browser \u2014 the UMD footer reads `typeof window`, and race.js paints a card. The build loads the same files under node, which is the point."
+}

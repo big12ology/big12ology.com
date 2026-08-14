@@ -127,8 +127,12 @@ function scenarioTexts(team, weekGames, combos, maxTerms) {
   const covers = (cond) => {
     for (let c = 0; c < total; c++) {
       let matches = true;
+      // Number(i), because for..in hands back the key as a string and
+      // `c >> "3"` only works by coercion. It gives the right answer today;
+      // it is also the exact shape of the bug this codebase has already been
+      // bitten by once, where `28 > null` quietly meant true.
       for (const i in cond) {
-        if (((c >> i) & 1) !== cond[i]) { matches = false; break; }
+        if (((c >> Number(i)) & 1) !== cond[i]) { matches = false; break; }
       }
       if (matches && !have.has(keyOf(c))) return false;
     }
