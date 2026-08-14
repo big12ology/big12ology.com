@@ -1,10 +1,10 @@
-import { seasonSummary, teamsForSeason } from "./stats.js?v=44";
-import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=44";
-import { gameTooltipHTML, setPreviewIndex } from "./gametip.js?v=44";
+import { seasonSummary, teamsForSeason } from "./stats.js?v=45";
+import { renderSeasonCharts, renderAllTimeCharts, renderTeamCharts } from "./charts.js?v=46";
+import { gameTooltipHTML, setPreviewIndex } from "./gametip.js?v=45";
 // Was a local copy of `esc`, applied to four `title=` attributes and to none
 // of the cell text beside them. It is shared now so that charts.js and
 // gametip.js cannot go on not having one — see the header there.
-import { esc, escUrl } from "./html.js?v=44";
+import { esc, escUrl } from "./html.js?v=45";
 
 const $ = (sel) => document.querySelector(sel);
 const num = (n) => n.toLocaleString("en-US");
@@ -219,7 +219,7 @@ function renderTable() {
         `<span class="conf">${esc(confOf[row.team] ?? "—")}</span>`;
       return `<tr>
         <td class="team" style="--tc:${esc(row.color ?? "transparent")}">${logo}<span class="team-name">${esc(row.team)}${confTag}<span class="stadium">${esc(stadiumLabel)}</span></span></td>
-        <td>${row.games}</td><td>${row.capacity != null ? num(row.capacity) : "varies"}${row.capacityEstimate ? ` <abbr class=estmark title="${esc(row.capacityEstimate)}">est</abbr>` : ""}${row.capacityDisputed ? ` <abbr class=capmark title="${esc(row.capacityDisputed)}">*</abbr>` : ""}</td>${cells}
+        <td>${row.games}</td><td>${row.capacity != null ? num(row.capacity) : "varies"}${row.capacityEstimate ? ` <abbr class=estmark title="${esc(row.capacityEstimate)}">est</abbr>` : ""}</td>${cells}
         <td class="season-total">${num(row.total)}${pctSpan(row.pct)}</td>
       </tr>`;
     })
@@ -383,7 +383,7 @@ function render(teamsData, season) {
   } else if (!hasPlayed) {
     empty.textContent = `Schedule loaded — attendance replaces each matchup as games are played.`;
   }
-  $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records). Click a column header to sort; game and season columns cycle raw attendance and percent full, descending then ascending. Team and conference marks via Wikimedia Commons (provenance in the repo); trademarks belong to their owners. An asterisk marks a published capacity this tracker does not trust as a denominator. Kansas State is the only one carrying it: the athletic department lists an official capacity of 50,000 that has not moved through seven stadium projects since 2013, while the same page claims a largest crowd of 53,811 — and K-State clears 100 percent in 72 of its 89 home games here. That gap is a stale published number, not proof of what any crowd actually was; several schools also sell standing room, so figures above 100 percent are expected league-wide.`;
+  $("#source-note").textContent = `Source: ${season.source}. Percent full is attendance ÷ capacity, per game; season percent divides by the sum of per-game capacities. Capacities are season-specific (current year from athletic departments, past years from stadium records). Click a column header to sort; game and season columns cycle raw attendance and percent full, descending then ascending. Team and conference marks via Wikimedia Commons (provenance in the repo); trademarks belong to their owners. Several schools sell standing room, so figures above 100 percent are expected league-wide.`;
 }
 
 // Which of these games the schedule section has a preview page for, so a

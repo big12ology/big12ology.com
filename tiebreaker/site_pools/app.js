@@ -1803,18 +1803,38 @@
     draw("").then(function (s) {
       var sel = $("cardwk");
       if (!sel || s == null) return;
-      for (var w = 1; w <= s.week; w++) {   // 1-based, as published
-        var o = document.createElement("option");
-        o.value = String(w);
-        o.textContent = "Week " + w;
-        if (w === s.week) o.selected = true;
-        sel.appendChild(o);
-      }
-      var lab = sel.closest ? sel.closest("label") : null;
-      // One option is not a choice, and a control that offers one is a
-      // control that lies about being one.
-      if (s.week > 1) { if (lab) lab.hidden = false; }
-      sel.addEventListener("change", function () { draw(sel.value); });
+      // WHICH WEEKS EXIST, asked rather than assumed.
+      //
+      // This counted `for (w = 1; w <= s.week; w++)` and called it "1-based,
+      // as published". College football has a week 0 — this season opens with
+      // one — so the count was wrong at both ends: in week 0 the loop never
+      // ran and the control stayed empty, and in week 1 it offered a single
+      // option and hid itself. A player could not look back at a card they
+      // had played, which is most of what the page is for once a week is
+      // graded.
+      //
+      // The leaderboard knows which weeks have been scored; the slate knows
+      // which one is current. Their union is exactly the set worth offering,
+      // and it needs no opinion about where the numbering starts.
+      return api("/api/leaderboard").catch(function () { return {}; })
+        .then(function (b) {
+          var weeks = (b && b.weeks ? b.weeks.slice() : []);
+          if (weeks.indexOf(s.week) < 0) weeks.push(s.week);
+          weeks.sort(function (a, c) { return a - c; });
+
+          weeks.forEach(function (w) {
+            var o = document.createElement("option");
+            o.value = String(w);
+            o.textContent = "Week " + w;
+            if (w === s.week) o.selected = true;
+            sel.appendChild(o);
+          });
+          var lab = sel.closest ? sel.closest("label") : null;
+          // One option is not a choice, and a control that offers one is a
+          // control that lies about being one.
+          if (weeks.length > 1 && lab) lab.hidden = false;
+          sel.addEventListener("change", function () { draw(sel.value); });
+        });
     }).catch(function (err) {
       note.textContent = err.status === 404
         ? "No slate published yet. The week goes up on Tuesday, once the "
@@ -1905,6 +1925,17 @@
     var fs = el("fieldset", "pk-slate-game");
     fs.dataset.gid = g.game_id;
 
+    // PER GAME, not per week. Survivor picks one team in one game, so a game
+    // that has not kicked off is still open however long ago the week's
+    // opener started — the pick'em's single deadline was only ever about
+    // keeping one card fair against itself. A row closes when its own game
+    // does.
+    if (!disabled && g.kickoff_at &&
+        g.kickoff_at * 1000 <= Date.now()) {
+      disabled = true;
+      fs.className += " pk-started";
+    }
+
     var lg = el("legend", "sr-only");
     lg.textContent = g.away + " " + joiner(g) + " " + g.home + ", " +
       fmtWhen(g.kickoff) +
@@ -1982,7 +2013,18 @@
     if (outcome === "win")  return el("span", "pk-res win", "WIN");
     if (outcome === "loss") return el("span", "pk-res loss", "OUT");
     if (outcome === "void") return el("span", "pk-res void", "VOID");
+    // Not an outcome the server sends — svDrawRun synthesises it for the week
+    // that ended a run by silence, which has no pick and so has no row of its
+    // own in `used`.
+    if (outcome === "missed") return el("span", "pk-res loss", "MISSED");
     return el("span", "pk-res pending", "OPEN");
+  }
+
+  /** How a run ended, in one sentence, used everywhere that has to say it. */
+  function svEndLine(s) {
+    var when = s.out_week == null ? "a week" : "week " + s.out_week;
+    return "Your run ended in " + when + (s.out_reason === "missed"
+      ? " — no pick before the lock." : " — your team lost.");
   }
 
   function svStandingText(mine, board) {
@@ -1995,8 +2037,13 @@
     var plural = function (n) { return n === 1 ? " win" : " wins"; };
     if (s && !s.alive) {
       var when = s.out_week == null ? "a week" : "week " + s.out_week;
+      // NOT "week 2 locked without your pick", which is what this said and
+      // which reads as a lock — the one word the rest of this page uses for a
+      // week that has closed on everybody. A reader who is out and a reader
+      // whose week has closed were being told the same thing in the same
+      // vocabulary. Elimination gets its own words.
       return "Out — " + (s.out_reason === "missed"
-        ? when + " locked without your pick"
+        ? "no pick in " + when
         : "your " + when + " team lost") +
         ". " + wins + plural(wins) + " on the run.";
     }
@@ -2063,18 +2110,45 @@
     var wrap = $("svslate"), note = $("svnote");
     var mine = st.mine, slate = st.slate;
     var week = slate.week;
-    var locked = !!slate.locked || !!(mine && mine.locked);
+    // mine.locked is survivor's deadline — every game started — and
+    // slate.locked is the card's, the first kickoff. ORing them shut the
+    // survivor picker the moment the week's opener began, which is the whole
+    // thing per-game locking exists to stop. The slate's answer is only used
+    // when there is no survivor state to read, i.e. signed out.
+    var locked = mine ? !!mine.locked : !!slate.locked;
     var dead = !!(mine && mine.standing && !mine.standing.alive);
     var spent = svSpent(mine, week);
 
     svHandicapNote(mine, week);
+    // Redrawn on every repaint, not once at load. This week's pick is part of
+    // `used`, so changing it changes the roster — and the roster was built in
+    // the init callback, which runs once. Picking a different team left the
+    // old one struck through and the new one looking available.
+    svDrawRoster(mine, st.teams);
+    svDrawRun(mine, st.teams);
+    if (st.board) svDrawField(st.board, st.teams, mine && mine.user_id);
 
-    note.textContent = locked
-      ? "Week " + week + " is locked."
-      : dead
-        ? "Your run ended in week " + (mine.standing.out_week) +
-          ". The board keeps score without you now."
-        : "One team, to win the game — not to cover. Pick by the lock.";
+    // A week the pool does not run. The server refuses a pick on it, so the
+    // page has to say why rather than offer a picker that fails: with one
+    // legal team there is no choice to make, and a player who does not know
+    // that sitting it out is free will spend a team to avoid a miss that was
+    // never coming. Entry is your first pick, so a skipped week simply is not
+    // part of your run.
+    var noContest = !!(mine && mine.no_contest);
+
+    note.textContent = noContest
+      ? "Week " + week + " is not a survivor week — only " +
+        (mine.pickable_teams === 1 ? "one Big 12 team is"
+                                   : mine.pickable_teams + " Big 12 teams are") +
+        " playing, so there is no choice to make. Sitting it out costs you " +
+        "nothing: you enter the pool with your first pick, and the weeks " +
+        "before it never happened for you."
+      : locked
+        ? "Week " + week + " is locked."
+        : dead
+          ? svEndLine(mine.standing) +
+            " The board keeps score without you now."
+          : "One team, to win the game — not to cover. Pick by the lock.";
 
     wrap.textContent = "";
     var games = inPlayOrder(slate.games).filter(function (g) {
@@ -2084,13 +2158,16 @@
       wrap.appendChild(el("p", "note", "No games this week."));
       return;
     }
-    var disabled = locked || dead || !SIGNED_IN;
+    var disabled = locked || dead || noContest || !SIGNED_IN;
     games.forEach(function (g) {
       wrap.appendChild(svGameRow(g, mine, st.teams, spent, disabled));
     });
     var form = $("svform");
-    form.className = disabled ? "pk-locked" + (SIGNED_IN ? "" : " pk-readonly")
-                              : "";
+    // pk-svdead on top of pk-locked, not instead of it. The rows still have to
+    // close the way any closed row closes; the watermark says WHY this one is
+    // closed for you and not for the pool.
+    form.className = (disabled ? "pk-locked" + (SIGNED_IN ? "" : " pk-readonly")
+                               : "") + (dead ? " pk-svdead" : "");
 
     // The one control the slate does not have: a pick can be taken back
     // outright, because unlike a card a single withdrawn pick is a state a
@@ -2118,6 +2195,180 @@
     }
   }
 
+  /**
+   * Your run, week by week — including the week that ended it.
+   *
+   * `used` is picks and nothing else, so a run killed by MISSING a week had
+   * no row for the week that killed it: the list stepped from week 1 to week
+   * 3 and read like a run still going. Three things fix that — the missed
+   * week gets a row of its own, the ending is stated above the list, and any
+   * pick made after the run was over is marked as not counting. The server
+   * refuses those now (api.js returns 409 `eliminated`), but rows written
+   * before that check existed still have to render honestly.
+   *
+   * Drawn from svRepaint rather than once at load, for the same reason the
+   * roster is: this week's pick is part of the run, so changing it changes
+   * what belongs here.
+   */
+  function svDrawRun(mine, teams) {
+    var ul = $("svused"), card = $("svusedcard"), end = $("svrunend");
+    if (!ul) return;
+    var used = (mine && mine.used) || [];
+    var s = (mine && mine.standing) || null;
+    var out = s && !s.alive ? s.out_week : null;
+
+    if (!used.length && out == null) { show(card, false); return; }
+
+    var rows = used.slice();
+    // Only a miss is missing a row. A run that ended on a loss already has
+    // one — the pick that lost is a pick, and it is already in `used`.
+    if (out != null && s.out_reason === "missed" &&
+        !used.some(function (u) { return u.week === out; })) {
+      rows.push({ week: out, team: null, outcome: "missed" });
+    }
+    rows.sort(function (a, b) { return a.week - b.week; });
+
+    ul.textContent = "";
+    rows.forEach(function (u) {
+      var moot = out != null && u.week > out;
+      var li = el("li", "pk-svrunrow" + (moot ? " pk-svmoot" : ""));
+      li.appendChild(el("span", "pk-when", "Wk " + u.week));
+      if (u.team == null) {
+        li.appendChild(el("span", "pk-svnopick", "no pick"));
+      } else {
+        var mk = mark(teams, u.team, 15);
+        if (mk) li.appendChild(mk);
+        li.appendChild(el("span", null, u.team));
+      }
+      li.appendChild(moot ? el("span", "pk-res void", "N/A")
+                          : svOutcomeChip(u.outcome));
+      if (moot) {
+        li.appendChild(el("span", "sr-only",
+          " — picked after your run had ended, so it does not count"));
+      }
+      ul.appendChild(li);
+    });
+
+    if (end) {
+      end.textContent = out == null ? "" : svEndLine(s);
+      show(end, out != null);
+    }
+    show(card, true);
+  }
+
+  /**
+   * All sixteen, and which are gone.
+   *
+   * A survivor player's real question between weeks is "who have I got left",
+   * and until now the only way to answer it was to read back through Your Run
+   * and remember which sixteen teams the conference has. The picker greys a
+   * spent team out, but only for the games on this week's card — a team you
+   * spent in September and who is on a bye today appeared nowhere at all.
+   *
+   * Three states, and the two ways of losing a team are shown apart because
+   * they are not the same fact: `spent` is a pick you made, `chalk` is the
+   * handicap charged for joining late, which nobody chose. The rest are yours.
+   */
+  /**
+   * One row of sixteen marks: what has been spent, then what is left.
+   *
+   * SPENT FIRST AND IN ORDER, because a survivor roster is read as a history
+   * and then as an inventory — "I have had these, so I still have those". A
+   * plain alphabetical list of sixteen answers neither question quickly.
+   *
+   * Faded rather than removed. Which teams are gone is half the answer, and a
+   * row that shrank every week would stop being a roster.
+   */
+  function teamMarks(usedTeams, teams, size, named) {
+    var ul = document.createDocumentFragment();
+    var spent = {};
+    usedTeams.forEach(function (u) { spent[u.team || u] = u; });
+
+    var all = Object.keys(teams).filter(function (t) { return teams[t].b12; })
+      .sort();
+    var rest = all.filter(function (t) { return !spent[t]; });
+    var order = usedTeams.map(function (u) { return u.team || u; })
+      .filter(function (t) { return teams[t]; })
+      .concat(rest);
+
+    order.forEach(function (t) {
+      var li = el("li", "pk-mk" + (spent[t] ? " pk-mkspent" : ""));
+      var mk = mark(teams, t, size || 22);
+      if (mk) li.appendChild(mk);
+      else li.appendChild(el("span", "pk-mkabbr", (teams[t] || {}).abbr || t));
+      if (named) {
+        li.appendChild(el("span", "pk-mkname", t));
+        var when = spent[t] && spent[t].week != null ? "wk " + spent[t].week
+          : (spent[t] ? "chalk" : "");
+        if (when) li.appendChild(el("span", "pk-mkwhen", when));
+      }
+      li.title = spent[t] && spent[t].week != null
+        ? t + " — spent in week " + spent[t].week
+        : (spent[t] ? t + " — spent" : t + " — available");
+      ul.appendChild(li);
+    });
+    return { frag: ul, left: rest.length, total: all.length };
+  }
+
+  /** Your own sixteen. */
+  function svDrawRoster(mine, teams) {
+    var card = $("svrostercard"), ul = $("svroster"), note = $("svrosternote");
+    if (!ul || !mine || !teams) return;
+    var used = (mine.used || []).slice()
+      .sort(function (a, b) { return a.week - b.week; });
+    (mine.burned || []).forEach(function (b) {
+      // Chalk charged for joining late. Spent, but not by you.
+      used.push({ team: b.team, week: null });
+    });
+    ul.textContent = "";
+    ul.className = "pk-roster pk-rostercol";
+    var r = teamMarks(used, teams, 26, true);
+    ul.appendChild(r.frag);
+    if (note) {
+      note.textContent = r.left + " of " + r.total + " still yours" +
+        ((mine.burned || []).length
+          ? " — the chalk of the weeks before you joined is already spent."
+          : ".");
+    }
+    show(card, true);
+  }
+
+  /**
+   * The same row, once per opponent.
+   *
+   * Every pool that runs this game publishes it, and it is what late-season
+   * decisions are made of: a rival who has burned the good teams is a rival
+   * whose remaining weeks are hard. The API sends only closed weeks, so this
+   * cannot show what anybody is doing right now.
+   */
+  function svDrawField(board, teams, meId) {
+    var card = $("svfieldcard"), ul = $("svfield"), note = $("svfieldnote");
+    if (!ul || !board || !board.rows || !teams) return;
+    var rows = board.rows.filter(function (r) { return r.user_id !== meId; });
+    if (!rows.length) return;
+
+    ul.textContent = "";
+    rows.forEach(function (r) {
+      var li = el("li", "pk-fieldrow" + (r.alive ? "" : " pk-fieldout"));
+      var who = el("span", "pk-fieldname", r.display_name || "—");
+      li.appendChild(who);
+      var marks = el("ul", "pk-roster pk-rostersm");
+      marks.appendChild(teamMarks(r.used || [], teams, 18).frag);
+      li.appendChild(marks);
+      if (!r.alive) {
+        li.appendChild(el("span", "pk-when",
+          "out wk " + r.out_week + (r.out_reason === "missed" ? " — no pick" : "")));
+      }
+      ul.appendChild(li);
+    });
+    if (note) {
+      note.textContent = rows.length + " other run" +
+        (rows.length === 1 ? "" : "s") +
+        ". Only weeks that have finished are shown.";
+    }
+    show(card, true);
+  }
+
   function svDrawBoard(board, teams, me, opts) {
     opts = opts || {};
     var tbl = $(opts.into || "svboard"), note = $(opts.note || "svboardnote");
@@ -2129,13 +2380,25 @@
       return;
     }
     if (note && !opts.note) {
+      // NAMES ITS OWN POPULATION. This renderer is handed a SUBSET on the pool
+      // page — the ranked entrants — while the summary card above it counts
+      // everybody, and both used to say "N of M runs still alive". With one
+      // late entrant alive, the page read "1 still alive" at the top and "0 of
+      // 10 runs still alive" directly beneath it, which looks like the site
+      // contradicting itself rather than two different questions.
       note.textContent = board.alive + " of " + board.entrants +
-        (board.entrants === 1 ? " run" : " runs") + " still alive.";
+        (board.entrants === 1 ? " run" : " runs") +
+        " on the leaderboard still alive.";
     }
 
     var showPicks = board.rows.some(function (r) { return r.pick; });
     var thead = el("thead"), tr = el("tr");
     var cols = opts.norank ? ["Player", "W", "Run"] : ["#", "Player", "W", "Run"];
+    // Which teams each run has burned, beside the run itself. It lived in its
+    // own card on the pick page, which put the standings and the thing the
+    // standings are made of on two different screens.
+    var showSpent = board.rows.some(function (r) { return (r.used || []).length; });
+    if (showSpent) cols.push("Spent");
     if (showPicks) cols.push("This week");
     cols.forEach(function (c, i) {
       tr.appendChild(el("th", i === 0 || c === "W" ? "n" : null, c));
@@ -2170,7 +2433,13 @@
       // column's width with it — the row rules stop at the last real cell and
       // the contents hang off the side of the card.
       var rd = el("td");
-      var run = el("span", "pk-svrun");
+      // NOT pk-svrun, which is the <ul> on the pick page. Both were styled
+      // under that one name and the badge's rule came second, so the pick
+      // page's run — a list, one week per line — was being laid out as an
+      // inline-flex nowrap strip: every week of the season on a single line,
+      // running off the card. One class, two elements, and the loser was the
+      // one that did not share a stylesheet neighbourhood with its rule.
+      var run = el("span", "pk-svstate");
       if (r.alive) {
         run.appendChild(el("span", "pk-svalive", "Alive"));
       } else {
@@ -2185,6 +2454,28 @@
       }
       rd.appendChild(run);
       tr2.appendChild(rd);
+
+      if (showSpent) {
+        // Spent first and in order, then nothing — the leftovers belong on
+        // your own roster, where they are a decision. Here the question is
+        // only what this run has already used up.
+        var sd = el("td");
+        var sul = el("ul", "pk-roster pk-rostersm");
+        // NOT pk-mkspent. That class exists on the roster to tell a spent
+        // team from an available one, and every mark in this column is spent
+        // — so the fade distinguished nothing and cost all of the contrast,
+        // leaving a row of grey smudges nobody could read a logo out of.
+        (r.used || []).forEach(function (u) {
+          var li = el("li", "pk-mk");
+          var umk = mark(teams, u.team, 16);
+          if (umk) li.appendChild(umk);
+          else li.appendChild(el("span", "pk-mkabbr", u.team));
+          li.title = u.team + " — week " + u.week;
+          sul.appendChild(li);
+        });
+        sd.appendChild(sul);
+        tr2.appendChild(sd);
+      }
 
       if (showPicks) {
         var pd = el("td");
@@ -2348,38 +2639,29 @@
 
         svRepaint();
 
-        // Your run, week by week, spent teams and all. Rendered from `used`
-        // rather than the board so a pick made ten seconds ago shows at once.
-        var ul = $("svused");
-        if (mine && mine.used && mine.used.length) {
-          ul.textContent = "";
-          mine.used.forEach(function (u) {
-            var li = el("li", "pk-svrunrow");
-            li.appendChild(el("span", "pk-when", "Wk " + u.week));
-            var nm = el("span", null, u.team);
-            var mk = mark(teams, u.team, 15);
-            if (mk) li.appendChild(mk);
-            li.appendChild(nm);
-            li.appendChild(svOutcomeChip(u.outcome));
-            ul.appendChild(li);
-          });
-          show($("svusedcard"), true);
-        }
-
         loadTeams().then(function (tm) { myTint = myColor(me, tm); });
-        svDrawBoard(board, teams, me);
+        svState.board = board;
+        svDrawRoster(mine, teams);
+        svDrawField(board, teams, me && me.user_id);
+        // The board itself lives on the Pool page. What belongs beside a
+        // picker is the one number that changes how you pick.
+        var al = $("svalive");
+        if (al && board && board.entrants) {
+          al.textContent = board.alive + " of " + board.entrants +
+            (board.entrants === 1 ? " run" : " runs") + " still alive.";
+        }
       })
       .catch(function (err) {
         $("svnote").textContent = err.status === 404
           ? "No slate published yet. The week goes up on Tuesday, once the "
             + "lines are in."
           : explain(err);
-        api("/api/survivor/board")
-          .then(function (b) { return loadTeams().then(function (tm) {
-            svDrawBoard(b, tm, me); }); })
-          .catch(function () {
-            $("svboardnote").textContent = "The pool is unavailable.";
-          });
+        // The picker failed, but the roster is built from your own picks and
+        // is still worth drawing — it is the half of this page that does not
+        // depend on a slate existing.
+        api("/api/survivor").then(function (m2) {
+          return loadTeams().then(function (tm) { svDrawRoster(m2, tm); });
+        }).catch(function () { /* nothing to show, and nothing to apologise for */ });
       });
 
     form.addEventListener("change", function (e) {

@@ -52,12 +52,20 @@
       mark(t) + esc(t) + (trail || "") + "</td>";
   }
 
+  // Four cells, matching the head standings_page writes. The last two are
+  // non-conference and overall: they decide nothing, which is why they are
+  // dimmed, and they are here because a September board with only conference
+  // records on it is all zeroes and reads as broken. A row this draws has to
+  // have the same shape as the row the server drew, or the two new columns
+  // go blank the instant the replay repaints the table.
   function recCells(r) {
     var p = PCT.pct(r.w, r.l);
     return "<td>" + r.w + "–" + r.l + "</td>" +
       (p === null ? "<td>—</td>"
                   : "<td style='color:" + PCT.color(p) + "'>" +
-                    PCT.fmt(p) + "</td>");
+                    PCT.fmt(p) + "</td>") +
+      "<td class=dim>" + r.nw + "–" + r.nl + "</td>" +
+      "<td class=dim>" + r.ow + "–" + r.ol + "</td>";
   }
 
   // Rank a team held in the frame before this one, for the movement arrows.

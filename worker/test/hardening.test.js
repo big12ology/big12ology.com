@@ -172,3 +172,105 @@ test("linking a provider refuses a session revoked at another edge", async () =>
   assert.match(r.headers.get("Location") || "", /auth_error=unauthenticated/,
     "a revoked session was allowed to start a link");
 });
+
+// ------------------------------------------------- a week that is not a contest
+
+// 2026 opens with one game — North Carolina at TCU, in Dublin — of which only
+// TCU is a Big 12 side. Survivor is a choice about which team to spend, and one
+// legal team is not a choice: it is a toll on whoever does not already know
+// that skipping is free. Since entered_week is MIN(week) over a player's own
+// picks and the scoring walk starts there, a week nobody can pick in is a week
+// nobody is judged on — so refusing the pick is the whole fix.
+
+import { seedWeek } from "./helpers/env.js";
+
+/** A week whose only Big 12 side is the home team of a single game. */
+function seedLoneGameWeek(env, week = 0) {
+  return seedWeek(env, {
+    week,
+    games: [{ game_id: 900, home: "TCU", away: "North Carolina",
+              spread_x2: -14, b12: "home" }],
+  });
+}
+
+test("a week with one pickable team refuses the pick, and says why", async () => {
+  const env = makeEnv();
+  seedUser(env, "U1", { name: "Someone" });
+  const cookie = await signedIn(env, "U1");
+  seedLoneGameWeek(env);
+
+  const r = await call(env, "/api/survivor/pick", {
+    method: "PUT", cookie,
+    body: { week: 0, game_id: 900, team: "TCU" },
+  });
+  assert.equal(r.status, 409);
+  const b = await r.json();
+  assert.equal(b.error, "no_contest");
+  assert.equal(b.pickable_teams, 1);
+  assert.equal(b.min_teams, 2);
+
+  assert.equal(env.raw.prepare(
+    `SELECT COUNT(*) n FROM survivor_picks`).get().n, 0,
+    "a team was spent on a week that offered no choice");
+});
+
+test("the week reports itself as no contest before anybody tries", async () => {
+  const env = makeEnv();
+  seedUser(env, "U1", { name: "Someone" });
+  const cookie = await signedIn(env, "U1");
+  seedLoneGameWeek(env);
+
+  const b = await (await call(env, "/api/survivor?week=0", { cookie })).json();
+  assert.equal(b.no_contest, true);
+  assert.equal(b.pickable_teams, 1);
+});
+
+test("two pickable teams is a contest, and is allowed", async () => {
+  // The boundary, from the other side: two is where a decision starts to
+  // exist, so it must not be swept up by the same guard.
+  const env = makeEnv();
+  seedUser(env, "U1", { name: "Someone" });
+  const cookie = await signedIn(env, "U1");
+  seedWeek(env, {
+    week: 0,
+    games: [{ game_id: 900, home: "TCU", away: "North Carolina",
+              spread_x2: -14, b12: "home" },
+            { game_id: 901, home: "Baylor", away: "Sam Houston",
+              spread_x2: -20, b12: "home" }],
+  });
+  // A season has to remain, or entry is refused by a different rule: joining
+  // closes when fewer than MIN_USABLE teams are left to pick from across the
+  // rest of the year, and a fixture with one week has two.
+  seedWeek(env, { week: 1 });
+
+  const b = await (await call(env, "/api/survivor?week=0", { cookie })).json();
+  assert.equal(b.no_contest, false);
+  assert.equal(b.pickable_teams, 2);
+
+  const r = await call(env, "/api/survivor/pick", {
+    method: "PUT", cookie,
+    body: { week: 0, game_id: 900, team: "TCU" },
+  });
+  assert.equal(r.status, 200, JSON.stringify(await r.clone().json()));
+  assert.equal((await r.json()).pick.team, "TCU");
+});
+
+test("skipping a no-contest week costs nothing: entry is the first pick", async () => {
+  // The property the whole fix rests on. A player who cannot pick in week 0
+  // enters at week 1, and the scoring walk never visits a week before that —
+  // so there is no miss to record and no elimination to explain.
+  const env = makeEnv();
+  seedUser(env, "U1", { name: "Someone" });
+  const cookie = await signedIn(env, "U1");
+  seedLoneGameWeek(env, 0);
+  seedWeek(env, { week: 1 });
+
+  const r = await call(env, "/api/survivor/pick", {
+    method: "PUT", cookie, body: { week: 1, game_id: 401, team: "Iowa State" },
+  });
+  assert.equal(r.status, 200, JSON.stringify(await r.clone().json()));
+
+  const row = env.raw.prepare(
+    `SELECT MIN(week) w FROM survivor_picks WHERE user_id = 'U1'`).get();
+  assert.equal(row.w, 1, "week 0 leaked into this player's entry week");
+});

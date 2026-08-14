@@ -201,7 +201,14 @@ footer { padding-bottom: 1.5rem; }
 }
 .chart-card h2 { margin: 0; font-size: 0.95rem; letter-spacing: -0.01em; }
 .chart-sub { margin: 0.15rem 0 0.6rem; color: var(--muted); font-size: 0.76rem; }
-.chart-card svg { width: 100%; height: auto; display: block; }
+/* The CHART, not every svg that happens to be inside the card. This was a
+   bare descendant selector, and it stopped being true the moment cards.js
+   started injecting a collapse chevron into the heading: `.chart-card svg`
+   outranks `.cardchev`, so the chevron took width:100% and, with a square
+   viewBox and height:auto, resolved to a 300×300 arrow sitting where the
+   chart should be. Excluded by role rather than by position, so chrome added
+   to these headings later does not have to rediscover this. */
+.chart-card svg:not(.cardchev) { width: 100%; height: auto; display: block; }
 .chart-card .tick { font-size: var(--t-micro); fill: var(--muted); font-variant-numeric: tabular-nums; }
 .chart-card .lbl { font-size: var(--t-fine); fill: var(--text); }
 .chart-card .val { font-size: var(--t-micro); fill: var(--muted); font-variant-numeric: tabular-nums; }
@@ -399,12 +406,6 @@ svg text.val-in {
 }
 .estmark:hover { border-color: var(--accent); color: var(--accent); }
 
-/* A capacity the school publishes but the attendance record contradicts. */
-.capmark {
-  font-size: var(--t-row); font-weight: 700; text-decoration: none;
-  margin-left: 3px; color: var(--muted); cursor: help; vertical-align: 1px;
-}
-.capmark:hover { color: var(--accent); }
 
 /* Records watch team cell — logo then name, like every other team cell. */
 .records-table td.rw-team { white-space: nowrap; }

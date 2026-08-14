@@ -684,14 +684,21 @@ SCHEDULE_NAV = [("schedule", "./", "The Schedule"),
 #
 # Relative hrefs, like every other nav: each of these is rendered at exactly
 # one depth, so "card.html" always means the same file.
+# The trailing entry in each is the OTHER GAME, not a tab of this one. Getting
+# from the survivor board to the pick'em slate meant going up to /pools/ and
+# back down, which is three clicks to move between two things a player is
+# playing at the same time. A "~" key marks it: it can never match `active`,
+# so it never renders as the current tab, and subnav() gives it its own class.
 PICKEM_NAV = [("slate", "./", "The Slate"),
               ("card", "card.html", "The Card"),
               ("board", "board.html", "The Board"),
-              ("rules", "rules.html", "The Rules")]
+              ("rules", "rules.html", "The Rules"),
+              ("~cross", "../survivor/", "Survivor \u2192")]
 
 SURVIVOR_NAV = [("survivor", "./", "The Pick"),
                 ("svpool", "pool.html", "The Pool"),
-                ("svrules", "rules.html", "The Rules")]
+                ("svrules", "rules.html", "The Rules"),
+                ("~cross", "../pickem/", "Pickem \u2192")]
 
 # The two games, for the pages that sit above both of them at /pools/. The
 # hub does not use it — its body is two large cards saying the same thing —
@@ -712,9 +719,14 @@ def subnav(active, section="tiebreaker", prefix=""):
     """`prefix` lifts the links for pages that sit a directory deeper. The
     hrefs are relative, so from /schedule/game/ a bare "matrix.html" points
     at a file that does not exist — and does it silently."""
+    def cls(key):
+        # "~" is a hop to a different section rather than a tab of this one.
+        if key.startswith("~"):
+            return "cross"
+        return "on" if key == active else "off"
     links = "".join(
-        f"<a href={prefix}{href} class={'on' if key == active else 'off'}>"
-        f"{label}</a>" for key, href, label in nav_for(section))
+        f"<a href={prefix}{href} class={cls(key)}>{label}</a>"
+        for key, href, label in nav_for(section))
     return f"<nav class=subnav>{links}</nav>"
 
 
@@ -920,11 +932,11 @@ def leverage_card(games, sims, teams=None):
     return (f"<div class=card id=levcard><h2>Games that matter · week {wk}"
             f"</h2>{''.join(rows)}"
             "<p class=note>Two teams reach the championship game &mdash; "
-            "think of that as two seats. The rest of the season is played "
+            "think of that as two berths. The rest of the season is played "
             "out ten thousand times; change who wins one game and different "
-            "teams end up in those seats. The number beside each game is how "
-            "much of a seat changes hands on it: <b>100 would be a whole "
-            "seat</b>, 0 would mean the result decides nothing. "
+            "teams end up in those berths. The number beside each game is "
+            "how many points of a berth change hands on it: <b>100 points "
+            "is a whole berth</b>, 0 would mean the result decides nothing. "
             "Percentages are how often that team reaches the title game "
             "across those simulated seasons, and the arrow is the move from "
             "where they stand today. Under the rule in each box are the "
@@ -1263,14 +1275,22 @@ def season_frames(games, overrides):
                 r = next(x for x in display if x["team"] == t)
                 left.append({"t": t, "p": b["pos"], "w": r["conf_w"],
                              "l": r["conf_l"], "n": len(b["teams"]),
+                             "nw": r["nonconf_w"], "nl": r["nonconf_l"],
+                             "ow": r["overall_w"], "ol": r["overall_l"],
                              "i": i, "s": status[t]})
         out.append({
             "w": w,
             "label": f"Week {w}",
             "date": pretty_date(last, "short") if last else "",
             "left": left,
+            # The two records that decide nothing travel with the frame
+            # too. Without them the replay repaints both boards with four
+            # columns into a table whose head has six, and the two new ones
+            # come out blank the moment the page finishes loading.
             "right": [{"t": r["team"], "p": str(r["rank"] or "—"),
                        "w": r["conf_w"], "l": r["conf_l"],
+                       "nw": r["nonconf_w"], "nl": r["nonconf_l"],
+                       "ow": r["overall_w"], "ol": r["overall_l"],
                        "s": status[r["team"]]} for r in display],
         })
     return out
@@ -1354,10 +1374,19 @@ def status_class(state, pos):
 def standings_page(games, overrides, display_rows, teams):
     """Two boards side by side, drawn with the same chrome as the main
     standings table so the only difference a reader sees is the ordering.
-    Non-conference and overall records are left to the Scenarios board —
-    at this width the conference record and percentage are the comparison."""
+
+    Non-conference and overall used to be left to the Scenarios board, on the
+    grounds that at this width the conference record and the percentage are
+    the comparison. That is true in November and badly wrong in September:
+    the Big 12 does not start conference play until week four or five, so for
+    the first month of every season THE STANDINGS PAGE IS ALL ZEROES while
+    the teams on it have played three or four games. It does not read as
+    "no conference games yet", it reads as broken.
+
+    So the same four columns the Scenarios board already carries, in the same
+    order, saying the same things. One quantity, one presentation."""
     head = ("<thead><tr><th></th><th>Team</th><th>Conf</th><th>Pct</th>"
-            "</tr></thead>")
+            "<th>Non-conf</th><th>Overall</th></tr></thead>")
     by_team = {r["team"]: r for r in display_rows}
     frames = season_frames(games, overrides)
     state = ({r["t"]: r["s"] for r in frames[-1]["right"]} if frames else {})
@@ -1371,7 +1400,14 @@ def standings_page(games, overrides, display_rows, teams):
                 f"</span>{logo_img(r['team'])}{esc(r['team'])}</td>"
                 f"<td>{r['conf_w']}–{r['conf_l']}</td>"
                 + ("<td>—</td>" if p is None else
-                   f"<td style='color:{winpct_color(p)}'>{p:.3f}</td>"))
+                   f"<td style='color:{winpct_color(p)}'>{p:.3f}</td>")
+                # Dimmed: they decide nothing. The conference record and its
+                # percentage are what the procedure sorts on, and these two
+                # are here so that a page read in September has a number on
+                # it that has moved. Same order and same labels as the
+                # Scenarios board.
+                + f"<td class=dim>{r['nonconf_w']}–{r['nonconf_l']}</td>"
+                + f"<td class=dim>{r['overall_w']}–{r['overall_l']}</td>")
 
     left = []
     for b in official_board(games, overrides, display_rows):
@@ -1896,8 +1932,8 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
         items = "".join(
             f"<li>{logo_img(e['away'], 14)}{esc(e['away'])} at "
             f"{logo_img(e['home'], 14)}{esc(e['home'])} <span class=dim>"
-            f"&mdash; {e['total'] * 100:.0f} of a title-game seat "
-            f"changes hands</span></li>" for e in lev[:3])
+            f"&mdash; {e['total'] * 100:.0f} points of a title-game berth "
+            f"change hands</span></li>" for e in lev[:3])
         parts.append(f"<div class=card><h2>What to watch next</h2>"
                      f"<ul>{items}</ul><p class=note>Full board on "
                      f"<a href=race.html>The Race</a>.</p></div>")
@@ -2861,7 +2897,21 @@ def pk_day(g):
     venue's own zone would read more naturally for one game and would put a
     late West Coast Saturday into Sunday's group on the odd week — a day
     heading that disagreed with the week it sat inside.
+
+    EXCEPT when there is no kickoff to convert. A game with no announced
+    window arrives at midnight EASTERN on its date, which is CFBD's
+    placeholder and not a time anybody plays at — and converting it to
+    Central walks it an hour backwards, into the day before. Week 4 came out
+    with seven cards each reading "Sat, Sep 26 · time TBD" filed under a
+    heading that said Friday, September 25. The date in the placeholder is
+    the real fact about the game; the hour is not, so only the date is used.
     """
+    if g.get("start_tbd") and g.get("start"):
+        try:
+            return datetime.datetime.fromisoformat(
+                g["start"].replace("Z", "+00:00")).date()
+        except ValueError:
+            return None
     k = pickem_mod.kickoff(g)
     return None if k is None else k.astimezone(pickem_mod.CENTRAL).date()
 
@@ -2986,12 +3036,25 @@ def build_schedule_page(games, ctx):
     done = [g for g in games if g["completed"]
             and tb.has_score(g) and pk_week(g, season) != wk]
     done.sort(key=lambda g: g["start"] or "", reverse=True)
+    # Grouped by week and counted down from the most recent, which is the same
+    # structure "the rest of the season" uses above and the only way to look a
+    # particular week back up. It was a flat list of the last forty games —
+    # newest first with no headings and a silent cut — so by October week 1
+    # had simply fallen off the page and there was nowhere to find it. No cap
+    # now: the card collapses, and an archive that hides its oldest half is
+    # not one.
     rescard = ""
     if done:
-        rescard = ("<div class=card><h2>Results, newest first</h2>"
-                   "<ul class=games>"
-                   + "".join(game_row(g) for g in done[:40])
-                   + "</ul></div>")
+        past = {}
+        for g in done:
+            past.setdefault(pk_week(g, season), []).append(g)
+        blocks = ""
+        for w in sorted(past, key=lambda x: (x is None, x), reverse=True):
+            head = "Week to be announced" if w is None else f"Week {w}"
+            blocks += (f"<h3 class=wkhead>{head}</h3><ul class=games>"
+                       + "".join(game_row(g) for g in past[w]) + "</ul>")
+        rescard = (f"<div class=card><h2>Results, newest first</h2>"
+                   f"{blocks}</div>")
     return slate + upcard + rescard
 
 
@@ -3117,11 +3180,11 @@ def race_card(g, ctx):
         str(g.get("id"))), teams_)
 
     key = (f"<p class='note swkey'>Two teams reach the championship game "
-           f"&mdash; think of that as two seats. The rest of the season is "
+           f"&mdash; think of that as two berths. The rest of the season is "
            f"played out ten thousand times with this result set and the "
            f"season played around it; the percentages are how often each "
-           f"team ends up in a seat, and the arrow is the move from where "
-           f"they stand today. <b>100 would be a whole seat</b> changing "
+           f"team ends up in a berth, and the arrow is the move from where "
+           f"they stand today. <b>100 points is a whole berth</b> changing "
            f"hands. Under the rule in each box are the teams that are not "
            f"playing but whose own chance the result moves by a point or "
            f"more.</p>")
@@ -3142,8 +3205,8 @@ def race_card(g, ctx):
            f"appearing.</p>") if teach else ""
     return (f"<div class=card id=racecard><h2>What it does to the race</h2>"
             f"<div class=levtotal><b>{total:.0f}</b> "
-            f"<span class=dim>of a title-game seat changes hands on this "
-            f"result</span></div>{fork}{teach}{key}{why}"
+            f"<span class=dim>points of a title-game berth change hands "
+            f"on this result</span></div>{fork}{teach}{key}{why}"
             f"<p class=note>From the same simulations the race card runs. "
             f"100 means a full berth's worth of probability moves on this "
             f"result. Each pair is that team's chance in the two futures, "
@@ -5355,7 +5418,7 @@ road. This can.</p>
 <p><b>{esc(hardest['team'])} drew the hardest schedule in the league and
 {esc(easiest['team'])} drew the easiest.</b> Between them sits
 <b>{spread:.2f}</b> of an expected win — worth about one game every other
-season, which is roughly the margin that decides a championship-game seat.</p>
+season, which is roughly the margin that decides a championship-game berth.</p>
 {draw_bars(rows, teams, span)}
 <p class=note>Each bar is that team's own schedule measured against what the
 <em>same team</em> would average across all sixteen schedules. Same roster,
@@ -5787,30 +5850,57 @@ cannot go on the board.</p>
 <p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
 <p id=alertstate class=pk-alertstate role=alert></p>
 
-<div class=card>
-  <h2>This week's pick</h2>
-  <p class=note id=svnote>Loading&hellip;</p>
-  <form id=svform>
-    <div id=svslate class=pk-slate></div>
-  </form>
-</div>
-
+<!-- Your run first. It is the context for the decision below it — which teams
+     are gone and how the season has gone — and reading it after making the
+     pick is reading it too late. -->
 <div class=card id=svusedcard hidden>
   <h2>Your run</h2>
+  <!-- How it ended, above the weeks rather than below them. A run that is
+       over is the first thing to know about a run, and the list alone could
+       not say it: a run killed by a missed week has no row for that week. -->
+  <p id=svrunend class=pk-svend hidden></p>
   <ul class=pk-svrun id=svused></ul>
 </div>
 
+<!-- The week and the roster side by side, because they are one decision: what
+     is on offer, and what you still hold to spend on it. They stack on a
+     phone, roster underneath, which is the order you read them in anyway. -->
+<div class="pk-duo pk-duo-pick">
+  <div class=card>
+    <h2>This week's pick</h2>
+    <p class=note id=svnote>Loading&hellip;</p>
+    <form id=svform>
+      <div id=svslate class=pk-slate></div>
+    </form>
+  </div>
+
+  <div class=card id=svrostercard hidden>
+    <h2>Available teams</h2>
+    <p class=note id=svrosternote></p>
+    <ul class=pk-roster id=svroster></ul>
+  </div>
+</div>
+
+<!-- THE POOL TABLE USED TO BE HERE and is deliberately gone. It is the same
+     #svboard the Pool page renders, and keeping two copies meant two callers
+     of one renderer with different data behind them: this page passed the
+     whole pool, that page passes the ranked subset, and both printed "N of M
+     runs still alive" in identical words — so the site appeared to contradict
+     itself, "1 still alive" above "0 of 10 runs still alive".
+     The Pool page does this properly, with the standings, the graveyard and
+     the unranked group, and the subnav reaches it in one click. What survives
+     here is the one number worth having beside the picker — how many are left
+     — and the rules, which belong next to the thing they govern. -->
 <div class=card>
-  <h2>The Pool</h2>
-  <p class=note id=svboardnote>Loading&hellip;</p>
-  <div class=table-wrap><div class=table-scroll>
-    <table id=svboard></table>
-  </div></div>
+  <h2>How it works</h2>
+  <p class=note id=svalive></p>
   <p class=note>One team a week, picked to win the game &mdash; the spread
   plays no part. A team can be used once a season; a canceled game hands it
   back. Lose, or let a week lock without a pick, and your run is over. Rank
   is wins, with the living above the dead on a tie. You can join any week:
   the weeks before your first pick simply never happened for you.</p>
+  <p class=note><a href="pool.html">The Pool &rarr;</a> has the full
+  standings, what went wrong, and the runs playing outside the leaderboard.</p>
 </div>
 
 <noscript><p class=note><b>The picker needs JavaScript.</b> The rules are in

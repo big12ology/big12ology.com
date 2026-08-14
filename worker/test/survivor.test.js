@@ -52,8 +52,11 @@ function twoWeeks(env) {
 
 // ---------------------------------------------------------------- triggers
 
-test("a survivor pick cannot be written, moved or withdrawn after the lock",
-  async () => {
+test("a survivor pick cannot be written, moved or withdrawn once its game "
+   + "has kicked off", async () => {
+    // 0010: the deadline is the GAME's, not the week's, so the abort says
+    // game_started. What it refuses is unchanged — a pick cannot be made,
+    // moved or taken back after the fact.
     const env = makeEnv();
     twoWeeks(env);
     seedUser(env, "u1", { name: "Early" });
@@ -61,14 +64,14 @@ test("a survivor pick cannot be written, moved or withdrawn after the lock",
     forceLock(env, 2026, 3);
 
     assert.throws(() => seedSurvivorPick(env, "u2", 2026, 3, 401, "Kansas"),
-      /week_locked/, "a locked week accepted a new pick");
+      /game_started/, "a started game accepted a new pick");
     assert.throws(() => env.raw.prepare(
       `UPDATE survivor_picks SET team = 'Kansas', game_id = 401
         WHERE user_id = 'u1'`).run(),
-      /week_locked/, "a locked pick moved");
+      /game_started/, "a pick moved after its game started");
     assert.throws(() => env.raw.prepare(
       `DELETE FROM survivor_picks WHERE user_id = 'u1'`).run(),
-      /week_locked/, "a locked pick was withdrawn");
+      /game_started/, "a pick was withdrawn after its game started");
   });
 
 test("the team must be playing that game, and the game must have a line",
@@ -85,11 +88,11 @@ test("the team must be playing that game, and the game must have a line",
 test("a team is spent the moment it is picked, and a void hands it back",
   async () => {
     const env = makeEnv();
-    // The kickoff is stale from the start — 40 hours gone — because
-    // slate_games_frozen forbids moving one, in tests as in production.
+    // The kickoff starts in the future and forceLock drags it back below,
+    // because a pick can no longer be made on a game that has already begun
+    // (0010) — so the pick must predate the kickoff, as a real one does.
     seedWeek(env, { week: 3, games: [
-      { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13,
-        kickoff_at: NOW() - 40 * HOUR },
+      { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13 },
     ] });
     seedWeek(env, { week: 4, games: [
       { game_id: 411, home: "Kansas", away: "Baylor", spread_x2: -3 },
@@ -271,12 +274,11 @@ test("a locked week with no result yet neither counts nor eliminates",
   async () => {
     const env = makeEnv();
     seedWeek(env, { week: 3, games: [
-      { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13,
-        kickoff_at: NOW() - HOUR },      // in play, nothing final
+      { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13 },
     ] });
     seedUser(env, "u1", { name: "Waiting" });
     seedSurvivorPick(env, "u1", 2026, 3, 401, "Iowa State");
-    forceLock(env, 2026, 3);
+    forceLock(env, 2026, 3);          // in play, nothing final
     await scoreWeek(env, 2026, 3, { games: {} });
 
     const b = env.raw.prepare(

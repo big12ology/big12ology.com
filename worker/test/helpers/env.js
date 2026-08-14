@@ -173,9 +173,78 @@ export function seedSurvivorPick(env, userId, season, week, gameId, team) {
 }
 
 /** Move a week's lock into the past without tripping weeks_lock_monotonic. */
-export function forceLock(env, season, week, at = NOW() - HOUR) {
+/**
+ * Put a week in the past.
+ *
+ * MOVES THE KICKOFFS TOO, since 0010. A locked week used to be one fact —
+ * weeks.lock_at — and survivor read it. Survivor now locks per game, so
+ * "this week has started" means its games have started; moving only lock_at
+ * leaves every kickoff in the future and every survivor pick still open,
+ * which is not the state any caller of this helper is asking for.
+ *
+ * `games: false` moves the week's deadline and leaves the kickoffs alone —
+ * the mid-week state, where the card is shut and some survivor games are not.
+ *
+ * slate_games_frozen makes kickoff_at immutable and is right to; it comes off
+ * and goes back verbatim, in a finally, exactly as the migration wrote it.
+ */
+export function forceLock(env, season, week, at = NOW() - HOUR,
+                          { games = true } = {}) {
   env.raw.exec("PRAGMA writable_schema = ON");
   env.raw.prepare(`UPDATE weeks SET lock_at = ? WHERE season = ? AND week = ?`)
     .run(at, season, week);
   env.raw.exec("PRAGMA writable_schema = OFF");
+  if (!games) return;
+  env.raw.exec("DROP TRIGGER IF EXISTS slate_games_frozen");
+  try {
+    env.raw.prepare(
+      `UPDATE slate_games SET kickoff_at = ?
+        WHERE season = ? AND week = ? AND kickoff_at > ?`)
+      .run(at, season, week, at);
+  } finally {
+    env.raw.exec(`
+      CREATE TRIGGER slate_games_frozen
+      BEFORE UPDATE ON slate_games
+      FOR EACH ROW WHEN
+           (OLD.spread_x2 IS NOT NULL AND OLD.spread_x2 IS NOT NEW.spread_x2)
+        OR OLD.kickoff_at <> NEW.kickoff_at
+        OR OLD.game_id    <> NEW.game_id
+        OR OLD.frozen_at  <> NEW.frozen_at
+      BEGIN
+        SELECT RAISE(ABORT, 'slate_frozen');
+      END`);
+  }
+}
+
+/**
+ * Move one game's kickoff into the past, after picks have been made on it.
+ *
+ * Needed since 0010: survivor picks are refused on a game that has already
+ * kicked off, so a fixture wanting "a pick on a game that has since been
+ * played" has to seed it live and age it afterwards — which is the order it
+ * happens in anyway.
+ *
+ * slate_games_frozen makes kickoff_at immutable, correctly, so it comes off
+ * and goes back verbatim in a finally.
+ */
+export function backdateGame(env, season, week, gameId, at = NOW() - 40 * HOUR) {
+  env.raw.exec("DROP TRIGGER IF EXISTS slate_games_frozen");
+  try {
+    env.raw.prepare(
+      `UPDATE slate_games SET kickoff_at = ?
+        WHERE season = ? AND week = ? AND game_id = ?`)
+      .run(at, season, week, gameId);
+  } finally {
+    env.raw.exec(`
+      CREATE TRIGGER slate_games_frozen
+      BEFORE UPDATE ON slate_games
+      FOR EACH ROW WHEN
+           (OLD.spread_x2 IS NOT NULL AND OLD.spread_x2 IS NOT NEW.spread_x2)
+        OR OLD.kickoff_at <> NEW.kickoff_at
+        OR OLD.game_id    <> NEW.game_id
+        OR OLD.frozen_at  <> NEW.frozen_at
+      BEGIN
+        SELECT RAISE(ABORT, 'slate_frozen');
+      END`);
+  }
 }
