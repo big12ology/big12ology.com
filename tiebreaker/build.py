@@ -17,8 +17,6 @@ import re
 import sys
 import zoneinfo
 
-import chaos as chaos_mod
-import clinch as clinch_mod
 import feed as feed_mod
 import facts as facts_mod
 import fetch as fetcher
@@ -1155,7 +1153,7 @@ def pad_standings(rows, games):
     follow the ranked ones in alphabetical order with a dash for rank and
     percentage, carrying whatever non-conference games they have played."""
     listed = {r["team"] for r in rows}
-    missing = sorted(t for t in clinch_mod.conf_teams(games) if t not in listed)
+    missing = sorted(t for t in engine.conf_teams(games) if t not in listed)
     if not missing:
         return rows
     tally = {t: {"nw": 0, "nl": 0, "ow": 0, "ol": 0} for t in missing}
@@ -1249,7 +1247,7 @@ def season_frames(games, overrides):
     weeks = sorted({g["week"] for g in games
                     if g["completed"] and g["conference_game"]
                     and not g.get("ccg") and tb.has_score(g)})
-    everyone = sorted(clinch_mod.conf_teams(games))
+    everyone = sorted(engine.conf_teams(games))
     out = []
     for w in weeks:
         # Weeks that had not happened yet are unplayed, not missing. Dropping
@@ -1274,7 +1272,7 @@ def season_frames(games, overrides):
         } for t in everyone if t not in seen]
         last = max((g["start"] or "" for g in sub
                     if g["week"] == w and g["completed"]), default="")
-        cl = clinch_mod.analyze(sub, overrides)["teams"]
+        cl = engine.clinch_analyze(sub, overrides)["teams"]
         status = {t: cl.get(t, {}).get("status", "alive") for t in everyone}
         left = []
         for b in official_board(sub, overrides, display):
@@ -1487,13 +1485,13 @@ def clinch_card(games, overrides, systems, stand_rows, sims,
     """The Championship race card: proof-grade clinch/elimination statuses,
     Monte Carlo odds, and the Chaos Index. Computed at build time from real
     results only — what-if picks in the browser don't touch it."""
-    res = clinch_mod.analyze(games, overrides)
+    res = engine.clinch_analyze(games, overrides)
     teams = res["teams"]
     n_sims = sims.get("_n", 0)
 
     chaos_html = ""
     if sims:
-        cx = chaos_mod.index(stand_rows, res, sims)
+        cx = engine.chaos_index(stand_rows, res, sims)
         ccolor = ("var(--accent)" if cx["score"] >= 55
                   else "var(--warn)" if cx["score"] >= 35 else "var(--dim)")
         comps = cx["components"]
@@ -1799,8 +1797,8 @@ def _prev_week_state(games, systems, overrides, last_week):
     sims = (odds_mod.simulate(prev, systems, overrides, n=4000)
             if systems else {})
     rows = engine.standings(prev, overrides)
-    cl = clinch_mod.analyze(prev, overrides, budget=2)
-    cx = chaos_mod.index(rows, cl, sims) if sims else None
+    cl = engine.clinch_analyze(prev, overrides, budget=2)
+    cx = engine.chaos_index(rows, cl, sims) if sims else None
     return {"sims": sims, "rows": rows, "chaos": cx, "clinch": cl["teams"]}
 
 
@@ -1811,8 +1809,8 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
     done = [g for g in games if g["completed"] and not g.get("ccg")
             and tb.has_score(g)]
     stand_rows = engine.standings(games, overrides)
-    cl = clinch_mod.analyze(games, overrides)
-    cx = chaos_mod.index(stand_rows, cl, sims) if sims else None
+    cl = engine.clinch_analyze(games, overrides)
+    cx = engine.chaos_index(stand_rows, cl, sims) if sims else None
     _now = datetime.datetime.now(datetime.timezone.utc)
     stamp = f"{_MON[_now.month - 1]} {_now.day}"
     parts = []
@@ -4648,7 +4646,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
             re.compile(r"<lastBuildDate>[^<]*</lastBuildDate>"))
 
     ccg = engine.championship(games, overrides)
-    cl = clinch_mod.analyze(games, overrides)
+    cl = engine.clinch_analyze(games, overrides)
     data = {
         "generated": datetime.datetime.now(datetime.timezone.utc)
             .isoformat(timespec="seconds"),

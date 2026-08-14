@@ -26,10 +26,21 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 
+import chaos                                             # noqa: E402
+import clinch                                            # noqa: E402
 import engine                                            # noqa: E402
+import odds                                              # noqa: E402
 import tiebreaker as tb                                  # noqa: E402
 
 fails = []
+
+
+def ratings(year):
+    """The rating systems, the way build.py loads them."""
+    p = os.path.join(ROOT, "data", f"ratings_{year}.json")
+    if not os.path.exists(p):
+        return {}
+    return json.load(open(p)).get("systems", {})
 
 
 def check(name, got, want):
@@ -81,6 +92,57 @@ else:
 check("pct", [engine.pct(w, l) for w in range(6) for l in range(6)],
       [tb.pct(w, l) for w in range(6) for l in range(6)])
 
+
+# --- clinch, where the enumeration actually engages -------------------------
+# A finished season has nothing left to enumerate and a September one is over
+# budget, so both ends answer "bounds" and prove nothing about the half of
+# clinch.py that had no JavaScript counterpart. The truncations that matter
+# are mid-November, where exact mode switches on and the scenario prose — new
+# code, with no browser original to check against — is written.
+def truncate(games, cutoff):
+    out = []
+    for g in games:
+        g = dict(g)
+        if (g["start"] or "9999")[:10] > cutoff:
+            g["completed"] = False
+            g["home_points"] = g["away_points"] = None
+        out.append(g)
+    return out
+
+
+exact_seen = scenarios_seen = 0
+for year in (2024, 2025):
+    games = load(year)
+    for cut in (f"{year}-10-20", f"{year}-11-10", f"{year}-11-16",
+                f"{year}-11-18", f"{year}-11-24", f"{year}-12-10"):
+        snap = truncate(games, cut)
+        got = engine.clinch_analyze(snap, {})
+        check(f"clinch {cut}", got, clinch.analyze(snap, {}))
+        if got["mode"] == "exact":
+            exact_seen += 1
+            scenarios_seen += sum(1 for i in got["teams"].values()
+                                  if i.get("scenarios"))
+
+if exact_seen < 2:
+    fails.append(f"exact enumeration never engaged ({exact_seen} of them) — "
+                 f"the truncations above stopped covering the expensive half")
+if not scenarios_seen:
+    fails.append("no this-week scenario text was produced, so scenarioTexts "
+                 "went unchecked")
+
+# --- chaos, across the label bands ------------------------------------------
+# Cheap to compute and easy to get subtly wrong: race.js keys its probability
+# map on the statuses and chaos.py keyed it on the odds, which agree only
+# while both cover the same teams.
+for year, cut in ((2024, "2024-10-20"), (2024, "2024-11-24"),
+                  (2025, "2025-10-20"), (2025, "2025-11-24")):
+    snap = truncate(load(year), cut)
+    rows = tb.standings(snap, {})
+    cl = clinch.analyze(snap, {})
+    sims = odds.simulate(snap, ratings(year), {}, n=400)
+    check(f"chaos {cut}", engine.chaos_index(rows, cl, sims),
+          chaos.index(rows, cl, sims))
+
 # --- the failure modes ------------------------------------------------------
 # An engine that answers the wrong question quietly is worse than one that is
 # down, so the protocol's guards are worth a test of their own.
@@ -121,5 +183,6 @@ if fails:
     for f in fails:
         print(f"  {f}")
     sys.exit(1)
-print(f"engine bridge: {n} seasons agree with tiebreaker.py, shapes and "
-      f"failure modes hold")
+print(f"engine bridge: {n} seasons agree with tiebreaker.py, clinch matches "
+      f"at 12 truncations ({exact_seen} in exact mode, {scenarios_seen} teams "
+      f"with scenario prose), chaos matches, shapes and failure modes hold")

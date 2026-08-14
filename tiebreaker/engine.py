@@ -141,3 +141,28 @@ def conf_records(games):
 
 def pct(w, l):
     return _call("pct", w, l)
+
+
+# ------------------------------------------------------------------- clinch
+# clinch.analyze's shape, so callers do not learn which language answered.
+# The budget default lives in engine/build-only.js; passing None takes it.
+
+def clinch_analyze(games, overrides=None, budget=None):
+    return _call("clinchAnalyze", games, overrides or {}, budget)
+
+
+def clinch_bounds(games):
+    return _call("clinchBounds", games)
+
+
+def clinch_exact(games, overrides=None, budget=None):
+    return _call("clinchExact", games, overrides or {}, budget)
+
+
+def conf_teams(games):
+    return _call("confTeams", games)
+
+
+def chaos_index(rows, clinch_result, odds_result):
+    """chaos.index's shape: {"score", "label", "components"}."""
+    return _call("chaosIndex", rows, clinch_result, odds_result)

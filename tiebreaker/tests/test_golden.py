@@ -75,12 +75,43 @@ CLOCKS = re.compile(
     r'|"generated": "[^"]*"')
 
 
-def tracked_and_clean():
-    """The baseline is only a baseline if it is what HEAD says it is."""
+# WHAT THE BUILD ACTUALLY WRITES. site/ is not a build directory — it holds
+# engine.js, race.js, app.js, brand.css and sixty logos, all hand-written, next
+# to the pages build.py generates. So "is the committed output what the build
+# produces" is a question about some of the files in there and not others, and
+# gating on the whole tree fails the moment anybody edits race.js — which is
+# exactly what the engine port does.
+#
+# Everything build.py emits is markup or data: .html, .xml, .csv, .json. The
+# one exception is the logo registry, which is a source file that happens to
+# be JSON (build.py:442 reads it and nothing writes it).
+GENERATED_EXT = (".html", ".xml", ".csv", ".json")
+NOT_GENERATED = {"site/logos/SOURCES.json"}
+
+
+def is_generated(rel):
+    return rel.endswith(GENERATED_EXT) and rel not in NOT_GENERATED
+
+
+def dirty_generated():
+    """Generated files that are not what HEAD says they are.
+
+    Only these: a baseline is only a baseline if it is committed, but a source
+    file being edited says nothing about whether the build reproduces its
+    output.
+    """
     out = subprocess.run(["git", "-C", ROOT, "status", "--porcelain", "--"]
                          + [os.path.join("tiebreaker", t) for t in TREES],
                          capture_output=True, text=True)
-    return [l for l in out.stdout.splitlines() if l.strip()]
+    bad = []
+    for line in out.stdout.splitlines():
+        if not line.strip():
+            continue
+        path = line[3:].strip().strip('"')
+        rel = path.split("tiebreaker/", 1)[-1]
+        if is_generated(rel):
+            bad.append(line)
+    return bad
 
 
 def build_into(dst):
@@ -140,7 +171,7 @@ def walk(root):
 
 
 def main():
-    dirty = tracked_and_clean()
+    dirty = dirty_generated()
     if dirty:
         print("the generated tree is not what HEAD says it is, so it cannot "
               "be the baseline. Commit or revert first:\n")
@@ -155,18 +186,28 @@ def main():
         fresh = os.path.join(tmp, "tb")
         build_into(fresh)
 
-        moved, missing, added, n = [], [], [], 0
+        moved, missing, added, stray, n = [], [], [], [], 0
         for tree in TREES:
             base, new = os.path.join(TB, tree), os.path.join(fresh, tree)
             have = dict(walk(base)) if os.path.isdir(base) else {}
             got = dict(walk(new)) if os.path.isdir(new) else {}
             for rel in sorted(have):
+                name = f"{tree}/{rel}"
                 if rel not in got:
-                    missing.append(f"{tree}/{rel}")
+                    if is_generated(name):
+                        missing.append(name)
                     continue
-                n += 1
                 a = open(have[rel], "rb").read()
                 b = open(got[rel], "rb").read()
+                if not is_generated(name):
+                    # A source file. The fresh tree is a copy, so this is
+                    # equal unless the build wrote somewhere it should not
+                    # have — which is worth hearing about, and keeps the list
+                    # above from going quietly stale.
+                    if a != b:
+                        stray.append(name)
+                    continue
+                n += 1
                 if a == b:
                     continue
                 # Only the deploy stamp moved: not a change in what the page
@@ -174,16 +215,18 @@ def main():
                 ta = CLOCKS.sub("", a.decode("utf-8", "replace"))
                 tb_ = CLOCKS.sub("", b.decode("utf-8", "replace"))
                 if ta != tb_:
-                    moved.append(f"{tree}/{rel}")
-            added += [f"{tree}/{rel}" for rel in sorted(got) if rel not in have]
+                    moved.append(name)
+            added += [f"{tree}/{rel}" for rel in sorted(got)
+                      if rel not in have and is_generated(f"{tree}/{rel}")]
 
-        if not (moved or missing or added):
+        if not (moved or missing or added or stray):
             print(f"golden: {n} generated files, all byte-identical to HEAD")
             return 0
 
         print("the build no longer reproduces the committed site.\n")
         for label, items in (("changed", moved), ("no longer built", missing),
-                             ("newly built", added)):
+                             ("newly built", added),
+                             ("build wrote a source file", stray)):
             if items:
                 print(f"  {label} ({len(items)}):")
                 for f in items[:25]:

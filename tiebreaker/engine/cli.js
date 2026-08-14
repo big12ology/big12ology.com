@@ -36,8 +36,20 @@ const path = require("path");
 // The same file the browser loads. That is the entire point: the page and the
 // build are running the same rules, not two ports of them.
 const engine = require(path.join(__dirname, "..", "site", "engine.js"));
+// The clinch model: race.js's primitives, plus the parts only a build runs.
+const build = require(path.join(__dirname, "build-only.js"));
 
 const OPS = {
+  clinchAnalyze: (games, overrides, budget) =>
+    build.analyze(games, overrides || {}, budget),
+  clinchBounds: (games) => build.bounds(games),
+  clinchExact: (games, overrides, budget) =>
+    build.exact(games, overrides || {}, budget),
+  confTeams: (games) => build.confTeams(games),
+  cutMembership: (games, overrides, ncf) =>
+    build.cutMembership(games, overrides || {}, ncf),
+  chaosIndex: (rows, clinchResult, oddsResult) =>
+    build.chaosIndex(rows, clinchResult, oddsResult),
   standings: (games, overrides) => engine.standings(games, overrides || {}),
   championship: (games, overrides) => engine.championship(games, overrides || {}),
   placementGroups: (games) => engine.placementGroups(games),

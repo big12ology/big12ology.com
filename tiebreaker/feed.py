@@ -14,8 +14,7 @@ import datetime
 import email.utils
 from xml.sax.saxutils import escape
 
-import chaos as chaos_mod
-import clinch as clinch_mod
+import engine
 import odds as odds_mod
 import tiebreaker as tb
 
@@ -91,7 +90,7 @@ def game_items(games):
 
 def status_items(games, year, overrides):
     """Clinched / eliminated announcements, dated by the team's last final."""
-    res = clinch_mod.analyze(games, overrides)
+    res = engine.clinch_analyze(games, overrides)
     last_game = {}
     for g in games:
         if not g["completed"] or not g["start"]:
@@ -138,12 +137,12 @@ def weekly_wraps(games, year, systems, overrides):
             if g["week"] > w:
                 g["completed"] = False
                 g["home_points"] = g["away_points"] = None
-        rows = tb.standings(snap, overrides)
+        rows = engine.standings(snap, overrides)
         # bounds-only here: exact enumeration at late-season
         # truncations would cost minutes per build
-        cl = clinch_mod.analyze(snap, overrides, budget=2)
+        cl = engine.clinch_analyze(snap, overrides, budget=2)
         od = odds_mod.simulate(snap, systems, overrides, n=WRAP_SIMS)
-        cx = chaos_mod.index(rows, cl, od)
+        cx = engine.chaos_index(rows, cl, od)
         leaders = sorted(
             ((v["p_ccg"], t) for t, v in od.items()
              if not t.startswith("_")),
