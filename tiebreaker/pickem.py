@@ -342,7 +342,7 @@ def write_scores(season, games, path):
     already holds the games.
 
     Sorted and rewritten only on change, because it is emitted on every build
-    and the deploy runs roughly three hundred times a season.
+    and the deploy runs roughly 1,800 times a season.
     """
     payload = {
         "season": season,

@@ -1,7 +1,7 @@
 # Deploying the pick'em Worker.
 #
-# Deliberately NOT part of pages.yml. That workflow runs about three hundred
-# times a season with cancel-in-progress, and merging them would hand a
+# Deliberately NOT part of pages.yml. That workflow runs about 1,800 times a
+# season with cancel-in-progress, and merging them would hand a
 # Cloudflare write token to every one of those runs, redeploy the Worker on
 # every hourly score refresh, and — worst — let a cancelled run abort a
 # migration halfway through applying.

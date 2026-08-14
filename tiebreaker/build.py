@@ -17,8 +17,6 @@ import re
 import sys
 import zoneinfo
 
-import chaos as chaos_mod
-import clinch as clinch_mod
 import feed as feed_mod
 import facts as facts_mod
 import fetch as fetcher
@@ -42,10 +40,17 @@ import scorecard as scorecard_mod
 import weather as weather_mod
 import rotation as rotation_mod
 import swap as swap_mod
+import engine
 import tiebreaker as tb
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(HERE, "site")
+# What every page inlines into its <head>: two stylesheets and three script
+# tags that must run before first paint. Kept as files rather than as string
+# constants in here. Not tidiness — it is the one change that removes a whole
+# class of silent bug, and it deduplicates the three that were pasted into
+# three templates. See inline() below.
+INLINE_DIR = os.path.join(HERE, "inline")
 # The schedule section is a sibling of /tiebreaker/ on the
 # domain, so its pages reach shared assets through ../tiebreaker/.
 SCHEDULE_SITE = os.path.join(HERE, "site_schedule")
@@ -1148,7 +1153,7 @@ def pad_standings(rows, games):
     follow the ranked ones in alphabetical order with a dash for rank and
     percentage, carrying whatever non-conference games they have played."""
     listed = {r["team"] for r in rows}
-    missing = sorted(t for t in clinch_mod.conf_teams(games) if t not in listed)
+    missing = sorted(t for t in engine.conf_teams(games) if t not in listed)
     if not missing:
         return rows
     tally = {t: {"nw": 0, "nl": 0, "ow": 0, "ol": 0} for t in missing}
@@ -1206,7 +1211,7 @@ def official_board(games, overrides, display_rows):
     if not played:
         return [{"pos": "—", "teams": [r["team"] for r in display_rows],
                  "rec": "0–0", "tied": True}]
-    ccg = tb.championship(games, overrides)
+    ccg = engine.championship(games, overrides)
     seeds = [ccg["seed1"], ccg["seed2"]] if ccg else []
     by_team = {r["team"]: r for r in display_rows}
     out = []
@@ -1242,7 +1247,7 @@ def season_frames(games, overrides):
     weeks = sorted({g["week"] for g in games
                     if g["completed"] and g["conference_game"]
                     and not g.get("ccg") and tb.has_score(g)})
-    everyone = sorted(clinch_mod.conf_teams(games))
+    everyone = sorted(engine.conf_teams(games))
     out = []
     for w in weeks:
         # Weeks that had not happened yet are unplayed, not missing. Dropping
@@ -1257,7 +1262,7 @@ def season_frames(games, overrides):
             later["home_points"] = None
             later["away_points"] = None
             sub.append(later)
-        rows = tb.standings(sub, overrides)
+        rows = engine.standings(sub, overrides)
         display = pad_standings(rows, sub)
         seen = {r["team"] for r in display}
         display = display + [{
@@ -1267,7 +1272,7 @@ def season_frames(games, overrides):
         } for t in everyone if t not in seen]
         last = max((g["start"] or "" for g in sub
                     if g["week"] == w and g["completed"]), default="")
-        cl = clinch_mod.analyze(sub, overrides)["teams"]
+        cl = engine.clinch_analyze(sub, overrides)["teams"]
         status = {t: cl.get(t, {}).get("status", "alive") for t in everyone}
         left = []
         for b in official_board(sub, overrides, display):
@@ -1480,13 +1485,13 @@ def clinch_card(games, overrides, systems, stand_rows, sims,
     """The Championship race card: proof-grade clinch/elimination statuses,
     Monte Carlo odds, and the Chaos Index. Computed at build time from real
     results only — what-if picks in the browser don't touch it."""
-    res = clinch_mod.analyze(games, overrides)
+    res = engine.clinch_analyze(games, overrides)
     teams = res["teams"]
     n_sims = sims.get("_n", 0)
 
     chaos_html = ""
     if sims:
-        cx = chaos_mod.index(stand_rows, res, sims)
+        cx = engine.chaos_index(stand_rows, res, sims)
         ccolor = ("var(--accent)" if cx["score"] >= 55
                   else "var(--warn)" if cx["score"] >= 35 else "var(--dim)")
         comps = cx["components"]
@@ -1791,9 +1796,9 @@ def _prev_week_state(games, systems, overrides, last_week):
             g["home_points"] = g["away_points"] = None
     sims = (odds_mod.simulate(prev, systems, overrides, n=4000)
             if systems else {})
-    rows = tb.standings(prev, overrides)
-    cl = clinch_mod.analyze(prev, overrides, budget=2)
-    cx = chaos_mod.index(rows, cl, sims) if sims else None
+    rows = engine.standings(prev, overrides)
+    cl = engine.clinch_analyze(prev, overrides, budget=2)
+    cx = engine.chaos_index(rows, cl, sims) if sims else None
     return {"sims": sims, "rows": rows, "chaos": cx, "clinch": cl["teams"]}
 
 
@@ -1803,9 +1808,9 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
     The Race — this page is movement, not reference."""
     done = [g for g in games if g["completed"] and not g.get("ccg")
             and tb.has_score(g)]
-    stand_rows = tb.standings(games, overrides)
-    cl = clinch_mod.analyze(games, overrides)
-    cx = chaos_mod.index(stand_rows, cl, sims) if sims else None
+    stand_rows = engine.standings(games, overrides)
+    cl = engine.clinch_analyze(games, overrides)
+    cx = engine.chaos_index(stand_rows, cl, sims) if sims else None
     _now = datetime.datetime.now(datetime.timezone.utc)
     stamp = f"{_MON[_now.month - 1]} {_now.day}"
     parts = []
@@ -2383,8 +2388,8 @@ def build_subpage(title, active, body, year, matchcard,
 <link rel=icon type=image/svg+xml href="{BASE}favicon.svg">
 <link rel=icon type=image/png sizes=32x32 href="{BASE}favicon-32.png">
 <link rel=apple-touch-icon href="{BASE}favicon-180.png">
-<script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
-<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
+{BOOT_THEME}
+{BOOT_CARDS}
 <link rel=stylesheet href="{BASE}{asset_v("brand.css")}">
 <script defer src="{BASE}{asset_v("theme.js")}"></script>
 <script src="{BASE}{asset_v("state.js")}"></script>
@@ -2400,7 +2405,7 @@ def build_subpage(title, active, body, year, matchcard,
 {body}
 </main>
 {footer()}
-<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
+{BEACON}
 </body></html>"""
 
 
@@ -3678,9 +3683,9 @@ def render(year, games):
     if mkt:
         favorites["Vegas"] = mkt
         models.append({"name": "Vegas", "year": None, "kind": "market"})
-    rows = tb.standings(games, overrides)
+    rows = engine.standings(games, overrides)
     display_rows = pad_standings(rows, games)
-    ccg = tb.championship(games, overrides)
+    ccg = engine.championship(games, overrides)
     reg = [g for g in games if g["conference_game"] and not g.get("ccg")]
     played = [g for g in games if g["completed"] and tb.has_score(g)]
     remaining = [g for g in games if not g["completed"]]
@@ -3859,6 +3864,11 @@ def render(year, games):
     page = TEMPLATE.format(
         year=year,
         base=BASE,
+        lab_css=LAB_CSS,
+        # Named for the globals so the same placeholder text works here and
+        # in build_subpage's f-string, which reads them straight off the
+        # module. One spelling, three templates.
+        BOOT_THEME=BOOT_THEME, BOOT_CARDS=BOOT_CARDS, BEACON=BEACON,
         v_engine=asset_v("engine.js"),
         v_pct=asset_v("pct.js"),
         v_race=asset_v("race.js"),
@@ -3948,6 +3958,45 @@ WHATIF_CARD = """<div class=card id=whatif>
 </div>"""
 
 
+def inline(name):
+    """A head fragment read from inline/, to be embedded verbatim in a page.
+
+    THIS IS WHY THEY ARE NOT IN THIS FILE. build.py writes markup three ways
+    — .format() templates, f-strings, and constants interpolated into an
+    f-string as a value — and the three disagree about braces. In the first
+    two a literal brace is written "{{"; in the third it must be single,
+    because nothing ever collapses it. CSS and minified JS are almost nothing
+    but braces, so a block that moves between the two conventions ships as
+    "{{ ... }}", which no browser parses. The page looks built and the
+    styling, or the script, is simply absent.
+
+    Text that arrives as a *value* is never re-scanned by either mechanism,
+    so a file has no convention at all and cannot be moved into the wrong
+    one. tools/verify-dist.py still greps the built pages for an uncollapsed
+    brace; after this it should never find one.
+
+    The three script tags were also pasted into three templates apiece, which
+    is how a pre-paint bootstrap gets fixed in two places out of three.
+
+    Read at import, not per page: 185 pages inline the same bytes.
+    """
+    with open(os.path.join(INLINE_DIR, name)) as f:
+        text = f.read()
+    # Drop only the newline the file ends with, so a block that deliberately
+    # ends in blank lines still round-trips byte for byte.
+    return text[:-1] if text.endswith("\n") else text
+
+
+LAB_CSS = inline("lab.css")
+HOW_CSS = inline("how.css")
+# Both must run before first paint — one sets the theme attribute, the other
+# pre-collapses cards — so they are inline script tags rather than files the
+# browser would have to go and fetch.
+BOOT_THEME = inline("boot-theme.js")
+BOOT_CARDS = inline("boot-cards.js")
+BEACON = inline("beacon.html")
+
+
 TEMPLATE = """<!doctype html>
 <html lang=en>
 <head>
@@ -3968,8 +4017,8 @@ TEMPLATE = """<!doctype html>
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
-<script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
-<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
+{BOOT_THEME}
+{BOOT_CARDS}
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
 <script src="{base}{v_state}"></script>
@@ -3977,413 +4026,7 @@ TEMPLATE = """<!doctype html>
 <script defer src="{base}{v_cards}"></script>
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href={base}feed.xml>
 <style>
-:root {{
-  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
-  --line: #e2ddd2; --accent: #0B6E77; --accent2: #003087;
-  --ok: #136536; --warn: #b45309;
-  --tie0: #fff3f4; --tie1: #eef4ff; --tie2: #f0fdf4; --tie3: #fefce8;
-  --pctl: 27%;
-}}
-@media (prefers-color-scheme: dark) {{
-  :root:not([data-theme="light"]) {{
-    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
-    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
-    --ok: #4ade80; --warn: #fbbf24;
-    --tie0: #2a1d20; --tie1: #1d2330; --tie2: #1d2a22; --tie3: #2a281d;
-    --pctl: 63%;
-  }}
-}}
-* {{ box-sizing: border-box; }}
-body {{ margin: 0; background: var(--bg); color: var(--ink);
-  font:var(--t-body)/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
-
-.whyout {{ margin-top: 6px; }}
-.whyout p {{ font-size: var(--t-copy); margin: 8px 0; }}
-.whyhead {{ display: flex; align-items: center; gap: 4px; font-weight: 700;
-  font-size: var(--t-subhead); margin: 6px 0; }}
-.evline {{ display: block; background: var(--bg); border-left: 3px solid
-  var(--accent); border-radius: 4px; padding: 6px 10px; margin: 6px 0;
-  font-size: var(--t-row); color: var(--dim); }}
-.ladder {{ margin: 10px 0 4px; }}
-.roundhead {{ font-size: var(--t-row); text-transform: uppercase; letter-spacing:
-  .05em; color: var(--dim); font-weight: 600; margin: 16px 0 6px; }}
-.lstep {{ display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid
-  var(--line); align-items: baseline; }}
-.lstep:last-child {{ border-bottom: none; }}
-.lstep.skip {{ opacity: .45; }}
-.lletter {{ flex: 0 0 22px; height: 22px; border-radius: 6px; background:
-  var(--line); color: var(--ink); font-size: var(--t-meta); font-weight: 700;
-  text-align: center; line-height: 22px; align-self: flex-start; }}
-.lbody {{ flex: 1; min-width: 0; }}
-.lname {{ font-size: var(--t-label); font-weight: 600; }}
-.lchip {{ font-size: var(--t-fine); border-radius: 20px; padding: 2px 9px;
-  font-weight: 700; letter-spacing: .03em; margin-left: 8px;
-  vertical-align: 1px; white-space: nowrap; }}
-.lchip.win {{ background: color-mix(in srgb, var(--ok, #136536) 15%,
-  transparent); color: #136536; }}
-.lchip.lose {{ background: color-mix(in srgb, var(--accent) 14%, transparent);
-  color: var(--accent); }}
-.lchip.none {{ background: color-mix(in srgb, var(--dim) 14%, transparent);
-  color: var(--dim); }}
-.lchip.skip {{ background: none; border: 1px solid var(--line);
-  color: var(--dim); font-weight: 500; }}
-@media (prefers-color-scheme: dark) {{
-  :root:not([data-theme="light"]) .lchip.win {{ color: #4ade80;
-    background: color-mix(in srgb, #4ade80 14%, transparent); }}
-}}
-:root[data-theme="dark"] .lchip.win {{ color: #4ade80;
-  background: color-mix(in srgb, #4ade80 14%, transparent); }}
-.lstep .evline {{ margin: 5px 0 0; }}
-/* This page only. 1120 is a measure for prose and the Lab is not prose: it
-   is two columns of tables, one of them a list of 120 games that had 460px
-   to say "Long Island University at Kansas" in and truncated both ends of
-   it. The other tracker pages keep the site's width — several of them are
-   mostly words, and none of them cap a lone card the way the rule below
-   does, so widening them would just stretch the paragraphs. */
-:root {{ --chrome-w: 1320px }}
-main {{ max-width: var(--chrome-w); margin: 0 auto; padding: 20px;
-  display: grid; gap: 20px; }}
-main > .card, main > .cols {{ max-width: 880px; width: 100%;
-  margin: 0 auto; }}
-.duo {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 20px; align-items: start; }}
-.duo > .stack {{ display: grid; gap: 20px; align-content: start;
-  min-width: 0; }}
-@media (max-width: 1023px) {{
-  .duo {{ grid-template-columns: minmax(0, 1fr); }}
-  /* flatten the columns so cards can interleave in reading order */
-  .duo > .stack {{ display: contents; }}
-  #whatif {{ order: 1; }}
-  /* The race card answers the picker directly — "who reaches the title
-     game" — so it follows it here as it sits above the standings on the
-     wide layout, rather than being read after the table it summarizes. */
-  #clinchcard {{ order: 2; }}
-  .standcard {{ order: 3; }}
-  #teamwhy {{ order: 4; }}
-  .rules {{ order: 5; }}
-}}
-.card {{ background: var(--panel); border: 1px solid var(--line);
-  border-radius: 10px; padding: 18px 20px; }}
-.card h2 {{ margin: 0 0 10px; font-size: var(--t-copy); text-transform: uppercase;
-  letter-spacing: .06em; color: var(--dim); font-weight: 600; }}
-
-.matchup {{ display: flex; align-items: center; gap: 18px; margin: 10px 0 4px;
-  flex-wrap: wrap; }}
-.side {{ display: flex; align-items: center; gap: 12px; font-size: var(--t-headline);
-  font-weight: 700; border-bottom: 4px solid var(--line);
-  padding: 6px 10px 10px 2px; }}
-.tname {{ letter-spacing: -.01em; }}
-.vs {{ color: var(--dim); font-weight: 400; font-size: var(--t-subhead); padding: 0 6px; }}
-/* One tile, both themes — see the note on .mark in the main sheet. */
-.mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain;
-  background: #f0ede6; border-radius: 4px; padding: 2px; }}
-.nomark {{ display: inline-block; width: 16px; height: 16px;
-  line-height: 16px; text-align: center; border-radius: 4px;
-  background: color-mix(in srgb, var(--dim) 18%, transparent);
-  color: var(--dim); font-weight: 700; font-size: var(--t-meta); cursor: help; }}
-.teamcell {{ white-space: nowrap; }}
-.cbar {{ display: inline-block; width: 4px; height: 16px; border-radius: 2px;
-  margin-right: 8px; vertical-align: -2px; }}
-.seed {{ display: inline-block; background: var(--accent); color: #fff;
-  border-radius: 6px; font-size: var(--t-label); width: 22px; height: 22px;
-  line-height: 22px; text-align: center; vertical-align: 3px; margin-right: 4px; }}
-.badge {{ font-size: var(--t-fine); border-radius: 20px; padding: 2px 9px;
-  vertical-align: 1px; font-weight: 600; letter-spacing: .03em; }}
-.badge.ok {{ background: color-mix(in srgb, var(--ok) 15%, transparent); color: var(--ok); }}
-.badge.warn {{ background: color-mix(in srgb, var(--warn) 15%, transparent); color: var(--warn); }}
-.note {{ color: var(--dim); font-size: var(--t-label); margin: 6px 0 0; }}
-table {{ border-collapse: collapse; width: 100%; }}
-th, td {{ text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line);
-  font-variant-numeric: tabular-nums; }}
-th {{ font-size: var(--t-meta); text-transform: uppercase; letter-spacing: .05em;
-  color: var(--dim); }}
-.dimcell {{ color: var(--dim); }}
-tr.tie0 td {{ background: var(--tie0); }}
-tr.tie1 td {{ background: var(--tie1); }}
-tr.tie2 td {{ background: var(--tie2); }}
-tr.tie3 td {{ background: var(--tie3); }}
-sup {{ color: var(--accent); font-weight: 700; }}
-details {{ border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;
-  margin: 8px 0; background: var(--panel); }}
-summary {{ cursor: pointer; font-weight: 600; }}
-.steps {{ margin: 10px 0 4px; padding-left: 22px; }}
-.steps li {{ margin: 6px 0; font-size: var(--t-label); }}
-.steps li.seeded {{ font-weight: 700; }}
-.steps li.seeded::marker {{ font-weight: 700; }}
-.cols {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
-@media (max-width: 700px) {{ .cols {{ grid-template-columns: 1fr; }} }}
-ul.games {{ list-style: none; padding: 0; margin: 0; }}
-ul.games li {{ padding: 6px 0; border-bottom: 1px solid var(--line); font-size: var(--t-label); }}
-.dim {{ color: var(--dim); }}
-.ccgtag {{ color: var(--accent); font-weight: 700; font-size: var(--t-meta);
-  text-transform: uppercase; }}
-.rules ol {{ padding-left: 22px; }} .rules li {{ margin: 7px 0; font-size: var(--t-label); }}
-progress {{ width: 100%; height: 6px; accent-color: var(--accent); }}
-.sorter {{ font-size: var(--t-row); color: var(--dim); margin: 10px 0 6px; }}
-.sorter button {{ font: inherit; border: 1px solid var(--line); background: none;
-  color: var(--dim); border-radius: 20px; padding: 3px 12px; margin-left: 6px;
-  cursor: pointer; }}
-.sorter button.on {{ background: var(--accent); border-color: var(--accent);
-  color: #fff; }}
-.wchip {{ background: var(--accent2); color: #fff; font-size: var(--t-fine);
-  border-radius: 20px; padding: 2px 9px; font-weight: 600;
-  letter-spacing: .03em; vertical-align: 1px; text-transform: none; }}
-/* Three jobs, three groups: lay the model's chalk down, change what is on
-   screen, do something with the board. Groups wrap as units, so a narrow
-   window breaks the row where the meaning already breaks. The gap between
-   groups is the wider one. */
-.wcontrols {{ display: flex; align-items: center; gap: 8px 16px;
-  flex-wrap: wrap; margin-bottom: 10px; }}
-/* A group is atomic: the row breaks between groups rather than through the
-   middle of one. Stretch rather than center, because a native <select> lays
-   its text out on its own terms and comes out three pixels shorter than the
-   buttons beside it — a row that reads as assembled rather than designed.
-   Stretching lets the tallest control set the height and the rest meet it.
-
-   ATOMIC UNTIL IT CANNOT BE. flex:0 0 auto said "never break", and never is
-   longer than the row: the chalk group is a select and two buttons that all
-   refuse to wrap, and at 530px of card column it grew straight past the
-   card's right edge and under the race board beside it. Shrinking and
-   wrapping stay last resorts — a flex line takes whole items first, so a
-   group is only squeezed once it is alone on its line and still too wide.
-   The old max-width:520px rule said this for phones only, which was the
-   wrong measurement: what has to fit is the card, not the window. */
-.wgroup {{ display: flex; align-items: stretch; gap: 6px; flex: 0 1 auto;
-  flex-wrap: wrap; min-width: 0; }}
-.wgroup > label {{ display: flex; align-items: center; }}
-/* Same rule as the subpages'. Denser than it was and pressable rather than
-   merely bordered: a smaller label, a tighter box, a hairline of lift, and a
-   press that actually moves. Flex is scoped to button/a because a <select>
-   wears this class too and has to keep its native control box. */
-.wbtn {{ font: inherit; font-size: var(--t-row); font-weight: 600;
-  line-height: 1.5; border: 1px solid var(--line); background: var(--panel);
-  color: var(--ink); border-radius: 7px; padding: 5px 11px; cursor: pointer;
-  white-space: nowrap; }}
-button.wbtn, a.wbtn {{ display: inline-flex; align-items: center; gap: 6px;
-  text-decoration: none; box-shadow: 0 1px 0 rgba(0,0,0,.05); }}
-.wbtn:hover {{ border-color: var(--accent); background: var(--bg); }}
-button.wbtn:active {{ transform: translateY(1px); box-shadow: none; }}
-.wbtn:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
-/* Decorative like .gi, but sized to the button and coloured by the job the
-   button does rather than by what it depicts: chalk the model lays down is
-   warn — the same colour as the ★ beside a favorite in the list — anything
-   that only changes the view is accent2, and anything that acts on the board
-   itself is accent. Three colours, three meanings. */
-.bi {{ width: 14px; height: 14px; flex: 0 0 14px; color: var(--accent); }}
-.bi-chalk {{ color: var(--warn); }}
-.bi-view {{ color: var(--accent2); }}
-/* position, so a floating model strip is measured against the week it is in
-   and cannot run out to the window's edge. */
-#wgames details {{ padding: 8px 12px; position: relative; }}
-#wgames summary {{ font-size: var(--t-label); }}
-/* The week's own chalk button, in its summary. Quiet until you are on it —
-   sixteen of these down the card should not read as sixteen calls to action. */
-#wgames summary {{ display:flex; align-items:center; gap:8px }}
-.wkfav {{ margin-left:auto; font: inherit; font-size:var(--t-meta);
-  color:var(--dim); background:none; border:1px solid var(--line);
-  border-radius:999px; padding:1px 9px; cursor:pointer; line-height:1.6 }}
-.wkfav:hover {{ color:var(--accent); border-color:var(--accent) }}
-.wkfav:focus-visible {{ outline:2px solid var(--accent);
-  outline-offset:2px }}
-.wkstar {{ color: var(--warn); margin-right: 4px; }}
-/* A link that could not be applied. Stated where the picks would have been,
-   because the alternative is a board that silently is not what was sent. */
-.wurlwarn {{ border-left: 3px solid var(--warn); padding-left: 10px;
-  margin: 0 0 10px; }}
-main > *, .duo > *, .cols > * {{ min-width: 0; }}
-.tablescroll {{ overflow-x: auto; position: relative; }}
-.scrollbox {{ position: relative; }}
-.scrollbox::after {{ content: ""; position: absolute; top: 0; right: 0;
-  bottom: 0; width: 38px; pointer-events: none; opacity: 1;
-  transition: opacity .18s ease;
-  background: linear-gradient(to right, transparent, var(--panel)); }}
-.scrollbox.at-end::after {{ opacity: 0; }}
-/* No wrapping. The row was flex-wrap:wrap with pick buttons that could not
-   shrink, so "Southeast Missouri State at Iowa State" pushed the date onto a
-   second line and the list lost its rhythm. The two buttons share the space
-   and truncate — which is what the pick'em slate already does with the same
-   long names — while the tag and the date, both short and both fixed, never
-   move. */
-.wgame {{ display: flex; align-items: center; gap: 8px; padding: 5px 0;
-  border-bottom: 1px solid var(--line); }}
-.wgame .pick {{ flex: 1 1 0; min-width: 0; display: flex;
-  align-items: center; gap: 6px; overflow: hidden; }}
-.wgame .pick .nm {{ overflow: hidden; text-overflow: ellipsis;
-  white-space: nowrap; }}
-.wgame .at, .wgame .wdate, .wgame .nctag {{ flex: 0 0 auto; }}
-/* Nothing of its own: the tag, the date and the ⋮ are items of the row,
-   exactly as they were before they had a wrapper. The wrapper exists for
-   the phone rule at the bottom of this sheet, which turns it back on. */
-.wmeta {{ display: contents; }}
-/* The per-game peek. A dotted handle at the end of the row, quiet until
-   wanted — 120 of these must not read as 120 buttons. */
-.wpeek {{ flex: 0 0 auto; background: none; border: 0; padding: 0 2px;
-  cursor: pointer; color: var(--dim); font-size: var(--t-label);
-  line-height: 1; border-radius: 4px; }}
-.wpeek:hover {{ color: var(--accent); }}
-.wpeek:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
-/* One line, wrapping only when it must. Each entry is the model's name in
-   small caps and what it makes the game — no bars, no colour, nothing that
-   competes with the picker above it. */
-.wmodels {{ display: flex; flex-wrap: wrap; gap: 3px 12px;
-  margin: -2px 0 6px; padding: 5px 8px; font-size: var(--t-meta);
-  color: var(--dim); background: var(--bg); border-radius: 6px;
-  font-variant-numeric: tabular-nums; }}
-/* display:flex on the element beats the hidden attribute's UA display:none,
-   so every unopened strip was drawing its padding and background as an empty
-   grey bar under all 120 rows. */
-.wmodels[hidden] {{ display: none; }}
-/* The same strip, opened by a hover instead of by the ⋮: a layer over the
-   list rather than a row inside it. In the list it pushed every game below
-   it down by its own height, and the game a pointer was moving toward slid
-   away mid-move. Nothing here changes where anything is.
-
-   No offsets, so it keeps the static position — directly under its own row,
-   at the row's left edge — and shrink-to-fit takes the width, which is what
-   makes it read as an answer to one game rather than a band across the card.
-   pointer-events:none because it covers the next row: it must neither be
-   hoverable itself nor swallow a pick meant for the row underneath. The
-   right margin is the week's own padding: shrink-to-fit measures against the
-   padding box, so without it a six-model strip runs 12px past the end of the
-   row it belongs to. */
-.wmodels.wfloat {{ position: absolute; z-index: 5; margin: 0 12px 0 0;
-  pointer-events: none; border: 1px solid var(--line);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, .35); }}
-.wm i {{ font-style: normal; text-transform: uppercase; letter-spacing: .04em;
-  opacity: .7; margin-right: 5px; }}
-.wgame:last-child {{ border-bottom: none; }}
-.wgame .at {{ color: var(--dim); font-size: var(--t-meta); }}
-.wgame .wdate {{ color: var(--dim); font-size: var(--t-meta); margin-left: auto; }}
-.nctag {{ color: var(--dim); font-size: var(--t-micro); border: 1px solid var(--line);
-  border-radius: 20px; padding: 1px 7px; text-transform: uppercase;
-  letter-spacing: .04em; }}
-/* Holds the chip's width open on a conference row so the dates in a mixed
-   week line up. visibility, not opacity: it keeps the box and its width
-   while staying out of the accessibility tree, so nothing announces a
-   "non-conf" that isn't there. */
-.nctag.ghost {{ visibility: hidden; }}
-.tag {{ font-size: var(--t-fine); border-radius: 20px; padding: 2px 9px;
-  font-weight: 700; letter-spacing: .03em; white-space: nowrap; }}
-.tag.live {{ background: color-mix(in srgb, var(--ok, #136536) 15%,
-  transparent); color: #136536; }}
-.tag.out {{ background: color-mix(in srgb, var(--dim) 14%, transparent);
-  color: var(--dim); }}
-.tag.alive {{ background: color-mix(in srgb, var(--accent2) 14%,
-  transparent); color: var(--accent2); }}
-.tag.destiny {{ background: color-mix(in srgb, var(--warn) 15%, transparent);
-  color: var(--warn); }}
-@media (prefers-color-scheme: dark) {{
-  :root:not([data-theme="light"]) .tag.live {{ color: #4ade80;
-    background: color-mix(in srgb, #4ade80 14%, transparent); }}
-}}
-:root[data-theme="dark"] .tag.live {{ color: #4ade80;
-  background: color-mix(in srgb, #4ade80 14%, transparent); }}
-.movemain {{ display:grid; align-items:center; gap:0 10px;
-  grid-template-columns:22px minmax(110px,148px) 62px auto }}
-.movepts {{ text-align:right; font-variant-numeric:tabular-nums }}
-@media (max-width:640px) {{
-  .movemain {{ grid-template-columns:22px 1fr auto; row-gap:2px }}
-}}
-.levmain {{ display:grid; align-items:center; gap:0 10px;
-  grid-template-columns:minmax(0,1fr) auto 112px 34px }}
-.levgame {{ min-width:0; overflow:hidden; text-overflow:ellipsis;
-  white-space:nowrap }}
-.levdate {{ color:var(--dim); white-space:nowrap }}
-.levswing {{ font-size:var(--t-row); margin-top:2px }}
-@media (max-width:640px) {{
-  .levmain {{ grid-template-columns:minmax(0,1fr) auto; row-gap:3px }}
-  .levbar {{ display:none }}
-}}
-.clmain {{ display:grid; align-items:center; gap:0 10px;
-  grid-template-columns:22px minmax(110px,148px) 112px 46px auto 1fr }}
-.clteam {{ min-width:0; overflow:hidden; text-overflow:ellipsis;
-  white-space:nowrap }}
-.clpct {{ text-align:right }}
-/* The chips hold their line — a "clinched" that breaks in half is not a
-   chip any more. The record after them does not: it is the longest thing on
-   the row and the least load-bearing, so when the row runs out of width it
-   is the one that gives. Set nowrap it did the opposite, holding the whole
-   card open past the column it was sitting in. */
-.cltags {{ white-space:nowrap }}
-.clrec {{ min-width:0 }}
-/* A row is as wide as the column it sits in, not as wide as the window: in
-   the Lab this table is a 530px card on a 1280px screen. Keyed to the window,
-   the narrow layout below only ever fired on a phone — so the moment a
-   "controls own destiny" chip claimed 135px of a 488px row, the record gave
-   the way min-width:0 lets it give, collapsing its track to nothing and
-   spilling one word per line down the outside of the card. Ask the row how
-   wide it actually is. */
-.clrow {{ container-type:inline-size }}
-/* A phone, which is a different layout rather than a smaller one. */
-@media (max-width:640px) {{
-  .clmain {{ grid-template-columns:22px 1fr auto; row-gap:3px }}
-  .clbar, .clpct {{ display:none }}
-  /* The record's own line, under the team. Auto-placed it wrapped onto the
-     next row into column 1 — a 22px track cut for a logo — and rendered one
-     word per line, 250px of it, on every row of the table. */
-  .clrec {{ grid-column:2/-1 }}
-}}
-/* Anything wider than a phone, in a card too narrow for six columns. Only
-   the chips move, and only down: the bar, the percentage and the record keep
-   their columns. Nested, so a phone gets exactly one of the two rules. */
-@media (min-width:641px) {{
-  @container (max-width:620px) {{
-    .clmain {{ row-gap:2px;
-      grid-template-columns:22px minmax(90px,148px) 112px 46px minmax(0,1fr) }}
-    .clmain > .mark {{ grid-area:1/1 }}
-    .clteam {{ grid-area:1/2 }}
-    .clbar {{ grid-area:1/3 }}
-    .clpct {{ grid-area:1/4 }}
-    .clrec {{ grid-area:1/5 }}
-    .cltags {{ grid-row:2; grid-column:2/-1 }}
-    /* Most rows carry no chip, and none of them should pay for the row. */
-    .cltags:empty {{ display:none }}
-  }}
-}}
-.clrow {{ padding: 8px 0; border-bottom: 1px solid var(--line);
-  font-size: var(--t-copy); }}
-.obar {{ display: inline-block; width: 110px; height: 8px;
-  background: var(--line); border-radius: 4px; overflow: hidden;
-  vertical-align: 1px; margin: 0 6px 0 8px; }}
-.chaosband {{ display: flex; align-items: center; gap: 14px;
-  border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;
-  margin-bottom: 12px; font-size: var(--t-label); }}
-.cnum {{ font-size: var(--t-hero); font-weight: 800; line-height: 1;
-  font-variant-numeric: tabular-nums; }}
-.obar i {{ display: block; height: 100%; border-radius: 4px; }}
-.opct {{ font-variant-numeric: tabular-nums; font-size: var(--t-label); }}
-.clrow:last-of-type {{ border-bottom: none; }}
-.scen {{ margin: 6px 0 2px; padding-left: 22px; font-size: var(--t-row);
-  color: var(--dim); }}
-.scen li {{ margin: 3px 0; }}
-.elim {{ font-size: var(--t-row); margin: 10px 0 0; }}
-.pick {{ font: inherit; font-size: var(--t-row); display: inline-flex;
-  align-items: center; gap: 6px; border: 1px solid var(--line);
-  background: var(--panel); color: var(--ink); border-radius: 8px;
-  padding: 4px 10px; cursor: pointer; min-width: 150px; }}
-.pick img {{ margin: 0; }}
-.pick .star {{ color: var(--warn); font-size: var(--t-meta); margin-left: auto; }}
-.pick.sel {{ font-weight: 700; }}
-/* the result that actually happened, until you overrule it */
-.pick.stands {{ border-color: var(--dim); border-style: dashed;
-  color: var(--ink); }}
-@media (max-width: 700px) {{
-  .pick {{ flex: 1 1 40%; min-width: 0; }}
-  .wgame .wdate {{ margin-left: 0; }}
-}}
-/* A phone cannot hold a game on one line. Six items across 331px left each
-   team button 75px, and a button is a logo plus 6px of gap plus padding
-   before a letter of the name gets a look in — so the list read "N at T",
-   "E at U", every row a pair of initials. The two buttons take the line and
-   the tag, the date and the ⋮ take the next one, which is 200px a name
-   instead of 35. */
-@media (max-width: 520px) {{
-  .wgame {{ flex-wrap: wrap; row-gap: 4px; }}
-  .wmeta {{ display: flex; align-items: center; gap: 8px; flex: 1 0 100%; }}
-  /* It held a column open on a row that no longer has one to line up with. */
-  .wmeta .nctag.ghost {{ display: none; }}
-  .wgame .wdate {{ margin-left: auto; }}
-}}
+{lab_css}
 </style>
 </head>
 <body>
@@ -4425,7 +4068,7 @@ main > *, .duo > *, .cols > * {{ min-width: 0; }}
 <script src={base}{v_race}></script>
 <script src={base}{v_app}></script>
 {footer}
-<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
+{BEACON}
 </body>
 </html>
 """
@@ -4442,8 +4085,8 @@ EXPLAINER = """<!doctype html>
 <link rel=icon type=image/svg+xml href="{base}favicon.svg">
 <link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
 <link rel=apple-touch-icon href="{base}favicon-180.png">
-<script>(function(){{try{{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){{document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}else{{document.documentElement.style.colorScheme="light dark";}}}}catch(e){{}}}})();</script>
-<script>(function(){{try{{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){{return /^[A-Za-z][\w-]*$/.test(k)}}).map(function(k){{return"#"+k+">*:not(h2):not(h3){{display:none}}#"+k+"{{padding-bottom:8px}}"}}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}}catch(e){{}}}})();</script>
+{BOOT_THEME}
+{BOOT_CARDS}
 <link rel=stylesheet href="{base}{v_brand}">
 <script defer src="{base}{v_theme}"></script>
 <script src="{base}{v_state}"></script>
@@ -4457,80 +4100,7 @@ EXPLAINER = """<!doctype html>
 <meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
 <meta name=twitter:card content=summary_large_image>
 <style>
-:root {{
-  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
-  --line: #e2ddd2; --accent: #0B6E77; --accent2: #003087;
-}}
-@media (prefers-color-scheme: dark) {{
-  :root:not([data-theme="light"]) {{
-    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
-    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
-  }}
-}}
-:root[data-theme="dark"] {{
-    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
-    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
-}}
-* {{ box-sizing: border-box; }}
-body {{ margin: 0; background: var(--bg); color: var(--ink);
-  font:var(--t-subhead)/1.65 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
-
-main {{ max-width: var(--chrome-w); margin: 0 auto;
-  padding: 26px 20px 48px; }}
-main > p, main > ol, main > ul, main > h2, main > h3, main > table,
-main > .aside, main > .worked, main > .backlink {{ max-width: 840px; }}
-h2 {{ font-size: var(--t-lead); margin: 34px 0 10px; }}
-h3 {{ font-size: var(--t-subhead); margin: 22px 0 8px; }}
-p, li {{ font-size: var(--t-subhead); }}
-a {{ color: var(--accent2); }}
-.lead {{ font-size: var(--t-subhead); }}
-ol.rules > li {{ margin: 10px 0; }}
-ol.rules b {{ color: var(--ink); }}
-.aside {{ background: var(--panel); border: 1px solid var(--line);
-  border-left: 4px solid var(--accent); border-radius: 8px;
-  padding: 12px 16px; font-size: var(--t-copy); color: var(--dim); margin: 16px 0; }}
-.worked {{ background: var(--panel); border: 1px solid var(--line);
-  border-radius: 10px; padding: 18px 22px; margin: 16px 0; }}
-.worked ol {{ padding-left: 20px; }}
-.worked li {{ margin: 8px 0; font-size: var(--t-copy); }}
-.worked li.seeded {{ font-weight: 700; }}
-.worked .meta {{ color: var(--dim); font-size: var(--t-label); margin: 0 0 10px; }}
-table.models {{ border-collapse: collapse; width: 100%; margin: 12px 0; }}
-table.models th, table.models td {{ text-align: left; padding: 8px 10px;
-  border-bottom: 1px solid var(--line); font-size: var(--t-copy); vertical-align: top; }}
-table.models th {{ font-size: var(--t-meta); text-transform: uppercase;
-  letter-spacing: .05em; color: var(--dim); }}
-.backlink {{ display: inline-block; margin-top: 8px; }}
-.card {{ background: var(--panel); border: 1px solid var(--line);
-  border-radius: 10px; padding: 16px 20px; margin: 0 0 18px; }}
-.card h2 {{ margin: 0 0 8px; font-size: var(--t-label); text-transform: uppercase;
-  letter-spacing: .06em; color: var(--dim); }}
-.matchup {{ display: flex; align-items: center; gap: 18px;
-  margin: 10px 0 4px; flex-wrap: wrap; }}
-.side {{ display: flex; align-items: center; gap: 12px; font-size: var(--t-headline);
-  font-weight: 700; border-bottom: 4px solid var(--line);
-  padding: 6px 10px 10px 2px; }}
-.tname {{ letter-spacing: -.01em; }}
-.vs {{ color: var(--dim); font-weight: 400; font-size: var(--t-subhead); padding: 0 6px; }}
-.seed {{ display: inline-block; background: var(--accent); color: #fff;
-  border-radius: 6px; font-size: var(--t-label); width: 22px; height: 22px;
-  line-height: 22px; text-align: center; vertical-align: 3px;
-  margin-right: 4px; }}
-.badge {{ font-size: var(--t-fine); border-radius: 20px; padding: 2px 9px;
-  vertical-align: 1px; font-weight: 600; letter-spacing: .03em; }}
-.badge.ok {{ background: #13653626; color: #136536; }}
-.badge.warn {{ background: #b4530926; color: #b45309; }}
-/* One tile, both themes — see the note on .mark in the main sheet. */
-.mark {{ vertical-align: -3px; margin-right: 7px; object-fit: contain;
-  background: #f0ede6; border-radius: 4px; padding: 2px; }}
-.nomark {{ display: inline-block; width: 16px; height: 16px;
-  line-height: 16px; text-align: center; border-radius: 4px;
-  background: color-mix(in srgb, var(--dim) 18%, transparent);
-  color: var(--dim); font-weight: 700; font-size: var(--t-meta); cursor: help; }}
-.dim {{ color: var(--dim); }}
-.note {{ color: var(--dim); font-size: var(--t-row); }}
-
-
+{how_css}
 </style>
 </head>
 <body>
@@ -4707,7 +4277,7 @@ href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
 <a class=backlink href="./">← Back to the tracker</a>
 </main>
 {footer}
-<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "355e765d921e4b36ad2bf78d509eae6c"}}'></script>
+{BEACON}
 </body>
 </html>
 """
@@ -4717,8 +4287,8 @@ def build_explainer(year, matchcard, outdir=None):
     """Render site/how.html. The 2024 worked example is generated live by the
     rules engine from the frozen season data in history/."""
     games = json.load(open(os.path.join(HERE, "history", "games_2024.json")))
-    groups = tb.placement_groups(games)
-    order, log, resolved, _events = tb.break_tie(groups[0], games)
+    groups = engine.placement_groups(games)
+    order, log, resolved, _events = engine.break_tie(groups[0], games)
     assert resolved and order[0] == "Arizona State" and order[1] == "Iowa State", \
         "2024 worked example no longer matches the historical outcome"
     worked = "".join(
@@ -4728,6 +4298,8 @@ def build_explainer(year, matchcard, outdir=None):
     with open(out, "w") as f:
         f.write(EXPLAINER.format(
             worked_2024=worked, base=BASE,
+            how_css=HOW_CSS,
+            BOOT_THEME=BOOT_THEME, BOOT_CARDS=BOOT_CARDS, BEACON=BEACON,
             v_brand=asset_v("brand.css"),
             v_theme=asset_v("theme.js"),
         v_cards=asset_v("cards.js"),
@@ -4878,7 +4450,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     # week cost one simulation; causal leverage buys two more per tracked
     # game, so on an eight-game Saturday the duplicate is most of a minute.
     sims = ctx.get("sims") or {}
-    rows = tb.standings(games, overrides)
+    rows = engine.standings(games, overrides)
     display_rows = pad_standings(rows, games)
 
     yr = f"the {year} Big 12 season"
@@ -5073,8 +4645,8 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
             feed_mod.build_feed(games, year, systems, overrides),
             re.compile(r"<lastBuildDate>[^<]*</lastBuildDate>"))
 
-    ccg = tb.championship(games, overrides)
-    cl = clinch_mod.analyze(games, overrides)
+    ccg = engine.championship(games, overrides)
+    cl = engine.clinch_analyze(games, overrides)
     data = {
         "generated": datetime.datetime.now(datetime.timezone.utc)
             .isoformat(timespec="seconds"),

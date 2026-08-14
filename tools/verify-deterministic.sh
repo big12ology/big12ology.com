@@ -3,7 +3,7 @@
 #
 #     tools/verify-deterministic.sh
 #
-# pages.yml deploys on a cron roughly three hundred times a season, and its
+# pages.yml deploys on a cron roughly 1,800 times a season, and its
 # opening comment says the output is deterministic so the unchanged parts
 # redeploy identical bytes. Nothing has ever checked that. It is not a small
 # claim to leave unchecked: a dict that iterates in a different order, a float
@@ -35,6 +35,12 @@ fail() { printf '\n\033[31m%s\033[0m\n' "$*"; exit 1; }
 # Run it twice into copies of the tree, so the working copy is untouched
 # either way.
 cp -R "$ROOT/tiebreaker" "$TMP/tb"
+# facts.py reads ../attendance/data/attendance.csv, the only thing the build
+# opens outside tiebreaker/. Without a sibling it still builds, just smaller:
+# facts.json loses its attendance section and hub.json its numbers, and the
+# two files whose determinism is least obvious were the two not being checked.
+# Both builds were equally short, so nothing ever went red over it.
+ln -s "$ROOT/attendance" "$TMP/attendance"
 ( cd "$TMP/tb" && B12_PICKEM=1 python3 build.py >/dev/null )
 cp -R "$TMP/tb" "$TMP/tb-before"
 ( cd "$TMP/tb" && B12_PICKEM=1 python3 build.py >/dev/null )

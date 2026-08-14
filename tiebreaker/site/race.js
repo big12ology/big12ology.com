@@ -766,10 +766,30 @@
     };
   }
 
+  /* The second half of this list is for the build, not for the page.
+   *
+   * engine/cli.js loads this file under node and runs the same functions the
+   * card runs, so that the clinch proofs published at build time and the ones
+   * The Lab recomputes after a pick come from one implementation rather than
+   * two that agree by inspection. What the build needs on top of the card's
+   * own surface is the schedule primitives — nothing new is defined for it,
+   * these were already here and already reachable from computeSync.
+   *
+   * Costs the page nothing: same file, same bytes, four more properties on an
+   * object literal. The parts that exist ONLY for the build — enumeration at
+   * a budget the browser would never survive, this-week scenario prose, the
+   * bounds/exact merge — are in engine/build-only.js, outside site/, so they
+   * are never served.
+   */
   global.B12Race = {
     mount: mount, update: update, cancel: cancel, computeSync: computeSync,
     bounds: bounds, cutMembership: cutMembership, chaosIndex: chaosIndex,
     ensembleMargins: ensembleMargins, pFromMargin: pFromMargin,
     N_SIMS: N_SIMS,
+    confTeams: confTeams, remainingConf: remainingConf,
+    unplayedNonconf: unplayedNonconf,
   };
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = global.B12Race;
+  }
 })(typeof window !== "undefined" ? window : globalThis);

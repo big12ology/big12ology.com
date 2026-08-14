@@ -4,8 +4,8 @@
     tools/api-budget.py            # this month
     tools/api-budget.py 2026-09    # a specific month
 
-DERIVED, NOT LOGGED, and that is the whole design. Every CFBD call this
-project makes comes from a workflow run whose cost is known and fixed:
+DERIVED, NOT LOGGED, and that is the whole design. Most CFBD calls this
+project makes come from a workflow run whose cost is known and fixed:
 
     pages.yml            1 call   the live season's scores
       ...with --refresh  +9       four ratings, the lines, the broadcasts
@@ -13,12 +13,29 @@ project makes comes from a workflow run whose cost is known and fixed:
 
 So the ledger already exists — it is the run history — and reading it costs
 no quota, no commits and nothing in the hot path. The alternative was writing
-a file on every call and committing it back, which is ~300 commits a month of
-pure bookkeeping in a repo whose history is meant to be readable.
+a file on every call and committing it back, which is ~1,800 commits a season
+of pure bookkeeping in a repo whose history is meant to be readable.
 
 The one thing run history cannot see is a call made by hand from a laptop, so
 fetch.py appends those to data/.api-local.log (gitignored) and they are added
 here. That file is the exception, not the mechanism.
+
+SCORES.YML BREAKS THE "KNOWN AND FIXED" PART, which is why it is reported
+separately rather than folded into the total. It runs build.py --fetch about
+232 times a week in season — more often than everything else combined — but
+load_games() gates the fetch on pending_results(), so a run spends a call only
+when some game is actually inside its settling window. Most runs spend nothing.
+Counting them as one call each would forecast ~1,000 a month and cry wolf every
+day; counting them as zero is what this tool did, and it was blind to its
+largest potential consumer.
+
+So both numbers are printed: a FLOOR of the calls whose cost is known, and a
+CEILING that assumes every scores.yml run spent one. The real figure is near
+the floor on a normal week. The ceiling is not idle arithmetic — a game CFBD
+never marks completed stays pending for GIVE_UP_AFTER, which is four days
+(build.py), and every run in that window fetches. One cancelled game can put
+the month's real spend most of the way to the ceiling, and that is the case
+worth seeing early.
 
 Counts are an UPPER BOUND. A run that failed after the fetch still spent its
 call and is counted; a run that failed before it did not, and is counted
@@ -87,6 +104,12 @@ def expected(y, m, through=None):
     It deliberately does NOT model pushes. A push is a deploy nobody
     scheduled, so the gap between this and reality IS the development
     traffic, which is the thing worth being warned about.
+
+    It also deliberately does not model scores.yml, whose per-run cost is 0 or
+    1 depending on whether a game is mid-settle. Forecasting it would mean
+    inventing a multiplier, and a forecast built on a guess is worse than one
+    that says which half it covers. main() reports those runs as a ceiling
+    instead — see the module docstring.
     """
     import calendar
     last = calendar.monthrange(y, m)[1]
@@ -98,7 +121,12 @@ def expected(y, m, through=None):
             if w in (5, 6):
                 n += 24                            # hourly Sat + Sun
             if w in (0, 4, 5):
-                n += 5                             # every 2h, 00-08
+                # HOURLY, not every two hours. The cron is
+                # "0 0-8 * 8-12 1,5,6" — nine hours, nine runs. Reading it as
+                # every-2h under-counted by four a day on three days a week,
+                # about 52 a month, which showed up as a permanent ~14% "above
+                # forecast" drift on a schedule behaving exactly as designed.
+                n += 9
             n += 1                                 # daily catch-all
             if w == 1:
                 n += 1 + REFRESH_EXTRA             # Tuesday + its refresh
@@ -114,6 +142,7 @@ def main(month=None):
 
     pages = runs("pages.yml", since)
     att = runs("attendance-data.yml", since)
+    sco = runs("scores.yml", since)
 
     # WHICH RUN WAS THE REFRESH. Not the one at 12:00 UTC — GitHub delays
     # scheduled workflows under load, sometimes by hours: the Tuesday 12:00
@@ -142,9 +171,17 @@ def main(month=None):
         print(f"  {'by hand':<34} {len(manual):>5}"
               f"   ({', '.join(f'{k} x{v}' for k, v in by.most_common(3))})")
     print(f"  {'-' * 34} {'-' * 5}")
-    print(f"  {'used':<34} {used:>5}")
+    print(f"  {'used (floor)':<34} {used:>5}")
     print(f"  {'remaining of ' + str(LIMIT):<34} {LIMIT - used:>5}"
           f"   {used * 100 // LIMIT}% spent")
+
+    # The half whose cost is not fixed. Most of these spent nothing; the
+    # ceiling is what a stuck game would cost.
+    ceiling = used + len(sco)
+    if sco:
+        print(f"\n  {'scores.yml runs (0 or 1 each)':<34} {len(sco):>5}")
+        print(f"  {'used (ceiling)':<34} {ceiling:>5}"
+              f"   {ceiling * 100 // LIMIT}% of cap if every run fetched")
 
     y, m = int(month[:4]), int(month[5:7])
     full = expected(y, m)
@@ -170,6 +207,16 @@ def main(month=None):
         projected = round(full + (over / max(today.day, 1)) * span)
         if used > LIMIT:
             print(f"\n  ** OVER THE CAP: {used} of {LIMIT} **")
+        elif ceiling > LIMIT:
+            # Not "we have overspent" — "we cannot rule out overspending".
+            # The floor is fine and the fixed-cost runs are behaving; what
+            # this says is that scores.yml has polled often enough that a
+            # stuck game could have taken the rest. Worth a look at whether
+            # any game has sat pending for days.
+            print(f"\n  ** CEILING OVER THE CAP: floor {used}, ceiling "
+                  f"{ceiling} of {LIMIT} **")
+            print("     Check for a game CFBD never completed — it stays "
+                  "pending for four days and every run refetches.")
         elif drift >= 25:
             print(f"\n  ** {drift:.0f}% above forecast — at this rate the "
                   f"month lands near {projected}, cap is {LIMIT} **")
@@ -199,7 +246,10 @@ def check():
     report = buf.getvalue()
     print(report)
     for line in report.splitlines():
-        if "OVER THE CAP" in line:
+        if "CEILING OVER THE CAP" in line:
+            print(f"::warning::CFBD spend cannot be ruled out over cap — "
+                  f"{line.strip(' *')}")
+        elif "OVER THE CAP" in line:
             print(f"::error::CFBD quota exceeded — {line.strip()}")
         elif "above forecast" in line and line.strip().startswith("**"):
             print(f"::warning::CFBD spend is {line.strip(' *')}")
