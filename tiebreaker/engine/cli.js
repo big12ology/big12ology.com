@@ -46,6 +46,8 @@ const OPS = {
   clinchExact: (games, overrides, budget) =>
     build.exact(games, overrides || {}, budget),
   confTeams: (games) => build.confTeams(games),
+  remainingConf: (games) => build.remainingConf(games),
+  tangleComponent: (rows, statuses, n) => build.tangleComponent(rows, statuses, n),
   cutMembership: (games, overrides, ncf) =>
     build.cutMembership(games, overrides || {}, ncf),
   chaosIndex: (rows, clinchResult, oddsResult) =>

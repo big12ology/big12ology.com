@@ -15,7 +15,7 @@ import email.utils
 from xml.sax.saxutils import escape
 
 import engine
-import tiebreaker as tb
+import rules_lite as rules
 
 SITE_URL = "https://big12ology.com/tiebreaker/"
 FEED_URL = SITE_URL + "feed.xml"
@@ -34,20 +34,20 @@ def sort_key(iso):
 
 def game_items(games):
     """One item per completed game, with records as of that game."""
-    # tb.has_score rather than a home_points check, because everything below
-    # this line assumes both numbers. tb.winner compares them, and the two
+    # rules.has_score rather than a home_points check, because everything below
+    # this line assumes both numbers. rules.winner compares them, and the two
     # title strings print them side by side; a row with one score filled in
     # would reach all of that and raise. The feed is the worst place to learn
     # that, too — it is regenerated on every build during the games, which is
     # exactly when a half-written row is sitting in the data.
     done = sorted(
-        (g for g in games if g["completed"] and tb.has_score(g)),
+        (g for g in games if g["completed"] and rules.has_score(g)),
         key=lambda g: sort_key(g["start"]))
     conf_rec = {}
     all_rec = {}
     items = []
     for g in done:
-        w = tb.winner(g)
+        w = rules.winner(g)
         loser = None
         if w:
             loser = g["away"] if w == g["home"] else g["home"]

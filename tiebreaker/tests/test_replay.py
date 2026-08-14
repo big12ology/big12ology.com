@@ -14,9 +14,10 @@ import sys
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HERE)
 
+import engine
+import rules_lite as rules
+
 import build  # noqa: E402
-import clinch as clinch_mod  # noqa: E402
-import tiebreaker as tb  # noqa: E402
 
 FAIL = []
 
@@ -28,9 +29,9 @@ def check(cond, msg):
 
 def season(year):
     games = json.load(open(os.path.join(HERE, "data", f"games_{year}.json")))
-    overrides = tb.load_overrides()
+    overrides = rules.load_overrides()
     frames = build.season_frames(games, overrides)
-    everyone = set(clinch_mod.conf_teams(games))
+    everyone = set(engine.conf_teams(games))
 
     check(len(frames) > 1, f"{year}: expected several frames, got {len(frames)}")
     check([f["w"] for f in frames] == sorted(f["w"] for f in frames),
@@ -68,7 +69,7 @@ def season(year):
                   f"with its group size")
 
     # The final frame is the season, so it has to match the live page.
-    rows = tb.standings(games, overrides)
+    rows = engine.standings(games, overrides)
     final = {r["t"]: (r["w"], r["l"]) for r in frames[-1]["right"]}
     for r in rows:
         check(final.get(r["team"]) == (r["conf_w"], r["conf_l"]),

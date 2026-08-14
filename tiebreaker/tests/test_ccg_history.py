@@ -15,8 +15,9 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
+
+import engine
 from gen_history import season_games
-import tiebreaker as tb
 
 FIRST_CCG, LAST = 2017, 2025
 
@@ -30,7 +31,7 @@ def main():
         if not ccg:
             print(f"  [skip] {year}: no championship game in the data")
             continue
-        rows = tb.standings(games)
+        rows = engine.standings(games)
         top2 = {r["team"] for r in rows if r["rank"] <= 2}
         actual = {ccg["home"], ccg["away"]}
         checked += 1

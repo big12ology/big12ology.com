@@ -797,6 +797,10 @@
     confTeams: confTeams, remainingConf: remainingConf,
     unplayedNonconf: unplayedNonconf,
     makeRng: makeRng, ratingSigma: ratingSigma, MARGIN_SIGMA: MARGIN_SIGMA,
+    // tangleComponent on its own, because its edges are worth testing
+    // directly: an empty board is maximum tangle and a one-team conference is
+    // none, and neither of those is reachable through chaosIndex.
+    tangleComponent: tangleComponent,
   };
   if (typeof module !== "undefined" && module.exports) {
     module.exports = global.B12Race;

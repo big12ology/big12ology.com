@@ -7,11 +7,9 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
+
+import engine
 sys.path.insert(0, HERE)
-import chaos
-import clinch
-import odds
-import tiebreaker as tb
 from test_clinch import load, truncate
 
 import build
@@ -23,10 +21,10 @@ def check(cond, msg):
 
 
 def score_at(games, systems, n=800):
-    rows = tb.standings(games)
-    cl = clinch.analyze(games)
-    od = odds.simulate(games, systems, n=n)
-    return chaos.index(rows, cl, od)
+    rows = engine.standings(games)
+    cl = engine.clinch_analyze(games)
+    od = engine.simulate(games, systems, n=n)
+    return engine.chaos_index(rows, cl, od)
 
 
 def main():
@@ -67,14 +65,14 @@ def main():
     teams = {f"T{i}": "alive" for i in range(16)}
     rows_one = [{"team": "T0", "tie_group": None},
                 {"team": "T1", "tie_group": None}]
-    one = chaos.tangle_component(rows_one, teams, 16)
+    one = engine.tangle_component(rows_one, teams, 16)
     ok &= check(one > 0.8,
                 f"one game played leaves the rest tied, not untangled ({one:.2f})")
-    ok &= check(chaos.tangle_component([], teams, 16) == 1.0,
+    ok &= check(engine.tangle_component([], teams, 16) == 1.0,
                 "nothing played is still a sixteen-way tie")
     # Alone at 0-0 is tied with nobody.
     solo = {"T0": "alive"}
-    ok &= check(chaos.tangle_component([], solo, 1) == 0.0,
+    ok &= check(engine.tangle_component([], solo, 1) == 0.0,
                 "a single unplayed team is not a tie")
 
     print("OK" if ok else "FAILURES")

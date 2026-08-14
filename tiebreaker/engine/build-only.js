@@ -570,6 +570,7 @@ function causalLeverage(games, systems, overrides, gids, opts) {
 module.exports = {
   exact, scenarioTexts, analyze, chaosIndex,
   bounds: R.bounds, confTeams: R.confTeams, cutMembership: R.cutMembership,
+  remainingConf: R.remainingConf, tangleComponent: R.tangleComponent,
   regressStale, ensembleMargin, teamStrength, hfaPoints, winProbs,
   simulate, leverage, forceResult, causalLeverage,
   ratingSigma: R.ratingSigma, pFromMargin: R.pFromMargin,

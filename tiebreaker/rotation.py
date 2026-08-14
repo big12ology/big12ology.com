@@ -20,7 +20,7 @@ import json
 import os
 
 import fetch as fetcher
-import tiebreaker as tb
+import rules_lite as rules
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HIST = os.path.join(HERE, "history")
@@ -93,9 +93,9 @@ def all_time_records(years, teams, current=None):
         for g in games:
             if not g.get("conference_game") or g.get("ccg"):
                 continue
-            if not g.get("completed") or not tb.has_score(g):
+            if not g.get("completed") or not rules.has_score(g):
                 continue
-            w = tb.winner(g)
+            w = rules.winner(g)
             if w is None:
                 continue
             loser = g["away"] if w == g["home"] else g["home"]

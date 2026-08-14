@@ -16,7 +16,8 @@ import json
 import os
 
 import fetch as fetcher
-import tiebreaker as tb
+import engine
+import rules_lite as rules
 from build import esc, logo_img, tie_headline
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -81,11 +82,11 @@ def season_games(year):
 def actual_outcome(year, games):
     """(description_html, engine_agrees, diff_note) for the season."""
     ccg = next((g for g in games if g.get("ccg") and g["completed"]), None)
-    rows = tb.standings(games)
+    rows = engine.standings(games)
     eng_top2 = [r["team"] for r in rows if r["rank"] <= 2]
     if ccg:
         pair = {ccg["home"], ccg["away"]}
-        w = tb.winner(ccg)
+        w = rules.winner(ccg)
         desc = (f"Actual championship game: {esc(ccg['away'])} at "
                 f"{esc(ccg['home'])} — {esc(w)} won the title.")
         if set(eng_top2) == pair:
@@ -119,7 +120,7 @@ def actual_outcome(year, games):
 
 
 def season_section(year, games):
-    rows = tb.standings(games)
+    rows = engine.standings(games)
     if not rows:
         return "", [], None
     groups = {}
@@ -273,7 +274,7 @@ def cutline_section(all_games):
         # conf_records hands back lists; normalize, or a tuple-to-list
         # comparison below is false for every season and the whole point of
         # the page silently disappears.
-        rec = {t: tuple(v) for t, v in tb.conf_records(games).items()}
+        rec = {t: tuple(v) for t, v in engine.conf_records(games).items()}
         part = [ccg["away"], ccg["home"]]
         floor = min(rec[t] for t in part)   # the weaker record that got in
         missed = sorted(((w, -l, t) for t, (w, l) in rec.items()

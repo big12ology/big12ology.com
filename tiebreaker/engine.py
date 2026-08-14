@@ -139,6 +139,19 @@ def conf_records(games):
     return _call("confRecords", games)
 
 
+# The engine's own view of the two predicates rules_lite keeps a Python copy
+# of. Not used by the build — routing a two-integer comparison through a pipe
+# would be absurd — but tests/test_engine.py checks the copy against these over
+# every game of every committed season, so the two cannot drift.
+
+def has_score(g):
+    return _call("hasScore", g)
+
+
+def winner(g):
+    return _call("winner", g)
+
+
 def pct(w, l):
     return _call("pct", w, l)
 
@@ -161,6 +174,16 @@ def clinch_exact(games, overrides=None, budget=None):
 
 def conf_teams(games):
     return _call("confTeams", games)
+
+
+def remaining_conf(games):
+    """Unplayed conference games — what the enumeration's budget is measured
+    against, and how the tests know whether exact mode should have engaged."""
+    return _call("remainingConf", games)
+
+
+def tangle_component(rows, statuses, n_teams):
+    return _call("tangleComponent", rows, statuses, n_teams)
 
 
 def chaos_index(rows, clinch_result, odds_result):
