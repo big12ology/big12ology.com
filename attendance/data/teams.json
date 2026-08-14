@@ -166,8 +166,7 @@
    "timezone": "America/Chicago",
    "color": "#3c0969",
    "altColor": "#e2e3e4",
-   "logo": "assets/logos/ksu.svg",
-   "capacityDisputed": "K-State publishes 50,000 as its official capacity and has not changed it through seven stadium projects since 2013, including the West Stadium Center. The same athletics page lists a largest crowd of 53,811, and this tracker records 53,746 in 2014 — both above the published number. Treat 50,000 as a round figure rather than a seat count: it makes percent full read high."
+   "logo": "assets/logos/ksu.svg"
   },
   {
    "team": "Oklahoma State",

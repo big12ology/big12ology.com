@@ -387,9 +387,32 @@ async function rebuildSurvivorBoard(env, season, now) {
            -- the tests run on cannot bind ?N numbered parameters
            -- positionally, and a query only D1 can execute is a query the
            -- suite cannot check.
+           -- A SURVIVOR WEEK CLOSES AT ITS LAST KICKOFF, not its first.
+           --
+           -- This walk is what decides a missed week, and a miss is an
+           -- elimination. Survivor locks per game now (0010), so a player
+           -- with no pick on Thursday may still have until Friday afternoon —
+           -- judging the week at lock_at would put them out while they could
+           -- still legally pick, which is the one direction this must never
+           -- get wrong.
+           --
+           -- Pickable games only, matching what may be picked at all. A week
+           -- whose last game has no line closes when its last PICKABLE game
+           -- kicks off, because the lineless one was never on the card.
+           -- BOTH conditions, not just the kickoffs. lock_at is what says a
+           -- week is under way at all; the last kickoff is what says nobody
+           -- can still be choosing. In production they cannot disagree —
+           -- lock_at IS the first kickoff — but dropping the lock_at test
+           -- would let a week that was never locked be walked the moment its
+           -- games' clocks passed, and eliminate somebody on a week the pool
+           -- had not started.
            WITH locked AS (
-             SELECT week FROM weeks
-              WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?),
+             SELECT w.week FROM weeks w
+              WHERE w.season = ?
+                AND w.lock_at IS NOT NULL AND w.lock_at <= ?
+                AND (SELECT MAX(g.kickoff_at) FROM slate_games g
+                      WHERE g.season = w.season AND g.week = w.week
+                        AND g.spread_x2 IS NOT NULL) <= ?),
            entrants AS (
              SELECT user_id, MIN(week) AS entered_week
                FROM survivor_picks WHERE season = ? GROUP BY user_id),
@@ -438,8 +461,13 @@ async function rebuildSurvivorBoard(env, season, now) {
       // that ranks within it have to agree, so they read the same binding.
       // The trailing seasons are, in text order: locked, entrants, picks,
       // scores, stranded.
+      //
+      // `now` appears twice inside locked since 0010 — once for the week's own
+      // deadline and once for its last kickoff. Positional binding means a
+      // missing one silently shifts every parameter after it, so the count
+      // here and the ? count in the query have to be read together.
       .bind(season, cutoff, cutoff, now,
-            season, now, season, season, season, season),
+            season, now, now, season, season, season, season),
   ]);
 }
 

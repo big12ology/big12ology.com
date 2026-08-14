@@ -108,6 +108,43 @@ export async function entryWeek(env, season, userId, thisWeek) {
   return row && row.w != null ? row.w : thisWeek;
 }
 
+/**
+ * Below this many pickable teams, a week is not a survivor week.
+ *
+ * Survivor is a choice about which team to spend. One legal team is not a
+ * choice — it is a toll, and it is worse than that, because the pool cannot
+ * tell somebody who does not already know the rules that skipping is free.
+ *
+ * 2026 opens with exactly this: a lone week 0 game in Dublin, North Carolina
+ * at TCU, of which only TCU is a Big 12 side. A new player arriving for launch
+ * sees a survivor pool with one game and one legal pick and reasonably
+ * concludes they must take it — spending a team who is on bye the following
+ * week and hosts an FCS opponent the week after, in exchange for a seventy
+ * percent shot at a game they were not allowed to decline.
+ *
+ * Two, not one, because two is where a decision starts existing.
+ */
+export const MIN_SURVIVOR_TEAMS = 2;
+
+/**
+ * How many different teams a survivor player may choose from in one week.
+ *
+ * Not filtered by what any one player has spent — this asks whether the WEEK
+ * is a contest at all, which is the same answer for everybody. A player who
+ * has personally run out is the `stranded` case and is handled by scoring.
+ */
+export async function pickableCount(env, season, week) {
+  const { results } = await env.DB.prepare(
+    `SELECT home, away, b12 FROM slate_games
+      WHERE season = ? AND week = ? AND spread_x2 IS NOT NULL`)
+    .bind(season, week).all();
+  const teams = new Set();
+  for (const g of results || []) {
+    for (const t of [g.home, g.away]) if (isPickable(g, t)) teams.add(t);
+  }
+  return teams.size;
+}
+
 /** Teams still available to someone entering now: never chalk, never spent. */
 export async function usableFrom(env, season, week, burnedTeams) {
   const { results } = await env.DB.prepare(

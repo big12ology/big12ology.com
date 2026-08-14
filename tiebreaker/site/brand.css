@@ -116,15 +116,20 @@
    cards.js does the wiring, this does the hiding. Defined here because this
    is the one stylesheet every page loads, and the rule has to be true in all
    five places cards are generated. */
-.card > h2 .cardtoggle,
-.chart-card > h3 .cardtoggle {
+/* Heading-agnostic for the same reason the rules below are: cards.js takes
+   `:scope > h2, :scope > h3` on both kinds of card, so a .chart-card headed
+   by an h2 — which is how the attendance tracker heads all of its — matched
+   NEITHER selector and kept the browser's own button chrome. A bordered grey
+   chip where a chart title belongs. */
+.card > :is(h2, h3) .cardtoggle,
+.chart-card > :is(h2, h3) .cardtoggle {
   display: flex; align-items: center; gap: 8px; width: 100%;
   background: none; border: 0; padding: 0; margin: 0; cursor: pointer;
   font: inherit; color: inherit; letter-spacing: inherit;
   text-transform: inherit; text-align: left;
 }
-.card > h2 .cardtoggle:focus-visible,
-.chart-card > h3 .cardtoggle:focus-visible {
+.card > :is(h2, h3) .cardtoggle:focus-visible,
+.chart-card > :is(h2, h3) .cardtoggle:focus-visible {
   outline: 2px solid var(--b12-accent); outline-offset: 3px;
   border-radius: 3px;
 }
@@ -133,18 +138,35 @@
   width: 15px; height: 15px; flex: none; margin-left: auto;
   opacity: .55; transition: transform .15s ease;
 }
-.card > h2 .cardtoggle[aria-expanded="false"] .cardchev,
-.chart-card > h3 .cardtoggle[aria-expanded="false"] .cardchev {
+/* Heading-agnostic, all three of these. cards.js takes `:scope > h2, :scope
+   > h3` on BOTH .card and .chart-card, so which tag heads a card is the
+   page's choice — and these rules had it fixed the other way, h2 for .card
+   and h3 for .chart-card. Attendance heads its chart cards with h2, so its
+   chevron never turned, and worse, `.chart-card.is-collapsed > *:not(h3)`
+   matched that very h2 and hid the heading a collapsed card is supposed to
+   leave behind. The pre-paint stylesheet cards.js writes already spells it
+   `*:not(h2):not(h3)`; this now agrees with it. */
+.cardtoggle[aria-expanded="false"] .cardchev {
   transform: rotate(-90deg);
 }
 /* Everything but the heading. Not a wrapper — the card's children stay where
    the scripts that fill them expect to find them. */
-.card.is-collapsed > *:not(h2),
-.chart-card.is-collapsed > *:not(h3) { display: none !important; }
+.card.is-collapsed > *:not(h2):not(h3),
+.chart-card.is-collapsed > *:not(h2):not(h3) { display: none !important; }
 /* A collapsed card is a line, so it should not also carry the padding of a
-   full one. */
-.card.is-collapsed, .chart-card.is-collapsed { padding-bottom: 8px; }
-.card.is-collapsed > h2, .chart-card.is-collapsed > h3 { margin-bottom: 0; }
+   full one — nor the HEIGHT of one. A grid item stretches to its row by
+   default, so closing one of a pair left a card that had hidden its contents
+   correctly and then inflated to match the open card beside it: a tall empty
+   box with a title in the corner. It read as a chart that had vanished
+   rather than one that had been put away, and on the attendance tracker —
+   where the panels are built after load and the saved state is applied on
+   the second pass — it read as a chart that flashed on and then disappeared.
+   align-self covers grid and flex both; it is inert everywhere else. */
+.card.is-collapsed, .chart-card.is-collapsed {
+  padding-bottom: 8px; align-self: start;
+}
+.card.is-collapsed > :is(h2, h3),
+.chart-card.is-collapsed > :is(h2, h3) { margin-bottom: 0; }
 @media (prefers-reduced-motion: reduce) { .cardchev { transition: none; } }
 
 /* ==== the fork ==========================================================
@@ -384,6 +406,13 @@
   padding: 4px 13px; background: transparent;
 }
 .subnav a:hover { color: inherit; border-color: var(--b12-teal); }
+/* The other game, not another tab of this one. Set apart by a dashed edge and
+   pushed to the far end of the row, so the eye reads the tabs as a group and
+   this as a way out of it — the two pools games each link straight to the
+   other rather than sending a player up to /pools/ and back down. */
+.subnav a.cross { margin-left: auto; border-style: dashed;
+  color: var(--b12-teal); }
+.subnav a.cross:hover { border-style: solid; }
 .subnav a.on { background: var(--b12-teal); border-color: var(--b12-teal);
   color: #fff; }
 @media (prefers-color-scheme: dark) {

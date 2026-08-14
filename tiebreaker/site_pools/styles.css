@@ -162,8 +162,12 @@
 .pk-side img.mark { margin: 0; flex: none; }
 .pk-side .pk-tname { flex: 1; min-width: 0; overflow: hidden;
                text-overflow: ellipsis; white-space: nowrap; font-size: var(--t-label); }
+/* nowrap because this slot is a spread — two or three characters — except on
+   a non-conference side, where it says "not Big 12" and wrapped to two lines
+   in the narrower survivor card. A quantity that reflows is a quantity that
+   moves the row it sits in. */
 .pk-side .pk-num { font-variant-numeric: tabular-nums; font-size: var(--t-label);
-             font-weight: 600; }
+             font-weight: 600; white-space: nowrap; }
 .pk-side img { flex: none; }
 
 .pk-slate-game input:checked + .pk-side {
@@ -786,6 +790,61 @@
 .pk-svspent:hover { border-color: var(--line); }
 .pk-svspent .pk-num { font-weight: 400; font-size: var(--t-fine); color: var(--dim); }
 
+/* --- the matchup stacks inside the survivor card -------------------------
+   The slate's 1fr / 1.3em / 1fr sides assume a card the width of the page.
+   The survivor picker is 2.1fr of a duo and still runs two columns of games
+   inside that, so a card lands near 390px: 56 for the time, 40 for the chip,
+   and what is left splits into two sides of about a hundred pixels each.
+   "Texas Tech" came out "T." on a 1400px screen, which is the exact failure
+   the two-column slate exists to avoid.
+
+   Stacked, each side gets the whole card width and a name is a name again.
+   The card grows by one row, not by a column, so the week still fits.
+   Away above home, which is the order the joiner already reads in. */
+#svslate .pk-sides { grid-template-columns: 1fr; gap: 3px; }
+/* Aligned under the logos rather than centered, so the eye going down the
+   card meets one left edge instead of three. display is restated because the
+   narrow-screen rule drops the joiner: that was the right call when stacking
+   only happened on a phone and the space was worth more than the word, and
+   it is the wrong one now that the survivor card stacks everywhere. Without
+   it a neutral-site game and a road game are the same two names in the same
+   order — and the joiner is the only thing that ever says which. */
+#svslate .pk-at { display: block; justify-self: start; padding-left: 7px; }
+
+/* --- eliminated ----------------------------------------------------------
+   The picker is already disabled for a dead run — svRepaint has folded it
+   into `disabled` since per-game locking landed — but disabled reads as
+   "not yet" and locked reads as "not any more", and the two look identical.
+   A run that is over is a different fact from a week that has closed, and it
+   is worth saying in a way you cannot miss on the way to the games. */
+.pk-svdead { position: relative; }
+/* Grayscale rather than a lower opacity on the games themselves: the checked
+   pick paints in its team's own color, which stays bright through opacity and
+   goes on looking like a live selection. */
+.pk-svdead .pk-slate { filter: grayscale(1); opacity: .5; }
+.pk-svdead::after {
+  content: "Eliminated"; position: absolute; inset: 0;
+  display: grid; place-items: center; pointer-events: none;
+  transform: rotate(-14deg);
+  font-size: clamp(2.2rem, 7vw, 4.5rem); font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--bad) 20%, transparent);
+}
+/* Forced-colors throws away color-mix and filters both, which would leave a
+   solid word over a full-strength slate — worse than no watermark. */
+@media (forced-colors: active) {
+  .pk-svdead .pk-slate { filter: none; opacity: 1; }
+  .pk-svdead::after { content: none; }
+}
+
+/* The run's own ending, stated in the card that shows the run. */
+.pk-svend { margin: 0 0 8px; font-weight: 600; color: var(--bad); }
+/* A week you picked in after the run was already over. The server refuses
+   these now; rows that predate that check still have to render as what they
+   are, which is not part of the run. */
+.pk-svmoot { opacity: .5; }
+.pk-svnopick { color: var(--dim); font-style: italic; }
+
 /* Your run: one line per week, the same rhythm as the card's rows. */
 .pk-svrun { list-style: none; margin: 0; padding: 0; }
 .pk-svrunrow { display: flex; align-items: center; gap: 10px;
@@ -823,8 +882,11 @@
 
 /* The Run cell. Two facts on one line — when it ended and what ended it —
    with the second set back so the column still scans as a status. */
-.pk-svrun { display: inline-flex; align-items: center; gap: 6px;
-            white-space: nowrap; }
+/* How a run stands, in one leaderboard cell: "Alive", or "Out wk 4" and what
+   ended it. Renamed off .pk-svrun — that is the pick page's list, and this
+   rule was silently flattening it into one line. */
+.pk-svstate { display: inline-flex; align-items: center; gap: 6px;
+              white-space: nowrap; }
 .pk-svalive { color: var(--ok); font-weight: 600; }
 .pk-svout   { color: var(--dim); }
 .pk-svwhy   { color: var(--ink); }
@@ -853,3 +915,72 @@
 .table-wrap { border-radius: 8px; }
 .table-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
 .table-scroll > table { min-width: 100%; }
+
+/* A survivor game whose own kickoff has passed, on a week that is still open
+   elsewhere. Dimmed rather than hidden: knowing the early game is gone is
+   part of reading what is left, and removing the row would make the card
+   change shape as the afternoon went on. */
+.pk-slate-game.pk-started { opacity: .55; }
+.pk-slate-game.pk-started .pk-when::after {
+  content: " · started"; color: var(--dim); font-size: var(--t-micro);
+}
+
+/* Sixteen marks in a row: spent first and in the order they were spent, then
+   what is left. Names are dropped in favour of the marks the whole site
+   already identifies teams by — sixteen names is a paragraph, sixteen marks
+   is a glance, and the title attribute carries the name for anyone who wants
+   it. */
+.pk-roster { list-style: none; margin: 6px 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.pk-mk { display: flex; align-items: center; line-height: 0; }
+.pk-mk .mark { margin: 0; }
+/* Spent. Faded rather than removed — which teams are gone is half the answer,
+   and a row that shrank each week would stop being a roster. */
+.pk-mkspent { opacity: .28; filter: grayscale(1); }
+.pk-mkabbr { font-size: var(--t-micro); color: var(--dim); }
+/* The leaderboard's spent column. Sixteen of these can land in one table cell
+   by November, so they stay small — but not so small the logo stops being
+   recognisable, which is the entire reason this column is marks and not a
+   list of names. */
+.pk-rostersm .mark { width: 20px; height: 20px; }
+.pk-rostersm { gap: 4px; max-width: 15rem; }
+
+/* One row per opponent: who, then their marks, then how their run ended. */
+.pk-field { list-style: none; margin: 6px 0 0; padding: 0; }
+.pk-fieldrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 6px 0; border-bottom: 1px solid var(--line); }
+.pk-fieldrow:last-child { border-bottom: 0; }
+.pk-fieldname { min-width: 9rem; font-size: var(--t-row); }
+.pk-fieldout { opacity: .6; }
+.pk-fieldout .pk-fieldname { text-decoration: line-through; }
+
+/* Zero-height children still cost a grid row.
+   main is display:grid with an 18px gap, so the two live regions and the icon
+   sprite — all of them empty and 0px tall — were adding 54px of nothing
+   between the cards. It read as a mysterious gap under the lock banner.
+   NOT display:none. These are aria-live regions, and a region that is
+   display:none when its text arrives may never be announced; the sprite is
+   referenced by <use> and has to stay rendered. position:absolute takes them
+   out of the grid's flow while leaving them in the document, which is the
+   distinction that matters here. */
+.pk-savestate:empty, .pk-alertstate:empty { position: absolute; margin: 0; }
+main > svg.sprite { position: absolute; }
+
+/* The picker earns the room. Its rows carry a time, two marks, two team names
+   and a number, and at an even split the names were wrapping "not Big 12"
+   onto three lines while the roster beside it sat half empty. Roughly two to
+   one, and the roster is a column of sixteen rather than a grid. */
+@media (min-width: 980px) {
+  .pk-duo-pick { grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr); }
+}
+/* Stacked and legible rather than a strip of thumbnails: this is the list you
+   read down while deciding, so each team gets a row, its mark at a size you
+   can identify without leaning in, and its name spelled out. */
+.pk-rostercol { display: block; }
+.pk-rostercol .pk-mk { display: flex; align-items: center; gap: 9px;
+  padding: 5px 2px; border-bottom: 1px solid var(--line); line-height: 1.2; }
+.pk-rostercol .pk-mk:last-child { border-bottom: 0; }
+.pk-rostercol .mark { width: 26px; height: 26px; }
+.pk-rostercol .pk-mkname { font-size: var(--t-row); }
+.pk-rostercol .pk-mkwhen { margin-left: auto; font-size: var(--t-micro);
+  color: var(--dim); white-space: nowrap; }

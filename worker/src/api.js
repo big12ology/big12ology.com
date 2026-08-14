@@ -365,8 +365,22 @@ export async function getSurvivor(env, user, url) {
   // the picker grays out, so it cannot come from a materialised row.
   const roster = await handicap.rosterFor(env, s, user.userId, week);
 
+  // Whether this week is a contest at all — the same answer for everybody, and
+  // the client needs it to explain an empty picker rather than render one that
+  // refuses. See MIN_SURVIVOR_TEAMS.
+  const choices = await handicap.pickableCount(env, s, week);
+
   return json({
-    season: s, week, locked: isLocked(w), lock_at: w ? w.lock_at : null,
+    season: s, week,
+    // SURVIVOR'S OWN LOCK, which is not the card's. isLocked(w) is the first
+    // kickoff and shuts the pick'em; survivor stays open game by game until
+    // the last one starts, so reporting the card's deadline here would grey
+    // out games a player can still legally pick.
+    locked: await survivorWeekClosed(env, s, week),
+    lock_at: w ? w.lock_at : null,
+    pickable_teams: choices,
+    no_contest: choices < handicap.MIN_SURVIVOR_TEAMS,
+    min_teams: handicap.MIN_SURVIVOR_TEAMS,
     pick: pick || null,
     used: used || [],
     standing: standing || null,
@@ -411,7 +425,31 @@ export async function putSurvivorPick(env, user, body) {
     `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
     .bind(s, week).first();
   if (!w) return fail("no_slate", 404);
-  if (isLocked(w)) return survivorLockedNow(env, user, s, week);
+  // NOT isLocked(w). That is the pick'em's deadline — the first kickoff of the
+  // week — and survivor no longer shares it: a game that has not started is
+  // still pickable however long ago the week's opener kicked. What closes the
+  // week here is its LAST kickoff, and past that there is nothing left to
+  // choose between.
+  if (await survivorWeekClosed(env, s, week)) {
+    return survivorLockedNow(env, user, s, week);
+  }
+
+  // A week with one legal team is not a survivor week, and taking a pick on it
+  // would cost a team for a choice that was never offered. Refused here rather
+  // than by a trigger because the reason has to reach the player: the database
+  // has no way to say "this week is not a contest, and sitting it out costs
+  // you nothing".
+  //
+  // Nothing else has to change for the week to disappear. entered_week is
+  // MIN(week) over a player's own picks and the scoring walk only visits weeks
+  // at or after it, so a week nobody can pick in is a week nobody is judged
+  // on — no miss, no elimination, no special case in the recompute.
+  const choices = await handicap.pickableCount(env, s, week);
+  if (choices < handicap.MIN_SURVIVOR_TEAMS) {
+    return fail("no_contest", 409,
+                { pickable_teams: choices,
+                  min_teams: handicap.MIN_SURVIVOR_TEAMS });
+  }
 
   const standing = await env.DB.prepare(
     `SELECT alive, out_week, out_reason FROM survivor_board
@@ -430,7 +468,8 @@ export async function putSurvivorPick(env, user, body) {
           WHERE user_id = ? AND season = ? AND week = ?`)
         .bind(user.userId, s, week).run();
     } catch (e) {
-      if (/week_locked/.test(String(e.message || e))) {
+      const m = String(e.message || e);
+      if (/game_started|week_locked/.test(m)) {
         return survivorLockedNow(env, user, s, week);
       }
       throw e;
@@ -446,11 +485,18 @@ export async function putSurvivorPick(env, user, body) {
   // trigger message, and reading the slate row first also confirms the game
   // belongs to this week rather than to some other slate.
   const g = await env.DB.prepare(
-    `SELECT home, away, spread_x2, b12 FROM slate_games
+    `SELECT home, away, spread_x2, b12, kickoff_at FROM slate_games
       WHERE season = ? AND week = ? AND game_id = ?`)
     .bind(s, week, gameId).first();
   if (!g) return fail("no_such_game", 400);
   if (g.spread_x2 == null) return fail("unpickable", 400);
+  // This game specifically. survivor_locked_insert would refuse it anyway, but
+  // a trigger cannot say WHICH game had already kicked off, and with per-game
+  // locks that is the only thing the player needs to hear.
+  if (g.kickoff_at != null && g.kickoff_at <= now) {
+    return fail("game_started", 409,
+                { game_id: gameId, kickoff_at: g.kickoff_at });
+  }
   if (team !== g.home && team !== g.away) return fail("not_in_game", 400);
   // Conference teams only. A visiting non-conference side plays a Big 12 team
   // once all season, so spending one would cost nothing and the pool would be
@@ -485,6 +531,10 @@ export async function putSurvivorPick(env, user, body) {
       .bind(user.userId, s, week, gameId, team, now, now).run();
   } catch (e) {
     const msg = String(e.message || e);
+    // 0010 renamed these from week_locked to game_started. Both are matched:
+    // the string is what a database emits, not what this code chose, and a
+    // deploy that lands before its migration would otherwise 500.
+    if (/game_started/.test(msg)) return fail("game_started", 409, { game_id: gameId });
     if (/week_locked/.test(msg)) return survivorLockedNow(env, user, s, week);
     if (/survivor_team_reused/.test(msg)) return fail("team_used", 409);
     if (/survivor_not_in_game/.test(msg)) return fail("not_in_game", 400);
@@ -503,13 +553,36 @@ async function survivorLockedNow(env, user, s, week) {
 }
 
 /**
+ * When every pickable game of a week has kicked off.
+ *
+ * The moment nobody can still be choosing — which is what survivor reveal and
+ * the missed-week judgement both hang on now that picks lock per game rather
+ * than per week. isLocked() answers a different question: whether the FIRST
+ * game has started, which is when the pick'em card closes.
+ */
+async function survivorWeekClosed(env, season_, week) {
+  const row = await env.DB.prepare(
+    `SELECT MAX(kickoff_at) AS last FROM slate_games
+      WHERE season = ? AND week = ? AND spread_x2 IS NOT NULL`)
+    .bind(season_, week).first();
+  return !!(row && row.last != null &&
+            row.last <= Math.floor(Date.now() / 1000));
+}
+
+/**
  * The survivor board. Public and cacheable, same regime as the leaderboard:
  * active accounts only, recomputed by the cron, identical for every reader.
  *
- * Each row carries the player's pick for the current week ONLY once that
- * week has locked — before the lock somebody's survivor pick is exactly the
- * information the lock exists to withhold, doubly so here where a team can
- * only be spent once.
+ * Each row carries the player's pick for the current week ONLY once EVERY game
+ * of it has kicked off — before that, somebody's survivor pick is exactly the
+ * information withholding exists for, doubly so here where a team can only be
+ * spent once.
+ *
+ * THE LAST KICKOFF, NOT THE FIRST, and the difference became load-bearing with
+ * 0010. Picks lock per game now, so a player holding an open Friday game is
+ * still choosing on Thursday night; revealing the field at the first kickoff
+ * would hand them the one thing worth knowing — which teams are already spent
+ * — while they could still act on it.
  */
 export async function getSurvivorBoard(env) {
   const s = season(env);
@@ -526,10 +599,7 @@ export async function getSurvivorBoard(env) {
   const rows = results || [];
   let picks = new Map();
   if (week != null) {
-    const w = await env.DB.prepare(
-      `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
-      .bind(s, week).first();
-    if (isLocked(w)) {
+    if (await survivorWeekClosed(env, s, week)) {
       const { results: wk } = await env.DB.prepare(
         `SELECT p.user_id, p.team, s2.outcome
            FROM survivor_picks p
@@ -562,6 +632,35 @@ export async function getSurvivorBoard(env) {
                         team: k.split("|")[1], ended: n }))
     .sort((a, b) => b.ended - a.ended || a.week - b.week);
 
+  // Every team each entrant has spent, in the order they spent it.
+  //
+  // WHAT A SURVIVOR POOL IS ACTUALLY ABOUT. Which teams your rivals have
+  // already burned is the information late-season decisions turn on, and every
+  // pool that runs this game publishes it. Withholding it made this the only
+  // survivor pool where you could not see the board you were playing against.
+  //
+  // CLOSED WEEKS ONLY, which is the same rule that governs `pick` above: a
+  // week is public once nobody can still be choosing in it. Joining the two
+  // would be the leak — an open week's picks appearing here a column away from
+  // the ones deliberately withheld.
+  const { results: history } = await env.DB.prepare(
+    `WITH closed AS (
+       SELECT w.week FROM weeks w
+        WHERE w.season = ?
+          AND (SELECT MAX(g.kickoff_at) FROM slate_games g
+                WHERE g.season = w.season AND g.week = w.week
+                  AND g.spread_x2 IS NOT NULL) <= ?)
+     SELECT p.user_id, p.week, p.team
+       FROM survivor_picks p JOIN closed c ON c.week = p.week
+      WHERE p.season = ?
+      ORDER BY p.user_id, p.week`)
+    .bind(s, Math.floor(Date.now() / 1000), s).all();
+  const used = new Map();
+  for (const h of history || []) {
+    if (!used.has(h.user_id)) used.set(h.user_id, []);
+    used.get(h.user_id).push({ week: h.week, team: h.team });
+  }
+
   let alive = 0, missed = 0, unranked = 0;
   for (const r of rows) {
     if (r.alive) alive++;
@@ -577,6 +676,7 @@ export async function getSurvivorBoard(env) {
     rows: rows.map((r) => {
       const p = picks.get(r.user_id);
       return { ...r, out_team: outTeam.get(r.user_id) || null,
+               used: used.get(r.user_id) || [],
                pick: p ? { team: p.team, outcome: p.outcome } : null };
     }),
   }, 200, {

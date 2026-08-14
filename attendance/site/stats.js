@@ -31,7 +31,6 @@ export function teamsForSeason(teamsData, year) {
     // A capacity the school does publish, but that the record contradicts.
     // Unlike an estimate this is not year-scoped: the figure is disputed for
     // as long as it stands unchanged.
-    capacityDisputed: t.capacityDisputed || null,
     color: t.color,
     altColor: t.altColor,
     logo: t.logo,
@@ -53,7 +52,6 @@ export function teamSeason(team, games) {
     stadium: team.stadium,
     capacity: team.capacity,
     capacityEstimate: team.capacityEstimate,
-    capacityDisputed: team.capacityDisputed,
     color: team.color,
     logo: team.logo,
     multiVenue: played.some((g) => g.capacity != null),

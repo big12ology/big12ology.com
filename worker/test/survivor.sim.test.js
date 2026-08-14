@@ -22,7 +22,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { scoreWeek, rankedEntryBy } from "../src/scoring.js";
 import { chalkRoster, isPickable } from "../src/handicap.js";
-import { makeEnv, seedWeek, seedUser, seedSurvivorPick, forceLock, NOW, HOUR }
+import { backdateGame, makeEnv, seedWeek, seedUser, seedSurvivorPick, forceLock, NOW, HOUR }
   from "./helpers/env.js";
 
 const RUNS = Number(process.env.SIM_RUNS || 300);
@@ -80,9 +80,14 @@ function buildSeason(r) {
         game_id: gid++, home, away,
         spread_x2: hasLine ? sx : null,
         b12: hb && ab ? "both" : (hb ? "home" : "away"),
-        // Past kickoffs let an ungraded game void on the clock; future ones
-        // stay waiting, which is the state a locked-but-unplayed week is in.
-        kickoff_at: r() > 0.4 ? NOW() - 40 * HOUR : NOW() + 6 * HOUR,
+        // Every game is seeded LIVE and the stale ones are aged afterwards.
+        // Since 0010 a survivor pick is refused on a game that has already
+        // kicked off, so a fixture cannot seed the pick and the past kickoff
+        // in one step — which is the real order too. `stale` says which ones
+        // simulate() drags back, and a stale game is one that can void on the
+        // clock rather than sit waiting.
+        stale: r() > 0.4,
+        kickoff_at: NOW() + 6 * HOUR,
       });
     }
     if (games.length) weeks.push({ week: w, games });
@@ -242,6 +247,14 @@ function simulate(seed) {
     seedUser(env, p.id, { name: `Player ${p.id}` });
     for (const pk of p.picks) {
       seedSurvivorPick(env, p.id, SEASON, pk.week, pk.game_id, pk.team);
+    }
+  }
+
+  // Now age the games that were meant to be already played. Picks are in, so
+  // the per-game lock has nothing left to refuse.
+  for (const w of weeks) {
+    for (const g of w.games) {
+      if (g.stale) backdateGame(env, SEASON, w.week, g.game_id);
     }
   }
 

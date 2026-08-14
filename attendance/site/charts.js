@@ -320,6 +320,15 @@ function heatmap(cardEl, summary, season) {
   });
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  // Never wider than it was drawn. This is the one chart whose viewBox grows
+  // with the season — 128px of team names plus 36 a week — so in September it
+  // is 244 units wide and `width:100%` blew it up to fill a 380px card:
+  // sixteen team names at half again their size, which read as a broken
+  // chart rather than a short one. In November the same rule shrinks a
+  // 640-unit board to fit, which is right and stays. Capping at the natural
+  // width leaves the type one size all year and lets a young season simply
+  // be narrow.
+  svg.style.maxWidth = `${W}px`;
   svg.innerHTML = marks;
   const homeInfo = new Map(
     season.games.filter((g) => !g.role).map((g) => [`${g.team}|${g.week}`, g]));
