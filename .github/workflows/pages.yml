@@ -23,6 +23,11 @@ on:
         description: "Also refetch ratings, closing lines and TV windows (+10 CFBD calls)"
         type: boolean
         default: false
+      pools:
+        description: "Pools section (dry run only): auto follows the date, open forces it"
+        type: choice
+        options: [auto, open, teaser]
+        default: auto
   push:
     branches: [main]
   schedule:
@@ -104,10 +109,39 @@ jobs:
       # are UTC and so is this. Keep the date in step with POOLS_OPEN in
       # tiebreaker/build.py — that constant decides what the teaser says the
       # date IS, and this decides when the section actually appears.
+      # THE OVERRIDE IS FOR DRY RUNS AND NOTHING ELSE. Every path the pools
+      # section takes through this workflow — build.py with B12_PICKEM set,
+      # assemble.sh's pools branch, the CSP writer over pages that carry an
+      # app — is unreachable until the date arrives, so launch morning would
+      # otherwise be the first time any of it ran. That is a poor day to find
+      # out. `pools: open` on a dry run builds the open site, compares it
+      # against what is live and uploads dist/ for inspection, and deploys
+      # nothing.
+      #
+      # It is refused on a real deploy on purpose. POOLS_OPEN in build.py is
+      # what the teaser quotes as the date; forcing the section open without
+      # moving that constant ships a page promising the 20th directly above
+      # pools that already work. Launching early is a code change, not a
+      # checkbox.
       - name: Decide whether the pools section ships
         id: pools
+        env:
+          FORCE: ${{ inputs.pools }}
+          DEPLOYING: ${{ github.event_name != 'workflow_dispatch' || inputs.deploy }}
         run: |
-          if [ "$(date -u +%Y%m%d)" -ge 20260820 ]; then
+          if [ -n "$FORCE" ] && [ "$FORCE" != "auto" ] && [ "$DEPLOYING" = "true" ]; then
+            echo "::error::pools=$FORCE is a dry-run override. Re-run with"
+            echo "::error::Deploy unchecked, or move POOLS_OPEN in build.py"
+            echo "::error::and the date below to launch for real."
+            exit 1
+          fi
+          if [ "$FORCE" = "open" ]; then
+            echo "on=1" >> "$GITHUB_OUTPUT"
+            echo "pools: FORCED open for this dry run"
+          elif [ "$FORCE" = "teaser" ]; then
+            echo "on=" >> "$GITHUB_OUTPUT"
+            echo "pools: FORCED teaser for this dry run"
+          elif [ "$(date -u +%Y%m%d)" -ge 20260820 ]; then
             echo "on=1" >> "$GITHUB_OUTPUT"
             echo "pools: open"
           else
@@ -262,8 +296,15 @@ jobs:
         run: tools/assemble.sh dist
 
       # Dry run only: prove the assembled output is the site that is live.
+      # Not when the pools gate is overridden. compare-live.sh exits non-zero
+      # on any difference, and a forced-open build differs from the live site
+      # by every page of the section on purpose — a guaranteed red X that
+      # would hide a real one. The build succeeding through the open path is
+      # the thing being tested; the artifact below is how you look at it.
       - name: Compare against what is live
-        if: github.event_name == 'workflow_dispatch' && !inputs.deploy
+        if: >-
+          github.event_name == 'workflow_dispatch' && !inputs.deploy
+          && (inputs.pools == 'auto' || inputs.pools == '')
         run: tools/compare-live.sh dist
 
       - name: Upload dist/ for inspection
