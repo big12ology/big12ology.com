@@ -46,10 +46,31 @@ const OPS = {
   clinchExact: (games, overrides, budget) =>
     build.exact(games, overrides || {}, budget),
   confTeams: (games) => build.confTeams(games),
+  remainingConf: (games) => build.remainingConf(games),
+  tangleComponent: (rows, statuses, n) => build.tangleComponent(rows, statuses, n),
   cutMembership: (games, overrides, ncf) =>
     build.cutMembership(games, overrides || {}, ncf),
   chaosIndex: (rows, clinchResult, oddsResult) =>
     build.chaosIndex(rows, clinchResult, oddsResult),
+
+  regressStale: (systems, season) => build.regressStale(systems, season),
+  ensembleMargin: (games, systems) => build.ensembleMargin(games, systems),
+  teamStrength: (systems) => build.teamStrength(systems),
+  hfaPoints: (systems) => build.hfaPoints(systems),
+  winProbs: (games, systems) => build.winProbs(games, systems),
+  ratingSigma: (games) => build.ratingSigma(games),
+  pFromMargin: (m) => build.pFromMargin(m),
+  // The model's constants, so the page can say how it was computed without
+  // Python holding a second copy of the numbers.
+  constants: () => ({
+    N_SIMS: build.N_SIMS, SEED: build.SEED,
+    MARGIN_SIGMA: build.MARGIN_SIGMA, EXACT_BUDGET: build.EXACT_BUDGET,
+  }),
+  simulate: (games, systems, overrides, opts) =>
+    build.simulate(games, systems, overrides || {}, opts || {}),
+  leverage: (sims, games) => build.leverage(sims, games),
+  causalLeverage: (games, systems, overrides, gids, opts) =>
+    build.causalLeverage(games, systems, overrides || {}, gids || [], opts || {}),
   standings: (games, overrides) => engine.standings(games, overrides || {}),
   championship: (games, overrides) => engine.championship(games, overrides || {}),
   placementGroups: (games) => engine.placementGroups(games),

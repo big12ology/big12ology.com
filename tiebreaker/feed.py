@@ -15,8 +15,7 @@ import email.utils
 from xml.sax.saxutils import escape
 
 import engine
-import odds as odds_mod
-import tiebreaker as tb
+import rules_lite as rules
 
 SITE_URL = "https://big12ology.com/tiebreaker/"
 FEED_URL = SITE_URL + "feed.xml"
@@ -35,20 +34,20 @@ def sort_key(iso):
 
 def game_items(games):
     """One item per completed game, with records as of that game."""
-    # tb.has_score rather than a home_points check, because everything below
-    # this line assumes both numbers. tb.winner compares them, and the two
+    # rules.has_score rather than a home_points check, because everything below
+    # this line assumes both numbers. rules.winner compares them, and the two
     # title strings print them side by side; a row with one score filled in
     # would reach all of that and raise. The feed is the worst place to learn
     # that, too — it is regenerated on every build during the games, which is
     # exactly when a half-written row is sitting in the data.
     done = sorted(
-        (g for g in games if g["completed"] and tb.has_score(g)),
+        (g for g in games if g["completed"] and rules.has_score(g)),
         key=lambda g: sort_key(g["start"]))
     conf_rec = {}
     all_rec = {}
     items = []
     for g in done:
-        w = tb.winner(g)
+        w = rules.winner(g)
         loser = None
         if w:
             loser = g["away"] if w == g["home"] else g["home"]
@@ -141,7 +140,7 @@ def weekly_wraps(games, year, systems, overrides):
         # bounds-only here: exact enumeration at late-season
         # truncations would cost minutes per build
         cl = engine.clinch_analyze(snap, overrides, budget=2)
-        od = odds_mod.simulate(snap, systems, overrides, n=WRAP_SIMS)
+        od = engine.simulate(snap, systems, overrides, n=WRAP_SIMS)
         cx = engine.chaos_index(rows, cl, od)
         leaders = sorted(
             ((v["p_ccg"], t) for t, v in od.items()

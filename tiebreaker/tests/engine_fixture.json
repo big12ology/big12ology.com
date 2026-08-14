@@ -1,0 +1,2349 @@
+{
+ "_comment": "What the Python rules engine answered, recorded on 2026-08-14 from tiebreaker.py, clinch.py, odds.py and chaos.py at commit e71d36c, the last commit before they were deleted. This is the oracle test_engine.py checks site/engine.js against now that there is no second implementation to compare with. Digests are sha256 of the canonical JSON, truncated to 16 hex chars, used where the full answer is bulky (standings carry their whole narrative log for sixteen seasons); everything small enough to be read is stored in full. Regenerating this from the JavaScript would defeat its purpose: it is only evidence because it predates the port.",
+ "chaos": {
+  "2024-10-20": {
+   "components": {
+    "breadth": 1.0,
+    "entropy": 0.0,
+    "tangle": 0.9375
+   },
+   "label": "Simmering",
+   "score": 38
+  },
+  "2024-11-24": {
+   "components": {
+    "breadth": 0.5,
+    "entropy": 0.0,
+    "tangle": 0.5625
+   },
+   "label": "Orderly",
+   "score": 22
+  },
+  "2025-10-20": {
+   "components": {
+    "breadth": 1.0,
+    "entropy": 0.4619668044806778,
+    "tangle": 1.0
+   },
+   "label": "Chaotic",
+   "score": 68
+  },
+  "2025-11-24": {
+   "components": {
+    "breadth": 0.14285714285714285,
+    "entropy": 0.03292454308061225,
+    "tangle": 0.25
+   },
+   "label": "Settled",
+   "score": 10
+  }
+ },
+ "clinch": {
+  "2024-10-20": {
+   "mode": "bounds",
+   "n_outcomes": null,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 1
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 2
+    },
+    "BYU": {
+     "destiny": true,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 1
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Colorado": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 1
+    },
+    "Iowa State": {
+     "destiny": true,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 1
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 2
+    },
+    "Texas Tech": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 1
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 1
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 2
+    }
+   },
+   "week": null
+  },
+  "2024-11-10": {
+   "mode": "bounds",
+   "n_outcomes": null,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "BYU": {
+     "destiny": true,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 6
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Colorado": {
+     "destiny": true,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 2
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Texas Tech": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    }
+   },
+   "week": null
+  },
+  "2024-11-16": {
+   "mode": "bounds",
+   "n_outcomes": null,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "BYU": {
+     "destiny": true,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 6
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Colorado": {
+     "destiny": true,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 6
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Texas Tech": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    }
+   },
+   "week": null
+  },
+  "2024-11-18": {
+   "mode": "exact",
+   "n_outcomes": 65536,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "BYU": {
+     "destiny": true,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [
+      "a BYU win + Utah over Iowa State"
+     ],
+     "status": "alive",
+     "w": 6
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Colorado": {
+     "destiny": true,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [
+      "BYU over Arizona State + a Colorado win + Utah over Iowa State"
+     ],
+     "status": "alive",
+     "w": 6
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Texas Tech": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    }
+   },
+   "week": 13
+  },
+  "2024-11-24": {
+   "mode": "exact",
+   "n_outcomes": 256,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [
+      "Oklahoma State over Colorado + an Arizona State win",
+      "Kansas over Baylor + an Arizona State win",
+      "West Virginia over Texas Tech + an Arizona State win",
+      "an Arizona State win + TCU over Cincinnati",
+      "an Arizona State win + Kansas State over Iowa State",
+      "an Arizona State win + BYU over Houston"
+     ],
+     "status": "alive",
+     "w": 6
+    },
+    "BYU": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [
+      "West Virginia over Texas Tech + a BYU win",
+      "Kansas State over Iowa State + a BYU win"
+     ],
+     "status": "alive",
+     "w": 6
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Colorado": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [
+      "a Colorado win + Texas Tech over West Virginia + Arizona over Arizona State",
+      "a Colorado win + Texas Tech over West Virginia + Houston over BYU",
+      "a Colorado win + Arizona over Arizona State + Kansas State over Iowa State",
+      "a Colorado win + Arizona over Arizona State + Houston over BYU",
+      "a Colorado win + Kansas State over Iowa State + Houston over BYU"
+     ],
+     "status": "alive",
+     "w": 6
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [
+      "Arizona over Arizona State + an Iowa State win"
+     ],
+     "status": "alive",
+     "w": 6
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 4
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Texas Tech": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    }
+   },
+   "week": 14
+  },
+  "2024-12-10": {
+   "mode": "exact",
+   "n_outcomes": 1,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "clinched",
+     "w": 7
+    },
+    "BYU": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 7
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 6
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Colorado": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 7
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "clinched",
+     "w": 7
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 4
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 5
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 6
+    },
+    "Texas Tech": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 6
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 5
+    }
+   },
+   "week": null
+  },
+  "2025-10-20": {
+   "mode": "bounds",
+   "n_outcomes": null,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 1
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "BYU": {
+     "destiny": true,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 2
+    },
+    "Cincinnati": {
+     "destiny": true,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Colorado": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 1
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 2
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 2
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 2
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 2
+    },
+    "Texas Tech": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 1
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 2
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 5,
+     "scenarios": [],
+     "status": "alive",
+     "w": 0
+    }
+   },
+   "week": null
+  },
+  "2025-11-10": {
+   "mode": "bounds",
+   "n_outcomes": null,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "BYU": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Colorado": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 3
+    },
+    "Texas Tech": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 6
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 3,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "bounds",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    }
+   },
+   "week": null
+  },
+  "2025-11-16": {
+   "mode": "exact",
+   "n_outcomes": 32768,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "BYU": {
+     "destiny": true,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [
+      "TCU over Houston + a BYU win + Colorado over Arizona State"
+     ],
+     "status": "alive",
+     "w": 6
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Colorado": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Texas Tech": {
+     "destiny": true,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [
+      "TCU over Houston + BYU over Cincinnati + Colorado over Arizona State",
+      "UCF over Oklahoma State + BYU over Cincinnati + Colorado over Arizona State",
+      "Kansas State over Utah + BYU over Cincinnati + Colorado over Arizona State"
+     ],
+     "status": "alive",
+     "w": 7
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    }
+   },
+   "week": 13
+  },
+  "2025-11-18": {
+   "mode": "exact",
+   "n_outcomes": 32768,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "BYU": {
+     "destiny": true,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [
+      "TCU over Houston + a BYU win + Colorado over Arizona State"
+     ],
+     "status": "alive",
+     "w": 6
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Colorado": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 4
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Texas Tech": {
+     "destiny": true,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [
+      "TCU over Houston + BYU over Cincinnati + Colorado over Arizona State",
+      "UCF over Oklahoma State + BYU over Cincinnati + Colorado over Arizona State",
+      "Kansas State over Utah + BYU over Cincinnati + Colorado over Arizona State"
+     ],
+     "status": "alive",
+     "w": 7
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "exact",
+     "r": 2,
+     "scenarios": [],
+     "status": "alive",
+     "w": 5
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    }
+   },
+   "week": 13
+  },
+  "2025-11-24": {
+   "mode": "exact",
+   "n_outcomes": 256,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 5
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [
+      "Kansas over Utah + an Arizona State win + West Virginia over Texas Tech",
+      "Kansas over Utah + an Arizona State win + UCF over BYU",
+      "an Arizona State win + Texas Tech over West Virginia + UCF over BYU"
+     ],
+     "status": "alive",
+     "w": 6
+    },
+    "BYU": {
+     "destiny": true,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [
+      "Arizona over Arizona State",
+      "a BYU win"
+     ],
+     "status": "alive",
+     "w": 7
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 5
+    },
+    "Colorado": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 5
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 4
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 4
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 4
+    },
+    "Texas Tech": {
+     "destiny": true,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [
+      "Arizona over Arizona State",
+      "a Texas Tech win"
+     ],
+     "status": "alive",
+     "w": 7
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "alive",
+     "w": 6
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "exact",
+     "r": 1,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    }
+   },
+   "week": 14
+  },
+  "2025-12-10": {
+   "mode": "exact",
+   "n_outcomes": 1,
+   "teams": {
+    "Arizona": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 6
+    },
+    "Arizona State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 6
+    },
+    "BYU": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "clinched",
+     "w": 8
+    },
+    "Baylor": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Cincinnati": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 5
+    },
+    "Colorado": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 1
+    },
+    "Houston": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 6
+    },
+    "Iowa State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 5
+    },
+    "Kansas": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 3
+    },
+    "Kansas State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 5
+    },
+    "Oklahoma State": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 0
+    },
+    "TCU": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 5
+    },
+    "Texas Tech": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "clinched",
+     "w": 8
+    },
+    "UCF": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    },
+    "Utah": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 7
+    },
+    "West Virginia": {
+     "destiny": false,
+     "method": "exact",
+     "r": 0,
+     "scenarios": [],
+     "status": "eliminated",
+     "w": 2
+    }
+   },
+   "week": null
+  }
+ },
+ "odds": {
+  "2025": {
+   "ensemble_margin": "44136fa355b3678a",
+   "hfa_points": 2.345679012345679,
+   "rating_sigma": 3.5,
+   "regress_stale": "e7be7d424aa1b635",
+   "team_strength": "a3d306ba67db1f8a"
+  },
+  "2026": {
+   "ensemble_margin": "536c5190b6f7d2c8",
+   "hfa_points": 2.3842592592592595,
+   "rating_sigma": 7.0,
+   "regress_stale": "141f9b3e768705e9",
+   "team_strength": "98bb0823a006d568"
+  }
+ },
+ "rules": {
+  "2011": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Oklahoma State",
+    "seed2": "Kansas State"
+   },
+   "conf_records": "de286b68c718a0a5",
+   "placement_groups": [
+    [
+     "Oklahoma State"
+    ],
+    [
+     "Kansas State"
+    ],
+    [
+     "Baylor",
+     "Texas A&M"
+    ],
+    [
+     "Missouri",
+     "Oklahoma",
+     "Texas"
+    ],
+    [
+     "Iowa State"
+    ],
+    [
+     "Texas Tech"
+    ],
+    [
+     "Kansas"
+    ]
+   ],
+   "standings": "75511a198f8ceb8f"
+  },
+  "2012": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Kansas State",
+    "seed2": "Oklahoma"
+   },
+   "conf_records": "6e2e8a84bfb5b069",
+   "placement_groups": [
+    [
+     "Kansas State"
+    ],
+    [
+     "Oklahoma"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "Oklahoma State"
+    ],
+    [
+     "Baylor",
+     "TCU",
+     "Texas Tech",
+     "West Virginia"
+    ],
+    [
+     "Iowa State"
+    ],
+    [
+     "Kansas"
+    ]
+   ],
+   "standings": "70c50cb6f77927e4"
+  },
+  "2013": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Baylor",
+    "seed2": "Oklahoma"
+   },
+   "conf_records": "71577593c74b3865",
+   "placement_groups": [
+    [
+     "Baylor"
+    ],
+    [
+     "Oklahoma"
+    ],
+    [
+     "Oklahoma State"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "Kansas State"
+    ],
+    [
+     "Texas Tech"
+    ],
+    [
+     "Iowa State",
+     "TCU",
+     "West Virginia"
+    ],
+    [
+     "Kansas"
+    ]
+   ],
+   "standings": "d1657786627fd4d6"
+  },
+  "2014": {
+   "championship": {
+    "note": "Two teams tied for first: both play in the championship game; Baylor is the #1 seed by head-to-head win.",
+    "resolved": true,
+    "seed1": "Baylor",
+    "seed2": "TCU"
+   },
+   "conf_records": "842a241f29e2c7f1",
+   "placement_groups": [
+    [
+     "Baylor",
+     "TCU"
+    ],
+    [
+     "Kansas State"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "West Virginia"
+    ],
+    [
+     "Oklahoma"
+    ],
+    [
+     "Oklahoma State"
+    ],
+    [
+     "Texas Tech"
+    ],
+    [
+     "Kansas"
+    ],
+    [
+     "Iowa State"
+    ]
+   ],
+   "standings": "174edaec90373182"
+  },
+  "2015": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Oklahoma",
+    "seed2": "Oklahoma State"
+   },
+   "conf_records": "b4572b79792646d9",
+   "placement_groups": [
+    [
+     "Oklahoma"
+    ],
+    [
+     "Oklahoma State",
+     "TCU"
+    ],
+    [
+     "Baylor"
+    ],
+    [
+     "Texas Tech",
+     "West Virginia"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "Kansas State"
+    ],
+    [
+     "Iowa State"
+    ],
+    [
+     "Kansas"
+    ]
+   ],
+   "standings": "4b04456cb1a29dae"
+  },
+  "2016": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Oklahoma",
+    "seed2": "Oklahoma State"
+   },
+   "conf_records": "0bc91210224486e7",
+   "placement_groups": [
+    [
+     "Oklahoma"
+    ],
+    [
+     "Oklahoma State",
+     "West Virginia"
+    ],
+    [
+     "Kansas State"
+    ],
+    [
+     "TCU"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "Baylor",
+     "Texas Tech"
+    ],
+    [
+     "Iowa State"
+    ],
+    [
+     "Kansas"
+    ]
+   ],
+   "standings": "d962d13ebb8cc789"
+  },
+  "2017": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Oklahoma",
+    "seed2": "TCU"
+   },
+   "conf_records": "d03bbffcabac4a2c",
+   "placement_groups": [
+    [
+     "Oklahoma"
+    ],
+    [
+     "TCU"
+    ],
+    [
+     "Oklahoma State"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "Iowa State",
+     "Kansas State",
+     "West Virginia"
+    ],
+    [
+     "Texas Tech"
+    ],
+    [
+     "Baylor"
+    ],
+    [
+     "Kansas"
+    ]
+   ],
+   "standings": "a5943816aedcdf63"
+  },
+  "2018": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Oklahoma",
+    "seed2": "Texas"
+   },
+   "conf_records": "c15ff94088b77862",
+   "placement_groups": [
+    [
+     "Oklahoma"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "Iowa State",
+     "West Virginia"
+    ],
+    [
+     "Baylor",
+     "TCU"
+    ],
+    [
+     "Kansas State",
+     "Oklahoma State",
+     "Texas Tech"
+    ],
+    [
+     "Kansas"
+    ]
+   ],
+   "standings": "29f47fc4550b9dc8"
+  },
+  "2019": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Oklahoma",
+    "seed2": "Baylor"
+   },
+   "conf_records": "7447ece75e9aab45",
+   "placement_groups": [
+    [
+     "Oklahoma"
+    ],
+    [
+     "Baylor"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "Iowa State",
+     "Kansas State",
+     "Oklahoma State"
+    ],
+    [
+     "TCU",
+     "West Virginia"
+    ],
+    [
+     "Texas Tech"
+    ],
+    [
+     "Kansas"
+    ]
+   ],
+   "standings": "0966f940c571f77c"
+  },
+  "2020": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Iowa State",
+    "seed2": "Oklahoma"
+   },
+   "conf_records": "b8e172a3c716e956",
+   "placement_groups": [
+    [
+     "Iowa State"
+    ],
+    [
+     "Oklahoma"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "Oklahoma State"
+    ],
+    [
+     "TCU"
+    ],
+    [
+     "West Virginia"
+    ],
+    [
+     "Kansas State"
+    ],
+    [
+     "Texas Tech"
+    ],
+    [
+     "Baylor"
+    ],
+    [
+     "Kansas"
+    ]
+   ],
+   "standings": "ee1cff69ca9f3bd8"
+  },
+  "2021": {
+   "championship": {
+    "note": "Two teams tied for first: both play in the championship game; Baylor is the #1 seed by head-to-head win.",
+    "resolved": true,
+    "seed1": "Baylor",
+    "seed2": "Oklahoma State"
+   },
+   "conf_records": "86be3e396e67707a",
+   "placement_groups": [
+    [
+     "Baylor",
+     "Oklahoma State"
+    ],
+    [
+     "Oklahoma"
+    ],
+    [
+     "Iowa State"
+    ],
+    [
+     "Kansas State",
+     "West Virginia"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "TCU",
+     "Texas Tech"
+    ],
+    [
+     "Kansas"
+    ]
+   ],
+   "standings": "c84f89a5974987d7"
+  },
+  "2022": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "TCU",
+    "seed2": "Kansas State"
+   },
+   "conf_records": "e489cefe2b70b243",
+   "placement_groups": [
+    [
+     "TCU"
+    ],
+    [
+     "Kansas State"
+    ],
+    [
+     "Texas"
+    ],
+    [
+     "Texas Tech"
+    ],
+    [
+     "Baylor",
+     "Oklahoma State"
+    ],
+    [
+     "Oklahoma"
+    ],
+    [
+     "Kansas",
+     "West Virginia"
+    ],
+    [
+     "Iowa State"
+    ]
+   ],
+   "standings": "acfd5f83b1ee1f87"
+  },
+  "2023": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Texas",
+    "seed2": "Oklahoma State"
+   },
+   "conf_records": "c5d35c3e90b194ed",
+   "placement_groups": [
+    [
+     "Texas"
+    ],
+    [
+     "Oklahoma State"
+    ],
+    [
+     "Oklahoma"
+    ],
+    [
+     "Iowa State",
+     "Kansas State",
+     "West Virginia"
+    ],
+    [
+     "Kansas",
+     "Texas Tech"
+    ],
+    [
+     "TCU",
+     "UCF"
+    ],
+    [
+     "BYU",
+     "Baylor",
+     "Houston"
+    ],
+    [
+     "Cincinnati"
+    ]
+   ],
+   "standings": "a4e42f1d9086c5f0"
+  },
+  "2024": {
+   "championship": {
+    "note": null,
+    "resolved": true,
+    "seed1": "Arizona State",
+    "seed2": "Iowa State"
+   },
+   "conf_records": "7211359f83356095",
+   "placement_groups": [
+    [
+     "Arizona State",
+     "BYU",
+     "Colorado",
+     "Iowa State"
+    ],
+    [
+     "Baylor",
+     "TCU",
+     "Texas Tech"
+    ],
+    [
+     "Kansas State",
+     "West Virginia"
+    ],
+    [
+     "Kansas"
+    ],
+    [
+     "Cincinnati",
+     "Houston"
+    ],
+    [
+     "Arizona",
+     "UCF",
+     "Utah"
+    ],
+    [
+     "Oklahoma State"
+    ]
+   ],
+   "standings": "d88f8e164034e9d0"
+  },
+  "2025": {
+   "championship": {
+    "note": "Two teams tied for first: both play in the championship game; Texas Tech is the #1 seed by head-to-head win.",
+    "resolved": true,
+    "seed1": "Texas Tech",
+    "seed2": "BYU"
+   },
+   "conf_records": "d8eebe7428b36f6d",
+   "placement_groups": [
+    [
+     "BYU",
+     "Texas Tech"
+    ],
+    [
+     "Utah"
+    ],
+    [
+     "Arizona",
+     "Arizona State",
+     "Houston"
+    ],
+    [
+     "Cincinnati",
+     "Iowa State",
+     "Kansas State",
+     "TCU"
+    ],
+    [
+     "Baylor",
+     "Kansas"
+    ],
+    [
+     "UCF",
+     "West Virginia"
+    ],
+    [
+     "Colorado"
+    ],
+    [
+     "Oklahoma State"
+    ]
+   ],
+   "standings": "e7699d0d75b3bbfe"
+  },
+  "2026": {
+   "championship": null,
+   "conf_records": "44136fa355b3678a",
+   "placement_groups": [],
+   "standings": "4f53cda18c2baa0c"
+  },
+  "break_tie_2024": {
+   "events": [
+    {
+     "line": "(b) vs common opponents (Kansas, Kansas State, UCF, Utah): Arizona State 1.000, BYU 0.750, Colorado 0.500, Iowa State 0.750 \u2014 Arizona State seeded.",
+     "step": "b",
+     "team": "Arizona State"
+    },
+    {
+     "line": "(d) Opponents' combined conference record: BYU 31-50 (0.383), Colorado 30-51 (0.370), Iowa State 36-45 (0.444) \u2014 Iowa State seeded.",
+     "step": "d",
+     "team": "Iowa State"
+    },
+    {
+     "line": "(b) vs common opponents (Arizona, Baylor, Kansas, Kansas State, Oklahoma State, UCF, Utah): BYU 0.857, Colorado 0.714 \u2014 BYU seeded.",
+     "step": "b",
+     "team": "BYU"
+    }
+   ],
+   "log": [
+    "(a) Not all tied teams played each other and no team defeated all others \u2014 proceed to next step.",
+    "(b) vs common opponents (Kansas, Kansas State, UCF, Utah): Arizona State 1.000, BYU 0.750, Colorado 0.500, Iowa State 0.750 \u2014 Arizona State seeded.",
+    "Restarting procedure for remaining tied teams: BYU, Colorado, Iowa State.",
+    "(a) Not all tied teams played each other and no team defeated all others \u2014 proceed to next step.",
+    "(b) vs common opponents (Baylor, Kansas, Kansas State, UCF, Utah): BYU 0.800, Colorado 0.600, Iowa State 0.800 \u2014 still tied.",
+    "(c) vs [Baylor/TCU/Texas Tech]: BYU 1-0, Colorado 2-0, Iowa State 1-1 \u2014 separates some but no single leader; continuing down the standings.",
+    "(c) vs [Kansas State/West Virginia]: BYU 1-0, Colorado 0-1, Iowa State 2-0 \u2014 separates some but no single leader; continuing down the standings.",
+    "(c) Walked full standings without a single leader \u2014 proceed.",
+    "(d) Opponents' combined conference record: BYU 31-50 (0.383), Colorado 30-51 (0.370), Iowa State 36-45 (0.444) \u2014 Iowa State seeded.",
+    "Restarting procedure for remaining tied teams: BYU, Colorado.",
+    "(a) Head-to-head: BYU and Colorado did not play.",
+    "(b) vs common opponents (Arizona, Baylor, Kansas, Kansas State, Oklahoma State, UCF, Utah): BYU 0.857, Colorado 0.714 \u2014 BYU seeded."
+   ],
+   "order": [
+    "Arizona State",
+    "Iowa State",
+    "BYU",
+    "Colorado"
+   ],
+   "resolved": true
+  }
+ }
+}

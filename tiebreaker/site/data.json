@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-12T20:56:18+00:00",
+ "generated": "2026-08-14T02:49:35+00:00",
  "season": 2026,
  "standings": [],
  "championship": null,
@@ -7,15 +7,15 @@
   "away": "Arizona",
   "home": "BYU",
   "start": "2026-09-12T19:30:00.000Z",
-  "total": 0.17589999999999997,
+  "total": 0.17170000000000002,
   "pair": {
    "Arizona": [
-    0.068,
-    0.18565
+    0.0684,
+    0.1909
    ],
    "BYU": [
-    0.29345,
-    0.1249
+    0.28275,
+    0.11825
    ]
   }
  },
@@ -23,98 +23,98 @@
   "Arizona": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.1245,
-   "exp_conf_wins": 4.6974
+   "p_ccg": 0.13045,
+   "exp_conf_wins": 4.7493
   },
   "Arizona State": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.07525,
-   "exp_conf_wins": 4.4226
+   "p_ccg": 0.07635,
+   "exp_conf_wins": 4.4016
   },
   "BYU": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.23335,
-   "exp_conf_wins": 5.6836
+   "p_ccg": 0.23285,
+   "exp_conf_wins": 5.7189
   },
   "Baylor": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.06015,
-   "exp_conf_wins": 3.9058
+   "p_ccg": 0.0571,
+   "exp_conf_wins": 3.8636
   },
   "Cincinnati": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.0528,
-   "exp_conf_wins": 3.6883
+   "p_ccg": 0.05405,
+   "exp_conf_wins": 3.6757
   },
   "Colorado": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.03615,
-   "exp_conf_wins": 3.3956
+   "p_ccg": 0.0365,
+   "exp_conf_wins": 3.408
   },
   "Houston": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.08925,
-   "exp_conf_wins": 4.6719
+   "p_ccg": 0.0901,
+   "exp_conf_wins": 4.6859
   },
   "Iowa State": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.09435,
-   "exp_conf_wins": 4.6419
+   "p_ccg": 0.0935,
+   "exp_conf_wins": 4.628
   },
   "Kansas": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.066,
-   "exp_conf_wins": 4.2225
+   "p_ccg": 0.06465,
+   "exp_conf_wins": 4.2242
   },
   "Kansas State": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.11205,
-   "exp_conf_wins": 4.9164
+   "p_ccg": 0.1182,
+   "exp_conf_wins": 4.9417
   },
   "Oklahoma State": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.01045,
-   "exp_conf_wins": 2.6806
+   "p_ccg": 0.0114,
+   "exp_conf_wins": 2.6571
   },
   "TCU": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.10515,
-   "exp_conf_wins": 4.5055
+   "p_ccg": 0.10645,
+   "exp_conf_wins": 4.4822
   },
   "Texas Tech": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.5721,
-   "exp_conf_wins": 7.3536
+   "p_ccg": 0.55685,
+   "exp_conf_wins": 7.3088
   },
   "UCF": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.0558,
-   "exp_conf_wins": 3.9892
+   "p_ccg": 0.05555,
+   "exp_conf_wins": 4.0002
   },
   "Utah": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.30885,
-   "exp_conf_wins": 6.1849
+   "p_ccg": 0.3071,
+   "exp_conf_wins": 6.1654
   },
   "West Virginia": {
    "status": "alive",
    "destiny": false,
-   "p_ccg": 0.0166,
-   "exp_conf_wins": 3.0402
+   "p_ccg": 0.01955,
+   "exp_conf_wins": 3.0894
   }
  }
 }

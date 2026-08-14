@@ -49,9 +49,9 @@ import re
 # The only non-stdlib import in this file, and it is here for one three-line
 # function. Worth it: what counts as a played game has to mean the same thing
 # in the facts as it does in the standings, or the hub publishes a sentence
-# the section it links to disagrees with. See tb.has_score for what the
+# the section it links to disagrees with. See rules.has_score for what the
 # hand-rolled version of that test kept getting wrong.
-import tiebreaker as tb
+import rules_lite as rules
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
@@ -402,7 +402,7 @@ def rivalry_facts(games_by_year, year, first_year):
         # walk and the biggest-margin search below all subtract one number
         # from the other, and a rivalry game with half a score posted would
         # crash the build rather than merely skew a count.
-        played = [(y, g) for y, g in met if tb.has_score(g)]
+        played = [(y, g) for y, g in met if rules.has_score(g)]
         if not played:
             continue
 
@@ -790,7 +790,7 @@ def tiebreaker_facts(games_by_year):
         # one of them has to be out before it gets there.
         conf = [g for g in games_by_year[y]
                 if g.get("conference_game") and not g.get("ccg")
-                and tb.has_score(g)]
+                and rules.has_score(g)]
         if not conf:
             continue
         rec = collections.defaultdict(lambda: [0, 0])
@@ -863,7 +863,7 @@ def tiebreaker_facts(games_by_year):
         rec = collections.defaultdict(lambda: [0, 0])
         graded = [g for g in games_by_year[y]
                   if g.get("conference_game") and not g.get("ccg")
-                  and tb.has_score(g)]
+                  and rules.has_score(g)]
         for g in sorted(graded, key=lambda x: (x.get("start") or "", x["id"])):
             hp, ap = g["home_points"], g["away_points"]
             w, l = ((g["home"], g["away"]) if hp > ap else (g["away"], g["home"]))

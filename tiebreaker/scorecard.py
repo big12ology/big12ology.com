@@ -8,7 +8,7 @@ newer numbers than existed at kickoff. Honest label for that lives in the
 card note; the alternative (frozen weekly snapshots) needs state that the
 stateless builds don't keep.
 """
-import tiebreaker as tb
+import rules_lite as rules
 
 
 def tally(games, systems, lines=None):
@@ -23,7 +23,7 @@ def tally(games, systems, lines=None):
         for g in games:
             if not g["completed"] or g.get("ccg"):
                 continue
-            win = tb.winner(g)
+            win = rules.winner(g)
             mkt = lines.get(str(g["id"])) or {}
             # Tolerate the pre-capture shape, where the value was the
             # spread itself rather than a market record.
@@ -45,7 +45,7 @@ def tally(games, systems, lines=None):
         for g in games:
             if not g["completed"] or g.get("ccg"):
                 continue
-            win = tb.winner(g)
+            win = rules.winner(g)
             if win is None:
                 continue
             hr, ar = r.get(g["home"]), r.get(g["away"])

@@ -20,7 +20,6 @@ import zoneinfo
 import feed as feed_mod
 import facts as facts_mod
 import fetch as fetcher
-import odds as odds_mod
 import pickem as pickem_mod
 
 # The pick'em is finished enough to look at and not finished enough to ship:
@@ -41,7 +40,7 @@ import weather as weather_mod
 import rotation as rotation_mod
 import swap as swap_mod
 import engine
-import tiebreaker as tb
+import rules_lite as rules
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(HERE, "site")
@@ -120,7 +119,7 @@ def load_ratings(year):
     Rule 6, the same quantity presented the same way everywhere."""
     p = os.path.join(HERE, "data", f"ratings_{year}.json")
     raw = json.load(open(p)) if os.path.exists(p) else {"systems": {}}
-    raw["systems"] = odds_mod.regress_stale(raw.get("systems", {}), year)
+    raw["systems"] = engine.regress_stale(raw.get("systems", {}), year)
     return raw
 
 
@@ -749,11 +748,11 @@ def simulate_week(games, systems, overrides, track):
     caller that wants them, and everything walking it either checks shape or
     skips the underscore keys. Same reason simulate() puts "_n" there.
     """
-    sims = odds_mod.simulate(games, systems, overrides, track=track)
+    sims = engine.simulate(games, systems, overrides, track=track)
     if track:
-        sims["_lev"] = odds_mod.causal_leverage(
+        sims["_lev"] = engine.causal_leverage(
             games, systems, overrides, track)
-        sims["_lev_cond"] = odds_mod.leverage(sims, games)
+        sims["_lev_cond"] = engine.leverage(sims, games)
     return sims
 
 
@@ -1108,7 +1107,7 @@ def h2h_card(games, teams, stand_rows):
             where = ("N" if g.get("neutral_site")
                      else "H" if g["home"] == a else "A")
             place = {"N": "neutral site", "H": "home", "A": "away"}[where]
-            if g["completed"] and tb.has_score(g):
+            if g["completed"] and rules.has_score(g):
                 mine = g["home_points"] if g["home"] == a else g["away_points"]
                 theirs = g["away_points"] if g["home"] == a else g["home_points"]
                 won = mine > theirs
@@ -1158,9 +1157,9 @@ def pad_standings(rows, games):
         return rows
     tally = {t: {"nw": 0, "nl": 0, "ow": 0, "ol": 0} for t in missing}
     for g in games:
-        if not g["completed"] or g.get("ccg") or not tb.has_score(g):
+        if not g["completed"] or g.get("ccg") or not rules.has_score(g):
             continue
-        w = tb.winner(g)
+        w = rules.winner(g)
         if not w:
             continue
         loser = g["away"] if w == g["home"] else g["home"]
@@ -1246,7 +1245,7 @@ def season_frames(games, overrides):
     client-side implementation would."""
     weeks = sorted({g["week"] for g in games
                     if g["completed"] and g["conference_game"]
-                    and not g.get("ccg") and tb.has_score(g)})
+                    and not g.get("ccg") and rules.has_score(g)})
     everyone = sorted(engine.conf_teams(games))
     out = []
     for w in weeks:
@@ -1397,7 +1396,7 @@ def standings_page(games, overrides, display_rows, teams):
     state = ({r["t"]: r["s"] for r in frames[-1]["right"]} if frames else {})
 
     def cells(r, pos=None):
-        p = tb.pct(r["conf_w"], r["conf_l"])
+        p = rules.pct(r["conf_w"], r["conf_l"])
         c = team_color(teams, r["team"])
         st = status_class(state.get(r["team"]), pos)
         return (f"<td class='teamcell{st}'><span class=cbar "
@@ -1794,7 +1793,7 @@ def _prev_week_state(games, systems, overrides, last_week):
         if g["week"] >= last_week and not g.get("ccg"):
             g["completed"] = False
             g["home_points"] = g["away_points"] = None
-    sims = (odds_mod.simulate(prev, systems, overrides, n=4000)
+    sims = (engine.simulate(prev, systems, overrides, n=4000)
             if systems else {})
     rows = engine.standings(prev, overrides)
     cl = engine.clinch_analyze(prev, overrides, budget=2)
@@ -1807,7 +1806,7 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
     """The Brief: what changed this week. Deliberately not a second copy of
     The Race — this page is movement, not reference."""
     done = [g for g in games if g["completed"] and not g.get("ccg")
-            and tb.has_score(g)]
+            and rules.has_score(g)]
     stand_rows = engine.standings(games, overrides)
     cl = engine.clinch_analyze(games, overrides)
     cx = engine.chaos_index(stand_rows, cl, sims) if sims else None
@@ -2762,11 +2761,11 @@ def espn_link(g):
     gid = g.get("id")
     if not gid:
         return ""
-    # tb.has_score, like everywhere else, though nothing here can crash on a
+    # rules.has_score, like everywhere else, though nothing here can crash on a
     # half-scored row: this one only chooses a destination. A game whose score
     # is half in is a game ESPN has no box score for either, so it gets the
     # preview link and the plain label until both numbers land.
-    played = g["completed"] and tb.has_score(g)
+    played = g["completed"] and rules.has_score(g)
     kind = "boxscore" if played else "game"
     # Beside our own Preview link, "Game preview" twice would be two names
     # for two different things. The destination is the label.
@@ -2805,7 +2804,7 @@ def matchup(g, size=18):
     # look like — both names, no figures — so switching the test here does not
     # need a new case, it just stops the comparison below from being reached
     # with a None on one side of it.
-    if g["completed"] and tb.has_score(g):
+    if g["completed"] and rules.has_score(g):
         hw = g["home_points"] > g["away_points"]
         away = (f"{am}<b>{esc(g['away'])}</b> {g['away_points']}" if not hw
                 else f"{am}{esc(g['away'])} {g['away_points']}")
@@ -3039,7 +3038,7 @@ def build_schedule_page(games, ctx):
     upcard = (f"<div class=card><h2>The rest of the season</h2>{up}</div>"
               if up else "")
     done = [g for g in games if g["completed"]
-            and tb.has_score(g) and pk_week(g, season) != wk]
+            and rules.has_score(g) and pk_week(g, season) != wk]
     done.sort(key=lambda g: g["start"] or "", reverse=True)
     # Grouped by week and counted down from the most recent, which is the same
     # structure "the rest of the season" uses above and the only way to look a
@@ -3575,7 +3574,7 @@ def pretty_date(iso, style="short"):
 
 def game_row(g):
     hm, am = logo_img(g["home"], 16), logo_img(g["away"], 16)
-    if g["completed"] and tb.has_score(g):
+    if g["completed"] and rules.has_score(g):
         hw = g["home_points"] > g["away_points"]
         home = f"<b>{esc(g['home'])} {g['home_points']}</b>" if hw \
             else f"{esc(g['home'])} {g['home_points']}"
@@ -3650,7 +3649,7 @@ def place_and_forecast(year, games):
 
 def render(year, games):
     place_and_forecast(year, games)
-    overrides = tb.load_overrides()
+    overrides = rules.load_overrides()
     teams = load_teams()
     systems = load_ratings(year).get("systems", {})
     closing_lines = load_lines(year)
@@ -3687,9 +3686,9 @@ def render(year, games):
     display_rows = pad_standings(rows, games)
     ccg = engine.championship(games, overrides)
     reg = [g for g in games if g["conference_game"] and not g.get("ccg")]
-    played = [g for g in games if g["completed"] and tb.has_score(g)]
+    played = [g for g in games if g["completed"] and rules.has_score(g)]
     remaining = [g for g in games if not g["completed"]]
-    reg_played = [g for g in reg if g["completed"] and tb.has_score(g)]
+    reg_played = [g for g in reg if g["completed"] and rules.has_score(g)]
     now = datetime.datetime.now(datetime.timezone.utc)
 
     # -- matchup card -----------------------------------------------------
@@ -3724,7 +3723,7 @@ def render(year, games):
             tie_colors[tg] = len(tie_colors) % 4
         cls = f"tie{tie_colors[tg]}" if tg else ""
         mark = f"<sup>{list(tie_colors).index(tg) + 1}</sup>" if tg else ""
-        p = tb.pct(r["conf_w"], r["conf_l"])
+        p = rules.pct(r["conf_w"], r["conf_l"])
         c = team_color(teams, r["team"])
         body.append(
             f"<tr class='{cls}' data-rank={r['rank'] or 99} "
@@ -4341,7 +4340,7 @@ def pending_results(games, now=None):
     now = now or datetime.datetime.now(datetime.timezone.utc)
     due = []
     for g in games:
-        # tb.has_score, and of all the places that test was written the short
+        # rules.has_score, and of all the places that test was written the short
         # way this is the one where it did real damage rather than merely
         # risking a crash. A row holding one score and a null satisfied the
         # old check, so this function called the game settled and skipped it —
@@ -4350,7 +4349,7 @@ def pending_results(games, now=None):
         # half-scored until some later game in the same file happened to
         # trigger a fetch. That is precisely the "erring toward silence" the
         # docstring above rules out, arrived at by accident.
-        if g.get("completed") and tb.has_score(g):
+        if g.get("completed") and rules.has_score(g):
             continue
         start = g.get("start")
         if not start:
@@ -4442,7 +4441,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     with open(os.path.join(outdir, "lab.html"), "w") as f:
         f.write(page)
 
-    overrides = tb.load_overrides()
+    overrides = rules.load_overrides()
     systems = load_ratings(year).get("systems", {})
     # render() has just run exactly this, off the same games, the same
     # ratings and a fixed seed, so a second run is guaranteed to produce the
@@ -5081,9 +5080,9 @@ def write_forecast(year, games, systems, sims):
         "generated": datetime.datetime.now(datetime.timezone.utc)
                              .replace(microsecond=0).isoformat(),
         "model": {
-            "n_sims": odds_mod.N_SIMS,
-            "rating_sigma": round(odds_mod.rating_sigma(games), 3),
-            "margin_sigma": odds_mod.MARGIN_SIGMA,
+            "n_sims": engine.constants()["N_SIMS"],
+            "rating_sigma": round(engine.rating_sigma(games), 3),
+            "margin_sigma": engine.constants()["MARGIN_SIGMA"],
             "systems": {n: {"year": s.get("year"),
                             "regressed": s.get("regressed")}
                         for n, s in systems.items()},

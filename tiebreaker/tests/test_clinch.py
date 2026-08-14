@@ -21,8 +21,8 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
-import clinch
-import tiebreaker as tb
+
+import engine
 
 
 def load():
@@ -53,8 +53,8 @@ def main():
     results = []
     for c in cutoffs:
         snap = truncate(games, c)
-        res = clinch.analyze(snap)
-        rem = len(clinch.remaining_conf(snap))
+        res = engine.clinch_analyze(snap)
+        rem = len(engine.remaining_conf(snap))
         results.append((c, rem, res))
         print(f"{c}: {rem:2d} conf games left, mode={res['mode']}")
         for t, info in res["teams"].items():
@@ -79,7 +79,7 @@ def main():
 
     # 2. season end: exactly the CCG pair clinched, everyone else eliminated
     final = results[-1][2]
-    ccg = tb.championship(games)
+    ccg = engine.championship(games)
     pair = {ccg["seed1"], ccg["seed2"]}
     clinched = {t for t, i in final["teams"].items() if i["status"] == "clinched"}
     elim = {t for t, i in final["teams"].items() if i["status"] == "eliminated"}

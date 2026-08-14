@@ -11,7 +11,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import tiebreaker as tb
+
+import engine
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(os.path.dirname(HERE), "data")
@@ -32,16 +33,16 @@ def main():
 
     print("2024 season:")
     games = load(2024)
-    groups = tb.placement_groups(games)
+    groups = engine.placement_groups(games)
     ok &= check(len(groups[0]) == 4 and set(groups[0]) ==
                 {"Arizona State", "BYU", "Colorado", "Iowa State"},
                 f"four-way tie at top: {groups[0]}")
-    ccg = tb.championship(games)
+    ccg = engine.championship(games)
     ok &= check(ccg["seed1"] == "Arizona State",
                 f"seed1 = {ccg['seed1']} (want Arizona State)")
     ok &= check(ccg["seed2"] == "Iowa State",
                 f"seed2 = {ccg['seed2']} (want Iowa State)")
-    order, log, resolved, events = tb.break_tie(groups[0], games)
+    order, log, resolved, events = engine.break_tie(groups[0], games)
     ok &= check(all(e["team"] and e["step"] and e["line"] for e in events),
                 f"seed events populated: {[(e['team'], e['step']) for e in events]}")
     print("  tiebreaker narrative:")
@@ -51,10 +52,10 @@ def main():
 
     print("2025 season:")
     games = load(2025)
-    groups = tb.placement_groups(games)
+    groups = engine.placement_groups(games)
     ok &= check(set(groups[0]) == {"BYU", "Texas Tech"},
                 f"two-way tie at top: {groups[0]}")
-    ccg = tb.championship(games)
+    ccg = engine.championship(games)
     ok &= check(ccg["seed1"] == "Texas Tech",
                 f"seed1 = {ccg['seed1']} (want Texas Tech)")
     ok &= check(ccg["seed2"] == "BYU", f"seed2 = {ccg['seed2']} (want BYU)")
