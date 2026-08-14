@@ -42,6 +42,7 @@ import scorecard as scorecard_mod
 import weather as weather_mod
 import rotation as rotation_mod
 import swap as swap_mod
+import engine
 import tiebreaker as tb
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -1212,7 +1213,7 @@ def official_board(games, overrides, display_rows):
     if not played:
         return [{"pos": "—", "teams": [r["team"] for r in display_rows],
                  "rec": "0–0", "tied": True}]
-    ccg = tb.championship(games, overrides)
+    ccg = engine.championship(games, overrides)
     seeds = [ccg["seed1"], ccg["seed2"]] if ccg else []
     by_team = {r["team"]: r for r in display_rows}
     out = []
@@ -1263,7 +1264,7 @@ def season_frames(games, overrides):
             later["home_points"] = None
             later["away_points"] = None
             sub.append(later)
-        rows = tb.standings(sub, overrides)
+        rows = engine.standings(sub, overrides)
         display = pad_standings(rows, sub)
         seen = {r["team"] for r in display}
         display = display + [{
@@ -1797,7 +1798,7 @@ def _prev_week_state(games, systems, overrides, last_week):
             g["home_points"] = g["away_points"] = None
     sims = (odds_mod.simulate(prev, systems, overrides, n=4000)
             if systems else {})
-    rows = tb.standings(prev, overrides)
+    rows = engine.standings(prev, overrides)
     cl = clinch_mod.analyze(prev, overrides, budget=2)
     cx = chaos_mod.index(rows, cl, sims) if sims else None
     return {"sims": sims, "rows": rows, "chaos": cx, "clinch": cl["teams"]}
@@ -1809,7 +1810,7 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
     The Race — this page is movement, not reference."""
     done = [g for g in games if g["completed"] and not g.get("ccg")
             and tb.has_score(g)]
-    stand_rows = tb.standings(games, overrides)
+    stand_rows = engine.standings(games, overrides)
     cl = clinch_mod.analyze(games, overrides)
     cx = chaos_mod.index(stand_rows, cl, sims) if sims else None
     _now = datetime.datetime.now(datetime.timezone.utc)
@@ -3684,9 +3685,9 @@ def render(year, games):
     if mkt:
         favorites["Vegas"] = mkt
         models.append({"name": "Vegas", "year": None, "kind": "market"})
-    rows = tb.standings(games, overrides)
+    rows = engine.standings(games, overrides)
     display_rows = pad_standings(rows, games)
-    ccg = tb.championship(games, overrides)
+    ccg = engine.championship(games, overrides)
     reg = [g for g in games if g["conference_game"] and not g.get("ccg")]
     played = [g for g in games if g["completed"] and tb.has_score(g)]
     remaining = [g for g in games if not g["completed"]]
@@ -4288,8 +4289,8 @@ def build_explainer(year, matchcard, outdir=None):
     """Render site/how.html. The 2024 worked example is generated live by the
     rules engine from the frozen season data in history/."""
     games = json.load(open(os.path.join(HERE, "history", "games_2024.json")))
-    groups = tb.placement_groups(games)
-    order, log, resolved, _events = tb.break_tie(groups[0], games)
+    groups = engine.placement_groups(games)
+    order, log, resolved, _events = engine.break_tie(groups[0], games)
     assert resolved and order[0] == "Arizona State" and order[1] == "Iowa State", \
         "2024 worked example no longer matches the historical outcome"
     worked = "".join(
@@ -4451,7 +4452,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     # week cost one simulation; causal leverage buys two more per tracked
     # game, so on an eight-game Saturday the duplicate is most of a minute.
     sims = ctx.get("sims") or {}
-    rows = tb.standings(games, overrides)
+    rows = engine.standings(games, overrides)
     display_rows = pad_standings(rows, games)
 
     yr = f"the {year} Big 12 season"
@@ -4646,7 +4647,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
             feed_mod.build_feed(games, year, systems, overrides),
             re.compile(r"<lastBuildDate>[^<]*</lastBuildDate>"))
 
-    ccg = tb.championship(games, overrides)
+    ccg = engine.championship(games, overrides)
     cl = clinch_mod.analyze(games, overrides)
     data = {
         "generated": datetime.datetime.now(datetime.timezone.utc)

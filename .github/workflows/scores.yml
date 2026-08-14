@@ -62,6 +62,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      # build.py runs the rules out of site/engine.js — see the note in
+      # pages.yml. Pinned for the same reason, even though this workflow
+      # throws its build away: it is the one deciding which games have
+      # finished, and it publishes that to the Worker.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
       # No --refresh. Ratings and lines are the Tuesday job and they still
       # belong to pages.yml, which is the workflow that publishes the slate
       # those lines become. This one only ever asks for scores.
