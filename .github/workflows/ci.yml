@@ -4,10 +4,11 @@ name: Tests
 #
 # pages.yml rebuilds and deploys the tiebreaker ~1,800 times a season and runs no
 # tests at all; attendance-data.yml runs its own two suites, but only on its own
-# data-fetch schedule, and never on a pull request. So the ten tiebreaker tests
-# — including test_parity.py, the one thing standing between engine.js and
-# tiebreaker.py drifting apart — have been local-only, on a repo whose deploy is
-# automatic. A change could reach the live site without a single test running.
+# data-fetch schedule, and never on a pull request. So the tiebreaker tests —
+# including test_engine.py, which is now the only thing standing between the
+# rules engine and the answers it used to give — have been local-only, on a
+# repo whose deploy is automatic. A change could reach the live site without a
+# single test running.
 #
 # This workflow exists to close that. It fetches nothing, spends no CFBD quota,
 # and touches no credentials: every test here runs against committed data.
@@ -84,10 +85,31 @@ jobs:
           node --test tests/parity.test.mjs tests/render.test.mjs
           python3 -m unittest discover -s tests
 
-      # No npm install: every test here is stdlib. node:sqlite runs the real
+      # THE RULES ARE JAVASCRIPT NOW, so this is the only static analysis the
+      # most correctness-critical code on the site can have. checkJs over plain
+      # .js with JSDoc: nothing is transpiled, nothing is emitted, and the
+      # files stay the exact files the browser loads.
+      #
+      # It earned its place on the first run, on code written a day earlier:
+      # `for (const i in cond)` hands back the key as a string, so `c >> i` was
+      # shifting by "3" and getting the right answer through coercion — the
+      # same shape as the `28 > null` bug that once cost eight files across
+      # four runtimes.
+      #
+      # typescript and @types/node are pinned exactly and live in the Worker's
+      # node_modules, the only one in the repo. A red run here does not block a
+      # deploy: pages.yml has no `needs` on this workflow.
+      - name: Type-check the engine
+        run: |
+          (cd worker && npm ci --silent)
+          worker/node_modules/.bin/tsc -p tiebreaker/jsconfig.json
+
+      # The TESTS are all stdlib and install nothing: node:sqlite runs the real
       # migration and attacks its triggers, so the schema is covered without a
-      # database, a container, or a dependency to audit. wrangler is a
-      # devDependency of the deploy workflow's concern, not this one.
+      # database, a container, or a dependency to audit. (This said "no npm
+      # install" full stop until the type check above arrived. What changed is
+      # worth stating exactly: nothing the site RUNS gained a dependency, and
+      # no test needs one — tsc reads the engine and emits nothing.)
       #
       # Named files, not the directory: `node --test worker/test/` treats the
       # path as a module to load and dies before running anything — the same
