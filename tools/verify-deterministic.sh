@@ -3,7 +3,7 @@
 #
 #     tools/verify-deterministic.sh
 #
-# pages.yml deploys on a cron roughly three hundred times a season, and its
+# pages.yml deploys on a cron roughly 1,800 times a season, and its
 # opening comment says the output is deterministic so the unchanged parts
 # redeploy identical bytes. Nothing has ever checked that. It is not a small
 # claim to leave unchecked: a dict that iterates in a different order, a float

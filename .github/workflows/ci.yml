@@ -2,7 +2,7 @@ name: Tests
 
 # The tests, on every change — which until now nothing did.
 #
-# pages.yml rebuilds and deploys the tiebreaker ~300 times a season and runs no
+# pages.yml rebuilds and deploys the tiebreaker ~1,800 times a season and runs no
 # tests at all; attendance-data.yml runs its own two suites, but only on its own
 # data-fetch schedule, and never on a pull request. So the ten tiebreaker tests
 # — including test_parity.py, the one thing standing between engine.js and
@@ -213,7 +213,7 @@ jobs:
           # build publishes the same ones.
           tools/verify-consistency.py dist
 
-      # pages.yml redeploys on a cron roughly three hundred times a season and
+      # pages.yml redeploys on a cron roughly 1,800 times a season and
       # its opening comment says unchanged content produces identical bytes.
       # That is load-bearing — it is what makes an actual change visible — and
       # nothing checked it until a rebuild was found rewriting data.json and
