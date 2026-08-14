@@ -17,7 +17,7 @@ Probabilities come from odds.p_from_margin and strengths from
 odds.team_strength, so this page and the championship odds cannot disagree
 about who is better than whom.
 """
-import odds
+import engine
 
 
 def slates(games):
@@ -47,7 +47,7 @@ def expected_wins(team, slate, strength, hfa, owner=None):
         os_ = strength.get(opp)
         if os_ is None:
             continue
-        total += odds.p_from_margin(st - os_ + (hfa if home else -hfa))
+        total += engine.p_from_margin(st - os_ + (hfa if home else -hfa))
     return total
 
 
@@ -60,8 +60,8 @@ def matrix(games, systems, teams=None):
     sl = slates(games)
     if not systems or not sl:
         return {}, []
-    strength = odds.team_strength(systems)
-    hfa = odds.hfa_points(systems)
+    strength = engine.team_strength(systems)
+    hfa = engine.hfa_points(systems)
     names = sorted(t for t in (teams or sl) if t in sl and t in strength)
 
     m = {t: {} for t in names}

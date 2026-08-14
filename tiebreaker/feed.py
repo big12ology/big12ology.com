@@ -15,7 +15,6 @@ import email.utils
 from xml.sax.saxutils import escape
 
 import engine
-import odds as odds_mod
 import tiebreaker as tb
 
 SITE_URL = "https://big12ology.com/tiebreaker/"
@@ -141,7 +140,7 @@ def weekly_wraps(games, year, systems, overrides):
         # bounds-only here: exact enumeration at late-season
         # truncations would cost minutes per build
         cl = engine.clinch_analyze(snap, overrides, budget=2)
-        od = odds_mod.simulate(snap, systems, overrides, n=WRAP_SIMS)
+        od = engine.simulate(snap, systems, overrides, n=WRAP_SIMS)
         cx = engine.chaos_index(rows, cl, od)
         leaders = sorted(
             ((v["p_ccg"], t) for t, v in od.items()

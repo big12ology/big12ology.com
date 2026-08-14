@@ -20,7 +20,6 @@ import zoneinfo
 import feed as feed_mod
 import facts as facts_mod
 import fetch as fetcher
-import odds as odds_mod
 import pickem as pickem_mod
 
 # The pick'em is finished enough to look at and not finished enough to ship:
@@ -120,7 +119,7 @@ def load_ratings(year):
     Rule 6, the same quantity presented the same way everywhere."""
     p = os.path.join(HERE, "data", f"ratings_{year}.json")
     raw = json.load(open(p)) if os.path.exists(p) else {"systems": {}}
-    raw["systems"] = odds_mod.regress_stale(raw.get("systems", {}), year)
+    raw["systems"] = engine.regress_stale(raw.get("systems", {}), year)
     return raw
 
 
@@ -749,11 +748,11 @@ def simulate_week(games, systems, overrides, track):
     caller that wants them, and everything walking it either checks shape or
     skips the underscore keys. Same reason simulate() puts "_n" there.
     """
-    sims = odds_mod.simulate(games, systems, overrides, track=track)
+    sims = engine.simulate(games, systems, overrides, track=track)
     if track:
-        sims["_lev"] = odds_mod.causal_leverage(
+        sims["_lev"] = engine.causal_leverage(
             games, systems, overrides, track)
-        sims["_lev_cond"] = odds_mod.leverage(sims, games)
+        sims["_lev_cond"] = engine.leverage(sims, games)
     return sims
 
 
@@ -1794,7 +1793,7 @@ def _prev_week_state(games, systems, overrides, last_week):
         if g["week"] >= last_week and not g.get("ccg"):
             g["completed"] = False
             g["home_points"] = g["away_points"] = None
-    sims = (odds_mod.simulate(prev, systems, overrides, n=4000)
+    sims = (engine.simulate(prev, systems, overrides, n=4000)
             if systems else {})
     rows = engine.standings(prev, overrides)
     cl = engine.clinch_analyze(prev, overrides, budget=2)
@@ -5081,9 +5080,9 @@ def write_forecast(year, games, systems, sims):
         "generated": datetime.datetime.now(datetime.timezone.utc)
                              .replace(microsecond=0).isoformat(),
         "model": {
-            "n_sims": odds_mod.N_SIMS,
-            "rating_sigma": round(odds_mod.rating_sigma(games), 3),
-            "margin_sigma": odds_mod.MARGIN_SIGMA,
+            "n_sims": engine.constants()["N_SIMS"],
+            "rating_sigma": round(engine.rating_sigma(games), 3),
+            "margin_sigma": engine.constants()["MARGIN_SIGMA"],
             "systems": {n: {"year": s.get("year"),
                             "regressed": s.get("regressed")}
                         for n, s in systems.items()},

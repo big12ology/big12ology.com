@@ -772,14 +772,22 @@
    * card runs, so that the clinch proofs published at build time and the ones
    * The Lab recomputes after a pick come from one implementation rather than
    * two that agree by inspection. What the build needs on top of the card's
-   * own surface is the schedule primitives — nothing new is defined for it,
-   * these were already here and already reachable from computeSync.
+   * own surface is the schedule primitives, the random stream and the model's
+   * own constants — nothing new is defined for any of it, these were already
+   * here and already reachable from computeSync.
    *
-   * Costs the page nothing: same file, same bytes, four more properties on an
+   * THE RANDOM STREAM IS THE IMPORTANT ONE. The build runs this simulation,
+   * not a second one that agrees with it, so it takes makeRng — mulberry32
+   * with Marsaglia polar normals — and ratingSigma rather than owning a pair
+   * of its own. Restated on the build's side they would drift apart in the way
+   * that is hardest to notice: both plausible, neither wrong-looking, quietly
+   * different numbers on two pages about the same season.
+   *
+   * Costs the page nothing: same file, same bytes, a few more properties on an
    * object literal. The parts that exist ONLY for the build — enumeration at
    * a budget the browser would never survive, this-week scenario prose, the
-   * bounds/exact merge — are in engine/build-only.js, outside site/, so they
-   * are never served.
+   * bounds/exact merge, leverage measured by asserting a result twice — are in
+   * engine/build-only.js, outside site/, so they are never served.
    */
   global.B12Race = {
     mount: mount, update: update, cancel: cancel, computeSync: computeSync,
@@ -788,6 +796,7 @@
     N_SIMS: N_SIMS,
     confTeams: confTeams, remainingConf: remainingConf,
     unplayedNonconf: unplayedNonconf,
+    makeRng: makeRng, ratingSigma: ratingSigma, MARGIN_SIGMA: MARGIN_SIGMA,
   };
   if (typeof module !== "undefined" && module.exports) {
     module.exports = global.B12Race;

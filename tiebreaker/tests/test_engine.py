@@ -143,6 +143,92 @@ for year, cut in ((2024, "2024-10-20"), (2024, "2024-11-24"),
     check(f"chaos {cut}", engine.chaos_index(rows, cl, sims),
           chaos.index(rows, cl, sims))
 
+
+# --- odds: the deterministic half must be exact ------------------------------
+# Everything up to the first random draw is arithmetic over the ratings, and
+# arithmetic does not get a tolerance. If a margin moves here the simulation is
+# sampling a different model, and no amount of agreement downstream would mean
+# anything.
+def near(a, b, tol):
+    if isinstance(a, dict):
+        return set(a) == set(b) and all(near(a[k], b[k], tol) for k in a)
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        return abs(a - b) <= tol * max(1.0, abs(a), abs(b))
+    return a == b
+
+
+for year in (2025, 2026):
+    games, sysd = load(year), ratings(year)
+    reg = odds.regress_stale(sysd, year)
+    check(f"{year} regress_stale", engine.regress_stale(sysd, year), reg)
+    check(f"{year} team_strength", engine.team_strength(reg), odds.team_strength(reg))
+    check(f"{year} hfa_points", engine.hfa_points(reg), odds.hfa_points(reg))
+    check(f"{year} ensemble_margin",
+          engine.ensemble_margin(games, reg), odds.ensemble_margin(games, reg))
+    check(f"{year} rating_sigma",
+          engine.rating_sigma(games), odds.rating_sigma(games))
+    # The one deterministic figure allowed to move: math.erf became Abramowitz
+    # & Stegun 7.1.26, whose stated error is 1.5e-7. Held an order of magnitude
+    # inside that, so a real divergence cannot hide under the allowance.
+    a, b = engine.win_probs(games, reg), odds.win_probs(games, reg)
+    if not near(a, b, 1e-6):
+        fails.append(f"{year} win_probs moved further than the erf bound")
+
+# --- odds: the sampled half, on its own terms --------------------------------
+# It cannot be compared to Python's numbers — different generator, different
+# sample — so it is held to the properties that must be true of any correct
+# run. These are test_odds.py's invariants, moved here because this is what
+# publishes now.
+games2026 = load(2026)
+reg2026 = odds.regress_stale(ratings(2026), 2026)
+sims = engine.simulate(games2026, reg2026, {}, n=2000)
+probs = [v["p_ccg"] for t, v in sims.items() if not t.startswith("_")]
+total = sum(probs)
+if not 1.9 < total < 2.1:
+    fails.append(f"probabilities should sum to the two berths, got {total:.3f}")
+if not all(0 <= p <= 1 for p in probs):
+    fails.append("a probability escaped [0, 1]")
+if not all(isinstance(v["p_ccg"], float) and isinstance(v["exp_w"], float)
+           for t, v in sims.items() if not t.startswith("_")):
+    fails.append("p_ccg/exp_w must stay floats — standings.csv publishes them "
+                 "and JavaScript has no int/float distinction to preserve")
+
+# Same seed, same answer. The whole module rests on this: pages.yml rebuilds
+# ~1,800 times a season and an unstable simulation would rewrite every board
+# on every run.
+if engine.simulate(games2026, reg2026, {}, n=300) != \
+        engine.simulate(games2026, reg2026, {}, n=300):
+    fails.append("same seed did not reproduce the same simulation")
+
+# A finished season has no randomness left in it: the two teams that reached
+# the title game are at 1, everyone else at 0.
+done25 = engine.simulate(load(2025), reg2026, {}, n=200)
+at1 = {t for t, v in done25.items() if not t.startswith("_") and v["p_ccg"] == 1}
+if at1 != {"BYU", "Texas Tech"}:
+    fails.append(f"2025 finished: expected BYU and Texas Tech at 1, got {at1}")
+if any(v["p_ccg"] for t, v in done25.items()
+       if not t.startswith("_") and t not in at1):
+    fails.append("2025 finished: a team outside the title game has odds")
+
+# --- causal leverage ---------------------------------------------------------
+# Not the numbers, which are sampled, but the shape and the ordering: the card
+# ranks games by these, and Python's tuple contract is what build.py unpacks.
+snap = truncate(load(2025), "2025-10-11")
+gids = [g["id"] for g in snap
+        if not g["completed"] and g["conference_game"]][:4]
+lev = engine.causal_leverage(snap, reg2026, {}, gids, n=300)
+if len(lev) != len(gids):
+    fails.append(f"causal_leverage returned {len(lev)} rows for {len(gids)} games")
+if lev != sorted(lev, key=lambda r: -r["total"]):
+    fails.append("causal_leverage must come back biggest-total first")
+for r in lev:
+    if not isinstance(r["total"], float):
+        fails.append("leverage total must be a float")
+    for m in r["movers"]:
+        if not (isinstance(m, tuple) and len(m) == 4):
+            fails.append(f"mover must be a 4-tuple, got {m!r}")
+            break
+
 # --- the failure modes ------------------------------------------------------
 # An engine that answers the wrong question quietly is worse than one that is
 # down, so the protocol's guards are worth a test of their own.
@@ -185,4 +271,5 @@ if fails:
     sys.exit(1)
 print(f"engine bridge: {n} seasons agree with tiebreaker.py, clinch matches "
       f"at 12 truncations ({exact_seen} in exact mode, {scenarios_seen} teams "
-      f"with scenario prose), chaos matches, shapes and failure modes hold")
+      f"with scenario prose), chaos matches, the odds model is exact up to "
+      f"the erf bound and its invariants hold, shapes and failure modes hold")

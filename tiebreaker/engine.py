@@ -166,3 +166,119 @@ def conf_teams(games):
 def chaos_index(rows, clinch_result, odds_result):
     """chaos.index's shape: {"score", "label", "components"}."""
     return _call("chaosIndex", rows, clinch_result, odds_result)
+
+
+# --------------------------------------------------------------------- odds
+# odds.py's shapes. The tuples matter: leverage's callers unpack
+# (team, delta, p_if_home_wins, p_if_home_loses) and JSON has only arrays, so
+# they are converted back here rather than at every call site.
+
+def regress_stale(systems, season):
+    return _call("regressStale", systems, season)
+
+
+def ensemble_margin(games, systems):
+    """{game_id: expected home margin}. JSON object keys are strings, and
+    every caller looks these up by the integer id the games carry."""
+    return {int(k): v for k, v in _call("ensembleMargin", games, systems).items()}
+
+
+def team_strength(systems):
+    return _call("teamStrength", systems)
+
+
+def hfa_points(systems):
+    return _call("hfaPoints", systems)
+
+
+def win_probs(games, systems):
+    return {int(k): v for k, v in _call("winProbs", games, systems).items()}
+
+
+def rating_sigma(games):
+    # float() for the same reason simulate() does it: this is written into the
+    # forecast records as the model's own description, and a preseason sigma of
+    # exactly 7 would be stored as "7" where every earlier week says "7.0".
+    return float(_call("ratingSigma", games))
+
+
+def p_from_margin(m):
+    return float(_call("pFromMargin", m))
+
+
+_CONSTS = None
+
+
+def constants():
+    """The model's own numbers — N_SIMS, SEED, MARGIN_SIGMA, EXACT_BUDGET.
+
+    Asked for rather than restated. build.py publishes N_SIMS and
+    MARGIN_SIGMA on the page as "how this was computed", and a Python copy of
+    either would be a second definition of exactly the kind this module exists
+    to remove: nothing would break if they drifted, the page would simply
+    describe a simulation that had not been run. Cached, so printing them
+    costs one round trip per build rather than one per page.
+    """
+    global _CONSTS
+    if _CONSTS is None:
+        _CONSTS = _call("constants")
+    return _CONSTS
+
+
+def simulate(games, systems, overrides=None, n=None, seed=None, track=None,
+             sigma=None):
+    opts = {}
+    if n is not None:
+        opts["n"] = n
+    if seed is not None:
+        opts["seed"] = seed
+    if track is not None:
+        opts["track"] = list(track)
+    if sigma is not None:
+        opts["sigma"] = sigma
+    out = _call("simulate", games, systems, overrides or {}, opts)
+    if "_cond" in out:
+        out["_cond"] = {int(k): v for k, v in out["_cond"].items()}
+    # FLOATS, EVEN WHEN THEY ARE WHOLE. JavaScript has one number type, so a
+    # probability of exactly 1 comes back as an int and json.dump then writes
+    # "1" where the published file has always said "1.0". That is not a
+    # different number, but standings.csv is a download people parse and
+    # data.json is a documented payload; the schema should not shift because
+    # the language underneath changed. odds.simulate always returned floats.
+    for t, v in out.items():
+        if not t.startswith("_"):
+            v["p_ccg"] = float(v["p_ccg"])
+            v["exp_w"] = float(v["exp_w"])
+    return out
+
+
+def _movers(rows):
+    """[[team, d, pw, pl], ...] -> [(team, d, pw, pl), ...], floats kept float.
+
+    Same reason as simulate(): a delta that lands on a whole number comes back
+    as an int, and these are formatted straight onto the page.
+    """
+    for r in rows:
+        r["total"] = float(r["total"])
+        r["movers"] = [(t, float(d), float(pw), float(pl))
+                       for t, d, pw, pl in r["movers"]]
+        r["pair"] = {t: (float(a), float(b)) for t, (a, b) in r["pair"].items()}
+    return rows
+
+
+def leverage(sims, games):
+    if "_cond" in sims:
+        sims = dict(sims, _cond={str(k): v for k, v in sims["_cond"].items()})
+    return _movers(_call("leverage", sims, games))
+
+
+def causal_leverage(games, systems, overrides=None, gids=(), n=None,
+                    seed=None):
+    opts = {}
+    if n is not None:
+        opts["n"] = n
+    if seed is not None:
+        opts["seed"] = seed
+    return _movers(
+        _call("causalLeverage", games, systems, overrides or {},
+              list(gids), opts))
