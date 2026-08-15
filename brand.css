@@ -19,7 +19,17 @@
 
   --b12-accent: var(--b12-teal);
   --b12-fg:     var(--b12-ink);
-  --chrome-w: 1120px;
+  /* The measure the whole domain lays out against. It was 1120 — a prose
+     measure — with the Lab overriding it to 1320 because it is two columns
+     of tables rather than paragraphs. The wide one won: every page here is
+     ultimately a board, a slate or a table, and the extra 200px is the
+     difference between a subnav that fits and one that clips its last tab.
+     What prose needs is a cap on the PARAGRAPH, not on the page, which is
+     what --measure below does. */
+  --chrome-w: 1320px;
+  /* Body copy stops here however wide the page gets. 68 characters is the
+     readable line the old 1120 was really protecting. */
+  --measure: 68ch;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -134,6 +144,15 @@
   border-radius: 3px;
 }
 .cardlabel { min-width: 0; }
+
+/* Prose stops at a readable measure even where the page does not. The notes
+   under the boards are full-width children of a full-width card, so at 1320
+   they ran about 190 characters to the line — a paragraph you lose your
+   place in on the way back. Only the TEXT is capped; the table above it goes
+   on using the whole page, which is the point of the width. They were
+   already 160 characters at 1120, so this is an old problem the new width
+   made visible rather than one it caused. */
+.note { max-width: var(--measure); }
 .cardchev {
   width: 15px; height: 15px; flex: none; margin-left: auto;
   opacity: .55; transition: transform .15s ease;

@@ -295,7 +295,7 @@ tok = {
     "HUB_SPOTLIGHT": (
         f"<p class=live-line>Biggest swing this week: <b>{e(spot['away'])}</b>"
         f" at <b>{e(spot['home'])}</b> &middot; {e(spot['when'])} &middot; "
-        f"{spot['total']} of a title-game seat changes hands</p>"
+        f"{spot['total']} points of a title-game berth change hands</p>"
         if spot else ""),
     "HUB_SEASON": str(hub.get("season") or ""),
     "HUB_TEAMS": str(counts.get("teams") or ""),
