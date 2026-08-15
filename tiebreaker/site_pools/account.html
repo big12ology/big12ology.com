@@ -8,7 +8,7 @@
 <link rel=apple-touch-icon href="../tiebreaker/favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
 <script>(function(){try{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){return /^[A-Za-z][\w-]*$/.test(k)}).map(function(k){return"#"+k+">*:not(h2):not(h3){display:none}#"+k+"{padding-bottom:8px}"}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}catch(e){}})();</script>
-<link rel=stylesheet href="../tiebreaker/brand.css?v=3727b0f9">
+<link rel=stylesheet href="../tiebreaker/brand.css?v=2915cd26">
 <script defer src="../tiebreaker/theme.js?v=ab3fca05"></script>
 <script src="../tiebreaker/state.js?v=f7c7de71"></script>
 <script src="../tiebreaker/metrics.js?v=8a5fb0cb"></script>
@@ -72,6 +72,14 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
    same in both themes, that the artwork's own white sits flush against. */
 .mark { vertical-align:-3px; margin-right:6px;
   background:#f0ede6; border-radius:4px; padding:2px }
+/* The tile above is deliberately the same in both themes, so the glyph that
+   stands in for a missing mark has to be theme-fixed as well. It was taking
+   its color from --ink, which flips, so in dark mode the "!" was #e8e6e1 on
+   that light tile: 1.07:1, invisible. #616874 is 4.80:1 against the tile and
+   does not move when the theme does. */
+.nomark { display:inline-block; width:16px; height:16px; line-height:16px;
+  text-align:center; color:#616874; font-weight:700; font-size:var(--t-meta);
+  cursor:help }
 .clrow { padding:7px 0; border-bottom:1px solid var(--line); font-size:var(--t-copy) }
 .movemain { display:grid; align-items:center; gap:0 10px;
   grid-template-columns:22px minmax(110px,148px) 62px auto }
