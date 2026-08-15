@@ -29,7 +29,25 @@
     });
   }
 
+  /* The team that scored more, or null — including when there is nothing to
+   * compare.
+   *
+   * THE hasScore GUARD IS THE POINT, and it was missing here while the
+   * comment at the top of this file described the exact bug it allows. A row
+   * with an integer home score and a null away score reaches the comparison,
+   * `28 > null` coerces the null to 0 and is true, and the home team is handed
+   * a game with no away score. Callers that reach winner() through confGames
+   * were safe, because that filters on hasScore; two did not, and they are the
+   * two that matter — the overall and non-conference tallies in standings(),
+   * which put the wrong record on the page, and stepTotalWins, which is step
+   * (e) of the ladder and decides who advances.
+   *
+   * Guarding here rather than at those two call sites, because the next caller
+   * would have to remember too. rules_lite.winner has always read this way;
+   * this is the copy that was wrong. Found by tests/test_malformed.py.
+   */
   function winner(g) {
+    if (!hasScore(g)) return null;
     if (g.home_points === g.away_points) return null;
     return g.home_points > g.away_points ? g.home : g.away;
   }
