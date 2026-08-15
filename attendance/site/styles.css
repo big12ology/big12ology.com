@@ -246,8 +246,13 @@ td.game .sub .win { color: var(--full); }
 td.game .sub .loss { color: var(--bad); }
 td.game.away { opacity: 0.45; }
 td.game.away:hover { opacity: 1; }
+/* --muted, not --border. A hairline token used as a text color put BYE at
+   1.35:1 on the light card and 1.25:1 on the dark one, which is not
+   de-emphasis, it is invisibility, and BYE is the cell's only content.
+   --muted is the token that exists for exactly this: quiet but readable,
+   5.20:1 light and 6.11:1 dark. */
 td.bye {
-  color: var(--border);
+  color: var(--muted);
   font-size: 0.68rem;
   letter-spacing: 0.12em;
   text-align: center;

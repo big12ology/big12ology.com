@@ -397,13 +397,21 @@
 .b12-head h1 .yrpills a:hover { color: #1a1c20; border-color: #c8c2b4; }
 .b12-head h1 .yrpills .yron { background: var(--b12-teal);
   border-color: var(--b12-teal); color: #fff; }
+/* THE DARK ACTIVE PILL FILLS WITH --b12-teal-lit, NOT --b12-teal-tile-dark.
+   The tile teal #0E8A94 sits in the dead middle of the range and carries small
+   text at 4.13:1 against white and 3.96:1 against #06232b, so it fails AA in
+   BOTH directions: there is no foreground that rescues it. --b12-teal-lit
+   #3FC7CE takes the same #06232b to 8.01:1, and it is the pairing the theme
+   toggle's pressed state already uses, so the three filled chrome controls now
+   read as one recipe instead of two. --b12-teal-tile-dark stays defined: it is
+   the LOGO tile fill, which is logotype and exempt from 1.4.3. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .b12-head h1 .yrpills a { color: #9aa0aa;
     border-color: #2f343c; }
   :root:not([data-theme="light"]) .b12-head h1 .yrpills a:hover {
     color: #e8e6e1; border-color: #4a515c; }
   :root:not([data-theme="light"]) .b12-head h1 .yrpills .yron {
-    background: var(--b12-teal-tile-dark); border-color: var(--b12-teal-tile-dark);
+    background: var(--b12-teal-lit); border-color: var(--b12-teal-lit);
     color: #06232b; }
 }
 :root[data-theme="dark"] .b12-head h1 .yrpills a { color: #9aa0aa;
@@ -411,7 +419,7 @@
 :root[data-theme="dark"] .b12-head h1 .yrpills a:hover { color: #e8e6e1;
   border-color: #4a515c; }
 :root[data-theme="dark"] .b12-head h1 .yrpills .yron {
-  background: var(--b12-teal-tile-dark); border-color: var(--b12-teal-tile-dark);
+  background: var(--b12-teal-lit); border-color: var(--b12-teal-lit);
   color: #06232b; }
 
 /* module tabs / page subnav — one look everywhere */
@@ -438,13 +446,13 @@
   :root:not([data-theme="light"]) .subnav a { color: #9aa0aa; }
   :root:not([data-theme="light"]) .subnav a:hover { border-color: var(--b12-teal-lit); }
   :root:not([data-theme="light"]) .subnav a.on {
-    background: var(--b12-teal-tile-dark); border-color: var(--b12-teal-tile-dark);
+    background: var(--b12-teal-lit); border-color: var(--b12-teal-lit);
     color: #06232b; }
 }
 :root[data-theme="dark"] .subnav a { color: #9aa0aa; }
 :root[data-theme="dark"] .subnav a:hover { border-color: var(--b12-teal-lit); }
-:root[data-theme="dark"] .subnav a.on { background: var(--b12-teal-tile-dark);
-  border-color: var(--b12-teal-tile-dark); color: #06232b; }
+:root[data-theme="dark"] .subnav a.on { background: var(--b12-teal-lit);
+  border-color: var(--b12-teal-lit); color: #06232b; }
 
 /* ==== accessibility ====================================================== */
 /* Bypass blocks (WCAG 2.4.1): every page repeats the topbar, the header and

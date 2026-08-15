@@ -20,28 +20,47 @@
 <meta name=twitter:card content=summary_large_image>
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
 <script>(function(){try{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){return /^[A-Za-z][\w-]*$/.test(k)}).map(function(k){return"#"+k+">*:not(h2):not(h3){display:none}#"+k+"{padding-bottom:8px}"}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}catch(e){}})();</script>
-<link rel=stylesheet href="../brand.css?v=3727b0f9">
+<link rel=stylesheet href="../brand.css?v=2915cd26">
 <script defer src="../theme.js?v=ab3fca05"></script>
 <script src="../state.js?v=f7c7de71"></script>
 <script src="../metrics.js?v=8a5fb0cb"></script>
 <script defer src="../cards.js?v=c5a69787"></script>
 <link rel=alternate type=application/rss+xml title="Big 12 Tiebreaker Tracker" href=../feed.xml>
 <style>
+/* --on-accent is the foreground for anything FILLED with --accent. It has to
+   be a token rather than a literal, because --accent flips lightness between
+   themes: #0B6E77 light, #3FC7CE dark. A fixed white passes on the first and
+   fails on the second, which is how .sorter button.on came to sit at 2.04:1. */
 :root {
   --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
   --line: #e2ddd2; --accent: #0B6E77; --accent2: #003087;
+  --on-accent: #fff;
   --ok: #136536; --warn: #b45309;
   --tie0: #fff3f4; --tie1: #eef4ff; --tie2: #f0fdf4; --tie3: #fefce8;
   --pctl: 27%;
 }
+/* Stated twice, the way brief.css and brand.css state it: once for "system,
+   and the OS is dark", once for "the reader picked dark in the toggle". This
+   page had only the first, so clicking the moon on a light OS set
+   data-theme="dark" and changed nothing here. Every other page on the site
+   carried both blocks; the Lab was the one that did not. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
     --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
+    --on-accent: #06232b;
     --ok: #4ade80; --warn: #fbbf24;
     --tie0: #2a1d20; --tie1: #1d2330; --tie2: #1d2a22; --tie3: #2a281d;
     --pctl: 63%;
   }
+}
+:root[data-theme="dark"] {
+  --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
+  --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
+  --on-accent: #06232b;
+  --ok: #4ade80; --warn: #fbbf24;
+  --tie0: #2a1d20; --tie1: #1d2330; --tie2: #1d2a22; --tie3: #2a281d;
+  --pctl: 63%;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink);
@@ -171,7 +190,7 @@ progress { width: 100%; height: 6px; accent-color: var(--accent); }
   color: var(--dim); border-radius: 20px; padding: 3px 12px; margin-left: 6px;
   cursor: pointer; }
 .sorter button.on { background: var(--accent); border-color: var(--accent);
-  color: #fff; }
+  color: var(--on-accent); }
 .wchip { background: var(--accent2); color: #fff; font-size: var(--t-fine);
   border-radius: 20px; padding: 2px 9px; font-weight: 600;
   letter-spacing: .03em; vertical-align: 1px; text-transform: none; }
