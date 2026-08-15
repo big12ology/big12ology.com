@@ -41,6 +41,8 @@
   var SIGMA_SHRINK = 4.0;   // games played at which that is ~halved
   var EXACT_BUDGET = 1 << 11;  // completions we will enumerate for proofs
   var SLICE_MS = 12;        // work per frame; one frame at 60Hz is 16.7
+  var FIRST_ESTIMATE = 200; // seasons before the bars are worth drawing
+  var REPAINT_MS = 350;     // and how often to redraw them while they settle
 
   var CHAOS_WEIGHTS = { entropy: 0.60, tangle: 0.25, breadth: 0.15 };
   /* Ceiling and name, in order. Annotated because the literal on its own
@@ -682,6 +684,29 @@
                              overrides);
     var ex = makeExactContext(games, overrides);
 
+    /* Show the estimate while it is still an estimate.
+     *
+     * The card used to paint once with no percentages at all, tick a
+     * "Simulating… n%" label, and only fill the bars in when all N_SIMS were
+     * done. In week ten that is imperceptible. In August it is 120 unplayed
+     * games and several seconds of a board that looks broken: sixteen teams
+     * listed alphabetically, every one of them blank, because the sort key is
+     * a probability nobody has computed yet.
+     *
+     * A Monte Carlo estimate is usable long before it is finished — a few
+     * hundred seasons already put the order roughly right and the standard
+     * error only shrinks from there — so the honest thing is to show it
+     * converging rather than to hide it until it stops moving.
+     *
+     * THROTTLED, because the reason it was not doing this is a real one: a
+     * repaint rebuilds sixteen rows, their bars and the chaos band, and doing
+     * that every tick is more work than the simulation it is reporting on.
+     * Time-based rather than every-nth-sim, for the same reason the pump
+     * slices on a clock: a slow phone should paint fewer times, not fall
+     * behind. Between repaints the cheap label keeps moving.
+     */
+    var lastPaint = 0;
+
     function runSim() {
       if (token.canceled) return;
       pump(token,
@@ -689,7 +714,19 @@
         function () { return sim.done >= N_SIMS; },
         function () {
           model.pending = sim.done / N_SIMS;
-          paintProgress(model);
+          var now = (global.performance || Date).now();
+          // FIRST_ESTIMATE before the first one: under a couple of hundred
+          // seasons the order still churns visibly, and a board that
+          // reshuffles twice a second reads worse than one that is honest
+          // about being busy.
+          if (sim.done >= FIRST_ESTIMATE && now - lastPaint >= REPAINT_MS) {
+            lastPaint = now;
+            applySims(p, sim, sim.done);
+            model.nSims = sim.done;
+            paint(model);
+          } else {
+            paintProgress(model);
+          }
         },
         function () {
           applySims(p, sim, N_SIMS);
