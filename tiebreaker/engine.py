@@ -139,6 +139,14 @@ def conf_records(games):
     return _call("confRecords", games)
 
 
+def pad(rows, games):
+    """Standings with the teams that have no conference result yet appended.
+
+    The display half, and it reads scores of its own, so tests/test_malformed
+    exercises it on the same bad rows the ladder gets."""
+    return _call("pad", rows, games)
+
+
 # The engine's own view of the two predicates rules_lite keeps a Python copy
 # of. Not used by the build — routing a two-integer comparison through a pipe
 # would be absurd — but tests/test_engine.py checks the copy against these over
