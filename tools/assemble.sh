@@ -710,13 +710,23 @@ done < <(find "$DIST" -name '*.html')
 # reading this script is now a failed build rather than a leaked client secret.
 while IFS= read -r bad; do
   echo "  MUST NOT SHIP  ${bad#"$DIST"/}"; fail=1
+#
+# The e2e names are here because tools/pickem-e2e.sh keeps a SERVER in the
+# tree — worker/test/e2e/proxy.mjs — and a dev server that reaches the public
+# site is a different class of mistake from a stray config. Nothing under
+# worker/ or tools/ is an input to this script today, so those names cannot
+# arrive; this is what makes that a checked property rather than a thing that
+# happened to be true when the harness was written.
 done < <(find "$DIST" \( -name '.env' -o -name '.env.*' -o -name '.dev.vars' \
                       -o -name 'wrangler.toml' -o -name '.wrangler' \
                       -o -name '*.sql' -o -name 'package.json' \
                       -o -name 'package-lock.json' \
                       -o -name 'client_secret*.json' \
                       -o -name '*credentials*.json' \
-                      -o -name '*service_account*.json' \) 2>/dev/null || true)
+                      -o -name '*service_account*.json' \
+                      -o -name 'e2e' -o -name 'pickem-e2e.sh' \
+                      -o -name 'proxy.mjs' -o -name 'checks.mjs' \
+                      -o -name 'seed.mjs' \) 2>/dev/null || true)
 
 # Under /pickem/ the rule is stricter than the named list above, and it has to
 # be. That list is a denylist: it catches app.js and styles.css because those
