@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-14T02:49:35+00:00",
+ "generated": "2026-08-16T18:13:32+00:00",
  "season": 2026,
  "standings": [],
  "championship": null,
@@ -7,6 +7,7 @@
   "away": "Arizona",
   "home": "BYU",
   "start": "2026-09-12T19:30:00.000Z",
+  "week": 2,
   "total": 0.17170000000000002,
   "pair": {
    "Arizona": [
