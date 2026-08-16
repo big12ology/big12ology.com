@@ -427,6 +427,110 @@ open(p, "w", encoding="utf-8").write(s)
 PY
 done < <(find "$DIST" -name '*.html')
 
+# --- cache-bust by content, not by hand ------------------------------------
+# Every ?v= in the assembled site is rewritten here to a hash of the bytes it
+# points at, so a file that changed always changes its own URL and a file that
+# did not never does.
+#
+# build.py already did this for the pages it generates, through asset_v(). The
+# four hand-written pages could not, because their versions were integers
+# typed by hand, and they had drifted exactly as you would expect: the same
+# brand.css was ?v=8 on 404.html, ?v=9 on index.html and ?v=48 under
+# attendance/, and a stylesheet fix landed without any of the three moving.
+# The check below only ever asked whether a query string was PRESENT, never
+# whether it was current, so nothing caught it.
+#
+# The module graph settles first, and leaves first, because a module's own
+# bytes contain its import specifiers: change html.js and gametip.js's text
+# changes with it, so gametip.js needs a new hash too, and so does app.js
+# above it. Walking bottom up is what carries a leaf edit up to the tag in
+# the page.
+#
+# That ordering fixes a live bug, not just a stale one. The attendance modules
+# disagreed about each other's versions: app.js imported html.js?v=45 while
+# charts.js and gametip.js imported html.js?v=44. Two URLs for one file is two
+# modules to a browser, so html.js, stats.js and gametip.js were each fetched,
+# parsed and instantiated twice on every page load. One hash per file collapses
+# each pair back into one.
+python3 - "$DIST" <<'PY'
+import hashlib, os, re, sys
+
+DIST = os.path.abspath(sys.argv[1])
+
+# The shared, mutable assets: the same list the NO CACHE-BUST check uses, plus
+# the attendance modules that are only ever reached from inside other modules.
+BUSTED = {"brand.css", "tokens.css", "theme.js", "cards.js", "state.js",
+          "metrics.js", "app.js", "engine.js", "pct.js", "replay.js",
+          "scrollcue.js", "styles.css", "charts.js", "gametip.js", "stats.js",
+          "html.js"}
+
+def digest(path):
+    return hashlib.sha1(open(path, "rb").read()).hexdigest()[:8]
+
+def resolve(ref, source):
+    """A reference as written, to a real file inside DIST, or None."""
+    bare = ref.split("?", 1)[0].split("#", 1)[0]
+    if not bare or bare.startswith(("http:", "https:", "//", "data:", "mailto:")):
+        return None
+    base = DIST if bare.startswith("/") else os.path.dirname(source)
+    p = os.path.normpath(os.path.join(base, bare.lstrip("/")))
+    return p if p.startswith(DIST) and os.path.isfile(p) else None
+
+IMPORT = re.compile(r"((?:from|import)\s*\(?\s*)(['\"])(\.[^'\"]*?\.js)(\?[^'\"]*)?\2")
+
+hashes = {}
+
+def settle(path, stack=()):
+    """Hash a module once its own imports carry their final versions."""
+    if path in hashes:
+        return hashes[path]
+    if path in stack:
+        return None          # an import cycle: leave those specifiers alone
+    text = open(path, encoding="utf-8").read()
+    for m in IMPORT.finditer(text):
+        target = resolve(m.group(3), path)
+        if target:
+            settle(target, stack + (path,))
+    def stamp(m):
+        target = resolve(m.group(3), path)
+        h = hashes.get(target) if target else None
+        if not h:
+            return m.group(0)
+        return f"{m.group(1)}{m.group(2)}{m.group(3)}?v={h}{m.group(2)}"
+    out = IMPORT.sub(stamp, text)
+    if out != text:
+        open(path, "w", encoding="utf-8").write(out)
+    hashes[path] = digest(path)
+    return hashes[path]
+
+for root, _, files in os.walk(DIST):
+    for f in sorted(files):
+        if f.endswith(".js"):
+            settle(os.path.join(root, f))
+
+# Then the pages, which point at modules whose bytes have stopped moving.
+REF = re.compile(r"""\b(src|href)=(["']?)([^"'\s>]+)\2""")
+
+for root, _, files in os.walk(DIST):
+    for f in sorted(files):
+        if not f.endswith(".html"):
+            continue
+        page = os.path.join(root, f)
+        text = open(page, encoding="utf-8").read()
+        def stamp(m, page=page):
+            attr, quote, ref = m.group(1), m.group(2), m.group(3)
+            bare = ref.split("?", 1)[0]
+            if os.path.basename(bare) not in BUSTED:
+                return m.group(0)
+            target = resolve(ref, page)
+            if not target:
+                return m.group(0)
+            return f"{attr}={quote}{bare}?v={hashes.get(target) or digest(target)}{quote}"
+        out = REF.sub(stamp, text)
+        if out != text:
+            open(page, "w", encoding="utf-8").write(out)
+PY
+
 # A missing page or a stale asset has shipped silently in this project
 # before. Both are cheap to catch here and expensive to notice in the wild.
 
