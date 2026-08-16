@@ -29,6 +29,26 @@ import { makeEnv, seedWeek, NOW, HOUR } from "./helpers/env.js";
 const SEASON = 2026;
 const ORIGIN = "https://big12ology.github.io";
 
+// ONE CLOCK READING FOR THE WHOLE FILE, and the reason is a trigger.
+//
+// season() used to stamp every kickoff with NOW() on each call. Six tests here
+// build the same season twice, publish it, and expect the second import to
+// land. When a second boundary fell between the two calls, the second slate
+// carried a lock_at one second later than the row already stored, and
+// weeks_lock_monotonic ABORTS THE BATCH on a lock that moves later. Nothing
+// was written, the walk counted it as an ordinary miss, the run still reported
+// success, and only the assertion afterwards knew: "a republished week that
+// gains a field is re-read" failed on roughly one run in twenty, with every
+// row still NULL. The window was the first run(env), so it lost the race only
+// when the boundary happened to land inside it.
+//
+// Anchoring here makes season(n) a pure function of n. A test can publish the
+// same weeks as often as it likes and the only things that differ between two
+// files are the ones it changed on purpose. The offsets below are whole hours,
+// so a few seconds of real drift while the suite runs cannot move a week from
+// one side of its lock to the other.
+const T0 = NOW();
+
 /**
  * A season the publisher could have written, and the scores file the build
  * writes beside it.
@@ -112,7 +132,7 @@ function season(through, { lastWeek = through + 1 } = {}) {
   const weeks = [];
   for (let w = 1; w <= lastWeek; w++) {
     const played = w <= through;
-    const kickoff = NOW() + (played ? -1 : 1) * (24 + w) * HOUR;
+    const kickoff = T0 + (played ? -1 : 1) * (24 + w) * HOUR;
     weeks.push({
       week: w,
       lock_at: kickoff,
@@ -226,18 +246,32 @@ test("a republished week that gains a field is re-read", async () => {
   // The second bug. The import used to skip weeks it already had, so a slate
   // that started carrying the conference side could never deliver it and the
   // column stayed NULL all season with nothing to show for it.
+  //
+  // One set of weeks, published twice, so the only difference between the two
+  // files is the field itself. See T0 at the top: this is the test the clock
+  // used to lose.
   const env = env0();
-  const early = publisher(season(3));
+  const weeks = season(3);
+  const total = weeks.reduce((n, w) => n + w.games.length, 0);
+
+  const early = publisher(weeks);
   for (const s of early.slates.values()) {
     for (const g of s.games) delete g.b12;      // the publisher before the field
   }
   serve(early);
   await run(env);
+  // Asserted before the NULL count below, because that one is also satisfied
+  // by an empty table: an import that silently wrote nothing would have read
+  // as a pass on both halves, which is the exact failure shape this file
+  // exists to catch.
+  assert.equal(
+    one(env, `SELECT COUNT(*) n FROM slate_games`).n, total,
+    "the first import did not land, so nothing below is being tested");
   assert.equal(
     one(env, `SELECT COUNT(*) n FROM slate_games WHERE b12 IS NOT NULL`).n, 0,
     "the fixture did not actually start without the column");
 
-  serve(publisher(season(3)));                  // the publisher after it
+  serve(publisher(weeks));                      // the publisher after it
   await run(env);
   assert.equal(
     one(env, `SELECT COUNT(*) n FROM slate_games WHERE b12 IS NULL`).n, 0,
@@ -297,9 +331,9 @@ test("a week 0 slate is imported like any other", async () => {
   const weeks = season(0, { lastWeek: 1 });
   weeks.unshift({
     week: 0,
-    lock_at: NOW() - 26 * HOUR,
+    lock_at: T0 - 26 * HOUR,
     games: [{ game_id: 1, home: "TCU", away: "North Carolina", spread_x2: -14,
-              kickoff_at: NOW() - 26 * HOUR, played: true,
+              kickoff_at: T0 - 26 * HOUR, played: true,
               home_points: 31, away_points: 20 }],
   });
   serve(publisher(weeks));
@@ -467,9 +501,9 @@ test("health reports a locked week nobody has graded", async () => {
 
   // Locked, never scored — the shape of a cron that is not running.
   seedWeek(env, { season: SEASON, week: 1,
-                  lockAt: NOW() - 3 * HOUR,
+                  lockAt: T0 - 3 * HOUR,
                   games: [{ game_id: 11, home: "Utah", away: "BYU",
-                            spread_x2: -7, kickoff_at: NOW() - 3 * HOUR }] });
+                            spread_x2: -7, kickoff_at: T0 - 3 * HOUR }] });
 
   const before = await (await worker.fetch(
     new Request("https://big12ology.com/api/health"), env, {})).json();
