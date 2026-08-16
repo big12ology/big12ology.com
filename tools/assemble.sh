@@ -267,6 +267,13 @@ def when(iso):
     return t.strftime("%a %-d %b, %H:%M UTC")
 
 
+# Computed before the dict rather than inline, because the alternative is a
+# conditional f-string nested inside an f-string inside a heredoc, and that is
+# how you end up with something nobody can read.
+spot_week = ""
+if spot and spot.get("week") is not None:
+    spot_week = f" in week {spot['week']}"
+
 tok = {
     "HUB_NEXT_WHEN": e(when(nxt.get("kickoff"))),
     "HUB_NEXT_AWAY": e(nxt.get("away") or ""),
@@ -290,12 +297,22 @@ tok = {
     #
     # Nothing at all, rather than a heading over a blank: before the season
     # and once every conference game is played there is no next game to point
-    # at, and "Biggest swing this week:" followed by nothing is worse than a
-    # card that simply does not have the line.
+    # at, and a heading followed by nothing is worse than a card that simply
+    # does not have the line.
+    #
+    # IT SAYS WHICH WEEK, because it is not necessarily this one. The game
+    # comes from build.py's next_conf_week_ids — the next week with unplayed
+    # CONFERENCE games — and in August that is a month out: this read
+    # "Biggest swing this week" over a September 12 kickoff while the season
+    # had not started. It stays wrong into the season, too, because the
+    # opening weeks are non-conference and the first conference game is week
+    # 2. Naming the week is what /tiebreaker/'s own card does ("Games that
+    # matter · week 2"), and the two now agree.
     "HUB_SPOTLIGHT": (
-        f"<p class=live-line>Biggest swing this week: <b>{e(spot['away'])}</b>"
-        f" at <b>{e(spot['home'])}</b> &middot; {e(spot['when'])} &middot; "
-        f"{spot['total']} points of a title-game berth change hands</p>"
+        f"<p class=live-line>Biggest swing{spot_week}: "
+        f"<b>{e(spot['away'])}</b> at <b>{e(spot['home'])}</b> &middot; "
+        f"{e(spot['when'])} &middot; {spot['total']} points of a title-game "
+        f"berth change hands</p>"
         if spot else ""),
     "HUB_SEASON": str(hub.get("season") or ""),
     "HUB_TEAMS": str(counts.get("teams") or ""),

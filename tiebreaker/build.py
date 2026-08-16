@@ -4114,6 +4114,11 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
         "leverage_top": (lambda L: {
             "away": L[0]["away"], "home": L[0]["home"],
             "start": L[0]["game"].get("start"),
+            # The week it is actually in. These games come from
+            # next_conf_week_ids, which is the next week with unplayed
+            # CONFERENCE games — not the current one. In August that is a
+            # month away, and the hub used to introduce it as "this week".
+            "week": L[0]["game"].get("week"),
             "total": L[0]["total"],
             "pair": {t: list(v) for t, v in (L[0].get("pair") or {}).items()},
         } if L else None)(leverage_of(sims)),
@@ -5179,6 +5184,7 @@ def write_hub(year, games, lines, sims_race, lev_top=None):
         hub["spotlight"] = {
             "away": lev_top["away"], "home": lev_top["home"],
             "when": pretty_date(lev_top.get("start")),
+            "week": lev_top.get("week"),
             "total": round((lev_top.get("total") or 0) * 100),
             # WHERE THE ARROWS POINT FROM. Every cell in the fork prints a
             # move from today, and on the race page today is the list of
