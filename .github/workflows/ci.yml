@@ -242,3 +242,21 @@ jobs:
       # feed.xml on every run purely for a timestamp.
       - name: Verify the build is deterministic
         run: tools/verify-deterministic.sh
+
+      # The seam every other step here leaves out. The Worker suite calls the
+      # handlers directly with a Request it builds itself, so what is between a
+      # browser and a handler has never been run: the Origin the client sends
+      # against the one SITE_ORIGIN expects, the session cookie over a real
+      # round trip, the slate pickem.py writes against the shape importWeek
+      # parses, a lock landing mid-week arriving as a 409 rather than a 500.
+      #
+      # It runs here rather than being left to whoever remembers, for the same
+      # reason the pick'em-on assembly above does: the section is dark on
+      # production, and a thing CI never exercises is discovered on the day you
+      # try to turn it on.
+      #
+      # Needs no secret. The harness generates its own dev values and never
+      # performs a sign-in — see worker/test/e2e/seed.mjs for why, and for what
+      # that leaves to oauth.e2e.test.js.
+      - name: Pick'em end to end
+        run: tools/pickem-e2e.sh
