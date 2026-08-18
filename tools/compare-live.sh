@@ -57,6 +57,12 @@ BASE="${2:-https://big12ology.com}"
 #
 # MODE=edge compares against Cloudflare on purpose. Useful once after a DNS
 # change; never as the CI gate, which must not be coupled to a CDN's cache.
+#
+# Since 2026-08-18 that coupling is real for HTML as well: pages are
+# edge-cached for up to ten minutes (see the canary below for why), so an edge
+# comparison inside that window of a deploy will report DIFFERS on pages that
+# are actually correct. Origin mode never sees the window, which is one more
+# reason it is the gate.
 HOST="${BASE#*://}"; HOST="${HOST%%/*}"
 MODE="${MODE:-origin}"
 ORIGIN_HOST="${ORIGIN_HOST:-big12ology.github.io}"
@@ -188,10 +194,20 @@ edge_canary() {
   [ "$n" = 1 ] ||
     { echo "  CANARY  analytics beacon appears $n times, expected 1 (auto-injection?)"; rc=1; }
 
-  # HTML must not be edge-cached: every deploy re-stamps every footer, so a
-  # cached page serves a stale "last updated" and undercounts in analytics.
-  grep -qiE 'cf-cache-status: *(DYNAMIC|BYPASS)' <<<"$head" ||
-    { echo "  CANARY  HTML is being served from the edge cache"; rc=1; }
+  # HTML is edge-cached ON PURPOSE, since 2026-08-18. A Cache Rule makes pages
+  # eligible (edge TTL follows GitHub's max-age=600, so ten minutes), a
+  # 500-526 status override keeps error pages out of the cache, and a
+  # stale-if-error response rule serves the last good copy through an origin
+  # outage. The trade was taken after GitHub's 2026-08-17 incident served its
+  # 503 unicorn through our domain: the cost is the cache window, a deploy can
+  # take up to ten minutes to reach readers and the footer stamp lags with it;
+  # the win is that a GitHub outage stops being our outage.
+  #
+  # So this assertion is the inverse of what it used to be. DYNAMIC or BYPASS
+  # now means the Cache Rule is gone and every page view is back to hitting
+  # the origin, with no stale copy standing by for the next incident.
+  grep -qiE 'cf-cache-status: *(HIT|MISS|EXPIRED|UPDATING|REVALIDATED|STALE)' <<<"$head" ||
+    { echo "  CANARY  HTML is not edge-cached (was the Cache Rule dropped?)"; rc=1; }
 
   # Mutable, frequently rebuilt, and carrying no ?v= — the files most likely to
   # go stale behind a CDN.
