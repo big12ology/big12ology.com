@@ -128,6 +128,9 @@
      never interleave across the gutter — and it starts a fresh pair of
      columns beneath it, which is what keeps the two groups from sharing one. */
   .pk-deadhead { column-span: all; }
+  /* The empty-state card (loading, no slate yet, no games) is the only thing
+     ever inside #slate besides game rows; half a column is no width for it. */
+  .pk-slate > .card { column-span: all; }
 }
 
 .pk-deadhead {

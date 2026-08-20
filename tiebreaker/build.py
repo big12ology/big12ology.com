@@ -4628,7 +4628,14 @@ PICKEM_SLATE_BODY = f"""
   pick &mdash; <a href="/pools/account.html">it takes a moment</a>.</p>
 <form id=slateform>
   <div id=slate class=pk-slate>
-    <p class=note id=slateload>Loading this week's slate&hellip;</p>
+    <!-- Inside #slate on purpose: renderSlate clears the container before it
+         draws game rows, so the card removes itself the moment there is a
+         slate. While there is not one, the message gets the same card the
+         survivor page gives its empty state. -->
+    <div class=card>
+      <h2>This week's slate</h2>
+      <p class=note id=slateload>Loading this week's slate&hellip;</p>
+    </div>
   </div>
 </form>
 {PICKEM_NOSCRIPT}

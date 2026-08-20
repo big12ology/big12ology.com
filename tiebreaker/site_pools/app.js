@@ -117,6 +117,75 @@
     return "Could not reach the pick'em. It may not be running yet.";
   }
 
+  // A missing slate is not a mystery, it is a schedule: the weekly refresh
+  // publishes it Tuesday 12:00 UTC and the Worker's sweep imports it at
+  // 13:00. So name the date and count down to it, instead of leaving the
+  // reader with a bare "Tuesday" and no idea which one.
+  function nextSlateTime() {
+    var now = new Date();
+    var t = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(),
+                              now.getUTCDate(), 13, 0, 0));
+    while (t.getUTCDay() !== 2 || t <= now) t.setUTCDate(t.getUTCDate() + 1);
+    return t;
+  }
+
+  // Week 1's publish Tuesday. Weeks run Tuesday to Monday with Week 1 ending
+  // on Labor Day (pickem.py's display_week, restated for the same reason it
+  // restates the attendance script's), so this is the Tuesday six days
+  // before September's first Monday.
+  function week1Tuesday(year) {
+    var d = new Date(Date.UTC(year, 8, 1, 13, 0, 0));
+    while (d.getUTCDay() !== 1) d.setUTCDate(d.getUTCDate() + 1);
+    d.setUTCDate(d.getUTCDate() - 6);
+    return d;
+  }
+
+  // The one empty-state message, shared by the slate, the card and the
+  // survivor page. `pool` is the difference between them: the pick'em waits
+  // on the market, so its copy says why Tuesday; survivor picks winners
+  // outright, so citing the lines there would imply they matter to the
+  // pick. Survivor also sits out Week 0 (one Big 12 game is not a choice,
+  // see MIN_SURVIVOR_TEAMS), so before the season its countdown points at
+  // Week 1's Tuesday, not the pick'em's. The target is fixed at first draw
+  // on purpose: once the hour arrives it says so, rather than rolling a
+  // week forward over a cron that is merely minutes late.
+  function slateCountdown(node, pool) {
+    var t = nextSlateTime();
+    var skipsWeek0 = false;
+    if (pool === "survivor") {
+      var w1 = week1Tuesday(t.getUTCFullYear());
+      if (t < w1) { t = w1; skipsWeek0 = true; }
+    }
+    var when = t.toLocaleDateString("en-US",
+      { weekday: "long", month: "long", day: "numeric" });
+    function draw() {
+      var ms = t - Date.now();
+      if (ms <= 0) {
+        node.textContent = "No slate published yet, but it is due: " +
+          "the week should be up any time now.";
+        return;
+      }
+      var d = Math.floor(ms / 86400000);
+      var h = Math.floor((ms % 86400000) / 3600000);
+      var away = !d && !h ? "under an hour"
+        : (d ? d + (d === 1 ? " day" : " days") + (h ? " and " : "") : "")
+          + (h ? h + (h === 1 ? " hour" : " hours") : "");
+      node.textContent = skipsWeek0
+        ? "No slate published yet. Week 0 is not a survivor week, so the " +
+          "first pick goes up on " + when + ": " + away + " away."
+        : "No slate published yet. The week goes up on " + when +
+          (pool === "survivor" ? "" : ", once the lines are in") +
+          ": " + away + " away.";
+    }
+    draw();
+    var tick = setInterval(function () {
+      // The node outlives its usefulness when a slate renders over it —
+      // renderSlate clears the container — so let the ticker die with it.
+      if (!node.isConnected) { clearInterval(tick); return; }
+      draw();
+    }, 60000);
+  }
+
   // ------------------------------------------------------------- numbers
 
   // The stored value is the home spread doubled — see worker/src/ats.js. The
@@ -411,7 +480,12 @@
     var wrap = $("slate");
     wrap.textContent = "";
     if (!slate.games.length) {
-      wrap.appendChild(el("p", "note", "No games this week."));
+      // The same card the markup gives the loading state — this path just
+      // replaced it (the clear above), so it owes the message the same frame.
+      var empty = el("div", "card");
+      empty.appendChild(el("h2", null, "This week's slate"));
+      empty.appendChild(el("p", "note", "No games this week."));
+      wrap.appendChild(empty);
       return;
     }
     var ordered = inPlayOrder(slate.games);
@@ -549,10 +623,8 @@
       // of a week that has not been published. The generic handler said "the
       // server said no (404)", which tells a player nothing they can act on
       // and reads like a fault. Slates go up on the Tuesday refresh.
-      n.textContent = err.status === 404
-        ? "No slate published yet. The week goes up on Tuesday, once the "
-          + "lines are in."
-        : explain(err);
+      if (err.status === 404) slateCountdown(n, "pickem");
+      else n.textContent = explain(err);
     });
   }
 
@@ -1836,10 +1908,8 @@
           sel.addEventListener("change", function () { draw(sel.value); });
         });
     }).catch(function (err) {
-      note.textContent = err.status === 404
-        ? "No slate published yet. The week goes up on Tuesday, once the "
-          + "lines are in."
-        : explain(err);
+      if (err.status === 404) slateCountdown(note, "pickem");
+      else note.textContent = explain(err);
     });
   }
 
@@ -2652,12 +2722,8 @@
         }
       })
       .catch(function (err) {
-        $("svnote").textContent = err.status === 404
-          // No lines clause here, unlike the pick'em copies of this message:
-          // survivor picks winners outright, and citing the lines to a
-          // survivor player implies they matter to the pick.
-          ? "No slate published yet. The week goes up on Tuesday."
-          : explain(err);
+        if (err.status === 404) slateCountdown($("svnote"), "survivor");
+        else $("svnote").textContent = explain(err);
         // The picker failed, but the roster is built from your own picks and
         // is still worth drawing — it is the half of this page that does not
         // depend on a slate existing.

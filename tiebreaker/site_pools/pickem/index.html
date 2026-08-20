@@ -587,7 +587,7 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=c4dc1757"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=291a8c7a"></script></head><body>
+<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=8d91e057"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=51ee2c1f"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pools/">Pools</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
@@ -627,7 +627,14 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
   pick &mdash; <a href="/pools/account.html">it takes a moment</a>.</p>
 <form id=slateform>
   <div id=slate class=pk-slate>
-    <p class=note id=slateload>Loading this week's slate&hellip;</p>
+    <!-- Inside #slate on purpose: renderSlate clears the container before it
+         draws game rows, so the card removes itself the moment there is a
+         slate. While there is not one, the message gets the same card the
+         survivor page gives its empty state. -->
+    <div class=card>
+      <h2>This week's slate</h2>
+      <p class=note id=slateload>Loading this week's slate&hellip;</p>
+    </div>
   </div>
 </form>
 
