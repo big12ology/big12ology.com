@@ -13,7 +13,8 @@ import worker from "../src/index.js";
 import * as session from "../src/session.js";
 import { SESSION_COOKIE } from "../src/cookies.js";
 import {
-  makeEnv, seedWeek, seedUser, seedPick, forceLock, NOW, HOUR,
+  makeEnv, seedWeek, seedUser, seedPick, seedSurvivorPick, forceLock,
+  NOW, HOUR,
 } from "./helpers/env.js";
 
 const ORIGIN = "https://big12ology.com";
@@ -61,6 +62,29 @@ test("health reports the database", async () => {
   const b = await r.json();
   assert.equal(b.ok, true);
   assert.equal(b.db, "ok");
+});
+
+test("health counts who signed up and who is actually in each game", async () => {
+  const env = makeEnv();
+  seedWeek(env);
+  // Three accounts, three standings: a provisional signup is a real person
+  // who has not finished a scored week yet, and a banned one is not in any
+  // public number no matter how much it picked.
+  seedUser(env, "u-new", { status: "provisional" });
+  seedUser(env, "u-vet", { status: "active" });
+  seedUser(env, "u-out", { status: "banned" });
+  seedPick(env, "u-new", 2026, 3, 401, "home", -13);
+  seedPick(env, "u-new", 2026, 3, 402, "away", 7);   // twice, counted once
+  seedPick(env, "u-vet", 2026, 3, 401, "away", -13);
+  seedPick(env, "u-out", 2026, 3, 401, "home", -13);
+  seedSurvivorPick(env, "u-new", 2026, 3, 401, "Iowa State");
+  seedSurvivorPick(env, "u-out", 2026, 3, 402, "Baylor");
+
+  const b = await (await call(env, "/api/health")).json();
+  assert.equal(b.registered, 2, "signed up = provisional + active");
+  assert.equal(b.pickem_players, 2, "picked at least one game this season");
+  assert.equal(b.survivor_players, 1, "picked at least one survivor week");
+  assert.equal(b.players, 1, "players still means a completed scored week");
 });
 
 test("every response is noindex and uncacheable unless it says otherwise",

@@ -4626,6 +4626,9 @@ PICKEM_SLATE_BODY = f"""
   kickoff.</p>
 <p class=pk-signedout id=needsname hidden>Choose a display name before you can
   pick &mdash; <a href="/pools/account.html">it takes a moment</a>.</p>
+<!-- Who is in this game: distinct people with at least one pick this season.
+     initCounts fills it, and only past the same threshold the hub uses. -->
+<p class=note id=pkplayers hidden></p>
 <form id=slateform>
   <div id=slate class=pk-slate>
     <!-- Inside #slate on purpose: renderSlate clears the container before it
@@ -4884,6 +4887,10 @@ a display name</a> before picking &mdash; a run with nobody's name on it
 cannot go on the board.</p>
 <p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
 <p id=alertstate class=pk-alertstate role=alert></p>
+<!-- Who is in this pool: distinct people with at least one survivor pick
+     this season, entry being your first pick. initCounts fills it, and only
+     past the same threshold the hub uses. -->
+<p class=note id=svplayers hidden></p>
 
 <!-- Your run first. It is the context for the decision below it — which teams
      are gone and how the season has gone — and reading it after making the
@@ -5226,6 +5233,9 @@ POOLS_HOME_BODY = """
   whenever you want, and skipping one costs you nothing in the other. One
   display name, the same team beside it, one set of rules about what is public
   and when.</p>
+  <!-- Filled by initCounts once enough people have signed up for the number
+       to be an argument rather than an admission; same rule as the hub. -->
+  <p class=note id=poolusers hidden></p>
 </div>
 <!-- Hidden until app.js reveals it. A button that needs JavaScript should not
      sit on a page whose JavaScript did not run — there is no invite code and

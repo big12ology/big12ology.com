@@ -860,8 +860,25 @@ export async function getHealth(env) {
            WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
              AND scored_at IS NULL) AS oldest,
          (SELECT MAX(scored_at) FROM weeks WHERE season = ?) AS last_scored,
-         (SELECT COUNT(*) FROM users WHERE status = 'active') AS players`)
-      .bind(s, s, now, s, now, s).first();
+         (SELECT COUNT(*) FROM users WHERE status = 'active') AS players,
+         -- Signed up, whether or not a week has been scored yet. 'active' is
+         -- earned by completing a scored week, so through launch week the
+         -- players figure reads zero however many people are in; this is the
+         -- number the pools splash quotes. Banned and shadowbanned stay out
+         -- of every public count.
+         (SELECT COUNT(*) FROM users
+           WHERE status IN ('provisional','active')) AS registered,
+         -- Participation per game: at least one pick this season. Joined to
+         -- users so a banned account's picks do not inflate a public number.
+         (SELECT COUNT(DISTINCT p.user_id) FROM picks p
+           JOIN users u ON u.id = p.user_id
+           WHERE p.season = ?
+             AND u.status IN ('provisional','active')) AS pickem_players,
+         (SELECT COUNT(DISTINCT p.user_id) FROM survivor_picks p
+           JOIN users u ON u.id = p.user_id
+           WHERE p.season = ?
+             AND u.status IN ('provisional','active')) AS survivor_players`)
+      .bind(s, s, now, s, now, s, s, s).first();
     db = "ok";
   } catch { /* reported as down */ }
 
@@ -878,10 +895,16 @@ export async function getHealth(env) {
     unscored: stats ? stats.unscored : null,
     waiting_s: waiting,
     last_scored_at: stats ? stats.last_scored : null,
-    // A count, and only a count. The board already names everyone playing, so
-    // this discloses nothing new; it exists so the hub can say how many
-    // people are in without fetching the whole leaderboard to find out.
+    // Counts, and only counts. The board already names everyone playing, so
+    // none of these discloses anything new; they exist so the hub and the
+    // pools pages can say how many people are in without fetching the whole
+    // leaderboard to find out. players: completed a scored week. registered:
+    // signed up. pickem_players / survivor_players: picked at least once
+    // this season in that game.
     players: stats ? stats.players : null,
+    registered: stats ? stats.registered : null,
+    pickem_players: stats ? stats.pickem_players : null,
+    survivor_players: stats ? stats.survivor_players : null,
   });
 }
 

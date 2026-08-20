@@ -587,7 +587,7 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="styles.css?v=c4dc1757"><style>
+<script defer src="../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="styles.css?v=da8545b5"><style>
   .poolgrid { display:grid; gap:14px; margin-top:14px;
     grid-template-columns:repeat(auto-fit,minmax(280px,1fr)) }
   .poolcard { display:block; text-decoration:none; color:inherit }
@@ -595,7 +595,7 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
   .poolcard:hover { border-color:var(--accent) }
   .poolcard p { margin:0 0 8px }
   .poolcard p:last-child { margin:0 }
-</style><script defer src="app.js?v=291a8c7a"></script></head><body>
+</style><script defer src="app.js?v=8465f40e"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pools/">Pools</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
@@ -618,6 +618,9 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
   whenever you want, and skipping one costs you nothing in the other. One
   display name, the same team beside it, one set of rules about what is public
   and when.</p>
+  <!-- Filled by initCounts once enough people have signed up for the number
+       to be an argument rather than an admission; same rule as the hub. -->
+  <p class=note id=poolusers hidden></p>
 </div>
 <!-- Hidden until app.js reveals it. A button that needs JavaScript should not
      sit on a page whose JavaScript did not run — there is no invite code and

@@ -2743,6 +2743,36 @@
     form.addEventListener("submit", function (e) { e.preventDefault(); });
   }
 
+  // ---------------------------------------------------------------- counts
+
+  /* The population figures, on the hub's rule: a count is an argument once
+     enough people are in it and an admission before that, so nothing shows
+     below MIN. Three slots, three meanings. The splash quotes everyone
+     signed up; each game quotes the people who have actually picked in it
+     this season, which for survivor is the same thing as having entered.
+     Counts and only counts, from /api/health, which already says why that
+     is fine to serve. */
+  function initCounts() {
+    var slots = [
+      ["poolusers", "registered", " people have signed up."],
+      ["pkplayers", "pickem_players", " people are playing this season."],
+      ["svplayers", "survivor_players", " people are in the pool."],
+    ].filter(function (s) { return $(s[0]); });
+    if (!slots.length) return;
+    var MIN = 10;
+    api("/api/health").then(function (h) {
+      slots.forEach(function (s) {
+        var n = h && h[s[1]];
+        if (!n || n < MIN) return;
+        var el = $(s[0]);
+        el.textContent = s[2];
+        el.insertBefore(document.createElement("b"), el.firstChild)
+          .textContent = n.toLocaleString();
+        el.hidden = false;
+      });
+    }).catch(function () { /* every page reads fine without them */ });
+  }
+
   // ------------------------------------------------------------------ boot
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -2759,6 +2789,7 @@
       show($("needsname"), !!me && !ready && !!$("slateform"));
       show($("signedin"), ready && !!$("slateform"));
       initSlate();
+      initCounts();
       initShare();
       initAccount(me);
       initBoard(me);

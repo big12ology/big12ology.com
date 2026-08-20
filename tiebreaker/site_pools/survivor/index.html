@@ -587,7 +587,7 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=c4dc1757"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=291a8c7a"></script></head><body>
+<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=da8545b5"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=8465f40e"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a href="/pools/">Pools</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
@@ -623,6 +623,10 @@ a display name</a> before picking &mdash; a run with nobody's name on it
 cannot go on the board.</p>
 <p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
 <p id=alertstate class=pk-alertstate role=alert></p>
+<!-- Who is in this pool: distinct people with at least one survivor pick
+     this season, entry being your first pick. initCounts fills it, and only
+     past the same threshold the hub uses. -->
+<p class=note id=svplayers hidden></p>
 
 <!-- Your run first. It is the context for the decision below it — which teams
      are gone and how the season has gone — and reading it after making the
