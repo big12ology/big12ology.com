@@ -2653,8 +2653,10 @@
       })
       .catch(function (err) {
         $("svnote").textContent = err.status === 404
-          ? "No slate published yet. The week goes up on Tuesday, once the "
-            + "lines are in."
+          // No lines clause here, unlike the pick'em copies of this message:
+          // survivor picks winners outright, and citing the lines to a
+          // survivor player implies they matter to the pick.
+          ? "No slate published yet. The week goes up on Tuesday."
           : explain(err);
         // The picker failed, but the roster is built from your own picks and
         // is still worth drawing — it is the half of this page that does not
