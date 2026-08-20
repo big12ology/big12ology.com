@@ -337,8 +337,13 @@ a.card:hover { border-color: var(--accent); }
   <a class=card href="/pools/">
     <h2>Pools <span class="tag new">new</span></h2>
     <p class=figs>
+      <!-- No "1 account" figure here any more: set beside "2 games" it read
+           as a population of one, not as the feature (one account covers both
+           games), which the hook line below still says in words. The hidden
+           span is the population, filled by the script at the foot of this
+           page once there are enough users for the number to be an argument
+           rather than an admission. -->
       <span><b>2</b>games</span>
-      <span><b>1</b>account</span>
       <span class=players hidden></span>
     </p>
     <p class=hook>Pick'em against the spread and survivor, one account. Both lock at
@@ -349,8 +354,13 @@ a.card:hover { border-color: var(--accent); }
   <a class=card href="/pools/">
     <h2>Pools <span class="tag new">coming soon</span></h2>
     <p class=figs>
+      <!-- No "1 account" figure here any more: set beside "2 games" it read
+           as a population of one, not as the feature (one account covers both
+           games), which the hook line below still says in words. The hidden
+           span is the population, filled by the script at the foot of this
+           page once there are enough users for the number to be an argument
+           rather than an admission. -->
       <span><b>2</b>games</span>
-      <span><b>1</b>account</span>
       <span class=players hidden></span>
     </p>
     <p class=hook>Pick'em against the spread and survivor, one account. Both lock at
@@ -548,12 +558,12 @@ a.card:hover { border-color: var(--accent); }
 </script>
 <!-- PICKEM-ONLY -->
 <script>
-/* How many people are playing — but only once that is worth saying.
+/* How many people are in, and only once that is worth saying.
  *
- * "3 players" is an advertisement for an empty room, and the number spends
+ * "3 users" is an advertisement for an empty room, and the number spends
  * the first weeks of a season being one. So it stays hidden until there are
  * enough of them for the figure to be an argument rather than an admission,
- * and the line reads perfectly well without it in the meantime.
+ * and the card reads perfectly well without it in the meantime.
  *
  * A count and nothing else. The board already names everyone on it, so this
  * discloses nothing that is not public — it just saves fetching the whole
@@ -569,9 +579,9 @@ a.card:hover { border-color: var(--accent); }
       var n = d && d.players;
       if (!n || n < MIN) return;
       Array.prototype.forEach.call(slots, function (el) {
-        // A third figure in the cluster, in the cluster's own shape — number
-        // over label — rather than a sentence tacked onto the end of one.
-        el.innerHTML = "<b></b>players";
+        // A second figure in the cluster, in the cluster's own shape (number
+        // over label) rather than a sentence tacked onto the end of one.
+        el.innerHTML = "<b></b>users";
         el.querySelector("b").textContent = n.toLocaleString();
         el.hidden = false;
       });
