@@ -65,10 +65,15 @@ async function call(method, path, { origin = ORIGIN, cookie = COOKIE, body } = {
 const cron = () =>
   fetch(`${WORKER}/__scheduled?cron=0+13+*+8-12+3`).then((r) => r.status);
 
+// The repo-layout path the import reads through RAW_ORIGIN, not the
+// /pools/data/ path the website serves; see pickem-e2e.sh's fixture step.
+const slatePath = (week) =>
+  join(SITE, "tiebreaker", "pickem", String(SEASON),
+       `week-${String(week).padStart(2, "0")}.json`);
+
 /** Rewrite a published week in the served tree, then re-import it. */
 async function republish(week, mutate) {
-  const p = join(SITE, "pools", "data", String(SEASON),
-                 `week-${String(week).padStart(2, "0")}.json`);
+  const p = slatePath(week);
   const slate = JSON.parse(readFileSync(p, "utf8"));
   mutate(slate);
   slate.pickable_count =
@@ -235,8 +240,7 @@ check("the spent team is on the run",
 // The rule the whole pool is: never the same team twice. Week 2 is republished
 // with that team playing again and a line on it, plus enough other lined games
 // that the week is a contest at all.
-const w2 = JSON.parse(readFileSync(
-  join(SITE, "pools", "data", String(SEASON), "week-02.json"), "utf8"));
+const w2 = JSON.parse(readFileSync(slatePath(2), "utf8"));
 const again = w2.games.find((g) => g.home === mine || g.away === mine);
 if (again) {
   await republish(2, (s) => {
