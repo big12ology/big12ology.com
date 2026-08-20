@@ -105,6 +105,15 @@
    group's accessible name) and the time moved into the row as its own column,
    which is what bought the line back. */
 
+/* A status line is not reading prose. brand.css caps every .note at the
+   measure, which is right for a paragraph someone reads — HOW IT WORKS, the
+   rules — and wrong for a one-sentence message sitting alone in a wide card:
+   there the cap breaks the sentence mid-phrase and reads as a layout
+   accident, not typography. The status notes (the slate's, the card's, the
+   boards', survivor's) run to their card instead. */
+#slateload, #cardnote, #svnote, #boardnote, #svboardnote,
+.pk-slate > .card .note { max-width: none; }
+
 .pk-slate { display: grid; grid-template-columns: 1fr; gap: 4px; }
 
 /* Two columns once there is room. This is what actually fits a full week on a
