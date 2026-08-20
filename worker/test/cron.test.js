@@ -88,12 +88,12 @@ function serve({ slates, scores }, opts = {}) {
   const hits = { slates: new Map(), scores: 0 };
   globalThis.fetch = async (url) => {
     const u = String(url);
-    if (u.endsWith("/tiebreaker/pickem-scores.json")) {
+    if (u.endsWith("/tiebreaker/site/pickem-scores.json")) {
       hits.scores++;
       if (opts.scoresDown) return new Response("", { status: 503 });
       return new Response(JSON.stringify(scores), { status: 200 });
     }
-    const m = u.match(/\/pools\/data\/(\d+)\/week-(\d+)\.json$/);
+    const m = u.match(/\/tiebreaker\/pickem\/(\d+)\/week-(\d+)\.json$/);
     if (m) {
       const wk = Number(m[2]);
       hits.slates.set(wk, (hits.slates.get(wk) || 0) + 1);
@@ -109,7 +109,7 @@ function serve({ slates, scores }, opts = {}) {
 function env0() {
   const env = makeEnv();
   env.SEASON = String(SEASON);
-  env.PAGES_ORIGIN = ORIGIN;
+  env.RAW_ORIGIN = ORIGIN;
   return env;
 }
 

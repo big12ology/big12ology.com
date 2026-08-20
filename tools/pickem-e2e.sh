@@ -136,6 +136,13 @@ say() { printf '  %s\n' "$*"; }
 say "assembling the lit site"
 B12_PICKEM=1 tools/assemble.sh "$SITE" >/dev/null
 
+# The scores fallback fetches the committed file at its repo path,
+# /tiebreaker/site/pickem-scores.json, which the assembled site flattens to
+# /tiebreaker/. Lay the repo-layout copy down too, since the proxy is playing
+# raw.githubusercontent.com as well as the website.
+mkdir -p "$SITE/tiebreaker/site"
+cp "$SITE/tiebreaker/pickem-scores.json" "$SITE/tiebreaker/site/"
+
 # --- the published weeks ------------------------------------------------------
 #
 # publish_slate() refuses to freeze a week more than LEAD_DAYS out and only runs
@@ -152,7 +159,10 @@ root, site, season = sys.argv[1], sys.argv[2], int(sys.argv[3])
 sys.path.insert(0, os.path.join(root, "tiebreaker"))
 import build as B, pickem as P
 games, lines = B.load_games(season), B.load_lines(season)
-out = os.path.join(site, "pools", "data", str(season))
+# The repo-layout path RAW_ORIGIN serves, not the /pools/data/ path the
+# website serves: the Worker imports the committed file, and the proxy is
+# standing in for raw.githubusercontent.com here.
+out = os.path.join(site, "tiebreaker", "pickem", str(season))
 os.makedirs(out, exist_ok=True)
 for wk in (0, 1, 2):
     slate = P.build_slate(season, games, lines, wk)
@@ -173,8 +183,9 @@ say "migrating a fresh D1"
 #
 # SITE_ORIGIN is load-bearing twice over: it is what csrfOk compares Origin
 # against, and the harness asserts that a write from anywhere else is refused.
-# PAGES_ORIGIN points back at the proxy, so the import reads the slates just
-# assembled rather than anything on the internet.
+# RAW_ORIGIN points back at the proxy, standing in for the repo's raw view,
+# so the import reads the slates just written rather than anything on the
+# internet.
 # THE dummy- PREFIX IS LOAD-BEARING, and not a naming preference. The
 # pre-commit hook refuses a secret-shaped value assigned to IDENTITY_PEPPER,
 # SIGNING_KEY or ADMIN_TOKEN, and exempts exactly one thing: a value that
@@ -186,7 +197,7 @@ say "migrating a fresh D1"
 INGEST_KEY="dummy-e2e-$(head -c 18 /dev/urandom | base64 | tr -d '=+/')"
 cat > "$RUN/e2e.env" <<EOF
 SITE_ORIGIN=$BASE
-PAGES_ORIGIN=$BASE
+RAW_ORIGIN=$BASE
 SEASON=$SEASON
 IDENTITY_PEPPER=dummy-e2e-identity-pepper
 STATE_SIGNING_KEY=dummy-e2e-state-signing-key

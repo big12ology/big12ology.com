@@ -6,22 +6,28 @@
 // database entirely costs the picks and nothing else, because every line, every
 // kickoff and every lock time can be re-imported from the repository.
 //
-// The file is fetched from the PAGES ORIGIN, not from big12ology.com. Two
-// reasons, both practical: the apex is behind our own Worker route, so a
-// subrequest to it is a loop through ourselves; and the Pages origin is not
-// cached by the edge, so a slate published four minutes ago is visible. It is
-// the same trick cert-watch.yml and compare-live.sh already use.
+// The file is fetched from the repo's RAW view, not from big12ology.com and
+// not from the Pages origin. The apex is behind our own Worker route and the
+// edge caches it, so a subrequest there is a loop through ourselves reading a
+// possibly ten-minute-old answer. The Pages origin is worse: it answers
+// nothing. GitHub routes Pages by Host header, and a project site's content
+// exists only under Host: big12ology.com; a fetch to big12ology.github.io
+// sends the github.io Host and gets GitHub's 404 for every path. (cert-watch
+// and compare-live reach the Pages servers with curl --connect-to, which
+// keeps the custom-domain Host. A Worker fetch cannot do that.) The raw view
+// serves the committed file, which is the durable record this comment's first
+// paragraph names, and pages.yml commits it minutes before Pages serves it.
 
 import { ats } from "./ats.js";
 
-/** Where the week lives once assemble.sh has copied it. */
+/** The committed slate, as raw.githubusercontent.com serves the repo. */
 export function slateUrl(env, season, week) {
   const nn = String(week).padStart(2, "0");
-  return `${env.PAGES_ORIGIN}/pools/data/${season}/week-${nn}.json`;
+  return `${env.RAW_ORIGIN}/tiebreaker/pickem/${season}/week-${nn}.json`;
 }
 
 export function scoresUrl(env, season) {
-  return `${env.PAGES_ORIGIN}/tiebreaker/pickem-scores.json`;
+  return `${env.RAW_ORIGIN}/tiebreaker/site/pickem-scores.json`;
 }
 
 async function sha256Hex(text) {

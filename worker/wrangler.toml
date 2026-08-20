@@ -30,10 +30,19 @@ routes = [
 # `wrangler secret put` and never in this file — see worker/README.md.
 [vars]
 SITE_ORIGIN = "https://big12ology.com"
-# The Pages origin, fetched directly for slates and scores: no Cloudflare cache
-# in the way, and no subrequest looping back through our own route. The same
-# trick cert-watch.yml and compare-live.sh already use.
-PAGES_ORIGIN = "https://big12ology.github.io"
+# The repo's raw view, fetched for slates and scores: no Cloudflare cache in
+# the way, and no subrequest looping back through our own route. NOT the Pages
+# origin, which this pointed at until 2026-08-20: GitHub routes Pages by Host
+# header, and a project site's content answers only to Host: big12ology.com,
+# so a Worker fetch to big12ology.github.io got GitHub's 404 for every path.
+# That never surfaced because no slate had been published yet, so the import's
+# 404s read as "nothing there yet". cert-watch.yml and compare-live.sh really
+# do reach the Pages servers, but with curl --connect-to, which keeps the
+# custom-domain Host; a fetch() has no equivalent. The raw view serves the
+# committed files, which pages.yml's keep step commits minutes before the
+# deploy makes them a website. Branch pinned to main on purpose: what main
+# says is what the site says.
+RAW_ORIGIN = "https://raw.githubusercontent.com/big12ology/big12ology.com/main"
 # Enter the survivor pool by this week to be on its leaderboard. Entry itself
 # never closes; this only decides who is in the running for the season, and it
 # exists because almost every run is dead by December — without it, one person
@@ -98,7 +107,7 @@ id = "c26df5e7e0904d1db35a4b2131b51a05"
 # NOT BACKED UP, and it does not need to be. backup.yml exists for the one
 # thing that cannot be rebuilt — accounts and picks. Scores are derived: the
 # publisher regenerates this file from committed data on its next run, and
-# until it does, fetchScores falls back to the Pages copy.
+# until it does, fetchScores falls back to the committed copy via RAW_ORIGIN.
 #
 # Created 2026-08-12 with `wrangler kv namespace create SCORES`. worker.yml
 # refuses to deploy while a binding still carries a PLACEHOLDER_ id, because a

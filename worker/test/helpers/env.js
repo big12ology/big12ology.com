@@ -99,7 +99,7 @@ export function makeEnv(overrides = {}) {
     DB: new D1(db),
     SESSIONS: new KV(),
     SITE_ORIGIN: "https://big12ology.com",
-    PAGES_ORIGIN: "https://big12ology.github.io",
+    RAW_ORIGIN: "https://raw.githubusercontent.com/big12ology/big12ology.com/main",
     GOOGLE_CLIENT_ID: "google-client-id",
     GITHUB_CLIENT_ID: "github-client-id",
     GOOGLE_CLIENT_SECRET: "google-secret",

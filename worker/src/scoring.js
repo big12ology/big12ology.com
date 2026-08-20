@@ -24,6 +24,7 @@
 
 import { ats } from "./ats.js";
 import { strandedWeeks } from "./handicap.js";
+import { scoresUrl } from "./slate.js";
 
 const VOID_AFTER = 36 * 3600;
 
@@ -75,12 +76,12 @@ export function scoresKey(season) {
  * could sit an hour before it was graded. Now the publisher POSTs them to
  * /api/ingest/scores, which writes them here.
  *
- * The Pages fetch stays as a fallback and is not dead code: it is what runs if
+ * The file fetch stays as a fallback and is not dead code: it is what runs if
  * the ingest secret is ever unset, if a KV namespace is lost, or on the very
  * first deploy after this change, when nothing has been posted yet. It is also
  * what the tests exercise, since makeEnv binds no SCORES namespace. When both
  * channels have been live for a season and the logs show no fallback, this
- * half can go and PAGES_ORIGIN with it.
+ * half can go, and RAW_ORIGIN with it if the slate import no longer wants it.
  */
 export async function fetchScores(env, season) {
   if (env.SCORES && season != null) {
@@ -89,9 +90,9 @@ export async function fetchScores(env, season) {
     // the fallback below rather than failing the whole sweep.
     const cached = await env.SCORES.get(scoresKey(season), "json");
     if (cached && cached.games) return cached;
-    console.log(`scores: KV miss for ${scoresKey(season)}, asking Pages`);
+    console.log(`scores: KV miss for ${scoresKey(season)}, asking the repo`);
   }
-  const r = await fetch(`${env.PAGES_ORIGIN}/tiebreaker/pickem-scores.json`, {
+  const r = await fetch(scoresUrl(env), {
     headers: { Accept: "application/json" }, cf: { cacheTtl: 0 },
   });
   if (!r.ok) throw new Error(`scores_${r.status}`);
