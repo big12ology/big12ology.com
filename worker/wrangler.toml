@@ -52,27 +52,32 @@ RAW_ORIGIN = "https://raw.githubusercontent.com/big12ology/big12ology.com/main"
 SURVIVOR_RANKED_ENTRY_BY = "6"
 GOOGLE_CLIENT_ID = "1029553052112-5db59l7pljf20ovi2913lghhv7n9rvgm.apps.googleusercontent.com"
 GITHUB_CLIENT_ID = "Ov23lioQoMOhhs5h5Cs7"
-# MICROSOFT AND AMAZON ARE WIRED AND DARK.
+# MICROSOFT IS WIRED AND DARK; AMAZON IS LIVE ONCE ITS SECRET EXISTS.
 #
 # src/oauth.js knows how to talk to both. `enabled(env)` offers a provider only
 # when its credentials are actually present, so an unconfigured one is a 404 at
 # /api/auth/login/<name> and its button is removed from the account page by
-# /api/auth/providers. Neither of these is a placeholder to be filled in "when
-# it works" — both code paths are tested and the secrets are the whole
-# remaining step.
+# /api/auth/providers. Nothing here is a placeholder to be filled in "when
+# it works" — both code paths are tested, and what remains per provider is
+# the pieces named below.
 #
-# To turn one on, add its CLIENT_ID here and put the secret in with
-# `wrangler secret put`. No deploy is required for the button to appear.
+# To turn one on, add its CLIENT_ID here (lands on the next deploy) and put
+# the secret in with `wrangler secret put` (immediate). The button appears on
+# its own once the Worker sees both.
 #
 #   MICROSOFT_CLIENT_ID = "..."     Entra app registration, "Personal Microsoft
 #                                   accounts only". Redirect URI:
 #                                   https://big12ology.com/api/auth/callback/microsoft
 #                                   secret: MICROSOFT_CLIENT_SECRET
+#                                   Registration stalled 2026-08-20: the
+#                                   dept@ Microsoft account still needs the
+#                                   Azure signup that provisions a tenant.
 #
-#   AMAZON_CLIENT_ID = "amzn1.application-oa2-client...."
-#                                   Login with Amazon, Allowed Return URL:
-#                                   https://big12ology.com/api/auth/callback/amazon
-#                                   secret: AMAZON_CLIENT_SECRET
+# Amazon's registration: Login with Amazon security profile "Big12ology
+# Pools" under the dept@ Amazon account, Allowed Return URL
+# https://big12ology.com/api/auth/callback/amazon; the pair is
+# AMAZON_CLIENT_SECRET, which lives in `wrangler secret put`.
+AMAZON_CLIENT_ID = "amzn1.application-oa2-client.0c2a9b4efa8c48a09f399ea964202234"
 #
 # NOT APPLE, and deliberately not. Sign in with Apple needs a paid developer
 # account, and the enrolment forces a choice this project has no good answer
