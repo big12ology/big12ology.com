@@ -133,3 +133,12 @@ Shared with the attendance tracker; break them only deliberately.
    placement awkward, change the placement in both, not in one. A reader
    comparing two boards should be spending their attention on the numbers,
    not relearning the legend.
+7. **The games are one product, and nothing floats.** Pick'em and survivor
+   share one card anatomy — header with title and week selector, standing
+   facts, live regions, status note, rows — at the same row padding and
+   spacing, diverging only where a real difference forces it (survivor
+   stacks its sides; the slate's one-line rows fit a week on a screen).
+   And no content sits bare on the page background, anywhere on the site: a
+   thing is inside a card, or it carries its own frame the way the sign-in
+   bar does. The 2026-08-20 launch day was spent rediscovering this one
+   element at a time; it is cheaper to read it here.
