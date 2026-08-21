@@ -68,10 +68,13 @@
       credentials: "same-origin",
       headers: {"Accept": "application/json"}
     };
-    if (opts.body !== undefined) {
-      init.headers["Content-Type"] = "application/json";
-      init.body = JSON.stringify(opts.body);
-    }
+    // Every write says application/json, body or no body: csrfOk refuses a
+    // write without the pair (Origin plus this content type), and the one
+    // body-less write on the site — the logout POST — went out bare, was
+    // refused as bad_origin, and the sign-out button looked dead. Launch
+    // day's first signed-in user found it.
+    if (init.method !== "GET") init.headers["Content-Type"] = "application/json";
+    if (opts.body !== undefined) init.body = JSON.stringify(opts.body);
     return fetch(path, init).then(function (r) {
       return r.text().then(function (t) {
         var data = null;
@@ -1152,6 +1155,10 @@
         e.preventDefault();
         api("/api/auth/logout", {method: "POST"}).then(function () {
           location.href = "/pools/pickem/";
+        }).catch(function (err) {
+          // A refusal with no message is a dead button; that is how this
+          // call's real failure hid for a week.
+          alertMsg(explain(err));
         });
       });
       var btn = el("button", "wbtn", "Sign out");
