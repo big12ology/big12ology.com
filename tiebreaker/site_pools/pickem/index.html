@@ -587,7 +587,7 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=da8545b5"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=8465f40e"></script></head><body>
+<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=4b21dc86"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=8f11ef4a"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pools/">Pools</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
@@ -616,30 +616,37 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
   <p class=pk-lockspan id=lockspan hidden></p>
   <p class=pk-slatecount id=slatecount></p>
 </div>
-
-<p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
-<p id=alertstate class=pk-alertstate role=alert></p>
 <p class=pk-signedout id=signedout hidden><a href="/pools/account.html">Sign in</a>
   to make your picks.</p>
-<p class=pk-hint id=signedin hidden>Picks save automatically and lock at
-  kickoff.</p>
 <p class=pk-signedout id=needsname hidden>Choose a display name before you can
   pick &mdash; <a href="/pools/account.html">it takes a moment</a>.</p>
-<!-- Who is in this game: distinct people with at least one pick this season.
-     initCounts fills it, and only past the same threshold the hub uses. -->
-<p class=note id=pkplayers hidden></p>
-<form id=slateform>
-  <div id=slate class=pk-slate>
-    <!-- Inside #slate on purpose: renderSlate clears the container before it
-         draws game rows, so the card removes itself the moment there is a
-         slate. While there is not one, the message gets the same card the
-         survivor page gives its empty state. -->
-    <div class=card>
-      <h2>This week's slate</h2>
-      <p class=note id=slateload>Loading this week's slate&hellip;</p>
-    </div>
+<!-- The slate's card, the same anatomy as the survivor pick card: header
+     with the title and the week selector, the standing facts (how picking
+     works, who is in), the live regions, the status note, then the rows.
+     Everything about the slate lives inside it — nothing on this site
+     floats on the page background except the sign-in bars, which carry
+     their own frame. The title flips to "Week N, before it opens" on a
+     look-ahead and app.js owns the text; the selector hides until there is
+     more than one week to offer. -->
+<div class=card id=slatecard>
+  <div class=pk-boardhead>
+    <h2 id=slatecardtitle>This week's slate</h2>
+    <label class=pk-wksel hidden>Week
+      <select id=slatewk aria-label="Which week to look at"></select></label>
   </div>
-</form>
+  <p class=pk-hint id=signedin hidden>Picks save automatically and lock at
+    kickoff.</p>
+  <!-- Who is in this game: distinct people with at least one pick this
+       season. initCounts fills it, past the same threshold the hub uses. -->
+  <p class=note id=pkplayers hidden></p>
+  
+<p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
+<p id=alertstate class=pk-alertstate role=alert></p>
+  <p class=note id=slateload>Loading this week's slate&hellip;</p>
+  <form id=slateform>
+    <div id=slate class=pk-slate></div>
+  </form>
+</div>
 
 <noscript><p class=note><b>The picker needs JavaScript.</b> The rules and this
 week's slate are readable without it:

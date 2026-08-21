@@ -1,0 +1,107 @@
+{
+ "game_count": 8,
+ "games": [
+  {
+   "away": "Houston",
+   "b12": "both",
+   "game_id": 401856860,
+   "home": "Colorado",
+   "kickoff": "2026-11-14T03:15:00.000Z",
+   "kickoff_at": 1794626100,
+   "neutral": false,
+   "preview": "/schedule/game/401856860-houston-at-colorado.html",
+   "spread_x2": null,
+   "unpickable": "no_line"
+  },
+  {
+   "away": "Arizona State",
+   "b12": "both",
+   "game_id": 401856857,
+   "home": "UCF",
+   "kickoff": "2026-11-14T05:00:00.000Z",
+   "kickoff_at": 1794632400,
+   "neutral": false,
+   "preview": "/schedule/game/401856857-arizona-state-at-ucf.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Baylor",
+   "b12": "both",
+   "game_id": 401856858,
+   "home": "BYU",
+   "kickoff": "2026-11-14T05:00:00.000Z",
+   "kickoff_at": 1794632400,
+   "neutral": false,
+   "preview": "/schedule/game/401856858-baylor-at-byu.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Cincinnati",
+   "b12": "both",
+   "game_id": 401856859,
+   "home": "Iowa State",
+   "kickoff": "2026-11-14T05:00:00.000Z",
+   "kickoff_at": 1794632400,
+   "neutral": false,
+   "preview": "/schedule/game/401856859-cincinnati-at-iowa-state.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Kansas",
+   "b12": "both",
+   "game_id": 401856861,
+   "home": "West Virginia",
+   "kickoff": "2026-11-14T05:00:00.000Z",
+   "kickoff_at": 1794632400,
+   "neutral": false,
+   "preview": "/schedule/game/401856861-kansas-at-west-virginia.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Kansas State",
+   "b12": "both",
+   "game_id": 401856862,
+   "home": "TCU",
+   "kickoff": "2026-11-14T05:00:00.000Z",
+   "kickoff_at": 1794632400,
+   "neutral": false,
+   "preview": "/schedule/game/401856862-kansas-state-at-tcu.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Texas Tech",
+   "b12": "both",
+   "game_id": 401856863,
+   "home": "Oklahoma State",
+   "kickoff": "2026-11-14T05:00:00.000Z",
+   "kickoff_at": 1794632400,
+   "neutral": false,
+   "preview": "/schedule/game/401856863-texas-tech-at-oklahoma-state.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Utah",
+   "b12": "both",
+   "game_id": 401856864,
+   "home": "Arizona",
+   "kickoff": "2026-11-14T05:00:00.000Z",
+   "kickoff_at": 1794632400,
+   "neutral": false,
+   "preview": "/schedule/game/401856864-utah-at-arizona.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  }
+ ],
+ "lock_at": null,
+ "pickable_count": 0,
+ "preview": true,
+ "season": 2026,
+ "status": "no_contest",
+ "week": 11
+}

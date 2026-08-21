@@ -1,0 +1,95 @@
+{
+ "game_count": 7,
+ "games": [
+  {
+   "away": "Baylor",
+   "b12": "both",
+   "game_id": 401856844,
+   "home": "UCF",
+   "kickoff": "2026-10-30T23:30:00.000Z",
+   "kickoff_at": 1793403000,
+   "neutral": false,
+   "preview": "/schedule/game/401856844-baylor-at-ucf.html",
+   "spread_x2": null,
+   "unpickable": "no_line"
+  },
+  {
+   "away": "Arizona",
+   "b12": "both",
+   "game_id": 401856842,
+   "home": "Texas Tech",
+   "kickoff": "2026-10-31T04:00:00.000Z",
+   "kickoff_at": 1793419200,
+   "neutral": false,
+   "preview": "/schedule/game/401856842-arizona-at-texas-tech.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Arizona State",
+   "b12": "both",
+   "game_id": 401856843,
+   "home": "BYU",
+   "kickoff": "2026-10-31T04:00:00.000Z",
+   "kickoff_at": 1793419200,
+   "neutral": false,
+   "preview": "/schedule/game/401856843-arizona-state-at-byu.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Kansas",
+   "b12": "both",
+   "game_id": 401856845,
+   "home": "TCU",
+   "kickoff": "2026-10-31T04:00:00.000Z",
+   "kickoff_at": 1793419200,
+   "neutral": false,
+   "preview": "/schedule/game/401856845-kansas-at-tcu.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Kansas State",
+   "b12": "both",
+   "game_id": 401856846,
+   "home": "Colorado",
+   "kickoff": "2026-10-31T04:00:00.000Z",
+   "kickoff_at": 1793419200,
+   "neutral": false,
+   "preview": "/schedule/game/401856846-kansas-state-at-colorado.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Oklahoma State",
+   "b12": "both",
+   "game_id": 401856847,
+   "home": "Iowa State",
+   "kickoff": "2026-10-31T04:00:00.000Z",
+   "kickoff_at": 1793419200,
+   "neutral": false,
+   "preview": "/schedule/game/401856847-oklahoma-state-at-iowa-state.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Utah",
+   "b12": "both",
+   "game_id": 401856848,
+   "home": "Cincinnati",
+   "kickoff": "2026-10-31T04:00:00.000Z",
+   "kickoff_at": 1793419200,
+   "neutral": false,
+   "preview": "/schedule/game/401856848-utah-at-cincinnati.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  }
+ ],
+ "lock_at": null,
+ "pickable_count": 0,
+ "preview": true,
+ "season": 2026,
+ "status": "no_contest",
+ "week": 9
+}

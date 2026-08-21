@@ -1,0 +1,83 @@
+{
+ "game_count": 6,
+ "games": [
+  {
+   "away": "Iowa State",
+   "b12": "both",
+   "game_id": 401856826,
+   "home": "BYU",
+   "kickoff": "2026-10-10T02:15:00.000Z",
+   "kickoff_at": 1791598500,
+   "neutral": false,
+   "preview": "/schedule/game/401856826-iowa-state-at-byu.html",
+   "spread_x2": null,
+   "unpickable": "no_line"
+  },
+  {
+   "away": "Hawai'i",
+   "b12": "home",
+   "game_id": 401856808,
+   "home": "Arizona State",
+   "kickoff": "2026-10-10T04:00:00.000Z",
+   "kickoff_at": 1791604800,
+   "neutral": false,
+   "preview": "/schedule/game/401856808-hawai-i-at-arizona-state.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Arizona",
+   "b12": "both",
+   "game_id": 401856823,
+   "home": "West Virginia",
+   "kickoff": "2026-10-10T04:00:00.000Z",
+   "kickoff_at": 1791604800,
+   "neutral": false,
+   "preview": "/schedule/game/401856823-arizona-at-west-virginia.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "UCF",
+   "b12": "both",
+   "game_id": 401856824,
+   "home": "Oklahoma State",
+   "kickoff": "2026-10-10T04:00:00.000Z",
+   "kickoff_at": 1791604800,
+   "neutral": false,
+   "preview": "/schedule/game/401856824-ucf-at-oklahoma-state.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Houston",
+   "b12": "both",
+   "game_id": 401856825,
+   "home": "Kansas State",
+   "kickoff": "2026-10-10T04:00:00.000Z",
+   "kickoff_at": 1791604800,
+   "neutral": false,
+   "preview": "/schedule/game/401856825-houston-at-kansas-state.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Kansas",
+   "b12": "both",
+   "game_id": 401856827,
+   "home": "Utah",
+   "kickoff": "2026-10-10T04:00:00.000Z",
+   "kickoff_at": 1791604800,
+   "neutral": false,
+   "preview": "/schedule/game/401856827-kansas-at-utah.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  }
+ ],
+ "lock_at": null,
+ "pickable_count": 0,
+ "preview": true,
+ "season": 2026,
+ "status": "no_contest",
+ "week": 6
+}

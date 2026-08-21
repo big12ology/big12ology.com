@@ -1,0 +1,95 @@
+{
+ "game_count": 7,
+ "games": [
+  {
+   "away": "Notre Dame",
+   "b12": "home",
+   "game_id": 401856809,
+   "home": "BYU",
+   "kickoff": "2026-10-17T04:00:00.000Z",
+   "kickoff_at": 1792209600,
+   "neutral": false,
+   "preview": "/schedule/game/401856809-notre-dame-at-byu.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Arizona State",
+   "b12": "both",
+   "game_id": 401856828,
+   "home": "Texas Tech",
+   "kickoff": "2026-10-17T04:00:00.000Z",
+   "kickoff_at": 1792209600,
+   "neutral": false,
+   "preview": "/schedule/game/401856828-arizona-state-at-texas-tech.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Cincinnati",
+   "b12": "both",
+   "game_id": 401856829,
+   "home": "West Virginia",
+   "kickoff": "2026-10-17T04:00:00.000Z",
+   "kickoff_at": 1792209600,
+   "neutral": false,
+   "preview": "/schedule/game/401856829-cincinnati-at-west-virginia.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Kansas",
+   "b12": "both",
+   "game_id": 401856830,
+   "home": "Kansas State",
+   "kickoff": "2026-10-17T04:00:00.000Z",
+   "kickoff_at": 1792209600,
+   "neutral": false,
+   "preview": "/schedule/game/401856830-kansas-at-kansas-state.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Oklahoma State",
+   "b12": "both",
+   "game_id": 401856831,
+   "home": "Houston",
+   "kickoff": "2026-10-17T04:00:00.000Z",
+   "kickoff_at": 1792209600,
+   "neutral": false,
+   "preview": "/schedule/game/401856831-oklahoma-state-at-houston.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "TCU",
+   "b12": "both",
+   "game_id": 401856832,
+   "home": "Baylor",
+   "kickoff": "2026-10-17T04:00:00.000Z",
+   "kickoff_at": 1792209600,
+   "neutral": false,
+   "preview": "/schedule/game/401856832-tcu-at-baylor.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Utah",
+   "b12": "both",
+   "game_id": 401856833,
+   "home": "Colorado",
+   "kickoff": "2026-10-17T04:00:00.000Z",
+   "kickoff_at": 1792209600,
+   "neutral": false,
+   "preview": "/schedule/game/401856833-utah-at-colorado.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  }
+ ],
+ "lock_at": null,
+ "pickable_count": 0,
+ "preview": true,
+ "season": 2026,
+ "status": "no_contest",
+ "week": 7
+}

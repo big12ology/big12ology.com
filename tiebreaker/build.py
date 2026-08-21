@@ -4619,28 +4619,35 @@ PICKEM_SLATE_BODY = f"""
   <p class=pk-lockspan id=lockspan hidden></p>
   <p class=pk-slatecount id=slatecount></p>
 </div>
-{PICKEM_LIVE_REGIONS}
 <p class=pk-signedout id=signedout hidden><a href="/pools/account.html">Sign in</a>
   to make your picks.</p>
-<p class=pk-hint id=signedin hidden>Picks save automatically and lock at
-  kickoff.</p>
 <p class=pk-signedout id=needsname hidden>Choose a display name before you can
   pick &mdash; <a href="/pools/account.html">it takes a moment</a>.</p>
-<!-- Who is in this game: distinct people with at least one pick this season.
-     initCounts fills it, and only past the same threshold the hub uses. -->
-<p class=note id=pkplayers hidden></p>
-<form id=slateform>
-  <div id=slate class=pk-slate>
-    <!-- Inside #slate on purpose: renderSlate clears the container before it
-         draws game rows, so the card removes itself the moment there is a
-         slate. While there is not one, the message gets the same card the
-         survivor page gives its empty state. -->
-    <div class=card>
-      <h2>This week's slate</h2>
-      <p class=note id=slateload>Loading this week's slate&hellip;</p>
-    </div>
+<!-- The slate's card, the same anatomy as the survivor pick card: header
+     with the title and the week selector, the standing facts (how picking
+     works, who is in), the live regions, the status note, then the rows.
+     Everything about the slate lives inside it — nothing on this site
+     floats on the page background except the sign-in bars, which carry
+     their own frame. The title flips to "Week N, before it opens" on a
+     look-ahead and app.js owns the text; the selector hides until there is
+     more than one week to offer. -->
+<div class=card id=slatecard>
+  <div class=pk-boardhead>
+    <h2 id=slatecardtitle>This week's slate</h2>
+    <label class=pk-wksel hidden>Week
+      <select id=slatewk aria-label="Which week to look at"></select></label>
   </div>
-</form>
+  <p class=pk-hint id=signedin hidden>Picks save automatically and lock at
+    kickoff.</p>
+  <!-- Who is in this game: distinct people with at least one pick this
+       season. initCounts fills it, past the same threshold the hub uses. -->
+  <p class=note id=pkplayers hidden></p>
+  {PICKEM_LIVE_REGIONS}
+  <p class=note id=slateload>Loading this week's slate&hellip;</p>
+  <form id=slateform>
+    <div id=slate class=pk-slate></div>
+  </form>
+</div>
 {PICKEM_NOSCRIPT}
 <span class=sr-only role=status id=cdsr></span>"""
 
@@ -4885,12 +4892,6 @@ end of your run.</p>
 <p class=pk-signedout id=svneedsname hidden><a href="/pools/account.html">Choose
 a display name</a> before picking &mdash; a run with nobody's name on it
 cannot go on the board.</p>
-<p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
-<p id=alertstate class=pk-alertstate role=alert></p>
-<!-- Who is in this pool: distinct people with at least one survivor pick
-     this season, entry being your first pick. initCounts fills it, and only
-     past the same threshold the hub uses. -->
-<p class=note id=svplayers hidden></p>
 
 <!-- Your run first. It is the context for the decision below it — which teams
      are gone and how the season has gone — and reading it after making the
@@ -4909,7 +4910,26 @@ cannot go on the board.</p>
      phone, roster underneath, which is the order you read them in anyway. -->
 <div class="pk-duo pk-duo-pick">
   <div class=card>
-    <h2>This week's pick</h2>
+    <!-- The same header shape the card page uses: the heading, and beside it
+         the season made browsable — the open week plus every later one as a
+         look-ahead. Hidden until app.js has more than one week to offer. -->
+    <div class=pk-boardhead>
+      <!-- The title flips with the mode: "This week's pick" for the live
+           week, "Week N, before it opens" on a look-ahead — the same words
+           the pick'em's preview card uses, so the two games read as one
+           feature. app.js owns the text. -->
+      <h2 id=svcardtitle>This week's pick</h2>
+      <label class=pk-wksel hidden>Week
+        <select id=svwk aria-label="Which week to look at"></select></label>
+    </div>
+    <!-- Who is in this pool: distinct people with at least one survivor
+         pick this season, entry being your first pick. initCounts fills it,
+         past the same threshold the hub uses. Inside the card with the live
+         regions, because nothing on this site floats on the page
+         background. -->
+    <p class=note id=svplayers hidden></p>
+    <p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
+    <p id=alertstate class=pk-alertstate role=alert></p>
     <p class=note id=svnote>Loading&hellip;</p>
     <form id=svform>
       <div id=svslate class=pk-slate></div>
@@ -5303,6 +5323,65 @@ def build_pools_home(year):
         f.write(html)
     BASE = prev
     print(f"built pools home -> {POOLS_SITE}/index.html")
+
+
+def build_pools_preview(year, games):
+    """The rest of the season, for looking at.
+
+    Every week still holding an unplayed game gets a look-ahead file at
+    /pools/preview/week-NN.json — the exact shape /api/slate serves, built
+    from committed games and lines (no fetch; see the CFBD budget note in
+    pages.yml) — and /pools/preview.json indexes them. app.js offers them
+    behind a week selector with every control disabled: a published week is
+    the API's to serve, an unpublished one is informational, and before the
+    first publish that is the whole section. The lines in these files are
+    today's market, not the frozen ones; the pages mark them ~ and say so,
+    and preview: true is what the client keys the whole treatment off.
+
+    survivor_weeks is the index filtered the way the Worker refuses
+    non-weeks: fewer than two pickable conference teams is not a contest
+    (MIN_SURVIVOR_TEAMS in worker/src/handicap.js). Week 0's lone Big 12
+    game is why survivor's list starts a week after the pick'em's.
+    """
+    lines = load_lines(year)
+    by_id = {g["id"]: g for g in games}
+    outdir = os.path.join(POOLS_SITE, "preview")
+    os.makedirs(outdir, exist_ok=True)
+
+    pending = sorted({w for g in games
+                      if not g.get("completed")
+                      and (w := pickem_mod.week_of(g, year)) is not None})
+    weeks, sv_weeks = [], []
+    for wk in pending:
+        s = pickem_mod.build_slate(year, games, lines, wk)
+        if not s or not s["games"]:
+            continue
+        # Every row can point at its page on the schedule: the preview is a
+        # shop window, and the game pages are the aisles.
+        for e in s["games"]:
+            g = by_id.get(e["game_id"])
+            if g:
+                e["preview"] = "/schedule/game/" + game_slug(g)
+        s["preview"] = True
+        with open(os.path.join(outdir, f"week-{wk:02d}.json"), "w") as f:
+            json.dump(s, f, indent=1, sort_keys=True)
+        weeks.append(wk)
+        # Prospective, so no line condition: an August look at Week 9 has no
+        # market yet, but the week will have one by the time it publishes,
+        # and what decides whether survivor runs is who is playing.
+        teams = set()
+        for e in s["games"]:
+            if e.get("b12") in ("home", "both"):
+                teams.add(e["home"])
+            if e.get("b12") in ("away", "both"):
+                teams.add(e["away"])
+        if len(teams) >= 2:
+            sv_weeks.append(wk)
+    with open(os.path.join(POOLS_SITE, "preview.json"), "w") as f:
+        json.dump({"weeks": weeks, "survivor_weeks": sv_weeks},
+                  f, indent=1, sort_keys=True)
+    print(f"built pools preview -> weeks {weeks[:1]}..{weeks[-1:]}"
+          f" ({len(weeks)} pickem, {len(sv_weeks)} survivor)")
 
 
 def build_pools_soon(year, games):
@@ -5733,6 +5812,7 @@ def main():
                                     os.path.join(SITE, "pickem-scores.json"))
             build_pickem(year)
             build_pools_home(year)
+            build_pools_preview(year, games)
         # Built either way. It is what stands at /pickem/ while the section
         # is dark, and building it on every run means it cannot rot into
         # something that no longer compiles by the time it is needed.

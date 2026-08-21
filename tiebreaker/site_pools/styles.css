@@ -112,9 +112,14 @@
    accident, not typography. The status notes (the slate's, the card's, the
    boards', survivor's) run to their card instead. */
 #slateload, #cardnote, #svnote, #boardnote, #svboardnote,
-.pk-slate > .card .note { max-width: none; }
+.pk-pvlinks, .pk-slate > .note { max-width: none; }
 
-.pk-slate { display: grid; grid-template-columns: 1fr; gap: 4px; }
+/* The gap and the row padding are the survivor card's numbers, measured:
+   both games' rows live inside the same card anatomy now, and 3px-padded
+   rows at a 4px gap beside survivor's 8px read as a different product.
+   The rows stay one line — stacking is survivor's answer to a narrower
+   card, and a whole week on one screen is still this slate's job. */
+.pk-slate { display: grid; grid-template-columns: 1fr; gap: 8px; }
 
 /* Two columns once there is room. This is what actually fits a full week on a
    screen: shrinking the type far enough to stack sixteen games in one column
@@ -131,15 +136,17 @@
    Same DOM order either way, so the keyboard walks it the same. */
 @media (min-width: 900px) {
   .pk-slate { display: block; columns: 2; column-gap: 12px; }
-  /* No row gap in a column layout, so the rows carry their own. */
-  .pk-slate-game { break-inside: avoid; margin-bottom: 4px; }
+  /* No row gap in a column layout, so the rows carry their own — the same
+     8px the grid gap gives them below 900. */
+  .pk-slate-game { break-inside: avoid; margin-bottom: 8px; }
   /* The break between playable and not spans both columns, so the two groups
      never interleave across the gutter — and it starts a fresh pair of
      columns beneath it, which is what keeps the two groups from sharing one. */
   .pk-deadhead { column-span: all; }
-  /* The empty-state card (loading, no slate yet, no games) is the only thing
-     ever inside #slate besides game rows; half a column is no width for it. */
-  .pk-slate > .card { column-span: all; }
+  /* The empty-state note (loading failed mid-render, no games) is the only
+     thing ever inside #slate besides game rows; half a column is no width
+     for a sentence. */
+  .pk-slate > .note { column-span: all; }
 }
 
 .pk-deadhead {
@@ -149,7 +156,9 @@
 
 .pk-slate-game {
   border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
-  margin: 0; padding: 3px 8px; min-width: 0;
+  /* 8px 10px, not the old 3px 8px: the survivor card's row padding, see the
+     .pk-slate note above. */
+  margin: 0; padding: 8px 10px; min-width: 0;
   display: grid; gap: 0 8px; align-items: center;
 }
 .pk-slate-game legend { padding: 0; }
@@ -651,6 +660,22 @@
 /* A game you never picked has no record to show, so the whole row recedes. */
 .pk-locked .pk-slate-game:not(:has(input:checked)) { opacity: .6; }
 
+/* --- the look-ahead ------------------------------------------------------
+   Before the first slate publishes, the upcoming week renders through the
+   ordinary renderer with everything shut (see renderPickemPreview). The
+   rows stay at full strength — like signed-out, there is no record to
+   recede behind, and the week is the whole reason to look — and the chip
+   column holds each game's link to its schedule page instead of a result,
+   sized to the word rather than to "WIN". */
+.pk-preview .pk-slate-game:not(:has(input:checked)) { opacity: 1; }
+.pk-preview .pk-slate-game,
+.pk-preview .pk-slate-game:not([disabled]) {
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+}
+.pk-peek { font-size: var(--t-meta); white-space: nowrap; justify-self: end;
+           color: var(--accent2); text-decoration: underline;
+           text-underline-offset: 2px; text-decoration-thickness: 1px; }
+
 /* --- the game's own state ------------------------------------------------
    The kickoff time is only interesting until kickoff. After that this column
    says what the game is doing, and the chip at the other end goes on saying
@@ -782,6 +807,11 @@
 .pk-duo { display: grid; gap: 14px; align-items: start; }
 @media (min-width: 980px) {
   .pk-duo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  /* A duo with one card is not a duo: signed out and on the look-ahead the
+     roster card is hidden, and holding its column open left the pick card
+     narrow beside a blank — the exact width mismatch against the pick'em's
+     full-row card. One visible card takes the row. */
+  .pk-duo:has(> .card[hidden]) { grid-template-columns: minmax(0, 1fr); }
 }
 /* The room reads as a summary of the two below it, so it spans and its
    figures spread rather than stacking into a column. */
@@ -801,6 +831,16 @@
                         text-decoration-color: var(--dim); }
 .pk-svspent:hover { border-color: var(--line); }
 .pk-svspent .pk-num { font-weight: 400; font-size: var(--t-fine); color: var(--dim); }
+
+/* Survivor's line is information, not the game — the pick is straight up,
+   and at chip weight the number read as the thing to optimize. Small, dim,
+   and named as whose opinion it is ("Vegas says"); stays that way even on
+   the selected side, where the generic rule would bold it back up. The
+   pick'em's numbers keep their weight, because there the number IS the
+   game. */
+.pk-side .pk-vegas { font-weight: 400; font-size: var(--t-fine);
+                     color: var(--dim); }
+.pk-slate-game input:checked + .pk-side .pk-vegas { font-weight: 400; }
 
 /* --- the matchup stacks inside the survivor card -------------------------
    The slate's 1fr / 1.3em / 1fr sides assume a card the width of the page.

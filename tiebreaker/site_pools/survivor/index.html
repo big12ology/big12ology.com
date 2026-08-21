@@ -587,7 +587,7 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=da8545b5"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=8465f40e"></script></head><body>
+<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=4b21dc86"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=8f11ef4a"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a href="/pools/">Pools</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
@@ -621,12 +621,6 @@ end of your run.</p>
 <p class=pk-signedout id=svneedsname hidden><a href="/pools/account.html">Choose
 a display name</a> before picking &mdash; a run with nobody's name on it
 cannot go on the board.</p>
-<p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
-<p id=alertstate class=pk-alertstate role=alert></p>
-<!-- Who is in this pool: distinct people with at least one survivor pick
-     this season, entry being your first pick. initCounts fills it, and only
-     past the same threshold the hub uses. -->
-<p class=note id=svplayers hidden></p>
 
 <!-- Your run first. It is the context for the decision below it — which teams
      are gone and how the season has gone — and reading it after making the
@@ -645,7 +639,26 @@ cannot go on the board.</p>
      phone, roster underneath, which is the order you read them in anyway. -->
 <div class="pk-duo pk-duo-pick">
   <div class=card>
-    <h2>This week's pick</h2>
+    <!-- The same header shape the card page uses: the heading, and beside it
+         the season made browsable — the open week plus every later one as a
+         look-ahead. Hidden until app.js has more than one week to offer. -->
+    <div class=pk-boardhead>
+      <!-- The title flips with the mode: "This week's pick" for the live
+           week, "Week N, before it opens" on a look-ahead — the same words
+           the pick'em's preview card uses, so the two games read as one
+           feature. app.js owns the text. -->
+      <h2 id=svcardtitle>This week's pick</h2>
+      <label class=pk-wksel hidden>Week
+        <select id=svwk aria-label="Which week to look at"></select></label>
+    </div>
+    <!-- Who is in this pool: distinct people with at least one survivor
+         pick this season, entry being your first pick. initCounts fills it,
+         past the same threshold the hub uses. Inside the card with the live
+         regions, because nothing on this site floats on the page
+         background. -->
+    <p class=note id=svplayers hidden></p>
+    <p id=savestate class=pk-savestate role=status aria-live=polite aria-atomic=true></p>
+    <p id=alertstate class=pk-alertstate role=alert></p>
     <p class=note id=svnote>Loading&hellip;</p>
     <form id=svform>
       <div id=svslate class=pk-slate></div>

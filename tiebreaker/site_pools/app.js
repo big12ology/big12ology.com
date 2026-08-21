@@ -149,10 +149,22 @@
   // Week 1's Tuesday, not the pick'em's. The target is fixed at first draw
   // on purpose: once the hour arrives it says so, rather than rolling a
   // week forward over a cron that is merely minutes late.
-  function slateCountdown(node, pool) {
-    var t = nextSlateTime();
+  //
+  // With `pv` (the preview slate the message sits above), the same clock
+  // narrates a different scene: the week is on the page, just not open, so
+  // the message says what the reader is looking at and when it goes live.
+  function slateCountdown(node, pool, pv) {
+    // A far-out week has no lock yet — every kickoff TBD means nothing is
+    // pickable and lock_at is null — but its games still carry real DATES
+    // (only the hours are CFBD placeholders), and the publish Tuesday only
+    // needs the date. Falling back to nextSlateTime here once claimed Week 5
+    // would open in four days.
+    var lockish = pv && (pv.lock_at || Math.min.apply(null,
+      pv.games.map(function (g) { return g.kickoff_at || Infinity; })));
+    var t = pv ? publishTuesday(lockish === Infinity ? null : lockish)
+               : nextSlateTime();
     var skipsWeek0 = false;
-    if (pool === "survivor") {
+    if (!pv && pool === "survivor") {
       var w1 = week1Tuesday(t.getUTCFullYear());
       if (t < w1) { t = w1; skipsWeek0 = true; }
     }
@@ -161,8 +173,10 @@
     function draw() {
       var ms = t - Date.now();
       if (ms <= 0) {
-        node.textContent = "No slate published yet, but it is due: " +
-          "the week should be up any time now.";
+        node.textContent = pv
+          ? "Picks should open any time now. Reload for the live week."
+          : "No slate published yet, but it is due: " +
+            "the week should be up any time now.";
         return;
       }
       var d = Math.floor(ms / 86400000);
@@ -170,20 +184,141 @@
       var away = !d && !h ? "under an hour"
         : (d ? d + (d === 1 ? " day" : " days") + (h ? " and " : "") : "")
           + (h ? h + (h === 1 ? " hour" : " hours") : "");
-      node.textContent = skipsWeek0
-        ? "No slate published yet. Week 0 is not a survivor week, so the " +
-          "first pick goes up on " + when + ": " + away + " away."
-        : "No slate published yet. The week goes up on " + when +
-          (pool === "survivor" ? "" : ", once the lines are in") +
-          ": " + away + " away.";
+      node.textContent = pv
+        ? (pool === "survivor"
+            ? "A look ahead at Week " + pv.week + ". Nothing can be picked " +
+              "yet: this week's pick opens on " + when + ", " + away +
+              " from now. A line marked ~ is today's market, not fixed."
+            : "A look ahead at Week " + pv.week + ". Nothing can be picked " +
+              "yet: picks open on " + when + ", " + away + " from now, " +
+              "when the lines freeze. A line marked ~ is today's market, " +
+              "not fixed; TBD has no market yet.")
+        : skipsWeek0
+          ? "No slate published yet. Week 0 is not a survivor week, so the " +
+            "first pick goes up on " + when + ": " + away + " away."
+          : "No slate published yet. The week goes up on " + when +
+            (pool === "survivor" ? "" : ", once the lines are in") +
+            ": " + away + " away.";
     }
+    // One ticker per node, however many times the selector lands here: the
+    // survivor page reuses its note element across weeks, and two intervals
+    // writing one node is a message that flickers between weeks.
+    if (node._cdTick) clearInterval(node._cdTick);
     draw();
-    var tick = setInterval(function () {
+    node._cdTick = setInterval(function () {
       // The node outlives its usefulness when a slate renders over it —
       // renderSlate clears the container — so let the ticker die with it.
-      if (!node.isConnected) { clearInterval(tick); return; }
+      if (!node.isConnected) { clearInterval(node._cdTick); return; }
       draw();
     }, 60000);
+  }
+
+  // The countdown's off switch, for the node that never disconnects: going
+  // back to the live week hands the survivor note back to svRepaint.
+  function stopCountdown(node) {
+    if (node && node._cdTick) { clearInterval(node._cdTick); node._cdTick = null; }
+  }
+
+  /* The look-ahead season, written by build_pools_preview: an index of the
+     weeks still to play, and a file per week in the API's own shape. All of
+     it renders disabled, and only for weeks the API is not serving. Every
+     loader returns null on any failure — the countdown alone is the
+     fallback, and it already works. */
+  var PVX = null;
+  function previewIndex() {
+    if (!PVX) {
+      PVX = fetch("/pools/preview.json")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; });
+    }
+    return PVX;
+  }
+
+  function previewWeek(wk) {
+    var nn = String(wk).length < 2 ? "0" + wk : String(wk);
+    return fetch("/pools/preview/week-" + nn + ".json")
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (s) {
+        if (!s || !s.games || !s.games.length) return null;
+        // no_line is a fact about grading, and a look-ahead grades nothing:
+        // most of a future week has no market yet, and sorting all of it
+        // under "not playable" would read as a verdict on the games rather
+        // than on the calendar. The slot shows TBD instead. kickoff_tbd
+        // stays — the placeholder times CFBD ships for unset windows are
+        // wrong on purpose, and a wrong time shown is worse than a tag.
+        s.games.forEach(function (g) {
+          if (g.unpickable === "no_line") delete g.unpickable;
+        });
+        return s;
+      })
+      .catch(function () { return null; });
+  }
+
+  /* When a week's picks open: the Tuesday 13:00 UTC before its lock, which
+     is the refresh that publishes it plus the Worker sweep that imports it.
+     The same walk nextSlateTime does, pointed at a particular week instead
+     of at the calendar. */
+  function publishTuesday(lockAt) {
+    if (!lockAt) return nextSlateTime();
+    var d = new Date(lockAt * 1000);
+    var t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(),
+                              d.getUTCDate(), 13, 0, 0));
+    while (t.getUTCDay() !== 2 || t.getTime() > lockAt * 1000) {
+      t.setUTCDate(t.getUTCDate() - 1);
+    }
+    return t;
+  }
+
+  // The shop-window footer under a preview's message: where to go while the
+  // week is shut. The rows link to their own game pages; this names the
+  // section-level tools.
+  function previewLinksNote() {
+    var p = el("p", "note pk-pvlinks");
+    p.appendChild(document.createTextNode("While you wait, every matchup " +
+      "links to its page on the "));
+    var a = el("a", null, "Schedule");
+    a.href = "/schedule/";
+    p.appendChild(a);
+    p.appendChild(document.createTextNode(", and the "));
+    var b = el("a", null, "Tiebreaker");
+    b.href = "/tiebreaker/";
+    p.appendChild(b);
+    p.appendChild(document.createTextNode(" has the season forecast those " +
+      "pages draw from."));
+    return p;
+  }
+
+  /* A game card's look-ahead dressing — the flipped title, the links note,
+     the game count — and its removal. One pair shared by both games, so
+     the two cards cannot drift apart and a selector cannot leave half of
+     it behind. `title` and `note` are the card's own; the links and count
+     are created on first use, keyed off the note's id. */
+  function lookaheadMeta(title, note, pv) {
+    if (title) title.textContent = "Week " + pv.week + ", before it opens";
+    if (!note) return;
+    var links = $(note.id + "-pvlinks");
+    if (!links) {
+      links = previewLinksNote();
+      links.id = note.id + "-pvlinks";
+      note.insertAdjacentElement("afterend", links);
+    }
+    show(links, true);
+    var count = $(note.id + "-pvcount");
+    if (!count) {
+      count = el("p", "pk-slatecount");
+      count.id = note.id + "-pvcount";
+      links.insertAdjacentElement("afterend", count);
+    }
+    var n = pv.games.length;
+    count.textContent = n + (n === 1 ? " game" : " games");
+    show(count, true);
+  }
+
+  function lookaheadMetaOff(title, note, liveTitle) {
+    if (title) title.textContent = liveTitle;
+    if (!note) return;
+    show($(note.id + "-pvlinks"), false);
+    show($(note.id + "-pvcount"), false);
   }
 
   // ------------------------------------------------------------- numbers
@@ -297,6 +432,15 @@
     return s.replace(/\s*AM$/i, "a").replace(/\s*PM$/i, "p");
   }
 
+  // For the game whose hour nobody has set: CFBD ships a placeholder time
+  // with an unannounced window, and printing it states a fact that is not
+  // one. The date half is real, so the row says only that.
+  function shortDate(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  }
+
   // A game is only "at 12:30" until 12:30. After that the kickoff time is the
   // least useful thing the row could say, so the first column carries the
   // game's own state instead: playing, waiting for a result, or done. What
@@ -366,11 +510,45 @@
   // -------------------------------------------------------------- the slate
 
   var slate = null, picks = {}, saveTimer = null, inflight = false;
+  var LIVE_WEEK = null;  // the API's week, once it has one; null pre-season
+
+  /* The season, browsable: the open week plus every later one from the
+     look-ahead index. Fewer than two options is not a choice, so the
+     control stays hidden until there are. */
+  function slateWeekSelector(current) {
+    var sel = $("slatewk");
+    if (!sel) return;
+    previewIndex().then(function (ix) {
+      var wks = ((ix && ix.weeks) || []).filter(function (w) {
+        return LIVE_WEEK == null || w > LIVE_WEEK;
+      });
+      var opts = (LIVE_WEEK != null ? [LIVE_WEEK] : []).concat(wks);
+      if (opts.length < 2) return;
+      sel.textContent = "";
+      opts.forEach(function (w) {
+        var o = document.createElement("option");
+        o.value = String(w);
+        o.textContent = String(w) + (w === LIVE_WEEK ? " (open)" : "");
+        sel.appendChild(o);
+      });
+      sel.value = String(current);
+      var lab = sel.closest ? sel.closest("label") : null;
+      if (lab) lab.hidden = false;
+    });
+  }
 
   function gameRow(g, teams) {
     var fs = el("fieldset", "pk-slate-game");
     fs.dataset.gid = g.game_id;
+    var pv = !!(slate && slate.preview);
     var why = g.unpickable;
+    var tbd = why === "kickoff_tbd";
+    // On the look-ahead the unpickable treatment comes off: "cannot be
+    // picked" is a verdict about a live week, and here NOTHING can be
+    // picked, so the rows wear the live week's shape and only the facts
+    // differ — a date where the hour is unset, a ~ or TBD where the line
+    // would be.
+    if (pv) why = null;
     if (why) fs.disabled = true;
 
     // The legend is the group's accessible name and carries the whole story:
@@ -381,17 +559,26 @@
     // aria-hidden column so it is said once and shown once.
     var lg = el("legend", "sr-only");
     lg.appendChild(document.createTextNode(
-      g.away + " " + joiner(g) + " " + g.home + ", " + fmtWhen(g.kickoff)));
+      g.away + " " + joiner(g) + " " + g.home + ", " +
+      (tbd ? shortDate(g.kickoff) : fmtWhen(g.kickoff))));
     lg.appendChild(document.createTextNode(
       why === "no_line"
         ? " — no spread available, this game cannot be picked"
         : why === "kickoff_tbd"
           ? " — kickoff time not announced, this game cannot be picked"
-          : " — " + (g.spread_x2 < 0 ? g.home : g.away) + " favored by " +
-            Math.abs(g.spread_x2 / 2)));
+          : pv
+            ? (g.spread_x2 != null
+                ? ", today's market has " +
+                  (g.spread_x2 < 0 ? g.home : g.away) + " by " +
+                  Math.abs(g.spread_x2 / 2) + ", not fixed"
+                : ", line to come when the week publishes") +
+              (tbd ? "; kickoff not announced yet" : "")
+            : " — " + (g.spread_x2 < 0 ? g.home : g.away) + " favored by " +
+              Math.abs(g.spread_x2 / 2)));
     fs.appendChild(lg);
 
-    var t = el("time", "pk-when", shortWhen(g.kickoff));
+    var t = el("time", "pk-when", tbd
+      ? shortDate(g.kickoff) : shortWhen(g.kickoff));
     t.setAttribute("datetime", g.kickoff);
     t.setAttribute("aria-hidden", "true");   // the legend already said it
     fs.appendChild(t);
@@ -425,8 +612,23 @@
       nm.title = team;
       lab.appendChild(nm);
       if (!why) {
-        lab.appendChild(el("span", "pk-num", spreadText(g.spread_x2, side)));
-        lab.appendChild(el("span", "sr-only", " " + spreadSaid(g.spread_x2, side)));
+        // On the look-ahead the market shows, marked: the pool's promise is
+        // one frozen line for everyone, and the schedule pages already quote
+        // today's market, so hiding it here made the pools look less
+        // informed than their own site. The ~ is the whole caveat (the
+        // banner spells it out), and TBD is for a game the market has not
+        // priced at all.
+        if (slate && slate.preview) {
+          var has = g.spread_x2 != null;
+          lab.appendChild(el("span", "pk-num",
+            has ? "~ " + spreadText(g.spread_x2, side) : "TBD"));
+          lab.appendChild(el("span", "sr-only", has
+            ? ", today's market, not fixed: " + spreadSaid(g.spread_x2, side)
+            : ", line to come when the week publishes"));
+        } else {
+          lab.appendChild(el("span", "pk-num", spreadText(g.spread_x2, side)));
+          lab.appendChild(el("span", "sr-only", " " + spreadSaid(g.spread_x2, side)));
+        }
       }
       sides.appendChild(input);
       sides.appendChild(lab);
@@ -456,6 +658,14 @@
       var chip = resultChip(g, picks[g.game_id] || null, true, "slate");
       if (chip) fs.appendChild(chip);
     }
+    // Only the look-ahead slate carries these (build_pools_preview writes
+    // them; the API never does), so in season this branch is dead and a row
+    // stays a control, not a link.
+    if (g.preview) {
+      var peek = el("a", "pk-peek", "preview →");
+      peek.href = g.preview;
+      fs.appendChild(peek);
+    }
     return fs;
   }
 
@@ -477,23 +687,30 @@
   }
 
   function renderSlate(teams) {
+    // A fresh verdict every render: the preview render before this one left
+    // the form classed shut, and coming back to the live week has to undo
+    // that before lockDown/readOnly below re-apply whatever is true now.
+    var form = $("slateform");
+    if (form) form.className = "";
     var wrap = $("slate");
     wrap.textContent = "";
     if (!slate.games.length) {
-      // The same card the markup gives the loading state — this path just
-      // replaced it (the clear above), so it owes the message the same frame.
-      var empty = el("div", "card");
-      empty.appendChild(el("h2", null, "This week's slate"));
-      empty.appendChild(el("p", "note", "No games this week."));
-      wrap.appendChild(empty);
+      // Plainly, inside the card the page already stands in — the same way
+      // the survivor picker says it.
+      wrap.appendChild(el("p", "note", "No games this week."));
       return;
     }
-    var ordered = inPlayOrder(slate.games);
+    // The look-ahead keeps the file's own kickoff order and draws no break:
+    // playable-versus-not is a live week's distinction, and here nothing is
+    // playable, so a "not playable" group would divide the week by a verdict
+    // that does not apply. The published file is already (kickoff, id)
+    // sorted, which is the order a reader browses a future week in.
+    var ordered = slate.preview ? slate.games : inPlayOrder(slate.games);
     var firstDead = true;
     ordered.forEach(function (g) {
       // One heading where the pickable games stop, so the break is announced
       // rather than only implied by the styling.
-      if (g.unpickable && firstDead) {
+      if (!slate.preview && g.unpickable && firstDead) {
         firstDead = false;
         var h = el("h2", "pk-deadhead", "Not playable this week");
         wrap.appendChild(h);
@@ -615,17 +832,64 @@
         startCountdown(slate.lock_at);
         lockSpanNote(slate);
       }
+      LIVE_WEEK = slate.week;
+      // The card is the live week's again: title back, look-ahead meta off,
+      // and the status note is silent — the hints above the card carry the
+      // live week's words.
+      lookaheadMetaOff($("slatecardtitle"), $("slateload"),
+                       "This week's slate");
+      var n0 = $("slateload");
+      if (n0) { stopCountdown(n0); n0.textContent = ""; }
       renderSlate(r[2] || {});
+      slateWeekSelector(slate.week);
     }).catch(function (err) {
       var n = $("slateload");
       if (!n) return;
       // 404 here is not an error to apologize for: it is the ordinary state
       // of a week that has not been published. The generic handler said "the
       // server said no (404)", which tells a player nothing they can act on
-      // and reads like a fault. Slates go up on the Tuesday refresh.
-      if (err.status === 404) slateCountdown(n, "pickem");
-      else n.textContent = explain(err);
+      // and reads like a fault. Slates go up on the Tuesday refresh — and
+      // until then the look-ahead slate stands in, disabled, so the page
+      // shows the game instead of describing it.
+      if (err.status === 404) {
+        previewIndex().then(function (ix) {
+          var wks = (ix && ix.weeks) || [];
+          if (!wks.length) { slateCountdown(n, "pickem"); return; }
+          previewWeek(wks[0]).then(function (pv) {
+            if (!pv) { slateCountdown(n, "pickem"); return; }
+            renderPickemPreview(pv);
+            slateWeekSelector(pv.week);
+          });
+        });
+      } else n.textContent = explain(err);
     });
+  }
+
+  /* The upcoming week, in the slate card the live week uses — the title
+     flips to say what this is, the countdown takes the status note, the
+     links and count slot in beneath it, and the rows draw where rows always
+     draw. Then it is shut: every input disabled and the read-only
+     treatment. The rows carry their preview links, so a visitor can walk
+     the week before there is anything to do in it. Mirror of the survivor
+     card's look-ahead, deliberately: one anatomy, two games. */
+  function renderPickemPreview(pv) {
+    fetch("/pools/teams.json")
+      .then(function (r) { return r.ok ? r.json() : {}; })
+      .catch(function () { return {}; })
+      .then(function (teams) {
+        slate = pv;
+        // The live week's lock furniture makes no claim about a week that
+        // is not open; the countdown in the card carries this week's dates.
+        show($("lockcard"), false);
+        renderSlate(teams);
+        var form = $("slateform");
+        [].forEach.call(form.querySelectorAll("input"), function (i) {
+          i.disabled = true;
+        });
+        form.className = "pk-locked pk-readonly pk-preview";
+        lookaheadMeta($("slatecardtitle"), $("slateload"), pv);
+        slateCountdown($("slateload"), "pickem", pv);
+      });
   }
 
   /**
@@ -691,6 +955,16 @@
     // action, so a slate that needed submitting would silently discard the
     // picks of anyone who filled it in and walked away.
     form.addEventListener("submit", function (e) { e.preventDefault(); });
+    var wsel = $("slatewk");
+    if (wsel) {
+      wsel.addEventListener("change", function () {
+        var w = Number(wsel.value);
+        if (LIVE_WEEK != null && w === LIVE_WEEK) { loadSlate(); return; }
+        previewWeek(w).then(function (pv) {
+          if (pv) renderPickemPreview(pv);
+        });
+      });
+    }
     loadSlate();
   }
 
@@ -1927,6 +2201,33 @@
    * is deliberately untouched; the two games share a slate and nothing else.
    */
   var svState = null;   // {slate, mine, teams} once loaded, for repaints
+  var SV_PREVIEW = false;  // the look-ahead week: rendered, never pickable
+  var SV_LIVE = null;   // the API's state, kept so the selector can return
+
+  /* The survivor season, browsable, same shape as the slate's selector but
+     over the weeks the pool actually runs (the index's survivor_weeks). */
+  function svWeekSelector(current) {
+    var sel = $("svwk");
+    if (!sel) return;
+    previewIndex().then(function (ix) {
+      var liveW = SV_LIVE && SV_LIVE.slate ? SV_LIVE.slate.week : null;
+      var wks = ((ix && ix.survivor_weeks) || []).filter(function (w) {
+        return liveW == null || w > liveW;
+      });
+      var opts = (liveW != null ? [liveW] : []).concat(wks);
+      if (opts.length < 2) return;
+      sel.textContent = "";
+      opts.forEach(function (w) {
+        var o = document.createElement("option");
+        o.value = String(w);
+        o.textContent = String(w) + (w === liveW ? " (open)" : "");
+        sel.appendChild(o);
+      });
+      sel.value = String(current);
+      var lab = sel.closest ? sel.closest("label") : null;
+      if (lab) lab.hidden = false;
+    });
+  }
 
   function svSpent(mine, week) {
     // Teams already burned: any pick from another week whose outcome is not
@@ -2012,7 +2313,8 @@
       " — pick a team to win the game outright";
     fs.appendChild(lg);
 
-    var t = el("time", "pk-when", shortWhen(g.kickoff));
+    var t = el("time", "pk-when", g.unpickable === "kickoff_tbd"
+      ? shortDate(g.kickoff) : shortWhen(g.kickoff));
     t.setAttribute("datetime", g.kickoff);
     t.setAttribute("aria-hidden", "true");
     fs.appendChild(t);
@@ -2066,14 +2368,28 @@
             : " — already used in week " + sp.week));
       } else if (g.spread_x2 != null) {
         // The line, as advice rather than as the bet: survivor is straight
-        // up, but which side the market likes is the whole question.
-        lab.appendChild(el("span", "pk-num", spreadText(g.spread_x2, side)));
+        // up, so the number is information, not the game — at chip weight it
+        // read as the thing to optimize. It recedes (.pk-vegas) and names
+        // whose opinion it is. The pick'em's rows keep their weight; there
+        // the number IS the game. On the look-ahead the same aside carries
+        // the ~, today's market rather than the frozen advice.
+        var vg = el("span", "pk-num pk-vegas");
+        vg.appendChild(document.createTextNode("Vegas says " +
+          (SV_PREVIEW ? "~ " : "") + spreadText(g.spread_x2, side)));
+        lab.appendChild(vg);
         lab.appendChild(el("span", "sr-only", " " + spreadSaid(g.spread_x2, side)));
       }
       sides.appendChild(input);
       sides.appendChild(lab);
     });
     fs.appendChild(sides);
+    // Only the look-ahead slate carries these — same rule as the pick'em's
+    // gameRow, and the same reason: in season a row is a control.
+    if (g.preview) {
+      var peek = el("a", "pk-peek", "preview →");
+      peek.href = g.preview;
+      fs.appendChild(peek);
+    }
     return fs;
   }
 
@@ -2222,13 +2538,18 @@
 
     wrap.textContent = "";
     var games = inPlayOrder(slate.games).filter(function (g) {
-      return !g.unpickable;
+      // A row nobody can pick has no place on a live picker. On the
+      // look-ahead nobody can pick anything, so a game whose kickoff is
+      // merely unannounced is still the content — a far-out week is all
+      // such games, and dropping them showed "no games" about a full week.
+      return !g.unpickable ||
+             (SV_PREVIEW && g.unpickable === "kickoff_tbd");
     });
     if (!games.length) {
       wrap.appendChild(el("p", "note", "No games this week."));
       return;
     }
-    var disabled = locked || dead || noContest || !SIGNED_IN;
+    var disabled = SV_PREVIEW || locked || dead || noContest || !SIGNED_IN;
     games.forEach(function (g) {
       wrap.appendChild(svGameRow(g, mine, st.teams, spent, disabled));
     });
@@ -2695,6 +3016,8 @@
       .then(function (r) {
         var slate = r[0], mine = r[1], teams = r[2] || {}, board = r[3];
         svState = { slate: slate, mine: mine, teams: teams };
+        SV_LIVE = svState;
+        svWeekSelector(slate.week);
 
         show($("svlock"), true);
         $("svweek").textContent = slate.week;
@@ -2722,8 +3045,30 @@
         }
       })
       .catch(function (err) {
-        if (err.status === 404) slateCountdown($("svnote"), "survivor");
-        else $("svnote").textContent = explain(err);
+        if (err.status === 404) {
+          // The look-ahead opener, if the build published one: drawn through
+          // the ordinary repaint with SV_PREVIEW holding every control shut,
+          // and the countdown narrating what it is. Without one, the
+          // countdown alone.
+          previewIndex().then(function (ix) {
+            var wks = (ix && ix.survivor_weeks) || [];
+            if (!wks.length) { slateCountdown($("svnote"), "survivor"); return; }
+            previewWeek(wks[0]).then(function (pv) {
+              if (!pv) { slateCountdown($("svnote"), "survivor"); return; }
+              SV_PREVIEW = true;
+              loadTeams().then(function (tm) {
+                svState = { slate: pv, mine: null, teams: tm };
+                svRepaint();
+                // On top of what svRepaint set: the preview grid makes the
+                // chip column fit the row links.
+                $("svform").className += " pk-preview";
+                lookaheadMeta($("svcardtitle"), $("svnote"), pv);
+                slateCountdown($("svnote"), "survivor", pv);
+                svWeekSelector(pv.week);
+              });
+            });
+          });
+        } else $("svnote").textContent = explain(err);
         // The picker failed, but the roster is built from your own picks and
         // is still worth drawing — it is the half of this page that does not
         // depend on a slate existing.
@@ -2741,6 +3086,44 @@
              svState ? svState.slate.week : null);
     });
     form.addEventListener("submit", function (e) { e.preventDefault(); });
+
+    var svsel = $("svwk");
+    if (svsel) {
+      svsel.addEventListener("change", function () {
+        var w = Number(svsel.value);
+        var note = $("svnote");
+        var liveW = SV_LIVE && SV_LIVE.slate ? SV_LIVE.slate.week : null;
+        if (liveW != null && w === liveW) {
+          // Back to the open week: hand the note back to svRepaint and let
+          // it recompute everything from the state the API gave us.
+          SV_PREVIEW = false;
+          stopCountdown(note);
+          lookaheadMetaOff($("svcardtitle"), $("svnote"), "This week's pick");
+          show($("svlock"), true);
+          svState = SV_LIVE;
+          svRepaint();
+          return;
+        }
+        previewWeek(w).then(function (pv) {
+          if (!pv) return;
+          loadTeams().then(function (tm) {
+            SV_PREVIEW = true;
+            // The live week's lock strip steps aside the way the pick'em's
+            // lock card does: it states a deadline for a week that is not
+            // the one on the page.
+            show($("svlock"), false);
+            // The real `mine` rides along on purpose: which of your teams
+            // are already spent is exactly what a look at Week 9 is for.
+            svState = { slate: pv, mine: SV_LIVE ? SV_LIVE.mine : null,
+                        teams: tm };
+            svRepaint();
+            $("svform").className += " pk-preview";
+            lookaheadMeta($("svcardtitle"), $("svnote"), pv);
+            slateCountdown(note, "survivor", pv);
+          });
+        });
+      });
+    }
   }
 
   // ---------------------------------------------------------------- counts

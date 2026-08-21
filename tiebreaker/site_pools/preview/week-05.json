@@ -1,0 +1,95 @@
+{
+ "game_count": 7,
+ "games": [
+  {
+   "away": "Middle Tennessee",
+   "b12": "home",
+   "game_id": 401856807,
+   "home": "Kansas",
+   "kickoff": "2026-10-03T04:00:00.000Z",
+   "kickoff_at": 1791000000,
+   "neutral": false,
+   "preview": "/schedule/game/401856807-middle-tennessee-at-kansas.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Baylor",
+   "b12": "both",
+   "game_id": 401856817,
+   "home": "Arizona State",
+   "kickoff": "2026-10-03T04:00:00.000Z",
+   "kickoff_at": 1791000000,
+   "neutral": false,
+   "preview": "/schedule/game/401856817-baylor-at-arizona-state.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "BYU",
+   "b12": "both",
+   "game_id": 401856818,
+   "home": "TCU",
+   "kickoff": "2026-10-03T04:00:00.000Z",
+   "kickoff_at": 1791000000,
+   "neutral": false,
+   "preview": "/schedule/game/401856818-byu-at-tcu.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "UCF",
+   "b12": "both",
+   "game_id": 401856819,
+   "home": "Houston",
+   "kickoff": "2026-10-03T04:00:00.000Z",
+   "kickoff_at": 1791000000,
+   "neutral": false,
+   "preview": "/schedule/game/401856819-ucf-at-houston.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Cincinnati",
+   "b12": "both",
+   "game_id": 401856820,
+   "home": "Arizona",
+   "kickoff": "2026-10-03T04:00:00.000Z",
+   "kickoff_at": 1791000000,
+   "neutral": false,
+   "preview": "/schedule/game/401856820-cincinnati-at-arizona.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "Texas Tech",
+   "b12": "both",
+   "game_id": 401856821,
+   "home": "Colorado",
+   "kickoff": "2026-10-03T04:00:00.000Z",
+   "kickoff_at": 1791000000,
+   "neutral": false,
+   "preview": "/schedule/game/401856821-texas-tech-at-colorado.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  },
+  {
+   "away": "West Virginia",
+   "b12": "both",
+   "game_id": 401856822,
+   "home": "Iowa State",
+   "kickoff": "2026-10-03T04:00:00.000Z",
+   "kickoff_at": 1791000000,
+   "neutral": false,
+   "preview": "/schedule/game/401856822-west-virginia-at-iowa-state.html",
+   "spread_x2": null,
+   "unpickable": "kickoff_tbd"
+  }
+ ],
+ "lock_at": null,
+ "pickable_count": 0,
+ "preview": true,
+ "season": 2026,
+ "status": "no_contest",
+ "week": 5
+}
