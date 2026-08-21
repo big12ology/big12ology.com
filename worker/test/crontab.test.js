@@ -57,7 +57,7 @@ test("the schedules land on the days the comments claim", () => {
   const want = {
     "30 * * 8-12 1,7": ["Sun", "Sat"],          // the weekend score sweep
     "30 0-8/2 * 8-12 2,6,7": ["Mon", "Fri", "Sat"], // US night finals, UTC
-    "0 13 * 8-12 3": ["Tue"],                  // the slate import
+    "30 7-12 * 8-12 3": ["Tue"],               // the slate import sweep
     "0 12 * * *": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   };
   for (const c of crons) {
@@ -86,17 +86,26 @@ test("the score sweeps run after the publisher, not alongside it", () => {
   }
 });
 
-test("the import runs after the publish, not before it", () => {
-  // pages.yml refreshes and publishes the slate at 12:00 UTC on Tuesday. An
-  // import that runs earlier in the day reads last week's file, which is
-  // exactly what the ordinary-cron numbering caused.
+test("the import sweeps hourly behind the publish and beats the promise", () => {
+  // pages.yml publishes the slate at 07:00 UTC Tuesday, GitHub's scheduler
+  // drifts that by up to ~75 observed minutes, and the pages promise the
+  // week is rolling by 09:00 UTC (5am ET). One import after the publish was
+  // a bet on the drift, and losing it cost a day — the next walk is
+  // Wednesday's heartbeat. So the import is a Tuesday-morning SWEEP: it
+  // must start at or after the publish hour, repeat hourly so a drifted
+  // publish is picked up within the hour, run past noon as backstop, and
+  // fire at :30 so each pass reads a publish that finished, not one mid-run.
   const imp = crons.find((c) => daysOf(c).length === 1
                               && c.trim() !== "0 12 * * *");
   assert.ok(imp, "no single-day schedule found");
   assert.deepEqual(daysOf(imp).map((d) => DAY[d]), ["Tue"]);
-  assert.ok(Number(imp.trim().split(/\s+/)[1]) > 12,
-    `the slate import runs at ${imp.trim().split(/\s+/)[1]}:00 UTC, at or `
-    + `before the 12:00 publish it is meant to read`);
+  const [minute, hours] = imp.trim().split(/\s+/);
+  assert.equal(Number(minute), 30, `sweeps at :${minute}, not after the :00 publish`);
+  const m = hours.match(/^(\d+)-(\d+)$/);
+  assert.ok(m, `${hours} is not an hourly range — one import is a bet on drift`);
+  assert.ok(Number(m[1]) >= 7, `first sweep ${m[1]}:30 runs before the 07:00 publish`);
+  assert.ok(Number(m[1]) <= 8, `first sweep ${m[1]}:30 misses the 09:00 UTC live-by`);
+  assert.ok(Number(m[2]) >= 12, `last sweep ${m[2]}:30 leaves the afternoon uncovered`);
 });
 
 test("only the heartbeat runs outside the season", () => {

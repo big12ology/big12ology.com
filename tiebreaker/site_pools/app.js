@@ -121,13 +121,15 @@
   }
 
   // A missing slate is not a mystery, it is a schedule: the weekly refresh
-  // publishes it Tuesday 12:00 UTC and the Worker's sweep imports it at
-  // 13:00. So name the date and count down to it, instead of leaving the
-  // reader with a bare "Tuesday" and no idea which one.
+  // publishes Tuesday 07:00 UTC and the Worker imports hourly from 07:30.
+  // The hour promised here is 09:00 UTC — 5am Eastern in season — which the
+  // pipeline beats even on GitHub's worst observed scheduler drift.
+  // "Tuesday" has to mean Tuesday morning to somebody opening the page at
+  // work on the East Coast, not whenever the crons got around to it.
   function nextSlateTime() {
     var now = new Date();
     var t = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(),
-                              now.getUTCDate(), 13, 0, 0));
+                              now.getUTCDate(), 9, 0, 0));
     while (t.getUTCDay() !== 2 || t <= now) t.setUTCDate(t.getUTCDate() + 1);
     return t;
   }
@@ -257,15 +259,15 @@
       .catch(function () { return null; });
   }
 
-  /* When a week's picks open: the Tuesday 13:00 UTC before its lock, which
-     is the refresh that publishes it plus the Worker sweep that imports it.
-     The same walk nextSlateTime does, pointed at a particular week instead
-     of at the calendar. */
+  /* When a week's picks open: the Tuesday 09:00 UTC before its lock — the
+     same live-by promise nextSlateTime makes, pointed at a particular week
+     instead of at the calendar. The pipeline behind the hour is described
+     on nextSlateTime. */
   function publishTuesday(lockAt) {
     if (!lockAt) return nextSlateTime();
     var d = new Date(lockAt * 1000);
     var t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(),
-                              d.getUTCDate(), 13, 0, 0));
+                              d.getUTCDate(), 9, 0, 0));
     while (t.getUTCDay() !== 2 || t.getTime() > lockAt * 1000) {
       t.setUTCDate(t.getUTCDate() - 1);
     }

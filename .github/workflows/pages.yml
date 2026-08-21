@@ -72,7 +72,13 @@ on:
     - cron: "0 0-8 * 8-12 1,5,6"   # hourly, small hours Mon/Fri/Sat
                                    # (Thu, Fri, and Sun night games)
     - cron: "0 18 * 8-12 *"        # daily catch-all, Aug–Dec
-    - cron: "0 12 * 8-12 2"        # Tue — the weekly ratings/lines refresh
+    # 07:00, not noon: "the week goes up on Tuesday" is a promise to the
+    # East Coast, and the pipeline behind it is this cron plus GitHub's
+    # scheduler drift (observed up to ~75 minutes) plus the Worker's hourly
+    # import sweep. Publishing at 07:00 puts the slate live by ~08:30 UTC at
+    # the very worst, ahead of the 09:00 UTC (5am ET) live-by the pages
+    # count down to. Same one weekly CFBD spend, earlier alarm.
+    - cron: "0 7 * 8-12 2"         # Tue — the weekly ratings/lines refresh
 
 permissions:
   contents: write   # to commit the week's forecast back; see the step below
@@ -172,7 +178,7 @@ jobs:
           B12_PICKEM: ${{ steps.pools.outputs.on }}
         run: >-
           python3 build.py --fetch
-          ${{ (github.event.schedule == '0 12 * 8-12 2' || inputs.refresh)
+          ${{ (github.event.schedule == '0 7 * 8-12 2' || inputs.refresh)
               && '--refresh' || '' }}
 
       # The build writes tiebreaker/forecasts/<season>/week-NN.json. Odds are
