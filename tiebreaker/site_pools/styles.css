@@ -840,6 +840,11 @@
    game. */
 .pk-side .pk-vegas { font-weight: 400; font-size: var(--t-fine);
                      color: var(--dim); }
+/* The look-ahead's qualifier on a line: a word, because the ~ it replaced
+   read as a third sign in front of +7. Dim and small against the number's
+   full weight, so the eye still lands on the number. */
+.pk-num .pk-est { font-weight: 400; font-size: var(--t-fine);
+                  color: var(--dim); letter-spacing: .02em; }
 .pk-slate-game input:checked + .pk-side .pk-vegas { font-weight: 400; }
 
 /* --- the matchup stacks inside the survivor card -------------------------

@@ -191,10 +191,10 @@
         ? (pool === "survivor"
             ? "A look ahead at Week " + pv.week + ". Nothing can be picked " +
               "yet: this week's pick opens on " + when + ", " + away +
-              " from now. A line marked ~ is today's market, not fixed."
+              " from now. A line marked est is today's market, not fixed."
             : "A look ahead at Week " + pv.week + ". Nothing can be picked " +
               "yet: picks open on " + when + ", " + away + " from now, " +
-              "when the lines freeze. A line marked ~ is today's market, " +
+              "when the lines freeze. A line marked est is today's market, " +
               "not fixed; TBD has no market yet.")
         : skipsWeek0
           ? "No slate published yet. Week 0 is not a survivor week, so the " +
@@ -623,8 +623,16 @@
         // priced at all.
         if (slate && slate.preview) {
           var has = g.spread_x2 != null;
-          lab.appendChild(el("span", "pk-num",
-            has ? "~ " + spreadText(g.spread_x2, side) : "TBD"));
+          var num = el("span", "pk-num");
+          if (has) {
+            // "est", a word, not a glyph: the ~ that used to sit here read
+            // as a third sign in front of +7. Dim and small, so the number
+            // keeps its weight and the qualifier stays a qualifier.
+            num.appendChild(el("span", "pk-est", "est"));
+            num.appendChild(document.createTextNode(
+              " " + spreadText(g.spread_x2, side)));
+          } else num.textContent = "TBD";
+          lab.appendChild(num);
           lab.appendChild(el("span", "sr-only", has
             ? ", today's market, not fixed: " + spreadSaid(g.spread_x2, side)
             : ", line to come when the week publishes"));
@@ -2382,7 +2390,7 @@
         // the ~, today's market rather than the frozen advice.
         var vg = el("span", "pk-num pk-vegas");
         vg.appendChild(document.createTextNode("Vegas says " +
-          (SV_PREVIEW ? "~ " : "") + spreadText(g.spread_x2, side)));
+          (SV_PREVIEW ? "est " : "") + spreadText(g.spread_x2, side)));
         lab.appendChild(vg);
         lab.appendChild(el("span", "sr-only", " " + spreadSaid(g.spread_x2, side)));
       }
