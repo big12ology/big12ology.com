@@ -22,6 +22,17 @@
   // that was never armed.
   var SIGNED_IN = false;
 
+  /* The server's clock, approximately, for DISPLAY decisions. Enforcement
+     never trusts a browser: the Worker checks its own clock and the D1
+     triggers check unixepoch(), so a wound-back clock only buys a rejected
+     write. But what the reader SEES has to match what the server will do,
+     and a skewed browser clock made the page grey out early or keep
+     offering picks the server would refuse. /api/health carries the
+     server's `at`; the difference corrects every UI clock on the page.
+     Zero until measured, which is the old behavior. */
+  var SKEW = 0;
+  function serverNow() { return Date.now() + SKEW; }
+
   // Below this many cards on a game, the split is not shown at all. Three
   // people picking is not a consensus, it is three people — and rendered as a
   // 67/33 bar it would read with exactly the same authority as a real one.
@@ -145,20 +156,39 @@
     return d;
   }
 
+  // 6:00 AM Eastern on the given Tuesday, whatever DST says that week:
+  // build both UTC hours that can be 6am in New York and keep the one that
+  // is. This is the time the pages STATE — the pipeline's own live-by is
+  // 09:00 UTC, a further hour ahead, so the stated time is beaten every
+  // week rather than merely met.
+  function sixEastern(t) {
+    var pick = null;
+    [10, 11].forEach(function (h) {
+      var c = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(),
+                                t.getUTCDate(), h, 0, 0));
+      if (c.toLocaleTimeString("en-US",
+            { timeZone: "America/New_York", hour: "numeric" })
+          .indexOf("6") === 0) pick = pick || c;
+    });
+    return pick || t;
+  }
+
   // The one empty-state message, shared by the slate, the card and the
   // survivor page. `pool` is the difference between them: the pick'em waits
   // on the market, so its copy says why Tuesday; survivor picks winners
   // outright, so citing the lines there would imply they matter to the
   // pick. Survivor also sits out Week 0 (one Big 12 game is not a choice,
-  // see MIN_SURVIVOR_TEAMS), so before the season its countdown points at
-  // Week 1's Tuesday, not the pick'em's. The target is fixed at first draw
-  // on purpose: once the hour arrives it says so, rather than rolling a
-  // week forward over a cron that is merely minutes late.
+  // see MIN_SURVIVOR_TEAMS), so before the season its note points at
+  // Week 1's Tuesday, not the pick'em's. No countdown: the hours-from-now
+  // figure a ticker prints would be beaten most weeks, and a number that
+  // cannot be spot on is not worth printing. The stated fact is the date
+  // and the 6am ET opening, said the way the schedule pages say kickoffs:
+  // the anchor time zone, then the reader's own.
   //
-  // With `pv` (the preview slate the message sits above), the same clock
+  // With `pv` (the preview slate the message sits above), the same note
   // narrates a different scene: the week is on the page, just not open, so
   // the message says what the reader is looking at and when it goes live.
-  function slateCountdown(node, pool, pv) {
+  function slateOpensNote(node, pool, pv) {
     // A far-out week has no lock yet — every kickoff TBD means nothing is
     // pickable and lock_at is null — but its games still carry real DATES
     // (only the hours are CFBD placeholders), and the publish Tuesday only
@@ -173,10 +203,22 @@
       var w1 = week1Tuesday(t.getUTCFullYear());
       if (t < w1) { t = w1; skipsWeek0 = true; }
     }
+    // The stated opening: 6am ET on the slate's Tuesday, then the reader's
+    // own clock in parentheses when it differs — the same shape the
+    // schedule pages give a kickoff. The "due" flip below keys off the
+    // stated time, not the internal one, so the page never claims lateness
+    // it has not incurred.
+    var open = sixEastern(t);
+    var et = open.toLocaleTimeString("en-US",
+      { timeZone: "America/New_York", hour: "numeric", minute: "2-digit" });
+    var local = open.toLocaleTimeString(undefined,
+      { hour: "numeric", minute: "2-digit" });
     var when = t.toLocaleDateString("en-US",
-      { weekday: "long", month: "long", day: "numeric" });
+      { weekday: "long", month: "long", day: "numeric" }) +
+      " at " + et + " ET" +
+      (local === et ? "" : " (" + local + " your time)");
     function draw() {
-      var ms = t - Date.now();
+      var ms = open - Date.now();
       if (ms <= 0) {
         node.textContent = pv
           ? "Picks should open any time now. Reload for the live week."
@@ -184,26 +226,20 @@
             "the week should be up any time now.";
         return;
       }
-      var d = Math.floor(ms / 86400000);
-      var h = Math.floor((ms % 86400000) / 3600000);
-      var away = !d && !h ? "under an hour"
-        : (d ? d + (d === 1 ? " day" : " days") + (h ? " and " : "") : "")
-          + (h ? h + (h === 1 ? " hour" : " hours") : "");
       node.textContent = pv
         ? (pool === "survivor"
             ? "A look ahead at Week " + pv.week + ". Nothing can be picked " +
-              "yet: this week's pick opens on " + when + ", " + away +
-              " from now. A line marked est is today's market, not fixed."
+              "yet: this week's pick opens " + when +
+              ". A line marked est is today's market, not fixed."
             : "A look ahead at Week " + pv.week + ". Nothing can be picked " +
-              "yet: picks open on " + when + ", " + away + " from now, " +
-              "when the lines freeze. A line marked est is today's market, " +
-              "not fixed; TBD has no market yet.")
+              "yet: picks open " + when + ", once the lines freeze. A line " +
+              "marked est is today's market, not fixed; TBD has no market " +
+              "yet.")
         : skipsWeek0
           ? "No slate published yet. Week 0 is not a survivor week, so the " +
-            "first pick goes up on " + when + ": " + away + " away."
-          : "No slate published yet. The week goes up on " + when +
-            (pool === "survivor" ? "" : ", once the lines are in") +
-            ": " + away + " away.";
+            "first pick goes up " + when + "."
+          : "No slate published yet. The week goes up " + when +
+            (pool === "survivor" ? "" : ", once the lines are in") + ".";
     }
     // One ticker per node, however many times the selector lands here: the
     // survivor page reuses its note element across weeks, and two intervals
@@ -220,7 +256,7 @@
 
   // The countdown's off switch, for the node that never disconnects: going
   // back to the live week hands the survivor note back to svRepaint.
-  function stopCountdown(node) {
+  function stopOpensNote(node) {
     if (node && node._cdTick) { clearInterval(node._cdTick); node._cdTick = null; }
   }
 
@@ -483,10 +519,16 @@
       // tab — cmd-click, "open in new tab", a restored session — is hidden
       // when this runs, and the deadline stayed blank until it was focused.
       if (document.hidden && force !== true) return;
-      var left = Math.floor(lockAt - Date.now() / 1000);
+      var left = Math.floor(lockAt - serverNow() / 1000);
       if (left <= 0) {
         cd.textContent = "locked";
         if (!said[0]) { said[0] = 1; if (sr) sr.textContent = "The slate is locked."; }
+        // The controls close the second the clock does. The server was
+        // already refusing; without this the page kept LOOKING open until a
+        // save bounced, and what the reader sees has to match what the
+        // server will do. Guarded on the form: the survivor page runs this
+        // countdown too, and its rows close per game, not per week.
+        if (!LOCKED && $("slateform")) lockDown();
         return;
       }
       var d = Math.floor(left / 86400), h = Math.floor(left % 86400 / 3600),
@@ -852,7 +894,7 @@
       lookaheadMetaOff($("slatecardtitle"), $("slateload"),
                        "This week's slate");
       var n0 = $("slateload");
-      if (n0) { stopCountdown(n0); n0.textContent = ""; }
+      if (n0) { stopOpensNote(n0); n0.textContent = ""; }
       renderSlate(r[2] || {});
       slateWeekSelector(slate.week);
     }).catch(function (err) {
@@ -867,9 +909,9 @@
       if (err.status === 404) {
         previewIndex().then(function (ix) {
           var wks = (ix && ix.weeks) || [];
-          if (!wks.length) { slateCountdown(n, "pickem"); return; }
+          if (!wks.length) { slateOpensNote(n, "pickem"); return; }
           previewWeek(wks[0]).then(function (pv) {
-            if (!pv) { slateCountdown(n, "pickem"); return; }
+            if (!pv) { slateOpensNote(n, "pickem"); return; }
             renderPickemPreview(pv);
             slateWeekSelector(pv.week);
           });
@@ -901,7 +943,7 @@
         });
         form.className = "pk-locked pk-readonly pk-preview";
         lookaheadMeta($("slatecardtitle"), $("slateload"), pv);
-        slateCountdown($("slateload"), "pickem", pv);
+        slateOpensNote($("slateload"), "pickem", pv);
       });
   }
 
@@ -948,9 +990,13 @@
     })[0];
     var n = tally[big];
 
-    el.textContent = "This week opens early, and the whole card locks with it "
-      + "— including the " + n + " game" + (n === 1 ? "" : "s")
-      + " played " + DAY[big] + ". Get your picks in before the first kickoff.";
+    // "Locks early", never "opens early": on this site "opens" means the
+    // Tuesday the week goes up, and this sentence is about the other end of
+    // the window. Using one word for both read as a contradiction of the
+    // Tuesday promise two lines above it.
+    el.textContent = "This week locks early, at its first kickoff: that "
+      + "includes the " + n + " game" + (n === 1 ? "" : "s")
+      + " played " + DAY[big] + ". Get your picks in before then.";
     el.hidden = false;
   }
 
@@ -2199,7 +2245,7 @@
           sel.addEventListener("change", function () { draw(sel.value); });
         });
     }).catch(function (err) {
-      if (err.status === 404) slateCountdown(note, "pickem");
+      if (err.status === 404) slateOpensNote(note, "pickem");
       else note.textContent = explain(err);
     });
   }
@@ -2219,6 +2265,7 @@
    */
   var svState = null;   // {slate, mine, teams} once loaded, for repaints
   var SV_PREVIEW = false;  // the look-ahead week: rendered, never pickable
+  var svTick = null;    // the repaint scheduled for the next kickoff
   var SV_LIVE = null;   // the API's state, kept so the selector can return
 
   /* The survivor season, browsable, same shape as the slate's selector but
@@ -2319,7 +2366,7 @@
     // keeping one card fair against itself. A row closes when its own game
     // does.
     if (!disabled && g.kickoff_at &&
-        g.kickoff_at * 1000 <= Date.now()) {
+        g.kickoff_at * 1000 <= serverNow()) {
       disabled = true;
       fs.className += " pk-started";
     }
@@ -2600,6 +2647,25 @@
           .catch(function (err) { alertMsg(explain(err)); });
       });
       form.appendChild(btn);
+    }
+
+    // The page keeps itself honest between saves: survivor closes per game,
+    // so each upcoming kickoff gets a repaint moment and a row greys the
+    // second its game starts — by the server's clock — instead of when a
+    // save bounces off the trigger. One timer, always for the nearest
+    // boundary; the repaint it fires schedules the next. Not on the
+    // look-ahead, where everything is already shut.
+    if (svTick) { clearTimeout(svTick); svTick = null; }
+    if (!SV_PREVIEW) {
+      var nowMs = serverNow();
+      var next = Infinity;
+      (st.slate.games || []).forEach(function (g) {
+        var k = (g.kickoff_at || 0) * 1000;
+        if (k > nowMs && k < next) next = k;
+      });
+      if (next < nowMs + 8 * 86400000) {
+        svTick = setTimeout(svRepaint, next - nowMs + 1000);
+      }
     }
   }
 
@@ -3069,9 +3135,9 @@
           // countdown alone.
           previewIndex().then(function (ix) {
             var wks = (ix && ix.survivor_weeks) || [];
-            if (!wks.length) { slateCountdown($("svnote"), "survivor"); return; }
+            if (!wks.length) { slateOpensNote($("svnote"), "survivor"); return; }
             previewWeek(wks[0]).then(function (pv) {
-              if (!pv) { slateCountdown($("svnote"), "survivor"); return; }
+              if (!pv) { slateOpensNote($("svnote"), "survivor"); return; }
               SV_PREVIEW = true;
               loadTeams().then(function (tm) {
                 svState = { slate: pv, mine: null, teams: tm };
@@ -3080,7 +3146,7 @@
                 // chip column fit the row links.
                 $("svform").className += " pk-preview";
                 lookaheadMeta($("svcardtitle"), $("svnote"), pv);
-                slateCountdown($("svnote"), "survivor", pv);
+                slateOpensNote($("svnote"), "survivor", pv);
                 svWeekSelector(pv.week);
               });
             });
@@ -3114,7 +3180,7 @@
           // Back to the open week: hand the note back to svRepaint and let
           // it recompute everything from the state the API gave us.
           SV_PREVIEW = false;
-          stopCountdown(note);
+          stopOpensNote(note);
           lookaheadMetaOff($("svcardtitle"), $("svnote"), "This week's pick");
           show($("svlock"), true);
           svState = SV_LIVE;
@@ -3136,7 +3202,7 @@
             svRepaint();
             $("svform").className += " pk-preview";
             lookaheadMeta($("svcardtitle"), $("svnote"), pv);
-            slateCountdown(note, "survivor", pv);
+            slateOpensNote(note, "survivor", pv);
           });
         });
       });
@@ -3161,6 +3227,8 @@
     if (!slots.length) return;
     var MIN = 10;
     api("/api/health").then(function (h) {
+      // The counts' fetch doubles as the page's clock sync; see SKEW.
+      if (h && h.at) SKEW = h.at * 1000 - Date.now();
       slots.forEach(function (s) {
         var n = h && h[s[1]];
         if (!n || n < MIN) return;
