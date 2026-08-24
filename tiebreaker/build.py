@@ -1278,6 +1278,35 @@ def pad_standings(rows, games):
     } for t in missing]
 
 
+def display_ranks(rows):
+    """{team: rank text}, honest about what the ladder proved.
+
+    A tie the procedure could not finish has no order inside its unresolved
+    remainder — the engine hands those teams back alphabetically, which is a
+    storage order, not a placement. Numbering them 1..6 publishes the
+    alphabet as a ranking, so the remainder shares one position ("T1") the
+    way the official board already writes shared positions. Teams the ladder
+    DID seed before running out of data keep their real ranks: those
+    placements are the procedure's own, and events records exactly how many
+    it made.
+    """
+    out = {}
+    i = 0
+    while i < len(rows):
+        r = rows[i]
+        if r["resolved"] or not r["tie_group"]:
+            out[r["team"]] = str(r["rank"]) if r["rank"] else "—"
+            i += 1
+            continue
+        grp = [x for x in rows if x["tie_group"] == r["tie_group"]]
+        seeded = len(r["events"] or [])
+        for j, x in enumerate(grp):
+            out[x["team"]] = (str(x["rank"]) if j < seeded
+                              else f"T{grp[seeded]['rank']}")
+        i += len(grp)
+    return out
+
+
 def tie_headline(group):
     """"How the three-way tie breaks — Arizona State, BYU and Texas Tech".
 
@@ -1383,6 +1412,7 @@ def season_frames(games, overrides):
                              "nw": r["nonconf_w"], "nl": r["nonconf_l"],
                              "ow": r["overall_w"], "ol": r["overall_l"],
                              "i": i, "s": status[t]})
+        wk_ranks = display_ranks(display)
         out.append({
             "w": w,
             "label": f"Week {w}",
@@ -1392,7 +1422,7 @@ def season_frames(games, overrides):
             # too. Without them the replay repaints both boards with four
             # columns into a table whose head has six, and the two new ones
             # come out blank the moment the page finishes loading.
-            "right": [{"t": r["team"], "p": str(r["rank"] or "—"),
+            "right": [{"t": r["team"], "p": wk_ranks[r["team"]],
                        "w": r["conf_w"], "l": r["conf_l"],
                        "nw": r["nonconf_w"], "nl": r["nonconf_l"],
                        "ow": r["overall_w"], "ol": r["overall_l"],
@@ -1524,8 +1554,9 @@ def standings_page(games, overrides, display_rows, teams):
             cls = " class=grpend" if i == n - 1 and n > 1 else ""
             left.append(f"<tr{cls}>{pos}{cells(by_team[t], b['pos'])}</tr>")
 
+    ranks = display_ranks(display_rows)
     right = "".join(
-        f"<tr><td class=posc>{r['rank'] or '—'}</td>"
+        f"<tr><td class=posc>{ranks[r['team']]}</td>"
         f"{cells(r, str(r['rank'] or '—'))}</tr>" for r in display_rows)
 
     replay = ""
@@ -3283,6 +3314,7 @@ def render(year, games):
     # -- standings table --------------------------------------------------
     body = []
     tie_colors = {}
+    ranks = display_ranks(display_rows)
     for r in display_rows:
         tg = r["tie_group"]
         if tg and tg not in tie_colors:
@@ -3294,7 +3326,7 @@ def render(year, games):
         body.append(
             f"<tr class='{cls}' data-rank={r['rank'] or 99} "
             f"data-w={r['conf_w']} data-l={r['conf_l']}>"
-            f"<td>{r['rank'] or '—'}</td>"
+            f"<td>{ranks[r['team']]}</td>"
             f"<td class=teamcell><span class=cbar style='background:{c}'>"
             f"</span>{logo_img(r['team'])}{esc(r['team'])}{mark}</td>"
             f"<td>{r['conf_w']}–{r['conf_l']}</td>"

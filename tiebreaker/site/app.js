@@ -363,8 +363,36 @@
     }));
   }
 
+  /* {team: rank text}, honest about what the ladder proved — build.py's
+     display_ranks, ported. The unresolved remainder of a tie has no order
+     (the engine hands it back alphabetically, a storage order), so those
+     rows share one position ("T1"); teams the ladder seeded before running
+     out of data keep their real ranks, and events counts how many it made. */
+  function displayRanks(rows) {
+    var out = {};
+    var i = 0;
+    while (i < rows.length) {
+      var r = rows[i];
+      if (r.resolved || !r.tie_group) {
+        out[r.team] = r.rank ? String(r.rank) : "—";
+        i += 1;
+        continue;
+      }
+      var grp = rows.filter(function (x) {
+        return x.tie_group === r.tie_group;
+      });
+      var seeded = (r.events || []).length;
+      grp.forEach(function (x, j) {
+        out[x.team] = j < seeded ? String(x.rank) : "T" + grp[seeded].rank;
+      });
+      i += grp.length;
+    }
+    return out;
+  }
+
   function renderRows(allRows) {
     var rows = padRows(allRows);
+    var ranks = displayRanks(rows);
     var tieColors = {};
     var html = rows.map(function (r) {
       var cls = "";
@@ -379,7 +407,7 @@
       var p = (r.conf_w + r.conf_l) ? r.conf_w / (r.conf_w + r.conf_l) : null;
       return "<tr class='" + cls + "' data-rank=" + (r.rank || 99) +
         " data-w=" + r.conf_w + " data-l=" + r.conf_l + ">" +
-        "<td>" + (r.rank || "—") + "</td>" +
+        "<td>" + ranks[r.team] + "</td>" +
         "<td class=teamcell><span class=cbar style='background:" +
         color(r.team) + "'></span>" + mark(r.team, 20) + esc(r.team) + mk +
         "</td><td>" + r.conf_w + "–" + r.conf_l + "</td>" +
