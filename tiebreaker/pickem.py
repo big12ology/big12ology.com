@@ -196,9 +196,16 @@ def build_slate(season, games, lines, week=None):
             e["unpickable"] = reason
         else:
             # Kept for audit, never for scoring. If the frozen half-point ever
-            # has to be defended, this is what it was derived from.
+            # has to be defended, this is what it was derived from. `books`
+            # stays a count because the Worker binds it straight into a D1
+            # column; the per-book entries ride under their own key, which
+            # the import reads past.
+            ln = lines.get(str(g["id"])) or {}
+            b = ln.get("books")
             e["spread_raw"] = raw
-            e["books"] = (lines.get(str(g["id"])) or {}).get("books")
+            e["books"] = len(b) if isinstance(b, list) else b
+            if isinstance(b, list) and b:
+                e["book_lines"] = b
         entries.append(e)
 
     playable = [e for e in entries if e["spread_x2"] is not None]

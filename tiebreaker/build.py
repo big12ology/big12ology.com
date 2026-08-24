@@ -5,6 +5,7 @@
     python3 build.py 2024       # specific season
     python3 build.py --fetch    # refetch this season's results (one call)
     python3 build.py --fetch --refresh   # ratings and lines too (+9 calls)
+    python3 build.py --fetch --refresh-lines   # just the market (+1 call)
 
 Writes site/index.html — fully self-contained, no external requests.
 """
@@ -153,15 +154,86 @@ def load_ratings(year):
 
 
 def load_lines(year):
-    """{game_id: {spread, over_under, ...}}, normalizing both file shapes.
+    """{game_id: {spread, over_under, ...}}, normalizing three file shapes.
 
-    Files written before the market capture hold a bare spread number.
-    Rather than migrate them — they would have to be refetched, and the
-    quota is the scarce thing here — wrap the old shape on read."""
+    Files written before the market capture hold a bare spread number, and
+    files from before the books were named hold an integer count where
+    `books` now holds a list of per-provider entries. Rather than migrate
+    them — they would have to be refetched, and the quota is the scarce
+    thing here — wrap the old shapes on read, via book_count/book_names
+    where the difference matters."""
     p = os.path.join(HERE, "data", f"lines_{year}.json")
     raw = json.load(open(p)) if os.path.exists(p) else {}
-    return {k: (v if isinstance(v, dict) else {"spread": v})
-            for k, v in raw.items()}
+    out = {k: (v if isinstance(v, dict) else {"spread": v})
+           for k, v in raw.items()}
+    # The meta sidecar rides in as `as_of` on every record, so anything
+    # holding a line also knows when the market was pulled. Denormalized on
+    # purpose: the consumers get handed one game's line, not the file.
+    mp = os.path.join(HERE, "data", f"lines_{year}.meta.json")
+    if out and os.path.exists(mp):
+        try:
+            as_of = json.load(open(mp)).get("fetched_at")
+        except (OSError, ValueError):
+            as_of = None
+        if as_of:
+            for v in out.values():
+                v["as_of"] = as_of
+    return out
+
+
+def book_count(ln):
+    """How many books are behind an averaged line, whichever shape holds it."""
+    b = (ln or {}).get("books")
+    return len(b) if isinstance(b, list) else (b or 0)
+
+
+def book_names(ln):
+    """The providers behind an averaged line, [] for files that predate
+    the names. Sorted for display: the file keeps CFBD's per-game order,
+    which differs game to game, and two disclaimers on one page should not
+    disagree about what to call the same pair of books."""
+    b = (ln or {}).get("books")
+    return (sorted(x["provider"] for x in b if x.get("provider"))
+            if isinstance(b, list) else [])
+
+
+def line_asof(ln):
+    """'Aug 25, 4:52 AM ET' — when this line was pulled, or None.
+
+    ET rather than venue-local, because it describes the fetch, not a game;
+    it is the clock the site's other promises ("live by 5am ET") are
+    already made on."""
+    iso = (ln or {}).get("as_of")
+    if not iso:
+        return None
+    try:
+        d = datetime.datetime.fromisoformat(iso.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    d = d.astimezone(zoneinfo.ZoneInfo("America/New_York"))
+    return f"{_MON[d.month - 1][:3]} {d.day}, {d.strftime('%-I:%M %p')} ET"
+
+
+def book_src(ln):
+    """Where a displayed line came from, said once, the same way everywhere.
+
+    'an average of 2 books (ESPN Bet, DraftKings) via collegefootballdata.com,
+    updated Aug 25, 4:52 AM ET' — with the names and the fetch stamp when
+    the files carry them, the bare count when they predate them, and just
+    the site when there is no line at all. A single named book is not an
+    average of anything, so it gets named instead. HTML-escaped here so
+    every call site can drop it into text or a quoted attribute as-is."""
+    n = book_count(ln)
+    names = ", ".join(book_names(ln))
+    if not n:
+        return "via collegefootballdata.com"
+    upd = line_asof(ln)
+    tail = f", updated {upd}" if upd else ""
+    if n == 1:
+        return f"{esc(names) or 'one book'} via collegefootballdata.com{tail}"
+    return (f"an average of {n} books"
+            + (f" ({esc(names)})" if names else "")
+            + f" via collegefootballdata.com{tail}")
 
 
 MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS"]
@@ -2229,8 +2301,8 @@ def market(g):
         # a hole that reads as a bug, so the card says what is true.
         return (f"<div class='slateline dim'>{icon('chart')}"
                 f"<span>No line posted</span></div>")
-    return (f"<div class=slateline title='Average of "
-            f"{ln.get('books', 0)} book(s) via collegefootballdata.com'>"
+    src = book_src(ln)
+    return (f"<div class=slateline title='{src[0].upper() + src[1:]}'>"
             f"{icon('chart')}<span>" + " · ".join(bits) + "</span></div>")
 
 
@@ -2591,9 +2663,7 @@ def model_card(g, ctx):
     # above as "opened -7" moved to -6.8; calling that a closing line
     # described a number that does not exist yet on the one kind of page —
     # a preview — where this card does its most useful work.
-    books = (g.get("line") or {}).get("books", 0)
-    src = (f"an average of {books} book(s) via collegefootballdata.com"
-           if books else "via collegefootballdata.com")
+    src = book_src(g.get("line"))
     note = ("Predicted margin in points, each system carrying its own "
             "home-field bump. The year under a name is the season those "
             "ratings come from. The market row is "
@@ -2953,10 +3023,10 @@ def build_game_page(g, ctx):
                 cells.append((f"{price:+g}", label))
         grid = "".join(f"<div><div class=mkval>{v}</div>"
                        f"<div class=dim>{k}</div></div>" for v, k in cells)
+        src = book_src(ln)
         mk = (f"<div class=card><h2>The market</h2>"
               f"<div class=mkgrid>{grid}</div>"
-              f"<p class=note>Average of {ln.get('books', 0)} book(s) via "
-              f"collegefootballdata.com.</p></div>")
+              f"<p class=note>{src[0].upper() + src[1:]}.</p></div>")
 
     # What the public did with that number. Ships hidden and empty; pickcon.js
     # fills it from /api/consensus once the week has locked, and leaves it
@@ -3815,17 +3885,32 @@ def pending_results(games, now=None):
     return due
 
 
-def load_games(year, refetch=False, refresh=False):
+def load_games(year, refetch=False, refresh=False, refresh_lines=False):
     """data/ is committed, so a build normally reads it and calls nothing.
 
     The CFBD key allows 1,000 calls a month. Only one thing changes on the
     hour — the live season's scores — so --fetch buys exactly that, one
-    call. Ratings are published weekly and lines drift daily; --refresh
-    picks those up and is worth nine more calls on a weekly cron, not every
-    hour. Finished seasons and the team list are never refetched at all:
-    they cannot change, and they are in the repo."""
+    call. Ratings are published weekly; --refresh picks those up and is
+    worth nine more calls on a weekly cron, not every hour. Lines drift
+    daily, and one call buys the whole season's market, so --refresh-lines
+    spends exactly that call on the crons in between. Finished seasons and
+    the team list are never refetched at all: they cannot change, and they
+    are in the repo."""
     path = os.path.join(HERE, "data", f"games_{year}.json")
     if refetch:
+        if refresh_lines and not refresh:
+            # Before the no-new-results skip below, which returns without
+            # reaching the main fetch: a Saturday morning with no game
+            # finished since Thursday is exactly when the lines have moved
+            # the most. Guarded the same way as the main fetch — stale
+            # lines beat no site.
+            try:
+                fetcher.fetch_lines(year)
+            except Exception as e:
+                warn = f"lines refresh failed ({e}) — using committed lines"
+                if os.environ.get("GITHUB_ACTIONS"):
+                    print(f"::warning::{warn}")
+                print(f"WARNING: {warn}")
         # ASK ONLY WHEN THE ANSWER COULD HAVE MOVED. --refresh is exempt: the
         # weekly run also pulls ratings and lines, which change on their own
         # schedule rather than when a game ends, and it doubles as the
@@ -5767,7 +5852,8 @@ def main():
     year = int(argv[0]) if argv else default_season()
     LIVE_YEAR = year
     games = load_games(year, refetch="--fetch" in sys.argv,
-                       refresh="--refresh" in sys.argv)
+                       refresh="--refresh" in sys.argv,
+                       refresh_lines="--refresh-lines" in sys.argv)
     build_season(year, games, SITE, "", sched_outdir=SCHEDULE_SITE,
                  sched_base="../tiebreaker/")
 
@@ -5800,12 +5886,14 @@ def main():
         print(f"::warning::facts not written: {e}")
 
     # The pick'em, which is the one part of this build that writes down a fact
-    # instead of deriving one. The slate is published on the weekly refresh —
-    # the only run that has just fetched the market — and frozen there. The
-    # scores file is rewritten every build, because that is what grades it.
+    # instead of deriving one. The slate is published on the runs that have
+    # just fetched the market — the weekly refresh and the lines-only crons
+    # between it — and frozen there. The scores file is rewritten every
+    # build, because that is what grades it.
     if year == LIVE_YEAR:
         if PICKEM_ENABLED:
-            if "--refresh" in sys.argv or "--republish" in sys.argv:
+            if ("--refresh" in sys.argv or "--refresh-lines" in sys.argv
+                    or "--republish" in sys.argv):
                 pickem_mod.publish_slate(year, games, load_lines(year),
                                          republish="--republish" in sys.argv)
             pickem_mod.write_scores(year, games,

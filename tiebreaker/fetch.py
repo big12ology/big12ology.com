@@ -236,20 +236,21 @@ def fetch_ratings(year):
 
 
 def fetch_lines(year):
-    """The market for games involving Big 12 teams, averaged across
-    providers. CFBD convention is the home-team spread (negative = home
-    favored).
+    """The market for games involving Big 12 teams: every book CFBD
+    carries, by name, plus the averages the pages display. CFBD convention
+    is the home-team spread (negative = home favored).
 
     One call returns spread, spreadOpen, overUnder, overUnderOpen and both
-    moneylines per provider, and this used to keep the spread and throw the
-    rest away — so every season since 2011 has a total and a line movement
-    that were fetched, paid for out of a 1,000-a-month allowance, and
-    dropped on the floor. Capturing them costs nothing extra: same endpoint,
+    moneylines per provider, and this used to keep the averages and throw
+    the provider names away — so a page could say "average of 2 books" and
+    never which two. Keeping each book costs nothing extra: same endpoint,
     same call, same quota.
 
     Writes data/lines_<year>.json = {game_id: {spread, spread_open,
-    over_under, over_under_open, home_ml, away_ml, books}}. Older files hold
-    a bare spread number; load_lines normalizes both shapes.
+    over_under, over_under_open, home_ml, away_ml, books: [{provider,
+    spread, ...}]}}. Older files hold a bare spread number, or a dict whose
+    `books` is an integer count; load_lines and the book_* helpers
+    normalize all three shapes.
     """
     os.makedirs(DATA, exist_ok=True)
     raw = get(f"lines?year={year}", key())
@@ -263,18 +264,28 @@ def fetch_lines(year):
         if g.get("homeConference") != "Big 12" \
                 and g.get("awayConference") != "Big 12":
             continue
-        books = g.get("lines") or []
+        books = []
+        for l in g.get("lines") or []:
+            b = {"provider": l.get("provider"),
+                 "spread": l.get("spread"),
+                 "spread_open": l.get("spreadOpen"),
+                 "over_under": l.get("overUnder"),
+                 "over_under_open": l.get("overUnderOpen"),
+                 "home_ml": l.get("homeMoneyline"),
+                 "away_ml": l.get("awayMoneyline")}
+            books.append({k: v for k, v in b.items() if v is not None})
         rec = {
-            "spread": avg(l.get("spread") for l in books),
-            "spread_open": avg(l.get("spreadOpen") for l in books),
-            "over_under": avg(l.get("overUnder") for l in books),
-            "over_under_open": avg(l.get("overUnderOpen") for l in books),
-            "home_ml": avg(l.get("homeMoneyline") for l in books),
-            "away_ml": avg(l.get("awayMoneyline") for l in books),
-            "books": len(books),
+            "spread": avg(b.get("spread") for b in books),
+            "spread_open": avg(b.get("spread_open") for b in books),
+            "over_under": avg(b.get("over_under") for b in books),
+            "over_under_open": avg(b.get("over_under_open") for b in books),
+            "home_ml": avg(b.get("home_ml") for b in books),
+            "away_ml": avg(b.get("away_ml") for b in books),
+            "books": books,
         }
         if rec["spread"] is not None or rec["over_under"] is not None:
-            out[str(g["id"])] = {k: v for k, v in rec.items() if v is not None}
+            out[str(g["id"])] = {k: v for k, v in rec.items()
+                                 if v not in (None, [])}
     p = os.path.join(DATA, f"lines_{year}.json")
     with open(p, "w") as f:
         json.dump(out, f, indent=1)

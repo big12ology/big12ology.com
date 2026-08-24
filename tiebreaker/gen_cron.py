@@ -123,6 +123,8 @@ def main():
           ' corrections')
     print('    - cron: "0 12 * 8-12 2"        # Tue — the weekly'
           ' ratings/lines refresh')
+    print('    - cron: "30 8 * 8-12 *"        # daily — morning lines'
+          ' refresh, live by 7am ET')
     for line in to_cron(sl):
         print(line)
 

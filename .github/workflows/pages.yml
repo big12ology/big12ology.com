@@ -79,6 +79,18 @@ on:
     # the very worst, ahead of the 09:00 UTC (5am ET) live-by the pages
     # count down to. Same one weekly CFBD spend, earlier alarm.
     - cron: "0 7 * 8-12 2"         # Tue — the weekly ratings/lines refresh
+    # The market drifts daily and one CFBD call buys the whole season's
+    # lines — so every morning gets a lines-only refresh (--refresh-lines
+    # below), promised live by 7am ET (11:00 UTC). 08:30, not 10:30: by
+    # this repo's own measurements scheduled runs land a median 19 minutes
+    # late and 130 at the 90th percentile, so 08:30 plus that drift plus
+    # the build still clears 11:00. Minute 30 because the hourly crons
+    # above own minute 0 and the concurrency group would cancel one of a
+    # colliding pair. One slot in ten never fires at all, which is what
+    # the 18:00 catch-all's --refresh-lines below is for: a missed morning
+    # costs a day of staleness, not an unbounded one. About 60 extra calls
+    # a month for the pair.
+    - cron: "30 8 * 8-12 *"        # daily — morning lines refresh
 
 permissions:
   contents: write   # to commit the week's forecast back; see the step below
@@ -180,6 +192,9 @@ jobs:
           python3 build.py --fetch
           ${{ (github.event.schedule == '0 7 * 8-12 2' || inputs.refresh)
               && '--refresh' || '' }}
+          ${{ (github.event.schedule == '30 8 * 8-12 *'
+               || github.event.schedule == '0 18 * 8-12 *')
+              && '--refresh-lines' || '' }}
 
       # The build writes tiebreaker/forecasts/<season>/week-NN.json. Odds are
       # recomputed and discarded every run, so a week that is not committed
@@ -219,8 +234,19 @@ jobs:
           # every run starts from the same committed copy, sees the same games
           # still missing a result, and asks CFBD again. The affordability
           # argument this whole schedule rests on was quietly not holding.
+          # data/lines, ratings and media ride along too. Before they did,
+          # the Tuesday refresh fetched fresh numbers, built with them, and
+          # never wrote them back — so the very next deploy rebuilt every
+          # preview from the committed copy and quietly reverted the site
+          # to lines that were weeks old. The refresh only counts if the
+          # next run can see it. (lines_*.json also catches the .meta.json
+          # sidecar, which is the point: the sidecar is how a stale file is
+          # told apart from a fresh one.)
           for p in tiebreaker/forecasts tiebreaker/pickem \
-                   tiebreaker/data/games_*.json; do
+                   tiebreaker/data/games_*.json \
+                   tiebreaker/data/lines_*.json \
+                   tiebreaker/data/ratings_*.json \
+                   tiebreaker/data/media_*.json; do
             [ -e "$p" ] && git add "$p"
           done
           if git diff --cached --quiet; then
