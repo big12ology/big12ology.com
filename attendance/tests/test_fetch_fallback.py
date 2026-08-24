@@ -312,5 +312,43 @@ class RoutesAroundCfbd(unittest.TestCase):
         self.assertEqual(self.refreshed, [])
 
 
+class VenueCatalog(unittest.TestCase):
+    """The committed catalog stands in for a per-run /venues call, so its
+    shape contract is load-bearing: the catalog stores lat/lon/tz and the
+    fetch reads latitude/longitude/timezone. A rename on either side would
+    not crash anything; it would just quietly drop weather and shift late
+    kickoffs to the wrong day."""
+
+    def test_normalizes_to_the_cfbd_field_names(self):
+        tmp = tempfile.NamedTemporaryFile(
+            mode="w", suffix=".json", delete=False)
+        tmp.write(json.dumps({"3616": {
+            "name": "Amon G. Carter Stadium", "city": "Fort Worth",
+            "state": "TX", "lat": 32.7097, "lon": -97.3681,
+            "tz": "America/Chicago"}}))
+        tmp.close()
+        self.addCleanup(Path(tmp.name).unlink)
+        with mock.patch.object(fa, "VENUE_CATALOG", Path(tmp.name)):
+            cat = fa.load_venue_catalog()
+        self.assertEqual(cat[3616], {
+            "timezone": "America/Chicago", "city": "Fort Worth",
+            "state": "TX", "latitude": 32.7097, "longitude": -97.3681})
+
+    def test_missing_file_says_so_rather_than_raising(self):
+        # None is main()'s cue to spend the one live /venues call.
+        with mock.patch.object(fa, "VENUE_CATALOG", Path("/nonexistent")):
+            self.assertIsNone(fa.load_venue_catalog())
+
+    def test_the_real_committed_catalog_loads(self):
+        # Against the actual file, not a fixture: this is the pair of
+        # artifacts that must agree, and the fixture above cannot notice
+        # the tiebreaker side changing its mind about the shape.
+        cat = fa.load_venue_catalog()
+        self.assertIsNotNone(cat, f"{fa.VENUE_CATALOG} is gone")
+        self.assertGreater(len(cat), 500)
+        self.assertEqual(cat[3616]["timezone"], "America/Chicago")
+        self.assertIsNotNone(cat[3616]["latitude"])
+
+
 if __name__ == "__main__":
     unittest.main()
