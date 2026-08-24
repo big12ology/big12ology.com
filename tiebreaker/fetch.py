@@ -203,31 +203,49 @@ def mark_ccg(games):
 
 
 def fetch_ratings(year):
-    """Rating systems for the what-if favorites. Preseason numbers for a new
-    year appear in late August; each system falls back to the prior season
-    until then.
+    """Rating systems for the what-if favorites. One call per system, for the
+    target year only. Preseason numbers appear in late August (Elo and SRS
+    only once games are played); until a system covers the full Big 12, the
+    prior season's numbers come from disk, not from a second call: they are
+    already sitting in ratings_<year>.json from the last refresh, or in the
+    committed ratings_<year-1>.json, and a finished season's ratings do not
+    change.
 
     Writes data/ratings_<year>.json =
         {"systems": {name: {year, hfa, per_pt, ratings: {team: r}}}}
     """
     os.makedirs(DATA, exist_ok=True)
     k = key()
+    out = os.path.join(DATA, f"ratings_{year}.json")
+
+    def _on_disk(path):
+        try:
+            return json.load(open(path)).get("systems", {})
+        except (OSError, ValueError):
+            return {}
+
+    have = _on_disk(out)
+    prior = _on_disk(os.path.join(DATA, f"ratings_{year - 1}.json"))
+
     systems = {}
     for name, (path, field, hfa, per_pt) in SYSTEMS.items():
-        got, used = {}, None
-        for used in (year, year - 1):
-            raw = get(f"{path}?year={used}", k)
-            if isinstance(raw, list):
-                # keep every rated team, not just the Big 12 — non-conference
-                # favorites need the opponents' numbers too
-                got = {r["team"]: r.get(field) for r in raw
-                       if r.get("team") and r.get(field) is not None}
-            if all(t in got for t in BIG12):
-                break
-        if got:
-            systems[name] = {"year": used, "hfa": hfa, "per_pt": per_pt,
+        raw = get(f"{path}?year={year}", k)
+        got = {}
+        if isinstance(raw, list):
+            # keep every rated team, not just the Big 12 — non-conference
+            # favorites need the opponents' numbers too
+            got = {r["team"]: r.get(field) for r in raw
+                   if r.get("team") and r.get(field) is not None}
+        if all(t in got for t in BIG12):
+            systems[name] = {"year": year, "hfa": hfa, "per_pt": per_pt,
                              "ratings": got}
-    out = os.path.join(DATA, f"ratings_{year}.json")
+            continue
+        prev = have.get(name) or prior.get(name)
+        if prev and all(t in prev.get("ratings", {}) for t in BIG12):
+            # hfa and per_pt come from SYSTEMS, not from the old file, so a
+            # constant tuned here is never pinned to a cached value
+            systems[name] = {"year": prev["year"], "hfa": hfa,
+                             "per_pt": per_pt, "ratings": prev["ratings"]}
     with open(out, "w") as f:
         json.dump({"systems": systems}, f, indent=1)
     years = {n: s["year"] for n, s in systems.items()}

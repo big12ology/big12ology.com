@@ -7,12 +7,12 @@
  },
  "ccg": [
   {
-   "p": 0.55685,
+   "p": 0.5661,
    "team": "Texas Tech"
   },
   {
-   "p": 0.3071,
-   "team": "Utah"
+   "p": 0.26625,
+   "team": "BYU"
   }
  ],
  "counts": {
@@ -25,22 +25,22 @@
   "home": "TCU",
   "kickoff": "2026-08-29T16:00:00.000Z",
   "neutral": true,
-  "spread": -7.0
+  "spread": -8.0
  },
  "season": 2026,
  "spotlight": {
   "away": "Arizona",
   "home": "BYU",
-  "html": "<div class='forkgrid'><div class=forkcol style='--fc:#003da5'><div class=forkhead>If BYU wins</div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</span><b class=forkp>28%</b><span class='forkd up'>&#9650;5</span></div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona</span><b class=forkp>7%</b><span class='forkd down'>&#9660;6</span></div></div><div class=forkcol style='--fc:#0c234b'><div class=forkhead>If Arizona wins</div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</span><b class=forkp>12%</b><span class='forkd down'>&#9660;11</span></div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona</span><b class=forkp>19%</b><span class='forkd up'>&#9650;6</span></div></div></div>",
+  "html": "<div class='forkgrid'><div class=forkcol style='--fc:#003da5'><div class=forkhead>If BYU wins</div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</span><b class=forkp>32%</b><span class='forkd up'>&#9650;5</span></div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona</span><b class=forkp>7%</b><span class='forkd down'>&#9660;6</span></div></div><div class=forkcol style='--fc:#0c234b'><div class=forkhead>If Arizona wins</div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</span><b class=forkp>13%</b><span class='forkd down'>&#9660;13</span></div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona</span><b class=forkp>20%</b><span class='forkd up'>&#9650;7</span></div></div></div>",
   "models": {
-   "stale": 3,
+   "stale": 2,
    "total": 4
   },
   "now": {
-   "Arizona": 0.1305,
-   "BYU": 0.2329
+   "Arizona": 0.1295,
+   "BYU": 0.2662
   },
-  "total": 17,
+  "total": 19,
   "week": 2,
   "when": "Sat, Sep 12"
  }

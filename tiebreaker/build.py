@@ -4,7 +4,7 @@
     python3 build.py            # current season, uses committed data
     python3 build.py 2024       # specific season
     python3 build.py --fetch    # refetch this season's results (one call)
-    python3 build.py --fetch --refresh   # ratings and lines too (+9 calls)
+    python3 build.py --fetch --refresh   # ratings, lines, media too (+6 calls)
     python3 build.py --fetch --refresh-lines   # just the market (+1 call)
 
 Writes site/index.html — fully self-contained, no external requests.
@@ -3906,8 +3906,9 @@ def load_games(year, refetch=False, refresh=False, refresh_lines=False):
 
     The CFBD key allows 1,000 calls a month. Only one thing changes on the
     hour — the live season's scores — so --fetch buys exactly that, one
-    call. Ratings are published weekly; --refresh picks those up and is
-    worth nine more calls on a weekly cron, not every hour. Lines drift
+    call. Ratings are published weekly; --refresh picks those up (one call
+    per system, prior seasons come from disk) and with lines and media is
+    worth six more calls on a weekly cron, not every hour. Lines drift
     daily, and one call buys the whole season's market, so --refresh-lines
     spends exactly that call on the crons in between. Finished seasons and
     the team list are never refetched at all: they cannot change, and they
