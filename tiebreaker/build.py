@@ -1686,7 +1686,8 @@ def clinch_card(games, overrides, systems, stand_rows, sims,
         notes.append(
             f"Percentages are championship-game odds from {n_sims:,} season "
             f"simulations (win probabilities from an ensemble of "
-            f"{', '.join(sorted(systems))}); proofs override odds.")
+            f"{', '.join(model_label(n, systems) for n in sorted(systems))}); "
+            f"proofs override odds.")
         # Say it when most of the ensemble is running last season's numbers.
         # A reader is entitled to know that August odds rest on how teams
         # finished in December, and how much that has been discounted.

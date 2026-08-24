@@ -200,6 +200,23 @@
 
   // ------------------------------------------------------------- the model
 
+  /* The systems the card's note may claim: the ratings the ensemble
+     actually averages, each carrying the season its numbers come from.
+     payload.favorites also holds the blend and the market, but
+     ensembleMargins excludes both, so naming them in the note would
+     describe a model nobody is running. A payload without `models`
+     predates the distinction and had only ratings in it. */
+  function ratingLabels(payload) {
+    var out = [];
+    (payload.models || []).forEach(function (m) {
+      if (m && m.kind === "rating") {
+        out.push(m.name + (m.year ? " (" + m.year + ")" : ""));
+      }
+    });
+    if (out.length) return out.sort();
+    return Object.keys(payload.favorites || {}).sort();
+  }
+
   /* Expected home margin per game, averaged over the rating systems.
      build.py already published each system's pick and margin for every game
      to drive the ★ favorites, so the ensemble is rebuilt from that rather
@@ -796,7 +813,7 @@
     return modelOf(p, {
       proof: proof, nOutcomes: nOutcomes, nSims: n,
       chaos: chaosIndex(p.rows, p.statuses, p.probs),
-      systems: Object.keys(payload.favorites || {}).sort(),
+      systems: ratingLabels(payload),
     });
   }
 
@@ -804,7 +821,7 @@
     state = {
       el: el, payload: payload,
       margins: ensembleMargins(payload),
-      systems: Object.keys(payload.favorites || {}).sort(),
+      systems: ratingLabels(payload),
     };
   }
 
