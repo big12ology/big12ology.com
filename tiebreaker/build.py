@@ -4268,13 +4268,19 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
         re.compile(r'"generated": "[^"]*"'))
     write_forecast(year, games, systems, sims)
     with open(os.path.join(outdir, "standings.csv"), "w") as f:
+        # `tied` is true for the unresolved remainder of a tie, where `rank`
+        # is only the alphabet: the pages show those rows as a shared "T1",
+        # and a consumer sorting on rank deserves the same warning. Appended
+        # last so position-indexed readers of the old shape keep working.
         f.write("rank,team,conf_w,conf_l,nonconf_w,nonconf_l,"
-                "overall_w,overall_l,p_ccg\n")
+                "overall_w,overall_l,p_ccg,tied\n")
+        ranks = display_ranks(rows)
         for r in rows:
             p = (sims.get(r["team"], {}) or {}).get("p_ccg", "")
+            tied = "true" if ranks[r["team"]].startswith("T") else "false"
             f.write(f"{r['rank']},{r['team']},{r['conf_w']},{r['conf_l']},"
                     f"{r['nonconf_w']},{r['nonconf_l']},{r['overall_w']},"
-                    f"{r['overall_l']},{p}\n")
+                    f"{r['overall_l']},{p},{tied}\n")
 
     # The Brief is the front door of every season. index.html is its file
     # name, which is what MATCHCARD_PAGES names it by.

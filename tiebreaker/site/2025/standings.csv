@@ -1,17 +1,17 @@
-rank,team,conf_w,conf_l,nonconf_w,nonconf_l,overall_w,overall_l,p_ccg
-1,Texas Tech,8,1,3,0,12,1,1.0
-2,BYU,8,1,3,0,11,2,1.0
-3,Utah,7,2,3,0,10,2,0.0
-4,Houston,6,3,3,0,9,3,0.0
-5,Arizona,6,3,3,0,9,3,0.0
-6,Arizona State,6,3,2,1,8,4,0.0
-7,TCU,5,4,3,0,8,4,0.0
-8,Iowa State,5,4,3,0,8,4,0.0
-9,Cincinnati,5,4,2,1,7,5,0.0
-10,Kansas State,5,4,1,2,6,6,0.0
-11,Baylor,3,6,2,1,5,7,0.0
-12,Kansas,3,6,2,1,5,7,0.0
-13,UCF,2,7,3,0,5,7,0.0
-14,West Virginia,2,7,2,1,4,8,0.0
-15,Colorado,1,8,2,1,3,9,0.0
-16,Oklahoma State,0,9,1,2,1,11,0.0
+rank,team,conf_w,conf_l,nonconf_w,nonconf_l,overall_w,overall_l,p_ccg,tied
+1,Texas Tech,8,1,3,0,12,1,1.0,false
+2,BYU,8,1,3,0,11,2,1.0,false
+3,Utah,7,2,3,0,10,2,0.0,false
+4,Houston,6,3,3,0,9,3,0.0,false
+5,Arizona,6,3,3,0,9,3,0.0,false
+6,Arizona State,6,3,2,1,8,4,0.0,false
+7,TCU,5,4,3,0,8,4,0.0,false
+8,Iowa State,5,4,3,0,8,4,0.0,false
+9,Cincinnati,5,4,2,1,7,5,0.0,false
+10,Kansas State,5,4,1,2,6,6,0.0,false
+11,Baylor,3,6,2,1,5,7,0.0,false
+12,Kansas,3,6,2,1,5,7,0.0,false
+13,UCF,2,7,3,0,5,7,0.0,false
+14,West Virginia,2,7,2,1,4,8,0.0,false
+15,Colorado,1,8,2,1,3,9,0.0,false
+16,Oklahoma State,0,9,1,2,1,11,0.0,false
