@@ -1790,7 +1790,8 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
         upcoming = [g for g in games if not g["completed"]][:8]
         if upcoming:
             parts.append("<div class=card><h2>First up</h2><ul class=games>"
-                         + "".join(game_row(g) for g in upcoming)
+                         + "".join(game_row(g, pages=year == LIVE_YEAR)
+                                   for g in upcoming)
                          + "</ul></div>")
         body = f"<p class=briefstamp>The Brief &middot; {esc(stamp)}</p>" + "".join(parts)
         return build_subpage(
@@ -1876,7 +1877,8 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
     if week_games:
         parts.append(f"<div class=card><h2>Week {last_week} finals</h2>"
                      "<ul class=games>"
-                     + "".join(game_row(g) for g in week_games[::-1])
+                     + "".join(game_row(g, pages=year == LIVE_YEAR)
+                               for g in week_games[::-1])
                      + "</ul></div>")
 
     lev = leverage_of(sims)
@@ -2585,7 +2587,8 @@ def build_schedule_page(games, ctx):
     for w in sorted(by_week, key=lambda x: (x is None, x)):
         head = "Week to be announced" if w is None else f"Week {w}"
         up += (f"<h3 class=wkhead>{head}</h3><ul class=games>"
-               + "".join(game_row(g) for g in by_week[w]) + "</ul>")
+               + "".join(game_row(g, pages=bool(ctx.get("game_pages")))
+                         for g in by_week[w]) + "</ul>")
     upcard = (f"<div class=card><h2>The rest of the season</h2>{up}</div>"
               if up else "")
     done = [g for g in games if g["completed"]
@@ -2607,7 +2610,8 @@ def build_schedule_page(games, ctx):
         for w in sorted(past, key=lambda x: (x is None, x), reverse=True):
             head = "Week to be announced" if w is None else f"Week {w}"
             blocks += (f"<h3 class=wkhead>{head}</h3><ul class=games>"
-                       + "".join(game_row(g) for g in past[w]) + "</ul>")
+                       + "".join(game_row(g, pages=bool(ctx.get("game_pages")))
+                                 for g in past[w]) + "</ul>")
         rescard = (f"<div class=card><h2>Results, newest first</h2>"
                    f"{blocks}</div>")
     return slate + upcard + rescard
@@ -3121,7 +3125,15 @@ def pretty_date(iso, style="short"):
     return f"{_DOW[d.weekday()][:3]}, {_MON[d.month - 1][:3]} {d.day}"
 
 
-def game_row(g):
+def game_row(g, pages=False):
+    """One game on one line, wherever a card lists many.
+
+    `pages` wraps the row in a link to the game's page — same gate as
+    slate_card's Preview link, passed by each caller because game pages
+    exist for the live season only and this row also renders on archived
+    briefs and schedules. Root-relative, like section_href: the rows appear
+    under /tiebreaker/ and /schedule/ both, and the pages live at
+    /schedule/game/ regardless of who is asking."""
     hm, am = logo_img(g["home"], 16), logo_img(g["away"], 16)
     if g["completed"] and rules.has_score(g):
         hw = g["home_points"] > g["away_points"]
@@ -3141,7 +3153,11 @@ def game_row(g):
            else " <span class=nctag>non-conf</span>")
     if g.get("ccg"):
         tag = " <span class=ccgtag>Championship</span>"
-    return f"<li class={cls}>{score}{tag}</li>"
+    row = f"{score}{tag}"
+    if pages:
+        row = (f"<a class=gamelink href='/schedule/game/{game_slug(g)}'>"
+               f"{row}</a>")
+    return f"<li class={cls}>{row}</li>"
 
 
 def place_and_forecast(year, games):

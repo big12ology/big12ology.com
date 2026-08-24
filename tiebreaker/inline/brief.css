@@ -147,6 +147,11 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
   font-size:var(--t-label) } .ccgtag { color:var(--accent); font-weight:700;
   font-size:var(--t-fine); text-transform:uppercase }
+/* The whole row is the link to the game's page. Ink, not accent: a list
+   where every word is link-colored says nothing; the hover underline says
+   it for the row under the pointer. */
+ul.games li a.gamelink { color:inherit; text-decoration:none; display:block }
+ul.games li a.gamelink:hover { text-decoration:underline }
 /* One non-conference marker for the whole site. It was a pill in the Lab's
    own stylesheet and bare parenthetical text everywhere else, so the same
    fact about the same game looked like two different things depending on
