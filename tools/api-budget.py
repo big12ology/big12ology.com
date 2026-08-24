@@ -10,6 +10,8 @@ project makes come from a workflow run whose cost is known and fixed:
     pages.yml            1 call   the live season's scores
       ...with --refresh  +9       four ratings, the lines, the broadcasts
     attendance-data.yml  1 call   one /games for the season
+                                  (2 before 2026-08-24: each run also
+                                  re-fetched /venues until 12fc00a cached it)
 
 So the ledger already exists — it is the run history — and reading it costs
 no quota, no commits and nothing in the hot path. The alternative was writing
@@ -55,6 +57,12 @@ LOCAL_LOG = os.path.join(ROOT, "tiebreaker", "data", ".api-local.log")
 LIMIT = 1000                       # calls per month on the free plan
 REFRESH_CRON = "0 12 * 8-12 2"     # the Tuesday run that also pulls lines
 REFRESH_EXTRA = 9                  # ratings x4 (x2 years worst case), lines, media
+
+# When 12fc00a landed and attendance runs stopped re-fetching /venues every
+# time. Before this instant each run spent 2 calls (/games + /venues); after
+# it, 1. The undercount was invisible to this tool but not to CFBD's own
+# dashboard, where /venues sat at 14% of all calls.
+VENUES_CACHED = "2026-08-24T20:16:32Z"
 
 
 def runs(workflow, since):
@@ -130,8 +138,14 @@ def expected(y, m, through=None):
             n += 1                                 # daily catch-all
             if w == 1:
                 n += 1 + REFRESH_EXTRA             # Tuesday + its refresh
-            # attendance: Fri/Sat x1, Sun x3, Mon x2
-            n += {4: 1, 5: 2, 6: 3, 0: 2}.get(w, 0)
+            # attendance: Fri/Sat x1, Sun x3, Mon x2. Doubled on days up
+            # through the venues-cache cutoff (day granularity is enough:
+            # the cutoff day's scheduled run fired hours before the fix
+            # merged), so the forecast prices those runs the way they
+            # actually cost, not the way they cost now.
+            per_run = 2 if datetime.date(y, m, d) <= datetime.date.fromisoformat(
+                VENUES_CACHED[:10]) else 1
+            n += {4: 1, 5: 2, 6: 3, 0: 2}.get(w, 0) * per_run
     return n
 
 
@@ -159,13 +173,20 @@ def main(month=None):
 
     manual = local_calls(month)
     n_pages, n_att = len(pages), len(att)
-    used = n_pages + len(refreshes) * REFRESH_EXTRA + n_att + len(manual)
+    # Runs from before the venues cache each spent a second call on /venues.
+    att_pre = sum(1 for r in att if r.get("createdAt", "") < VENUES_CACHED)
+    att_calls = n_att + att_pre
+    used = n_pages + len(refreshes) * REFRESH_EXTRA + att_calls + len(manual)
 
     print(f"CFBD budget — {month}\n")
     print(f"  {'deploy runs (1 call each)':<34} {n_pages:>5}")
     print(f"  {'weekly refresh (+9 each)':<34} {len(refreshes) * REFRESH_EXTRA:>5}"
           f"   ({len(refreshes)} run{'s' if len(refreshes) != 1 else ''})")
-    print(f"  {'attendance runs (1 call each)':<34} {n_att:>5}")
+    if att_pre:
+        print(f"  {'attendance runs':<34} {att_calls:>5}"
+              f"   ({att_pre} x2 pre venues cache, {n_att - att_pre} x1)")
+    else:
+        print(f"  {'attendance runs (1 call each)':<34} {att_calls:>5}")
     if manual:
         by = collections.Counter(manual)
         print(f"  {'by hand':<34} {len(manual):>5}"
