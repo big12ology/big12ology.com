@@ -11,6 +11,14 @@ the ESPN game id (CFBD reuses ESPN ids, so box-score links are free), and
 kickoff-hour weather from the Open-Meteo historical archive (free, keyless;
 skipped silently if unavailable).
 
+Venue coordinates, timezones and locations come from the committed catalog
+at tiebreaker/data/venues.json rather than a live /venues call: stadiums do
+not move, and at ~7 runs a week in season that one endpoint was 14% of the
+monthly CFBD quota. The live endpoint is only hit when the file is missing.
+To pick up a new stadium, refresh the catalog with
+`python3 tiebreaker/fetch.py --venues --force` (this script warns when a
+game references a venue the catalog lacks).
+
 Requires CFBD_API_KEY (free key: https://collegefootballdata.com/key). If CFBD
 cannot be reached — a spent monthly quota, an outage — the run falls back to
 refreshing the committed season file from ESPN alone and exits clean.
@@ -90,6 +98,33 @@ def load_api_key() -> str:
             "(gitignored). Free key: https://collegefootballdata.com/key"
         )
     return key
+
+
+# Maintained by tiebreaker/fetch.py --venues; that script is the only writer.
+VENUE_CATALOG = ROOT.parent / "tiebreaker" / "data" / "venues.json"
+
+
+def load_venue_catalog() -> dict | None:
+    """The committed venue catalog, keyed by CFBD venue id (as int).
+
+    The catalog stores {lat, lon, tz, city, state, name}; the CFBD /venues
+    records this replaces used {latitude, longitude, timezone, ...}, and the
+    consumers below read the CFBD names, so normalize here and both sources
+    look identical downstream. Returns None when the file is missing, and
+    main() falls back to one live /venues call."""
+    if not VENUE_CATALOG.exists():
+        return None
+    raw = json.loads(VENUE_CATALOG.read_text())
+    return {
+        int(vid): {
+            "timezone": v.get("tz"),
+            "city": v.get("city"),
+            "state": v.get("state"),
+            "latitude": v.get("lat"),
+            "longitude": v.get("lon"),
+        }
+        for vid, v in raw.items()
+    }
 
 
 def espn_game(espn_id) -> dict | None:
@@ -233,8 +268,7 @@ def refresh_from_espn(out: Path, year: int) -> None:
     a game is played, attendance and the score, can be read directly.
 
     What this cannot do is discover a game the file does not have, or fill
-    weather (venue coordinates come from CFBD). A schedule change during a
-    quota wall waits for the quota."""
+    weather. A schedule change during a quota wall waits for the quota."""
     season = json.loads(out.read_text())
     by_id = {}
     today = date.today().isoformat()
@@ -313,12 +347,17 @@ def main(year: int) -> None:
     # were already in the Big 12. For backfilled seasons the current sixteen
     # were scattered across the Pac-12, AAC, Big East and independence, so
     # pull the full slate and filter by team.
+    venues_by_id = load_venue_catalog()
     try:
         raw = cfbd("/games", api_key, year=year, seasonType="regular")
         raw = [g for g in raw
                if (g.get("homeTeam") or g.get("home_team")) in teams
                or (g.get("awayTeam") or g.get("away_team")) in teams]
-        venues = cfbd("/venues", api_key)
+        if venues_by_id is None:
+            # Self-heal for a checkout without the catalog; the normal path
+            # never spends this call. Inside the try on purpose, so a spent
+            # quota here still routes to the ESPN fallback below.
+            venues_by_id = {v["id"]: v for v in cfbd("/venues", api_key)}
     except Exception as e:
         # A spent quota or an API outage must not cost a game day. The same
         # call the site is built on says so directly — CFBD answers a run
@@ -334,12 +373,25 @@ def main(year: int) -> None:
         refresh_from_espn(out, year)
         return
 
-    venues_by_id = {v["id"]: v for v in venues}
     coords_by_id = {
-        v["id"]: (v["latitude"], v["longitude"])
-        for v in venues
+        vid: (v["latitude"], v["longitude"])
+        for vid, v in venues_by_id.items()
         if v.get("latitude") is not None
     }
+
+    # A venue the catalog has never heard of degrades quietly (kickoff time
+    # falls back to the team's timezone, no weather, no city/state on road
+    # rows), so name it out loud instead. New stadiums are the only way this
+    # fires, and the fix is one forced refresh on the tiebreaker side.
+    unknown = sorted({
+        f'{g.get("venue") or "?"} (id {g.get("venueId")})'
+        for g in raw
+        if g.get("venueId") is not None and g.get("venueId") not in venues_by_id
+    })
+    if unknown:
+        print("WARNING: venues missing from tiebreaker/data/venues.json: "
+              + ", ".join(unknown)
+              + ". Refresh with: python3 tiebreaker/fetch.py --venues --force")
 
     games = []
     for g in raw:
