@@ -109,22 +109,22 @@
  ],
  "401856780": [
   {
-   "outlet": "TNT",
-   "type": "tv"
-  },
-  {
    "outlet": "HBO Max",
    "type": "web"
+  },
+  {
+   "outlet": "TNT",
+   "type": "tv"
   }
  ],
  "401856781": [
   {
-   "outlet": "TNT",
-   "type": "tv"
-  },
-  {
    "outlet": "HBO Max",
    "type": "web"
+  },
+  {
+   "outlet": "TNT",
+   "type": "tv"
   }
  ],
  "401856782": [
@@ -195,12 +195,12 @@
  ],
  "401856793": [
   {
-   "outlet": "TNT",
-   "type": "tv"
-  },
-  {
    "outlet": "HBO Max",
    "type": "web"
+  },
+  {
+   "outlet": "TNT",
+   "type": "tv"
   }
  ],
  "401856795": [

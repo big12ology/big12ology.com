@@ -1,0 +1,41 @@
+{
+ "game_count": 1,
+ "games": [
+  {
+   "away": "North Carolina",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 195,
+     "home_ml": -235,
+     "over_under": 47.5,
+     "over_under_open": 50.5,
+     "provider": "Bovada",
+     "spread": -8.5,
+     "spread_open": -7.5
+    },
+    {
+     "away_ml": 240,
+     "home_ml": -298,
+     "over_under": 47.5,
+     "provider": "DraftKings",
+     "spread": -7.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856766,
+   "home": "TCU",
+   "kickoff": "2026-08-29T16:00:00.000Z",
+   "kickoff_at": 1788019200,
+   "neutral": true,
+   "spread_raw": -8.0,
+   "spread_x2": -16
+  }
+ ],
+ "lock_at": 1788019200,
+ "pickable_count": 1,
+ "published": "2026-08-25T07:49:44+00:00",
+ "season": 2026,
+ "status": "published",
+ "week": 0
+}
