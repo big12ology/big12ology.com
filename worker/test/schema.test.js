@@ -153,8 +153,12 @@ test("after the lock, no insert, no update, no delete", () => {
 test("the lock is inclusive: at the instant itself, it is shut", () => {
   const now = Math.floor(Date.now() / 1000);
   raises(() => pick(db({ lockAt: now })), "week_locked");
-  // A second later is fine.
-  const open = db({ lockAt: now + 1 });
+  // Later is fine. A minute, not a second: the shut half above is the exact
+  // boundary and stays exact, but this half only needs a lock that is still
+  // in the future when the insert runs, and a one-second margin lost a race
+  // against a slow CI runner (2026-08-25, the second between Date.now() and
+  // the trigger's unixepoch()).
+  const open = db({ lockAt: now + 60 });
   pick(open);
 });
 
