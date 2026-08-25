@@ -174,6 +174,11 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
   font-size:var(--t-label) } .ccgtag { color:var(--accent); font-weight:700;
   font-size:var(--t-fine); text-transform:uppercase }
+/* The whole row is the link to the game's page. Ink, not accent: a list
+   where every word is link-colored says nothing; the hover underline says
+   it for the row under the pointer. */
+ul.games li a.gamelink { color:inherit; text-decoration:none; display:block }
+ul.games li a.gamelink:hover { text-decoration:underline }
 /* One non-conference marker for the whole site. It was a pill in the Lab's
    own stylesheet and bare parenthetical text everywhere else, so the same
    fact about the same game looked like two different things depending on
@@ -587,7 +592,7 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=4b21dc86"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=8f11ef4a"></script></head><body>
+<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=211a2fef"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=40272170"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pools/">Pools</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>

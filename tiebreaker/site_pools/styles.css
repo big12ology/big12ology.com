@@ -664,13 +664,17 @@
    Before the first slate publishes, the upcoming week renders through the
    ordinary renderer with everything shut (see renderPickemPreview). The
    rows stay at full strength — like signed-out, there is no record to
-   recede behind, and the week is the whole reason to look — and the chip
-   column holds each game's link to its schedule page instead of a result,
-   sized to the word rather than to "WIN". */
+   recede behind, and the week is the whole reason to look. */
 .pk-preview .pk-slate-game:not(:has(input:checked)) { opacity: 1; }
-.pk-preview .pk-slate-game,
-.pk-preview .pk-slate-game:not([disabled]) {
-  grid-template-columns: 56px minmax(0, 1fr) auto;
+/* Every row that carries its schedule link — live weeks borrow them from
+   the look-ahead files (mergePeeks) — grows a fourth column for it, so the
+   link coexists with whatever the chip column holds (a result, LOCKED, a
+   no-line tag) instead of competing for its 40px. The middle 1fr pins both
+   trailing columns to the right edge. */
+.pk-slate-game:has(.pk-peek),
+.pk-slate-game:has(.pk-peek):not([disabled]),
+.pk-locked .pk-slate-game:has(.pk-peek):not([disabled]) {
+  grid-template-columns: 56px minmax(0, 1fr) auto auto;
 }
 .pk-peek { font-size: var(--t-meta); white-space: nowrap; justify-self: end;
            color: var(--accent2); text-decoration: underline;

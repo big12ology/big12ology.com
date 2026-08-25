@@ -4,14 +4,22 @@
   {
    "away": "Houston",
    "b12": "both",
+   "book_lines": [
+    {
+     "provider": "DraftKings",
+     "spread": -13.5,
+     "spread_open": -13.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856811,
    "home": "Texas Tech",
    "kickoff": "2026-09-19T00:00:00.000Z",
    "kickoff_at": 1789776000,
    "neutral": false,
    "preview": "/schedule/game/401856811-houston-at-texas-tech.html",
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -13.5,
+   "spread_x2": -27
   },
   {
    "away": "Tulane",
@@ -170,10 +178,10 @@
    "unpickable": "no_line"
   }
  ],
- "lock_at": null,
- "pickable_count": 0,
+ "lock_at": 1789776000,
+ "pickable_count": 1,
  "preview": true,
  "season": 2026,
- "status": "no_contest",
+ "status": "published",
  "week": 3
 }

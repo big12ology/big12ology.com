@@ -295,6 +295,24 @@
       .catch(function () { return null; });
   }
 
+  /* The live rows carry the same schedule links the look-ahead rows do: the
+     week's preview file already knows each game's page (build_pools_preview
+     writes the slug the schedule build produced), so the API slate borrows
+     them by game_id rather than teaching the client to slugify. Failing the
+     fetch loses only the links. */
+  function mergePeeks(s) {
+    return previewWeek(s.week).then(function (pv) {
+      if (pv) {
+        var by = {};
+        pv.games.forEach(function (g) { by[g.game_id] = g.preview; });
+        s.games.forEach(function (g) {
+          g.preview = g.preview || by[g.game_id];
+        });
+      }
+      return s;
+    });
+  }
+
   /* When a week's picks open: the Tuesday 09:00 UTC before its lock — the
      same live-by promise nextSlateTime makes, pointed at a particular week
      instead of at the calendar. The pipeline behind the hour is described
@@ -713,9 +731,10 @@
       var chip = resultChip(g, picks[g.game_id] || null, true, "slate");
       if (chip) fs.appendChild(chip);
     }
-    // Only the look-ahead slate carries these (build_pools_preview writes
-    // them; the API never does), so in season this branch is dead and a row
-    // stays a control, not a link.
+    // The row's door to its schedule page. The look-ahead files carry the
+    // URL and mergePeeks lends it to the live slate, so every row links out
+    // in every season state; the grid grows a fourth column for it only on
+    // rows that have one (see .pk-peek in styles.css).
     if (g.preview) {
       var peek = el("a", "pk-peek", "preview →");
       peek.href = g.preview;
@@ -895,8 +914,10 @@
                        "This week's slate");
       var n0 = $("slateload");
       if (n0) { stopOpensNote(n0); n0.textContent = ""; }
-      renderSlate(r[2] || {});
-      slateWeekSelector(slate.week);
+      return mergePeeks(slate).then(function () {
+        renderSlate(r[2] || {});
+        slateWeekSelector(slate.week);
+      });
     }).catch(function (err) {
       var n = $("slateload");
       if (!n) return;
@@ -2447,8 +2468,8 @@
       sides.appendChild(lab);
     });
     fs.appendChild(sides);
-    // Only the look-ahead slate carries these — same rule as the pick'em's
-    // gameRow, and the same reason: in season a row is a control.
+    // The row's door to its schedule page, live and look-ahead alike; see
+    // the pick'em gameRow's note.
     if (g.preview) {
       var peek = el("a", "pk-peek", "preview →");
       peek.href = g.preview;
@@ -3102,6 +3123,7 @@
         SV_LIVE = svState;
         svWeekSelector(slate.week);
 
+        return mergePeeks(slate).then(function () {
         show($("svlock"), true);
         $("svweek").textContent = slate.week;
         if (slate.lock_at) {
@@ -3126,6 +3148,7 @@
           al.textContent = board.alive + " of " + board.entrants +
             (board.entrants === 1 ? " run" : " runs") + " still alive.";
         }
+        });
       })
       .catch(function (err) {
         if (err.status === 404) {
@@ -3211,18 +3234,19 @@
 
   // ---------------------------------------------------------------- counts
 
-  /* The population figures, on the hub's rule: a count is an argument once
+  /* The population figure, on the hub's rule: a count is an argument once
      enough people are in it and an admission before that, so nothing shows
-     below MIN. Three slots, three meanings. The splash quotes everyone
-     signed up; each game quotes the people who have actually picked in it
-     this season, which for survivor is the same thing as having entered.
+     below MIN. ONE number and one word everywhere — registrations, said as
+     "players" — because three counts with three definitions read as three
+     sites disagreeing (the per-game participation counts still exist in
+     /api/health for anyone curious; the pages just stopped quoting them).
      Counts and only counts, from /api/health, which already says why that
      is fine to serve. */
   function initCounts() {
     var slots = [
-      ["poolusers", "registered", " people have signed up."],
-      ["pkplayers", "pickem_players", " people are playing this season."],
-      ["svplayers", "survivor_players", " people are in the pool."],
+      ["poolusers", "registered", " players have signed up."],
+      ["pkplayers", "registered", " players have signed up."],
+      ["svplayers", "registered", " players have signed up."],
     ].filter(function (s) { return $(s[0]); });
     if (!slots.length) return;
     var MIN = 10;

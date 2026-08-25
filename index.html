@@ -558,16 +558,18 @@ a.card:hover { border-color: var(--accent); }
 </script>
 <!-- PICKEM-ONLY -->
 <script>
-/* How many people are in, and only once that is worth saying.
+/* How many players are in, and only once that is worth saying.
  *
- * "3 users" is an advertisement for an empty room, and the number spends
+ * "3 players" is an advertisement for an empty room, and the number spends
  * the first weeks of a season being one. So it stays hidden until there are
  * enough of them for the figure to be an argument rather than an admission,
  * and the card reads perfectly well without it in the meantime.
  *
- * A count and nothing else. The board already names everyone on it, so this
- * discloses nothing that is not public — it just saves fetching the whole
- * leaderboard to find out how long it is.
+ * `registered`, the same number and the same word the pools pages quote:
+ * one count with one definition across the site, rather than a hub that
+ * disagrees with the splash it links to. A count and nothing else — the
+ * board already names everyone on it, so this discloses nothing that is
+ * not public.
  */
 (function () {
   var MIN = 10;
@@ -576,12 +578,12 @@ a.card:hover { border-color: var(--accent); }
   fetch("/api/health")
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (d) {
-      var n = d && d.players;
+      var n = d && d.registered;
       if (!n || n < MIN) return;
       Array.prototype.forEach.call(slots, function (el) {
         // A second figure in the cluster, in the cluster's own shape (number
         // over label) rather than a sentence tacked onto the end of one.
-        el.innerHTML = "<b></b>users";
+        el.innerHTML = "<b></b>players";
         el.querySelector("b").textContent = n.toLocaleString();
         el.hidden = false;
       });

@@ -4,26 +4,50 @@
   {
    "away": "Missouri",
    "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": -238,
+     "home_ml": 195,
+     "over_under": 52.5,
+     "over_under_open": 52.5,
+     "provider": "DraftKings",
+     "spread": 7,
+     "spread_open": 7
+    }
+   ],
+   "books": 1,
    "game_id": 401856678,
    "home": "Kansas",
    "kickoff": "2026-09-12T00:00:00.000Z",
    "kickoff_at": 1789171200,
    "neutral": false,
    "preview": "/schedule/game/401856678-missouri-at-kansas.html",
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": 7.0,
+   "spread_x2": 14
   },
   {
    "away": "Arizona State",
    "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": 425,
+     "home_ml": -575,
+     "over_under": 51.5,
+     "over_under_open": 51.5,
+     "provider": "DraftKings",
+     "spread": -14.5,
+     "spread_open": -14.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856683,
    "home": "Texas A&M",
    "kickoff": "2026-09-12T16:00:00.000Z",
    "kickoff_at": 1789228800,
    "neutral": false,
    "preview": "/schedule/game/401856683-arizona-state-at-texas-a-m.html",
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -14.5,
+   "spread_x2": -29
   },
   {
    "away": "Washington State",
@@ -40,14 +64,26 @@
   {
    "away": "Oregon",
    "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": -1100,
+     "home_ml": 700,
+     "over_under": 60.5,
+     "over_under_open": 60.5,
+     "provider": "DraftKings",
+     "spread": 18.5,
+     "spread_open": 18.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856782,
    "home": "Oklahoma State",
    "kickoff": "2026-09-12T16:00:00.000Z",
    "kickoff_at": 1789228800,
    "neutral": false,
    "preview": "/schedule/game/401856782-oregon-at-oklahoma-state.html",
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": 18.5,
+   "spread_x2": 37
   },
   {
    "away": "UT Martin",
@@ -136,14 +172,26 @@
   {
    "away": "Iowa State",
    "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": 525,
+     "home_ml": -750,
+     "over_under": 41.5,
+     "over_under_open": 41.5,
+     "provider": "DraftKings",
+     "spread": -11.5,
+     "spread_open": -11.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856788,
    "home": "Iowa",
    "kickoff": "2026-09-12T23:30:00.000Z",
    "kickoff_at": 1789255800,
    "neutral": false,
    "preview": "/schedule/game/401856788-iowa-state-at-iowa.html",
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -11.5,
+   "spread_x2": -23
   },
   {
    "away": "Prairie View A&M",
@@ -172,20 +220,32 @@
   {
    "away": "Arkansas",
    "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 295,
+     "home_ml": -375,
+     "over_under": 54.5,
+     "over_under_open": 54.5,
+     "provider": "DraftKings",
+     "spread": -9.5,
+     "spread_open": -9.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856670,
    "home": "Utah",
    "kickoff": "2026-09-13T02:15:00.000Z",
    "kickoff_at": 1789265700,
    "neutral": false,
    "preview": "/schedule/game/401856670-arkansas-at-utah.html",
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -9.5,
+   "spread_x2": -19
   }
  ],
- "lock_at": null,
- "pickable_count": 0,
+ "lock_at": 1789171200,
+ "pickable_count": 5,
  "preview": true,
  "season": 2026,
- "status": "no_contest",
+ "status": "published",
  "week": 2
 }

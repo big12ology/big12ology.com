@@ -4,6 +4,24 @@
   {
    "away": "North Carolina",
    "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 195,
+     "home_ml": -235,
+     "over_under": 47.5,
+     "over_under_open": 50.5,
+     "provider": "Bovada",
+     "spread": -8,
+     "spread_open": -7.5
+    },
+    {
+     "away_ml": 240,
+     "home_ml": -298,
+     "over_under": 47.5,
+     "provider": "DraftKings",
+     "spread": -7.5
+    }
+   ],
    "books": 2,
    "game_id": 401856766,
    "home": "TCU",
@@ -11,8 +29,8 @@
    "kickoff_at": 1788019200,
    "neutral": true,
    "preview": "/schedule/game/401856766-north-carolina-at-tcu.html",
-   "spread_raw": -7.0,
-   "spread_x2": -14
+   "spread_raw": -7.8,
+   "spread_x2": -16
   }
  ],
  "lock_at": 1788019200,
