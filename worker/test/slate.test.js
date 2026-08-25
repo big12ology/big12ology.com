@@ -20,14 +20,21 @@ function serving(body, status = 200) {
   return () => { globalThis.fetch = real; };
 }
 
+// One clock reading for every fixture this file builds. Each WEEK() used to
+// take its own NOW(), so two fixtures in one test could straddle a second
+// boundary on a slow runner — and then the SECOND import died on
+// weeks_lock_monotonic (its lock_at was a second "later") before ever
+// reaching the trigger the test was about. The times only need to be in the
+// future and consistent, so they are read once.
+const T0 = NOW();
 const WEEK = (over = {}) => ({
   season: 2026, week: 4, status: "published",
-  lock_at: NOW() + 48 * HOUR, game_count: 2, pickable_count: 1,
+  lock_at: T0 + 48 * HOUR, game_count: 2, pickable_count: 1,
   games: [
     { game_id: 901, home: "Iowa State", away: "Kansas",
-      kickoff_at: NOW() + 48 * HOUR, spread_x2: -13, spread_raw: -6.4, books: 5 },
+      kickoff_at: T0 + 48 * HOUR, spread_x2: -13, spread_raw: -6.4, books: 5 },
     { game_id: 902, home: "TCU", away: "Utah",
-      kickoff_at: NOW() + 50 * HOUR, spread_x2: null },
+      kickoff_at: T0 + 50 * HOUR, spread_x2: null },
   ],
   ...over,
 });
