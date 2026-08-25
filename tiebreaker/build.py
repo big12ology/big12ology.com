@@ -5387,28 +5387,11 @@ def write_hub(year, games, lines, sims_race, lev_top=None):
 
 
 POOLS_HOME_BODY = """
-<div class=card>
-  <h2>Two games, one account</h2>
-  <p class=note><b>Play either one, or both.</b> They are separate games and
-  neither needs the other &mdash; signing in gets you into whichever you want,
-  whenever you want, and skipping one costs you nothing in the other. One
-  display name, the same team beside it, one set of rules about what is public
-  and when.</p>
-  <!-- Filled by initCounts once enough people have signed up for the number
-       to be an argument rather than an admission; same rule as the hub. -->
-  <p class=note id=poolusers hidden></p>
-</div>
-<!-- Hidden until app.js reveals it. A button that needs JavaScript should not
-     sit on a page whose JavaScript did not run — there is no invite code and
-     no league to create, so with the script off the address bar is already the
-     whole feature and a dead button would only be in the way. -->
-<div class=card id=sharecard hidden>
-  <h2>Bring somebody</h2>
-  <p class=note>Everybody plays in the same pool. There is no league to make
-  and no roster to keep &mdash; the link is the whole invitation.</p>
-  <p><button class=wbtn type=button id=sharebtn>Share the pool</button>
-  <span class=note id=sharemsg role=status aria-live=polite></span></p>
-</div>
+<!-- One 2x2 grid, games on top: the games are what the page is FOR, so they
+     get the first row; the account explainer and the invitation are the
+     supporting act. Source order is the layout — grid auto-placement fills
+     row one then row two — and it is also the reading order a screen reader
+     and a phone (where the grid stacks) walk. -->
 <div class=poolgrid>
   <a class="card poolcard" href="pickem/">
     <h2>Pickem</h2>
@@ -5425,12 +5408,40 @@ POOLS_HOME_BODY = """
     which teams you have left in November.</p>
     <p class=note>One pick, one life, the whole season.</p>
   </a>
+  <div class=card>
+    <h2>Two games, one account</h2>
+    <p class=note><b>Play either one, or both.</b> They are separate games and
+    neither needs the other &mdash; signing in gets you into whichever you
+    want, whenever you want, and skipping one costs you nothing in the other.
+    One display name, the same team beside it, one set of rules about what is
+    public and when.</p>
+    <!-- Filled by initCounts once enough people have signed up for the number
+         to be an argument rather than an admission; same rule as the hub. -->
+    <p class=note id=poolusers hidden></p>
+  </div>
+  <!-- Hidden until app.js reveals it. A button that needs JavaScript should
+       not sit on a page whose JavaScript did not run — there is no invite
+       code and no league to create, so with the script off the address bar is
+       already the whole feature and a dead button would only be in the way.
+       While it is hidden the account card holds the second row alone, which
+       reads fine and lasts only as long as the script takes. -->
+  <div class=card id=sharecard hidden>
+    <h2>Bring somebody</h2>
+    <p class=note>Everybody plays in the same pool. There is no league to make
+    and no roster to keep &mdash; the link is the whole invitation.</p>
+    <p><button class=wbtn type=button id=sharebtn>Share the pool</button>
+    <span class=note id=sharemsg role=status aria-live=polite></span></p>
+  </div>
 </div>
 """
 
 POOLS_HOME_CSS = """
-  .poolgrid { display:grid; gap:14px; margin-top:14px;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr)) }
+  /* Two columns, declared — not auto-fit, which at page width happily laid
+     all four cards in one row and made the games a quarter each. */
+  .poolgrid { display:grid; gap:14px; grid-template-columns:1fr }
+  @media (min-width: 720px) {
+    .poolgrid { grid-template-columns:repeat(2, minmax(0, 1fr)) }
+  }
   .poolcard { display:block; text-decoration:none; color:inherit }
   .poolcard h2 { color:var(--accent) }
   .poolcard:hover { border-color:var(--accent) }
