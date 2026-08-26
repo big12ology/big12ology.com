@@ -188,13 +188,20 @@ jobs:
         env:
           CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
           B12_PICKEM: ${{ steps.pools.outputs.on }}
-        run: >-
-          python3 build.py --fetch
-          ${{ (github.event.schedule == '0 7 * 8-12 2' || inputs.refresh)
-              && '--refresh' || '' }}
-          ${{ (github.event.schedule == '30 8 * 8-12 *'
-               || github.event.schedule == '0 18 * 8-12 *')
-              && '--refresh-lines' || '' }}
+        # A LITERAL BLOCK, ONE LINE PER EXPRESSION. This was a folded block
+        # (>-) with each ${{ }} wrapped across more-indented continuation
+        # lines — which YAML keeps literally, newlines and all. The first
+        # morning the daily lines cron fired (2026-08-26 08:30), the first
+        # expression expanded to nothing, the surviving newline promoted
+        # "--refresh-lines" to its own shell line, and the build died on
+        # exit 127 running a flag as a command. The Tuesday branch had
+        # dodged it for a week only because ITS expression came first.
+        # Folded scalars and multi-line expressions do not mix; the shell
+        # continuations below are explicit and the expressions unwrappable.
+        run: |
+          python3 build.py --fetch \
+            ${{ (github.event.schedule == '0 7 * 8-12 2' || inputs.refresh) && '--refresh' || '' }} \
+            ${{ (github.event.schedule == '30 8 * 8-12 *' || github.event.schedule == '0 18 * 8-12 *') && '--refresh-lines' || '' }}
 
       # The build writes tiebreaker/forecasts/<season>/week-NN.json. Odds are
       # recomputed and discarded every run, so a week that is not committed
