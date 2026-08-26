@@ -592,7 +592,7 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=211a2fef"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=40272170"></script></head><body>
+<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><link rel=stylesheet href="../styles.css?v=211a2fef"><script defer src="../../tiebreaker/pct.js?v=9b775f7b"></script><script defer src="../app.js?v=30c6966c"></script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a class=on href="/pools/">Pools</a><span class=b12-right><span class=b12-acct hidden></span><span class=b12-theme></span></span></nav>
 <header class=b12-head>
@@ -620,6 +620,11 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
        assumes Saturday's card is still open on Friday has lost the week. -->
   <p class=pk-lockspan id=lockspan hidden></p>
   <p class=pk-slatecount id=slatecount></p>
+  <!-- The other half of the deadline story: picks lock above, and the lines
+       locked already — at publish, whose timestamp the slate carries. Said
+       here so "frozen when the week is published" is a checkable time on
+       the page that shows the numbers. -->
+  <p class=pk-slatecount id=linefroze hidden></p>
 </div>
 <p class=pk-signedout id=signedout hidden><a href="/pools/account.html">Sign in</a>
   to make your picks.</p>

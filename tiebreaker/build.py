@@ -4759,6 +4759,11 @@ PICKEM_SLATE_BODY = f"""
        assumes Saturday's card is still open on Friday has lost the week. -->
   <p class=pk-lockspan id=lockspan hidden></p>
   <p class=pk-slatecount id=slatecount></p>
+  <!-- The other half of the deadline story: picks lock above, and the lines
+       locked already — at publish, whose timestamp the slate carries. Said
+       here so "frozen when the week is published" is a checkable time on
+       the page that shows the numbers. -->
+  <p class=pk-slatecount id=linefroze hidden></p>
 </div>
 <p class=pk-signedout id=signedout hidden><a href="/pools/account.html">Sign in</a>
   to make your picks.</p>

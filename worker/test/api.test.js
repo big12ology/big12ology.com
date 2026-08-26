@@ -345,6 +345,9 @@ test("the slate is shaped the way the client reads it", async () => {
   assert.equal(s.season, 2026);
   assert.equal(s.week, 3);
   assert.equal(s.locked, false);
+  // The freeze moment travels with the slate: the page prints it under the
+  // lock card, so "frozen when published" is a checkable time.
+  assert.ok(Number.isInteger(s.published_at), "slate carries published_at");
   assert.equal(s.games.length, 3);
   const g = s.games[0];
   for (const k of ["game_id", "home", "away", "kickoff", "kickoff_at",

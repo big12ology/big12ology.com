@@ -906,6 +906,17 @@
         startCountdown(slate.lock_at);
         lockSpanNote(slate);
       }
+      // The lines' own deadline is already behind us, and the page says
+      // when: the freeze happened at publish, so the number beside a team
+      // has been the number since this moment and will not move.
+      var lf = $("linefroze");
+      if (lf) {
+        if (slate.published_at) {
+          lf.textContent = "Lines frozen since " +
+            fmtWhen(slate.published_at * 1000) + "; they do not move.";
+          show(lf, true);
+        } else show(lf, false);
+      }
       LIVE_WEEK = slate.week;
       // The card is the live week's again: title back, look-ahead meta off,
       // and the status note is silent — the hints above the card carry the

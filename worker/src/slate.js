@@ -214,6 +214,10 @@ export async function readSlate(env, season, week) {
 
   return {
     season, week: w.week, status: w.status, lock_at: w.lock_at, locked,
+    // When the lines froze: the import stamped this as the week arrived,
+    // and the page states it so "frozen when the week is published" is a
+    // checkable time rather than a slogan.
+    published_at: w.published_at,
     game_count: w.game_count, pickable_count: w.pickable_count,
     games: (games || []).map((g) => {
       const out = {
