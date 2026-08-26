@@ -346,8 +346,11 @@ a.card:hover { border-color: var(--accent); }
       <span><b>2</b>games</span>
       <span class=players hidden></span>
     </p>
-    <p class=hook>Pick'em against the spread and survivor, one account. Both lock at
-    first kickoff.</p>
+    <!-- Not "both lock at first kickoff": that stopped being true when
+         survivor moved to per-game locks (80604c4). The slate is one
+         deadline; a survivor pick stays open until its own game starts. -->
+    <p class=hook>Pick'em against the spread and survivor, one account. The slate
+    locks at first kickoff; survivor locks game by game.</p>
   </a>
   <!-- /PICKEM-ONLY -->
   <!-- PICKEM-OFF -->
@@ -363,8 +366,11 @@ a.card:hover { border-color: var(--accent); }
       <span><b>2</b>games</span>
       <span class=players hidden></span>
     </p>
-    <p class=hook>Pick'em against the spread and survivor, one account. Both lock at
-    first kickoff.</p>
+    <!-- Not "both lock at first kickoff": that stopped being true when
+         survivor moved to per-game locks (80604c4). The slate is one
+         deadline; a survivor pick stays open until its own game starts. -->
+    <p class=hook>Pick'em against the spread and survivor, one account. The slate
+    locks at first kickoff; survivor locks game by game.</p>
   </a>
   <!-- /PICKEM-OFF -->
   <a class=card href="/schedule/">
