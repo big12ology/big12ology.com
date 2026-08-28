@@ -152,25 +152,6 @@
    }
   ]
  },
- "401856683": {
-  "spread": -14.5,
-  "spread_open": -14.5,
-  "over_under": 51.5,
-  "over_under_open": 51.5,
-  "home_ml": -575.0,
-  "away_ml": 425.0,
-  "books": [
-   {
-    "provider": "DraftKings",
-    "spread": -14.5,
-    "spread_open": -14.5,
-    "over_under": 51.5,
-    "over_under_open": 51.5,
-    "home_ml": -575,
-    "away_ml": 425
-   }
-  ]
- },
  "401856811": {
   "spread": -13.5,
   "spread_open": -13.5,
@@ -179,25 +160,6 @@
     "provider": "DraftKings",
     "spread": -13.5,
     "spread_open": -13.5
-   }
-  ]
- },
- "401856670": {
-  "spread": -9.5,
-  "spread_open": -9.5,
-  "over_under": 54.5,
-  "over_under_open": 54.5,
-  "home_ml": -395.0,
-  "away_ml": 310.0,
-  "books": [
-   {
-    "provider": "DraftKings",
-    "spread": -9.5,
-    "spread_open": -9.5,
-    "over_under": 54.5,
-    "over_under_open": 54.5,
-    "home_ml": -395,
-    "away_ml": 310
    }
   ]
  },
@@ -258,6 +220,44 @@
    }
   ]
  },
+ "401856683": {
+  "spread": -14.5,
+  "spread_open": -14.5,
+  "over_under": 51.5,
+  "over_under_open": 51.5,
+  "home_ml": -550.0,
+  "away_ml": 410.0,
+  "books": [
+   {
+    "provider": "DraftKings",
+    "spread": -14.5,
+    "spread_open": -14.5,
+    "over_under": 51.5,
+    "over_under_open": 51.5,
+    "home_ml": -550,
+    "away_ml": 410
+   }
+  ]
+ },
+ "401856670": {
+  "spread": -9.5,
+  "spread_open": -9.5,
+  "over_under": 54.5,
+  "over_under_open": 54.5,
+  "home_ml": -380.0,
+  "away_ml": 300.0,
+  "books": [
+   {
+    "provider": "DraftKings",
+    "spread": -9.5,
+    "spread_open": -9.5,
+    "over_under": 54.5,
+    "over_under_open": 54.5,
+    "home_ml": -380,
+    "away_ml": 300
+   }
+  ]
+ },
  "401856768": {
   "spread": -33.5,
   "spread_open": -32.5,
@@ -282,8 +282,8 @@
   "spread_open": -4.5,
   "over_under": 52.5,
   "over_under_open": 52.5,
-  "home_ml": -218.0,
-  "away_ml": 180.0,
+  "home_ml": -205.0,
+  "away_ml": 170.0,
   "books": [
    {
     "provider": "DraftKings",
@@ -291,8 +291,8 @@
     "spread_open": -4.5,
     "over_under": 52.5,
     "over_under_open": 52.5,
-    "home_ml": -218,
-    "away_ml": 180
+    "home_ml": -205,
+    "away_ml": 170
    }
   ]
  },
@@ -331,25 +331,6 @@
     "over_under_open": 54.5,
     "home_ml": -310,
     "away_ml": 250
-   }
-  ]
- },
- "401856837": {
-  "spread": -6.5,
-  "spread_open": -6.5,
-  "over_under": 50.5,
-  "over_under_open": 50.5,
-  "home_ml": -250.0,
-  "away_ml": 205.0,
-  "books": [
-   {
-    "provider": "DraftKings",
-    "spread": -6.5,
-    "spread_open": -6.5,
-    "over_under": 50.5,
-    "over_under_open": 50.5,
-    "home_ml": -250,
-    "away_ml": 205
    }
   ]
  },
@@ -407,6 +388,25 @@
     "over_under_open": 55.5,
     "home_ml": -950,
     "away_ml": 625
+   }
+  ]
+ },
+ "401856837": {
+  "spread": -6.5,
+  "spread_open": -6.5,
+  "over_under": 50.5,
+  "over_under_open": 50.5,
+  "home_ml": -265.0,
+  "away_ml": 215.0,
+  "books": [
+   {
+    "provider": "DraftKings",
+    "spread": -6.5,
+    "spread_open": -6.5,
+    "over_under": 50.5,
+    "over_under_open": 50.5,
+    "home_ml": -265,
+    "away_ml": 215
    }
   ]
  },
@@ -469,8 +469,8 @@
   "spread_open": -7.5,
   "over_under": 46.5,
   "over_under_open": 50.5,
-  "home_ml": -295.0,
-  "away_ml": 237.5,
+  "home_ml": -297.5,
+  "away_ml": 240.0,
   "books": [
    {
     "provider": "Bovada",
@@ -485,8 +485,8 @@
     "provider": "DraftKings",
     "spread": -9.5,
     "over_under": 46.5,
-    "home_ml": -355,
-    "away_ml": 280
+    "home_ml": -360,
+    "away_ml": 285
    }
   ]
  },
@@ -549,8 +549,8 @@
   "spread_open": -17.5,
   "over_under": 56.2,
   "over_under_open": 57.5,
-  "home_ml": -1462.5,
-  "away_ml": -49625.0,
+  "home_ml": -1687.5,
+  "away_ml": -49525.0,
   "books": [
    {
     "provider": "Bovada",
@@ -566,8 +566,8 @@
     "spread": -21.5,
     "spread_open": -17.5,
     "over_under": 56.5,
-    "home_ml": -1200,
-    "away_ml": 750
+    "home_ml": -1650,
+    "away_ml": 950
    }
   ]
  }
