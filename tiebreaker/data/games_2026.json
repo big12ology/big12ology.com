@@ -5,7 +5,7 @@
   "notes": "Aer Lingus College Football Classic",
   "ccg": false,
   "start": "2026-08-29T16:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Aviva Stadium",
   "venue_id": 3504,
@@ -17,8 +17,8 @@
   "away_conf": "ACC",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 10,
+  "away_points": 15
  },
  {
   "id": 401856767,
