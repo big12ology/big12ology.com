@@ -2000,9 +2000,16 @@
   function cardRow(g, side, teams, locked) {
     var li = el("li", "pk-cardrow");
     var st = gameStatus(g);
-    var when = el("span", "pk-when pk-st-" + st.kind, st.text);
+    var when = el("span", "pk-when pk-st-" + st.kind);
+    when.appendChild(document.createTextNode(st.text));
     if (st.kind !== "time") {
-      when.title = "Kickoff " + fmtWhen(g.kickoff);
+      // FINAL, IN PLAY and WAITING have taken the kickoff's place, and until
+      // now it survived only in a title. Title is hover, and hover is not a
+      // reading. Only in this branch: while the chip still shows the time it
+      // is saying it already, and twice is worse than tersely.
+      var kick = fmtWhen(g.kickoff);
+      when.title = "Kickoff " + kick;
+      when.appendChild(el("span", "sr-only", ", kickoff " + kick));
     }
     li.appendChild(when);
 
@@ -2011,11 +2018,19 @@
       if (i) m.appendChild(el("span", "pk-at", " " + joiner(g) + " "));
       var mk2 = mark(teams, g[s], 15);
       if (mk2) m.appendChild(mk2);
-      var t = el("span",
-        s === side ? "pk-took" : (side ? "pk-nottook" : null), g[s]);
-      if (s === side) {
+      var took = s === side;
+      var t = el("span", took ? "pk-took" : (side ? "pk-nottook" : null));
+      t.appendChild(document.createTextNode(g[s]));
+      if (took) {
         var c = (teams[g[s]] && teams[g[s]].color) || "";
         if (c) { t.style.setProperty("--tc", c); t.style.setProperty("--tfg", textOn(c)); }
+        // The fill and the tick are the visible answer to "which one did I
+        // take". The fill is a color and the tick is CSS generated content,
+        // so between them they say nothing a screen reader can be relied on
+        // to report, on the one page whose entire subject is what you
+        // picked, and whose result chip then says "your pick, loss" with
+        // nothing anywhere to say what the pick was.
+        t.appendChild(el("span", "sr-only", ", your pick"));
       }
       m.appendChild(t);
     });
@@ -2026,24 +2041,41 @@
     // the thing anyone actually wants to look at.
     var sc = el("span", "pk-score");
     if (hasResult(g)) {
-      sc.textContent = g.result.away_points + "\u2013" + g.result.home_points;
-      sc.title = g.away + " " + g.result.away_points + ", " +
+      var said = g.away + " " + g.result.away_points + ", " +
                  g.home + " " + g.result.home_points;
+      // The figures are for the eye, which reads them against a matchup one
+      // column to the left. Spoken, "21 to 31" is two numbers with nothing
+      // attached to them, so the ear gets the sentence and not the dash.
+      var fig = el("span", null,
+        g.result.away_points + "\u2013" + g.result.home_points);
+      fig.setAttribute("aria-hidden", "true");
+      sc.appendChild(fig);
+      sc.appendChild(el("span", "sr-only", said));
+      sc.title = said;
     }
     li.appendChild(sc);
 
-    li.appendChild(el("span", "pk-num",
+    // The number for the eye, the sentence for the ear: "-8" read aloud is
+    // "minus eight", of what and for whom unstated. spreadSaid already says
+    // it properly for the slate and for survivor; this row is the one that
+    // never got it.
+    var num = el("span", "pk-num");
+    num.appendChild(document.createTextNode(
       side ? spreadText(g.spread_x2, side) : "—"));
+    if (side) {
+      num.appendChild(el("span", "sr-only", " " + spreadSaid(g.spread_x2, side)));
+    }
+    li.appendChild(num);
 
     // The split goes before the result, because the grid places children in
     // DOM order and the result belongs in the last, narrow column. Appending
     // it after put the chip in the gauge's slot and squeezed the gauge into
     // the chip's.
     //
-    // A bar running from one team's color to the other with a marker where
-    // the split falls and each side's number at its own end: the question is
-    // which way the room leaned and how hard, and that is a position rather
-    // than a digit.
+    // Each side's mark, its share of the room, and a bar filled to that
+    // share: the question is which way the room leaned and how hard, and that
+    // is a length rather than a digit. gauge.js draws it, the same way it
+    // draws the one on the schedule.
     //
     // Absent below MIN_CONSENSUS, and absent entirely before the lock — the
     // server does not send the field, so a late picker cannot follow the room.
