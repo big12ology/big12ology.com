@@ -2764,16 +2764,35 @@
    * handicap charged for joining late, which nobody chose. The rest are yours.
    */
   /**
-   * One row of sixteen marks: what has been spent, then what is left.
+   * A row of marks: what has been spent, and on your own roster what is left.
    *
    * SPENT FIRST AND IN ORDER, because a survivor roster is read as a history
    * and then as an inventory — "I have had these, so I still have those". A
    * plain alphabetical list of sixteen answers neither question quickly.
    *
-   * Faded rather than removed. Which teams are gone is half the answer, and a
-   * row that shrank every week would stop being a roster.
+   * TWO SHAPES, and which one you want is a question about whose row it is.
+   *
+   *   opts.named       all sixteen, faded where spent, each one captioned
+   *                    with the week it went. Your own roster, where the
+   *                    teams you still hold are a decision you are about to
+   *                    make, so removing them would remove the point.
+   *
+   *   opts.spentOnly   what this run has used up, and nothing else. Somebody
+   *                    else's row, where the leftovers are not your decision
+   *                    and eleven extra logos are eleven things to look past.
+   *
+   * The fade only ever distinguishes something in the first shape. In the
+   * second every mark is spent, so fading them would separate nothing and
+   * spend all of the contrast. That is why that column is not faded, and
+   * why it must not silently become the first shape again.
+   *
+   * A fade is also not a label. `named` earns the right to fade because it
+   * writes the week beside each mark; `spentOnly` earns it by not needing to.
+   * Marks carry alt="", so a column distinguished by opacity alone says
+   * nothing at all to a screen reader.
    */
-  function teamMarks(usedTeams, teams, size, named) {
+  function teamMarks(usedTeams, teams, size, opts) {
+    opts = typeof opts === "object" && opts ? opts : {named: !!opts};
     var ul = document.createDocumentFragment();
     var spent = {};
     usedTeams.forEach(function (u) { spent[u.team || u] = u; });
@@ -2781,16 +2800,22 @@
     var all = Object.keys(teams).filter(function (t) { return teams[t].b12; })
       .sort();
     var rest = all.filter(function (t) { return !spent[t]; });
-    var order = usedTeams.map(function (u) { return u.team || u; })
-      .filter(function (t) { return teams[t]; })
-      .concat(rest);
+    // Spent-only keeps every team it was handed, including one the build has
+    // never heard of: this column is somebody's record, and a name we cannot
+    // draw a mark for still belongs in it as an abbreviation.
+    var order = opts.spentOnly
+      ? usedTeams.map(function (u) { return u.team || u; })
+      : usedTeams.map(function (u) { return u.team || u; })
+          .filter(function (t) { return teams[t]; })
+          .concat(rest);
 
     order.forEach(function (t) {
-      var li = el("li", "pk-mk" + (spent[t] ? " pk-mkspent" : ""));
+      var li = el("li", "pk-mk" +
+        (spent[t] && !opts.spentOnly ? " pk-mkspent" : ""));
       var mk = mark(teams, t, size || 22);
       if (mk) li.appendChild(mk);
       else li.appendChild(el("span", "pk-mkabbr", (teams[t] || {}).abbr || t));
-      if (named) {
+      if (opts.named) {
         li.appendChild(el("span", "pk-mkname", t));
         var when = spent[t] && spent[t].week != null ? "wk " + spent[t].week
           : (spent[t] ? "chalk" : "");
@@ -2816,7 +2841,7 @@
     });
     ul.textContent = "";
     ul.className = "pk-roster pk-rostercol";
-    var r = teamMarks(used, teams, 26, true);
+    var r = teamMarks(used, teams, 26, {named: true});
     ul.appendChild(r.frag);
     if (note) {
       note.textContent = r.left + " of " + r.total + " still yours" +
@@ -2846,8 +2871,16 @@
       var li = el("li", "pk-fieldrow" + (r.alive ? "" : " pk-fieldout"));
       var who = el("span", "pk-fieldname", r.display_name || "—");
       li.appendChild(who);
+      // What this run has spent, and only that. It used to draw all sixteen
+      // with the spent ones faded, which is the shape your OWN roster wants:
+      // there the teams still standing are the decision in front of you. On
+      // somebody else's row they are not, so eleven full-strength logos were
+      // eleven things to look past to find the five that mattered, and the
+      // five that mattered were the faded ones, which is backwards.
+      // The Board's spent column already answered this the same way.
       var marks = el("ul", "pk-roster pk-rostersm");
-      marks.appendChild(teamMarks(r.used || [], teams, 18).frag);
+      marks.appendChild(teamMarks(r.used || [], teams, 18,
+                                  {spentOnly: true}).frag);
       li.appendChild(marks);
       if (!r.alive) {
         li.appendChild(el("span", "pk-when",
@@ -2955,18 +2988,10 @@
         // only what this run has already used up.
         var sd = el("td");
         var sul = el("ul", "pk-roster pk-rostersm");
-        // NOT pk-mkspent. That class exists on the roster to tell a spent
-        // team from an available one, and every mark in this column is spent
-        // — so the fade distinguished nothing and cost all of the contrast,
-        // leaving a row of grey smudges nobody could read a logo out of.
-        (r.used || []).forEach(function (u) {
-          var li = el("li", "pk-mk");
-          var umk = mark(teams, u.team, 16);
-          if (umk) li.appendChild(umk);
-          else li.appendChild(el("span", "pk-mkabbr", u.team));
-          li.title = u.team + " — week " + u.week;
-          sul.appendChild(li);
-        });
+        // This was the same list built by hand, down to the reason it is not
+        // faded. teamMarks does it now, under the name for what it is.
+        sul.appendChild(teamMarks(r.used || [], teams, 16,
+                                  {spentOnly: true}).frag);
         sd.appendChild(sul);
         tr2.appendChild(sd);
       }
