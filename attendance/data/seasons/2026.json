@@ -30,7 +30,9 @@
       "role": "neutral",
       "venue": "Aviva Stadium",
       "city": "Dublin",
-      "state": ""
+      "state": "",
+      "pointsFor": 10,
+      "pointsAgainst": 15
     },
     {
       "team": "Arizona",
