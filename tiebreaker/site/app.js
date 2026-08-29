@@ -883,6 +883,34 @@
     });
   }
 
+  /* What the list SHOWS, which is not the same as what it lets you change.
+     pickable() is the levers: in a live season, the games not yet played.
+     A week whose games have all been played has no levers, and used to
+     vanish from the list entirely -- so week 0 of 2026, one game in Dublin,
+     was simply missing from a page headed "the season". A week that has
+     happened is still part of the season and still worth reading; it just
+     cannot be rewritten. Same conference filter, no completed filter. */
+  function listed() {
+    return payload.games.filter(function (g) {
+      return !g.ccg && (!confOnly || g.conference_game);
+    });
+  }
+
+  /* Whether a row can be touched. In a finished season every game is a
+     lever, so nothing is frozen; in a live one a played game is a record. */
+  function frozen(g) {
+    return !unlocked && g.completed;
+  }
+
+  /* Points for one side of a played game, or null. A played row that names
+     both teams and withholds what they scored is the one row on the page
+     that already knows the answer and will not say it. */
+  function score(g, side) {
+    if (!B12Engine.hasScore(g)) return null;
+    var v = side === "home" ? g.home_points : g.away_points;
+    return v == null ? null : v;
+  }
+
   /**
    * Fill a set of games with the selected model's favorites.
    *
@@ -918,7 +946,7 @@
   function renderPickList() {
     var box = document.getElementById("wgames");
     if (!box) return;
-    var games = visible();
+    var games = listed();
     var byWeek = {};
     var weeks = [];
     games.forEach(function (g) {
@@ -934,7 +962,17 @@
       if (s && d.open) wasOpen[s.textContent.split(" (")[0].trim()] = true;
     });
     var anyOpen = Object.keys(wasOpen).length > 0;
-    var openWeek = weeks.length ? weeks[0] : null;
+    // The week in front of you, not the first one on the page. Now that
+    // played weeks are listed, weeks[0] is whatever the season opened with,
+    // which in September is a game from August nobody can change. The first
+    // week that still has something to pick is the one to open; a finished
+    // season falls back to its first week, because there every game is live.
+    var openWeek = null;
+    for (var wi = 0; wi < weeks.length; wi++) {
+      var some = byWeek[weeks[wi]].some(function (g) { return !frozen(g); });
+      if (some) { openWeek = weeks[wi]; break; }
+    }
+    if (!openWeek && weeks.length) openWeek = weeks[0];
     var html = weeks.map(function (wk) {
       // A week that mixes the two kinds of game read as ragged: the
       // conference rows carry no chip, so their buttons ran on into the
@@ -956,10 +994,10 @@
         // still fills in a home column because it needs one, so the flag is
         // the only thing that knows. Same rule as joiner() in build.py — this
         // list is the one place that was writing the word itself.
-        return "<div class=wgame>" +
-          pickBtn(id, g.away, fav, was) +
+        return "<div class='wgame" + (frozen(g) ? " wplayed" : "") + "'>" +
+          pickBtn(id, g.away, fav, was, frozen(g), score(g, "away")) +
           "<span class=at>" + (g.neutral_site ? "vs" : "at") + "</span>" +
-          pickBtn(id, g.home, fav, was) +
+          pickBtn(id, g.home, fav, was, frozen(g), score(g, "home")) +
           // The tag, the date and the ⋮ in one wrapper so a phone can put
           // all three on a line of their own. It is display:contents on
           // anything wider, so the row it makes there is the same flat row
@@ -973,9 +1011,15 @@
           // selector above picks which opinion fills the stars; this says
           // what the other five thought, which is the question a reader has
           // at the moment they disagree with the star.
-          "<button type=button class=wpeek data-id=\"" + id + "\"" +
-          " aria-expanded=false title=\"What each model makes of this" +
-          " game\">&#8942;</button>" +
+          // No model rates a game that has been played, so the peek had
+          // nothing to open but the words "No model rates this game." A
+          // control whose only answer is that it has no answer is better
+          // not offered.
+          (frozen(g)
+            ? ""
+            : "<button type=button class=wpeek data-id=\"" + id + "\"" +
+              " aria-expanded=false title=\"What each model makes of this" +
+              " game\">&#8942;</button>") +
           "</span>" +
           "</div><div class=wmodels hidden data-for=\"" + id + "\"></div>";
       }).join("");
@@ -987,13 +1031,21 @@
       // thirteen weeks at once, which answers a different question — the
       // reader working down the season a week at a time wants the chalk for
       // the week in front of them and their own opinion after that.
+      // A week with no levers left has nothing to count. "0/1 picked" under
+      // a week that finished a month ago reads as something undone.
+      var live = byWeek[wk].filter(function (g) { return !frozen(g); }).length;
+      var tally = live
+        ? "(" + picked + "/" + live + (unlocked ? " changed" : " picked") + ")"
+        : "(played)";
       return "<details" + (open ? " open" : "") + "><summary>" +
-        wk + " <span class=dim>(" + picked + "/" + byWeek[wk].length +
-        (unlocked ? " changed" : " picked") + ")</span>" +
-        "<button type=button class=wkfav data-wk=\"" + wk +
-        "\" title=\"Pick the " + modelShort() + " favorite in every " + wk +
-        " game\"><span class=wkstar>&#9733;</span>" + esc(modelShort()) +
-        "</button>" +
+        wk + " <span class=dim>" + tally + "</span>" +
+        // And no chalk button on a week there is nothing to apply it to.
+        (live
+          ? "<button type=button class=wkfav data-wk=\"" + wk +
+            "\" title=\"Pick the " + modelShort() + " favorite in every " +
+            wk + " game\"><span class=wkstar>&#9733;</span>" +
+            esc(modelShort()) + "</button>"
+          : "") +
         "</summary>" + inner + "</details>";
     }).join("");
     box.innerHTML = html;
@@ -1087,11 +1139,24 @@
     updateCount(pickable().length);
   }
 
-  function pickBtn(id, team, fav, was) {
+  function pickBtn(id, team, fav, was, isFrozen, pts) {
     var sel = picks[id] === team;
     // No pick yet on a played game: show the result that stands.
     var stands = !picks[id] && was === team;
     var isFav = fav && fav.team === team;
+    // A played game in a live season is a record, so the button says what
+    // happened and refuses the press. disabled rather than a click handler
+    // that ignores it: the cursor, the keyboard and assistive tech all read
+    // the same answer off the attribute, and none of them has to guess.
+    if (isFrozen) {
+      return "<button class='pick" + (was === team ? " stands" : "") +
+        "' disabled title='" + esc(team) +
+        (was === team ? " won this game" : " lost this game") +
+        ". Played games cannot be changed.'>" + mark(team, 18) +
+        "<span class=nm>" + esc(team) + "</span>" +
+        (pts == null ? "" : "<span class=wpts>" + pts + "</span>") +
+        "</button>";
+    }
     var style = sel
       ? " style='background:" + color(team) + ";border-color:" + color(team) +
         ";color:" + textOn(color(team)) + "'"

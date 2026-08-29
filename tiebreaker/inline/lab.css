@@ -421,3 +421,20 @@ main > *, .duo > *, .cols > * { min-width: 0; }
   .wmeta .nctag.ghost { display: none; }
   .wgame .wdate { margin-left: auto; }
 }
+
+/* A played game in a live season. The row is still listed, because a week
+   that has happened is part of the season and worth reading, but there is no
+   lever in it: the buttons say what happened and refuse the press. Quiet
+   rather than greyed to nothing, because the names and the result are the
+   reason the row is there at all. */
+.pick:disabled { cursor: default; opacity: .72; }
+.pick:disabled:hover { border-color: var(--line); }
+.wplayed .at { opacity: .72; }
+
+/* The score on a played row. Pushed to the trailing edge so the two numbers
+   line up down a week however long the names are, and tabular so they do not
+   shuffle. Same weight as the name it belongs to: it is the fact the row is
+   there for, not an annotation on it. */
+.wpts { margin-left: auto; padding-left: 10px; font-weight: 700;
+        font-variant-numeric: tabular-nums; }
+.pick.stands .wpts { color: var(--ink); }
