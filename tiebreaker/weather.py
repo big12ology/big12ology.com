@@ -34,6 +34,24 @@ import subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 CACHE = os.path.join(DATA, "weather_cache.json")
+
+
+def _played_path(season):
+    """Observed conditions for games that have been played, one file a season.
+
+    THIS ONE IS COMMITTED, and it is the opposite of the cache beside it. A
+    forecast is perishable, so weather.py fetches it every build and stores
+    nothing; what a game was played in never changes again, and Open-Meteo
+    only serves the hour back about 92 days. Without a record, a September
+    kickoff silently reverted to the venue's ten-season average some time in
+    December -- the page quietly getting worse months after anybody would
+    think to look at it.
+
+    So it is written once, when the game is close enough to still have an
+    answer, and read forever after. Same rule the rest of this repo follows
+    for anything fetched from outside: pull it once, keep the response.
+    """
+    return os.path.join(DATA, f"weather_played_{season}.json")
 API = "https://api.open-meteo.com/v1/forecast"
 
 HORIZON_DAYS = 16       # as far as the forecast model actually goes
@@ -68,6 +86,27 @@ def _load_cache():
         return c.get("games", {}) if age < CACHE_MINUTES else {}
     except Exception:
         return {}
+
+
+def _load_played(season):
+    try:
+        return json.load(open(_played_path(season))).get("games", {})
+    except Exception:
+        return {}
+
+
+def _save_played(season, by_game):
+    """Sorted and one key per line, so a diff shows the games that were added
+    and nothing else. This lands in commits alongside the slate."""
+    try:
+        os.makedirs(DATA, exist_ok=True)
+        with open(_played_path(season), "w") as f:
+            json.dump({"season": season,
+                       "games": {k: by_game[k] for k in sorted(by_game)}},
+                      f, indent=1, sort_keys=True)
+            f.write("\n")
+    except OSError:
+        pass
 
 
 def _save_cache(by_game):
@@ -118,16 +157,29 @@ def in_range(games, now=None):
     return out
 
 
-def attach(games, venues, quiet=False):
+def attach(games, venues, quiet=False, season=None):
     """Hang a `weather` dict on every game close enough to have a forecast.
 
     Returns the number of games given one. Mutates `games` in place, which
     is what the build wants — the forecast is a property of the game
     everywhere it is rendered.
     """
-    due = in_range(games)
+    # The record first, and at any age. A game played last September is long
+    # past the window Open-Meteo will answer for, and it does not need one:
+    # the answer was written down when it was fresh.
+    # Passed in rather than sniffed off the games: they carry no season field,
+    # and a store keyed on a guess is a store that silently writes nowhere.
+    played = _load_played(season) if season else {}
+    for g in games:
+        if g.get("completed") and not g.get("dome"):
+            w = played.get(str(g.get("id")))
+            if w:
+                g["weather"] = dict(w, observed=True)
+
+    # Only what is still missing an answer.
+    due = [(g, w) for g, w in in_range(games) if not g.get("weather")]
     if not due:
-        return 0
+        return sum(1 for g in games if g.get("weather"))
 
     cached = _load_cache()
     hit = {}
@@ -178,13 +230,27 @@ def attach(games, venues, quiet=False):
                 if not quiet:
                     print(f"weather: no forecast this build ({e})")
 
+    fresh = {}
     for g, _ in due:
         w = hit.get(str(g.get("id")))
         if w:
             # Played games carry the same three numbers, but they are a record
             # rather than a forecast and the page has to be able to say so.
-            g["weather"] = dict(w, observed=bool(g.get("completed")))
-    return sum(1 for g, _ in due if g.get("weather"))
+            was = bool(g.get("completed"))
+            g["weather"] = dict(w, observed=was)
+            # And a record gets written down. Only played games: a forecast
+            # committed to the repo would be an hourly churn of numbers
+            # nobody can check, which is what the cache beside this exists
+            # to avoid.
+            if was:
+                fresh[str(g.get("id"))] = w
+    if fresh and season:
+        played.update(fresh)
+        _save_played(season, played)
+        if not quiet:
+            print(f"weather: recorded {len(fresh)} played "
+                  f"game{'' if len(fresh) == 1 else 's'}")
+    return sum(1 for g in games if g.get("weather"))
 
 
 NORMALS = os.path.join(DATA, "normals.json")
@@ -261,7 +327,7 @@ if __name__ == "__main__":
         year -= 1
         path = os.path.join(DATA, f"games_{year}.json")
     games = json.load(open(path))
-    got = attach(games, fetcher.load_venues())
+    got = attach(games, fetcher.load_venues(), season=year)
     print(f"{year}: {got} of {len(in_range(games))} games in range "
           f"have a kickoff forecast")
     for g in games:

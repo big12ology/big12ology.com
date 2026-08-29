@@ -3343,7 +3343,7 @@ def place_and_forecast(year, games):
         if gid in lines:
             g["line"] = lines[gid]
     try:
-        weather_mod.attach(games, venues)
+        weather_mod.attach(games, venues, season=year)
     except Exception as e:
         # A forecast is the least important thing on the page. It never
         # takes a deploy down with it.

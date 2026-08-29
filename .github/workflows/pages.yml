@@ -249,11 +249,20 @@ jobs:
           # next run can see it. (lines_*.json also catches the .meta.json
           # sidecar, which is the point: the sidecar is how a stale file is
           # told apart from a fresh one.)
+          #
+          # weather_played_* is the newest of these and the one with a
+          # deadline. Open-Meteo answers for the kickoff hour for about 92
+          # days and then stops, so a game's conditions have to be written
+          # down while they can still be asked for. Not weather_cache.json,
+          # which is the forecast and is gitignored on purpose: perishable,
+          # refetched every build, and an hourly churn of numbers nobody can
+          # check if it were committed.
           for p in tiebreaker/forecasts tiebreaker/pickem \
                    tiebreaker/data/games_*.json \
                    tiebreaker/data/lines_*.json \
                    tiebreaker/data/ratings_*.json \
-                   tiebreaker/data/media_*.json; do
+                   tiebreaker/data/media_*.json \
+                   tiebreaker/data/weather_played_*.json; do
             [ -e "$p" ] && git add "$p"
           done
           if git diff --cached --quiet; then
