@@ -3383,7 +3383,14 @@ def render(year, games):
 
     # -- matchup card -----------------------------------------------------
     if not rows:
-        card = ("<div class=card id=matchcard><h2>Season not started</h2>"
+        # CONFERENCE play, not the season. This card appears when there are
+        # no standings rows, which means no conference game has been played
+        # yet, and that is routinely true while the season is underway: 2026
+        # opened on August 29 with a non-conference game in Dublin and the
+        # first Big 12 game is weeks after it. The body always said
+        # "conference"; only the heading claimed the whole season.
+        card = ("<div class=card id=matchcard>"
+                "<h2>Conference play has not started</h2>"
                 "<p>No conference results yet. The projected championship "
                 "matchup will appear after the first Big 12 game.</p></div>")
     else:

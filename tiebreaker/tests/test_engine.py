@@ -192,11 +192,22 @@ for year, want in sorted(FIXTURE["odds"].items()):
     check(f"{year} regress_stale", digest(reg), want["regress_stale"])
     check(f"{year} team_strength", digest(engine.team_strength(reg)),
           want["team_strength"])
-    check(f"{year} ensemble_margin", digest(engine.ensemble_margin(games, reg)),
-          want["ensemble_margin"])
     check(f"{year} hfa_points", engine.hfa_points(reg), want["hfa_points"])
-    check(f"{year} rating_sigma", engine.rating_sigma(games),
-          want["rating_sigma"])
+    # THE TWO THAT READ THE SEASON, not just its ratings, and so only hold
+    # while the season is not being played. The fixture is an oracle about the
+    # engine and that is only true if the input is fixed; a finished season is
+    # fixed, a live one is not. 2026 opened on August 29 and both of these
+    # moved that evening -- ensemble_margin because a result landed,
+    # rating_sigma because it is measured off played margins -- with nothing
+    # in the engine having changed. Skipping them there keeps the failure
+    # meaning "the engine moved", which is the only thing this file is for.
+    # The archived seasons still check them, and their data cannot drift.
+    if all(g["completed"] for g in games):
+        check(f"{year} ensemble_margin",
+              digest(engine.ensemble_margin(games, reg)),
+              want["ensemble_margin"])
+        check(f"{year} rating_sigma", engine.rating_sigma(games),
+              want["rating_sigma"])
 
 # --- odds: the sampled half, on its own terms -------------------------------
 # No fixture can pin these — a different generator draws a different sample —

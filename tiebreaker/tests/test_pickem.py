@@ -196,7 +196,17 @@ pickem.OUT = tmp
 try:
     T0 = datetime.datetime(2025, 10, 1, tzinfo=datetime.timezone.utc)
 
-    p = pickem.publish_slate(2025, games25, lines25, week=6, now=T0)
+    # A lines-only run may not START a week. Opening one freezes the lines
+    # the season is scored against and opens the pick'em and survivor to
+    # picks, and on 2026-08-29 a daily lines cron did exactly that four days
+    # early, off a stale committed file. Only the weekly refresh opens.
+    check(pickem.publish_slate(2025, games25, lines25, week=6, now=T0) is None,
+          "a lines-only run opened a week it should not have")
+    check(not os.path.exists(os.path.join(tmp, "2025", "week-06.json")),
+          "a refused open still wrote a file")
+
+    p = pickem.publish_slate(2025, games25, lines25, week=6, now=T0,
+                             may_open=True)
     check(p and os.path.exists(p), "first publish wrote nothing")
     first = json.load(open(p))
 
@@ -223,7 +233,10 @@ try:
     victim = first["games"][-1]["game_id"]
     thin.pop(str(victim), None)
     shutil.rmtree(tmp)
-    pickem.publish_slate(2025, games25, thin, week=6, now=T0)
+    # The tree was just wiped, so this is opening the week again, not
+    # filling one in. The fill-in below is deliberately left without
+    # may_open: that is the lines-only path, and it must still work.
+    pickem.publish_slate(2025, games25, thin, week=6, now=T0, may_open=True)
     before = json.load(open(p))
     got = [e for e in before["games"] if e["game_id"] == victim][0]
     check(got["spread_x2"] is None and got["unpickable"] == pickem.NO_LINE,
@@ -243,8 +256,8 @@ try:
     shutil.rmtree(tmp, ignore_errors=True)
     far = datetime.datetime.fromtimestamp(
         locked_at - 30 * 86400, datetime.timezone.utc)
-    check(pickem.publish_slate(2025, games25, lines25, week=6,
-                               now=far) is None,
+    check(pickem.publish_slate(2025, games25, lines25, week=6, now=far,
+                               may_open=True) is None,
           "a slate 30 days out was frozen — openers drift most, and this is "
           "the one write that cannot be taken back")
     check(not os.path.exists(p), "nothing should have been written")
@@ -253,7 +266,7 @@ try:
     # opening a slate, not on completing one.
     near = datetime.datetime.fromtimestamp(
         locked_at - 4 * 86400, datetime.timezone.utc)
-    pickem.publish_slate(2025, games25, thin, week=6, now=near)
+    pickem.publish_slate(2025, games25, thin, week=6, now=near, may_open=True)
     check(os.path.exists(p), "a slate 4 days out should have published")
     pickem.publish_slate(2025, games25, lines25, week=6, now=near)
     late = [e for e in json.load(open(p))["games"]

@@ -73,8 +73,14 @@ def main():
         [i.findtext("guid") for i in parse(feed.build_feed(snap, 2025, systems))[0]]
         == guids2, "rebuild produces identical item set")
 
-    # preseason 2026
-    g26 = json.load(open(os.path.join(ROOT, "data", "games_2026.json")))
+    # preseason 2026, TRUNCATED TO ONE. This read the live file and assumed
+    # it was still preseason, which stopped being true the moment 2026 opened
+    # in Dublin on August 29 -- the test then failed on the calendar rather
+    # than on anything feed.py did. Cut back to before the opener, so what is
+    # asserted is the preseason SHAPE and not the date the suite is run.
+    g26 = truncate(
+        json.load(open(os.path.join(ROOT, "data", "games_2026.json"))),
+        "2026-08-01")
     xml3 = feed.build_feed(g26, 2026, systems)
     items3, guids3, _ = parse(xml3)
     ok &= check(len(items3) == 1 and guids3[0] == "preseason-2026",
