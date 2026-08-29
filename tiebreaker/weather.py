@@ -37,6 +37,11 @@ CACHE = os.path.join(DATA, "weather_cache.json")
 API = "https://api.open-meteo.com/v1/forecast"
 
 HORIZON_DAYS = 16       # as far as the forecast model actually goes
+# And backwards, for games already played. Open-Meteo serves past hours from
+# the forecast endpoint for about 92 days, so this stays inside that with
+# room. Beyond it a game falls back to the venue average again, which is the
+# honest answer when the observation is no longer retrievable.
+LOOKBACK_DAYS = 85
 CACHE_MINUTES = 90      # a rebuild inside this window reuses what it got
 
 
@@ -83,14 +88,24 @@ def _get(url):
 
 
 def in_range(games, now=None):
-    """The games a forecast can actually speak to: not yet played, kickoff
-    known, and inside the horizon."""
+    """The games this can speak to: kickoff known, and inside the window.
+
+    BOTH DIRECTIONS. A played game used to be skipped outright, so a game
+    page that had a real answer available fell back to the venue's ten-season
+    average and printed it under a final score: the 2026 opener in Dublin read
+    "Average 61F, 10 mph, 60% of days see rain" when the hour it kicked off in
+    was 63.8F and 2.5 mph. An average is what you show when nothing better
+    exists, and once a game is played something better does.
+
+    Open-Meteo serves observed hours from the same endpoint as the forecast,
+    so this costs no extra request, only a wider date range on the one that
+    was already going out.
+    """
     now = now or _utcnow()
     edge = now + datetime.timedelta(days=HORIZON_DAYS)
+    floor = now - datetime.timedelta(days=LOOKBACK_DAYS)
     out = []
     for g in games:
-        if g.get("completed"):
-            continue
         # A roof settles it. Nothing renders a dome's forecast, so fetching
         # one buys a column of numbers no page will ever print — and the
         # request is shared with every other venue in range, so leaving it in
@@ -98,7 +113,7 @@ def in_range(games, now=None):
         if g.get("dome"):
             continue
         when = _parse(g.get("start"))
-        if when and now - datetime.timedelta(hours=6) <= when <= edge:
+        if when and floor <= when <= edge:
             out.append((g, when))
     return out
 
@@ -166,7 +181,9 @@ def attach(games, venues, quiet=False):
     for g, _ in due:
         w = hit.get(str(g.get("id")))
         if w:
-            g["weather"] = w
+            # Played games carry the same three numbers, but they are a record
+            # rather than a forecast and the page has to be able to say so.
+            g["weather"] = dict(w, observed=bool(g.get("completed")))
     return sum(1 for g, _ in due if g.get("weather"))
 
 

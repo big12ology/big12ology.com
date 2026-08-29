@@ -2343,6 +2343,19 @@ def weather_line(g):
             parts.append(f"<span class=wxwarn>{pct}</span>" if wet else pct)
         glyph = "rain" if wet else ("wind" if windy else "sun")
         cls = "gi wxwarn" if wet or windy else "gi"
+        # A played game's numbers are what happened, not what was expected,
+        # and the two must not read alike. The wet/windy warning colours come
+        # off with the forecast: they exist to warn somebody deciding whether
+        # to go, and nobody is deciding about a game that is over.
+        if w.get("observed"):
+            said = [f"{round(w['tempF'])}&deg;F"]
+            if wind is not None:
+                said.append(f"{round(wind)} mph")
+            if rain is not None:
+                said.append(f"{round(rain)}% rain")
+            return (f"<div class=slatewx title='Recorded at the venue for the "
+                    f"kickoff hour.'>{icon('history', 'gi')}<span>"
+                    + ", ".join(said) + " at kickoff</span></div>")
         return (f"<div class=slatewx>{icon(glyph, cls)}<span>"
                 + ", ".join(parts) + "</span></div>")
 
@@ -3033,18 +3046,28 @@ def venue_card(g):
     elif g.get("weather"):
         w = g["weather"]
         wind, rain = w.get("windMph"), w.get("precipChance")
+        # Played or not. The same three numbers mean different things either
+        # side of kickoff, and this card was reading them as a forecast for a
+        # game that was already final -- which is how the Dublin opener came
+        # to sit under a final score describing a two-week average.
+        was = bool(w.get("observed"))
         cells.append((f"{round(w['tempF'])}&deg;F", "at kickoff", "temp"))
         if wind is not None:
-            windy = round(wind) >= WIND_WARN
+            # No warning colour on a game that is over. It is there to warn
+            # somebody deciding whether to go, and that decision has passed.
+            windy = not was and round(wind) >= WIND_WARN
             cells.append((f"<span class=wxwarn>{round(wind)} mph</span>"
                           if windy else f"{round(wind)} mph",
                           "wind", "wind"))
         if rain is not None:
-            wet = round(rain) >= RAIN_WARN
+            wet = not was and round(rain) >= RAIN_WARN
             cells.append((f"<span class=wxwarn>{round(rain)}%</span>"
                           if wet else f"{round(rain)}%",
-                          "chance of rain", "rain"))
-        note = "Forecast for the hour of kickoff, via Open-Meteo."
+                          "rain that hour" if was else "chance of rain",
+                          "rain"))
+        note = ("Recorded at the venue for the hour of kickoff, via "
+                "Open-Meteo." if was else
+                "Forecast for the hour of kickoff, via Open-Meteo.")
     elif g.get("normal"):
         n = g["normal"]
         cells.append((f"{n['tempF']}&deg;F", "average temperature", "temp"))
