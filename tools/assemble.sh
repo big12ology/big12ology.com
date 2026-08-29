@@ -69,7 +69,11 @@ rsync -a "${COMMON[@]}" \
 # Seeded rather than empty: bash 3.2 — which is what macOS ships — treats
 # "${arr[@]}" on an empty array as an unbound variable under set -u.
 PICKEM_EX=(--exclude=.keep-pickem-none)
+# gauge.js draws the consensus gauge for the schedule AND for the pools card,
+# so it lives with the other shared scripts under site/ rather than in either
+# section. It is still pick'em content, and ships only when the section does.
 [ "${B12_PICKEM:-}" = "1" ] || PICKEM_EX+=(--exclude=pickcon.js
+                                           --exclude=gauge.js
                                            --exclude=pickem-scores.json)
 rsync -a "${COMMON[@]}" "${PICKEM_EX[@]}" \
       "$ROOT/tiebreaker/site/" "$DIST/tiebreaker/"

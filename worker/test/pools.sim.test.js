@@ -31,8 +31,13 @@ const RUNS = Number(process.env.SIM_RUNS || 300);
 const ONLY = process.env.SIM_SEED ? Number(process.env.SIM_SEED) : null;
 
 const APP = new URL("../../tiebreaker/site_pools/app.js", import.meta.url);
+// The consensus gauge is drawn by a script the pools pages load from
+// /tiebreaker/, shared with the schedule section so the two cannot drift.
+// The page loads it before app.js; so does this.
+const GAUGE = new URL("../../tiebreaker/site/gauge.js", import.meta.url);
 
 installDOM();
+vm.runInThisContext(fs.readFileSync(GAUGE, "utf8"), { filename: "gauge.js" });
 vm.runInThisContext(fs.readFileSync(APP, "utf8"), { filename: "app.js" });
 const P = globalThis.window.B12POOLS;
 assert.ok(P, "app.js did not expose its test surface");

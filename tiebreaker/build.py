@@ -2415,10 +2415,20 @@ def when_line(g):
 def pickem_line(g):
     """An empty slot for what the pick'em made of this game.
 
-    Sixteen of these to a page, so it is one line and carries no percentages —
-    at this size the reading is only "which way, and how far", and two numbers
-    would crowd out the stadium name. The full split is on the game page and
-    on your card.
+    One gauge, three places on the site, and this is one of them: each side's
+    mark, its share of the room, and a bar filled to that share. The pick'em
+    card row is where the shape comes from, and the point of repeating it
+    exactly is that a reader who has learned it once has learned all three.
+
+    The names used to be the labels and there were no numbers, on the theory
+    that at this size the reading is only "which way, and how far". Marks say
+    the same thing in a fifth of the width, which is what buys room for the
+    two percentages beside them.
+
+    The marks are emitted here rather than fetched because the build already
+    has them, and logo_img is the one place that knows which teams have a
+    usable one. pickcon.js moves them into the gauge rather than building its
+    own, so a team with no mark behaves the same way here as everywhere else.
 
     Ships empty and hidden. pickcon.js fills whichever of these it finds, in
     one request for the whole page, and leaves the rest alone: no line, no
@@ -2429,16 +2439,21 @@ def pickem_line(g):
     if not (g.get("line") or {}).get("spread"):
         return ""
     teams_ = load_teams()
-    # Abbreviations only exist for the sixteen members, and team_abbr falls
-    # back to the full name for everyone else — which put "COLO" beside
-    # "Georgia Tech" in the same row. Either both are short or neither is.
-    al, ah = team_abbr(teams_, g["away"]), team_abbr(teams_, g["home"])
-    if al == g["away"] or ah == g["home"]:
-        al, ah = g["away"], g["home"]
+    # Full names, not abbreviations. These are no longer drawn: they are what
+    # the tooltip and the screen-reader sentence say, and both want the name
+    # the reader would use out loud.
+    # EMPTY, not a hex, for a team we have no color for. The old fallback
+    # baked #252932 in here, which is the light theme's neutral and vanishes
+    # against a dark card. It did not show while this was a gradient and the
+    # marker carried the number; now the block IS the number, so a side that
+    # disappears in dark mode takes the reading with it. pickcon.js puts a
+    # theme-aware variable in its place.
     return (f"<div class=slateline data-pkcon='{g['id']}' hidden "
-            f"data-ac='{team_color(teams_, g['away'], '#252932')}' "
-            f"data-hc='{team_color(teams_, g['home'], '#252932')}' "
-            f"data-al=\"{esc(al)}\" data-hl=\"{esc(ah)}\"></div>")
+            f"data-ac='{team_color(teams_, g['away'], '')}' "
+            f"data-hc='{team_color(teams_, g['home'], '')}' "
+            f"data-al=\"{esc(g['away'])}\" data-hl=\"{esc(g['home'])}\">"
+            f"<span class=pcmk>{logo_img(g['away'], 13)}</span>"
+            f"<span class=pcmk>{logo_img(g['home'], 13)}</span></div>")
 
 
 def slate_card(g, pages=True):
@@ -3074,12 +3089,18 @@ def build_game_page(g, ctx):
     teams_ = ctx.get("teams") or {}
     con = ""
     if g.get("line") and PICKEM_ENABLED:
+        # The marks ride along hidden, the same way the slate line carries
+        # them, so pickcon.js draws one gauge for both and neither has to
+        # know how this site decides a team has a usable logo.
         con = (f"<div class=card id=pickcon hidden "
                f"data-gid='{g['id']}' "
                f"data-away=\"{esc(g['away'])}\" data-home=\"{esc(g['home'])}\" "
-               f"data-ac='{team_color(teams_, g['away'], '#252932')}' "
-               f"data-hc='{team_color(teams_, g['home'], '#252932')}'>"
-               f"<h2>Pickem says</h2><div class=pcbody></div></div>")
+               f"data-ac='{team_color(teams_, g['away'], '')}' "
+               f"data-hc='{team_color(teams_, g['home'], '')}'>"
+               f"<h2>Pickem says</h2>"
+               f"<span class=pcmk hidden>{logo_img(g['away'], 18)}</span>"
+               f"<span class=pcmk hidden>{logo_img(g['home'], 18)}</span>"
+               f"<div class=pcbody></div></div>")
 
     # Market first, then the venue, then the models. The column flow fills in
     # source order, so this is also the balancing: two short cards on the left
@@ -4059,6 +4080,8 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          # cards have a split worth showing. Everything else on this page is
          # static, and stays static if it never answers.
          LOCAL_TIME_JS + (
+             f'<script defer src="/tiebreaker/{asset_v("gauge.js")}">'
+             f'</script>'
              f'<script defer src="/tiebreaker/{asset_v("pickcon.js")}">'
              f'</script>' if PICKEM_ENABLED else "")),
         ("matrix.html", "The Matrix", "matrix",
@@ -4194,7 +4217,12 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                         # whose whole job is telling you when to watch, with
                         # the slate one click away answering it properly.
                         head=(LOCAL_TIME_JS
+                              # gauge.js first: pickcon.js calls it, and defer
+                              # runs them in document order.
                               + (f'<script defer '
+                                 f'src="/tiebreaker/{asset_v("gauge.js")}">'
+                                 f'</script>'
+                                 f'<script defer '
                                  f'src="/tiebreaker/{asset_v("pickcon.js")}">'
                                  f'</script>' if PICKEM_ENABLED else "")
                               + game_jsonld(g, year,
@@ -5690,6 +5718,11 @@ def build_pickem(year):
     head = (f'<link rel=stylesheet '
             f'href="{POOLS_UP}{asset_v("styles.css", POOLS_SITE)}">'
             f'<script defer src="{BASE}{asset_v("pct.js")}"></script>'
+            # And gauge.js, shared the same way and for the same reason: the
+            # consensus gauge is drawn identically here and on the schedule,
+            # so it is one file rather than a copy per section. Before app.js,
+            # which calls it; defer runs them in document order.
+            f'<script defer src="{BASE}{asset_v("gauge.js")}"></script>'
             f'<script defer '
             f'src="{POOLS_UP}{asset_v("app.js", POOLS_SITE)}"></script>')
 

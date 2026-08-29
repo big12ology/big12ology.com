@@ -18,6 +18,12 @@ import { fileURLToPath } from "node:url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const APP = path.join(HERE, "..", "site_pools", "app.js");
+// The consensus gauge lives in a script the pools pages load from
+// /tiebreaker/, shared with the schedule section so the two cannot draw the
+// same number two different ways. The page loads it before app.js; so does
+// this, rather than stubbing it, because a stub would stop the one thing
+// worth checking here: that the client's rows still come out whole.
+const GAUGE = path.join(HERE, "..", "site", "gauge.js");
 const DATA = path.join(HERE, "..", "data");
 
 const read = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
@@ -139,6 +145,7 @@ function harness(override) {
   };
   ctx.globalThis = ctx;
   vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(GAUGE, "utf8"), ctx, { filename: "gauge.js" });
   vm.runInContext(fs.readFileSync(APP, "utf8"), ctx, { filename: "app.js" });
   return { byId, fire: () => Promise.all(
     (listeners.DOMContentLoaded || []).map((f) => f())) };

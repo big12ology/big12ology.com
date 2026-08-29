@@ -552,60 +552,29 @@
    whole way between them saying nothing about the distance it covered. At a
    fixed width it is a gauge sitting where a gauge belongs, and it absorbs the
    slack the matchup column used to hand to the gutter. */
-.pk-split { display: flex; align-items: center; gap: 6px; min-width: 0; }
 /* The waiting state, in the gauge's own slot. Muted and small on purpose:
    it is an explanation for an absence, not a number anybody is playing for,
    and it must not compete with the spread and the result either side of it.
    Centred because it replaces a bar that filled the column, and a left-aligned
    fragment there reads as a broken bar rather than as a caption. */
 .pk-splitwait {
+  /* Its own flex, not the gauge's. It shares the .pk-split class for the grid
+     track, but gauge.js only injects that stylesheet once it has drawn
+     something, and a card where no game reached the threshold is precisely
+     the card where it never does. Inheriting display from a sheet that is not
+     there left the wait text stranded at the left of its column. */
+  display: flex; align-items: center; min-width: 0;
   justify-content: center; font-size: var(--t-micro);
   color: var(--dim); font-variant-numeric: tabular-nums; white-space: nowrap;
 }
-/* TWO BLOCKS, NOT A GRADIENT WITH A MARKER ON IT.
-   The gradient could not be read, and against two dark colors, or against the
-   graphite a non-conference opponent gets for having none, it could not be
-   read at all: the bar was one smear and the marker was the only thing left
-   holding the number. A marker on an undifferentiated bar does not say
-   "the split is here", it says "a line is drawn here", and the line got read
-   as the spread and as a fill boundary that made whichever team it sat
-   nearest look like the favorite.
-   Length carries it now. Each block is as long as its side's share, so the
-   number survives colors nobody can tell apart, and the break between them is
-   a real gap in the page rather than a mark that had to out-contrast sixteen
-   team colors at once. */
-.pk-splitbar {
-  display: flex; align-items: stretch; gap: 3px;
-  flex: 1; min-width: 40px; height: 7px;
-}
-/* flex-grow off a zero basis: the two split the column in exactly the ratio
-   of the vote. The floor keeps a side nobody took visible as a nub, because
-   3% and 0% should not both render as nothing. */
-.pk-splitbar i { flex-basis: 0; min-width: 3px; border-radius: 3px; }
+/* THE GAUGE ITSELF IS NOT HERE. It is drawn by ../site/gauge.js, which the
+   schedule section calls too, and its stylesheet comes with it: .pk-split,
+   .pk-splitbar and .pk-splitpct are all declared there. Two copies of these
+   rules is what let the card row and the slate line drift into saying the
+   same number two different ways.
+   What stays below is what is true only of this page: the state before the
+   threshold, and which of the two sides is yours. */
 
-/* And the numbers say WHOSE. The row names both teams, but it names them in
-   a column of their own with the spread parked between, so two bare
-   percentages beside a bar were arriving unattached: 18 and 82, of what.
-   The mark, at the size the row can spare. Not an abbreviation: only the
-   sixteen have one, and build.py's team_abbr exists precisely to refuse to
-   invent the rest by truncation (Arizona and Arizona State collide at three
-   letters and at four). The mark is also the one the matchup at the left of
-   this row already carries, which is exactly the tie the gauge was missing.
-   A team with no mark falls back to its number alone. */
-.pk-splitpct {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: var(--t-fine); color: var(--dim); font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  /* Wide enough for a mark and three digits, so the bar starts and ends at the
-     same place on every row of the card. Without it a single-digit share, or a
-     team with no mark, shortened its own label and dragged the whole gauge
-     sideways relative to the row above it. */
-  min-width: 3.7em;
-}
-.pk-splitpct img.mark { width: 13px; height: 13px; margin: 0; flex: none; }
-.pk-splitpct.pk-home { justify-content: flex-end; text-align: right; }
-/* Your side, in weight rather than hue — the crowd is not a verdict, and
-   coloring it would make it look like one. */
 .pk-splitpct.pk-mine { color: var(--ink); font-weight: 700; }
 
 .pk-cardseason { margin: 0 0 10px; font-size: var(--t-row); color: var(--dim);
