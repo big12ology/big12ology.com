@@ -1,0 +1,391 @@
+{
+ "game_count": 15,
+ "games": [
+  {
+   "away": "Bethune-Cookman",
+   "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 59.5,
+     "provider": "DraftKings",
+     "spread": -42.5,
+     "spread_open": -41.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401856767,
+   "home": "UCF",
+   "kickoff": "2026-09-03T23:00:00.000Z",
+   "kickoff_at": 1788476400,
+   "neutral": false,
+   "spread_raw": -42.5,
+   "spread_x2": -85
+  },
+  {
+   "away": "Colorado",
+   "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": 195,
+     "home_ml": -238,
+     "over_under": 50.5,
+     "provider": "DraftKings",
+     "spread": -6.5,
+     "spread_open": -7
+    },
+    {
+     "away_ml": 240,
+     "home_ml": -290,
+     "over_under": 51,
+     "over_under_open": 51.5,
+     "provider": "Bovada",
+     "spread": -6.5,
+     "spread_open": -7
+    }
+   ],
+   "books": 2,
+   "game_id": 401856776,
+   "home": "Georgia Tech",
+   "kickoff": "2026-09-04T00:00:00.000Z",
+   "kickoff_at": 1788480000,
+   "neutral": false,
+   "spread_raw": -6.5,
+   "spread_x2": -13
+  },
+  {
+   "away": "Idaho",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 3500,
+     "home_ml": -20000,
+     "over_under": 56.5,
+     "over_under_open": 56.5,
+     "provider": "DraftKings",
+     "spread": -33.5,
+     "spread_open": -32.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401856768,
+   "home": "Utah",
+   "kickoff": "2026-09-04T01:00:00.000Z",
+   "kickoff_at": 1788483600,
+   "neutral": false,
+   "spread_raw": -33.5,
+   "spread_x2": -67
+  },
+  {
+   "away": "Long Island University",
+   "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 53.5,
+     "over_under_open": 53.5,
+     "provider": "DraftKings",
+     "spread": -38.5,
+     "spread_open": -38.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401856769,
+   "home": "Kansas",
+   "kickoff": "2026-09-05T00:00:00.000Z",
+   "kickoff_at": 1788566400,
+   "neutral": false,
+   "spread_raw": -38.5,
+   "spread_x2": -77
+  },
+  {
+   "away": "Oregon State",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 725,
+     "home_ml": -1300,
+     "over_under": 51.5,
+     "over_under_open": 51.5,
+     "provider": "Bovada",
+     "spread": -21,
+     "spread_open": -18.5
+    },
+    {
+     "away_ml": 1000,
+     "home_ml": -1800,
+     "over_under": 51.5,
+     "provider": "DraftKings",
+     "spread": -20.5,
+     "spread_open": -18.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856778,
+   "home": "Houston",
+   "kickoff": "2026-09-05T16:00:00.000Z",
+   "kickoff_at": 1788624000,
+   "neutral": false,
+   "spread_raw": -20.8,
+   "spread_x2": -42
+  },
+  {
+   "away": "Coastal Carolina",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": -100000,
+     "home_ml": -1725,
+     "over_under": 56,
+     "over_under_open": 57.5,
+     "provider": "Bovada",
+     "spread": -21.5,
+     "spread_open": -17.5
+    },
+    {
+     "away_ml": 950,
+     "home_ml": -1650,
+     "over_under": 56.5,
+     "provider": "DraftKings",
+     "spread": -21.5,
+     "spread_open": -17.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856780,
+   "home": "West Virginia",
+   "kickoff": "2026-09-05T16:00:00.000Z",
+   "kickoff_at": 1788624000,
+   "neutral": false,
+   "spread_raw": -21.5,
+   "spread_x2": -43
+  },
+  {
+   "away": "Southeast Missouri State",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 3500,
+     "home_ml": -20000,
+     "over_under": 53.5,
+     "over_under_open": 53.5,
+     "provider": "DraftKings",
+     "spread": -29.5,
+     "spread_open": -29.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401856779,
+   "home": "Iowa State",
+   "kickoff": "2026-09-05T17:00:00.000Z",
+   "kickoff_at": 1788627600,
+   "neutral": false,
+   "spread_raw": -29.5,
+   "spread_x2": -59
+  },
+  {
+   "away": "Baylor",
+   "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": 240,
+     "home_ml": -298,
+     "over_under": 59.5,
+     "provider": "DraftKings",
+     "spread": -7,
+     "spread_open": -6.5
+    },
+    {
+     "away_ml": 220,
+     "home_ml": -270,
+     "over_under": 59,
+     "over_under_open": 58.5,
+     "provider": "Bovada",
+     "spread": -7,
+     "spread_open": -7.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856636,
+   "home": "Auburn",
+   "kickoff": "2026-09-05T19:30:00.000Z",
+   "kickoff_at": 1788636600,
+   "neutral": true,
+   "spread_raw": -7.0,
+   "spread_x2": -14
+  },
+  {
+   "away": "Boston College",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 250,
+     "home_ml": -310,
+     "over_under": 51.5,
+     "provider": "DraftKings",
+     "spread": -7.5,
+     "spread_open": -9.5
+    },
+    {
+     "away_ml": 220,
+     "home_ml": -270,
+     "over_under": 52,
+     "over_under_open": 54.5,
+     "provider": "Bovada",
+     "spread": -7.5,
+     "spread_open": -9.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856777,
+   "home": "Cincinnati",
+   "kickoff": "2026-09-05T19:30:00.000Z",
+   "kickoff_at": 1788636600,
+   "neutral": false,
+   "spread_raw": -7.5,
+   "spread_x2": -15
+  },
+  {
+   "away": "Oklahoma State",
+   "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": -650,
+     "home_ml": 470,
+     "over_under": 60.5,
+     "provider": "DraftKings",
+     "spread": 14,
+     "spread_open": 11.5
+    },
+    {
+     "away_ml": -550,
+     "home_ml": 390,
+     "over_under": 60.5,
+     "over_under_open": 61.5,
+     "provider": "Bovada",
+     "spread": 14,
+     "spread_open": 11.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856772,
+   "home": "Tulsa",
+   "kickoff": "2026-09-05T19:45:00.000Z",
+   "kickoff_at": 1788637500,
+   "neutral": false,
+   "spread_raw": 14.0,
+   "spread_x2": 28
+  },
+  {
+   "away": "Abilene Christian",
+   "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 59.5,
+     "over_under_open": 59.5,
+     "provider": "DraftKings",
+     "spread": -42.5,
+     "spread_open": -42.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401856770,
+   "home": "Texas Tech",
+   "kickoff": "2026-09-05T23:00:00.000Z",
+   "kickoff_at": 1788649200,
+   "neutral": false,
+   "spread_raw": -42.5,
+   "spread_x2": -85
+  },
+  {
+   "away": "Nicholls",
+   "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 55.5,
+     "over_under_open": 55.5,
+     "provider": "DraftKings",
+     "spread": -40.5,
+     "spread_open": -40.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401856771,
+   "home": "Kansas State",
+   "kickoff": "2026-09-05T23:00:00.000Z",
+   "kickoff_at": 1788649200,
+   "neutral": false,
+   "spread_raw": -40.5,
+   "spread_x2": -81
+  },
+  {
+   "away": "Utah Tech",
+   "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 54.5,
+     "over_under_open": 54.5,
+     "provider": "DraftKings",
+     "spread": -47.5,
+     "spread_open": -47.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401856775,
+   "home": "BYU",
+   "kickoff": "2026-09-06T00:00:00.000Z",
+   "kickoff_at": 1788652800,
+   "neutral": false,
+   "spread_raw": -47.5,
+   "spread_x2": -95
+  },
+  {
+   "away": "Northern Arizona",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 3000,
+     "home_ml": -10000,
+     "over_under": 56.5,
+     "over_under_open": 56.5,
+     "provider": "DraftKings",
+     "spread": -31.5,
+     "spread_open": -31.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401856773,
+   "home": "Arizona",
+   "kickoff": "2026-09-06T01:30:00.000Z",
+   "kickoff_at": 1788658200,
+   "neutral": false,
+   "spread_raw": -31.5,
+   "spread_x2": -63
+  },
+  {
+   "away": "Morgan State",
+   "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 52.5,
+     "over_under_open": 52.5,
+     "provider": "DraftKings",
+     "spread": -41.5,
+     "spread_open": -41.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401856774,
+   "home": "Arizona State",
+   "kickoff": "2026-09-06T02:00:00.000Z",
+   "kickoff_at": 1788660000,
+   "neutral": false,
+   "spread_raw": -41.5,
+   "spread_x2": -83
+  }
+ ],
+ "lock_at": 1788476400,
+ "pickable_count": 15,
+ "published": "2026-08-29T20:15:04+00:00",
+ "season": 2026,
+ "status": "published",
+ "week": 1
+}
