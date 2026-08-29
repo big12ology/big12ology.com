@@ -34,11 +34,9 @@
 
   var CSS =
     ".pcsplit{display:flex;align-items:center;gap:8px;margin:2px 0 0}" +
-    ".pcbar{position:relative;flex:1;min-width:60px;height:8px;" +
-      "border-radius:4px;overflow:hidden}" +
-    ".pcmark{position:absolute;top:-2px;bottom:-2px;width:3px;" +
-      "transform:translateX(-1.5px);background:var(--bg);" +
-      "box-shadow:0 0 0 1px var(--ink);border-radius:1px}" +
+    ".pcbar{display:flex;align-items:stretch;flex:1;min-width:60px;" +
+      "height:8px;gap:3px}" +
+    ".pcbar i{flex-basis:0;min-width:3px;border-radius:3px}" +
     ".pcpct{font-size:13px;font-variant-numeric:tabular-nums;" +
       "white-space:nowrap;font-weight:600}" +
     ".pcpct.r{text-align:right}" +
@@ -59,17 +57,36 @@
     document.head.appendChild(s);
   }
 
+  // Two solid blocks, not a gradient with a needle laid over it.
+  //
+  // The gradient was the whole bug. Between two dark team colors, and against
+  // the graphite a non-conference opponent gets for having no color at all,
+  // the blend reads as one continuous smear. That left a 3px marker as the
+  // only thing carrying the number, and a marker on an undifferentiated bar
+  // is not a proportion: it reads as a line drawn ON something. Which is how
+  // it was being read, as the spread, and as a fill boundary that made the
+  // team nearest it look like the favorite when it was the one nobody took.
+  //
+  // Filled to length instead. The size of each block IS that side's share, so
+  // the reading survives two colors a reader cannot tell apart, and the break
+  // between them is a real gap in the page rather than a mark that has to
+  // out-contrast sixteen team colors at once.
   function gauge(ap, ac, hc) {
     var bar = document.createElement("span");
     bar.className = "pcbar";
-    // The gradient says which team is which; the marker says where the split
-    // actually falls. A gradient on its own cannot be read to a number.
-    bar.style.background = "linear-gradient(90deg," + ac + " 0%," + hc + " 100%)";
-    var m = document.createElement("i");
-    m.className = "pcmark";
-    m.style.left = ap + "%";
-    bar.appendChild(m);
+    bar.appendChild(seg(ap, ac));
+    bar.appendChild(seg(100 - ap, hc));
     return bar;
+  }
+
+  // flex-grow against a zero basis, so the two blocks split whatever the
+  // column gives them in exactly the ratio of the vote. The min-width keeps a
+  // side nobody took visible as a nub: 3% and 0% should not both be nothing.
+  function seg(pct, color) {
+    var s = document.createElement("i");
+    s.style.flexGrow = String(pct);
+    s.style.background = color;
+    return s;
   }
 
   function fillRow(node, d) {

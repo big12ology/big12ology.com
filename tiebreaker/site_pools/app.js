@@ -2095,23 +2095,21 @@
     var hc = (teams[g.home] && teams[g.home].color) || "";
     var wrap = el("div", "pk-split");
 
-    var lp = el("span", "pk-splitpct pk-away", ap + "%");
-    if (side === "away") lp.className += " pk-mine";
-    wrap.appendChild(lp);
+    wrap.appendChild(pctLabel(teams, g.away, ap, side === "away", "away"));
 
+    // Two filled blocks rather than one gradient with a marker floating on
+    // it. The gradient asked the reader to tell two dark team colors apart,
+    // and where one side is a non-conference opponent with no color at all it
+    // asked them to tell a color from graphite. Neither happens, so the bar
+    // came out a single smear with a line on it, and the line got read as the
+    // spread. Sized blocks say the same thing with geometry, which does not
+    // depend on hue: the long one is the side the room took.
     var bar = el("span", "pk-splitbar");
-    // The gradient carries which team is which; the marker carries where the
-    // split actually is. A gradient alone blurs the one number that matters.
-    bar.style.background = "linear-gradient(90deg," +
-      (ac || "var(--tc-none)") + " 0%," + (hc || "var(--tc-none)") + " 100%)";
-    var mark = el("i", "pk-splitmark");
-    mark.style.left = ap + "%";
-    bar.appendChild(mark);
+    bar.appendChild(seg(ap, ac || "var(--tc-none)"));
+    bar.appendChild(seg(hp, hc || "var(--tc-none)"));
     wrap.appendChild(bar);
 
-    var rp = el("span", "pk-splitpct pk-home", hp + "%");
-    if (side === "home") rp.className += " pk-mine";
-    wrap.appendChild(rp);
+    wrap.appendChild(pctLabel(teams, g.home, hp, side === "home", "home"));
 
     wrap.title = ap + "% took " + g.away + ", " + hp + "% took " + g.home +
                  " — " + n + " cards";
@@ -2119,6 +2117,40 @@
       "Of " + n + " cards, " + ap + " percent took " + g.away + " and " +
       hp + " percent took " + g.home + "."));
     return wrap;
+  }
+
+  // flex-grow against a zero basis, so the pair divides whatever the gauge
+  // column gives them in exactly the ratio of the vote. The min-width in CSS
+  // keeps a side nobody took visible as a nub rather than as nothing.
+  function seg(pct, color) {
+    var s = el("i");
+    s.style.flexGrow = String(pct);
+    s.style.background = color;
+    return s;
+  }
+
+  // The number, and whose it is. The row spells both teams out already, but
+  // it does so two columns to the left with the spread in between, so the
+  // percentages were landing unattached to anything.
+  //
+  // The team's mark, at 13px, is the label. Not an abbreviation: only the
+  // sixteen have one, and inventing the rest by truncation is the bug
+  // build.py's team_abbr exists to refuse (Arizona and Arizona State collide
+  // at three letters and at four). A team with no mark simply gets its number
+  // on its own, which is still unambiguous as long as the other end has one.
+  function pctLabel(teams, team, pct, mine, which) {
+    var lab = el("span", "pk-splitpct pk-" + which);
+    if (mine) lab.className += " pk-mine";
+    var img = mark(teams, team, 13);
+    var num = document.createTextNode(pct + "%");
+    if (which === "away") {
+      if (img) lab.appendChild(img);
+      lab.appendChild(num);
+    } else {
+      lab.appendChild(num);
+      if (img) lab.appendChild(img);
+    }
+    return lab;
   }
 
   // Five states, not two. A card read on Saturday afternoon is mostly games

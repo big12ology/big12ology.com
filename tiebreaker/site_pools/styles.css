@@ -562,24 +562,48 @@
   justify-content: center; font-size: var(--t-micro);
   color: var(--dim); font-variant-numeric: tabular-nums; white-space: nowrap;
 }
+/* TWO BLOCKS, NOT A GRADIENT WITH A MARKER ON IT.
+   The gradient could not be read, and against two dark colors, or against the
+   graphite a non-conference opponent gets for having none, it could not be
+   read at all: the bar was one smear and the marker was the only thing left
+   holding the number. A marker on an undifferentiated bar does not say
+   "the split is here", it says "a line is drawn here", and the line got read
+   as the spread and as a fill boundary that made whichever team it sat
+   nearest look like the favorite.
+   Length carries it now. Each block is as long as its side's share, so the
+   number survives colors nobody can tell apart, and the break between them is
+   a real gap in the page rather than a mark that had to out-contrast sixteen
+   team colors at once. */
 .pk-splitbar {
-  position: relative; flex: 1; min-width: 40px; height: 7px;
-  border-radius: 4px; overflow: hidden;
+  display: flex; align-items: stretch; gap: 3px;
+  flex: 1; min-width: 40px; height: 7px;
 }
-/* Sits ON the color, so it needs to read against sixteen different ones:
-   a white bar with a dark outline is legible over every team in the
-   conference and over the graphite an unknown opponent gets. */
-.pk-splitmark {
-  position: absolute; top: -2px; bottom: -2px; width: 3px;
-  transform: translateX(-1.5px);
-  background: var(--bg); box-shadow: 0 0 0 1px var(--ink);
-  border-radius: 1px;
-}
+/* flex-grow off a zero basis: the two split the column in exactly the ratio
+   of the vote. The floor keeps a side nobody took visible as a nub, because
+   3% and 0% should not both render as nothing. */
+.pk-splitbar i { flex-basis: 0; min-width: 3px; border-radius: 3px; }
+
+/* And the numbers say WHOSE. The row names both teams, but it names them in
+   a column of their own with the spread parked between, so two bare
+   percentages beside a bar were arriving unattached: 18 and 82, of what.
+   The mark, at the size the row can spare. Not an abbreviation: only the
+   sixteen have one, and build.py's team_abbr exists precisely to refuse to
+   invent the rest by truncation (Arizona and Arizona State collide at three
+   letters and at four). The mark is also the one the matchup at the left of
+   this row already carries, which is exactly the tie the gauge was missing.
+   A team with no mark falls back to its number alone. */
 .pk-splitpct {
+  display: inline-flex; align-items: center; gap: 4px;
   font-size: var(--t-fine); color: var(--dim); font-variant-numeric: tabular-nums;
-  white-space: nowrap; min-width: 2.2em;
+  white-space: nowrap;
+  /* Wide enough for a mark and three digits, so the bar starts and ends at the
+     same place on every row of the card. Without it a single-digit share, or a
+     team with no mark, shortened its own label and dragged the whole gauge
+     sideways relative to the row above it. */
+  min-width: 3.7em;
 }
-.pk-splitpct.pk-home { text-align: right; }
+.pk-splitpct img.mark { width: 13px; height: 13px; margin: 0; flex: none; }
+.pk-splitpct.pk-home { justify-content: flex-end; text-align: right; }
 /* Your side, in weight rather than hue — the crowd is not a verdict, and
    coloring it would make it look like one. */
 .pk-splitpct.pk-mine { color: var(--ink); font-weight: 700; }
