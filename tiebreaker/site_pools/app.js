@@ -2815,15 +2815,27 @@
       var mk = mark(teams, t, size || 22);
       if (mk) li.appendChild(mk);
       else li.appendChild(el("span", "pk-mkabbr", (teams[t] || {}).abbr || t));
+      // The caption, drawn in one shape and spoken in the other. It is the
+      // same fact either way, so it is written either way: a mark carries
+      // alt="" everywhere on this site, and a column of them with the wording
+      // only in a title is a column that says nothing at all to a screen
+      // reader. Title is hover, and hover is not a reading.
+      var u = spent[t], wk = u && u.week != null ? u.week : null;
       if (opts.named) {
         li.appendChild(el("span", "pk-mkname", t));
-        var when = spent[t] && spent[t].week != null ? "wk " + spent[t].week
-          : (spent[t] ? "chalk" : "");
+        var when = wk != null ? "wk " + wk : (u ? "chalk" : "");
         if (when) li.appendChild(el("span", "pk-mkwhen", when));
+      } else if (opts.spentOnly) {
+        // Spelled out rather than abbreviated. "wk 5" is a label to glance
+        // at; read aloud it is two fragments, and the visible shape is not
+        // there to explain it.
+        li.appendChild(el("span", "sr-only",
+          t + (wk != null ? ", week " + wk : ", chalk")));
       }
-      li.title = spent[t] && spent[t].week != null
-        ? t + " — spent in week " + spent[t].week
-        : (spent[t] ? t + " — spent" : t + " — available");
+      // Kept for the sighted reader hovering a 16px logo they cannot place.
+      // It is no longer the only wording on the element.
+      li.title = wk != null ? t + " — spent in week " + wk
+        : (u ? t + " — spent" : t + " — available");
       ul.appendChild(li);
     });
     return { frag: ul, left: rest.length, total: all.length };
