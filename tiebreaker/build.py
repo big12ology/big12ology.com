@@ -6078,8 +6078,15 @@ def main():
         if PICKEM_ENABLED:
             if ("--refresh" in sys.argv or "--refresh-lines" in sys.argv
                     or "--republish" in sys.argv):
-                pickem_mod.publish_slate(year, games, load_lines(year),
-                                         republish="--republish" in sys.argv)
+                # --refresh is the Tuesday cron, and it is the only schedule
+                # that may OPEN a week: that write freezes the lines the
+                # season is scored against and opens the pick'em and survivor
+                # to picks. The daily lines runs still come through here, to
+                # merge in lines that had not posted when the week opened.
+                pickem_mod.publish_slate(
+                    year, games, load_lines(year),
+                    republish="--republish" in sys.argv,
+                    may_open="--refresh" in sys.argv)
             pickem_mod.write_scores(year, games,
                                     os.path.join(SITE, "pickem-scores.json"))
             build_pickem(year)

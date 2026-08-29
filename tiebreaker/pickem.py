@@ -273,12 +273,25 @@ def _merge(old, new):
     return merged, changed
 
 
-def publish_slate(season, games, lines, week=None, now=None, republish=False):
+def publish_slate(season, games, lines, week=None, now=None, republish=False,
+                  may_open=False):
     """Write pickem/<season>/week-NN.json. Returns the path, or None.
 
     Called from the weekly refresh, where the lines have just been refetched.
     Safe to call on every build: after the lock it is a no-op, and before it
     only fills in what was missing.
+
+    OPENING A WEEK AND FILLING ONE IN ARE DIFFERENT ACTS, and only the first
+    is a promise. The first write freezes the lines a whole season is scored
+    against and opens both games to picks; every write after it merges in
+    lines that had not posted yet. They were gated the same, so the daily
+    lines crons could do either. On 2026-08-29 one of them opened week 1 on a
+    Saturday afternoon, four days early, off committed lines because its own
+    refetch had just failed.
+
+    So opening is the caller's decision. `may_open` is for the weekly refresh
+    and an explicit republish; the lines-only runs between them fill in a week
+    that is already open and never start one.
     """
     now = now or datetime.datetime.now(datetime.timezone.utc)
     slate = build_slate(season, games, lines, week)
@@ -291,6 +304,10 @@ def publish_slate(season, games, lines, week=None, now=None, republish=False):
     # the window keeps filling in as its remaining lines post.
     lock = slate["lock_at"]
     p_early = os.path.join(OUT, str(season), f"week-{slate['week']:02d}.json")
+    if not os.path.exists(p_early) and not (may_open or republish):
+        print(f"pickem: week {slate['week']} is not open yet; only the "
+              f"weekly refresh freezes lines")
+        return None
     if (lock is not None and not os.path.exists(p_early)
             and lock - now.timestamp() > LEAD_DAYS * 86400):
         days = (lock - now.timestamp()) / 86400
