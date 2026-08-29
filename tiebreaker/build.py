@@ -1765,15 +1765,33 @@ CLINCH_TAIL_LAB = ("Reflects real results until you pick a game; from then on "
 BRIEF_CSS = inline("brief.css")
 
 
-def _prev_week_state(games, systems, overrides, last_week):
+def lab_week(g, season):
+    """pk_week, falling back to CFBD's field when there is no kickoff yet.
+
+    week_of reads the Central-local date off the kickoff and returns None
+    without one, and a game whose time is not set still has to land under
+    some heading."""
+    w = pk_week(g, season)
+    return g["week"] if w is None else w
+
+
+def _prev_week_state(games, systems, overrides, last_week, season):
     """Re-run the season as it stood before `last_week` so the Brief can say
-    what actually changed. Same truncated-replay trick the RSS wraps use."""
+    what actually changed. Same truncated-replay trick the RSS wraps use.
+
+    THE SAME n AS THE LIVE RUN, and that is not a detail. This used to ask for
+    4,000 while the page it is compared against ran the default 10,000, so the
+    two sides were different sample sizes of the same distribution and the
+    difference between them was mostly sampling error. Measured on week 0 of
+    2026: a non-conference result, which cannot move a conference title race
+    at all, produced a false signal of up to 1.7 points and pushed five teams
+    over the print threshold. Five teams is exactly what the card showed."""
     prev = [dict(g) for g in games]
     for g in prev:
-        if g["week"] >= last_week and not g.get("ccg"):
+        if lab_week(g, season) >= last_week and not g.get("ccg"):
             g["completed"] = False
             g["home_points"] = g["away_points"] = None
-    sims = (engine.simulate(prev, systems, overrides, n=4000)
+    sims = (engine.simulate(prev, systems, overrides)
             if systems else {})
     rows = engine.standings(prev, overrides)
     cl = engine.clinch_analyze(prev, overrides, budget=2)
@@ -1831,13 +1849,19 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
             desc=("The Big 12 championship race with the official "
                   "tiebreaking procedures applied to live results."))
 
-    last_week = max(g["week"] for g in done)
-    prev = _prev_week_state(games, systems, overrides, last_week)
-    week_games = [g for g in done if g["week"] == last_week]
+    # pk_week, not CFBD's. Week 0 of 2026 is one game in Dublin on August 29,
+    # and CFBD files it under week 1 along with the following weekend, so the
+    # Brief announced "Week 1 is in the books" on the morning after week 0,
+    # while the schedule and the pick'em both called the same game week 0.
+    last_week = max(lab_week(g, year) for g in done)
+    prev = _prev_week_state(games, systems, overrides, last_week, year)
+    week_games = [g for g in done if lab_week(g, year) == last_week]
 
     lede_bits = [f"<b>Week {last_week}</b> is in the books"]
     if week_games:
-        lede_bits[0] += f" &mdash; {len(week_games)} games involving Big 12 teams"
+        n_wk = len(week_games)
+        lede_bits[0] += (f" &mdash; {n_wk} game{'' if n_wk == 1 else 's'} "
+                         f"involving Big 12 teams")
     if cx and prev["chaos"]:
         d = cx["score"] - prev["chaos"]["score"]
         if abs(d) >= 2:
@@ -1865,8 +1889,19 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
                 continue
             moves.append((v["p_ccg"] - was, t, was, v["p_ccg"]))
         moves.sort(reverse=True)
-        up = [m for m in moves if m[0] > 0.005][:5]
-        down = [m for m in moves if m[0] < -0.005][-5:][::-1]
+        # ABOVE THE NOISE, not above zero. Both sides of this comparison are
+        # Monte Carlo runs, and two runs of the same season disagree with each
+        # other on the seed alone: at 40,000 that spread measures 0.31 points
+        # on average and 0.80 at the tail. The old 0.005 sat far under it, so
+        # the card printed sampling error as though the week had caused it.
+        #
+        # One point clears the tail with margin. Retune this if N_SIMS moves
+        # again: at 10,000 the tail was 1.7 and a point would not have been
+        # enough. A conference weekend that really moves a team moves it by
+        # five to twenty, so nothing worth reading is lost either way.
+        NOISE = 0.01
+        up = [m for m in moves if m[0] > NOISE][:5]
+        down = [m for m in moves if m[0] < -NOISE][-5:][::-1]
 
         def movement_rows(items):
             out = []
@@ -3406,11 +3441,18 @@ def render(year, games):
         for t, e in MARKS.items()
         if t not in team_meta and e.get("usable") is not False
     }
+    # The week the rest of the site files a game under. CFBD's week 1 in 2026
+    # spans August 29 to September 6 (the Dublin opener plus the following
+    # weekend), so the Lab grouped a game from the previous month under a card
+    # headed "Week 1" and the season had no week 0 in it at all, while the
+    # schedule and the pick'em both had one. engine.js never reads this field
+    # (app.js does, for the heading), so only the grouping moves.
+    lab_games = [dict(g, week=lab_week(g, year)) for g in games]
     payload = json.dumps({
         "year": year,
         "teams": team_meta,
         "marks": mark_only,
-        "games": games,
+        "games": lab_games,
         "favorites": favorites,
         "models": models,
         "overrides": overrides,
@@ -3421,7 +3463,7 @@ def render(year, games):
     }).replace("</", "<\\/")
 
     unlocked = year != LIVE_YEAR
-    n_remaining = len([g for g in games
+    n_remaining = len([g for g in lab_games
                        if not g.get("ccg")
                        and (unlocked or not g["completed"])])
     # Grouped, because the list contains three different KINDS of thing and

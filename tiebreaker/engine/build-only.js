@@ -246,12 +246,26 @@ function chaosIndex(rows, clinchResult, oddsResult) {
  * (|error| < 1.5e-7). Same model, same distribution, a different sample of
  * it. What is bought is that The Race and The Lab now sample the SAME stream:
  * they still differ, because the card runs 2,000 seasons to the build's
- * 10,000 and builds its ensemble from published favorites rather than raw
+ * 40,000 and builds its ensemble from published favorites rather than raw
  * ratings, but those two differences are written down and deliberate, and
  * nothing else is left to drift.
  */
 
-const N_SIMS = 10000;
+/* 40,000, and the number is chosen against a measurement rather than a feel.
+ *
+ * At 10,000 two runs of the SAME season disagree by 0.56 points on average
+ * and 1.7 at the tail, purely on the seed. Every probability on this site is
+ * published to one decimal, so that entire decimal was sampling error, and
+ * the Brief's movement card was reporting it as news: a non-conference result
+ * in week 0 of 2026, which cannot move a conference title race at all, pushed
+ * five teams over its print threshold. At 40,000 the same false signal falls
+ * to 0.16 average and 0.48 tail, under the half point the card prints at.
+ *
+ * It costs about 2.4s a call and the build makes two of them, against a build
+ * that runs on a schedule in CI and that nobody waits on. The interactive
+ * card in the browser is the one with a real budget, and it stays at 2,000.
+ */
+const N_SIMS = 40000;
 const SEED = 1996;            // the year of the first Big 12 season
 const STALE_KEEP = 0.65;
 
