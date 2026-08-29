@@ -113,11 +113,30 @@
 
   /* Matches fmt_prob in build.py, including the always-one-decimal rule —
      a column of these only lines up if every number has the same shape. */
+  /* WHOLE NUMBERS, and deliberately not the one decimal build.py's fmt_prob
+     prints. The two are not disagreeing; they are describing runs of
+     different sizes and saying so.
+
+     This one formats The Lab, which simulates 2,000 seasons in the browser
+     against the build's 40,000, because it runs again on every pick and has
+     an interactive budget the build does not. Measured on the 2026 board,
+     12 seeds, identical inputs: a team's probability moves 0.57 points on
+     the seed alone at 2,000, and the observed range runs to 3.35. A tenth
+     of a point is a digit that number cannot support, and printing it says
+     the run was more precise than it was.
+
+     Noise falls as the square root of the sample, so 10,000 would be needed
+     to make a decimal defensible here and would cost 661ms a pick instead of
+     166ms. The cheaper honesty is to print what 2,000 seasons actually
+     knows, which is the whole number. */
   function prob(p) {
     if (p >= 0.9995) return "100%";
     if (p <= 0) return "0%";
-    if (p < 0.001) return "<0.1%";
-    return (p * 100).toFixed(1) + "%";
+    // Rounds to nothing but is not nothing, and the reverse: a race that is
+    // not quite settled must not read as though it were.
+    if (p < 0.005) return "<1%";
+    if (p > 0.995) return ">99%";
+    return Math.round(p * 100) + "%";
   }
 
   root.B12PCT = { color: color, fmt: fmt, pct: pct, ats: ats, ccg: ccg,

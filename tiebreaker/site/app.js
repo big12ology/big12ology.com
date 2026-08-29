@@ -277,7 +277,7 @@
   // shows the real standings beside the rewritten ones; if the two functions
   // counted different games, the difference would read as the user's picks.
   function actualWinner(g) {
-    if (!g.completed || !B12Engine.hasScore(g)) return null;
+    if (!g || !g.completed || !B12Engine.hasScore(g)) return null;
     if (g.home_points === g.away_points) return null;
     return g.home_points > g.away_points ? g.home : g.away;
   }
@@ -1120,6 +1120,11 @@
     var box = document.getElementById("wgames");
     if (!box) return;
     box.querySelectorAll(".pick").forEach(function (btn) {
+      // A played row carries no data-id, because nothing about it can move.
+      // Reading one off it gave byId[undefined] and actualWinner threw on
+      // every click, which took the whole handler down with it: the Lab
+      // stopped accepting picks at all.
+      if (btn.disabled) return;
       var id = btn.dataset.id, team = btn.dataset.team;
       var sel = picks[id] === team;
       var stands = !picks[id] && actualWinner(byId[id]) === team;
@@ -1132,9 +1137,13 @@
     box.querySelectorAll("details").forEach(function (d) {
       var tag = d.querySelector("summary .dim");
       if (!tag) return;
+      // A week with nothing to pick keeps the word for that. Recomputing it
+      // here would have relabelled "(played)" as "(0/1 picked)" the moment
+      // anything else on the page was touched.
+      var live = d.querySelectorAll(".wgame:not(.wplayed)").length;
+      if (!live) { tag.textContent = "(played)"; return; }
       tag.textContent = "(" + d.querySelectorAll(".pick.sel").length + "/" +
-        d.querySelectorAll(".wgame").length +
-        (unlocked ? " changed" : " picked") + ")";
+        live + (unlocked ? " changed" : " picked") + ")";
     });
     updateCount(pickable().length);
   }
