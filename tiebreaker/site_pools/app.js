@@ -1446,7 +1446,8 @@
     var tb = el("tbody");
     rows.forEach(function (r) {
       var tr2 = el("tr");
-      if (meId && r.user_id === meId) {
+      var isMe = meId && r.user_id === meId;
+      if (isMe) {
         tr2.className = "you";
         // Your row in your own team's color rather than the house accent.
         // A wash, not a fill: it has to sit beside the ATS% ramp without
@@ -1479,6 +1480,11 @@
             td.appendChild(el("span", "pk-markgap"));
           }
           td.appendChild(document.createTextNode(r[c.key] == null ? "—" : r[c.key]));
+          // Your row is a wash of your team's color and a bar down its left
+          // edge, and neither is a word. Your display name identifies you
+          // only if you already know it is yours, which is exactly what a
+          // reader arriving at a table of names does not.
+          if (isMe) td.appendChild(el("span", "sr-only", ", your row"));
         } else {
           td.textContent = r[c.key] == null ? "—" : r[c.key];
         }
@@ -1756,10 +1762,15 @@
 
     // aria-label rather than a <title> child. A <title> is the accessible
     // name AND the browser's native tooltip, so hovering anywhere on the plot
-    // popped a gray box over the middle of the chart — on top of the readout
+    // popped a gray box over the middle of the chart, on top of the readout
     // it was competing with.
+    //
+    // group, not img. role="img" makes the whole subtree presentational, so
+    // the per-week stops below would have been announced by nothing no matter
+    // what they carried. The label still names the region; what changed is
+    // that the region now has contents worth reaching.
     var svg = sv("svg", {viewBox: "0 0 " + W + " " + H, class: "pk-hist",
-                         role: "img", "aria-label":
+                         role: "group", "aria-label":
       "Season-to-date percentage after each week, against the field."});
 
     // Gridlines and the axis, first, so everything else sits over them.
@@ -1827,39 +1838,70 @@
     ring.setAttribute("visibility", "hidden");
     svg.appendChild(ring);
 
+    // What a week holds, looked up once and rendered twice: as the box for
+    // the eye, as a sentence for the ear. They were never going to stay in
+    // step written out separately, and the sentence is the only route into
+    // this chart that does not go through a pointer.
+    function weekRows(w) {
+      var at = function (rows) {
+        return (rows || []).filter(function (r) { return r.week === w; })[0];
+      };
+      var mine = at(h.you), fw = at(f), rm = at(h.room), ck = at(h.chalk);
+      var ld = h.leader && at(h.leader.rows);
+      var out = [];
+      if (mine) out.push(["you", "You", mine.pct,
+                          mine.rank ? ordinal(mine.rank) : ""]);
+      if (ld) out.push(["lead", "Leader", ld.pct, h.leader.display_name || ""]);
+      if (rm) out.push(["room", "Room", rm.pct, ""]);
+      if (ck) out.push(["chalk", "Chalk", ck.pct, ""]);
+      if (fw) out.push(["med", "Median", fw.p50, "of " + fw.n]);
+      return out;
+    }
+    function weekSaid(w) {
+      var said = weekRows(w)
+        .filter(function (r) { return r[2] != null; })
+        .map(function (r) {
+          return r[1] + " " + (100 * r[2]).toFixed(1) + "%" +
+                 (r[3] ? ", " + r[3] : "");
+        });
+      return "Week " + w + (said.length ? ": " + said.join(". ") + "." : "");
+    }
+
     // One hit target per week, full height, so the tooltip is easy to reach.
     var tip = el("div", "pk-htip");
     tip.hidden = true;
     weeks.forEach(function (w, i) {
       var half = (W - L - R) / Math.max(1, weeks.length - 1) / 2;
+      // FOCUSABLE, at last. The focus and blur handlers below have been here
+      // from the start, and an SVG rect is not in the tab order without a
+      // tabindex, so tabIndex was -1 and neither of them could ever fire.
+      // The readout they exist to open was reachable by pointer only.
+      // The label is the week's own numbers rather than a description of the
+      // chart: a stop that announces "week 3" and nothing else is a stop not
+      // worth making.
       var hit = sv("rect", {x: x(i) - half, y: T, width: half * 2,
-                            height: H - T - B, fill: "transparent"});
+                            height: H - T - B, fill: "transparent",
+                            tabindex: "0", role: "img",
+                            "aria-label": weekSaid(w)});
       var say = function () {
+        // Your own row, on its own, because the ring below sits on YOUR point
+        // and needs it outside the grid the rest of them go into.
+        var mine = (h.you || []).filter(function (r) {
+          return r.week === w;
+        })[0];
         // Two columns, not five sentences. Every row is a name and a
         // percentage, so as prose it was five ragged lines carrying one
         // number each and a box wider than the plot it sat on.
-        var at = function (rows) {
-          return (rows || []).filter(function (r) { return r.week === w; })[0];
-        };
-        var mine = at(h.you), fw = at(f), rm = at(h.room), ck = at(h.chalk);
-        var ld = h.leader && at(h.leader.rows);
-
         tip.textContent = "";
         tip.appendChild(el("div", "pk-htipwk", "Week " + w));
         var grid = el("div", "pk-htipgrid");
-        var row = function (cls, label, pct, extra) {
-          if (pct == null) return;
-          grid.appendChild(el("span", "pk-htipk " + cls, label));
+        weekRows(w).forEach(function (r) {
+          if (r[2] == null) return;
+          grid.appendChild(el("span", "pk-htipk " + r[0], r[1]));
           grid.appendChild(el("span", "pk-htipv",
-            (100 * pct).toFixed(1) + "%"));
-          grid.appendChild(el("span", "pk-htipx", extra || ""));
-        };
-        if (mine) row("you", "You", mine.pct,
-                      mine.rank ? ordinal(mine.rank) : "");
-        if (ld) row("lead", "Leader", ld.pct, h.leader.display_name || "");
-        if (rm) row("room", "Room", rm.pct, "");
-        if (ck) row("chalk", "Chalk", ck.pct, "");
-        if (fw) row("med", "Median", fw.p50, "of " + fw.n);
+            (100 * r[2]).toFixed(1) + "%"));
+          grid.appendChild(el("span", "pk-htipx", r[3] || ""));
+        });
         tip.appendChild(grid);
         tip.hidden = false;
 
@@ -2026,6 +2068,12 @@
     li.appendChild(when);
 
     var m = el("span", "pk-cardmatch");
+    // The column ellipsises, and a name cut off mid-word is recoverable only
+    // if something holds the whole of it. The slate row does the same thing
+    // per team; here the track is one span holding both, so the title is the
+    // matchup. Sighted-only: the names are already in the row's text, so a
+    // screen reader was never the one missing them.
+    m.title = g.away + " " + joiner(g) + " " + g.home;
     ["away", "home"].forEach(function (s, i) {
       if (i) m.appendChild(el("span", "pk-at", " " + joiner(g) + " "));
       var mk2 = mark(teams, g[s], 15);
@@ -2992,7 +3040,8 @@
     var tb = el("tbody");
     board.rows.forEach(function (r) {
       var tr2 = el("tr");
-      if (me && r.user_id === me.user_id) {
+      var isMe = me && r.user_id === me.user_id;
+      if (isMe) {
         tr2.className = "you";
         if (myTint) tr2.style.setProperty("--you", myTint);
       }
@@ -3004,6 +3053,8 @@
       if (mk) td.appendChild(mk);
       else if (r.team) td.appendChild(el("span", "pk-markgap"));
       td.appendChild(document.createTextNode(r.display_name || "—"));
+      // Same wash, same bar, same silence as the pick'em board.
+      if (isMe) td.appendChild(el("span", "sr-only", ", your row"));
       tr2.appendChild(td);
 
       tr2.appendChild(el("td", "n", r.wins));
