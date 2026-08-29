@@ -421,11 +421,23 @@
 
   // What a screen reader hears instead of "minus six point five", which is
   // not what the number means to anybody.
+  // Said, not shown, which is the whole reason it has to be grammatical: this
+  // is the sr-only expansion beside every spread on the slate, on survivor
+  // and on your card, and "getting 1 points" is not a thing anybody says.
+  //
+  // The half-point line was wrong in a second way. Math.floor(0.5) is 0, so a
+  // -0.5 read as "getting 0 and a half points", which is arithmetic rather
+  // than English. Half a point is its own phrase and gets one.
   function spreadSaid(spreadX2, side) {
     var v = (side === "home" ? spreadX2 : -spreadX2) / 2;
     if (v === 0) return "pick em, no points";
-    var n = Math.abs(v), half = (n % 1) ? " and a half" : "";
-    return (v < 0 ? "giving " : "getting ") + Math.floor(n) + half + " points";
+    var verb = v < 0 ? "giving " : "getting ";
+    var n = Math.abs(v);
+    if (n === 0.5) return verb + "half a point";
+    // Plural on everything except a flat one. "One and a half points" is
+    // correct, so the half only affects the number, never the noun.
+    return verb + Math.floor(n) + ((n % 1) ? " and a half" : "") +
+      (n === 1 ? " point" : " points");
   }
 
   // Readable text on a team's own color. Selected picks fill with the team
