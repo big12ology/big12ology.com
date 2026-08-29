@@ -385,6 +385,43 @@ def asset_v(name, root=None):
     return f"{name}?v={h}"
 
 
+def _archive_digest(y):
+    """Everything that can change what a finished season renders to.
+
+    Deliberately wide. A missed input means a stale page nobody is looking
+    for, which is the expensive kind of wrong; an extra input means an
+    occasional rebuild that was not needed, which costs nine seconds. So this
+    takes all of the Python, the engine, the inlined fragments, every shared
+    asset the pages reference by content hash, and the season's own data.
+    """
+    h = hashlib.sha1()
+    paths = []
+    paths += [os.path.join(HERE, n) for n in sorted(os.listdir(HERE))
+              if n.endswith(".py")]
+    for d in ("engine", "inline"):
+        p = os.path.join(HERE, d)
+        if os.path.isdir(p):
+            paths += [os.path.join(p, n) for n in sorted(os.listdir(p))]
+    # The pages carry ?v=<hash> for these, so their bytes are in the output.
+    paths += [os.path.join(SITE, n) for n in sorted(os.listdir(SITE))
+              if n.endswith((".css", ".js"))]
+    paths.append(os.path.join(SITE, "logos", "SOURCES.json"))
+    paths += [os.path.join(HERE, "data", n)
+              for n in (f"games_{y}.json", f"ratings_{y}.json", "teams.json")]
+    hist = os.path.join(HERE, "history")
+    if os.path.isdir(hist):
+        paths += [os.path.join(hist, n) for n in sorted(os.listdir(hist))
+                  if str(y) in n or n.endswith((".html", ".css"))]
+    for p in paths:
+        h.update(os.path.relpath(p, HERE).encode())
+        try:
+            with open(p, "rb") as f:
+                h.update(f.read())
+        except OSError:
+            h.update(b"\0missing")
+    return h.hexdigest()
+
+
 def rebase(html):
     """Point a prebuilt fragment's assets at the shared copies. The tie
     archive is generated once by gen_history.py with paths relative to the
@@ -6068,16 +6105,39 @@ def main():
             f.write(redirect_stub(
                 "/pools/pickem/" if PICKEM_ENABLED else "/pools/", "Pickem"))
     # Finished seasons are rebuilt from cached results — no API calls, and
-    # their output is deterministic, so a rebuild is a no-op unless the
-    # engine itself changed.
+    # their output is deterministic, so a rebuild is a no-op unless something
+    # that feeds it changed. So it is only done when something has: 2024 and
+    # 2025 cost 9 seconds of a 26 second build, every build, to write the
+    # bytes that were already on disk.
+    #
+    # NOT a plain "build once and never again". The archive pages share this
+    # site's templates, its inlined CSS and its asset hashes, so a change to
+    # brand.css or to a template changes their bytes too — and a skip that
+    # ignored that would leave two seasons quietly rendering last month's
+    # design while everything around them moved. The stamp is a digest of
+    # everything that can reach the output, so the skip proves itself and a
+    # miss costs a rebuild rather than a wrong page.
     if "--no-archive" not in sys.argv:
         for y in ARCHIVE_YEARS:
             if y == year:
+                continue
+            want = _archive_digest(y)
+            stamp = os.path.join(SITE, str(y), ".inputs")
+            try:
+                with open(stamp, encoding="utf-8") as f:
+                    have = f.read().strip()
+            except OSError:
+                have = None
+            if have == want and os.path.exists(
+                    os.path.join(SITE, str(y), "index.html")):
+                print(f"{y}: inputs unchanged, kept")
                 continue
             build_season(y, load_games(y), os.path.join(SITE, str(y)), "../",
                          feed=False,
                          sched_outdir=os.path.join(SCHEDULE_SITE, str(y)),
                          sched_base="../../tiebreaker/")
+            with open(stamp, "w", encoding="utf-8") as f:
+                f.write(want + "\n")
     write_discovery([year] + [y for y in ARCHIVE_YEARS if y != year])
 
 
