@@ -154,7 +154,7 @@ cp "$SITE/tiebreaker/pickem-scores.json" "$SITE/tiebreaker/site/"
 # is made, and none should ever be added here: the key allows 1,000 a month.
 say "publishing weeks 0, 1, 2 from committed data"
 python3 - "$ROOT" "$SITE" "$SEASON" <<'PY'
-import json, os, sys
+import datetime, json, os, sys
 root, site, season = sys.argv[1], sys.argv[2], int(sys.argv[3])
 sys.path.insert(0, os.path.join(root, "tiebreaker"))
 import build as B, pickem as P
@@ -164,14 +164,55 @@ games, lines = B.load_games(season), B.load_lines(season)
 # standing in for raw.githubusercontent.com here.
 out = os.path.join(site, "tiebreaker", "pickem", str(season))
 os.makedirs(out, exist_ok=True)
+
+slates = []
 for wk in (0, 1, 2):
     slate = P.build_slate(season, games, lines, wk)
     if slate is None:
         sys.exit(f"no slate for week {wk}: the fixture cannot be built")
+    slates.append(slate)
+
+# ONE CLOCK READING, AND A SEASON POSITIONED AGAINST IT.
+#
+# The data is real and therefore dated: week 0 is North Carolina at TCU on
+# 29 August 2026. Published verbatim, that fixture is a week which has already
+# locked by the time the calendar reaches it, so the week 0 pick the lock
+# checks are built on can never be entered, and the republish that walks the
+# lock into the past is instead moving it LATER, which weeks_lock_monotonic
+# aborts by design. The abort takes the whole import batch, week 0 never lands,
+# and six checks downstream of it fail against no data at all. That is what
+# happened on 29 August 2026, with no commit behind it.
+#
+# So the slate keeps its real shape, its real teams and its real lines, and
+# only its clock moves: every time in all three weeks shifts by one delta, read
+# once, chosen to put week 0's lock LEAD seconds out. The spacing between the
+# weeks stays the season's own, the ordering is preserved, and no check here
+# depends on what day it is any more. Same fix as 796fa67 made to
+# worker/test/slate.test.js: a fixture time derived from a moving clock is the
+# bug, whether the clock moves a second or a fortnight.
+T0 = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+LEAD = 6 * 3600
+anchor = slates[0]["lock_at"]
+if anchor is None:
+    sys.exit("week 0 has no lock_at: the fixture cannot be positioned")
+delta = (T0 + LEAD) - anchor
+
+for slate in slates:
+    slate["lock_at"] = None if slate["lock_at"] is None else slate["lock_at"] + delta
+    for g in slate["games"]:
+        # kickoff_tbd carries no time to move, and pickem.py has already
+        # marked it unpickable.
+        if g.get("kickoff_at") is None:
+            continue
+        g["kickoff_at"] += delta
+        g["kickoff"] = datetime.datetime.fromtimestamp(
+            g["kickoff_at"], datetime.timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%S.000Z")
     with open(os.path.join(out, f"week-{slate['week']:02d}.json"), "w") as f:
         json.dump(slate, f, indent=1, sort_keys=True)
     print(f"    week {slate['week']}: {slate['game_count']} games, "
-          f"{slate['pickable_count']} with a line")
+          f"{slate['pickable_count']} with a line, locking in "
+          f"{(slate['lock_at'] - T0) / 3600:.1f}h")
 PY
 
 # --- a database of its own ----------------------------------------------------
