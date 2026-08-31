@@ -107,6 +107,24 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # The last good forecast, carried between runs. weather_cache.json is
+      # gitignored on purpose (perishable, hourly churn), so a fresh checkout
+      # has none, and when Open-Meteo failed mid-deploy every venue card on
+      # the site reverted to the ten-season average until the next run. With
+      # the cache restored, weather.py falls back to the previous fetch
+      # instead, at any age up to a day (STALE_MINUTES there).
+      #
+      # The key is unique per run so every run SAVES its cache; restore-keys
+      # matches the newest previous one. A restored cache under 90 minutes
+      # old also short-circuits the fetch entirely, which is fine: deploys
+      # run an hour or more apart, and an hour-old forecast is not
+      # meaningfully different from a fresh one.
+      - uses: actions/cache@v4
+        with:
+          path: tiebreaker/data/weather_cache.json
+          key: weather-cache-${{ github.run_id }}
+          restore-keys: weather-cache-
+
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"

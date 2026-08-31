@@ -18,12 +18,15 @@ Three things keep it cheap anyway:
   * Every venue in range goes into one request. Open-Meteo takes parallel
     latitude and longitude lists, so a full week's slate is a single call
     rather than one per stadium.
-  * A local cache with a short life covers repeated local builds. CI starts
-    from a fresh checkout, so it never hits the cache and always renders a
-    forecast fetched minutes earlier — which is the point.
+  * A local cache with a short life covers repeated local builds. CI
+    carries it between runs via actions/cache in pages.yml, so most deploys
+    still fetch fresh (deploys run further apart than the cache lives) and
+    every deploy has a recent forecast on disk.
 
-Failure is not an error. No network, a bad response, a venue with no
-coordinates: the games keep their other fields and the page shows no
+Failure is not an error, and it is not a blank card either. No network, a
+bad response, a venue with no coordinates: the games keep their other
+fields, and any game the last good fetch answered for keeps that answer,
+up to a day old. Only past that does the page fall back to showing no
 forecast rather than a wrong one.
 """
 import datetime
@@ -61,6 +64,11 @@ HORIZON_DAYS = 16       # as far as the forecast model actually goes
 # honest answer when the observation is no longer retrievable.
 LOOKBACK_DAYS = 85
 CACHE_MINUTES = 90      # a rebuild inside this window reuses what it got
+# How old a forecast can be and still beat the venue average when the fetch
+# fails. A day, not forever: an hour-old forecast is barely different from a
+# fresh one, but if Open-Meteo has been unreachable for days the ten-season
+# average is the honest answer again.
+STALE_MINUTES = 24 * 60
 
 
 def _utcnow():
@@ -76,14 +84,14 @@ def _parse(iso):
         return None
 
 
-def _load_cache():
+def _load_cache(max_minutes=CACHE_MINUTES):
     try:
         c = json.load(open(CACHE))
         fetched = _parse(c.get("fetched"))
         if not fetched:
             return {}
         age = (_utcnow() - fetched).total_seconds() / 60
-        return c.get("games", {}) if age < CACHE_MINUTES else {}
+        return c.get("games", {}) if age < max_minutes else {}
     except Exception:
         return {}
 
@@ -122,7 +130,7 @@ def _get(url):
     r = subprocess.run(["curl", "-sS", "-m", "45", url],
                        capture_output=True, text=True)
     if r.returncode != 0:
-        raise RuntimeError(r.stderr[:150])
+        raise RuntimeError(r.stderr[:150].strip())
     return json.loads(r.stdout)
 
 
@@ -215,6 +223,12 @@ def attach(games, venues, quiet=False, season=None):
                    f"&timezone=UTC&start_date={start}&end_date={end}")
             try:
                 raw = _get(url)
+                # Open-Meteo reports its own failures as a 200 with an error
+                # object. Indexing into that as if it were the venue list
+                # raised a bare IndexError, so the build log said "list index
+                # out of range" where it should have said what the API said.
+                if isinstance(raw, dict) and raw.get("error"):
+                    raise RuntimeError(raw.get("reason") or "API error")
                 # One location comes back as an object, several as a list.
                 blocks = raw if isinstance(raw, list) else [raw]
                 for g, when, gid in need:
@@ -227,8 +241,28 @@ def attach(games, venues, quiet=False, season=None):
                         hit[gid] = w
                 _save_cache(hit)
             except Exception as e:
+                # A failed fetch used to blank every card back to the venue
+                # average until the next deploy fetched clean. The cache the
+                # freshness check just aged out is still sitting on disk, and
+                # an hour-old forecast is a far better answer than a
+                # ten-season average, so reuse it, at any age up to a day.
+                # Played games are left out: their cached entry is a
+                # pre-kickoff forecast, and attaching it here would let the
+                # loop below write it into the permanent record as if it were
+                # the observed hour. The cache file itself is not rewritten,
+                # so its timestamp keeps telling the truth and the next build
+                # fetches again.
+                stale = _load_cache(STALE_MINUTES)
+                saved = 0
+                for g, when, gid in need:
+                    if gid not in hit and gid in stale \
+                            and not g.get("completed"):
+                        hit[gid] = stale[gid]
+                        saved += 1
                 if not quiet:
-                    print(f"weather: no forecast this build ({e})")
+                    kept = (f"; kept {saved} from the last good fetch"
+                            if saved else "")
+                    print(f"weather: fetch failed ({e}){kept}")
 
     fresh = {}
     for g, _ in due:
