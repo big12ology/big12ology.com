@@ -96,6 +96,39 @@ def get(path, k):
     return data
 
 
+def _refuse_shrink(path, kind, new_count):
+    """Refuse to replace a committed file with a gutted one.
+
+    An outage arrives as an exception, and every caller already handles
+    those: build.py falls back to committed data, the lines refresh keeps
+    the committed lines. But a glitch can also arrive as HTTP 200 with an
+    empty or near-empty list, which raises nothing, overwrites the committed
+    file, and gets committed back to the repo by the deploy's keep step.
+    games_<year>.json going empty is the worst case: the no-new-results
+    check in build.py then sees nothing due a score and stops asking, so
+    the wipe outlives every hourly build until the weekly refresh.
+
+    Ratings always had this rule in their own units (all sixteen teams
+    present, or keep the prior file); this is the same idea for the
+    fetchers that count rows rather than teams. Half, not just zero: a
+    partial response is as wrong as an empty one, and no real update halves
+    one of these files. Schedules add games, lines and media accrue, the
+    venue catalog grows. If a fetch ever should legitimately shrink one,
+    delete the committed file and refetch.
+
+    Raises rather than skipping the write, so the caller's existing failure
+    handling takes over and says so in the build log. Stale beats gutted.
+    """
+    try:
+        old = len(json.load(open(path)))
+    except (OSError, ValueError):
+        return
+    if old and new_count < old / 2:
+        raise RuntimeError(
+            f"{kind}: fetch returned {new_count} rows against {old} "
+            f"committed, refusing to overwrite")
+
+
 def fetch_season(year, force=False):
     os.makedirs(DATA, exist_ok=True)
     cache = os.path.join(DATA, f"games_{year}.json")
@@ -157,6 +190,7 @@ def fetch_season(year, force=False):
     # byte-different pages — which is the whole basis for rebuilding the
     # domain on a schedule.
     games.sort(key=lambda x: (x["week"], x["start"] or "", x["id"]))
+    _refuse_shrink(cache, f"games {year}", len(games))
     with open(cache, "w") as f:
         json.dump(games, f, indent=1)
     done = sum(1 for x in games if x["completed"])
@@ -305,6 +339,7 @@ def fetch_lines(year):
             out[str(g["id"])] = {k: v for k, v in rec.items()
                                  if v not in (None, [])}
     p = os.path.join(DATA, f"lines_{year}.json")
+    _refuse_shrink(p, f"lines {year}", len(out))
     with open(p, "w") as f:
         json.dump(out, f, indent=1)
     # When, beside what. The file itself carries no date and is overwritten in
@@ -331,6 +366,7 @@ def fetch_teams():
                          "abbr": t.get("abbreviation")}
            for t in raw if t.get("school") in BIG12}
     p = os.path.join(DATA, "teams.json")
+    _refuse_shrink(p, "teams", len(out))
     with open(p, "w") as f:
         json.dump(out, f, indent=1)
     print(f"teams: {len(out)} -> {p}")
@@ -385,6 +421,7 @@ def fetch_media(year, force=False):
         row = {"type": kind, "outlet": outlet}
         if row not in out.setdefault(gid, []):
             out[gid].append(row)
+    _refuse_shrink(p, f"media {year}", len(out))
     with open(p, "w") as f:
         json.dump(out, f, indent=1, sort_keys=True)
     tv = sum(1 for v in out.values() if any(m["type"] == "tv" for m in v))
@@ -437,6 +474,7 @@ def fetch_venues(force=False):
         if v.get("dome"):
             rec["dome"] = True
         out[str(vid)] = rec
+    _refuse_shrink(VENUES, "venues", len(out))
     with open(VENUES, "w") as f:
         json.dump(out, f, indent=1, sort_keys=True)
     print(f"venues: {len(out)} with coordinates -> {VENUES}")

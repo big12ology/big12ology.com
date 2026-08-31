@@ -312,6 +312,43 @@ class RoutesAroundCfbd(unittest.TestCase):
         self.assertEqual(self.refreshed, [])
 
 
+class RefusesAnEmptySeason(unittest.TestCase):
+    """The other way CFBD fails: HTTP 200 with no games in it, which raises
+    nothing on its own. Before the guard that response flowed all the way to
+    write_text and replaced the committed season with an empty one; it must
+    route to the same ESPN fallback a 429 does, and fail loudly for a season
+    with nothing committed to fall back on."""
+
+    def run_main(self, year, payload):
+        self.refreshed = []
+        with mock.patch.object(fa, "cfbd", return_value=payload), \
+                mock.patch.object(fa, "refresh_from_espn",
+                                  side_effect=lambda out, y:
+                                  self.refreshed.append((out.name, y))), \
+                mock.patch.dict("os.environ", {"CFBD_API_KEY": "test-key"}), \
+                quiet() as out:
+            try:
+                fa.main(year)
+            finally:
+                self.printed = out.getvalue()
+
+    def test_empty_response_routes_to_espn(self):
+        self.run_main(2026, [])
+        self.assertEqual(self.refreshed, [("2026.json", 2026)])
+        self.assertIn("no games for 2026", self.printed)
+
+    def test_no_big12_rows_is_empty_too(self):
+        # A payload that answers but holds nobody we track: same glitch,
+        # filtered one line later.
+        self.run_main(2026, [{"homeTeam": "Alabama", "awayTeam": "Auburn"}])
+        self.assertEqual(self.refreshed, [("2026.json", 2026)])
+
+    def test_no_committed_season_re_raises(self):
+        with self.assertRaises(RuntimeError):
+            self.run_main(1999, [])
+        self.assertEqual(self.refreshed, [])
+
+
 class VenueCatalog(unittest.TestCase):
     """The committed catalog stands in for a per-run /venues call, so its
     shape contract is load-bearing: the catalog stores lat/lon/tz and the

@@ -353,6 +353,14 @@ def main(year: int) -> None:
         raw = [g for g in raw
                if (g.get("homeTeam") or g.get("home_team")) in teams
                or (g.get("awayTeam") or g.get("away_team")) in teams]
+        if not raw:
+            # An HTTP 200 with nothing in it is an outage wearing a success
+            # code. Left alone it flowed all the way to write_text and
+            # replaced the committed season with an empty one. Raise into
+            # the handler below instead: it already knows what to do, ESPN
+            # when there is a committed season to refresh, a loud failure
+            # when there is not.
+            raise RuntimeError(f"CFBD returned no games for {year}")
         if venues_by_id is None:
             # Self-heal for a checkout without the catalog; the normal path
             # never spends this call. Inside the try on purpose, so a spent
