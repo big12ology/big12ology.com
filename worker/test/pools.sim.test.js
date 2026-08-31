@@ -343,6 +343,150 @@ function runOne(seed, cover) {
     }
   }
 
+  // -------------------------------------------------------- the grid cell
+  //
+  // One cell per player per game, so it is the most-rendered thing on the
+  // site and the one with the least room to say anything. Two rules are
+  // asserted: it never carries more than one outcome, and the outcome it
+  // carries is the one The Card's chip would have shown for the same pick.
+  // The second is why atsOutcome exists: two renderers reading the same
+  // grade must not be free to disagree about it.
+  for (const g of games) {
+    for (const side of ["home", "away", null]) {
+      const locked = r() < 0.5;
+      const cell = P.gridCell(g, side, teams, locked);
+      cover.gcells++;
+      assertClean(cell, "gridCell");
+
+      const out = P.atsOutcome(g, side);
+      const classes = ["win", "loss", "push", "void"]
+        .filter((k) => String(cell.className).includes("pk-g-" + k));
+      assert.ok(classes.length <= 1,
+        `a grid cell carried ${classes.length} outcomes: ${cell.className}`);
+      assert.deepEqual(classes, out ? [out] : [],
+        `grid cell says ${classes} where the outcome is ${out}`);
+
+      // A game nobody picked is a dash, and a game somebody picked never is:
+      // a cell that silently lost its pick looks exactly like one that never
+      // had one.
+      const dashed = cell.querySelectorAll(".pk-gnone").length === 1;
+      assert.equal(dashed, side == null,
+        `a ${side == null ? "blank" : side} cell rendered ${
+          dashed ? "" : "no "}dash`);
+      if (side != null) {
+        assert.ok(String(cell.textContent).includes(g[side]),
+          "a grid cell did not name the team that was taken");
+      }
+
+      // The Card's chip, on the same pick. Where it says nothing (an
+      // ungraded game) the cell must be uncoloured, and where it says
+      // something the two must be the same word.
+      // Read off the chip's class rather than its text: the text carries an
+      // sr-only tail naming whose pick it was, and matching on that would
+      // be asserting the wording rather than the verdict.
+      const chip = P.resultChip(g, side, locked, "card");
+      const said = ["win", "loss", "push", "void"].filter(
+        (k) => chip && String(chip.className).split(/\s+/).includes(k));
+      assert.deepEqual(classes, said,
+        `the card said ${said} and the grid said ${classes}`);
+    }
+    cover.gheads++;
+    assertClean(P.gridHead(g, teams), "gridHead");
+  }
+
+  // ------------------------------------------------------- the player page
+  //
+  // The page is one request wide, so what is fuzzed is the four renderers it
+  // is built from. The rule with teeth is the link: a name with no id behind
+  // it must NOT become one, because an <a> to a page that cannot exist is
+  // worse than the plain text it replaced.
+  for (let i = 0; i < 3; i++) {
+    const row = {
+      user_id: r() < 0.75 ? pick(r, ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "x", ""])
+                          : null,
+      display_name: r() < 0.8 ? pick(r, NAMES) : pick(r, [null, "", undefined]),
+    };
+    const node = P.playerName(row);
+    cover.pnames++;
+    const linked = node.tagName === "A";
+    assert.equal(linked, !!(row.user_id && row.display_name),
+      `a name with id=${JSON.stringify(row.user_id)} name=${
+        JSON.stringify(row.display_name)} rendered as ${node.tagName}`);
+    if (linked) {
+      // The client sets href as a property, so that is where the stub DOM
+      // keeps it; a real browser answers from either.
+      const href = node.href || (node.attributes || {}).href || "";
+      // Whatever the id is made of, it comes back out of the URL intact.
+      assert.ok(href.includes(encodeURIComponent(row.user_id)),
+        `an id was not escaped into the href: ${href}`);
+      assert.ok(!/\bnull\b|undefined/.test(href),
+        `href leaked a nothing: ${href}`);
+    }
+
+    // Counts, not ODD_NUMBERS: these come from SUM(outcome = 'loss') on a
+    // materialised board, so null and zero are real and a negative one is
+    // not. Feeding it -7 only proves that "0–-7" contains a hyphen, and the
+    // honest fix for that would be a guard against a payload the API cannot
+    // send. Same argument randomGame makes about one-sided finals.
+    const COUNTS = [null, undefined, 0, 1, 7, 99, int(r, 0, 16)];
+    const rec = P.recordText({ w: pick(r, COUNTS), l: pick(r, COUNTS),
+                               p: pick(r, COUNTS) });
+    if (rec != null) {
+      for (const bad of TELLS) {
+        assert.ok(!bad.test(rec), `recordText leaked ${bad}: ${rec}`);
+      }
+      assert.ok(!rec.includes("-"), `recordText used a hyphen: ${rec}`);
+    }
+    cover.precs++;
+  }
+
+  // The survivor half, standing and run together: a player can be in the pool
+  // with no board row yet (the recompute has not run), out on a team, or out
+  // for having missed a week, and the sentence has to work for all three.
+  for (let i = 0; i < 2; i++) {
+    const sv = {
+      wins: pick(r, [null, undefined, 0, 1, int(r, 0, 14)]),
+      alive: pick(r, [1, 0, null]),
+      rank: pick(r, [null, 1, int(r, 1, 400)]),
+      entered_week: pick(r, [null, 0, int(r, 0, 14)]),
+      out_week: pick(r, [null, int(r, 0, 14)]),
+      out_reason: pick(r, ["loss", "missed", null]),
+      picks: [],
+    };
+    for (let k = int(r, 0, 5); k > 0; k--) {
+      sv.picks.push({ week: int(r, 0, 14), team: pick(r, NAMES),
+                      outcome: pick(r, ["win", "loss", "void", null]) });
+    }
+    const run = P.playerRun(sv, teams, pick(r, NAMES));
+    cover.pruns++;
+    assertClean(run, "playerRun");
+    const word = P.svStandingWord(sv);
+    for (const bad of TELLS) {
+      assert.ok(!bad.test(word), `svStandingWord leaked ${bad}: ${word}`);
+    }
+  }
+
+  // The week strip, which is both the season at a glance and the navigation.
+  {
+    const wks = [];
+    for (let k = int(r, 1, 14); k > 0; k--) {
+      wks.push({ week: k, w: pick(r, [null, 0, 1, int(r, 0, 16)]),
+                 l: pick(r, [null, 0, 1, int(r, 0, 16)]),
+                 p: pick(r, [null, 0, 1]), picks: {} });
+    }
+    const strip = P.playerWeeks(wks, wks[0].week, function () {});
+    cover.pstrips++;
+    assertClean(strip, "playerWeeks");
+    // Counted off classList rather than a ".pk-wkchip.on" selector: the stub
+    // DOM answers single-class selectors only, and a compound one silently
+    // matches nothing, which is a test that passes for the wrong reason in
+    // the other direction.
+    const chips = strip.querySelectorAll(".pk-wkchip");
+    assert.equal(chips.length, wks.length, "the strip lost a week");
+    assert.equal(chips.filter((c) => c.classList.contains("on")).length, 1,
+      "the week being read is not the one and only one marked current");
+  }
+
   // ------------------------------------------------------- error messages
   for (const status of [0, 400, 401, 403, 404, 409, 429, 500, 503]) {
     const msg = P.explain({ status, data: { error: pick(r,
@@ -395,7 +539,9 @@ function runOne(seed, cover) {
 test("the client survives ten thousand hostile payloads", (t) => {
   const cover = { spreads: 0, pickems: 0, colors: 0, ordered: 0, chips: 0,
                   rows: 0, unpickable: 0, svrows: 0, outside: 0, bars: 0,
-                  cards: 0, thin: 0, standing: 0, errors: 0, ordinals: 0 };
+                  cards: 0, thin: 0, standing: 0, errors: 0, ordinals: 0,
+                  gcells: 0, gheads: 0, pnames: 0, precs: 0, pruns: 0,
+                  pstrips: 0 };
   for (let i = 0; i < RUNS; i++) {
     const seed = ONLY != null ? ONLY : i + 1;
     try {

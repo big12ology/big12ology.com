@@ -329,10 +329,19 @@ async function handle(req, env, ctx) {
   if (path === "/api/survivor/board" && req.method === "GET") {
     return api.getSurvivorBoard(env);
   }
+  // Everybody's picks for one closed week: the plural of the route below,
+  // and the only one of the two the site actually links to.
+  if (path === "/api/grid" && req.method === "GET") {
+    return api.getGrid(env, url);
+  }
   const upicks = path.match(/^\/api\/users\/([A-Za-z0-9]+)\/picks$/);
   if (upicks && req.method === "GET") {
     return api.getUserPicks(env, url, upicks[1]);
   }
+
+  // One player, both games. The page behind every name on every public board.
+  const uget = path.match(/^\/api\/users\/([A-Za-z0-9]+)$/);
+  if (uget && req.method === "GET") return api.getUser(env, url, uget[1]);
 
   // ------------------------------------------------------------ needs a user
 

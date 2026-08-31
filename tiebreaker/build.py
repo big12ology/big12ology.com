@@ -831,8 +831,12 @@ SCHEDULE_NAV = [("schedule", "./", "The Schedule"),
 # back down, which is three clicks to move between two things a player is
 # playing at the same time. A "~" key marks it: it can never match `active`,
 # so it never renders as the current tab, and subnav() gives it its own class.
+# The Card is your own picks, The Grid is everyone's, and The Board is the
+# standing those picks produced. That is the reading order of the section and
+# it is the order of the tabs.
 PICKEM_NAV = [("slate", "./", "The Slate"),
               ("card", "card.html", "The Card"),
+              ("grid", "grid.html", "The Grid"),
               ("board", "board.html", "The Board"),
               ("rules", "rules.html", "The Rules"),
               ("~cross", "../survivor/", "Survivor \u2192")]
@@ -4983,6 +4987,66 @@ PICKEM_BOARD_BODY = f"""
 </div>
 {PICKEM_NOSCRIPT}"""
 
+PICKEM_GRID_BODY = f"""
+<div class=card id=gridcard>
+  <div class=pk-boardhead>
+    <h2>Every card, side by side</h2>
+    <label class=pk-wksel hidden>Week
+      <select id=gridwk aria-label="Which week to show"></select>
+    </label>
+  </div>
+  <div class=table-wrap><div class=table-scroll>
+    <table id=grid></table>
+  </div></div>
+  <p class=note id=gridnote>Loading&hellip;</p>
+  <!-- The rule, on the page it is a rule about. The Board can be read at any
+       hour because a record is not a position; a card is, and publishing one
+       of these while the week was open would hand the last picker everybody
+       else's homework. Said here rather than only in The Rules because this
+       is the page where a reader notices the week they wanted is missing. -->
+  <p class=note>A week appears here the moment it locks, and not a minute
+  before. While anyone can still pick, nobody's card is public. Picks
+  are colored once the game is graded: green beat the spread, red did not,
+  grey pushed. A dash is a game that player left blank.</p>
+</div>
+{PICKEM_NOSCRIPT}"""
+
+# One player, both games. Reached from every name the site prints, and the
+# reason those names became links.
+#
+# It sits at /pools/ rather than inside either game, for the same reason the
+# account page does: it spans both, and a page about a person filed under
+# "pickem" would be lying about half of what is on it. Its nav is POOLS_NAV,
+# so the way back is into either game rather than back to the board you came
+# from. A player page is a leaf, and the browser's back button is what
+# returns you to a row in a table.
+#
+# Every region is empty in the file and filled by app.js from the one request
+# it makes. What is NOT here is any of the withholding: the server sends a
+# locked week or nothing, so there is no state the page has to be trusted to
+# hide.
+PLAYER_BODY = f"""
+<div class=card id=playercard>
+  <div id=phead><h2>Loading&hellip;</h2></div>
+  <p class=note id=perr></p>
+</div>
+<div class=card id=pcard hidden>
+  <h2>The pick&rsquo;em, week by week</h2>
+  <div id=pweeks></div>
+  <p class=note id=pnote></p>
+  <div id=pbody></div>
+  <p class=note>Weeks appear here once they lock. Each row shows the side
+  they took, the number it was frozen at, and how the room split on it.</p>
+</div>
+<div class=card id=pscard hidden>
+  <h2>The survivor run</h2>
+  <div id=psbody></div>
+  <p class=note>A week joins the run once every game in it has kicked off,
+  which is later than the pick&rsquo;em card: survivor picks lock game by
+  game, so a week is still being played after its opener.</p>
+</div>
+{PICKEM_NOSCRIPT}"""
+
 PICKEM_ACCOUNT_BODY = f"""
 {PICKEM_LIVE_REGIONS}
 <div class=card id=signin hidden>
@@ -5087,6 +5151,12 @@ one genuine exception here too, running Thursday to Labor Day.</p>
 board until it has completed one scored week &mdash; long enough that a
 throwaway account is not worth making, short enough that a real player waits
 once.</p>
+<h3>The grid</h3>
+<p>Where &ldquo;becomes public then&rdquo; actually happens: every card in the
+week, side by side, a player to a row and a game to a column. It carries the
+same weeks the board does and the same people: an account still waiting out
+its first scored week is on neither. A week appears the moment it locks,
+which is also the moment nobody can still be picking in it.</p>
 <h3>The chalk</h3>
 <p>The bottom row of the board, and <b>not a player</b>. It is what you would
 have scored by taking the favorite in every single game, every week, without
@@ -5876,6 +5946,10 @@ def build_pickem(year):
                 "for everyone; the slate locks at the first kickoff.", True),
         ("card.html", "card", "The Card", PICKEM_CARD_BODY,
          None, None, False),
+        ("grid.html", "grid", "The Grid", PICKEM_GRID_BODY,
+         canon + "grid.html", "Every Big 12 pick'em card side by side: what "
+                              "each player picked in each game, week by week.",
+         True),
         ("board.html", "board", "The Board", PICKEM_BOARD_BODY,
          canon + "board.html", "The Big 12 pick'em leaderboard: every "
                                "player's record against the spread.", True),
@@ -5934,6 +6008,30 @@ def build_pickem(year):
                         '<meta name=robots content="noindex, follow">')
     with open(os.path.join(POOLS_SITE, "account.html"), "w") as f:
         f.write(acct)
+
+    # The player page, same depth and the same head. NOINDEX, and not for the
+    # account page's reason: this one is public and identical for every
+    # reader. It is one file serving every player through ?u=, so a crawler
+    # would index a single URL whose title and content are whichever player
+    # it happened to fetch, and the thing it would be indexing is a list of
+    # real people's names against a search engine's idea of a canonical page.
+    # The boards it is reached from are indexed and are the right entry.
+    # NOT acct_head: this page draws the consensus gauge on every row of the
+    # week it shows, and gauge.js is not on the account page because the
+    # account page has no rows. Before app.js, which calls it; defer runs
+    # them in document order.
+    player_head = acct_head.replace(
+        "<script defer src=",
+        f'<script defer src="{BASE}{asset_v("gauge.js")}">'
+                              "</script><script defer src=", 1)
+    player = build_subpage("Player", "~player", PLAYER_BODY, year, "",
+                           desc=None, head=player_head, section="pools",
+                           page="player.html")
+    player = player.replace("<meta charset=utf-8>",
+                            "<meta charset=utf-8>"
+                            '<meta name=robots content="noindex, follow">')
+    with open(os.path.join(POOLS_SITE, "player.html"), "w") as f:
+        f.write(player)
 
     BASE = prev
     print(f"built pools -> {POOLS_SITE}")
@@ -6037,6 +6135,8 @@ def write_discovery(years):
         f'  <url><loc>{pool}pickem/rules.html</loc><lastmod>{today}</lastmod>'
         f'<changefreq>monthly</changefreq><priority>0.7</priority></url>',
         f'  <url><loc>{pool}pickem/board.html</loc><lastmod>{today}</lastmod>'
+        f'<changefreq>weekly</changefreq><priority>0.6</priority></url>',
+        f'  <url><loc>{pool}pickem/grid.html</loc><lastmod>{today}</lastmod>'
         f'<changefreq>weekly</changefreq><priority>0.6</priority></url>',
         f'  <url><loc>{pool}survivor/</loc><lastmod>{today}</lastmod>'
         f'<changefreq>daily</changefreq><priority>0.8</priority></url>',

@@ -414,7 +414,14 @@
                           padding: 8px 10px; }
   .pk-res, .pk-nopick { justify-self: start; }
   .pk-sides { grid-template-columns: 1fr; gap: 4px; }
-  .pk-at { display: none; }
+  /* SCOPED TO .pk-sides, where the two sides stack into their own rows at
+     this width and the word between them has nothing left to sit between.
+     Unscoped it also hid the joiner in .pk-cardmatch, which is not a stack:
+     the card's matchup stays on one line, and "at" is the only thing
+     separating the two names there. "West Virginia" ran straight into Texas
+     Tech's mark on The Card, and then on the player page, which draws the
+     same row. */
+  .pk-sides .pk-at { display: none; }
   .pk-side { padding: 7px 10px; }
   .b12-acct { display: none; }
   .pk-slate { gap: 8px; }
@@ -592,6 +599,16 @@
                   background: color-mix(in srgb, var(--dim) 10%, transparent); }
 
 @media (max-width: 620px) {
+  /* THE LIST'S TRACKS TOO, not just the row's, and the row is the reason the
+     list was missed. A row is `grid-column: 1 / -1` over the LIST's six
+     tracks, so giving the row two columns of its own changes how it divides
+     the space it was handed and not how much it was handed: the parent kept
+     `max-content max-content 3.6em 3.2em minmax(120px, 1fr) 4.6em`, which is
+     317px of tracks inside a 297px card at 375px. The rows were clipped at
+     the right edge by about 20px on every locked week: visible on The Card
+     for as long as it has existed, and inherited by the player page the day
+     it started drawing the same rows. */
+  .pk-card, .pk-card:has(.pk-splitbar) { grid-template-columns: 1fr auto; }
   .pk-cardrow { grid-template-columns: 1fr auto; gap: 3px 8px; }
   .pk-split { grid-column: 1 / -1; }
   .pk-cardrow .pk-when { grid-column: 1; }
@@ -1035,3 +1052,185 @@ main > svg.sprite { position: absolute; }
 .pk-rostercol .pk-mkname { font-size: var(--t-row); }
 .pk-rostercol .pk-mkwhen { margin-left: auto; font-size: var(--t-micro);
   color: var(--dim); white-space: nowrap; }
+
+/* ------------------------------------------------------------------ the grid
+
+   Everybody's card for one closed week: a player per row, a game per column,
+   the pick in the cell. Sixteen columns is more than any other table on the
+   site carries, and the two decisions that make it fit are both here.
+
+   ABBREVIATIONS, NOT NAMES. A cell holds a mark and three letters, so a
+   column is about 62px and a full slate is about a phone and a half: a
+   sideways drag, not a redesign. Names would make it four phones.
+
+   THE NAME COLUMN STICKS. Scrolled to week 3's late games, a row with no name
+   on it is a row of picks belonging to nobody, which is the one thing this
+   table exists to say. It needs an opaque background of its own: a sticky cell
+   is painted over the cells sliding under it, and the default transparent one
+   would let them show through. --panel is the card's own fill, so the column
+   reads as part of the card rather than as a floating strip. */
+#grid { font-size: var(--t-row); }
+#grid th, #grid td { padding: 6px 8px; white-space: nowrap; }
+#grid thead th { vertical-align: bottom; }
+
+.pk-gname { position: sticky; left: 0; z-index: 1; background: var(--panel);
+  text-align: left; max-width: 11rem; overflow: hidden;
+  text-overflow: ellipsis; }
+/* A row header is still a th, and th is uppercase small-caps chrome in this
+   section. A player's name is data. */
+tbody th.pk-gname { font-size: var(--t-row); text-transform: none;
+  letter-spacing: 0; color: var(--ink); font-weight: 600; }
+tbody th.pk-gname img.mark { vertical-align: -2px; margin-right: 6px; }
+.pk-grec { color: var(--dim); }
+
+/* The matchup, away over home, the same order the card and the slate read
+   them in, so a column head and a row on The Card name the two teams the same
+   way round. */
+.pk-gcol { text-align: center; }
+.pk-gteam { display: flex; align-items: center; gap: 4px; line-height: 1.15; }
+.pk-gteam + .pk-gteam { margin-top: 2px; }
+/* teams.json carries an abbreviation for the sixteen members and for nobody
+   else, so half a non-conference week falls back to the full name, and
+   build.py's team_abbr will not truncate one, because Arizona and Arizona
+   State collide at three letters and at four. The column cannot be allowed to
+   size itself to "Prairie View A&M" either, so the label is capped and clipped
+   and the cell's title and sr-only text hold the whole of it. The Card's
+   matchup column solves the same problem the same way. */
+.pk-gabbr { font-size: var(--t-micro); letter-spacing: .02em;
+  display: inline-block; max-width: 4.6rem; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+thead .pk-gabbr { color: var(--dim); }
+
+/* The pick. Three flat outcomes, not a gradient: the same three colors and
+   the same reasoning as the chip on The Card, which is why they are mixed
+   from the same two tokens rather than picked afresh. Weaker than the chip
+   (10% against 15%): a chip is one thing on a row, and these are sixteen
+   across it, so at the chip's strength a graded week reads as a colour field
+   with some logos in it. */
+.pk-gcell { text-align: left; }
+.pk-gcell .pk-gabbr { color: var(--ink); }
+.pk-gcell img.mark { vertical-align: -3px; margin-right: 4px; }
+.pk-g-win  { background: color-mix(in srgb, var(--ok) 10%, transparent); }
+.pk-g-loss { background: color-mix(in srgb, var(--bad) 10%, transparent); }
+.pk-g-push { background: color-mix(in srgb, var(--push) 10%, transparent); }
+.pk-g-void { background: color-mix(in srgb, var(--dim) 8%, transparent); }
+/* FOUR STATES, NOT THREE, and the fourth is why the two quiet ones are
+   colored at all. A push tints at 10% of a grey, and a pick on a game that
+   has not been graded yet tints at nothing: side by side those are about two
+   percent of luminance apart, which is no difference at all on a Saturday
+   afternoon when half the board is ungraded. So the label carries the state
+   as well as the cell does. Ungraded stays ink, which is the only one of the
+   four that is still waiting to become something. */
+.pk-g-win .pk-gabbr  { color: var(--ok); }
+.pk-g-loss .pk-gabbr { color: var(--bad); }
+.pk-g-push .pk-gabbr { color: var(--push); }
+/* A voided game is a pick that stopped counting, so it reads as struck from
+   the card rather than merely neutral. */
+.pk-g-void { opacity: .6; }
+.pk-g-void .pk-gabbr { color: var(--dim); }
+/* A game left blank. Dimmed to the point of being a gap in the row, because
+   that is what it is, but present, because a blank cell and a missing column
+   look identical once the table is scrolled. */
+.pk-gnone { color: var(--dim); }
+
+/* On a phone the sticky column is spending a third of the screen on names
+   the reader already knows, and every point it keeps is a point the games do
+   not get. A name and a half-dozen characters of the next one still tells one
+   player from another, and the title attribute holds the whole of it; one more
+   game on screen is the difference between scanning and dragging. */
+@media (max-width: 640px) {
+  .pk-gname { max-width: 9.5rem; }
+  #grid th, #grid td { padding: 6px 6px; }
+}
+
+/* Your own row, the same wash and the same left bar as The Board and The
+   Pool. The bar goes on the sticky header cell, which is the one that is
+   always on screen. */
+#grid tr.you {
+  --youwash: color-mix(in srgb, var(--you, var(--accent)) 10%, transparent);
+}
+#grid tr.you td, #grid tr.you th { background: var(--youwash); }
+/* The sticky cell needs the wash OVER an opaque ground rather than instead of
+   one: a translucent mix alone would let the scrolling cells through it. Two
+   layers of the same wash, so it sits on the card's own fill. */
+#grid tr.you th.pk-gname {
+  background: linear-gradient(var(--youwash), var(--youwash)), var(--panel);
+  box-shadow: inset 3px 0 0 var(--you, var(--accent));
+}
+
+/* ---------------------------------------------------------- the player page
+
+   One player, both games. Mostly borrowed: the week's rows are The Card's
+   rows, the outcome chips are the same chips, and the survivor lines are the
+   run from the pool page. What is new is the identity block at the top and
+   the week strip, and both exist to answer the question a name on a board
+   raises and cannot answer. */
+/* `.card h2` is uppercase small-caps chrome across this whole section, and it
+   out-specifies a bare class, so this has to name the element to win. It is
+   worth winning: every other h2 here is a label the site wrote, and this one
+   is a name a person chose. Shouting it back at them loses the casing they
+   picked and reads as a heading rather than as who the page is about. */
+.card h2.pk-pname { display: flex; align-items: center; gap: 10px;
+  font-size: var(--t-subhead); text-transform: none; letter-spacing: 0;
+  color: var(--ink); margin: 0 0 6px; }
+.pk-pname .mark { margin: 0; }
+/* The one place the reader is told a page is about them. Chrome, so teal. */
+.pk-pyou { font-size: var(--t-fine); font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 20px; padding: 1px 8px; }
+.pk-plines p { margin: 0; }
+
+/* The season as a strip, and the week picker in the same control.
+   A <select> would have been fewer lines and would have hidden the thing
+   worth seeing: which weeks went well IS the shape of a season, and it is
+   legible at a glance only when the weeks are all on screen at once. It
+   scrolls sideways rather than wrapping to four rows on a phone. */
+.pk-wkstrip { list-style: none; display: flex; gap: 6px; margin: 0 0 10px;
+  padding: 0 0 4px; overflow-x: auto; overscroll-behavior-x: contain; }
+.pk-wkchip { font: inherit; cursor: pointer; white-space: nowrap;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  padding: 5px 10px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg); color: var(--ink); }
+.pk-wkchip:hover { border-color: var(--accent); }
+.pk-wkchip:focus-visible { outline: 3px solid var(--accent);
+  outline-offset: 2px; }
+.pk-wkchipn { font-size: var(--t-micro); color: var(--dim);
+  letter-spacing: .04em; text-transform: uppercase; }
+.pk-wkchipr { font-size: var(--t-row); font-variant-numeric: tabular-nums; }
+/* Won more than lost, lost more than won, or neither. Three states and no
+   gradient: a week is not a continuum, and a scale here would compete with
+   the ATS ramp on The Board for what a color means in this section. */
+.pk-wkchip.up   .pk-wkchipr { color: var(--ok); }
+.pk-wkchip.down .pk-wkchipr { color: var(--bad); }
+/* The week being read. Teal is chrome, and a selected tab is chrome. */
+.pk-wkchip.on { border-color: var(--accent); background: var(--panel);
+  box-shadow: inset 0 -3px 0 var(--accent); }
+
+/* The survivor run, one line per finished week. Not the sixteen-mark roster
+   the pool page draws: this is the run in the order it was spent, which is
+   the only order the story happens in. */
+.pk-run { list-style: none; margin: 6px 0 0; padding: 0; }
+.pk-runrow { display: flex; align-items: center; gap: 10px; padding: 7px 0;
+  border-bottom: 1px solid var(--line); }
+.pk-runrow:last-child { border-bottom: 0; }
+.pk-runwk { min-width: 5.5rem; font-size: var(--t-row); color: var(--dim); }
+.pk-runteam { display: flex; align-items: center; gap: 7px; flex: 1;
+  min-width: 0; }
+.pk-runteam .mark { margin: 0; }
+
+/* A name that goes somewhere.
+   The first version revealed itself only on hover, on the reasoning that
+   thirty underlines in a column is a page of ruled lines. True, and it made
+   the link undiscoverable: the boards looked exactly as they had before, and
+   on a phone there is no hover to find it with. So the underline is always
+   there and quiet instead, a quarter-strength rule that firms up and takes
+   the accent when you are actually on it. The color stays --ink either way,
+   because a column of accent-colored names would read as a column of state
+   rather than as names. */
+.pk-plink { color: inherit; text-decoration: underline;
+  text-decoration-thickness: 1px; text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--ink) 25%, transparent); }
+.pk-plink:hover { color: var(--accent);
+  text-decoration-color: currentColor; }
+.pk-plink:focus-visible { outline: 3px solid var(--accent);
+  outline-offset: 2px; border-radius: 3px; }
