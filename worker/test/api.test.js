@@ -14,7 +14,7 @@ import * as session from "../src/session.js";
 import { SESSION_COOKIE } from "../src/cookies.js";
 import {
   makeEnv, seedWeek, seedUser, seedPick, seedSurvivorPick, forceLock,
-  NOW, HOUR,
+  backdateGame, NOW, HOUR,
 } from "./helpers/env.js";
 
 const ORIGIN = "https://big12ology.com";
@@ -334,6 +334,150 @@ test("one player's card is not public until the week locks", async () => {
   const late = await call(env, "/api/users/u1/picks?week=3");
   assert.equal(late.status, 200);
   assert.equal((await late.json()).picks.length, 1);
+});
+
+// ------------------------------------------------------------------ grid
+
+test("the grid is not public until the week locks", async () => {
+  const env = makeEnv();
+  seedWeek(env);
+  seedUser(env, "u1", { name: "Player" });
+  seedPick(env, "u1", 2026, 3, 401, "home", -13);
+
+  const early = await call(env, "/api/grid?week=3");
+  assert.equal(early.status, 403);
+  assert.equal((await early.json()).error, "not_yet_public");
+
+  forceLock(env, 2026, 3);
+  const late = await call(env, "/api/grid?week=3");
+  assert.equal(late.status, 200);
+  const b = await late.json();
+  assert.equal(b.week, 3);
+  assert.deepEqual(b.weeks, [3]);
+  assert.equal(b.players.length, 1);
+  assert.deepEqual(b.players[0].picks, { 401: "home" });
+});
+
+test("the grid defaults to the last week that closed, not the one in play",
+     async () => {
+  const env = makeEnv();
+  seedWeek(env, { week: 2 });
+  seedWeek(env, { week: 3, games: [
+    { game_id: 501, home: "BYU", away: "Utah", spread_x2: -6 }] });
+  seedUser(env, "u1", { name: "Player" });
+  // Picked before the lock, because the database will not take a pick after
+  // one, which is the rule this whole page is downstream of.
+  seedPick(env, "u1", 2026, 2, 401, "away", -13);
+  seedPick(env, "u1", 2026, 3, 501, "home", -6);
+  forceLock(env, 2026, 2);
+
+  // Week 3 is open, so the page's front door lands on week 2 rather than on
+  // an error, and week 3's picks are nowhere in the answer.
+  const r = await call(env, "/api/grid");
+  assert.equal(r.status, 200);
+  const b = await r.json();
+  assert.equal(b.week, 2);
+  assert.deepEqual(b.weeks, [2]);
+  assert.deepEqual(b.players[0].picks, { 401: "away" });
+
+  // Asking for the open week by name is still refused, and the refusal
+  // carries the weeks there ARE, so the selector survives it.
+  const open = await call(env, "/api/grid?week=3");
+  assert.equal(open.status, 403);
+  assert.deepEqual((await open.json()).weeks, [2]);
+});
+
+// ------------------------------------------------------------ player page
+
+test("a player page shows nothing until the week it is about has locked",
+     async () => {
+  const env = makeEnv();
+  seedWeek(env);
+  seedUser(env, "u1", { name: "Player" });
+  seedPick(env, "u1", 2026, 3, 401, "home", -13);
+
+  const early = await (await call(env, "/api/users/u1")).json();
+  assert.deepEqual(early.pickem.weeks, [],
+    "an open week's card was on a public page");
+  assert.deepEqual(early.weeks, []);
+
+  forceLock(env, 2026, 3);
+  const late = await (await call(env, "/api/users/u1")).json();
+  assert.equal(late.display_name, "Player");
+  assert.deepEqual(late.weeks, [3]);
+  assert.equal(late.pickem.weeks.length, 1);
+  assert.deepEqual(late.pickem.weeks[0].picks, { 401: "home" });
+});
+
+test("the survivor half waits for the LAST kickoff, not the first",
+     async () => {
+  const env = makeEnv();
+  // Two games, and only the first of them has been played. That is a week the
+  // pick'em has closed and the survivor pool has not.
+  const { lockAt } = seedWeek(env, { games: [
+    { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13 },
+    { game_id: 402, home: "Baylor", away: "Houston", spread_x2: 7,
+      kickoff_at: NOW() + 72 * HOUR },
+  ] });
+  seedUser(env, "u1", { name: "Player" });
+  seedPick(env, "u1", 2026, 3, 401, "home", -13);
+  seedSurvivorPick(env, "u1", 2026, 3, 401, "Iowa State");
+  backdateGame(env, 2026, 3, 401, NOW() - HOUR);
+  forceLock(env, 2026, 3, NOW() - HOUR, { games: false });
+
+  const b = await (await call(env, "/api/users/u1")).json();
+  assert.equal(b.pickem.weeks.length, 1,
+    "the pick\u2019em card is public once the slate locks");
+  // Absent either way: with nothing yet to publish and no board row yet
+  // computed, the whole survivor half is null rather than an empty card.
+  assert.deepEqual((b.survivor && b.survivor.picks) || [], [],
+    "a survivor pick was published while a game of its week was still open");
+
+  // Now play the rest of the week.
+  backdateGame(env, 2026, 3, 402, NOW() - HOUR);
+  const shut = await (await call(env, "/api/users/u1")).json();
+  assert.deepEqual((shut.survivor.picks || []).map((p) => p.team),
+                   ["Iowa State"]);
+  assert.ok(lockAt);
+});
+
+test("only an account the boards already name has a page", async () => {
+  const env = makeEnv();
+  seedWeek(env);
+  // Alphanumeric ids, because that is what the route accepts and what a ULID
+  // is. A hyphenated fixture id never reaches the handler at all, which would
+  // make this test pass for the wrong reason.
+  seedUser(env, "unew", { name: "Newcomer", status: "provisional" });
+  seedUser(env, "uout", { name: "Banned", status: "banned" });
+  seedUser(env, "uhush", { name: "Quiet", status: "shadowbanned" });
+  for (const u of ["unew", "uout", "uhush"]) {
+    // Every one of them has a real card. None of them has a page, and the
+    // three refusals are identical: which kind of absent an account is, is
+    // not something this endpoint publishes.
+    const r = await call(env, `/api/users/${u}`);
+    assert.equal(r.status, 404, `${u} had a page`);
+    assert.equal((await r.json()).error, "no_such_user");
+  }
+  const gone = await call(env, "/api/users/nobody");
+  assert.equal(gone.status, 404);
+});
+
+test("the grid publishes the same population as the board", async () => {
+  const env = makeEnv();
+  seedWeek(env);
+  seedUser(env, "u-vet", { name: "Veteran", status: "active" });
+  seedUser(env, "u-new", { name: "Newcomer", status: "provisional" });
+  seedUser(env, "u-out", { name: "Banned", status: "banned" });
+  seedUser(env, "u-sat", { name: "Sat It Out", status: "active" });
+  for (const u of ["u-vet", "u-new", "u-out"]) {
+    seedPick(env, u, 2026, 3, 401, "home", -13);
+  }
+  forceLock(env, 2026, 3);
+
+  const b = await (await call(env, "/api/grid?week=3")).json();
+  assert.deepEqual(b.players.map((p) => p.display_name), ["Veteran"],
+    "a provisional or banned account is on nobody's grid, and a player who "
+    + "made no pick this week is not a row of dashes");
 });
 
 // ----------------------------------------------------------------- slate

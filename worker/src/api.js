@@ -802,6 +802,272 @@ export async function getUserPicks(env, url, userId) {
 }
 
 /**
+ * Everybody's card for one week, side by side.
+ *
+ * The plural of getUserPicks above, and it is a separate handler rather than a
+ * loop over that one because a grid of thirty players would otherwise be
+ * thirty requests, each re-asking the same lock question about the same week.
+ *
+ * SAME GATE, AND IT IS THE ONLY ONE THAT MATTERS HERE. The pick'em freezes the
+ * whole slate at its first kickoff, so past the lock nobody can still be
+ * choosing and every pick in the week is a finished fact. Before it, this page
+ * is precisely what the lock exists to withhold, and worse than the
+ * consensus, which at least anonymises the room. Survivor's closed-week rule
+ * is a different question and deliberately not reused: picks lock per game
+ * there, so its week is still open after the first kickoff. This one is not.
+ *
+ * THE DEFAULT WEEK IS THE LATEST CLOSED ONE, not the current one. A grid is by
+ * definition about weeks that have finished being picked, so answering "the
+ * week in play" with a 403 every Wednesday would make the page's own front
+ * door an error. An explicit ?week= on an open week still gets the 403: asking
+ * for it is a different act from landing on the page.
+ *
+ * ACTIVE ACCOUNTS ONLY, the same population as the leaderboard and the
+ * survivor board. A provisional account's picks are scored and counted and are
+ * not published until it has completed a scored week; letting them appear here
+ * with a name beside them would make this the way around a rule the board
+ * spends a paragraph explaining.
+ *
+ * NO OUTCOMES. The client already holds the slate, since it needs the
+ * kickoffs, the lines and the results to draw the columns at all, and a pick's
+ * outcome is its side read against that game's `ats`. Sending pick_scores as
+ * well would be a second copy of the same judgement, free to disagree with the
+ * first on a week that has locked but not yet been scored.
+ */
+export async function getGrid(env, url) {
+  const s = season(env);
+  const now = Math.floor(Date.now() / 1000);
+
+  // The weeks that have closed, which is both the answer to "which week is
+  // this page about" and the list the week selector is built from. Asked once
+  // and used twice; a client that had to infer it from the leaderboard would
+  // get the SCORED weeks, which is a different and later set: a week is
+  // readable here the moment it locks, hours before anything is graded.
+  const { results: shut } = await env.DB.prepare(
+    `SELECT week FROM weeks
+      WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
+      ORDER BY week`).bind(s, now).all();
+  const weeks = (shut || []).map((r) => r.week);
+
+  const raw = url.searchParams.get("week");
+  const week = raw ? Number(raw)
+                   : (weeks.length ? weeks[weeks.length - 1] : null);
+  if (raw && !Number.isInteger(week)) return fail("bad_week", 400);
+  // Nothing has closed yet: the season has not started, or its first week is
+  // still open. The selector list rides along so the page can say which weeks
+  // there will be rather than merely failing.
+  if (week == null) return fail("not_yet_public", 403, { weeks });
+
+  const w = await env.DB.prepare(
+    `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
+    .bind(s, week).first();
+  if (!w) return fail("no_slate", 404);
+  if (!isLocked(w)) return fail("not_yet_public", 403, { weeks });
+
+  // Everyone with at least one pick in the week, ranked if the week has been
+  // scored and alphabetical until it has. A player who sat the week out is
+  // left off rather than drawn as a row of dashes: a card nobody filled in is
+  // not a reading of what they picked, and the board already reports who is
+  // playing the season.
+  const { results: players } = await env.DB.prepare(
+    `SELECT u.id AS user_id, u.display_name, u.team,
+            b.rank, b.w, b.l, b.p, b.pct
+       FROM users u
+       LEFT JOIN leaderboard_week b
+         ON b.user_id = u.id AND b.season = ? AND b.week = ?
+      WHERE u.status = 'active'
+        AND EXISTS (SELECT 1 FROM picks p
+                     WHERE p.user_id = u.id AND p.season = ? AND p.week = ?)
+      -- Unscored weeks sort last as a block rather than interleaving with
+      -- the ranked ones, which is what ordering on b.rank alone does to NULLs.
+      ORDER BY b.rank IS NULL, b.rank, u.display_name
+      LIMIT 500`).bind(s, week, s, week).all();
+
+  const by = new Map();
+  for (const p of players || []) {
+    p.picks = {};
+    by.set(p.user_id, p);
+  }
+
+  // One week of picks is one row per player per game, a few hundred at the
+  // sizes this pool runs at. Not itself capped at 500, because the cap belongs
+  // to the field above and a pick belonging to nobody in it is dropped here
+  // rather than served.
+  const { results: picks } = await env.DB.prepare(
+    `SELECT p.user_id, p.game_id, p.side
+       FROM picks p JOIN users u ON u.id = p.user_id
+      WHERE p.season = ? AND p.week = ? AND u.status = 'active'`)
+    .bind(s, week).all();
+  for (const r of picks || []) {
+    const p = by.get(r.user_id);
+    if (p) p.picks[r.game_id] = r.side;
+  }
+
+  return json({ season: s, week, weeks, players: players || [] }, 200, {
+    // Public, identical for every reader, and about a week nobody can change.
+    // Same regime as the leaderboard.
+    "Cache-Control": "public, max-age=0, s-maxage=60",
+    Vary: "",
+  });
+}
+
+/**
+ * One player, both games, everything about them that is already public.
+ *
+ * Reached by clicking a name on The Board, The Grid or The Pool, so the
+ * subject is always somebody the site has already named in public. What it
+ * adds is the assembly: their season, their week-by-week pick'em card, and the
+ * survivor run underneath it, which until now were spread across three pages
+ * and readable for nobody but the player themselves.
+ *
+ * TWO GAMES, TWO REVEAL RULES, AND THEY ARE NOT THE SAME RULE. Getting this
+ * wrong is the only way this handler can do harm, so both are stated:
+ *
+ *   * The pick'em card is public once the week has LOCKED, which is its first
+ *     kickoff. The whole slate locks at once, so past that nobody can still be
+ *     picking in it and every pick is a finished fact.
+ *   * The survivor pick is public once the week has CLOSED, which is its last
+ *     kickoff. Picks lock per game there since 0010, so a player holding an
+ *     open Friday game is still choosing on Thursday night, and revealing the
+ *     field at the first kickoff would hand them the one thing worth knowing.
+ *
+ * The two are separate queries against separate definitions on purpose. Joined
+ * under one week list, the looser rule would quietly govern both.
+ *
+ * ACTIVE ACCOUNTS ONLY. A provisional account is not on any public board, so
+ * it has no page either; a shadowbanned or banned one gets the same answer as
+ * a name that was never real. The distinction between them is not this
+ * endpoint's to publish.
+ *
+ * NOTHING PER-VIEWER. A player looking at their own page sees exactly what
+ * everybody else sees, including the withholding: their own open week lives on
+ * The Card, which is theirs. That is what lets this be cached at the edge.
+ */
+export async function getUser(env, url, userId) {
+  const s = season(env);
+  const now = Math.floor(Date.now() / 1000);
+
+  const u = await env.DB.prepare(
+    `SELECT id, display_name, team, status, created_at FROM users WHERE id = ?`)
+    .bind(userId).first();
+  if (!u || u.status !== "active") return fail("no_such_user", 404);
+
+  // The pick'em's weeks: locked, so the card is finished being played.
+  const { results: shut } = await env.DB.prepare(
+    `SELECT week FROM weeks
+      WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
+      ORDER BY week`).bind(s, now).all();
+  const weeks = (shut || []).map((r) => r.week);
+
+  const season_ = await env.DB.prepare(
+    `SELECT w, l, p, v, pct, rank, weeks_played FROM leaderboard_season
+      WHERE season = ? AND user_id = ?`).bind(s, userId).first();
+
+  // Every pick they have made in a week that has locked, with the grade beside
+  // it. pick_scores rather than a re-derivation: this endpoint has no slate in
+  // hand to derive from, the client draws each week's games from /api/slate
+  // anyway, and a week that has locked but not been scored simply has no row
+  // here, which is the honest answer for a Saturday afternoon.
+  const { results: picks } = weeks.length ? await env.DB.prepare(
+    `SELECT p.week, p.game_id, p.side, p.spread_x2, sc.outcome
+       FROM picks p
+       JOIN weeks w ON w.season = p.season AND w.week = p.week
+       LEFT JOIN pick_scores sc
+         ON sc.user_id = p.user_id AND sc.season = p.season
+        AND sc.week = p.week AND sc.game_id = p.game_id
+      WHERE p.user_id = ? AND p.season = ?
+        AND w.lock_at IS NOT NULL AND w.lock_at <= ?
+      ORDER BY p.week, p.game_id`).bind(userId, s, now).all() : { results: [] };
+
+  const { results: wkrec } = await env.DB.prepare(
+    `SELECT week, w, l, p, pct, rank FROM leaderboard_week
+      WHERE season = ? AND user_id = ? ORDER BY week`)
+    .bind(s, userId).all();
+  const rec = new Map((wkrec || []).map((r) => [r.week, r]));
+
+  const byWeek = new Map();
+  for (const p of picks || []) {
+    if (!byWeek.has(p.week)) {
+      const r = rec.get(p.week) || {};
+      byWeek.set(p.week, {
+        week: p.week,
+        w: r.w == null ? null : r.w, l: r.l == null ? null : r.l,
+        p: r.p == null ? null : r.p, pct: r.pct == null ? null : r.pct,
+        rank: r.rank == null ? null : r.rank,
+        picks: {}, lines: {},
+      });
+    }
+    const wk = byWeek.get(p.week);
+    wk.picks[p.game_id] = p.side;
+    // The number they played it at, carried from the pick's own receipt rather
+    // than looked up on the slate. They are the same today; if a line ever did
+    // move, this is the copy that says what was on screen.
+    wk.lines[p.game_id] = { spread_x2: p.spread_x2,
+                            outcome: p.outcome || null };
+  }
+  // Newest first. A season's worth of weeks is a page you scroll, and the week
+  // somebody wants is nearly always the one that just finished.
+  const pickem = [...byWeek.values()].sort((a, b) => b.week - a.week);
+
+  // ------------------------------------------------------------- survivor
+
+  const sv = await env.DB.prepare(
+    `SELECT wins, alive, entered_week, out_week, out_reason, rank
+       FROM survivor_board WHERE season = ? AND user_id = ?`)
+    .bind(s, userId).first();
+
+  // CLOSED weeks, by the last kickoff. Not the `weeks` list above: that one is
+  // the pick'em's, and it turns true at the FIRST kickoff of a week whose
+  // survivor games are mostly still to come.
+  const { results: run } = await env.DB.prepare(
+    `WITH closed AS (
+       SELECT w.week FROM weeks w
+        WHERE w.season = ?
+          AND (SELECT MAX(g.kickoff_at) FROM slate_games g
+                WHERE g.season = w.season AND g.week = w.week
+                  AND g.spread_x2 IS NOT NULL) <= ?)
+     SELECT p.week, p.team, sc.outcome
+       FROM survivor_picks p
+       JOIN closed c ON c.week = p.week
+       LEFT JOIN survivor_scores sc
+         ON sc.user_id = p.user_id AND sc.season = p.season AND sc.week = p.week
+      WHERE p.user_id = ? AND p.season = ?
+      ORDER BY p.week`).bind(s, now, userId, s).all();
+
+  return json({
+    user_id: u.id,
+    display_name: u.display_name,
+    team: u.team || null,
+    since: u.created_at,
+    season: s,
+    weeks,
+    pickem: {
+      season: season_ || null,
+      weeks: pickem,
+    },
+    // NULL MEANS "NOT IN THE POOL", and it has to be distinguishable from
+    // "in the pool with nothing to show yet" or the page draws an empty
+    // survivor card for the whole pick'em-only half of the field. A board row
+    // is not the test: the recompute writes those, so a player who entered
+    // this week has a run and no row until the cron next runs, and keying off
+    // the row alone dropped their picks on the floor.
+    survivor: (sv || (run || []).length) ? {
+      wins: sv ? sv.wins : null,
+      alive: sv ? sv.alive : null,
+      entered_week: sv ? sv.entered_week : null,
+      out_week: sv ? sv.out_week : null,
+      out_reason: sv ? sv.out_reason : null,
+      rank: sv ? sv.rank : null,
+      picks: run || [],
+    } : null,
+  }, 200, {
+    // Public and identical for every reader, same regime as the boards.
+    "Cache-Control": "public, max-age=0, s-maxage=60",
+    Vary: "",
+  });
+}
+
+/**
  * Where you stood after each week, against the shape of the field.
  *
  * Signed out it still answers — the band, the leader and the room are public

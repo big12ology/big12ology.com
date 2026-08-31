@@ -1479,7 +1479,10 @@
             // the names still line up down the column.
             td.appendChild(el("span", "pk-markgap"));
           }
-          td.appendChild(document.createTextNode(r[c.key] == null ? "—" : r[c.key]));
+          // The name goes somewhere now. Before the player page existed this
+          // column was the end of the road: the row said somebody was 34-20
+          // and nothing whatever about how.
+          td.appendChild(playerName(r));
           // Your row is a wash of your team's color and a bar down its left
           // edge, and neither is a word. Your display name identifies you
           // only if you already know it is yours, which is exactly what a
@@ -1579,8 +1582,12 @@
       boardRows = r.rows || [];
       chalk = r.chalk || null;
       room = r.room || null;
+      // The board is the site's index of players, so it is the one place the
+      // link is worth saying out loud. The underline is the affordance; this
+      // is what the affordance leads to, which an underline cannot say.
       note.textContent = boardRows.length
         ? (r.week == null ? "Season to date." : "Week " + r.week + ".")
+          + " Every name opens that player's card, both games."
         : "Nobody has a scored week yet.";
       drawBoard();
       return r;
@@ -2051,7 +2058,13 @@
   // slate to your picks rather than listing either alone: what you took, the
   // number you took it at, and how it came out — including the games you left
   // blank, which is the thing a card is for noticing.
-  function cardRow(g, side, teams, locked) {
+  // `whose` is the possessive the row speaks in, and it exists because this
+  // row is now read on two pages. On The Card it is yours and says so; on a
+  // player's page it is somebody else's, and a row that told a screen reader
+  // "your pick, loss" about a stranger would be worse than silent. Defaulted,
+  // so the page that had it first did not have to change.
+  function cardRow(g, side, teams, locked, whose) {
+    whose = whose || "your";
     var li = el("li", "pk-cardrow");
     var st = gameStatus(g);
     var when = el("span", "pk-when pk-st-" + st.kind);
@@ -2090,7 +2103,7 @@
         // to report, on the one page whose entire subject is what you
         // picked, and whose result chip then says "your pick, loss" with
         // nothing anywhere to say what the pick was.
-        t.appendChild(el("span", "sr-only", ", your pick"));
+        t.appendChild(el("span", "sr-only", ", " + whose + " pick"));
       }
       m.appendChild(t);
     });
@@ -2175,7 +2188,7 @@
       li.appendChild(gap);
     }
 
-    var res = resultChip(g, side, locked, "card");
+    var res = resultChip(g, side, locked, "card", whose);
     if (res) li.appendChild(res);
     else li.appendChild(el("span", "pk-res pk-res-none", ""));
     return li;
@@ -2207,13 +2220,26 @@
   // What YOUR pick did — nothing about the game itself, which the status
   // column already says. Before a result there is no outcome to report, so it
   // stays empty rather than inventing a state for it.
-  function resultChip(g, side, locked, view) {
-    if (side && g.result) {
-      var a = g.result.ats;
-      var out = a === "void" ? "void" : a === "push" ? "push"
-              : a === side ? "win" : "loss";
+  // What a pick DID, as one word, from the game's own grade.
+  //
+  // Two pages ask it, your card and the grid of everybody's, and they must
+  // never answer differently about the same pick, so the rule lives here
+  // rather than once in each renderer. It is derived rather than fetched on
+  // purpose: pick_scores says the same thing, but only after the scoring cron
+  // has run, and both pages are readable from the moment the week locks.
+  function atsOutcome(g, side) {
+    if (!side || !g.result) return null;
+    var a = g.result.ats;
+    return a === "void" ? "void" : a === "push" ? "push"
+         : a === side ? "win" : "loss";
+  }
+
+  function resultChip(g, side, locked, view, whose) {
+    var out = atsOutcome(g, side);
+    if (out) {
       var chip = el("span", "pk-res " + out, out.toUpperCase());
-      chip.appendChild(el("span", "sr-only", " \u2014 your pick " + out));
+      chip.appendChild(el("span", "sr-only",
+                          ", " + (whose || "your") + " pick " + out));
       return chip;
     }
 
@@ -2365,6 +2391,488 @@
   function ordinal(n) {
     var s = ["th", "st", "nd", "rd"], v = n % 100;
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+
+  // ------------------------------------------------------------------ grid
+
+  /* Everybody's card for one week, in one table.
+   *
+   * The Card answers "how did I do"; The Board answers "who is winning". The
+   * question neither answers is the one a room actually argues about: who
+   * else took Iowa State. Answering it needs both axes at once, a player per
+   * row, a game per column, the pick in the cell.
+   *
+   * ONLY WEEKS THAT HAVE CLOSED. The server will not serve an open one, and
+   * this page does not ask twice: /api/grid with no week lands on the latest
+   * closed week by itself, so the ordinary visit cannot be an error. What is
+   * withheld is withheld at the source. Nothing here is a hidden column.
+   */
+
+  // The column head, and the reason a sixteen-game week fits in about a
+  // phone and a half of sideways scroll rather than four: the matchup as two
+  // stacked abbreviations rather than two names. Names are what teams.json
+  // calls them, which runs to "Oklahoma State"; the abbreviation is what a
+  // scoreboard calls them, and a grid IS a scoreboard.
+  function gridHead(g, teams) {
+    var th = el("th", "pk-gcol");
+    th.setAttribute("scope", "col");
+    ["away", "home"].forEach(function (s) {
+      var line = el("span", "pk-gteam");
+      var mk = mark(teams, g[s], 14);
+      if (mk) line.appendChild(mk);
+      else line.appendChild(el("span", "pk-markgap"));
+      line.appendChild(el("span", "pk-gabbr",
+                          (teams[g[s]] || {}).abbr || g[s]));
+      th.appendChild(line);
+    });
+    // Spelled out for the ear and for a hover, because an abbreviation is a
+    // reminder of a name rather than the name. The cells below say only which
+    // side was taken, so this is the one place the matchup is stated in full.
+    var said = g.away + " " + joiner(g) + " " + g.home;
+    th.title = said + "  ·  " + shortWhen(g.kickoff);
+    th.appendChild(el("span", "sr-only", said));
+    return th;
+  }
+
+  // One pick. The team taken, tinted by what it did, and nothing else: the
+  // number it was taken at is the same for everybody, so printing it in every
+  // cell would be the one fact on the page that repeats down the column.
+  function gridCell(g, side, teams, locked) {
+    var out = atsOutcome(g, side);
+    var td = el("td", "pk-gcell" + (out ? " pk-g-" + out : ""));
+    if (!side) {
+      // A game this player left blank, on a week where everyone else's is
+      // filled. It is a result, since a blank scores as nothing, so it is drawn
+      // as an absence rather than left as whitespace that reads like a bug.
+      td.appendChild(el("span", "pk-gnone", "—"));
+      td.appendChild(el("span", "sr-only", "no pick"));
+      return td;
+    }
+    var team = g[side];
+    var mk = mark(teams, team, 15);
+    if (mk) td.appendChild(mk);
+    td.appendChild(el("span", "pk-gabbr", (teams[team] || {}).abbr || team));
+    // The tint is a color and nothing else, so the word has to be said. Not
+    // shown: sixteen WIN/LOSS chips across a row would bury the teams, which
+    // are what the eye is here to scan.
+    td.appendChild(el("span", "sr-only",
+      team + (out ? ", " + out : (locked ? ", not yet graded" : ""))));
+    // The label above is clipped when teams.json has no abbreviation for the
+    // team, so the whole name has to live somewhere the eye can still reach.
+    td.title = team + (out ? ", " + out : "");
+    return td;
+  }
+
+  function drawGrid(slate, grid, teams, me) {
+    var tbl = $("grid");
+    if (!tbl) return;
+    tbl.textContent = "";
+    var games = (slate.games || []).filter(function (g) {
+      return !g.unpickable;      // nobody could pick it, so nobody is shown
+    });
+    var players = grid.players || [];
+
+    var thead = el("thead"), hr = el("tr");
+    var who = el("th", "pk-gname");
+    who.setAttribute("scope", "col");
+    who.textContent = "Player";
+    hr.appendChild(who);
+    var rec = el("th", "n pk-grec");
+    rec.setAttribute("scope", "col");
+    rec.textContent = "W–L";
+    hr.appendChild(rec);
+    games.forEach(function (g) { hr.appendChild(gridHead(g, teams)); });
+    thead.appendChild(hr);
+    tbl.appendChild(thead);
+
+    var tb = el("tbody");
+    players.forEach(function (p) {
+      var tr = el("tr");
+      var isMe = me && p.user_id === me.user_id;
+      if (isMe) {
+        tr.className = "you";
+        if (myTint) tr.style.setProperty("--you", myTint);
+      }
+      // A row header, not a cell. It is what a screen reader names when it
+      // reads a pick out of the middle of the table, and the column head
+      // supplies the other half, which is why the cells themselves can get
+      // away with saying only the team.
+      var nd = el("th", "pk-gname");
+      nd.setAttribute("scope", "row");
+      var mk = mark(teams, p.team, 15);
+      if (mk) nd.appendChild(mk);
+      else if (p.team) nd.appendChild(el("span", "pk-markgap"));
+      nd.appendChild(playerName(p));
+      // The column is capped so the games get the rest of the width, and a
+      // long display name is clipped by it. The name is the row's whole
+      // identity, so the full one has to be recoverable from somewhere.
+      if (p.display_name) nd.title = p.display_name;
+      if (isMe) nd.appendChild(el("span", "sr-only", ", your row"));
+      tr.appendChild(nd);
+
+      // The week's record, which exists only once the week has been scored.
+      // A locked-but-ungraded week shows the picks and no numbers, which is
+      // the honest state on a Saturday afternoon.
+      var rd = el("td", "n pk-grec");
+      rd.textContent = p.w == null ? "—"
+        : p.w + "–" + p.l + (p.p ? "–" + p.p : "");
+      tr.appendChild(rd);
+
+      games.forEach(function (g) {
+        tr.appendChild(gridCell(g, p.picks[g.game_id] || null, teams,
+                                slate.locked));
+      });
+      tb.appendChild(tr);
+    });
+    tbl.appendChild(tb);
+  }
+
+  function gridWeeks(sel, weeks, cur, onPick) {
+    if (!sel) return;
+    sel.textContent = "";
+    (weeks || []).forEach(function (w) {
+      var o = document.createElement("option");
+      o.value = String(w);
+      o.textContent = "Week " + w;
+      if (w === cur) o.selected = true;
+      sel.appendChild(o);
+    });
+    var lab = sel.closest ? sel.closest("label") : null;
+    // One closed week is not a choice, and a control offering one lies about
+    // being one. Same rule as the card's selector.
+    show(lab, (weeks || []).length > 1);
+    if (!sel._wired) {
+      sel._wired = true;
+      sel.addEventListener("change", function () { onPick(sel.value); });
+    }
+  }
+
+  function initGrid(me) {
+    var note = $("gridnote"), tbl = $("grid");
+    if (!note || !tbl) return;
+    var sel = $("gridwk");
+
+    function draw(week) {
+      var q = week == null || week === "" ? ""
+            : "?week=" + encodeURIComponent(week);
+      note.textContent = "Loading…";
+      return loadTeams().then(function (teams) {
+        myTint = myColor(me, teams);
+        // The grid first: it decides WHICH week this is when none was asked
+        // for, and the slate has to be fetched for that same week or the
+        // columns would be one week's games under another week's picks.
+        return api("/api/grid" + q).then(function (grid) {
+          return api("/api/slate?week=" + grid.week).then(function (slate) {
+            drawGrid(slate, grid, teams, me);
+            var ps = grid.players || [], n = ps.length;
+            // Whether the week has been GRADED, which is not whether it has
+            // closed. Between the lock and the scoring cron the picks are
+            // public and the records are not, and a W–L column of dashes
+            // needs saying rather than explaining itself.
+            var graded = ps.some(function (p) { return p.w != null; });
+            note.textContent = n
+              ? n + (n === 1 ? " card, " : " cards, ")
+                + "week " + grid.week + "."
+                + (graded ? "" : " Not scored yet, so the records are blank.")
+              : "Nobody picked week " + grid.week + ".";
+            gridWeeks(sel, grid.weeks, grid.week, go);
+          });
+        });
+      });
+    }
+
+    function failed(err) {
+      // The table goes with the note. A failure that left the previous week's
+      // rows standing under a sentence about a different week would be the
+      // page contradicting itself.
+      tbl.textContent = "";
+      var weeks = (err.data && err.data.weeks) || [];
+      if (err.status === 403) {
+        note.textContent = weeks.length
+          ? "That week has not locked yet. Every card goes up at once, the "
+            + "moment it does."
+          : "No week has closed yet. Every card goes up at once, the moment "
+            + "the first week locks.";
+        gridWeeks(sel, weeks, null, go);
+      } else if (err.status === 404) {
+        slateOpensNote(note, "pickem");
+      } else {
+        note.textContent = explain(err);
+      }
+    }
+
+    // Every path through the page goes through this one, the first load and
+    // every change of the selector alike. The selector's handler used to call
+    // draw() raw, so a week that failed for it left the note reading
+    // "Loading…" for good and the reason in the console.
+    function go(week) { return draw(week).catch(failed); }
+
+    go(null);
+  }
+
+
+  // ---------------------------------------------------------------- player
+
+  /* One player, both games, on one page.
+   *
+   * Reached by clicking a name anywhere the site prints one. The Card is the
+   * same anatomy for the person reading it; this is that anatomy pointed at
+   * somebody else, which is why the row renderer is shared rather than
+   * copied. What it adds is the season's shape: a strip of week chips that
+   * doubles as the navigation, and the survivor run underneath, which is the
+   * one thing about a player that reads better whole than a week at a time.
+   *
+   * WHAT IS NOT HERE is the open week, and it is missing at the server. The
+   * pick'em half appears when a week locks, the survivor half when its last
+   * game kicks off, and the two are different moments for the same week.
+   */
+
+  function playerHref(userId) {
+    return "/pools/player.html?u=" + encodeURIComponent(userId);
+  }
+
+  /* A name that goes somewhere. Every board on the site prints a column of
+     these, and before this page existed a name was a dead end: the row told
+     you somebody was 34-20 and nothing about how. Returns a node either way,
+     so a caller can append it without asking which it got. */
+  function playerName(row, label) {
+    var text = label || row.display_name || "—";
+    if (!row.user_id || !row.display_name) {
+      return document.createTextNode(text);
+    }
+    var a = el("a", "pk-plink", text);
+    a.href = playerHref(row.user_id);
+    return a;
+  }
+
+  // The W–L–P of a record, or null when there is not one yet.
+  //
+  // BOTH HALVES REQUIRED, and that is not defensiveness for its own sake: a
+  // week that has locked but not been scored has no row in leaderboard_week
+  // at all, so every number on it arrives absent together. Guarding on the
+  // wins alone rendered "99–undefined" on a page whose entire subject is
+  // somebody's numbers. One function, because three places ask the question
+  // and they must not answer it differently.
+  function winLoss(r) {
+    if (!r || r.w == null || r.l == null) return null;
+    return r.w + "–" + r.l + (r.p ? "–" + r.p : "");
+  }
+
+  function recordText(r) {
+    var s = winLoss(r);
+    if (s == null) return null;
+    var d = r.w + r.l;
+    return d ? s + "  ·  " + (100 * r.w / d).toFixed(1) + "%" : s;
+  }
+
+  /* The season as a row of weeks, and the week picker in the same object.
+     A <select> would have been fewer lines and would have hidden the thing
+     worth seeing: which weeks went well is the shape of somebody's season,
+     and it is legible at a glance only if the weeks are all on screen at
+     once. Ordered newest first, as the payload arrives. */
+  function playerWeeks(weeks, cur, onPick) {
+    var strip = el("ul", "pk-wkstrip");
+    weeks.forEach(function (wk) {
+      var li = el("li");
+      var b = el("button", "pk-wkchip" + (wk.week === cur ? " on" : ""));
+      b.type = "button";
+      if (wk.week === cur) b.setAttribute("aria-current", "true");
+      b.appendChild(el("span", "pk-wkchipn", "Week " + wk.week));
+      var rec = winLoss(wk) || "not scored";
+      b.appendChild(el("span", "pk-wkchipr", rec));
+      // Won more than lost, lost more than won, or neither. Three states and
+      // no gradient, the same rule the outcome chips follow: a week is not a
+      // continuum, and a scale here would compete with the ATS ramp on The
+      // Board for the reader's idea of what a color means.
+      if (winLoss(wk) != null && wk.w !== wk.l) {
+        b.classList.add(wk.w > wk.l ? "up" : "down");
+      }
+      b.addEventListener("click", function () { onPick(wk.week); });
+      li.appendChild(b);
+      strip.appendChild(li);
+    });
+    return strip;
+  }
+
+  /* The survivor run: one line per week that has finished, the team spent and
+     what it did. Whole rather than paged, because a run is fifteen lines at
+     most, and the question people ask of it (which teams are gone) is a
+     question about all of them at once. */
+  function playerRun(sv, teams, name) {
+    var wrap = el("div");
+    var line = el("p", "pk-cardrec");
+    line.appendChild(el("b", null, svStandingWord(sv)));
+    if (sv.wins != null) {
+      line.appendChild(document.createTextNode(
+        "  ·  " + sv.wins + (sv.wins === 1 ? " win" : " wins")));
+    }
+    if (sv.rank) {
+      line.appendChild(document.createTextNode(
+        "  ·  " + ordinal(sv.rank) + " in the pool"));
+    }
+    if (sv.entered_week != null && sv.entered_week > 0) {
+      // Entering late is not a neutral fact in this pool: the chalk of the
+      // weeks before you is already spent, so a run that starts at week six
+      // was played with a smaller roster than one that started at week zero.
+      line.appendChild(document.createTextNode(
+        "  ·  joined at week " + sv.entered_week));
+    }
+    wrap.appendChild(line);
+
+    if (!sv.picks.length) {
+      wrap.appendChild(el("p", "note",
+        "No week of " + name + "'s run has finished yet."));
+      return wrap;
+    }
+    var ul = el("ul", "pk-run");
+    sv.picks.slice().sort(function (a, b) { return b.week - a.week; })
+      .forEach(function (p) {
+        var li = el("li", "pk-runrow");
+        li.appendChild(el("span", "pk-runwk", "Week " + p.week));
+        var t = el("span", "pk-runteam");
+        var mk = mark(teams, p.team, 18);
+        if (mk) t.appendChild(mk);
+        t.appendChild(document.createTextNode(p.team));
+        li.appendChild(t);
+        var chip = p.outcome ? svOutcomeChip(p.outcome)
+                             : el("span", "pk-res pending", "PENDING");
+        li.appendChild(chip);
+        ul.appendChild(li);
+      });
+    wrap.appendChild(ul);
+    return wrap;
+  }
+
+  function svStandingWord(sv) {
+    if (sv.alive == null) return "In the pool";
+    if (sv.alive) return "Still alive";
+    // survivor_board.out_week is nullable while alive is NOT NULL, so the two
+    // can genuinely arrive as "out, and the week is not recorded". "Out in
+    // week null" is worse than the plain fact, which is still a fact.
+    return "Out" + (sv.out_week == null ? "" : " in week " + sv.out_week) +
+      (sv.out_reason === "missed" ? ", no pick" : "");
+  }
+
+  function initPlayer(me) {
+    var head = $("phead");
+    if (!head) return;
+    var id = new URLSearchParams(location.search).get("u");
+    // NOT #pnote, which is the week line inside the pick'em card: that card is
+    // hidden whenever there is an error worth reading, so a message put there
+    // would be a message nobody sees.
+    var note = $("perr");
+
+    /* Every way this page can fail to be about somebody, said in the heading
+       as well as the note. The heading is the one thing on screen before the
+       request returns, and it says "Loading…". Leaving it there under an
+       explanation of why nothing loaded is the page contradicting itself,
+       which is what the first version did. */
+    function nobody(said) {
+      head.textContent = "";
+      head.appendChild(el("h2", null, "No player"));
+      note.textContent = said + " ";
+      var back = el("a", null, "The Board");
+      back.href = "/pools/pickem/board.html";
+      note.appendChild(back);
+      note.appendChild(document.createTextNode(" lists everybody playing."));
+    }
+
+    if (!id) return nobody("This page is about one player, and the link that "
+                           + "reached it did not say which.");
+
+    Promise.all([api("/api/users/" + encodeURIComponent(id)), loadTeams()])
+      .then(function (r) { drawPlayer(r[0], r[1], me); })
+      .catch(function (err) {
+        if (err.status === 404) {
+          nobody("Nobody by that name is on the boards. A new account joins "
+                 + "them once it has completed one scored week.");
+        } else {
+          note.textContent = explain(err);
+        }
+      });
+  }
+
+  function drawPlayer(u, teams, me) {
+    var isMe = me && me.user_id === u.user_id;
+    document.title = u.display_name + " — Big 12 Pools";
+
+    // ------------------------------------------------------------- who
+    var head = $("phead");
+    head.textContent = "";
+    var h = el("h2", "pk-pname");
+    var mk = mark(teams, u.team, 28);
+    if (mk) h.appendChild(mk);
+    h.appendChild(document.createTextNode(u.display_name || "—"));
+    if (isMe) h.appendChild(el("span", "pk-pyou", "you"));
+    head.appendChild(h);
+
+    var lines = el("div", "pk-plines");
+    var pk = u.pickem.season;
+    if (pk) {
+      var l1 = el("p", "pk-cardrec");
+      l1.appendChild(el("b", null, recordText(pk) || "—"));
+      if (pk.rank) {
+        l1.appendChild(document.createTextNode(
+          "  ·  " + ordinal(pk.rank) + " on the board"));
+      }
+      if (pk.weeks_played) {
+        l1.appendChild(document.createTextNode("  ·  " + pk.weeks_played +
+          (pk.weeks_played === 1 ? " week" : " weeks") + " played"));
+      }
+      lines.appendChild(l1);
+    }
+    head.appendChild(lines);
+    // A player in one game and not the other is the ordinary case, so each
+    // half says whether it has anything before it says anything.
+    if (!pk && !u.survivor) {
+      head.appendChild(el("p", "note",
+        "Nothing to show yet. Cards go up when the week they were played in "
+        + "locks."));
+    }
+
+    // -------------------------------------------------------- the pick'em
+    var pcard = $("pcard"), pweeks = $("pweeks"), pbody = $("pbody"),
+        pnote = $("pnote");
+    var wks = (u.pickem && u.pickem.weeks) || [];
+    show(pcard, wks.length > 0);
+    if (wks.length) {
+      var cur = wks[0].week;                  // newest, the payload's order
+
+      var drawWeek = function (week) {
+        cur = week;
+        var wk = wks.filter(function (x) { return x.week === week; })[0];
+        pweeks.textContent = "";
+        pweeks.appendChild(playerWeeks(wks, cur, drawWeek));
+        pnote.textContent = "Loading week " + week + "…";
+        return api("/api/slate?week=" + week).then(function (s) {
+          var rec = recordText(wk);
+          pnote.textContent = "Week " + week + (rec ? "  ·  " + rec : "")
+            + (rec ? "" : "  ·  not scored yet");
+          var ul = el("ul", "pk-card");
+          inPlayOrder(s.games).forEach(function (g) {
+            if (g.unpickable) return;
+            ul.appendChild(cardRow(g, wk.picks[g.game_id] || null, teams,
+                                   true, isMe ? "your" : "their"));
+          });
+          pbody.textContent = "";
+          pbody.appendChild(ul);
+        }).catch(function (err) {
+          pbody.textContent = "";
+          pnote.textContent = explain(err);
+        });
+      };
+      drawWeek(cur);
+    }
+
+    // ------------------------------------------------------- the survivor
+    var scard = $("pscard"), sbody = $("psbody");
+    show(scard, !!u.survivor);
+    if (u.survivor) {
+      sbody.textContent = "";
+      sbody.appendChild(playerRun(u.survivor, teams,
+                                  u.display_name || "this run"));
+    }
   }
 
   // -------------------------------------------------------------- survivor
@@ -2973,7 +3481,8 @@
     ul.textContent = "";
     rows.forEach(function (r) {
       var li = el("li", "pk-fieldrow" + (r.alive ? "" : " pk-fieldout"));
-      var who = el("span", "pk-fieldname", r.display_name || "—");
+      var who = el("span", "pk-fieldname");
+      who.appendChild(playerName(r));
       li.appendChild(who);
       // What this run has spent, and only that. It used to draw all sixteen
       // with the spent ones faded, which is the shape your OWN roster wants:
@@ -3052,7 +3561,7 @@
       var mk = mark(teams, r.team, 15);
       if (mk) td.appendChild(mk);
       else if (r.team) td.appendChild(el("span", "pk-markgap"));
-      td.appendChild(document.createTextNode(r.display_name || "—"));
+      td.appendChild(playerName(r));
       // Same wash, same bar, same silence as the pick'em board.
       if (isMe) td.appendChild(el("span", "sr-only", ", your row"));
       tr2.appendChild(td);
@@ -3417,6 +3926,8 @@
       initAccount(me);
       initBoard(me);
       initCard(me);
+      initGrid(me);
+      initPlayer(me);
       initSurvivorPool();
       initSurvivor(me);
     });
@@ -3441,7 +3952,11 @@
     svSplit: svSplit, resultChip: resultChip, svOutcomeChip: svOutcomeChip,
     gameRow: gameRow, cardRow: cardRow, svGameRow: svGameRow,
     consensusBar: consensusBar, svStandingText: svStandingText,
-    explain: explain,
+    explain: explain, atsOutcome: atsOutcome, gridCell: gridCell,
+    gridHead: gridHead, drawGrid: drawGrid, playerName: playerName,
+    winLoss: winLoss,
+    playerHref: playerHref, playerRun: playerRun, playerWeeks: playerWeeks,
+    recordText: recordText, svStandingWord: svStandingWord,
   };
 
 })();
