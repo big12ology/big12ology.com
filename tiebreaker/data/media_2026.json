@@ -1,6 +1,10 @@
 {
  "401856636": [
   {
+   "outlet": "Disney+",
+   "type": "web"
+  },
+  {
    "outlet": "ABC",
    "type": "tv"
   }
@@ -24,6 +28,10 @@
   }
  ],
  "401856766": [
+  {
+   "outlet": "Disney+",
+   "type": "web"
+  },
   {
    "outlet": "ESPN",
    "type": "tv"
@@ -97,6 +105,10 @@
  ],
  "401856778": [
   {
+   "outlet": "Disney+",
+   "type": "web"
+  },
+  {
    "outlet": "ESPN",
    "type": "tv"
   }
@@ -109,25 +121,29 @@
  ],
  "401856780": [
   {
-   "outlet": "HBO Max",
-   "type": "web"
-  },
-  {
    "outlet": "TNT",
    "type": "tv"
+  },
+  {
+   "outlet": "HBO Max",
+   "type": "web"
   }
  ],
  "401856781": [
   {
-   "outlet": "HBO Max",
-   "type": "web"
-  },
-  {
    "outlet": "TNT",
    "type": "tv"
+  },
+  {
+   "outlet": "HBO Max",
+   "type": "web"
   }
  ],
  "401856782": [
+  {
+   "outlet": "Disney+",
+   "type": "web"
+  },
   {
    "outlet": "ESPN",
    "type": "tv"
@@ -195,12 +211,12 @@
  ],
  "401856793": [
   {
-   "outlet": "HBO Max",
-   "type": "web"
-  },
-  {
    "outlet": "TNT",
    "type": "tv"
+  },
+  {
+   "outlet": "HBO Max",
+   "type": "web"
   }
  ],
  "401856795": [
