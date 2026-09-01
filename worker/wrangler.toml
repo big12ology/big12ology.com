@@ -187,16 +187,20 @@ crons = [
   "30 * * 8-12 1,7",       # hourly Sat + Sun UTC — the score sweep
   "30 0-8/2 * 8-12 2,6,7", # Mon/Fri/Sat UTC, small hours: Sun/Thu/Fri
                            # night finals in the US
-  "30 7-12 * 8-12 3",      # Tue UTC — import the week's slate, hourly. The
+  "30 7-23 * 8-12 3",      # Tue UTC — import the week's slate, hourly. The
                            # publish is one GitHub cron at 07:00 with drift
-                           # observed up to ~75 minutes; a single import
-                           # after it was a bet on that drift, and losing
-                           # the bet cost a DAY (the next walk is
-                           # Wednesday's heartbeat). Hourly through 12:30,
-                           # the worst case is live by ~08:30 UTC — inside
-                           # the 09:00 UTC (5am ET) live-by the pages
-                           # promise. The :30 clears the :00 publish; the
-                           # extra sweeps import nothing and cost nothing.
+                           # once observed at ~75 minutes and, on 2026-09-01,
+                           # at five and a half hours: the publish landed at
+                           # 12:30:20 UTC, twenty seconds after what was then
+                           # the day's last sweep (7-12), and week 1 sat
+                           # published but unimported until the next walk, a
+                           # day away. The window has to outlast GitHub's
+                           # worst day, not its median, so it runs to 23:30
+                           # now. The usual case is unchanged, live by ~08:30
+                           # UTC, inside the 09:00 UTC (5am ET) live-by the
+                           # pages promise; the :30 clears the :00 publish,
+                           # and the extra sweeps import nothing and cost
+                           # nothing.
   # ALL YEAR, unlike the three above. This one exists for the heartbeat: the
   # cron pings a dead man's switch when it finishes, and a switch that stops
   # being pinged every January would page somebody daily for seven months —
