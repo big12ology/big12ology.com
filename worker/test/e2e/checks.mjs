@@ -63,7 +63,7 @@ async function call(method, path, { origin = ORIGIN, cookie = COOKIE, body } = {
 }
 
 const cron = () =>
-  fetch(`${WORKER}/__scheduled?cron=30+7-12+*+8-12+3`).then((r) => r.status);
+  fetch(`${WORKER}/__scheduled?cron=30+7-23+*+8-12+3`).then((r) => r.status);
 
 // The repo-layout path the import reads through RAW_ORIGIN, not the
 // /pools/data/ path the website serves; see pickem-e2e.sh's fixture step.

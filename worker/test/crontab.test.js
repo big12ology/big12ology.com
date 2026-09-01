@@ -57,7 +57,7 @@ test("the schedules land on the days the comments claim", () => {
   const want = {
     "30 * * 8-12 1,7": ["Sun", "Sat"],          // the weekend score sweep
     "30 0-8/2 * 8-12 2,6,7": ["Mon", "Fri", "Sat"], // US night finals, UTC
-    "30 7-12 * 8-12 3": ["Tue"],               // the slate import sweep
+    "30 7-23 * 8-12 3": ["Tue"],               // the slate import sweep
     "0 12 * * *": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   };
   for (const c of crons) {
