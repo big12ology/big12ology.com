@@ -26,7 +26,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-03T23:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "FBC Mortgage Stadium",
   "venue_id": 3652,
@@ -38,8 +38,8 @@
   "away_conf": "SWAC",
   "home_class": "fbs",
   "away_class": "fcs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 73,
+  "away_points": 6
  },
  {
   "id": 401856776,
