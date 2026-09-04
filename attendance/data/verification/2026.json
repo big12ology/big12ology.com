@@ -1,5 +1,30 @@
 {
   "season": 2026,
-  "summary": {},
-  "games": []
+  "summary": {
+    "agree": 2
+  },
+  "games": [
+    {
+      "team": "UCF",
+      "week": 1,
+      "opponent": "Bethune-Cookman",
+      "date": "2026-09-03",
+      "espnId": 401856767,
+      "ours": 43127,
+      "espn": 43127,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Utah",
+      "week": 1,
+      "opponent": "Idaho",
+      "date": "2026-09-03",
+      "espnId": 401856768,
+      "ours": 51444,
+      "espn": 51444,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    }
+  ]
 }

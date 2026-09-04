@@ -96,13 +96,14 @@
       "espnId": 401856776,
       "conferenceGame": false,
       "opponent": "Georgia Tech",
-      "attendance": null,
+      "attendance": 52113,
       "role": "away",
       "venue": "Bobby Dodd Stadium",
       "city": "Atlanta",
       "state": "GA",
       "pointsFor": 14,
-      "pointsAgainst": 13
+      "pointsAgainst": 13,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)"
     },
     {
       "team": "Houston",
@@ -176,14 +177,15 @@
       "espnId": 401856767,
       "conferenceGame": false,
       "opponent": "Bethune-Cookman",
-      "attendance": null,
+      "attendance": 43127,
       "pointsFor": 73,
       "pointsAgainst": 6,
       "weather": {
         "tempF": 80,
         "windMph": 4,
         "precipIn": 0.01
-      }
+      },
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)"
     },
     {
       "team": "Utah",
@@ -193,14 +195,15 @@
       "espnId": 401856768,
       "conferenceGame": false,
       "opponent": "Idaho",
-      "attendance": null,
+      "attendance": 51444,
       "pointsFor": 66,
       "pointsAgainst": 14,
       "weather": {
         "tempF": 82,
         "windMph": 13,
         "precipIn": 0
-      }
+      },
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)"
     },
     {
       "team": "West Virginia",

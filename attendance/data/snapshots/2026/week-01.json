@@ -1,0 +1,332 @@
+{
+  "season": 2026,
+  "throughWeek": 1,
+  "rows": [
+    {
+      "team": "Utah",
+      "stadium": "Rice-Eccles Stadium",
+      "capacity": 51444,
+      "capacityEstimate": null,
+      "color": "#ea002a",
+      "logo": "assets/logos/utah.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 51444,
+          "pct": 1
+        }
+      ],
+      "total": 51444,
+      "pct": 1
+    },
+    {
+      "team": "UCF",
+      "stadium": "Acrisure Bounce House",
+      "capacity": 44206,
+      "capacityEstimate": null,
+      "color": "#ba9b37",
+      "logo": "assets/logos/ucf.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 43127,
+          "pct": 0.9755915486585531
+        }
+      ],
+      "total": 43127,
+      "pct": 0.9755915486585531
+    },
+    {
+      "team": "Arizona",
+      "stadium": "Casino Del Sol Stadium",
+      "capacity": 50782,
+      "capacityEstimate": null,
+      "color": "#0c234b",
+      "logo": "assets/logos/ariz.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "Arizona State",
+      "stadium": "Mountain America Stadium",
+      "capacity": 53599,
+      "capacityEstimate": null,
+      "color": "#8e0c3a",
+      "logo": "assets/logos/asu.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "Baylor",
+      "stadium": "McLane Stadium",
+      "capacity": 45140,
+      "capacityEstimate": null,
+      "color": "#154734",
+      "logo": "assets/logos/bay.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "BYU",
+      "stadium": "LaVell Edwards Stadium",
+      "capacity": 62073,
+      "capacityEstimate": null,
+      "color": "#003da5",
+      "logo": "assets/logos/byu.png",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "Cincinnati",
+      "stadium": "Nippert Stadium",
+      "capacity": 38088,
+      "capacityEstimate": null,
+      "color": "#e00122",
+      "logo": "assets/logos/cin.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "Colorado",
+      "stadium": "Folsom Field",
+      "capacity": 50183,
+      "capacityEstimate": null,
+      "color": "#cfb87c",
+      "logo": "assets/logos/cu.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "Houston",
+      "stadium": "TDECU Stadium",
+      "capacity": 40000,
+      "capacityEstimate": null,
+      "color": "#c92a39",
+      "logo": "assets/logos/hou.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "Iowa State",
+      "stadium": "Jack Trice Stadium",
+      "capacity": 61500,
+      "capacityEstimate": null,
+      "color": "#822433",
+      "logo": "assets/logos/isu.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "Kansas",
+      "stadium": "David Booth Kansas Memorial Stadium",
+      "capacity": 41525,
+      "capacityEstimate": "KU has published no 2026 capacity. Phase II of the Gateway rebuild demolished the east stand in December 2025 and only its lower bowl returns this season, so the real figure is below the 41,525 carried forward from 2025 — percent full for Kansas home games reads low until the university publishes a number.",
+      "color": "#0051ba",
+      "logo": "assets/logos/ku.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "Kansas State",
+      "stadium": "Bill Snyder Family Football Stadium",
+      "capacity": 50000,
+      "capacityEstimate": null,
+      "color": "#3c0969",
+      "logo": "assets/logos/ksu.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "Oklahoma State",
+      "stadium": "Boone Pickens Stadium",
+      "capacity": 52202,
+      "capacityEstimate": null,
+      "color": "#ff7300",
+      "logo": "assets/logos/okst.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "TCU",
+      "stadium": "Amon G. Carter Stadium",
+      "capacity": 46000,
+      "capacityEstimate": null,
+      "color": "#4d1979",
+      "logo": "assets/logos/tcu.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "Texas Tech",
+      "stadium": "Jones AT&T Stadium",
+      "capacity": 60229,
+      "capacityEstimate": null,
+      "color": "#cc0000",
+      "logo": "assets/logos/ttu.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    },
+    {
+      "team": "West Virginia",
+      "stadium": "Milan Puskar Stadium",
+      "capacity": 60000,
+      "capacityEstimate": null,
+      "color": "#002855",
+      "logo": "assets/logos/wvu.svg",
+      "multiVenue": false,
+      "games": 0,
+      "weeks": [],
+      "total": 0,
+      "pct": 0
+    }
+  ],
+  "weeks": [
+    {
+      "week": 0,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 1,
+      "games": 2,
+      "attendance": 94571,
+      "capacity": 95650,
+      "pct": 0.9887192890747517
+    },
+    {
+      "week": 2,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 3,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 4,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 5,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 6,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 7,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 8,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 9,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 10,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 11,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 12,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    },
+    {
+      "week": 13,
+      "games": 0,
+      "attendance": 0,
+      "capacity": 0,
+      "pct": 0
+    }
+  ],
+  "totals": {
+    "games": 2,
+    "attendance": 94571,
+    "capacity": 95650,
+    "pct": 0.9887192890747517
+  }
+}
