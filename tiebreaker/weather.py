@@ -32,6 +32,7 @@ forecast rather than a wrong one.
 import datetime
 import json
 import os
+import re
 import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -57,7 +58,14 @@ def _played_path(season):
     return os.path.join(DATA, f"weather_played_{season}.json")
 API = "https://api.open-meteo.com/v1/forecast"
 
-HORIZON_DAYS = 16       # as far as the forecast model actually goes
+# As far as the forecast model actually goes, counted as days AHEAD of today.
+# Open-Meteo serves sixteen days including today, so the last date it will
+# accept is today+15 — and asking for today+16 does not return fifteen days
+# and a gap, it rejects the entire request. Every venue in range shares one
+# call, so a single game one day past the edge blanked the forecast on every
+# card on the site, finals included, back to the venue's ten-season average.
+# That is what "Average 79F, 5 mph, 91% rain" under a final score means.
+HORIZON_DAYS = 15
 # And backwards, for games already played. Open-Meteo serves past hours from
 # the forecast endpoint for about 92 days, so this stays inside that with
 # room. Beyond it a game falls back to the venue average again, which is the
@@ -134,6 +142,31 @@ def _get(url):
     return json.loads(r.stdout)
 
 
+def _url(lats, lons, start, end):
+    return (f"{API}?latitude={lats}&longitude={lons}"
+            "&hourly=temperature_2m,wind_speed_10m,precipitation_probability"
+            "&temperature_unit=fahrenheit&wind_speed_unit=mph"
+            f"&timezone=UTC&start_date={start}&end_date={end}")
+
+
+def _clip_to_allowed(raw, start, end):
+    """(start, end) clipped to the range an out-of-range error names, or None.
+
+    Open-Meteo reports this failure as a 200 carrying
+    "Parameter 'end_date' is out of allowed range from A to B". Anything else
+    is somebody else's problem and comes back None so the caller raises."""
+    if not (isinstance(raw, dict) and raw.get("error")):
+        return None
+    m = re.search(r"out of allowed range from (\S+) to (\S+)",
+                  raw.get("reason") or "")
+    if not m:
+        return None
+    lo, hi = m.group(1).rstrip("."), m.group(2).rstrip(".")
+    new = (max(start, lo), min(end, hi))
+    # Only worth a second call if it actually asks for something legal.
+    return new if new != (start, end) and new[0] <= new[1] else None
+
+
 def in_range(games, now=None):
     """The games this can speak to: kickoff known, and inside the window.
 
@@ -149,7 +182,13 @@ def in_range(games, now=None):
     was already going out.
     """
     now = now or _utcnow()
-    edge = now + datetime.timedelta(days=HORIZON_DAYS)
+    # A DATE at the top end, not a timestamp. The API's window is a date
+    # range, so it answers for every hour of its last day — but an edge held
+    # as "now plus fifteen days" falls in the afternoon and cut the whole of
+    # that Saturday night's slate, seven games it would happily have
+    # forecast. The floor stays a timestamp: nothing is lost by being an
+    # afternoon strict about an observation 85 days old.
+    last_date = (now + datetime.timedelta(days=HORIZON_DAYS)).date()
     floor = now - datetime.timedelta(days=LOOKBACK_DAYS)
     out = []
     for g in games:
@@ -160,7 +199,7 @@ def in_range(games, now=None):
         if g.get("dome"):
             continue
         when = _parse(g.get("start"))
-        if when and floor <= when <= edge:
+        if when and floor <= when and when.date() <= last_date:
             out.append((g, when))
     return out
 
@@ -216,13 +255,15 @@ def attach(games, venues, quiet=False, season=None):
             lons = ",".join(str(p[1]) for p in spots)
             start = min(w for _, w, _ in need).date().isoformat()
             end = max(w for _, w, _ in need).date().isoformat()
-            url = (f"{API}?latitude={lats}&longitude={lons}"
-                   "&hourly=temperature_2m,wind_speed_10m,"
-                   "precipitation_probability"
-                   "&temperature_unit=fahrenheit&wind_speed_unit=mph"
-                   f"&timezone=UTC&start_date={start}&end_date={end}")
             try:
-                raw = _get(url)
+                raw = _get(_url(lats, lons, start, end))
+                # Belt to HORIZON_DAYS' braces. If Open-Meteo ever moves its
+                # window, the error names the range it will accept, so clip
+                # to that and ask once more rather than losing the whole
+                # slate to an edge that shifted by a day.
+                clipped = _clip_to_allowed(raw, start, end)
+                if clipped:
+                    raw = _get(_url(lats, lons, *clipped))
                 # Open-Meteo reports its own failures as a 200 with an error
                 # object. Indexing into that as if it were the venue list
                 # raised a bare IndexError, so the build log said "list index
