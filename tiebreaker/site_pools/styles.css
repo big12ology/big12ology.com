@@ -186,9 +186,15 @@
 /* nowrap because this slot is a spread — two or three characters — except on
    a non-conference side, where it says "not Big 12" and wrapped to two lines
    in the narrower survivor card. A quantity that reflows is a quantity that
-   moves the row it sits in. */
-.pk-side .pk-num { font-variant-numeric: tabular-nums; font-size: var(--t-label);
-             font-weight: 600; white-space: nowrap; }
+   moves the row it sits in.
+
+   The two traits every .pk-num needs belong to the class, not to one of its
+   homes. Scoped under .pk-side they covered the picker and survivor and
+   missed the card, whose row is not a side: its spread inherited the
+   document default, so a column sized in em came out 16px wide-figure text
+   with the decimal points in a different place on every row. */
+.pk-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pk-side .pk-num { font-size: var(--t-label); font-weight: 600; }
 .pk-side img { flex: none; }
 
 .pk-slate-game input:checked + .pk-side {
@@ -447,17 +453,29 @@
    column started and the gauges all came out different lengths. One set of
    tracks means the parts line up down the card — the alignment of a table,
    without becoming one: no rules, no header row, and each game still its own
-   rounded panel. */
+   rounded panel.
+
+   ONE OF THE SIX HAS TO BE ABLE TO GIVE, and it is the matchup. The list is
+   `width: max-content` under a `max-width: 100%`, which is a promise the
+   tracks cannot keep: max-width caps the box, and a row of content-sized
+   tracks just carries on past it. Between the phone breakpoint and the point
+   where the card gets its own width, that is 40-odd pixels of row hanging out
+   over the panel's right edge. minmax(0, max-content) says the matchup takes
+   what it wants when there is room and yields when there is not, which is
+   what its ellipsis and its title attribute were already there for. The other
+   five hold their size, because a kickoff, a score, a line and a result are
+   short and fixed and have nowhere to go. */
 .pk-card {
   list-style: none; margin: 0; padding: 0;
   display: grid; gap: 3px;
-  grid-template-columns: max-content max-content 3.6em 3.2em minmax(0, 1fr) 4.6em;
+  grid-template-columns:
+    max-content minmax(0, max-content) 3.6em 3.2em minmax(0, 1fr) 4.6em;
 }
 /* Only when there is actually a gauge to draw — before the lock the server
    sends no split, and a 1fr column holding nothing swallows the row. */
 .pk-card:has(.pk-splitbar) {
   grid-template-columns:
-    max-content max-content 3.6em 3.2em minmax(120px, 1fr) 4.6em;
+    max-content minmax(0, max-content) 3.6em 3.2em minmax(120px, 1fr) 4.6em;
 }
 /* And when there is not, THE ROW STOPS BEING FULL WIDTH.
    That is the fix, and two earlier attempts at it were not. minmax(0, 1fr)
@@ -467,10 +485,21 @@
    column with nothing to fill it is a gap wherever you put it.
    So none of the columns flex. Every track is content-sized, the list is
    exactly as wide as its widest row needs, and the rows are dense. The
-   matchup goes back to centring inside a track set by the longest pair, which
-   is what it was for. */
+   matchup goes back to centering inside a track set by the longest pair,
+   which is what it was for.
+
+   THE CROWD COLUMN IS CONTENT-SIZED, NOT ZERO, and that is the difference
+   between a dense row and a broken one. No gauge does not mean no content:
+   below the threshold the column holds the count climbing toward it, and a
+   0px track gave that count nowhere to sit. Being centered and nowrap it
+   overflowed both edges of a zero-width box, and the half that spilled left
+   landed on top of the spread: "+42.5" and "9 of 10" printed over each other
+   on every row of a week nobody had reached ten picks on yet. max-content is
+   0 when the column really is empty, which is the case this rule was written
+   for, and the width of "10 of 10" when it is not. */
 .pk-card:not(:has(.pk-splitbar)) {
-  grid-template-columns: max-content max-content 3.6em 3.2em 0 4.6em;
+  grid-template-columns:
+    max-content minmax(0, max-content) 3.6em 3.2em max-content 4.6em;
   width: max-content;
   max-width: 100%;
 }
@@ -502,7 +531,8 @@
      all. */
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: max-content max-content 3.6em 3.2em minmax(0, 1fr) 4.6em;
+  grid-template-columns:
+    max-content minmax(0, max-content) 3.6em 3.2em minmax(0, 1fr) 4.6em;
   grid-template-columns: subgrid;
   gap: 0 14px; align-items: center;
   border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
@@ -532,6 +562,13 @@
 
 .pk-score { font-variant-numeric: tabular-nums; font-size: var(--t-row);
              color: var(--dim); white-space: nowrap; }
+/* The line, at the row's size rather than the document's, and ranged right so
+   the figures stack: the column runs from "−7" to "−51.5" and a left edge put
+   the tenths in five different places down the card. It keeps its weight,
+   because the number is what the pick was made against, while the score
+   beside it stays dim. */
+.pk-cardrow .pk-num { font-size: var(--t-row); font-weight: 600;
+                      text-align: right; }
 
 .pk-cardrec { margin: 0 0 12px; font-size: var(--t-copy); }
 .pk-cardrec b { font-size: var(--t-subhead); }
@@ -607,11 +644,49 @@
      317px of tracks inside a 297px card at 375px. The rows were clipped at
      the right edge by about 20px on every locked week: visible on The Card
      for as long as it has existed, and inherited by the player page the day
-     it started drawing the same rows. */
-  .pk-card, .pk-card:has(.pk-splitbar) { grid-template-columns: 1fr auto; }
-  .pk-cardrow { grid-template-columns: 1fr auto; gap: 3px 8px; }
-  .pk-split { grid-column: 1 / -1; }
-  .pk-cardrow .pk-when { grid-column: 1; }
+     it started drawing the same rows.
+
+     AND THE UNLOCKED WEEKS WERE STILL MISSING, because the selector above
+     was not the one that wins. `.pk-card:not(:has(.pk-splitbar))` up in the
+     desktop rules is two compound selectors deep; a bare `.pk-card` here is
+     one, and specificity does not care which side of a media query a rule
+     sits on. So every week without a gauge kept its six desktop tracks, the
+     row's own max-content pushed them to 314px inside a 297px box, and the
+     page scrolled sideways at 375px. Named explicitly, all three.
+
+     ONE TRACK, not two, and that is what actually breaks the loop. The tracks
+     here were never dividing anything: the row spans all of them and then
+     lays out its own two columns inside. What they did instead was ask the
+     row how wide it wanted to be, and a max-content track believes the
+     answer. A single minmax(0, 1fr) has nothing to ask. */
+  .pk-card,
+  .pk-card:has(.pk-splitbar),
+  .pk-card:not(:has(.pk-splitbar)) {
+    grid-template-columns: minmax(0, 1fr);
+    width: auto;
+  }
+
+  /* THE MATCHUP GETS THE WHOLE WIDTH, on its own line under the time. Sharing
+     a line with the kickoff left it about 210px, which is not a Big 12
+     matchup: "Southeast Missouri State at Iowa State" needs 273 and the
+     column ellipsized away the opponent, on the page whose entire subject is
+     which of the two you took. Given the whole row it fits, and anything
+     longer than the row still ellipsizes rather than pushing the panel.
+
+     Placed rather than flowed. Auto-placement put the score and the spread on
+     a line of their own between the matchup and the crowd, which read as two
+     unrelated numbers floating in the middle of the card; the spread belongs
+     beside the kickoff, and the score belongs beside the result it produced.
+     Four lines either way, and an unplayed game collapses the last one. */
+  .pk-cardrow { grid-template-columns: max-content minmax(0, 1fr);
+                gap: 3px 8px; }
+  .pk-cardrow .pk-when  { grid-column: 1; grid-row: 1; }
+  .pk-cardrow .pk-num   { grid-column: 2; grid-row: 1; }
+  .pk-cardrow .pk-cardmatch { grid-column: 1 / -1; grid-row: 2;
+                              max-width: 100%; }
+  .pk-cardrow .pk-split { grid-column: 1 / -1; grid-row: 3; }
+  .pk-cardrow .pk-score { grid-column: 1; grid-row: 4; }
+  .pk-cardrow .pk-res   { grid-column: 2; grid-row: 4; justify-self: end; }
 }
 
 /* --- a locked slate ------------------------------------------------------
