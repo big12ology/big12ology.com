@@ -10,3 +10,12 @@ site/history.html
 
 # Forecasts are perishable and fetched at build time — see weather.py.
 data/weather_cache.json
+
+# build.py's archive-skip stamp: a digest of every input that can change what
+# a finished season renders to, written after 2024 and 2025 are rebuilt so the
+# next build can skip them. Local build state, like the cache above. A stamp
+# committed from one checkout is a claim about another machine's output
+# directory, and the failure it buys is silent: a season kept because its
+# inputs "have not changed" when that checkout never rendered it. Nine seconds
+# is not worth an archive quietly serving last month's design.
+site/*/.inputs
