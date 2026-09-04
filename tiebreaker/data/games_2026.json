@@ -47,7 +47,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-04T00:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Bobby Dodd Stadium",
   "venue_id": 721,
@@ -59,8 +59,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 13,
+  "away_points": 14
  },
  {
   "id": 401856768,
@@ -68,7 +68,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-04T01:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Rice-Eccles Stadium",
   "venue_id": 587,
@@ -80,8 +80,8 @@
   "away_conf": "Big Sky",
   "home_class": "fbs",
   "away_class": "fcs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 66,
+  "away_points": 14
  },
  {
   "id": 401856769,
