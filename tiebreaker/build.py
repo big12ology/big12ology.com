@@ -1898,11 +1898,26 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
     prev = _prev_week_state(games, systems, overrides, last_week, year)
     week_games = [g for g in done if lab_week(g, year) == last_week]
 
-    lede_bits = [f"<b>Week {last_week}</b> is in the books"]
-    if week_games:
-        n_wk = len(week_games)
-        lede_bits[0] += (f" &mdash; {n_wk} game{'' if n_wk == 1 else 's'} "
-                         f"involving Big 12 teams")
+    # A week is not over because its first games are. Week 1 of 2026 opened
+    # with three Thursday games and twelve still on the schedule, and the
+    # unconditional "in the books" declared the week finished with most of it
+    # unplayed. Count what is left in the same week and say so.
+    n_left = sum(1 for g in games
+                 if not g.get("ccg") and not g["completed"]
+                 and lab_week(g, year) == last_week)
+    n_wk = len(week_games)
+    if n_left:
+        lede_bits = [f"<b>Week {last_week}</b> is in motion"]
+        if week_games:
+            lede_bits[0] += (
+                f" &mdash; {n_wk} game{'' if n_wk == 1 else 's'} involving "
+                f"Big 12 teams {'is' if n_wk == 1 else 'are'} final, "
+                f"{n_left} still to play")
+    else:
+        lede_bits = [f"<b>Week {last_week}</b> is in the books"]
+        if week_games:
+            lede_bits[0] += (f" &mdash; {n_wk} game{'' if n_wk == 1 else 's'} "
+                             f"involving Big 12 teams")
     if cx and prev["chaos"]:
         d = cx["score"] - prev["chaos"]["score"]
         if abs(d) >= 2:
@@ -1983,7 +1998,11 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
                      + "".join(news) + "</ul></div>")
 
     if week_games:
-        parts.append(f"<div class=card><h2>Week {last_week} finals</h2>"
+        # "so far" while the week is still running: the list is honest about
+        # what has finished, the heading should be too.
+        parts.append(f"<div class=card>"
+                     f"<h2>Week {last_week} finals"
+                     f"{' so far' if n_left else ''}</h2>"
                      "<ul class=games>"
                      + "".join(game_row(g, pages=year == LIVE_YEAR)
                                for g in week_games[::-1])
