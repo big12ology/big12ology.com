@@ -185,29 +185,149 @@ for cut, want in sorted(FIXTURE["chaos"].items()):
 # Everything before the first random draw is arithmetic over the ratings, and
 # arithmetic does not get a tolerance. If a margin moves the simulation is
 # sampling a different model, and no agreement downstream would mean anything.
+# The oracle was recorded on 2026-08-14, when 2026 had not kicked off. Both
+# of its inputs have moved since, so every 2026 entry under "odds" is now
+# unreachable, permanently:
+#
+#   * the games, on August 29, when the season opened in Dublin;
+#   * the ratings, on September 1, when the bot committed in-season SP+ into
+#     ratings_2026.json (Jacksonville State -8.463 to -13.934, TCU 6.366 to
+#     4.77), which moved regress_stale and team_strength with it.
+#
+# That second one cost five red CI runs. Both digests still reproduce exactly
+# from the pre-September ratings file, so the engine had not changed at all --
+# the fixture was being handed a different question and marked wrong for
+# giving a different answer. hfa_points survived only because that refresh
+# happened not to touch the home-field terms, which is luck, not a reason to
+# treat it differently.
+#
+# Refreshing the fixture is not the fix and never will be: it is evidence
+# about the port precisely because it predates it, and the modules that
+# produced it are deleted. Nor is waiting for the season to end -- December's
+# ratings are no closer to August's than today's are. So the season that was
+# live when the oracle was taken is not asked, and a failure here keeps
+# meaning "the engine moved", which is the only thing this file is for. 2025
+# and everything before it still check all five, and their data cannot drift.
+# What 2026 covered and nothing else did is picked up on its own terms below.
+ORACLE_SEASON = 2026
+
 for year, want in sorted(FIXTURE["odds"].items()):
     y = int(year)
+    if y >= ORACLE_SEASON:
+        continue
     games, sysd = load(y), ratings(y)
     reg = engine.regress_stale(sysd, y)
     check(f"{year} regress_stale", digest(reg), want["regress_stale"])
     check(f"{year} team_strength", digest(engine.team_strength(reg)),
           want["team_strength"])
     check(f"{year} hfa_points", engine.hfa_points(reg), want["hfa_points"])
-    # THE TWO THAT READ THE SEASON, not just its ratings, and so only hold
-    # while the season is not being played. The fixture is an oracle about the
-    # engine and that is only true if the input is fixed; a finished season is
-    # fixed, a live one is not. 2026 opened on August 29 and both of these
-    # moved that evening -- ensemble_margin because a result landed,
-    # rating_sigma because it is measured off played margins -- with nothing
-    # in the engine having changed. Skipping them there keeps the failure
-    # meaning "the engine moved", which is the only thing this file is for.
-    # The archived seasons still check them, and their data cannot drift.
-    if all(g["completed"] for g in games):
-        check(f"{year} ensemble_margin",
-              digest(engine.ensemble_margin(games, reg)),
-              want["ensemble_margin"])
-        check(f"{year} rating_sigma", engine.rating_sigma(games),
-              want["rating_sigma"])
+    check(f"{year} ensemble_margin",
+          digest(engine.ensemble_margin(games, reg)),
+          want["ensemble_margin"])
+    check(f"{year} rating_sigma", engine.rating_sigma(games),
+          want["rating_sigma"])
+
+# --- regressStale, on its own terms -----------------------------------------
+# The one thing dropping 2026 would otherwise leave uncovered. Every system
+# in ratings_2025.json carries year 2025, so the check above walks only the
+# passthrough branch; 2026 is the sole year in the fixture whose ratings mix
+# a current season with stale ones, and it is exactly the year that can no
+# longer be pinned.
+#
+# So: fixed input, and properties rather than a recorded answer. Restating
+# `mean + STALE_KEEP * (r - mean)` here would be a second copy of the model,
+# which is what engine.py exists to prevent -- it would agree with the engine
+# by construction and notice nothing. These hold for any regression toward
+# the mean, whatever the constant is set to.
+stale_in = {
+    "Fresh": {"year": 2026, "hfa": 2.0, "ratings": {"A": 10.0, "B": 0.0}},
+    "Stale": {"year": 2025, "hfa": 2.0, "ratings": {"A": 10.0, "B": 0.0,
+                                                    "C": 5.0}},
+}
+sr = engine.regress_stale(stale_in, 2026)
+
+check("regressStale leaves the current season alone",
+      sr["Fresh"]["ratings"], {"A": 10.0, "B": 0.0})
+if "regressed" in sr["Fresh"]:
+    fails.append("regressStale marked a current-season system as regressed")
+if not sr["Stale"].get("regressed"):
+    fails.append("regressStale did not mark a stale system as regressed")
+
+r = sr["Stale"]["ratings"]
+mean_in, mean_out = 5.0, sum(r.values()) / len(r)
+if abs(mean_out - mean_in) > 1e-9:
+    fails.append(f"regressStale moved the mean: {mean_in} -> {mean_out}")
+# Toward the mean, not past it and not nowhere. The team already at the mean
+# is the one that says the shrink is centered rather than a flat offset.
+if not 5.0 < r["A"] < 10.0:
+    fails.append(f"regressStale did not pull the leader in: {r['A']}")
+if not 0.0 < r["B"] < 5.0:
+    fails.append(f"regressStale did not pull the trailer up: {r['B']}")
+if abs(r["C"] - 5.0) > 1e-9:
+    fails.append(f"regressStale moved a team already at the mean: {r['C']}")
+if not r["A"] > r["C"] > r["B"]:
+    fails.append("regressStale reordered the teams")
+# An empty system has no mean to regress toward, and dividing by zero teams
+# is the shape of bug this branch invites.
+check("regressStale passes an unrated system through",
+      engine.regress_stale({"Empty": {"year": 2025, "hfa": 0, "ratings": {}}},
+                           2026)["Empty"]["ratings"], {})
+
+# --- ensembleMargin, on its own terms ---------------------------------------
+# The fixture cannot cover this at all, and never could. ensembleMargin skips
+# completed and championship games, so a finished season projects nothing and
+# 2025's recorded answer is the digest of an empty object -- a check that
+# cannot fail. 2026 was the only real one, recorded when no game had been
+# played, and its ratings have since moved. Both halves of the fixture's
+# coverage here are gone, and only one of them ever existed.
+#
+# Fixed input again, and relationships rather than restated arithmetic. Two
+# systems that disagree about the scale and agree about the game: SP+-like at
+# a point per point, Elo-like at 27, both saying the home side is ten points
+# better with two points of home field. Anything that reads per_pt wrongly
+# lands 27x out; anything that drops hfa breaks the symmetry below.
+em_sys = {
+    "PointScale": {"year": 2026, "hfa": 2.0, "per_pt": 1.0,
+                   "ratings": {"A": 10.0, "B": 0.0}},
+    "EloScale": {"year": 2026, "hfa": 54.0, "per_pt": 27.0,
+                 "ratings": {"A": 270.0, "B": 0.0}},
+}
+em_games = [
+    {"id": 1, "home": "A", "away": "B", "completed": False},
+    {"id": 2, "home": "B", "away": "A", "completed": False},
+    {"id": 3, "home": "A", "away": "B", "completed": True},
+    {"id": 4, "home": "A", "away": "B", "completed": False, "ccg": True},
+    {"id": 5, "home": "Unrated", "away": "AlsoUnrated", "completed": False},
+    {"id": 6, "home": "A", "away": "Unrated", "completed": False},
+]
+em = engine.ensemble_margin(em_games, em_sys)
+
+for gid, why in ((3, "a completed game"), (4, "a championship game"),
+                 (5, "a game with neither side rated")):
+    if gid in em:
+        fails.append(f"ensembleMargin projected {why}")
+for gid in (1, 2, 6):
+    if gid not in em:
+        fails.append(f"ensembleMargin skipped game {gid}, which it can answer")
+
+if em.get(1) is not None:
+    # Ten points better plus two of home field, on both scales, so the
+    # ensemble is one number rather than an average of two disagreeing ones.
+    if abs(em[1] - 12.0) > 1e-9:
+        fails.append(f"ensembleMargin put A over B by {em[1]}, not 12 "
+                     f"(a system read on the wrong scale looks like this)")
+if em.get(1) is not None and em.get(2) is not None:
+    # THE HOME-FIELD TERM, pinned without naming it: the same matchup from
+    # both ends sums to twice the home edge, whatever that edge is. A margin
+    # that quietly gained or lost a point fails here and nowhere else.
+    if abs((em[1] + em[2]) - 4.0) > 1e-9:
+        fails.append(f"the same game from both ends sums to {em[1] + em[2]}, "
+                     f"not twice the 2.0 of home field")
+    if not em[2] < 0:
+        fails.append("the weaker home side was still favored")
+if em.get(6) is not None and em.get(1) is not None and not em[6] > em[1]:
+    fails.append("an unrated opponent was not treated as worse than the "
+                 "worst rated one")
 
 # --- odds: the sampled half, on its own terms -------------------------------
 # No fixture can pin these — a different generator draws a different sample —
