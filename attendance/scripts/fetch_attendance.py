@@ -43,7 +43,21 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parent.parent
 API = "https://api.collegefootballdata.com"
 WEATHER_API = "https://archive-api.open-meteo.com/v1/archive"
-ESPN_SUMMARY = "https://site.api.espn.com/apis/site/v2/sports/football/college-football/summary"
+# TWO ESPN ENDPOINTS, and the second is not redundant. The site.api summary
+# host this used to call began answering 403 to everything in September 2026 —
+# from Actions runners and from a laptop alike, browser User-Agent or not — and
+# because espn_game() swallows its exceptions the fill loop went quiet rather
+# than loud: UCF and Utah sat with attendance null through a week of runs while
+# CFBD had not ingested a single 2026 crowd figure either.
+#
+# ESPN_GAME is the same gamepackage payload the summary API served (identical
+# shape, under a `gamepackageJSON` wrapper) from ESPN's CDN. ESPN_CORE is a
+# structurally different service that carries `attendance` inline on the
+# competition; it has no scores without four more calls, so it is the
+# attendance-only backstop for the day the CDN goes the way of site.api.
+ESPN_GAME = "https://cdn.espn.com/core/college-football/game"
+ESPN_CORE = ("https://sports.core.api.espn.com/v2/sports/football/leagues"
+             "/college-football/events")
 
 
 def get_json(url: str, headers: dict | None = None):
@@ -128,21 +142,29 @@ def load_venue_catalog() -> dict | None:
 
 
 def espn_game(espn_id) -> dict | None:
-    """Second fetcher: ESPN's summary API, hit directly. Same upstream chain
-    as CFBD but a different pipeline — on game night ESPN has attendance
-    before CFBD's ingest picks it up, so 'first source that has it' wins,
-    and when the CFBD key is spent this is the only source that still
-    answers at all (see refresh_from_espn).
+    """Second fetcher: ESPN, hit directly. Same upstream chain as CFBD but a
+    different pipeline — on game night ESPN has attendance before CFBD's
+    ingest picks it up, so 'first source that has it' wins, and when the CFBD
+    key is spent this is the only source that still answers at all (see
+    refresh_from_espn).
 
-    Returns attendance, whether the game is final, and each side's points
-    and team name keyed by home/away. ESPN reports 0 attendance when none
-    was recorded — treat that as missing. A game that has not kicked off
-    carries no score field at all, so points stay None rather than 0."""
+    Returns attendance, whether the game is final, each side's points and team
+    name keyed by home/away, and which endpoint answered. ESPN reports 0
+    attendance when none was recorded — treat that as missing. A game that has
+    not kicked off carries no score field at all, so points stay None rather
+    than 0.
+
+    None means neither endpoint could be reached, which is a different fact
+    from "ESPN has no crowd for this game" and the callers say so out loud."""
     try:
-        d = get_json(f"{ESPN_SUMMARY}?event={espn_id}", {"User-Agent": "Mozilla/5.0"})
+        d = get_json(f"{ESPN_GAME}?xhr=1&gameId={espn_id}",
+                     {"User-Agent": "Mozilla/5.0"})
+        # The CDN wraps what the summary API returned at the top level.
+        d = d.get("gamepackageJSON", d)
         comp = d["header"]["competitions"][0]
-    except Exception:
-        return None
+    except Exception as e:
+        print(f"  ESPN gamepackage unreachable for {espn_id}: {e}")
+        return espn_core_attendance(espn_id)
     att = d.get("gameInfo", {}).get("attendance")
     sides = {}
     for c in comp.get("competitors", []):
@@ -156,6 +178,31 @@ def espn_game(espn_id) -> dict | None:
         "completed": bool(comp.get("status", {}).get("type", {}).get("completed")),
         "home": sides.get("home", {}),
         "away": sides.get("away", {}),
+        "source": "ESPN gamepackage",
+    }
+
+
+def espn_core_attendance(espn_id) -> dict | None:
+    """Attendance alone, from ESPN's core API — the backstop when the
+    gamepackage host is down or blocking.
+
+    Everything else on this competition object is a $ref: the score and the
+    status each cost their own call, and a crowd figure is not worth five
+    round trips. So the shape matches espn_game with the score half empty,
+    which leaves the callers filling attendance and skipping scores."""
+    try:
+        d = get_json(f"{ESPN_CORE}/{espn_id}/competitions/{espn_id}",
+                     {"User-Agent": "Mozilla/5.0"})
+    except Exception as e:
+        print(f"  ESPN core API unreachable for {espn_id}: {e}")
+        return None
+    att = d.get("attendance")
+    return {
+        "attendance": att if att else None,
+        "completed": False,
+        "home": {},
+        "away": {},
+        "source": "ESPN core API",
     }
 
 
@@ -290,7 +337,7 @@ def refresh_from_espn(out: Path, year: int) -> None:
         for g in entries:
             if summary["attendance"] and g.get("attendance") is None:
                 g["attendance"] = summary["attendance"]
-                g["attendanceSource"] = "ESPN summary API (CFBD unavailable)"
+                g["attendanceSource"] = f"{summary['source']} (CFBD unavailable)"
                 filled_att += 1
             if not summary["completed"]:
                 continue
@@ -525,7 +572,7 @@ def main(year: int) -> None:
             att = summary["attendance"] if summary else None
             if att:
                 g["attendance"] = att
-                g["attendanceSource"] = "ESPN summary API (not yet in CFBD)"
+                g["attendanceSource"] = f"{summary['source']} (not yet in CFBD)"
                 print(f"  filled from ESPN: {g['team']} wk{g['week']} = {att}")
             time.sleep(0.5)
 
@@ -539,8 +586,14 @@ def main(year: int) -> None:
     prior_season = json.loads(out.read_text()) if out.exists() else {}
 
     # Never let a flaky upstream erase enrichment we already have: if the
-    # previous season file had weather for a game and this fetch didn't get
-    # it, carry the old value forward.
+    # previous season file had weather or a crowd for a game and this fetch
+    # didn't get one, carry the old value forward.
+    #
+    # Attendance was not covered here and should have been. The ESPN-only
+    # path fills road rows, this one skips them, so a crowd read during a
+    # quota wall disappeared the moment CFBD answered again — the file losing
+    # a number nobody had noticed it gained. A live number always wins; this
+    # only fills a hole.
     if prior_season:
         prior = {
             (p["team"], p["week"], p.get("role")): p
@@ -548,8 +601,14 @@ def main(year: int) -> None:
         }
         for g in games:
             old = prior.get((g["team"], g["week"], g.get("role")))
-            if old and "weather" in old and "weather" not in g:
+            if not old:
+                continue
+            if "weather" in old and "weather" not in g:
                 g["weather"] = old["weather"]
+            if old.get("attendance") is not None and g["attendance"] is None:
+                g["attendance"] = old["attendance"]
+                if old.get("attendanceSource"):
+                    g["attendanceSource"] = old["attendanceSource"]
 
     num_weeks = max((g["week"] for g in games), default=14) + 1
     source = "CollegeFootballData API (collegefootballdata.com); weather via Open-Meteo"
@@ -576,6 +635,16 @@ def main(year: int) -> None:
         f"{year}: {len(home_games)} home games ({reported} with attendance, "
         f"{weathered} with weather), {len(games) - len(home_games)} road/neutral -> {out}"
     )
+    # A played home game with no crowd anywhere is the shape this pipeline
+    # fails in: the page renders it in the scheduled style, opponent and date,
+    # so it reads as a game that has not happened rather than as missing data.
+    # Neither source erroring is loud on its own, so say it here.
+    unreported = [g for g in home_games
+                  if g["attendance"] is None and g.get("pointsFor") is not None]
+    if unreported:
+        which = ", ".join(f"{g['team']} wk{g['week']}" for g in unreported)
+        print(f"WARNING: played with no attendance from CFBD or ESPN: {which}")
+
     per_team = {t: sum(1 for g in home_games if g["team"] == t) for t in teams}
     missing = [t for t, n in per_team.items() if n == 0]
     if missing:

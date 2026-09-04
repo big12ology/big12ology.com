@@ -92,8 +92,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run pages.yml --ref "${{ github.ref_name }}"
 
-      - name: Fail run if cross-check found mismatches
+      # Read the cross-check's own output for what went wrong. This step used
+      # to assert "mismatch" for any non-zero exit, and in September 2026 it
+      # reported an ESPN 403 that had crashed the verifier as a disagreement
+      # between two sources, only one of which had been reached.
+      - name: Fail run if the cross-check did not pass
         if: steps.verify.outcome == 'failure'
         run: |
-          echo "Attendance mismatch between CFBD and ESPN — see data/verification/. Official school box scores are the arbiter."
+          echo "Cross-check did not pass. See the 'Cross-check attendance vs ESPN' step above for the reason: a MISMATCH means the sources disagree, and an official school box score is the arbiter; anything else is the check itself failing to run."
           exit 1

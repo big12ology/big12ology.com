@@ -5,11 +5,13 @@ exactly where a regression sits unnoticed until the day it costs a game.
 Everything here is stubbed: a test that called ESPN would be flaky, and a
 test that called CFBD would spend from a 1,000-call month.
 
-The two ESPN payloads below are trimmed captures of real responses (events
-401628582 and 401856766), kept because the parsing depends on shape details
-that are easy to get wrong from memory — attendance lives outside the
-competition object, and a game that has not kicked off carries no score
-field at all rather than a zero.
+The ESPN payloads below are trimmed captures of real responses (events
+401628582, 401856766 and 401856767), kept because the parsing depends on
+shape details that are easy to get wrong from memory — the CDN wraps the
+gamepackage a level down, attendance lives outside the competition object,
+and a game that has not kicked off carries no score field at all rather
+than a zero. The core-API capture is a different service with a different
+shape, and it is the backstop when the gamepackage host stops answering.
 
     python3 -m unittest discover -s tests
 """
@@ -46,25 +48,41 @@ def quiet():
 
 
 FINAL = {  # event 401628582 — UCF 57, New Hampshire 3
-    "gameInfo": {"attendance": 44206},
-    "header": {"competitions": [{
-        "status": {"type": {"completed": True}},
-        "competitors": [
-            {"homeAway": "home", "score": "57", "team": {"location": "UCF"}},
-            {"homeAway": "away", "score": "3",
-             "team": {"location": "New Hampshire"}},
-        ],
-    }]},
+    "gamepackageJSON": {
+        "gameInfo": {"attendance": 44206},
+        "header": {"competitions": [{
+            "status": {"type": {"completed": True}},
+            "competitors": [
+                {"homeAway": "home", "score": "57",
+                 "team": {"location": "UCF"}},
+                {"homeAway": "away", "score": "3",
+                 "team": {"location": "New Hampshire"}},
+            ],
+        }]},
+    },
 }
 SCHEDULED = {  # event 401856766 — TCU vs North Carolina, Dublin, not yet played
-    "gameInfo": {"venue": {"fullName": "Aviva Stadium"}},
-    "header": {"competitions": [{
-        "status": {"type": {"completed": False}},
-        "competitors": [
-            {"homeAway": "home", "team": {"location": "TCU"}},
-            {"homeAway": "away", "team": {"location": "North Carolina"}},
-        ],
-    }]},
+    "gamepackageJSON": {
+        "gameInfo": {"venue": {"fullName": "Aviva Stadium"}},
+        "header": {"competitions": [{
+            "status": {"type": {"completed": False}},
+            "competitors": [
+                {"homeAway": "home", "team": {"location": "TCU"}},
+                {"homeAway": "away", "team": {"location": "North Carolina"}},
+            ],
+        }]},
+    },
+}
+CORE = {  # event 401856767 — UCF vs Bethune-Cookman, core API competition
+    "attendance": 43127,
+    "venue": {"fullName": "Acrisure Bounce House"},
+    # Everything the score would come from is a $ref, which is why this
+    # endpoint answers for attendance and nothing else.
+    "status": {"$ref": "http://sports.core.api.espn.com/..."},
+    "competitors": [
+        {"homeAway": "home", "score": {"$ref": "http://.../score"}},
+        {"homeAway": "away", "score": {"$ref": "http://.../score"}},
+    ],
 }
 
 
@@ -91,12 +109,43 @@ class ReadsEspnPayloads(unittest.TestCase):
 
     def test_zero_attendance_is_missing(self):
         payload = json.loads(json.dumps(FINAL))
-        payload["gameInfo"]["attendance"] = 0
+        payload["gamepackageJSON"]["gameInfo"]["attendance"] = 0
         self.assertIsNone(self.parse(payload)["attendance"])
 
-    def test_unreachable_espn_is_not_fatal(self):
-        with mock.patch.object(fa, "get_json", side_effect=OSError("boom")):
+    def test_source_is_named(self):
+        self.assertEqual(self.parse(FINAL)["source"], "ESPN gamepackage")
+
+    def test_both_endpoints_down_is_not_fatal(self):
+        with mock.patch.object(fa, "get_json", side_effect=OSError("boom")), \
+                quiet():
             self.assertIsNone(fa.espn_game(1))
+
+    def test_core_api_covers_a_dead_gamepackage_host(self):
+        # The September 2026 failure exactly: site.api answered 403 to
+        # everything, the fill loop swallowed it, and two played games sat
+        # with attendance null. The backstop has to carry the crowd through.
+        blocked = urllib.error.HTTPError(
+            "https://cdn.espn.com/core/college-football/game", 403,
+            "Forbidden", {}, None)
+
+        def answers(url, headers=None):
+            if url.startswith(fa.ESPN_GAME):
+                raise blocked
+            return CORE
+
+        with mock.patch.object(fa, "get_json", side_effect=answers), quiet():
+            g = fa.espn_game(401856767)
+        self.assertEqual(g["attendance"], 43127)
+        self.assertEqual(g["source"], "ESPN core API")
+        # No score is better than a guessed one: the caller skips the score
+        # fill when the sides come back empty.
+        self.assertFalse(g["completed"])
+        self.assertEqual(g["home"], {})
+
+    def test_core_api_zero_attendance_is_missing(self):
+        with mock.patch.object(fa, "get_json",
+                               return_value={**CORE, "attendance": 0}):
+            self.assertIsNone(fa.espn_core_attendance(1)["attendance"])
 
 
 class MatchesTeamNames(unittest.TestCase):
@@ -136,6 +185,8 @@ SUMMARIES = {
         "home": {"points": 3, "team": "Utah"},
         "away": {"points": 45, "team": "Idaho"}},
 }
+for _s in SUMMARIES.values():
+    _s["source"] = "ESPN gamepackage"
 
 
 def season_fixture():
@@ -218,7 +269,7 @@ class RefreshesFromEspnAlone(unittest.TestCase):
         tcu = self.rows[("TCU", 1)]
         self.assertEqual(tcu["attendance"], 48000)
         self.assertEqual(tcu["attendanceSource"],
-                         "ESPN summary API (CFBD unavailable)")
+                         "ESPN gamepackage (CFBD unavailable)")
 
     def test_game_in_progress_gets_nothing(self):
         bu = self.rows[("Baylor", 4)]
