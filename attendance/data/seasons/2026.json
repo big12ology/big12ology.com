@@ -100,7 +100,9 @@
       "role": "away",
       "venue": "Bobby Dodd Stadium",
       "city": "Atlanta",
-      "state": "GA"
+      "state": "GA",
+      "pointsFor": 14,
+      "pointsAgainst": 13
     },
     {
       "team": "Houston",
@@ -174,7 +176,14 @@
       "espnId": 401856767,
       "conferenceGame": false,
       "opponent": "Bethune-Cookman",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 73,
+      "pointsAgainst": 6,
+      "weather": {
+        "tempF": 80,
+        "windMph": 4,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "Utah",
@@ -184,7 +193,14 @@
       "espnId": 401856768,
       "conferenceGame": false,
       "opponent": "Idaho",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 66,
+      "pointsAgainst": 14,
+      "weather": {
+        "tempF": 82,
+        "windMph": 13,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
