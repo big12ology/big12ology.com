@@ -1220,11 +1220,20 @@ thead .pk-gabbr { color: var(--dim); }
 
 /* Your own row, the same wash and the same left bar as The Board and The
    Pool. The bar goes on the sticky header cell, which is the one that is
-   always on screen. */
+   always on screen.
+
+   ON THE ROW, NOT ON ITS CELLS, and that is the whole point. The wash used to
+   sit on `tr.you td`, which carries an id and therefore out-specifies the flat
+   .pk-g-win / .pk-g-loss tints by a mile: your own row lost its grading
+   entirely and every cell in it came out one flat color. Worse, that color is
+   your team's, so a maroon profile read as a row of losses on a week you had
+   won games in. A row background paints behind its cells rather than instead
+   of them, and the outcome tints are already mixed against transparent, so
+   this way the two compose: your wash underneath, the grading on top of it. */
 #grid tr.you {
   --youwash: color-mix(in srgb, var(--you, var(--accent)) 10%, transparent);
+  background: var(--youwash);
 }
-#grid tr.you td, #grid tr.you th { background: var(--youwash); }
 /* The sticky cell needs the wash OVER an opaque ground rather than instead of
    one: a translucent mix alone would let the scrolling cells through it. Two
    layers of the same wash, so it sits on the card's own fill. */
