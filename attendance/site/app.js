@@ -18,12 +18,16 @@ const view = {
   sort: { key: "pct", dir: "desc", metric: "pct" },
 };
 
-// The data are fetched, not linked, so assemble.sh's cache-bust check never
-// sees them — it reads href/src in the HTML. Today's code against yesterday's
-// JSON is the failure that hides: capacities and schedules change between
-// builds, and the page looks merely wrong rather than stale. Take the version
-// off this module's own URL so the two can never drift; the loader is the
-// only place data enters the page.
+// The data are fetched, not linked, so no href or src in the HTML points at
+// them and the version has to come from somewhere else. Take it off this
+// module's own URL: assemble.sh folds every file this loader reaches into that
+// hash (DATA_DEPS), so changed data moves the module's URL and the module's
+// URL moves the data's. Today's code against yesterday's JSON is the failure
+// that hides, because the page looks merely wrong rather than stale.
+//
+// The loader is the only place data enters the page, and it has to stay that
+// way: a fetch that goes around it carries no version at all, and one that
+// reaches a path DATA_DEPS does not cover fails the build.
 const DATA_V = new URL(import.meta.url).search;
 
 async function loadJSON(path) {

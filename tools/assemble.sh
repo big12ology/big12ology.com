@@ -485,8 +485,46 @@ BUSTED = {"brand.css", "tokens.css", "theme.js", "cards.js", "state.js",
           "scrollcue.js", "styles.css", "charts.js", "gametip.js", "stats.js",
           "html.js"}
 
-def digest(path):
-    return hashlib.sha1(open(path, "rb").read()).hexdigest()[:8]
+# Data that a module fetches at runtime rather than links to. Nothing in any
+# page points at these files, so the walk below cannot reach them and their
+# bytes could change without a single URL moving. app.js hands its own version
+# to every data URL it loads (DATA_V), which made the data exactly as fresh as
+# app.js's hash: a data-only deploy moved no JS byte, so the stamp held still
+# and the edge kept serving the previous JSON under the unchanged URL until its
+# ten-minute TTL lapsed. Folding the data into the module's hash closes that.
+#
+# Keyed by module, valued by the page the fetches resolve against, the paths
+# under it the loader can reach, and the name of the loader itself. Directories
+# are walked for .json; files are taken as they are. Anything not listed is
+# invisible to the hash, which is what the check below is for.
+DATA_DEPS = {
+    "attendance/site/app.js": ("attendance", ("data/teams.json", "data/seasons"), "loadJSON"),
+}
+
+def data_inputs(path):
+    """Every data file folded into this module's version, sorted, or []."""
+    dep = DATA_DEPS.get(os.path.relpath(path, DIST))
+    if not dep:
+        return []
+    base, covered, _ = dep
+    found = []
+    for ref in covered:
+        target = os.path.join(DIST, base, ref)
+        if os.path.isfile(target):
+            found.append(target)
+        elif os.path.isdir(target):
+            for root, _, files in os.walk(target):
+                found += [os.path.join(root, f) for f in files if f.endswith(".json")]
+    return sorted(found)
+
+def version(path):
+    """A module's cache-bust hash: its own bytes, plus any data it fetches."""
+    h = hashlib.sha1(open(path, "rb").read())
+    for f in data_inputs(path):
+        # Path as well as content: a season file appearing or disappearing has
+        # to move the hash even when nothing else changed.
+        h.update(os.path.relpath(f, DIST).encode() + b"\0" + open(f, "rb").read())
+    return h.hexdigest()[:8]
 
 def resolve(ref, source):
     """A reference as written, to a real file inside DIST, or None."""
@@ -521,8 +559,25 @@ def settle(path, stack=()):
     out = IMPORT.sub(stamp, text)
     if out != text:
         open(path, "w", encoding="utf-8").write(out)
-    hashes[path] = digest(path)
+    hashes[path] = version(path)
     return hashes[path]
+
+# A loader reaching past what DATA_DEPS covers is the original bug wearing a
+# different hat: the fetch would carry a version that cannot move with it.
+uncovered = []
+for mod, (base, covered, loader) in DATA_DEPS.items():
+    path = os.path.join(DIST, mod)
+    if not os.path.isfile(path):
+        continue
+    text = open(path, encoding="utf-8").read()
+    for m in re.finditer(rf"""{loader}\(\s*['"`]([^'"`$]*)""", text):
+        ref = m.group(1)
+        if not any(ref == c or ref.startswith(c.rstrip("/") + "/") for c in covered):
+            uncovered.append(f"  UNHASHED DATA  {mod} fetches {ref}, "
+                             f"which DATA_DEPS does not cover")
+if uncovered:
+    print("\n".join(uncovered))
+    sys.exit(1)
 
 for root, _, files in os.walk(DIST):
     for f in sorted(files):
@@ -546,7 +601,7 @@ for root, _, files in os.walk(DIST):
             target = resolve(ref, page)
             if not target:
                 return m.group(0)
-            return f"{attr}={quote}{bare}?v={hashes.get(target) or digest(target)}{quote}"
+            return f"{attr}={quote}{bare}?v={hashes.get(target) or version(target)}{quote}"
         out = REF.sub(stamp, text)
         if out != text:
             open(page, "w", encoding="utf-8").write(out)
