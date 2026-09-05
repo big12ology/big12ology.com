@@ -89,7 +89,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-05T00:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Memorial Stadium",
   "venue_id": 3833,
@@ -101,8 +101,8 @@
   "away_conf": "NEC",
   "home_class": "fbs",
   "away_class": "fcs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 51,
+  "away_points": 6
  },
  {
   "id": 401856778,
