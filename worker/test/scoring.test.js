@@ -204,6 +204,41 @@ test("a corrected score propagates and bumps the revision", async () => {
     "SELECT revision FROM results WHERE game_id = 401").get().revision, 2);
 });
 
+// The regression that made this worth keeping: a week that reads correct now,
+// having been wrong in between, and a revision counter that can prove only the
+// first half of that sentence.
+test("the history keeps what each revision said, not just how many", async () => {
+  // Old enough to be voidable from the start: slate_frozen refuses to move a
+  // kickoff after the lock, which is correct and means the fixture has to be
+  // built the way the real week was rather than edited into shape.
+  const env = makeEnv();
+  seedWeek(env, { lockAt: NOW() + HOUR, games: [
+    { game_id: 601, home: "Kansas", away: "Iowa", spread_x2: -3,
+      kickoff_at: NOW() - 40 * HOUR },
+  ] });
+  seedUser(env, "u1", { name: "Flipped" });
+  seedPick(env, "u1", 2026, 3, 601, "home", -3);
+  lock(env);
+
+  const played = { games: { "601": [28, 20, true] } };
+  await scoreWeek(env, 2026, 3, played);
+  await scoreWeek(env, 2026, 3, { games: {} });   // the score goes missing
+  await scoreWeek(env, 2026, 3, played);          // and comes back, as it did
+
+  const log = env.raw.prepare(
+    `SELECT revision, status, ats, home_points AS hp FROM results_history
+      WHERE game_id = 601 ORDER BY id`).all();
+  assert.deepEqual(log.map((r) => `${r.revision}:${r.status}`),
+                   ["1:final", "2:void", "3:final"],
+                   "the round trip through void is what the count could not say");
+  assert.equal(log[1].ats, "void");
+  assert.equal(log[1].hp, null, "a voided row carries no score");
+  assert.equal(log[2].hp, 28, "and the corrected one carries it again");
+  assert.equal(env.raw.prepare(
+    "SELECT revision FROM results WHERE game_id = 601").get().revision,
+    log.at(-1).revision, "the log and the row agree about where they are");
+});
+
 test("provisional accounts are scored but not published", async () => {
   const { env } = open();
   seedUser(env, "new", { name: "Newcomer", status: "provisional" });

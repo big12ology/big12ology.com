@@ -156,12 +156,16 @@ export async function scoreWeek(env, season, week, scores,
 
     const src = await hashOf([status, home, away, atsValue, g.spread_x2]);
     const prev = await env.DB.prepare(
-      `SELECT source_hash FROM results
+      `SELECT source_hash, revision FROM results
         WHERE season = ? AND week = ? AND game_id = ?`)
       .bind(season, week, g.game_id).first();
     if (prev && prev.source_hash === src) continue;   // genuinely unchanged
     changed++;
     touched.push(g.game_id);
+    // The revision the upsert below is about to produce. Read rather than
+    // returned, because the log entry and the row it describes go into one
+    // batch and neither can see the other's result.
+    const rev = (prev ? prev.revision : 0) + 1;
 
     stmts.push(env.DB.prepare(
       `INSERT INTO results (season, week, game_id, home_points, away_points,
@@ -179,6 +183,15 @@ export async function scoreWeek(env, season, week, scores,
          revision    = results.revision + 1,
          scored_at   = excluded.scored_at`)
       .bind(season, week, g.game_id, home, away, status, atsValue, src, now));
+
+    // And the same fact, kept rather than overwritten. revision counts the
+    // corrections; this is what each of them said. See 0011 for why a count
+    // on its own could prove a week had regressed and not say how.
+    stmts.push(env.DB.prepare(
+      `INSERT INTO results_history (season, week, game_id, revision, status,
+                                    ats, home_points, away_points, scored_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      .bind(season, week, g.game_id, rev, status, atsValue, home, away, now));
   }
 
   if (stmts.length) await env.DB.batch(stmts);
