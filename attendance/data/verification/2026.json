@@ -1,9 +1,43 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 3
+    "missing_both": 1,
+    "agree": 6
   },
   "games": [
+    {
+      "team": "Cincinnati",
+      "week": 1,
+      "opponent": "Boston College",
+      "date": "2026-09-05",
+      "espnId": 401856777,
+      "ours": null,
+      "espn": null,
+      "source": "CFBD",
+      "status": "missing_both"
+    },
+    {
+      "team": "Houston",
+      "week": 1,
+      "opponent": "Oregon State",
+      "date": "2026-09-05",
+      "espnId": 401856778,
+      "ours": 28742,
+      "espn": 28742,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Iowa State",
+      "week": 1,
+      "opponent": "Southeast Missouri State",
+      "date": "2026-09-05",
+      "espnId": 401856779,
+      "ours": 51802,
+      "espn": 51802,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
     {
       "team": "Kansas",
       "week": 1,
@@ -34,6 +68,17 @@
       "espnId": 401856768,
       "ours": 51444,
       "espn": 51444,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "West Virginia",
+      "week": 1,
+      "opponent": "Coastal Carolina",
+      "date": "2026-09-05",
+      "espnId": 401856780,
+      "ours": 54158,
+      "espn": 54158,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

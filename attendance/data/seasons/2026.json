@@ -76,7 +76,9 @@
       "role": "neutral",
       "venue": "Mercedes-Benz Stadium",
       "city": "Atlanta",
-      "state": "GA"
+      "state": "GA",
+      "pointsFor": 16,
+      "pointsAgainst": 17
     },
     {
       "team": "Cincinnati",
@@ -86,7 +88,14 @@
       "espnId": 401856777,
       "conferenceGame": false,
       "opponent": "Boston College",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 34,
+      "pointsAgainst": 15,
+      "weather": {
+        "tempF": 90,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -113,7 +122,15 @@
       "espnId": 401856778,
       "conferenceGame": false,
       "opponent": "Oregon State",
-      "attendance": null
+      "attendance": 28742,
+      "pointsFor": 33,
+      "pointsAgainst": 20,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 84,
+        "windMph": 3,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "Iowa State",
@@ -123,7 +140,15 @@
       "espnId": 401856779,
       "conferenceGame": false,
       "opponent": "Southeast Missouri State",
-      "attendance": null
+      "attendance": 51802,
+      "pointsFor": 38,
+      "pointsAgainst": 10,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 86,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
@@ -165,7 +190,9 @@
       "role": "away",
       "venue": "Chapman Stadium",
       "city": "Tulsa",
-      "state": "OK"
+      "state": "OK",
+      "pointsFor": 10,
+      "pointsAgainst": 24
     },
     {
       "team": "Texas Tech",
@@ -221,7 +248,15 @@
       "espnId": 401856780,
       "conferenceGame": false,
       "opponent": "Coastal Carolina",
-      "attendance": null
+      "attendance": 54158,
+      "pointsFor": 31,
+      "pointsAgainst": 24,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 75,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",

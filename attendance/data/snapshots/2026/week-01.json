@@ -60,6 +60,63 @@
       "pct": 0.96575
     },
     {
+      "team": "West Virginia",
+      "stadium": "Milan Puskar Stadium",
+      "capacity": 60000,
+      "capacityEstimate": null,
+      "color": "#002855",
+      "logo": "assets/logos/wvu.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 54158,
+          "pct": 0.9026333333333333
+        }
+      ],
+      "total": 54158,
+      "pct": 0.9026333333333333
+    },
+    {
+      "team": "Iowa State",
+      "stadium": "Jack Trice Stadium",
+      "capacity": 61500,
+      "capacityEstimate": null,
+      "color": "#822433",
+      "logo": "assets/logos/isu.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 51802,
+          "pct": 0.8423089430894309
+        }
+      ],
+      "total": 51802,
+      "pct": 0.8423089430894309
+    },
+    {
+      "team": "Houston",
+      "stadium": "TDECU Stadium",
+      "capacity": 40000,
+      "capacityEstimate": null,
+      "color": "#c92a39",
+      "logo": "assets/logos/hou.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 28742,
+          "pct": 0.71855
+        }
+      ],
+      "total": 28742,
+      "pct": 0.71855
+    },
+    {
       "team": "Arizona",
       "stadium": "Casino Del Sol Stadium",
       "capacity": 50782,
@@ -138,32 +195,6 @@
       "pct": 0
     },
     {
-      "team": "Houston",
-      "stadium": "TDECU Stadium",
-      "capacity": 40000,
-      "capacityEstimate": null,
-      "color": "#c92a39",
-      "logo": "assets/logos/hou.svg",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
-    },
-    {
-      "team": "Iowa State",
-      "stadium": "Jack Trice Stadium",
-      "capacity": 61500,
-      "capacityEstimate": null,
-      "color": "#822433",
-      "logo": "assets/logos/isu.svg",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
-    },
-    {
       "team": "Kansas State",
       "stadium": "Bill Snyder Family Football Stadium",
       "capacity": 50000,
@@ -214,19 +245,6 @@
       "weeks": [],
       "total": 0,
       "pct": 0
-    },
-    {
-      "team": "West Virginia",
-      "stadium": "Milan Puskar Stadium",
-      "capacity": 60000,
-      "capacityEstimate": null,
-      "color": "#002855",
-      "logo": "assets/logos/wvu.svg",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
     }
   ],
   "weeks": [
@@ -239,10 +257,10 @@
     },
     {
       "week": 1,
-      "games": 3,
-      "attendance": 125475,
-      "capacity": 127650,
-      "pct": 0.9829612220916569
+      "games": 6,
+      "attendance": 260177,
+      "capacity": 289150,
+      "pct": 0.8997994120698599
     },
     {
       "week": 2,
@@ -330,9 +348,9 @@
     }
   ],
   "totals": {
-    "games": 3,
-    "attendance": 125475,
-    "capacity": 127650,
-    "pct": 0.9829612220916569
+    "games": 6,
+    "attendance": 260177,
+    "capacity": 289150,
+    "pct": 0.8997994120698599
   }
 }
