@@ -73,10 +73,27 @@ jobs:
       # No --refresh. Ratings and lines are the Tuesday job and they still
       # belong to pages.yml, which is the workflow that publishes the slate
       # those lines become. This one only ever asks for scores.
+      #
+      # B12_PICKEM IS WHAT MAKES THE SCORES FILE EXIST, and this workflow ran
+      # without it from the day it was split out. build.py gates the whole
+      # pick'em block on it, write_scores included, so every run here rebuilt
+      # the site and left tiebreaker/site/pickem-scores.json exactly as git had
+      # checked it out. The publish step below then signed and shipped that:
+      # 120 games, all [null, null, false], dated 2026-08-30. Anything past the
+      # thirty-six hour void window was written off on the spot, pages.yml put
+      # it back on its next deploy, and the two undid each other all weekend.
+      #
+      # SET FLAT, not through pages.yml's dry-run gate. That gate exists to
+      # decide whether the pools section SHIPS, and this workflow ships no
+      # site: it fetches, commits games_<year>.json, and posts a JSON file to
+      # the Worker. Nothing it builds is published, so there is nothing here
+      # for the gate to protect, and a second copy of the launch date is a
+      # third place for it to rot.
       - name: Fetch results
         working-directory: tiebreaker
         env:
           CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+          B12_PICKEM: "1"
         run: python3 build.py --fetch
 
       # Same reasoning as pages.yml's copy, and the same one-run-teaches-the-

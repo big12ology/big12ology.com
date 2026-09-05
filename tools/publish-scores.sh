@@ -47,13 +47,53 @@ BASE="${B12_API_BASE:-https://big12ology.com}"
 # here, where the message is about this repo, rather than as a 400 from the
 # Worker that somebody has to go and read.
 python3 - "$FILE" <<'PY'
-import json, sys
-doc = json.load(open(sys.argv[1]))
+import json, os, sys
+path = sys.argv[1]
+doc = json.load(open(path))
 if not isinstance(doc.get("games"), dict):
     sys.exit("scores file has no games object")
 if not isinstance(doc.get("season"), int):
     sys.exit("scores file has no integer season")
-print(f"publishing {len(doc['games'])} games for {doc['season']}")
+
+# AND THAT IT SAYS WHAT THE REPO KNOWS. Shape was all that was checked here,
+# which let through a file of exactly the right shape and a month out of date.
+#
+# 2026-09-05: scores.yml never set B12_PICKEM, so build.py's pick'em block --
+# write_scores included -- was skipped on every run of the workflow whose one
+# job is publishing scores. The file was never rewritten, so this script signed
+# and shipped the copy git had checked out: 120 games, every one of them
+# [null, null, false]. Games inside the void window were unharmed, because a
+# missing result reads as "still to come". Games past thirty-six hours were
+# written off. pages.yml, which does set the variable, published a correct file
+# on its own cadence and put them back, so the two workflows spent a weekend
+# undoing each other. A week 0 game reached revision 42 before the results
+# history landed and made the flapping visible.
+#
+# games_<season>.json is what build.py built this payload FROM, sits in the
+# same checkout, and is committed by these same workflows. If it knows a game
+# finished and the payload does not, the payload is stale whatever its shape.
+games_file = os.path.join(os.path.dirname(os.path.abspath(path)),
+                          "..", "data", f"games_{doc['season']}.json")
+scored = sum(1 for v in doc["games"].values()
+             if isinstance(v, list) and len(v) == 3 and v[2]
+             and v[0] is not None and v[1] is not None)
+if os.path.exists(games_file):
+    known = sum(1 for g in json.load(open(games_file))
+                if g.get("completed") and g.get("home_points") is not None
+                and g.get("away_points") is not None)
+    if scored < known:
+        sys.exit(f"REFUSING TO PUBLISH. games_{doc['season']}.json has {known} "
+                 f"finished game(s) and this file carries {scored}, so it was "
+                 f"not rebuilt this run. Check that B12_PICKEM is set: "
+                 f"build.py writes no scores without it.")
+else:
+    # The e2e test signs a payload from a temp directory with no repo around
+    # it. Said out loud rather than passed over, so a real run that has somehow
+    # lost its data directory cannot look like a clean one.
+    print(f"note: no {os.path.basename(games_file)} beside the payload, "
+          f"published without the cross-check")
+print(f"publishing {len(doc['games'])} games for {doc['season']}, "
+      f"{scored} finished")
 PY
 
 TS=$(date -u +%s)
