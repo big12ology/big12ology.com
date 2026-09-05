@@ -43,8 +43,8 @@
     {
       "team": "Kansas",
       "stadium": "David Booth Kansas Memorial Stadium",
-      "capacity": 41525,
-      "capacityEstimate": "KU has published no 2026 capacity. Phase II of the Gateway rebuild demolished the east stand in December 2025 and only its lower bowl returns this season, so the real figure is below the 41,525 carried forward from 2025 — percent full for Kansas home games reads low until the university publishes a number.",
+      "capacity": 32000,
+      "capacityEstimate": null,
       "color": "#0051ba",
       "logo": "assets/logos/ku.svg",
       "multiVenue": false,
@@ -53,11 +53,11 @@
         {
           "week": 1,
           "attendance": 30904,
-          "pct": 0.7442263696568332
+          "pct": 0.96575
         }
       ],
       "total": 30904,
-      "pct": 0.7442263696568332
+      "pct": 0.96575
     },
     {
       "team": "Arizona",
@@ -241,8 +241,8 @@
       "week": 1,
       "games": 3,
       "attendance": 125475,
-      "capacity": 137175,
-      "pct": 0.91470749043193
+      "capacity": 127650,
+      "pct": 0.9829612220916569
     },
     {
       "week": 2,
@@ -332,7 +332,7 @@
   "totals": {
     "games": 3,
     "attendance": 125475,
-    "capacity": 137175,
-    "pct": 0.91470749043193
+    "capacity": 127650,
+    "pct": 0.9829612220916569
   }
 }
