@@ -1,9 +1,20 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 2
+    "agree": 3
   },
   "games": [
+    {
+      "team": "Kansas",
+      "week": 1,
+      "opponent": "Long Island University",
+      "date": "2026-09-04",
+      "espnId": 401856769,
+      "ours": 30904,
+      "espn": 30904,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
     {
       "team": "UCF",
       "week": 1,

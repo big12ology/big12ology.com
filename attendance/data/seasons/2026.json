@@ -133,7 +133,15 @@
       "espnId": 401856769,
       "conferenceGame": false,
       "opponent": "Long Island University",
-      "attendance": null
+      "attendance": 30904,
+      "pointsFor": 51,
+      "pointsAgainst": 6,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 94,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
@@ -180,12 +188,12 @@
       "attendance": 43127,
       "pointsFor": 73,
       "pointsAgainst": 6,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
         "tempF": 80,
         "windMph": 4,
         "precipIn": 0.01
-      },
-      "attendanceSource": "ESPN gamepackage (not yet in CFBD)"
+      }
     },
     {
       "team": "Utah",
@@ -198,12 +206,12 @@
       "attendance": 51444,
       "pointsFor": 66,
       "pointsAgainst": 14,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
         "tempF": 82,
         "windMph": 13,
         "precipIn": 0
-      },
-      "attendanceSource": "ESPN gamepackage (not yet in CFBD)"
+      }
     },
     {
       "team": "West Virginia",

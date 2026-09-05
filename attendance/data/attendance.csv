@@ -1401,5 +1401,6 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2025,West Virginia,9,2025-10-25,TCU,true,Milan Puskar Stadium,54110,60000,0.9018,false
 2025,West Virginia,11,2025-11-08,Colorado,true,Milan Puskar Stadium,55510,60000,0.9252,false
 2025,West Virginia,14,2025-11-29,Texas Tech,true,Milan Puskar Stadium,44250,60000,0.7375,false
+2026,Kansas,1,2026-09-04,Long Island University,false,David Booth Kansas Memorial Stadium,30904,41525,0.7442,true
 2026,UCF,1,2026-09-03,Bethune-Cookman,false,Acrisure Bounce House,43127,44206,0.9756,false
 2026,Utah,1,2026-09-03,Idaho,false,Rice-Eccles Stadium,51444,51444,1.0000,false
