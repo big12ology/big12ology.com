@@ -23,6 +23,7 @@
 //   consensus would become visible. The guard is unconditional.
 
 import { ats } from "./ats.js";
+import { withEspn } from "./espn.js";
 import { strandedWeeks } from "./handicap.js";
 import { scoresUrl } from "./slate.js";
 
@@ -112,6 +113,14 @@ export async function scoreWeek(env, season, week, scores,
   if (!w) return { skipped: "no_such_week" };
   // The guard. Never scores an open week, whatever the caller thinks.
   if (w.lock_at == null || w.lock_at > now) return { skipped: "not_locked" };
+
+  // HERE RATHER THAN IN scoreAll, and that is the whole point of the placement.
+  // scoreWeek is called directly from several places, and the guarantee wanted
+  // is that no grading pass can write off a game ESPN has already graded --
+  // which only holds if the fill is applied where the grading happens rather
+  // than at one of the ways in. Costs one KV read per locked week per sweep,
+  // against an allowance of a hundred thousand a day.
+  scores = await withEspn(env, season, scores);
 
   const { results: games } = await env.DB.prepare(
     `SELECT game_id, kickoff_at, spread_x2 FROM slate_games

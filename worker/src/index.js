@@ -17,7 +17,8 @@ import {
   SESSION_COOKIE, STATE_COOKIE, clear, parseCookies, safeReturn, serialize,
 } from "./cookies.js";
 import { importWeek } from "./slate.js";
-import { scoreAll } from "./scoring.js";
+import { fetchScores, scoreAll } from "./scoring.js";
+import { sweepEspn } from "./espn.js";
 
 const { json, fail } = api;
 
@@ -557,6 +558,18 @@ export default {
         if (!r.unchanged) console.log(`import ${season} w${w}: ${r.games} games`);
       }
       if (!imported) console.log(`import ${season}: nothing published yet`);
+      // ESPN BEFORE THE GRADING, and only for games the publisher has not
+      // graded yet. A quiet sweep costs one D1 read and no fetch at all; a
+      // busy one costs a single scoreboard call with no key and no quota
+      // behind it. Never fatal: CFBD is the record and the next publish
+      // grades these anyway, so a scoreboard that is down or has changed
+      // shape must not take the sweep with it.
+      try {
+        const e = await sweepEspn(env, season, await fetchScores(env, season));
+        if (e.added) console.log(`espn ${season}: ${JSON.stringify(e)}`);
+      } catch (e) {
+        console.log(`espn ${season}: ${e && (e.message || e)}`);
+      }
       const report = await scoreAll(env, season);
       for (const r of report) {
         if (r.changed) console.log(`score w${r.week}: ${JSON.stringify(r)}`);

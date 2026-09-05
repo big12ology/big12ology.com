@@ -485,6 +485,12 @@ def footer():
     says so, and the disclaimer stopped saying "conference and team marks"
     when "marks" covers both. Anything added here should buy its line.
 
+    ESPN joined collegefootballdata.com on 2026-09-05, when the Worker's score
+    sweep began reading finals off ESPN's scoreboard to shorten the wait
+    between a game ending and CFBD carrying it. The attendance section had
+    been reading ESPN for crowd figures before that and this line had never
+    said so, so the clause was overdue on its own account.
+
     The four hand-written pages — index.html, privacy.html, 404.html and
     attendance/index.html — carry this footer as literal HTML. Nothing checks
     that they still match, so a change here is four edits, not one.
@@ -493,7 +499,9 @@ def footer():
     # collapse to single braces and assemble.sh would never match it.
     return ('<footer class=b12-footer>Results from '
             '<a href="https://collegefootballdata.com">'
-            'collegefootballdata.com</a> · procedure per the '
+            'collegefootballdata.com</a> and '
+            '<a href="https://www.espn.com/college-football/scoreboard">'
+            'ESPN</a> · procedure per the '
             f'<a href="{POLICY_URL}">official Big 12 tiebreaker policy</a> · '
             'marks via Wikimedia Commons '
             '(<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · '

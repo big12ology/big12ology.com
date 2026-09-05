@@ -407,10 +407,25 @@ test("a corrected score is a revision, and it moves the board", async () => {
   assert.notEqual(after.ats, first.ats, "the correction did not change who covered");
 });
 
-test("the cron never reaches the apex, only the Pages origin", async () => {
-  // Fetching big12ology.com from inside the Worker loops a request back
-  // through our own route. cert-watch.yml and compare-live.sh use the same
-  // trick for the same reason, and it is the kind of thing a refactor undoes.
+// Everywhere the cron is allowed to reach, named rather than implied.
+//
+// The apex is the one that matters and the reason this test exists: fetching
+// big12ology.com from inside the Worker loops a request back through our own
+// route. cert-watch.yml and compare-live.sh use the same trick for the same
+// reason, and it is the kind of thing a refactor undoes.
+//
+// ESPN was added deliberately on 2026-09-05, when the score sweep started
+// filling the gap between a game ending and CFBD saying so. It is a read of a
+// public scoreboard with no key and no credentials, so the loop hazard above
+// does not apply to it -- but it is still egress from the Worker, and a list
+// is the only way that stays a decision rather than an accident. Anything
+// reaching a host that is not on this list should fail here and be argued
+// about, which is what the old assertion did by allowing exactly one.
+const REACHABLE = [ORIGIN, "https://site.api.espn.com"];
+const APEX = "big12ology.com";
+
+test("the cron reaches only the hosts it is allowed to, and never the apex",
+     async () => {
   const env = env0();
   const seen = [];
   const inner = serve(publisher(season(3)));
@@ -419,8 +434,10 @@ test("the cron never reaches the apex, only the Pages origin", async () => {
   await run(env);
   assert.ok(seen.length > 0, "the cron fetched nothing");
   for (const u of seen) {
-    assert.ok(u.startsWith(ORIGIN),
-      `the cron fetched ${u}, which is not the Pages origin`);
+    assert.ok(!new URL(u).hostname.endsWith(APEX),
+      `the cron fetched ${u}, which loops back through our own route`);
+    assert.ok(REACHABLE.some((h) => u.startsWith(h)),
+      `the cron fetched ${u}, which is not on the reachable list`);
   }
   assert.ok(inner.scores > 0);
 });
