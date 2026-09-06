@@ -3,6 +3,63 @@
   "throughWeek": 1,
   "rows": [
     {
+      "team": "BYU",
+      "stadium": "LaVell Edwards Stadium",
+      "capacity": 62073,
+      "capacityEstimate": null,
+      "color": "#003da5",
+      "logo": "assets/logos/byu.png",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 64077,
+          "pct": 1.0322845681697357
+        }
+      ],
+      "total": 64077,
+      "pct": 1.0322845681697357
+    },
+    {
+      "team": "Arizona State",
+      "stadium": "Mountain America Stadium",
+      "capacity": 53599,
+      "capacityEstimate": null,
+      "color": "#8e0c3a",
+      "logo": "assets/logos/asu.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 54004,
+          "pct": 1.0075561111214761
+        }
+      ],
+      "total": 54004,
+      "pct": 1.0075561111214761
+    },
+    {
+      "team": "Texas Tech",
+      "stadium": "Jones AT&T Stadium",
+      "capacity": 60229,
+      "capacityEstimate": null,
+      "color": "#cc0000",
+      "logo": "assets/logos/ttu.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 60229,
+          "pct": 1
+        }
+      ],
+      "total": 60229,
+      "pct": 1
+    },
+    {
       "team": "Utah",
       "stadium": "Rice-Eccles Stadium",
       "capacity": 51444,
@@ -39,6 +96,25 @@
       ],
       "total": 43127,
       "pct": 0.9755915486585531
+    },
+    {
+      "team": "Cincinnati",
+      "stadium": "Nippert Stadium",
+      "capacity": 38088,
+      "capacityEstimate": null,
+      "color": "#e00122",
+      "logo": "assets/logos/cin.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 37097,
+          "pct": 0.9739813064482251
+        }
+      ],
+      "total": 37097,
+      "pct": 0.9739813064482251
     },
     {
       "team": "Kansas",
@@ -98,6 +174,25 @@
       "pct": 0.8423089430894309
     },
     {
+      "team": "Arizona",
+      "stadium": "Casino Del Sol Stadium",
+      "capacity": 50782,
+      "capacityEstimate": null,
+      "color": "#0c234b",
+      "logo": "assets/logos/ariz.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 40129,
+          "pct": 0.7902209444291284
+        }
+      ],
+      "total": 40129,
+      "pct": 0.7902209444291284
+    },
+    {
       "team": "Houston",
       "stadium": "TDECU Stadium",
       "capacity": 40000,
@@ -117,64 +212,12 @@
       "pct": 0.71855
     },
     {
-      "team": "Arizona",
-      "stadium": "Casino Del Sol Stadium",
-      "capacity": 50782,
-      "capacityEstimate": null,
-      "color": "#0c234b",
-      "logo": "assets/logos/ariz.svg",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
-    },
-    {
-      "team": "Arizona State",
-      "stadium": "Mountain America Stadium",
-      "capacity": 53599,
-      "capacityEstimate": null,
-      "color": "#8e0c3a",
-      "logo": "assets/logos/asu.svg",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
-    },
-    {
       "team": "Baylor",
       "stadium": "McLane Stadium",
       "capacity": 45140,
       "capacityEstimate": null,
       "color": "#154734",
       "logo": "assets/logos/bay.svg",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
-    },
-    {
-      "team": "BYU",
-      "stadium": "LaVell Edwards Stadium",
-      "capacity": 62073,
-      "capacityEstimate": null,
-      "color": "#003da5",
-      "logo": "assets/logos/byu.png",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
-    },
-    {
-      "team": "Cincinnati",
-      "stadium": "Nippert Stadium",
-      "capacity": 38088,
-      "capacityEstimate": null,
-      "color": "#e00122",
-      "logo": "assets/logos/cin.svg",
       "multiVenue": false,
       "games": 0,
       "weeks": [],
@@ -232,19 +275,6 @@
       "weeks": [],
       "total": 0,
       "pct": 0
-    },
-    {
-      "team": "Texas Tech",
-      "stadium": "Jones AT&T Stadium",
-      "capacity": 60229,
-      "capacityEstimate": null,
-      "color": "#cc0000",
-      "logo": "assets/logos/ttu.svg",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
     }
   ],
   "weeks": [
@@ -257,10 +287,10 @@
     },
     {
       "week": 1,
-      "games": 6,
-      "attendance": 260177,
-      "capacity": 289150,
-      "pct": 0.8997994120698599
+      "games": 11,
+      "attendance": 515713,
+      "capacity": 553921,
+      "pct": 0.9310226548551147
     },
     {
       "week": 2,
@@ -348,9 +378,9 @@
     }
   ],
   "totals": {
-    "games": 6,
-    "attendance": 260177,
-    "capacity": 289150,
-    "pct": 0.8997994120698599
+    "games": 11,
+    "attendance": 515713,
+    "capacity": 553921,
+    "pct": 0.9310226548551147
   }
 }

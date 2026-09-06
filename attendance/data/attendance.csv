@@ -1401,9 +1401,14 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2025,West Virginia,9,2025-10-25,TCU,true,Milan Puskar Stadium,54110,60000,0.9018,false
 2025,West Virginia,11,2025-11-08,Colorado,true,Milan Puskar Stadium,55510,60000,0.9252,false
 2025,West Virginia,14,2025-11-29,Texas Tech,true,Milan Puskar Stadium,44250,60000,0.7375,false
+2026,Arizona,1,2026-09-05,Northern Arizona,false,Casino Del Sol Stadium,40129,50782,0.7902,false
+2026,Arizona State,1,2026-09-05,Morgan State,false,Mountain America Stadium,54004,53599,1.0076,false
+2026,BYU,1,2026-09-05,Utah Tech,false,LaVell Edwards Stadium,64077,62073,1.0323,false
+2026,Cincinnati,1,2026-09-05,Boston College,false,Nippert Stadium,37097,38088,0.9740,false
 2026,Houston,1,2026-09-05,Oregon State,false,TDECU Stadium,28742,40000,0.7186,false
 2026,Iowa State,1,2026-09-05,Southeast Missouri State,false,Jack Trice Stadium,51802,61500,0.8423,false
 2026,Kansas,1,2026-09-04,Long Island University,false,David Booth Kansas Memorial Stadium,30904,32000,0.9657,false
+2026,Texas Tech,1,2026-09-05,Abilene Christian,false,Jones AT&T Stadium,60229,60229,1.0000,false
 2026,UCF,1,2026-09-03,Bethune-Cookman,false,Acrisure Bounce House,43127,44206,0.9756,false
 2026,Utah,1,2026-09-03,Idaho,false,Rice-Eccles Stadium,51444,51444,1.0000,false
 2026,West Virginia,1,2026-09-05,Coastal Carolina,false,Milan Puskar Stadium,54158,60000,0.9026,false

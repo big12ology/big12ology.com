@@ -42,7 +42,15 @@
       "espnId": 401856773,
       "conferenceGame": false,
       "opponent": "Northern Arizona",
-      "attendance": null
+      "attendance": 40129,
+      "pointsFor": 35,
+      "pointsAgainst": 7,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 94,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
@@ -52,7 +60,15 @@
       "espnId": 401856774,
       "conferenceGame": false,
       "opponent": "Morgan State",
-      "attendance": null
+      "attendance": 54004,
+      "pointsFor": 70,
+      "pointsAgainst": 7,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 99,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
@@ -62,7 +78,15 @@
       "espnId": 401856775,
       "conferenceGame": false,
       "opponent": "Utah Tech",
-      "attendance": null
+      "attendance": 64077,
+      "pointsFor": 63,
+      "pointsAgainst": 7,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 82,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
@@ -88,12 +112,13 @@
       "espnId": 401856777,
       "conferenceGame": false,
       "opponent": "Boston College",
-      "attendance": null,
+      "attendance": 37097,
       "pointsFor": 34,
       "pointsAgainst": 15,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 90,
-        "windMph": 5,
+        "tempF": 92,
+        "windMph": 6,
         "precipIn": 0
       }
     },
@@ -176,7 +201,14 @@
       "espnId": 401856771,
       "conferenceGame": false,
       "opponent": "Nicholls",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 71,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 98,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
@@ -202,7 +234,15 @@
       "espnId": 401856770,
       "conferenceGame": false,
       "opponent": "Abilene Christian",
-      "attendance": null
+      "attendance": 60229,
+      "pointsFor": 33,
+      "pointsAgainst": 10,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 96,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",

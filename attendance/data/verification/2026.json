@@ -1,20 +1,53 @@
 {
   "season": 2026,
   "summary": {
-    "missing_both": 1,
-    "agree": 6
+    "agree": 11,
+    "MISMATCH": 1
   },
   "games": [
+    {
+      "team": "Arizona",
+      "week": 1,
+      "opponent": "Northern Arizona",
+      "date": "2026-09-05",
+      "espnId": 401856773,
+      "ours": 40129,
+      "espn": 40129,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Arizona State",
+      "week": 1,
+      "opponent": "Morgan State",
+      "date": "2026-09-05",
+      "espnId": 401856774,
+      "ours": 54004,
+      "espn": 54004,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "BYU",
+      "week": 1,
+      "opponent": "Utah Tech",
+      "date": "2026-09-05",
+      "espnId": 401856775,
+      "ours": 64077,
+      "espn": 64077,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
     {
       "team": "Cincinnati",
       "week": 1,
       "opponent": "Boston College",
       "date": "2026-09-05",
       "espnId": 401856777,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 37097,
+      "espn": 37097,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "Houston",
@@ -46,6 +79,28 @@
       "espnId": 401856769,
       "ours": 30904,
       "espn": 30904,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Kansas State",
+      "week": 1,
+      "opponent": "Nicholls",
+      "date": "2026-09-05",
+      "espnId": 401856771,
+      "ours": null,
+      "espn": 51719,
+      "source": "CFBD",
+      "status": "MISMATCH"
+    },
+    {
+      "team": "Texas Tech",
+      "week": 1,
+      "opponent": "Abilene Christian",
+      "date": "2026-09-05",
+      "espnId": 401856770,
+      "ours": 60229,
+      "espn": 60229,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     },
