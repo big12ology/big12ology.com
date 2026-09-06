@@ -278,7 +278,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-06T00:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "LaVell Edwards Stadium",
   "venue_id": 3801,
@@ -290,8 +290,8 @@
   "away_conf": "Big Sky",
   "home_class": "fbs",
   "away_class": "fcs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 63,
+  "away_points": 7
  },
  {
   "id": 401856773,
