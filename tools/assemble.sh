@@ -621,6 +621,74 @@ while IFS= read -r page; do
   echo "  UNSTAMPED  ${page#"$DIST"/}"; fail=1
 done < <(grep -rlE '\{\{(BUILD_STAMP|HUB_[A-Z_]+|FACTS:[a-z]+)\}\}' "$DIST" \
            --include='*.html' || true)
+
+# ONE FOOTER, OR SAY WHICH PAGES DISAGREE.
+#
+# build.py's footer() generates it for every page this project builds, and four
+# hand-written pages — index.html, privacy.html, 404.html and
+# attendance/index.html — carry the same thing as literal HTML. That docstring
+# has said "nothing checks that they still match, so a change here is four
+# edits, not one" since it was written. This is the check.
+#
+# It earns its place immediately: adding the ESPN credit on 2026-09-05 was five
+# edits, and the only reason the fifth was not missed is that somebody counted.
+# The same week, a stale build artifact shipped for a month because the thing
+# that would have noticed was checking shape rather than content.
+#
+# NO REFERENCE COPY. Nothing here decides which footer is correct, only that
+# there is one of them, because picking a winner would be wrong exactly when it
+# matters: run without build.py first, the generated pages are last build's and
+# a reference-based check would blame all four hand-written pages for being
+# right. Grouping says what a person needs either way.
+#
+# The comparison starts at "Results from" because attendance/index.html opens
+# its footer with an empty <p id=source-note> that the script fills in, and
+# that is a real difference rather than drift.
+#
+# `if !` rather than a bare call: set -e is on, so a non-zero exit here would
+# abort the script at the first drift and skip every check below it. A drifted
+# footer should be reported alongside whatever else is wrong, not instead of it.
+if ! python3 - "$DIST" <<'PY'
+import collections, os, re, sys
+
+DIST = sys.argv[1]
+FOOTER = re.compile(r'<footer class=["\']?b12-footer["\']?[^>]*>(.*?)</footer>', re.S)
+groups = collections.defaultdict(list)
+for root, _, files in os.walk(DIST):
+    for f in sorted(files):
+        if not f.endswith(".html"):
+            continue
+        p = os.path.join(root, f)
+        m = FOOTER.search(open(p, encoding="utf-8", errors="replace").read())
+        if not m:
+            continue
+        # Whitespace against a tag is markup, not content: the hand-written
+        # copies wrap after the <br> and the generated one does not, which is
+        # a difference in how the file reads and none at all in what the page
+        # says. Collapsing runs is not enough on its own, because a newline
+        # there collapses to a space the generated string never had.
+        #
+        # The blind spot this buys is a missing space between two words either
+        # side of a tag. That is cosmetic, and it is the right trade against a
+        # check that cries drift over an indent.
+        body = " ".join(m.group(1).split())
+        body = re.sub(r">\s+", ">", re.sub(r"\s+<", "<", body))
+        i = body.find("Results from")
+        groups[body[i:] if i >= 0 else body].append(os.path.relpath(p, DIST))
+
+if len(groups) > 1:
+    print(f"  FOOTER DRIFT  {len(groups)} versions across "
+          f"{sum(len(v) for v in groups.values())} pages")
+    for text, pages in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+        shown = ", ".join(pages[:4]) + (f" +{len(pages) - 4} more"
+                                        if len(pages) > 4 else "")
+        print(f"    {len(pages):>4} page(s): {shown}")
+        print(f"          {text[:150]}")
+    sys.exit(1)
+PY
+then
+  fail=1
+fi
 # FACTS: stays in that pattern deliberately. Nothing fills it any more, so a
 # token left behind in a hand-written page is now a build failure rather than
 # a pair of braces in the middle of the attendance page.
