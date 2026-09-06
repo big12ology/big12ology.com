@@ -1,8 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 11,
-    "MISMATCH": 1
+    "agree": 12
   },
   "games": [
     {
@@ -88,10 +87,10 @@
       "opponent": "Nicholls",
       "date": "2026-09-05",
       "espnId": 401856771,
-      "ours": null,
+      "ours": 51719,
       "espn": 51719,
-      "source": "CFBD",
-      "status": "MISMATCH"
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "Texas Tech",

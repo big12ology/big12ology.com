@@ -3,6 +3,25 @@
   "throughWeek": 1,
   "rows": [
     {
+      "team": "Kansas State",
+      "stadium": "Bill Snyder Family Football Stadium",
+      "capacity": 50000,
+      "capacityEstimate": null,
+      "color": "#3c0969",
+      "logo": "assets/logos/ksu.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 51719,
+          "pct": 1.03438
+        }
+      ],
+      "total": 51719,
+      "pct": 1.03438
+    },
+    {
       "team": "BYU",
       "stadium": "LaVell Edwards Stadium",
       "capacity": 62073,
@@ -238,19 +257,6 @@
       "pct": 0
     },
     {
-      "team": "Kansas State",
-      "stadium": "Bill Snyder Family Football Stadium",
-      "capacity": 50000,
-      "capacityEstimate": null,
-      "color": "#3c0969",
-      "logo": "assets/logos/ksu.svg",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
-    },
-    {
       "team": "Oklahoma State",
       "stadium": "Boone Pickens Stadium",
       "capacity": 52202,
@@ -287,10 +293,10 @@
     },
     {
       "week": 1,
-      "games": 11,
-      "attendance": 515713,
-      "capacity": 553921,
-      "pct": 0.9310226548551147
+      "games": 12,
+      "attendance": 567432,
+      "capacity": 603921,
+      "pct": 0.9395798457082963
     },
     {
       "week": 2,
@@ -378,9 +384,9 @@
     }
   ],
   "totals": {
-    "games": 11,
-    "attendance": 515713,
-    "capacity": 553921,
-    "pct": 0.9310226548551147
+    "games": 12,
+    "attendance": 567432,
+    "capacity": 603921,
+    "pct": 0.9395798457082963
   }
 }

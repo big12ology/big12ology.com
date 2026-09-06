@@ -47,8 +47,8 @@
       "pointsAgainst": 7,
       "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 94,
-        "windMph": 9,
+        "tempF": 95,
+        "windMph": 8,
         "precipIn": 0
       }
     },
@@ -65,8 +65,8 @@
       "pointsAgainst": 7,
       "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 99,
-        "windMph": 5,
+        "tempF": 98,
+        "windMph": 6,
         "precipIn": 0
       }
     },
@@ -83,8 +83,8 @@
       "pointsAgainst": 7,
       "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 82,
-        "windMph": 3,
+        "tempF": 83,
+        "windMph": 5,
         "precipIn": 0
       }
     },
@@ -201,9 +201,10 @@
       "espnId": 401856771,
       "conferenceGame": false,
       "opponent": "Nicholls",
-      "attendance": null,
+      "attendance": 51719,
       "pointsFor": 71,
       "pointsAgainst": 3,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
         "tempF": 98,
         "windMph": 6,
