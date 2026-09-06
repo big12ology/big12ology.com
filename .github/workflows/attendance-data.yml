@@ -71,6 +71,47 @@ jobs:
         continue-on-error: true
         run: python3 scripts/verify_attendance.py "${{ inputs.year || '2026' }}"
 
+      # BEFORE THE COMMIT, not after it. This gate used to sit at the end of
+      # the job, which meant a run could fail the cross-check and still have
+      # pushed the data it was failing about. On 2026-09-06 it did exactly
+      # that: "Attendance update: 2026-09-06" landed with a null crowd for a
+      # game that had been played, the run then went red, and the bad row sat
+      # on main for five hours until the next run happened to fix it. Red after
+      # the fact is not a gate, it is a receipt.
+      #
+      # The cost of the order is one CFBD call. A blocked run discards what it
+      # fetched, and the next one asks again — the fetch spends exactly one
+      # /games call (the venue catalog is committed and only fetched when
+      # missing), against a thousand a month. Cheap enough that shipping data
+      # the check just objected to was never the better trade.
+      #
+      # Nothing downstream is lost by stopping here. verify_attendance.py's
+      # memory of the previous run is the committed verification file, and the
+      # status that depends on it (espn_ahead, a first sighting) exits clean and
+      # therefore still commits. Only a run that already decided something is
+      # wrong stops before writing.
+      #
+      # Read the cross-check's own output for what went wrong. This step used
+      # to assert "mismatch" for any non-zero exit, and in September 2026 it
+      # reported an ESPN 403 that had crashed the verifier as a disagreement
+      # between two sources, only one of which had been reached.
+      #
+      # It then made the same mistake once more, in the other direction. On
+      # 2026-09-06 a Kansas State crowd ESPN published between the fetch and
+      # the check came out as a MISMATCH, and this message sent whoever read it
+      # after a school box score to arbitrate a disagreement that did not
+      # exist: there was one number in it, not two. Naming the cases is the fix
+      # — a message that says "anything else is the check failing to run" is
+      # wrong the moment a third thing can go wrong.
+      - name: Fail run if the cross-check did not pass
+        if: steps.verify.outcome == 'failure'
+        run: |
+          echo "Cross-check did not pass, so nothing was committed. The reason is in the 'Cross-check attendance vs ESPN' step above, and it is one of three things:"
+          echo "  MISMATCH   — two numbers that differ. The sources genuinely disagree and an official school box score is the arbiter."
+          echo "  stuck      — ESPN has a crowd we still do not, two runs running. Nobody disagrees; the fetch's ESPN fill is not working. Start there, not at a box score."
+          echo "  neither    — the check itself could not run, e.g. ESPN unreachable for every game. Says nothing about the numbers on file."
+          exit 1
+
       - name: Commit and push if changed
         id: commit
         run: |
@@ -91,24 +132,3 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run pages.yml --ref "${{ github.ref_name }}"
-
-      # Read the cross-check's own output for what went wrong. This step used
-      # to assert "mismatch" for any non-zero exit, and in September 2026 it
-      # reported an ESPN 403 that had crashed the verifier as a disagreement
-      # between two sources, only one of which had been reached.
-      #
-      # It then made the same mistake once more, in the other direction. On
-      # 2026-09-06 a Kansas State crowd ESPN published between the fetch and
-      # the check came out as a MISMATCH, and this message sent whoever read it
-      # after a school box score to arbitrate a disagreement that did not
-      # exist: there was one number in it, not two. Naming the cases is the fix
-      # — a message that says "anything else is the check failing to run" is
-      # wrong the moment a third thing can go wrong.
-      - name: Fail run if the cross-check did not pass
-        if: steps.verify.outcome == 'failure'
-        run: |
-          echo "Cross-check did not pass. The reason is in the 'Cross-check attendance vs ESPN' step above, and it is one of three things:"
-          echo "  MISMATCH   — two numbers that differ. The sources genuinely disagree and an official school box score is the arbiter."
-          echo "  stuck      — ESPN has a crowd we still do not, two runs running. Nobody disagrees; the fetch's ESPN fill is not working. Start there, not at a box score."
-          echo "  neither    — the check itself could not run, e.g. ESPN unreachable for every game. Says nothing about the numbers on file."
-          exit 1
