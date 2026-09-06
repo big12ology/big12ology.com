@@ -57,6 +57,23 @@ jobs:
       - name: Rebuild the flat CSV
         run: node scripts/build_csv.mjs
 
+      # The shareable cards, one pair per week plus an unversioned "latest"
+      # pair. Built here rather than at deploy time because they derive from
+      # the snapshots and change only when the data does, and because deploys
+      # run hourly all season while this runs about seven times a week.
+      #
+      # Committed, which is a change of mind worth recording. Generated-at-
+      # deploy was the first plan, to keep binaries out of git — but a
+      # versioned card is written once and then frozen, so the churn is a
+      # handful of files a week rather than a rewrite of everything on every
+      # build, and a committed archive survives the generator breaking.
+      #
+      # Chrome rasterizes the PNGs and is already on the runner: the image
+      # carries Chrome, Chromium and ChromeDriver but no librsvg and no
+      # ImageMagick.
+      - name: Build the shareable cards
+        run: node scripts/build_cards.mjs "${{ inputs.year || '2026' }}" cards --png
+
       # The Python half covers the fetch's CFBD-less path, which by
       # definition never runs on a healthy day — so nothing else here would
       # notice it breaking until the outage it exists for. Fully stubbed: it
@@ -117,7 +134,7 @@ jobs:
         run: |
           git config user.name "attendance-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/
+          git add data/ cards/
           if git diff --cached --quiet; then
             echo "No new attendance data."
             echo "changed=false" >> "$GITHUB_OUTPUT"
