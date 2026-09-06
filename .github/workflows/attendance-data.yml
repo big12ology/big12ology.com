@@ -96,8 +96,19 @@ jobs:
       # to assert "mismatch" for any non-zero exit, and in September 2026 it
       # reported an ESPN 403 that had crashed the verifier as a disagreement
       # between two sources, only one of which had been reached.
+      #
+      # It then made the same mistake once more, in the other direction. On
+      # 2026-09-06 a Kansas State crowd ESPN published between the fetch and
+      # the check came out as a MISMATCH, and this message sent whoever read it
+      # after a school box score to arbitrate a disagreement that did not
+      # exist: there was one number in it, not two. Naming the cases is the fix
+      # — a message that says "anything else is the check failing to run" is
+      # wrong the moment a third thing can go wrong.
       - name: Fail run if the cross-check did not pass
         if: steps.verify.outcome == 'failure'
         run: |
-          echo "Cross-check did not pass. See the 'Cross-check attendance vs ESPN' step above for the reason: a MISMATCH means the sources disagree, and an official school box score is the arbiter; anything else is the check itself failing to run."
+          echo "Cross-check did not pass. The reason is in the 'Cross-check attendance vs ESPN' step above, and it is one of three things:"
+          echo "  MISMATCH   — two numbers that differ. The sources genuinely disagree and an official school box score is the arbiter."
+          echo "  stuck      — ESPN has a crowd we still do not, two runs running. Nobody disagrees; the fetch's ESPN fill is not working. Start there, not at a box score."
+          echo "  neither    — the check itself could not run, e.g. ESPN unreachable for every game. Says nothing about the numbers on file."
           exit 1
