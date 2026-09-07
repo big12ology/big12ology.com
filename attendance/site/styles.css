@@ -465,3 +465,18 @@ svg text.val-in {
 .share code { font-size: .92em; background: var(--panel);
               border: 1px solid var(--line); border-radius: 4px;
               padding: 1px 5px; white-space: nowrap; }
+/* The URL list. A grid rather than a default <dl> so the labels form a column
+   and the paths line up under each other: they are meant to be compared and
+   copied, and a reader scanning for the versioned one should not have to read
+   a sentence to find it. */
+.share-urls { display: grid; grid-template-columns: max-content 1fr;
+              gap: 4px 14px; margin: 10px 0 6px; align-items: baseline; }
+.share-urls dt { color: var(--muted); font-size: 0.8rem; }
+.share-urls dd { margin: 0; min-width: 0; }
+/* The paths are long and this sits under two 900px images: on a phone the
+   column has to give rather than push the page sideways. */
+.share-urls code { white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 560px) {
+  .share-urls { grid-template-columns: 1fr; gap: 2px; }
+  .share-urls dd { margin-bottom: 8px; }
+}

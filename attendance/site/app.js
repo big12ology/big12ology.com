@@ -360,12 +360,23 @@ function renderShare(season, summary) {
   ].map(([href, alt]) =>
     `<a href="${escUrl(href)}"><img src="${escUrl(href)}" alt="${esc(alt)}" `
     + `loading="lazy" width="900" height="590"></a>`).join("");
+  // A LIST, NOT A SENTENCE. This was one run-on line carrying three separate
+  // ideas, and the <code> chips carry side padding, so a full stop written
+  // straight after one rendered as a floating dot: "week-01.png ." read as a
+  // typo rather than as the end of a clause. Nothing here needs to be prose,
+  // and a reader copying a URL wants to find it, not parse toward it.
   $("#share-links").innerHTML =
-    `Week ${wk} keeps this link for good: `
-    + `<code>/attendance/${esc(base)}/week-${nn}.png</code>. `
-    + `For whatever is current instead, use <code>/attendance/cards/week.png</code> `
-    + `and <code>/attendance/cards/season.png</code>. `
-    + `Every one is also a <code>.svg</code>.`;
+    `<dl class="share-urls">`
+    + `<dt>Week ${wk}, permanently</dt>`
+    + `<dd><code>/attendance/${esc(base)}/week-${nn}.png</code></dd>`
+    + `<dt>Whatever week is current</dt>`
+    + `<dd><code>/attendance/cards/week.png</code></dd>`
+    + `<dt>Season to date</dt>`
+    + `<dd><code>/attendance/cards/season.png</code></dd>`
+    + `</dl>`
+    + `<p class="note">Swap <code>.png</code> for <code>.svg</code> on any of `
+    + `them. The season card is versioned the same way: `
+    + `<code>/attendance/${esc(base)}/season-${nn}.png</code></p>`;
 }
 
 function render(teamsData, season) {
