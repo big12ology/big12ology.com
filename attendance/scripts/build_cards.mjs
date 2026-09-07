@@ -132,6 +132,29 @@ function card({ title, subtitle, rows, footnote }) {
        + `${esc(subtitle)}">\n` + parts.join("\n") + "\n</svg>\n";
 }
 
+/**
+ * Home games on the schedule that week, which the snapshots cannot say.
+ *
+ * A snapshot is built from games that have reported, so it has no idea what it
+ * is missing. Without this a card built on Saturday afternoon and one built on
+ * Sunday morning look equally authoritative, and the versioned URL is the one
+ * somebody else has already put in their page.
+ *
+ * "!role" is how the rest of the pipeline says home: build_snapshots.mjs
+ * filters the same way, and a designated home game moved to a neutral site
+ * carries role and belongs to neither side.
+ */
+function scheduledByWeek(y) {
+  const p = join(ROOT, "data", "seasons", `${y}.json`);
+  if (!existsSync(p)) return null;
+  const counts = new Map();
+  for (const g of JSON.parse(readFileSync(p)).games || []) {
+    if (g.role) continue;
+    counts.set(g.week, (counts.get(g.week) || 0) + 1);
+  }
+  return counts;
+}
+
 function snapshots(y) {
   const dir = join(ROOT, "data", "snapshots", String(y));
   if (!existsSync(dir)) return [];
@@ -267,6 +290,7 @@ if (!snaps.length) {
   process.exit(1);
 }
 
+const scheduled = scheduledByWeek(year);
 const seasonDir = join(outDir, String(year));
 let wrote = 0;
 let newest = null;
@@ -277,10 +301,21 @@ for (const snap of snaps) {
   const rows = weekRowsOf(snap);
   // A week nobody hosted in gets no card rather than an empty one.
   if (rows.length) {
+    // "8 of 12" only while some are missing. A complete week says its count
+    // plainly, because "12 of 12" reads like a warning about nothing, and this
+    // label is on every card that will ever be archived.
+    const of = scheduled ? scheduled.get(wk) : null;
+    const partial = of != null && rows.length < of;
     wrote += emit(seasonDir, `week-${nn}`, card({
       title: `Big 12 home crowds, week ${wk}`,
-      subtitle: `${rows.length} home games, sorted by percent of capacity`,
+      subtitle: (partial ? `${rows.length} of ${of} home games`
+                         : `${rows.length} home games`)
+              + `, sorted by percent of capacity`,
       rows,
+      // The count states the fact and stops there. "Still filling in" was the
+      // first wording and it predicts: a 2014 week missing a figure nobody
+      // ever published is short for good, and telling a reader to come back
+      // for it would be a lie with a decade on it.
       footnote: `${snap.season} season, week ${wk}`,
     })) ? 1 : 0;
   }
