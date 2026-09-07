@@ -145,7 +145,17 @@ function weekRowsOf(snap) {
   const wk = snap.throughWeek;
   return snap.rows
     .map((r) => ({ row: r, w: (r.weeks || []).find((x) => x.week === wk) }))
-    .filter((x) => x.w && x.w.attendance != null)
+    // A ZERO IS NOT AN EMPTY STADIUM, it is a figure that never arrived, and
+    // facts.py's attendance_totals draws the same line for the hub card: "a
+    // home game" means one this tracker has a crowd for. Drawing a 0% bar
+    // would say the opposite of what the row means, on an image that travels
+    // to pages with none of this context around it.
+    //
+    // Twenty-five such rows exist: twenty in 2020, three in 2014, two in 2015.
+    // The 2020 ones are the arguable case, because some of those stadiums
+    // really did bar fans, but the season is excluded from the site's own
+    // index below and never reaches a card at all.
+    .filter((x) => x.w && x.w.attendance)
     .map(({ row, w }) => ({
       team: row.team,
       pct: w.pct,
@@ -158,9 +168,13 @@ function weekRowsOf(snap) {
     .sort((a, b) => b.pct - a.pct);
 }
 
+// The season card keeps the site's own totals rather than recomputing them
+// without the zero games. They come from the same snapshot the season table on
+// the page is built from, and a card that quietly disagreed with the table it
+// links to would be worse than one that carries the table's own definition.
 function seasonRowsOf(snap) {
   return snap.rows
-    .filter((r) => r.games > 0 && r.pct != null)
+    .filter((r) => r.games > 0 && r.pct != null && r.total > 0)
     .map((r) => ({
       team: r.team,
       pct: r.pct,
@@ -233,6 +247,18 @@ function emit(dir, name, svg) {
   }
   if (moved) console.log(`  ${name}.svg`);
   return moved;
+}
+
+// 2020 IS NOT A SEASON HERE. data/seasons/index.json is what the page's own
+// selector reads, and it lists 2012-2019 and 2021-2026: the covid year is left
+// out of the site everywhere, so a card for it would be the one place it came
+// back. Read rather than hard-coded, so the two cannot drift.
+const offered = JSON.parse(
+  readFileSync(join(ROOT, "data", "seasons", "index.json"))).seasons || [];
+if (offered.length && !offered.includes(Number(year))) {
+  console.error(`${year} is not in data/seasons/index.json, which is the list `
+                + `the site offers. Nothing built.`);
+  process.exit(1);
 }
 
 const snaps = snapshots(year);
