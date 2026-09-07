@@ -446,7 +446,14 @@ svg text.val-in {
    Below the table, because it answers a question the table raises rather than
    one a reader arrives with: they have looked at the numbers, and now they
    want to put them somewhere. */
-.share { margin: 28px 0 8px; }
+/* 1.5rem is the page's gutter: main, .cards and .note all carry it, and
+   without it this section ran flush to the window while the table above it sat
+   inset, so the cards were visibly wider than the data they came from. The
+   notes inside already have their own copy of that padding, so theirs is taken
+   back off rather than added twice. Their narrow measure is deliberate and
+   belongs to .note, which is where the site keeps prose readable. */
+.share { margin: 28px 0 8px; padding: 0 1.5rem; }
+.share .note { padding-left: 0; padding-right: 0; }
 .share h2 { font-size: var(--t-label); text-transform: uppercase;
             letter-spacing: .06em; color: var(--dim); margin: 0 0 6px; }
 .share-imgs { display: flex; flex-wrap: wrap; gap: 14px; margin: 12px 0; }
