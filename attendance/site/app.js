@@ -332,6 +332,42 @@ function hideTooltip() {
   }, 150);
 }
 
+/**
+ * The two images, and the links that let somebody else host them.
+ *
+ * The versioned URL is the one offered first, because it is the one that still
+ * shows this week in November: cards/<year>/week-NN is written once and frozen.
+ * The unversioned pair is named second and described as what it is, so nobody
+ * pastes it expecting a particular week to stay put.
+ */
+function renderShare(season, summary) {
+  const box = $("#share");
+  const played = summary.weeks.filter((w) => w.games > 0).map((w) => w.week);
+  if (season.season !== liveSeason || !played.length) {
+    box.hidden = true;
+    return;
+  }
+  const wk = Math.max(...played);
+  const nn = String(wk).padStart(2, "0");
+  const base = `cards/${season.season}`;
+  box.hidden = false;
+  $("#share-note").textContent =
+    `Two images built from this table, updated whenever the crowds are. `
+    + `Hotlink either one; nothing else is needed to display them.`;
+  $("#share-imgs").innerHTML = [
+    [`${base}/week-${nn}.png`, `Big 12 home crowds, week ${wk}`],
+    [`${base}/season-${nn}.png`, `Big 12 attendance, ${season.season} to date`],
+  ].map(([href, alt]) =>
+    `<a href="${escUrl(href)}"><img src="${escUrl(href)}" alt="${esc(alt)}" `
+    + `loading="lazy" width="900" height="590"></a>`).join("");
+  $("#share-links").innerHTML =
+    `Week ${wk} keeps this link for good: `
+    + `<code>/attendance/${esc(base)}/week-${nn}.png</code>. `
+    + `For whatever is current instead, use <code>/attendance/cards/week.png</code> `
+    + `and <code>/attendance/cards/season.png</code>. `
+    + `Every one is also a <code>.svg</code>.`;
+}
+
 function render(teamsData, season) {
   const numWeeks = season.weekLabels.length;
   const teams = teamsForSeason(teamsData, season.season);
@@ -377,6 +413,7 @@ function render(teamsData, season) {
   }
 
   renderTable();
+  renderShare(season, summary);
 
   const empty = $("#empty-note");
   const hasPlayed = summary.totals.games > 0;
@@ -407,6 +444,11 @@ function loadPreviewIndex() {
     .catch(() => {});
 }
 
+// The season the cards exist for. build_cards.mjs runs against the live year
+// only, so every other season on the selector has none, and the share block
+// stays hidden rather than pointing at files that were never generated.
+let liveSeason = null;
+
 async function main() {
   loadPreviewIndex();
   const [index, teamsData] = await Promise.all([
@@ -418,6 +460,8 @@ async function main() {
       index.seasons.map(async (y) => [y, await loadJSON(`data/seasons/${y}.json`)])
     )
   );
+
+  liveSeason = index.default ?? Math.max(...index.seasons);
 
   const select = $("#season");
   // Newest first, for two reasons. It is the order a reader wants, and the

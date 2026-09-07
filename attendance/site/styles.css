@@ -441,3 +441,20 @@ svg text.val-in {
 .ledger .lg.b12 .lgname { color: var(--accent); }
 .ledger .lgn { color: var(--dim); font-variant-numeric: tabular-nums; }
 .ledger .lgteams { color: var(--dim); font-size: var(--t-row); }
+
+/* --- the shareable cards -------------------------------------------------
+   Below the table, because it answers a question the table raises rather than
+   one a reader arrives with: they have looked at the numbers, and now they
+   want to put them somewhere. */
+.share { margin: 28px 0 8px; }
+.share h2 { font-size: var(--t-label); text-transform: uppercase;
+            letter-spacing: .06em; color: var(--dim); margin: 0 0 6px; }
+.share-imgs { display: flex; flex-wrap: wrap; gap: 14px; margin: 12px 0; }
+/* The cards are 900 wide and there are two. One per row until there is room
+   for both without shrinking them into illegibility. */
+.share-imgs a { flex: 1 1 380px; min-width: 0; }
+.share-imgs img { width: 100%; height: auto; display: block;
+                  border: 1px solid var(--line); border-radius: 10px; }
+.share code { font-size: .92em; background: var(--panel);
+              border: 1px solid var(--line); border-radius: 4px;
+              padding: 1px 5px; white-space: nowrap; }

@@ -77,6 +77,16 @@
       </div>
       <p id="empty-note" class="note" hidden></p>
     </main>
+    <!-- The shareable cards, filled in by app.js and hidden until it does.
+         Hidden rather than absent so the images are never requested for a
+         season that has none: cards are generated for the live season only,
+         and an <img> with a 404 src is a broken icon on the page. -->
+    <section id="share" class="share" hidden>
+      <h2>Take these with you</h2>
+      <p class="note" id="share-note"></p>
+      <div class="share-imgs" id="share-imgs"></div>
+      <p class="note" id="share-links"></p>
+    </section>
   </div>
   <div id="view-charts" hidden>
     <main><section id="charts-season" class="charts"></section></main>
