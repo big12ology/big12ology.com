@@ -3226,6 +3226,15 @@
       // look-ahead nobody can pick anything, so a game whose kickoff is
       // merely unannounced is still the content — a far-out week is all
       // such games, and dropping them showed "no games" about a full week.
+      //
+      // NO_LINE IS NOT ONE OF THOSE ROWS HERE. It means the books never
+      // posted a number, which decides nothing about a pick made to win
+      // outright, and dropping it took six of fifteen games off 2026 week 2
+      // — every FCS visitor, which is exactly the week a survivor player
+      // wants to spend. Same call the preview loader above already makes for
+      // the same reason. The pick'em keeps the row disabled, because there it
+      // really is unpickable.
+      if (g.unpickable === "no_line") return true;
       return !g.unpickable ||
              (SV_PREVIEW && g.unpickable === "kickoff_tbd");
     });

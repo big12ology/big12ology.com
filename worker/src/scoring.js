@@ -131,11 +131,25 @@ export async function scoreWeek(env, season, week, scores,
   let finals = 0, voids = 0, changed = 0;
 
   for (const g of games || []) {
-    // A game with no line was never pickable, so there is nothing to be right
-    // or wrong about and no pick can exist on it. It gets no result row at
-    // all — writing one made nine junk voids a week and put a "void" chip on
-    // a card row that only ever said "No Spread Available".
-    if (g.spread_x2 == null) continue;
+    // A LINELESS GAME NOW GETS A ROW, because survivor can pick it.
+    //
+    // It used to get none, and that was sound while it held: nothing could be
+    // picked on such a game, so there was nothing to be right or wrong about,
+    // and writing rows anyway made nine junk voids a week and put a "void"
+    // chip on a card row that only ever said "No Spread Available".
+    //
+    // 0012 changed the premise. Survivor picks a team to win outright and
+    // never touches the number, so an FCS visitor is a perfectly good survivor
+    // game, and rebuildSurvivorScores grades by joining picks to results. No
+    // row means that join finds nothing and the pick sits ungraded for good:
+    // not a win, not a loss, just missing. That is worse than not offering the
+    // game, which is why this and 0012 have to travel together.
+    //
+    // ats STAYS NULL for these, and that is what keeps the old symptom away.
+    // "Void" is a verdict about covering a spread, and with no spread there is
+    // no such verdict to reach. The pick'em card reads result.ats to decide
+    // its chip, so null renders nothing where "void" would put the chip back
+    // on the very row that has no line to begin with.
 
     const raw = scores.games ? scores.games[String(g.game_id)] : null;
     const [hp, ap, completed] = raw || [null, null, false];
@@ -144,7 +158,7 @@ export async function scoreWeek(env, season, week, scores,
     if (completed && hp != null && ap != null) {
       status = "final";
       home = hp; away = ap;
-      atsValue = ats(hp, ap, g.spread_x2);
+      atsValue = g.spread_x2 == null ? null : ats(hp, ap, g.spread_x2);
       finals++;
     } else if (now > g.kickoff_at + VOID_AFTER) {
       // Thirty-six hours past kickoff with no final: no result is coming,
@@ -157,7 +171,10 @@ export async function scoreWeek(env, season, week, scores,
       // an entire locked week of games that had not kicked off yet. The clock
       // says the same thing about a genuinely canceled game a day and a half
       // later, and cannot be wrong about one still to be played.
-      status = "void"; atsValue = "void";
+      status = "void";
+      // Same reasoning as above: no line, no ats verdict. status carries the
+      // fact, and survivor grades off status.
+      atsValue = g.spread_x2 == null ? null : "void";
       voids++;
     } else {
       continue;   // still to come; no row, so the card says "waiting"
@@ -434,8 +451,7 @@ async function rebuildSurvivorBoard(env, season, now) {
               WHERE w.season = ?
                 AND w.lock_at IS NOT NULL AND w.lock_at <= ?
                 AND (SELECT MAX(g.kickoff_at) FROM slate_games g
-                      WHERE g.season = w.season AND g.week = w.week
-                        AND g.spread_x2 IS NOT NULL) <= ?),
+                      WHERE g.season = w.season AND g.week = w.week) <= ?),
            entrants AS (
              SELECT user_id, MIN(week) AS entered_week
                FROM survivor_picks WHERE season = ? GROUP BY user_id),

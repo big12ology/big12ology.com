@@ -136,28 +136,48 @@ test("a game still to be played is not voided for being absent", async () => {
   // A scores file listing none of them, which is what a locked week looks
   // like on a Saturday afternoon before anything has finished.
   const r = await scoreWeek(env, 2026, 3, { games: {} });
-  assert.equal(r.voids, 1, "voided a game that had not finished");
+  // Two, not one: 1104 has no line but is equally forty hours stale, and
+  // since 0012 a lineless game is a survivor game and gets graded like any
+  // other. The point of this test is the two that must NOT void, 1101 still
+  // being played and 1102 not yet kicked off.
+  assert.equal(r.voids, 2, "voided a game that had not finished");
 
   const rows = env.raw.prepare(
     "SELECT game_id, status FROM results ORDER BY game_id").all();
-  assert.deepEqual(rows.map((x) => x.game_id), [1103],
-    "only the 40-hours-stale game should have a result row");
+  assert.deepEqual(rows.map((x) => x.game_id), [1103, 1104],
+    "only the 40-hours-stale games should have a result row");
   // The card says WAITING off the missing row; a void would have said the
   // game was canceled.
   assert.equal(env.raw.prepare(
     "SELECT COUNT(*) c FROM pick_scores WHERE user_id='u1'").get().c, 0);
 });
 
-test("a game with no line never gets a result row", async () => {
+// The rule this replaces was "a game with no line never gets a result row",
+// and it was right until survivor could pick one. Now the row has to exist, or
+// rebuildSurvivorScores joins to nothing and the pick never grades. What must
+// not come back is the ats verdict: "void" on a game with no spread is a
+// judgment about covering a number that was never posted, and it is what put a
+// chip on a card row reading "No Spread Available".
+test("a game with no line is graded, but reaches no ats verdict", async () => {
   const env = makeEnv();
   seedWeek(env, { games: [
     { game_id: 1201, home: "A", away: "B", spread_x2: null,
       kickoff_at: NOW() - 40 * HOUR },
+    { game_id: 1202, home: "C", away: "D", spread_x2: null,
+      kickoff_at: NOW() - 5 * HOUR },
   ] });
   lock(env);
-  await scoreWeek(env, 2026, 3, { games: {} });
-  assert.equal(env.raw.prepare("SELECT COUNT(*) c FROM results").get().c, 0,
-    "an unpickable game produced a result nobody could have picked");
+  await scoreWeek(env, 2026, 3, { games: { "1202": [24, 10, true] } });
+
+  const rows = env.raw.prepare(
+    "SELECT game_id, status, ats, home_points FROM results ORDER BY game_id")
+    .all();
+  assert.deepEqual(rows.map((r) => [r.game_id, r.status]),
+                   [[1201, "void"], [1202, "final"]],
+                   "a lineless game was not graded");
+  assert.equal(rows[0].ats, null, "a void verdict on a game with no spread");
+  assert.equal(rows[1].ats, null, "an ats verdict on a game with no spread");
+  assert.equal(rows[1].home_points, 24, "the score itself was not recorded");
 });
 
 test("re-running changes nothing", async () => {

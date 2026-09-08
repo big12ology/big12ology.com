@@ -74,15 +74,21 @@ test("a survivor pick cannot be written, moved or withdrawn once its game "
       /game_started/, "a pick was withdrawn after its game started");
   });
 
-test("the team must be playing that game, and the game must have a line",
+test("the team must be playing that game, but the game needs no line",
   async () => {
     const env = makeEnv();
     twoWeeks(env);
     seedUser(env, "u1", { name: "Confused" });
     assert.throws(() => seedSurvivorPick(env, "u1", 2026, 3, 401, "Baylor"),
       /survivor_not_in_game/, "a team from another game was accepted");
-    assert.throws(() => seedSurvivorPick(env, "u1", 2026, 3, 403, "TCU"),
-      /survivor_not_in_game/, "a lineless game was pickable");
+    // 403 has no line, and since 0012 that is not survivor's business: the
+    // pick is a team to win outright, and the books not posting a number on an
+    // FCS visitor says nothing about who wins. This was the rule that took six
+    // of fifteen games off 2026 week 2.
+    seedSurvivorPick(env, "u1", 2026, 3, 403, "TCU");
+    assert.equal(env.raw.prepare(
+      `SELECT team FROM survivor_picks WHERE user_id = 'u1' AND game_id = 403`)
+      .get().team, "TCU", "a lineless game was refused");
   });
 
 test("a team is spent the moment it is picked, and a void hands it back",
@@ -146,6 +152,36 @@ test("straight up, not against the spread", async () => {
     { user_id: "u1", outcome: "win" },
     { user_id: "u2", outcome: "loss" },
   ]);
+});
+
+// THE WHOLE POINT OF 0012, end to end. Allowing the pick was the easy half;
+// what made it worth doing is that the pick then grades, and it only grades
+// because scoreWeek now writes a result row for a game with no line. Without
+// that, this pick joins to nothing in rebuildSurvivorScores and sits neither
+// won nor lost for the rest of the season, which is worse than never selling
+// the game at all.
+test("a game with no line is picked, and grades like any other", async () => {
+  const env = makeEnv();
+  twoWeeks(env);            // 403 is TCU vs Utah with spread_x2 null
+  seedUser(env, "u1", { name: "Chalk Eater" });
+  seedUser(env, "u2", { name: "Contrarian" });
+  seedSurvivorPick(env, "u1", 2026, 3, 403, "TCU");
+  seedSurvivorPick(env, "u2", 2026, 3, 403, "Utah");
+  forceLock(env, 2026, 3);
+  await scoreWeek(env, 2026, 3, { games: { "403": [45, 3, true] } });
+
+  assert.deepEqual(env.raw.prepare(
+    `SELECT user_id, outcome FROM survivor_scores ORDER BY user_id`).all()
+    .map((r) => ({ ...r })), [
+      { user_id: "u1", outcome: "win" },
+      { user_id: "u2", outcome: "loss" },
+    ], "a lineless game did not grade");
+
+  // And the game itself reaches no verdict about a spread nobody posted.
+  const r = env.raw.prepare(
+    `SELECT status, ats FROM results WHERE game_id = 403`).get();
+  assert.equal(r.status, "final");
+  assert.equal(r.ats, null, "an ats verdict on a game with no spread");
 });
 
 test("a loss is the out, with the week and the reason on the row", async () => {

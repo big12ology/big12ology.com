@@ -489,7 +489,11 @@ export async function putSurvivorPick(env, user, body) {
       WHERE season = ? AND week = ? AND game_id = ?`)
     .bind(s, week, gameId).first();
   if (!g) return fail("no_such_game", 400);
-  if (g.spread_x2 == null) return fail("unpickable", 400);
+  // NO LINE REQUIRED HERE, unlike the pick'em above. A survivor pick is a team
+  // to win outright, so the number is not part of it; the rules page has said
+  // the card shows every game a Big 12 team plays since the pool opened, and
+  // this line was quietly making that untrue for FCS visitors. 0012 dropped
+  // the matching condition from survivor_in_game_insert/_update.
   // This game specifically. survivor_locked_insert would refuse it anyway, but
   // a trigger cannot say WHICH game had already kicked off, and with per-game
   // locks that is the only thing the player needs to hear.
@@ -563,7 +567,7 @@ async function survivorLockedNow(env, user, s, week) {
 async function survivorWeekClosed(env, season_, week) {
   const row = await env.DB.prepare(
     `SELECT MAX(kickoff_at) AS last FROM slate_games
-      WHERE season = ? AND week = ? AND spread_x2 IS NOT NULL`)
+      WHERE season = ? AND week = ?`)
     .bind(season_, week).first();
   return !!(row && row.last != null &&
             row.last <= Math.floor(Date.now() / 1000));
@@ -648,8 +652,7 @@ export async function getSurvivorBoard(env) {
        SELECT w.week FROM weeks w
         WHERE w.season = ?
           AND (SELECT MAX(g.kickoff_at) FROM slate_games g
-                WHERE g.season = w.season AND g.week = w.week
-                  AND g.spread_x2 IS NOT NULL) <= ?)
+                WHERE g.season = w.season AND g.week = w.week) <= ?)
      SELECT p.user_id, p.week, p.team
        FROM survivor_picks p JOIN closed c ON c.week = p.week
       WHERE p.season = ?
@@ -1024,8 +1027,7 @@ export async function getUser(env, url, userId) {
        SELECT w.week FROM weeks w
         WHERE w.season = ?
           AND (SELECT MAX(g.kickoff_at) FROM slate_games g
-                WHERE g.season = w.season AND g.week = w.week
-                  AND g.spread_x2 IS NOT NULL) <= ?)
+                WHERE g.season = w.season AND g.week = w.week) <= ?)
      SELECT p.week, p.team, sc.outcome
        FROM survivor_picks p
        JOIN closed c ON c.week = p.week

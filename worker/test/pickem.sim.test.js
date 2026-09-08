@@ -260,13 +260,26 @@ async function runOne(seed) {
     .get(SEASON, NOW() + 1);
   assert.equal(leaked.n, 0, "an unlocked week was scored");
 
-  // --- a game with no line has no result and no score
-  const unlined = env.raw.prepare(
+  // --- a game with no line is graded, but never against a spread
+  //
+  // This used to assert no result row at all. Since 0012 survivor can pick
+  // such a game, so the row has to exist for it to grade against — what must
+  // stay impossible is an ats verdict on a spread that was never posted, and a
+  // pick'em score on a game the pick'em would not sell.
+  const unlinedAts = env.raw.prepare(
     `SELECT COUNT(*) n FROM results r
        JOIN slate_games g ON g.season = r.season AND g.week = r.week
                          AND g.game_id = r.game_id
-      WHERE r.season = ? AND g.spread_x2 IS NULL`).get(SEASON);
-  assert.equal(unlined.n, 0, "a game with no line got a result row");
+      WHERE r.season = ? AND g.spread_x2 IS NULL AND r.ats IS NOT NULL`)
+    .get(SEASON);
+  assert.equal(unlinedAts.n, 0, "a game with no line reached an ats verdict");
+
+  const unlinedScore = env.raw.prepare(
+    `SELECT COUNT(*) n FROM pick_scores s
+       JOIN slate_games g ON g.season = s.season AND g.week = s.week
+                         AND g.game_id = s.game_id
+      WHERE s.season = ? AND g.spread_x2 IS NULL`).get(SEASON);
+  assert.equal(unlinedScore.n, 0, "a pick'em score on a game with no line");
 
   const graded = gradedGames(env);
   if (!locked.length) cover.unlockedSeasons++;
@@ -363,7 +376,11 @@ async function runOne(seed) {
     const ck = await chalk(env, SEASON, w);
     let cw = 0, cl = 0, cp = 0, cv = 0;
     for (const g of graded.values()) {
-      if (g.week !== w || g.spread_x2 === 0) continue;
+      // Lineless games are graded now (0012, for survivor) but the chalk is an
+      // against-the-spread benchmark and handicap.js counts only games that
+      // have a spread. Skipping them here is matching what chalk measures, not
+      // excusing it: a game with no number has no favorite to take.
+      if (g.week !== w || g.spread_x2 == null || g.spread_x2 === 0) continue;
       if (g.status === "void") { cv++; continue; }
       const c = covered(g.home_points, g.away_points, g.spread_x2);
       if (c === "push") { cp++; continue; }
