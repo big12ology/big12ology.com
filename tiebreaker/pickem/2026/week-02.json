@@ -1,0 +1,364 @@
+{
+ "game_count": 15,
+ "games": [
+  {
+   "away": "Missouri",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": -218,
+     "home_ml": 180,
+     "over_under": 50.5,
+     "over_under_open": 52.5,
+     "provider": "DraftKings",
+     "spread": 5.5,
+     "spread_open": 7
+    },
+    {
+     "away_ml": -235,
+     "home_ml": 195,
+     "over_under": 50,
+     "over_under_open": 50,
+     "provider": "Bovada",
+     "spread": 5.5,
+     "spread_open": 6.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856678,
+   "home": "Kansas",
+   "kickoff": "2026-09-12T00:00:00.000Z",
+   "kickoff_at": 1789171200,
+   "neutral": false,
+   "spread_raw": 5.5,
+   "spread_x2": 11
+  },
+  {
+   "away": "Arizona State",
+   "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": 455,
+     "home_ml": -625,
+     "over_under": 51.5,
+     "over_under_open": 51.5,
+     "provider": "DraftKings",
+     "spread": -14.5,
+     "spread_open": -14.5
+    },
+    {
+     "away_ml": 450,
+     "home_ml": -650,
+     "over_under": 51.5,
+     "over_under_open": 51.5,
+     "provider": "Bovada",
+     "spread": -14,
+     "spread_open": -14
+    }
+   ],
+   "books": 2,
+   "game_id": 401856683,
+   "home": "Texas A&M",
+   "kickoff": "2026-09-12T16:00:00.000Z",
+   "kickoff_at": 1789228800,
+   "neutral": false,
+   "spread_raw": -14.2,
+   "spread_x2": -28
+  },
+  {
+   "away": "Washington State",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 750,
+     "home_ml": -1200,
+     "over_under": 49.5,
+     "over_under_open": 51.5,
+     "provider": "DraftKings",
+     "spread": -18.5,
+     "spread_open": -16.5
+    },
+    {
+     "away_ml": 650,
+     "home_ml": -1100,
+     "over_under": 49,
+     "over_under_open": 49,
+     "provider": "Bovada",
+     "spread": -18.5,
+     "spread_open": -18.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856781,
+   "home": "Kansas State",
+   "kickoff": "2026-09-12T16:00:00.000Z",
+   "kickoff_at": 1789228800,
+   "neutral": false,
+   "spread_raw": -18.5,
+   "spread_x2": -37
+  },
+  {
+   "away": "Oregon",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": -2100,
+     "home_ml": 1100,
+     "over_under": 57.5,
+     "over_under_open": 60.5,
+     "provider": "DraftKings",
+     "spread": 22.5,
+     "spread_open": 18.5
+    },
+    {
+     "away_ml": -2200,
+     "home_ml": 1000,
+     "over_under": 57.5,
+     "over_under_open": 57.5,
+     "provider": "Bovada",
+     "spread": 22.5,
+     "spread_open": 22.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856782,
+   "home": "Oklahoma State",
+   "kickoff": "2026-09-12T16:00:00.000Z",
+   "kickoff_at": 1789228800,
+   "neutral": false,
+   "spread_raw": 22.5,
+   "spread_x2": 45
+  },
+  {
+   "away": "UT Martin",
+   "b12": "home",
+   "game_id": 401856791,
+   "home": "West Virginia",
+   "kickoff": "2026-09-12T17:00:00.000Z",
+   "kickoff_at": 1789232400,
+   "neutral": false,
+   "spread_x2": null,
+   "unpickable": "no_line"
+  },
+  {
+   "away": "Weber State",
+   "b12": "home",
+   "game_id": 401856785,
+   "home": "Colorado",
+   "kickoff": "2026-09-12T19:30:00.000Z",
+   "kickoff_at": 1789241400,
+   "neutral": false,
+   "spread_x2": null,
+   "unpickable": "no_line"
+  },
+  {
+   "away": "UCF",
+   "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": 220,
+     "home_ml": -270,
+     "over_under": 57.5,
+     "over_under_open": 51.5,
+     "provider": "DraftKings",
+     "spread": -7,
+     "spread_open": -8.5
+    },
+    {
+     "away_ml": 250,
+     "home_ml": -300,
+     "over_under": 57,
+     "over_under_open": 57,
+     "provider": "Bovada",
+     "spread": -7.5,
+     "spread_open": -7.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856790,
+   "home": "Pittsburgh",
+   "kickoff": "2026-09-12T19:30:00.000Z",
+   "kickoff_at": 1789241400,
+   "neutral": false,
+   "spread_raw": -7.2,
+   "spread_x2": -14
+  },
+  {
+   "away": "Arizona",
+   "b12": "both",
+   "book_lines": [
+    {
+     "away_ml": 230,
+     "home_ml": -285,
+     "over_under": 50.5,
+     "provider": "DraftKings",
+     "spread": -7.5,
+     "spread_open": -6.5
+    },
+    {
+     "away_ml": 255,
+     "home_ml": -310,
+     "over_under": 50.5,
+     "over_under_open": 50.5,
+     "provider": "Bovada",
+     "spread": -7.5,
+     "spread_open": -7.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856810,
+   "home": "BYU",
+   "kickoff": "2026-09-12T19:30:00.000Z",
+   "kickoff_at": 1789241400,
+   "neutral": false,
+   "spread_raw": -7.5,
+   "spread_x2": -15
+  },
+  {
+   "away": "Western Carolina",
+   "b12": "home",
+   "game_id": 401856786,
+   "home": "Cincinnati",
+   "kickoff": "2026-09-12T23:00:00.000Z",
+   "kickoff_at": 1789254000,
+   "neutral": false,
+   "spread_x2": null,
+   "unpickable": "no_line"
+  },
+  {
+   "away": "Southern",
+   "b12": "home",
+   "game_id": 401856787,
+   "home": "Houston",
+   "kickoff": "2026-09-12T23:00:00.000Z",
+   "kickoff_at": 1789254000,
+   "neutral": false,
+   "spread_x2": null,
+   "unpickable": "no_line"
+  },
+  {
+   "away": "Texas Tech",
+   "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": -3600,
+     "home_ml": 1500,
+     "over_under": 51.5,
+     "over_under_open": 49.5,
+     "provider": "DraftKings",
+     "spread": 26.5,
+     "spread_open": 27.5
+    },
+    {
+     "away_ml": -5000,
+     "home_ml": 1300,
+     "over_under": 51,
+     "over_under_open": 51.5,
+     "provider": "Bovada",
+     "spread": 26.5,
+     "spread_open": 26.5
+    }
+   ],
+   "books": 2,
+   "game_id": 401856783,
+   "home": "Oregon State",
+   "kickoff": "2026-09-12T23:30:00.000Z",
+   "kickoff_at": 1789255800,
+   "neutral": false,
+   "spread_raw": 26.5,
+   "spread_x2": 53
+  },
+  {
+   "away": "Iowa State",
+   "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": 470,
+     "home_ml": -650,
+     "over_under": 41.5,
+     "over_under_open": 41.5,
+     "provider": "DraftKings",
+     "spread": -14.5,
+     "spread_open": -11.5
+    },
+    {
+     "away_ml": 450,
+     "home_ml": -650,
+     "over_under": 41,
+     "over_under_open": 41,
+     "provider": "Bovada",
+     "spread": -14,
+     "spread_open": -14
+    }
+   ],
+   "books": 2,
+   "game_id": 401856788,
+   "home": "Iowa",
+   "kickoff": "2026-09-12T23:30:00.000Z",
+   "kickoff_at": 1789255800,
+   "neutral": false,
+   "spread_raw": -14.2,
+   "spread_x2": -28
+  },
+  {
+   "away": "Prairie View A&M",
+   "b12": "home",
+   "game_id": 401856784,
+   "home": "Baylor",
+   "kickoff": "2026-09-13T00:00:00.000Z",
+   "kickoff_at": 1789257600,
+   "neutral": false,
+   "spread_x2": null,
+   "unpickable": "no_line"
+  },
+  {
+   "away": "Grambling",
+   "b12": "home",
+   "game_id": 401856789,
+   "home": "TCU",
+   "kickoff": "2026-09-13T00:00:00.000Z",
+   "kickoff_at": 1789257600,
+   "neutral": false,
+   "spread_x2": null,
+   "unpickable": "no_line"
+  },
+  {
+   "away": "Arkansas",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 360,
+     "home_ml": -470,
+     "over_under": 56.5,
+     "over_under_open": 54.5,
+     "provider": "DraftKings",
+     "spread": -12.5,
+     "spread_open": -9.5
+    },
+    {
+     "away_ml": 375,
+     "home_ml": -525,
+     "over_under": 57,
+     "over_under_open": 57,
+     "provider": "Bovada",
+     "spread": -13,
+     "spread_open": -13
+    }
+   ],
+   "books": 2,
+   "game_id": 401856670,
+   "home": "Utah",
+   "kickoff": "2026-09-13T02:15:00.000Z",
+   "kickoff_at": 1789265700,
+   "neutral": false,
+   "spread_raw": -12.8,
+   "spread_x2": -26
+  }
+ ],
+ "lock_at": 1789171200,
+ "pickable_count": 9,
+ "published": "2026-09-08T12:04:40+00:00",
+ "season": 2026,
+ "status": "published",
+ "week": 2
+}

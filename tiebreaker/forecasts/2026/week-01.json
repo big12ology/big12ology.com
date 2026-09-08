@@ -1,14 +1,14 @@
 {
  "games_complete": 16,
- "generated": "2026-09-06T05:31:51+00:00",
+ "generated": "2026-09-08T12:04:32+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
   "rating_sigma": 6.261,
   "systems": {
    "Elo": {
-    "regressed": 0.65,
-    "year": 2025
+    "regressed": null,
+    "year": 2026
    },
    "FPI": {
     "regressed": null,
@@ -27,68 +27,68 @@
  "season": 2026,
  "teams": {
   "Arizona": {
-   "exp_w": 4.788,
-   "p_ccg": 0.1322
+   "exp_w": 4.771,
+   "p_ccg": 0.1297
   },
   "Arizona State": {
-   "exp_w": 4.259,
-   "p_ccg": 0.0679
+   "exp_w": 4.237,
+   "p_ccg": 0.0661
   },
   "BYU": {
-   "exp_w": 5.979,
-   "p_ccg": 0.2777
+   "exp_w": 5.944,
+   "p_ccg": 0.2717
   },
   "Baylor": {
-   "exp_w": 3.918,
-   "p_ccg": 0.0558
+   "exp_w": 3.889,
+   "p_ccg": 0.0539
   },
   "Cincinnati": {
-   "exp_w": 3.567,
-   "p_ccg": 0.0429
+   "exp_w": 3.611,
+   "p_ccg": 0.0442
   },
   "Colorado": {
-   "exp_w": 3.448,
-   "p_ccg": 0.0343
+   "exp_w": 3.45,
+   "p_ccg": 0.035
   },
   "Houston": {
-   "exp_w": 4.654,
-   "p_ccg": 0.0886
+   "exp_w": 4.629,
+   "p_ccg": 0.0864
   },
   "Iowa State": {
-   "exp_w": 4.131,
-   "p_ccg": 0.0578
+   "exp_w": 4.102,
+   "p_ccg": 0.0566
   },
   "Kansas": {
-   "exp_w": 4.03,
-   "p_ccg": 0.0567
+   "exp_w": 4.076,
+   "p_ccg": 0.0585
   },
   "Kansas State": {
-   "exp_w": 5.063,
-   "p_ccg": 0.1277
+   "exp_w": 5.056,
+   "p_ccg": 0.125
   },
   "Oklahoma State": {
-   "exp_w": 3.325,
-   "p_ccg": 0.0253
+   "exp_w": 3.234,
+   "p_ccg": 0.0221
   },
   "TCU": {
-   "exp_w": 4.522,
-   "p_ccg": 0.1063
+   "exp_w": 4.454,
+   "p_ccg": 0.1016
   },
   "Texas Tech": {
-   "exp_w": 7.391,
-   "p_ccg": 0.6039
+   "exp_w": 7.399,
+   "p_ccg": 0.602
   },
   "UCF": {
-   "exp_w": 3.93,
-   "p_ccg": 0.051
+   "exp_w": 4.067,
+   "p_ccg": 0.058
   },
   "Utah": {
-   "exp_w": 5.939,
-   "p_ccg": 0.2661
+   "exp_w": 6.041,
+   "p_ccg": 0.283
   },
   "West Virginia": {
-   "exp_w": 3.057,
-   "p_ccg": 0.0176
+   "exp_w": 3.041,
+   "p_ccg": 0.0169
   }
  },
  "through_week": 1
