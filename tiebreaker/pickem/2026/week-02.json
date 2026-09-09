@@ -132,24 +132,46 @@
   {
    "away": "UT Martin",
    "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 55.5,
+     "over_under_open": 55.5,
+     "provider": "DraftKings",
+     "spread": -40.5,
+     "spread_open": -40.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856791,
    "home": "West Virginia",
    "kickoff": "2026-09-12T17:00:00.000Z",
    "kickoff_at": 1789232400,
    "neutral": false,
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -40.5,
+   "spread_x2": -81
   },
   {
    "away": "Weber State",
    "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 2500,
+     "home_ml": -9000,
+     "over_under": 53.5,
+     "over_under_open": 53.5,
+     "provider": "DraftKings",
+     "spread": -33.5,
+     "spread_open": -33.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856785,
    "home": "Colorado",
    "kickoff": "2026-09-12T19:30:00.000Z",
    "kickoff_at": 1789241400,
    "neutral": false,
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -33.5,
+   "spread_x2": -67
   },
   {
    "away": "UCF",
@@ -323,24 +345,44 @@
   {
    "away": "Prairie View A&M",
    "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 56.5,
+     "over_under_open": 56.5,
+     "provider": "DraftKings",
+     "spread": -38.5,
+     "spread_open": -37.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856784,
    "home": "Baylor",
    "kickoff": "2026-09-13T00:00:00.000Z",
    "kickoff_at": 1789257600,
    "neutral": false,
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -38.5,
+   "spread_x2": -77
   },
   {
    "away": "Grambling",
    "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 53.5,
+     "over_under_open": 53.5,
+     "provider": "DraftKings",
+     "spread": -43.5,
+     "spread_open": -43.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856789,
    "home": "TCU",
    "kickoff": "2026-09-13T00:00:00.000Z",
    "kickoff_at": 1789257600,
    "neutral": false,
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -43.5,
+   "spread_x2": -87
   },
   {
    "away": "Arkansas",
@@ -376,8 +418,8 @@
   }
  ],
  "lock_at": 1789171200,
- "pickable_count": 11,
- "published": "2026-09-09T13:02:32+00:00",
+ "pickable_count": 15,
+ "published": "2026-09-09T20:16:08+00:00",
  "season": 2026,
  "status": "published",
  "week": 2
