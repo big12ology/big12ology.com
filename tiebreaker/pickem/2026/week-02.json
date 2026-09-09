@@ -217,24 +217,44 @@
   {
    "away": "Western Carolina",
    "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 60.5,
+     "over_under_open": 60.5,
+     "provider": "DraftKings",
+     "spread": -36.5,
+     "spread_open": -36.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856786,
    "home": "Cincinnati",
    "kickoff": "2026-09-12T23:00:00.000Z",
    "kickoff_at": 1789254000,
    "neutral": false,
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -36.5,
+   "spread_x2": -73
   },
   {
    "away": "Southern",
    "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 60.5,
+     "over_under_open": 60.5,
+     "provider": "DraftKings",
+     "spread": -51.5,
+     "spread_open": -51.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856787,
    "home": "Houston",
    "kickoff": "2026-09-12T23:00:00.000Z",
    "kickoff_at": 1789254000,
    "neutral": false,
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -51.5,
+   "spread_x2": -103
   },
   {
    "away": "Texas Tech",
@@ -356,8 +376,8 @@
   }
  ],
  "lock_at": 1789171200,
- "pickable_count": 9,
- "published": "2026-09-08T12:04:40+00:00",
+ "pickable_count": 11,
+ "published": "2026-09-09T13:02:32+00:00",
  "season": 2026,
  "status": "published",
  "week": 2
