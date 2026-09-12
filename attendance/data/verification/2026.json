@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 12
+    "agree": 13
   },
   "games": [
     {
@@ -133,6 +133,17 @@
       "espnId": 401856780,
       "ours": 54158,
       "espn": 54158,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Kansas",
+      "week": 2,
+      "opponent": "Missouri",
+      "date": "2026-09-11",
+      "espnId": 401856678,
+      "ours": 32000,
+      "espn": 32000,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

@@ -399,7 +399,15 @@
       "espnId": 401856678,
       "conferenceGame": false,
       "opponent": "Missouri",
-      "attendance": null
+      "attendance": 32000,
+      "pointsFor": 21,
+      "pointsAgainst": 38,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 80,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
