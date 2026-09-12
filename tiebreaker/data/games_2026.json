@@ -404,7 +404,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-12T16:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Boone Pickens Stadium",
   "venue_id": 3646,
@@ -416,8 +416,8 @@
   "away_conf": "Big Ten",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 39,
+  "away_points": 31
  },
  {
   "id": 401856791,
