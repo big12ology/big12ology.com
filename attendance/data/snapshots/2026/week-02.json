@@ -3,25 +3,6 @@
   "throughWeek": 2,
   "rows": [
     {
-      "team": "Kansas State",
-      "stadium": "Bill Snyder Family Football Stadium",
-      "capacity": 50000,
-      "capacityEstimate": null,
-      "color": "#3c0969",
-      "logo": "assets/logos/ksu.svg",
-      "multiVenue": false,
-      "games": 1,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 51719,
-          "pct": 1.03438
-        }
-      ],
-      "total": 51719,
-      "pct": 1.03438
-    },
-    {
       "team": "BYU",
       "stadium": "LaVell Edwards Stadium",
       "capacity": 62073,
@@ -29,16 +10,45 @@
       "color": "#003da5",
       "logo": "assets/logos/byu.png",
       "multiVenue": false,
-      "games": 1,
+      "games": 2,
       "weeks": [
         {
           "week": 1,
           "attendance": 64077,
           "pct": 1.0322845681697357
+        },
+        {
+          "week": 2,
+          "attendance": 64409,
+          "pct": 1.0376331094034443
         }
       ],
-      "total": 64077,
-      "pct": 1.0322845681697357
+      "total": 128486,
+      "pct": 1.03495883878659
+    },
+    {
+      "team": "Kansas State",
+      "stadium": "Bill Snyder Family Football Stadium",
+      "capacity": 50000,
+      "capacityEstimate": null,
+      "color": "#3c0969",
+      "logo": "assets/logos/ksu.svg",
+      "multiVenue": false,
+      "games": 2,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 51719,
+          "pct": 1.03438
+        },
+        {
+          "week": 2,
+          "attendance": 51759,
+          "pct": 1.03518
+        }
+      ],
+      "total": 103478,
+      "pct": 1.03478
     },
     {
       "team": "Arizona State",
@@ -120,6 +130,25 @@
       ],
       "total": 62904,
       "pct": 0.982875
+    },
+    {
+      "team": "Oklahoma State",
+      "stadium": "Boone Pickens Stadium",
+      "capacity": 52202,
+      "capacityEstimate": null,
+      "color": "#ff7300",
+      "logo": "assets/logos/okst.svg",
+      "multiVenue": false,
+      "games": 1,
+      "weeks": [
+        {
+          "week": 2,
+          "attendance": 51035,
+          "pct": 0.9776445346921574
+        }
+      ],
+      "total": 51035,
+      "pct": 0.9776445346921574
     },
     {
       "team": "UCF",
@@ -262,19 +291,6 @@
       "pct": 0
     },
     {
-      "team": "Oklahoma State",
-      "stadium": "Boone Pickens Stadium",
-      "capacity": 52202,
-      "capacityEstimate": null,
-      "color": "#ff7300",
-      "logo": "assets/logos/okst.svg",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
-    },
-    {
       "team": "TCU",
       "stadium": "Amon G. Carter Stadium",
       "capacity": 46000,
@@ -305,10 +321,10 @@
     },
     {
       "week": 2,
-      "games": 1,
-      "attendance": 32000,
-      "capacity": 32000,
-      "pct": 1
+      "games": 4,
+      "attendance": 199203,
+      "capacity": 196275,
+      "pct": 1.0149178448605274
     },
     {
       "week": 3,
@@ -389,9 +405,9 @@
     }
   ],
   "totals": {
-    "games": 13,
-    "attendance": 599432,
-    "capacity": 635921,
-    "pct": 0.9426202311293383
+    "games": 16,
+    "attendance": 766635,
+    "capacity": 800196,
+    "pct": 0.958059025538743
   }
 }

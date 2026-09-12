@@ -1,7 +1,8 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 13
+    "agree": 16,
+    "missing_both": 2
   },
   "games": [
     {
@@ -137,6 +138,28 @@
       "status": "agree"
     },
     {
+      "team": "BYU",
+      "week": 2,
+      "opponent": "Arizona",
+      "date": "2026-09-12",
+      "espnId": 401856810,
+      "ours": 64409,
+      "espn": 64409,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Colorado",
+      "week": 2,
+      "opponent": "Weber State",
+      "date": "2026-09-12",
+      "espnId": 401856785,
+      "ours": null,
+      "espn": null,
+      "source": "CFBD",
+      "status": "missing_both"
+    },
+    {
       "team": "Kansas",
       "week": 2,
       "opponent": "Missouri",
@@ -146,6 +169,39 @@
       "espn": 32000,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
+    },
+    {
+      "team": "Kansas State",
+      "week": 2,
+      "opponent": "Washington State",
+      "date": "2026-09-12",
+      "espnId": 401856781,
+      "ours": 51759,
+      "espn": 51759,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 2,
+      "opponent": "Oregon",
+      "date": "2026-09-12",
+      "espnId": 401856782,
+      "ours": 51035,
+      "espn": 51035,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "West Virginia",
+      "week": 2,
+      "opponent": "UT Martin",
+      "date": "2026-09-12",
+      "espnId": 401856791,
+      "ours": null,
+      "espn": null,
+      "source": "CFBD",
+      "status": "missing_both"
     }
   ]
 }

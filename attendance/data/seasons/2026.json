@@ -311,7 +311,9 @@
       "role": "away",
       "venue": "LaVell Edwards Stadium",
       "city": "Provo",
-      "state": "UT"
+      "state": "UT",
+      "pointsFor": 17,
+      "pointsAgainst": 28
     },
     {
       "team": "Arizona State",
@@ -325,7 +327,9 @@
       "role": "away",
       "venue": "Kyle Field",
       "city": "College Station",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 20,
+      "pointsAgainst": 48
     },
     {
       "team": "BYU",
@@ -335,7 +339,15 @@
       "espnId": 401856810,
       "conferenceGame": true,
       "opponent": "Arizona",
-      "attendance": null
+      "attendance": 64409,
+      "pointsFor": 28,
+      "pointsAgainst": 17,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 83,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
@@ -365,7 +377,14 @@
       "espnId": 401856785,
       "conferenceGame": false,
       "opponent": "Weber State",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 52,
+      "pointsAgainst": 21,
+      "weather": {
+        "tempF": 72,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
@@ -417,7 +436,15 @@
       "espnId": 401856781,
       "conferenceGame": false,
       "opponent": "Washington State",
-      "attendance": null
+      "attendance": 51759,
+      "pointsFor": 34,
+      "pointsAgainst": 7,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 78,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
@@ -427,7 +454,15 @@
       "espnId": 401856782,
       "conferenceGame": false,
       "opponent": "Oregon",
-      "attendance": null
+      "attendance": 51035,
+      "pointsFor": 39,
+      "pointsAgainst": 31,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 83,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
@@ -485,7 +520,14 @@
       "espnId": 401856791,
       "conferenceGame": false,
       "opponent": "UT Martin",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 52,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 77,
+        "windMph": 9,
+        "precipIn": 0.11
+      }
     },
     {
       "team": "Arizona",
