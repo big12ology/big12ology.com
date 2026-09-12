@@ -95,10 +95,20 @@
    "tempF": 85.4,
    "windMph": 8.9
   },
+  "401856785": {
+   "precipChance": 1,
+   "tempF": 74.1,
+   "windMph": 6.2
+  },
   "401856791": {
    "precipChance": 2,
    "tempF": 84.9,
    "windMph": 6.3
+  },
+  "401856810": {
+   "precipChance": 0,
+   "tempF": 88.3,
+   "windMph": 9.7
   }
  },
  "season": 2026
