@@ -1,10 +1,10 @@
 {
- "games_complete": 30,
- "generated": "2026-09-13T04:31:57+00:00",
+ "games_complete": 31,
+ "generated": "2026-09-13T06:11:03+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
-  "rating_sigma": 5.745,
+  "rating_sigma": 5.715,
   "systems": {
    "Elo": {
     "regressed": null,
@@ -28,67 +28,67 @@
  "teams": {
   "Arizona": {
    "exp_w": 4.412,
-   "p_ccg": 0.0683
+   "p_ccg": 0.0649
   },
   "Arizona State": {
-   "exp_w": 4.245,
-   "p_ccg": 0.0629
+   "exp_w": 4.248,
+   "p_ccg": 0.0641
   },
   "BYU": {
-   "exp_w": 6.32,
-   "p_ccg": 0.3363
+   "exp_w": 6.329,
+   "p_ccg": 0.3376
   },
   "Baylor": {
-   "exp_w": 3.881,
-   "p_ccg": 0.0536
+   "exp_w": 3.87,
+   "p_ccg": 0.0533
   },
   "Cincinnati": {
-   "exp_w": 3.596,
-   "p_ccg": 0.0413
+   "exp_w": 3.605,
+   "p_ccg": 0.0411
   },
   "Colorado": {
-   "exp_w": 3.441,
-   "p_ccg": 0.032
+   "exp_w": 3.452,
+   "p_ccg": 0.033
   },
   "Houston": {
-   "exp_w": 4.634,
-   "p_ccg": 0.0853
+   "exp_w": 4.617,
+   "p_ccg": 0.0845
   },
   "Iowa State": {
-   "exp_w": 4.101,
-   "p_ccg": 0.0554
+   "exp_w": 4.084,
+   "p_ccg": 0.0542
   },
   "Kansas": {
-   "exp_w": 4.07,
-   "p_ccg": 0.0547
+   "exp_w": 4.084,
+   "p_ccg": 0.0564
   },
   "Kansas State": {
-   "exp_w": 5.058,
-   "p_ccg": 0.1216
+   "exp_w": 5.05,
+   "p_ccg": 0.119
   },
   "Oklahoma State": {
-   "exp_w": 3.193,
-   "p_ccg": 0.0192
+   "exp_w": 3.199,
+   "p_ccg": 0.0196
   },
   "TCU": {
-   "exp_w": 4.464,
-   "p_ccg": 0.0966
+   "exp_w": 4.444,
+   "p_ccg": 0.0964
   },
   "Texas Tech": {
-   "exp_w": 7.455,
-   "p_ccg": 0.6276
+   "exp_w": 7.458,
+   "p_ccg": 0.624
   },
   "UCF": {
-   "exp_w": 4.049,
-   "p_ccg": 0.0552
+   "exp_w": 4.061,
+   "p_ccg": 0.0555
   },
   "Utah": {
-   "exp_w": 6.067,
-   "p_ccg": 0.2879
+   "exp_w": 6.074,
+   "p_ccg": 0.2935
   },
   "West Virginia": {
-   "exp_w": 3.014,
-   "p_ccg": 0.0141
+   "exp_w": 3.012,
+   "p_ccg": 0.0149
   }
  },
  "through_week": 2

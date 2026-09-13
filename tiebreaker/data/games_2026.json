@@ -635,7 +635,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-13T02:15:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Rice-Eccles Stadium",
   "venue_id": 587,
@@ -647,8 +647,8 @@
   "away_conf": "SEC",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 43,
+  "away_points": 10
  },
  {
   "id": 401856811,
