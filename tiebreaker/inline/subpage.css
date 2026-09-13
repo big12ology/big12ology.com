@@ -237,6 +237,31 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
   font-variant-numeric:tabular-nums }
 .mkval { font-size:var(--t-lead); font-weight:600 }
 .mkgrid .dim { font-size:var(--t-meta) }
+/* The books behind the average, shut by default. The averages above are the
+   answer; this is the working, and it only earns room when asked for. */
+.bookbox { margin-top:14px; border-top:1px solid var(--line); padding-top:10px }
+.bookbox > summary { cursor:pointer; list-style:none; display:flex;
+  align-items:center; justify-content:space-between; gap:8px;
+  font-size:var(--t-meta); color:var(--dim) }
+/* Both spellings: WebKit still wants the pseudo-element, everyone else takes
+   list-style. Left in, the native triangle sits beside our own chevron. */
+.bookbox > summary::-webkit-details-marker { display:none }
+.bookchev { color:var(--dim); transition:transform .15s ease }
+.bookbox[open] .bookchev { transform:rotate(180deg) }
+/* The wrapper scrolls, not the table: four columns of numbers plus a book
+   name does not fit a phone, and a card that scrolls the PAGE sideways is
+   worse than a table that scrolls itself. On the table directly this would
+   need display:block, which throws away the column alignment that is the
+   only reason to use a table here. */
+.booktabwrap { overflow-x:auto; margin-top:10px }
+.booktab { width:100%; border-collapse:collapse;
+  font-size:var(--t-meta); font-variant-numeric:tabular-nums }
+.booktab th, .booktab td { padding:4px 8px 4px 0; text-align:right;
+  white-space:nowrap }
+.booktab th:first-child, .booktab td:first-child { text-align:left;
+  padding-right:14px }
+.booktab thead th { color:var(--dim); font-weight:500;
+  border-bottom:1px solid var(--line) }
 /* Model against market: the same bar the race card uses, so a reader who
    knows one knows the other. */
 /* 58px, not 44. The label track was cut to fit SP+, FPI, ELO and SRS, and

@@ -166,18 +166,21 @@ def load_lines(year):
     raw = json.load(open(p)) if os.path.exists(p) else {}
     out = {k: (v if isinstance(v, dict) else {"spread": v})
            for k, v in raw.items()}
-    # The meta sidecar rides in as `as_of` on every record, so anything
-    # holding a line also knows when the market was pulled. Denormalized on
-    # purpose: the consumers get handed one game's line, not the file.
-    mp = os.path.join(HERE, "data", f"lines_{year}.meta.json")
-    if out and os.path.exists(mp):
-        try:
-            as_of = json.load(open(mp)).get("fetched_at")
-        except (OSError, ValueError):
-            as_of = None
-        if as_of:
-            for v in out.values():
-                v["as_of"] = as_of
+    # `as_of` is per record and is not backfilled from the meta sidecar.
+    #
+    # It used to be: the file was overwritten whole, so one fetch stamp was
+    # true of every record in it. Merging (fetch.py) ended that. The file
+    # now holds captures of several ages at once — this week at a dozen
+    # books, a week 11 game CFBD lined in September, a finished game whose
+    # line is frozen where it was — and the sidecar says when the last
+    # refresh ran, not when any given record was taken. Backfilling it
+    # printed "updated Sep 13, 4:30 PM" under a week 1 closing line that
+    # had not been touched since August.
+    #
+    # So records written before per-record stamps carry no time, and
+    # book_src leaves the clause off rather than inventing one. Those are
+    # finished games whose line is closed, which is the case where a fetch
+    # time was telling the reader least.
     return out
 
 
@@ -214,26 +217,101 @@ def line_asof(ln):
     return f"{_MON[d.month - 1][:3]} {d.day}, {d.strftime('%-I:%M %p')} ET"
 
 
+# Where a record came from, as fetch.py stamps it, and what to call that
+# in a sentence. Records written before the merge carry no `source` and are
+# all CFBD, which is what the fallback says.
+_LINE_SOURCE = "collegefootballdata.com"
+
+# The longest list of book names a disclaimer will spell out. Past this it
+# gives the count alone; see book_src.
+_BOOKS_NAMED = 4
+
+
 def book_src(ln):
     """Where a displayed line came from, said once, the same way everywhere.
 
-    'an average of 2 books (ESPN Bet, DraftKings) via collegefootballdata.com,
-    updated Aug 25, 4:52 AM ET' — with the names and the fetch stamp when
+    'an average of 11 books (Bally Bet, BetMGM, ...) via the-odds-api.com,
+    updated Sep 13, 4:52 PM ET' — with the names and the fetch stamp when
     the files carry them, the bare count when they predate them, and just
-    the site when there is no line at all. A single named book is not an
+    the source when there is no line at all. A single named book is not an
     average of anything, so it gets named instead. HTML-escaped here so
-    every call site can drop it into text or a quoted attribute as-is."""
+    every call site can drop it into text or a quoted attribute as-is.
+
+    The source is per record rather than per site: the file is merged from
+    two of them (fetch.py), so this week's game can be eleven books from
+    the-odds-api while a week 11 game on the same page is two from CFBD.
+    Naming the wrong one is a small lie in the one sentence whose whole job
+    is to say where the number came from."""
     n = book_count(ln)
-    names = ", ".join(book_names(ln))
+    src = esc((ln or {}).get("source") or _LINE_SOURCE)
     if not n:
-        return "via collegefootballdata.com"
+        return f"via {src}"
     upd = line_asof(ln)
     tail = f", updated {upd}" if upd else ""
+    all_names = book_names(ln)
     if n == 1:
-        return f"{esc(names) or 'one book'} via collegefootballdata.com{tail}"
+        return (f"{esc(', '.join(all_names)) or 'one book'} via "
+                f"{src}{tail}")
+    # Named in full while there were two of them, and still named while
+    # the list is short enough to read. Past that the names come off
+    # entirely rather than being truncated: book_names sorts
+    # alphabetically, so the first four of eleven are Bally Bet, BetMGM,
+    # BetOnline.ag and BetRivers, which reads like the four that matter
+    # and buries DraftKings and FanDuel in "and 7 more". An arbitrary
+    # subset presented as a sample is worse than the count alone, and the
+    # count is the part that was load-bearing: how many opinions is this
+    # number the average of. The full list is in the file.
+    names = ", ".join(all_names) if len(all_names) <= _BOOKS_NAMED else ""
     return (f"an average of {n} books"
             + (f" ({esc(names)})" if names else "")
-            + f" via collegefootballdata.com{tail}")
+            + f" via {src}{tail}")
+
+
+def book_table(ln, g, teams):
+    """Every book behind the average, folded away until asked for.
+
+    The card leads with the average because that is the number the rest of
+    the site reasons about: the slate freezes it, the Lab plots against it,
+    the race card ranks by it. But an average is a claim about a spread of
+    opinions, and until the market carried more than two books there was
+    nowhere to see the spread. Eleven books disagreeing by a point is a
+    different fact from eleven books agreeing, and both round to the same
+    headline.
+
+    A native <details>, like the tie stories and the Lab's weeks, so it
+    works with no script, keyboard-opens, and prints open if somebody
+    prints the page. Shut by default: the averages are the answer, and
+    this is the working.
+
+    Nothing at all for one book, because there is no distribution to show
+    and the note already names it. Records that predate the per-book
+    capture hold an integer where the list goes, and book_count reads
+    those; they get nothing here either."""
+    books = (ln or {}).get("books")
+    if not isinstance(books, list) or len(books) < 2:
+        return ""
+    ml_head = (f"{team_abbr(teams, g['home'])}/"
+               f"{team_abbr(teams, g['away'])}")
+    rows = []
+    for b in sorted(books, key=lambda x: (x.get("provider") or "").lower()):
+        sp, ou = b.get("spread"), b.get("over_under")
+        hm, aw = b.get("home_ml"), b.get("away_ml")
+        # An em space rather than a hyphen for a number a book did not
+        # post: BetOnline.ag and LowVig.ag carry spreads and totals but no
+        # moneyline, and a dash in a column of signed numbers reads as one.
+        ml = (f"{hm:+g}/{aw:+g}" if hm is not None and aw is not None
+              else "&emsp;")
+        rows.append(f"<tr><td>{esc(b.get('provider') or '?')}</td>"
+                    f"<td>{'' if sp is None else f'{sp:+g}'}</td>"
+                    f"<td>{'' if ou is None else f'{ou:g}'}</td>"
+                    f"<td>{ml}</td></tr>")
+    return (f"<details class=bookbox><summary>"
+            f"<span>{len(books)} books</span>"
+            f"{icon('chev', 'gi bookchev')}</summary>"
+            f"<div class=booktabwrap><table class=booktab>"
+            f"<thead><tr><th>book</th><th>spread</th><th>total</th>"
+            f"<th>{ml_head}</th></tr></thead>"
+            f"<tbody>{''.join(rows)}</tbody></table></div></details>")
 
 
 MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS"]
@@ -2164,6 +2242,11 @@ ICONS = {
               " 2 0 0 1 -2 2z'/><path d='M16 6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2"
               " 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z'/><path d='M9 18a6 6 0 0 1 6"
               " -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z'/>"),
+    # Single, for one disclosure; the doubles below are "expand ALL". The
+    # same path cards.js draws for the card-level toggle, so a chevron means
+    # the same thing at both levels of the market card rather than looking
+    # like two unrelated controls that happen to point down.
+    "chev": "<path d='M6 9l6 6l6 -6'/>",
     "chevdown": "<path d='M7 7l5 5l5 -5'/><path d='M7 13l5 5l5 -5'/>",
     "chevup": "<path d='M7 11l5 -5l5 5'/><path d='M7 17l5 -5l5 5'/>",
     "filter": ("<path d='M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414"
@@ -3174,6 +3257,7 @@ def build_game_page(g, ctx):
         src = book_src(ln)
         mk = (f"<div class=card><h2>The market</h2>"
               f"<div class=mkgrid>{grid}</div>"
+              f"{book_table(ln, g, ctx.get('teams') or {})}"
               f"<p class=note>{src[0].upper() + src[1:]}.</p></div>")
 
     # What the public did with that number. Ships hidden and empty; pickcon.js
@@ -4139,7 +4223,11 @@ def load_games(year, refetch=False, refresh=False, refresh_lines=False):
             games = fetcher.fetch_season(year, force=True)
             if refresh:
                 fetcher.fetch_ratings(year)
-                fetcher.fetch_lines(year)
+                # force_cfbd: this is the run that publishes the slate, and
+                # the openers it freezes into the page should be checked
+                # rather than inherited from whenever the daily gate last
+                # let a CFBD call through.
+                fetcher.fetch_lines(year, force_cfbd=True)
                 # Broadcast windows are announced about two weeks out and
                 # move after that. Weekly is the right cadence: on the
                 # hourly build it would be 300 calls a month to learn the

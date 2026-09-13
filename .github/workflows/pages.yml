@@ -205,6 +205,11 @@ jobs:
         working-directory: tiebreaker
         env:
           CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+          # The market's deep book count (tiebreaker/market.py). Absent, the
+          # lines refresh still runs and still writes: the fetcher says so in
+          # the log and falls back to CFBD's two books, because a missing key
+          # is not a reason to take the build down.
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           B12_PICKEM: ${{ steps.pools.outputs.on }}
         # A LITERAL BLOCK, ONE LINE PER EXPRESSION. This was a folded block
         # (>-) with each ${{ }} wrapped across more-indented continuation
@@ -216,10 +221,23 @@ jobs:
         # dodged it for a week only because ITS expression came first.
         # Folded scalars and multi-line expressions do not mix; the shell
         # continuations below are explicit and the expressions unwrappable.
+        #
+        # --refresh-lines is now EVERY scheduled run except Tuesday's, which
+        # passes --refresh instead and does the same work plus ratings and
+        # media. It used to name the two daily crons explicitly; naming the
+        # one exception is shorter, and it means a cron added later picks up
+        # the market without anybody remembering to come back here.
+        #
+        # The count of runs is no longer the count of calls. Both halves of
+        # fetch_lines are rate limited on their own clock — the market every
+        # few hours, CFBD once a day — so most of these runs make no call at
+        # all and simply build from what the last one wrote. That is what
+        # makes it affordable to ask on the hourly weekend builds, which is
+        # where the market actually moves.
         run: |
           python3 build.py --fetch \
             ${{ (github.event.schedule == '0 7 * 8-12 2' || inputs.refresh) && '--refresh' || '' }} \
-            ${{ (github.event.schedule == '30 8 * 8-12 *' || github.event.schedule == '0 18 * 8-12 *') && '--refresh-lines' || '' }}
+            ${{ (github.event_name == 'schedule' && github.event.schedule != '0 7 * 8-12 2') && '--refresh-lines' || '' }}
 
       # The build writes tiebreaker/forecasts/<season>/week-NN.json. Odds are
       # recomputed and discarded every run, so a week that is not committed
@@ -230,9 +248,12 @@ jobs:
       #
       # tiebreaker/pickem/ rides along for the same reason, one step harder:
       # the forecast is a record of an opinion, the slate is the number a
-      # player is scored against. fetch_lines overwrites data/lines_<year>.json
-      # on every refresh, so if a published week is not committed here, the
-      # line it was played on is gone and the week cannot be graded at all.
+      # player is scored against. fetch_lines MERGES into
+      # data/lines_<year>.json rather than overwriting it, and only ever
+      # forward, so a line that was committed survives on its own; what
+      # still has to be committed is the capture this run made, because the
+      # week it belongs to will have kicked off before the next refresh and
+      # nothing will ever write it again.
       - name: Keep the week's forecast and slate
         id: keep
         if: github.event_name != 'workflow_dispatch' || inputs.deploy
@@ -275,9 +296,16 @@ jobs:
           # which is the forecast and is gitignored on purpose: perishable,
           # refetched every build, and an hourly churn of numbers nobody can
           # check if it were committed.
+          # data/odds/ is the raw the-odds-api response, one file per week,
+          # append-only. It is what makes a re-parse free: the feed only
+          # carries about seven days, so a capture not committed on the day
+          # it was made cannot be asked for again at this tier. Uncommitted,
+          # every CI run would start from an empty archive and the file
+          # would never accumulate at all.
           for p in tiebreaker/forecasts tiebreaker/pickem \
                    tiebreaker/data/games_*.json \
                    tiebreaker/data/lines_*.json \
+                   tiebreaker/data/odds \
                    tiebreaker/data/ratings_*.json \
                    tiebreaker/data/media_*.json \
                    tiebreaker/data/weather_played_*.json; do
