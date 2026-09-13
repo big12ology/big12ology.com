@@ -248,15 +248,58 @@
   ]
  },
  "401856811": {
-  "spread": -8.5,
-  "spread_open": -13.5,
+  "spread": -9.1,
+  "over_under": 53.0,
+  "home_ml": -384,
+  "away_ml": 295,
   "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -9.5,
+    "over_under": 52.5,
+    "home_ml": -385,
+    "away_ml": 300
+   },
    {
     "provider": "DraftKings",
     "spread": -8.5,
-    "spread_open": -13.5
+    "over_under": 53.5,
+    "home_ml": -375,
+    "away_ml": 295
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -9.5,
+    "over_under": 52.5,
+    "home_ml": -400,
+    "away_ml": 295
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": -9.0,
+    "over_under": 53.0
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -9.0,
+    "over_under": 53.0
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -9.5,
+    "over_under": 53.5,
+    "home_ml": -375,
+    "away_ml": 290
+   },
+   {
+    "provider": "BetUS",
+    "spread": -9.0,
+    "over_under": 53.0
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -13.5
  },
  "401856774": {
   "spread": -44.0,
@@ -978,23 +1021,66 @@
   ]
  },
  "401856802": {
-  "spread": -9.5,
-  "spread_open": -8.5,
+  "spread": -9.8,
   "over_under": 54.5,
-  "over_under_open": 50.5,
-  "home_ml": -360.0,
-  "away_ml": 285.0,
+  "home_ml": -357,
+  "away_ml": 270,
   "books": [
    {
     "provider": "DraftKings",
     "spread": -9.5,
-    "spread_open": -8.5,
     "over_under": 54.5,
-    "over_under_open": 50.5,
     "home_ml": -360,
     "away_ml": 285
+   },
+   {
+    "provider": "FanDuel",
+    "spread": -9.5,
+    "over_under": 54.5,
+    "home_ml": -330,
+    "away_ml": 260
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -9.0,
+    "over_under": 54.5,
+    "home_ml": -375,
+    "away_ml": 260
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": -10.0,
+    "over_under": 54.5
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -10.0,
+    "over_under": 54.5
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -10.0,
+    "over_under": 54.5,
+    "home_ml": -350,
+    "away_ml": 280
+   },
+   {
+    "provider": "MyBookie.ag",
+    "spread": -10.0,
+    "over_under": 54.5,
+    "home_ml": -370,
+    "away_ml": 265
+   },
+   {
+    "provider": "BetUS",
+    "spread": -10.0,
+    "over_under": 54.5
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -8.5,
+  "over_under_open": 50.5
  },
  "401856784": {
   "spread": -37.5,
@@ -1082,208 +1168,667 @@
   ]
  },
  "401856812": {
-  "spread": 5.5,
-  "spread_open": 5.5,
-  "over_under": 53.5,
-  "over_under_open": 56.5,
-  "home_ml": 170.0,
-  "away_ml": -205.0,
+  "spread": 5.9,
+  "over_under": 53.0,
+  "home_ml": 174,
+  "away_ml": -217,
   "books": [
    {
     "provider": "DraftKings",
+    "spread": 6.0,
+    "over_under": 52.5,
+    "home_ml": 185,
+    "away_ml": -225
+   },
+   {
+    "provider": "MyBookie.ag",
     "spread": 5.5,
-    "spread_open": 5.5,
     "over_under": 53.5,
-    "over_under_open": 56.5,
-    "home_ml": 170,
-    "away_ml": -205
+    "home_ml": 160,
+    "away_ml": -208
+   },
+   {
+    "provider": "FanDuel",
+    "spread": 5.5,
+    "over_under": 52.5,
+    "home_ml": 164,
+    "away_ml": -200
+   },
+   {
+    "provider": "BetRivers",
+    "spread": 6.5,
+    "over_under": 53.0,
+    "home_ml": 185,
+    "away_ml": -240
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": 5.5,
+    "over_under": 52.0
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": 5.5,
+    "over_under": 52.0
+   },
+   {
+    "provider": "BetMGM",
+    "spread": 6.0,
+    "over_under": 55.5,
+    "home_ml": 175,
+    "away_ml": -210
+   },
+   {
+    "provider": "BetUS",
+    "spread": 6.5,
+    "over_under": 53.0
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": 5.5,
+  "over_under_open": 56.5
  },
  "401856792": {
-  "spread": -19.5,
-  "spread_open": -20.5,
-  "over_under": 49.5,
-  "over_under_open": 49.5,
-  "home_ml": -1600.0,
-  "away_ml": 900.0,
+  "spread": -19.4,
+  "over_under": 49.6,
+  "home_ml": -1615,
+  "away_ml": 864,
   "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -19.5,
+    "over_under": 49.5,
+    "home_ml": -2000,
+    "away_ml": 980
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -19.5,
+    "over_under": 50.5,
+    "home_ml": -1667,
+    "away_ml": 800
+   },
    {
     "provider": "DraftKings",
     "spread": -19.5,
-    "spread_open": -20.5,
     "over_under": 49.5,
-    "over_under_open": 49.5,
     "home_ml": -1600,
     "away_ml": 900
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -19.0,
+    "over_under": 49.5
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": -19.0,
+    "over_under": 49.5
+   },
+   {
+    "provider": "MyBookie.ag",
+    "spread": -20.0,
+    "over_under": 49.5,
+    "home_ml": -1408,
+    "away_ml": 690
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -19.5,
+    "over_under": 49.5,
+    "home_ml": -1400,
+    "away_ml": 950
+   },
+   {
+    "provider": "BetUS",
+    "spread": -19.0,
+    "over_under": 49.5
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -20.5,
+  "over_under_open": 49.5
  },
  "401856801": {
-  "spread": -27.5,
-  "spread_open": -27.5,
-  "over_under": 57.5,
-  "over_under_open": 57.5,
-  "home_ml": -6500.0,
-  "away_ml": 2000.0,
+  "spread": -28.4,
+  "over_under": 56.9,
+  "home_ml": -8300,
+  "away_ml": 1970,
   "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -28.5,
+    "over_under": 56.5,
+    "home_ml": -10000,
+    "away_ml": 2400
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -28.5,
+    "over_under": 56.5,
+    "home_ml": -10000,
+    "away_ml": 1800
+   },
    {
     "provider": "DraftKings",
     "spread": -27.5,
-    "spread_open": -27.5,
     "over_under": 57.5,
-    "over_under_open": 57.5,
     "home_ml": -6500,
     "away_ml": 2000
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -28.5,
+    "over_under": 57.0
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -28.5,
+    "over_under": 56.5,
+    "home_ml": -10000,
+    "away_ml": 2500
+   },
+   {
+    "provider": "MyBookie.ag",
+    "spread": -28.5,
+    "over_under": 57.0,
+    "home_ml": -5000,
+    "away_ml": 1150
+   },
+   {
+    "provider": "BetUS",
+    "spread": -28.5,
+    "over_under": 57.0
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -27.5,
+  "over_under_open": 57.5
  },
  "401856797": {
-  "spread": -15.5,
-  "spread_open": -15.5,
-  "over_under": 49.5,
-  "over_under_open": 49.5,
-  "home_ml": -750.0,
-  "away_ml": 525.0,
+  "spread": -14.7,
+  "over_under": 49.8,
+  "home_ml": -781,
+  "away_ml": 524,
   "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -14.5,
+    "over_under": 50.5,
+    "home_ml": -820,
+    "away_ml": 550
+   },
    {
     "provider": "DraftKings",
     "spread": -15.5,
-    "spread_open": -15.5,
     "over_under": 49.5,
-    "over_under_open": 49.5,
     "home_ml": -750,
     "away_ml": 525
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": -14.5,
+    "over_under": 49.5
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -14.5,
+    "over_under": 49.5
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -14.5,
+    "over_under": 49.5,
+    "home_ml": -750,
+    "away_ml": 550
+   },
+   {
+    "provider": "MyBookie.ag",
+    "spread": -15.0,
+    "over_under": 49.5,
+    "home_ml": -752,
+    "away_ml": 470
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -14.5,
+    "over_under": 50.5,
+    "home_ml": -835,
+    "away_ml": 525
+   },
+   {
+    "provider": "BetUS",
+    "spread": -14.5,
+    "over_under": 49.5
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -15.5,
+  "over_under_open": 49.5
  },
  "401867804": {
-  "spread": -17.5,
-  "spread_open": -17.5,
-  "over_under": 55.5,
-  "over_under_open": 55.5,
-  "home_ml": -1200.0,
-  "away_ml": 750.0,
+  "spread": -17.9,
+  "over_under": 54.8,
+  "home_ml": -1203,
+  "away_ml": 723,
   "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -18.5,
+    "over_under": 54.5,
+    "home_ml": -1400,
+    "away_ml": 800
+   },
    {
     "provider": "DraftKings",
     "spread": -17.5,
-    "spread_open": -17.5,
-    "over_under": 55.5,
-    "over_under_open": 55.5,
+    "over_under": 54.5,
     "home_ml": -1200,
     "away_ml": 750
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": -17.5,
+    "over_under": 55.0
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -17.5,
+    "over_under": 55.0
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -18.0,
+    "over_under": 54.5,
+    "home_ml": -1200,
+    "away_ml": 825
+   },
+   {
+    "provider": "MyBookie.ag",
+    "spread": -18.0,
+    "over_under": 55.0,
+    "home_ml": -1099,
+    "away_ml": 590
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -18.5,
+    "over_under": 54.5,
+    "home_ml": -1115,
+    "away_ml": 650
+   },
+   {
+    "provider": "BetUS",
+    "spread": -17.5,
+    "over_under": 55.0
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -17.5,
+  "over_under_open": 55.5
  },
  "401856796": {
-  "spread": -3.5,
-  "spread_open": -4.5,
-  "over_under": 47.5,
-  "over_under_open": 45.5,
-  "home_ml": -162.0,
-  "away_ml": 136.0,
+  "spread": -3.4,
+  "over_under": 47.7,
+  "home_ml": -164,
+  "away_ml": 133,
   "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -3.5,
+    "over_under": 47.5,
+    "home_ml": -156,
+    "away_ml": 130
+   },
    {
     "provider": "DraftKings",
     "spread": -3.5,
-    "spread_open": -4.5,
     "over_under": 47.5,
-    "over_under_open": 45.5,
     "home_ml": -162,
     "away_ml": 136
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": -3.5,
+    "over_under": 48.0
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -3.5,
+    "over_under": 48.0
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -3.5,
+    "over_under": 47.5,
+    "home_ml": -160,
+    "away_ml": 130
+   },
+   {
+    "provider": "MyBookie.ag",
+    "spread": -3.0,
+    "over_under": 47.5,
+    "home_ml": -165,
+    "away_ml": 129
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -3.5,
+    "over_under": 47.5,
+    "home_ml": -177,
+    "away_ml": 140
+   },
+   {
+    "provider": "BetUS",
+    "spread": -3.5,
+    "over_under": 48.0
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -4.5,
+  "over_under_open": 45.5
  },
  "401856798": {
-  "spread": -22.5,
-  "spread_open": -22.5,
-  "over_under": 45.5,
-  "over_under_open": 45.5,
-  "home_ml": -2800.0,
-  "away_ml": 1300.0,
+  "spread": -23.1,
+  "over_under": 46.1,
+  "home_ml": -3133,
+  "away_ml": 1232,
   "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -23.5,
+    "over_under": 46.5,
+    "home_ml": -4000,
+    "away_ml": 1400
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -23.5,
+    "over_under": 47.0,
+    "home_ml": -3335,
+    "away_ml": 1100
+   },
    {
     "provider": "DraftKings",
     "spread": -22.5,
-    "spread_open": -22.5,
     "over_under": 45.5,
-    "over_under_open": 45.5,
     "home_ml": -2800,
     "away_ml": 1300
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": -22.5,
+    "over_under": 46.0
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -22.5,
+    "over_under": 46.0
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -23.0,
+    "over_under": 45.5,
+    "home_ml": -2500,
+    "away_ml": 1400
+   },
+   {
+    "provider": "MyBookie.ag",
+    "spread": -23.5,
+    "over_under": 46.0,
+    "home_ml": -3030,
+    "away_ml": 960
+   },
+   {
+    "provider": "BetUS",
+    "spread": -23.5,
+    "over_under": 46.0
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -22.5,
+  "over_under_open": 45.5
  },
  "401856799": {
   "spread": -20.5,
-  "spread_open": -20.5,
-  "over_under": 57.5,
-  "over_under_open": 57.5,
-  "home_ml": -1450.0,
-  "away_ml": 850.0,
+  "over_under": 57.1,
+  "home_ml": -1483,
+  "away_ml": 826,
   "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -20.5,
+    "over_under": 56.5,
+    "home_ml": -1600,
+    "away_ml": 860
+   },
    {
     "provider": "DraftKings",
     "spread": -20.5,
-    "spread_open": -20.5,
     "over_under": 57.5,
-    "over_under_open": 57.5,
     "home_ml": -1450,
     "away_ml": 850
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": -20.5,
+    "over_under": 57.0
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -20.5,
+    "over_under": 57.0
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -20.5,
+    "over_under": 56.5,
+    "home_ml": -1400,
+    "away_ml": 900
+   },
+   {
+    "provider": "MyBookie.ag",
+    "spread": -20.5,
+    "over_under": 57.5,
+    "home_ml": -1299,
+    "away_ml": 670
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -20.5,
+    "over_under": 57.5,
+    "home_ml": -1667,
+    "away_ml": 850
+   },
+   {
+    "provider": "BetUS",
+    "spread": -20.5,
+    "over_under": 57.0
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -20.5,
+  "over_under_open": 57.5
  },
  "401856793": {
-  "spread": -35.5,
-  "spread_open": -35.5,
-  "over_under": 49.5,
-  "over_under_open": 49.5,
+  "spread": -34.9,
+  "over_under": 50.0,
+  "home_ml": -10000,
+  "away_ml": 2500,
   "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -35.5,
+    "over_under": 50.5,
+    "home_ml": -10000,
+    "away_ml": 2500
+   },
    {
     "provider": "DraftKings",
     "spread": -35.5,
-    "spread_open": -35.5,
-    "over_under": 49.5,
-    "over_under_open": 49.5
+    "over_under": 49.5
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": -34.5,
+    "over_under": 50.0
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -34.5,
+    "over_under": 50.0
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -34.5,
+    "over_under": 49.5
+   },
+   {
+    "provider": "BetUS",
+    "spread": -34.5,
+    "over_under": 50.0
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -35.5,
+    "over_under": 50.5
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -35.5,
+  "over_under_open": 49.5
  },
  "401856800": {
-  "spread": -21.0,
-  "spread_open": -21.0,
-  "over_under": 50.5,
-  "over_under_open": 49.5,
-  "home_ml": -1800.0,
-  "away_ml": 1000.0,
+  "spread": -20.4,
+  "over_under": 50.9,
+  "home_ml": -1757,
+  "away_ml": 912,
   "books": [
    {
+    "provider": "FanDuel",
+    "spread": -20.5,
+    "over_under": 51.5,
+    "home_ml": -1800,
+    "away_ml": 920
+   },
+   {
     "provider": "DraftKings",
-    "spread": -21,
-    "spread_open": -21,
+    "spread": -21.0,
     "over_under": 50.5,
-    "over_under_open": 49.5,
     "home_ml": -1800,
     "away_ml": 1000
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": -20.0,
+    "over_under": 51.0
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": -20.0,
+    "over_under": 51.0
+   },
+   {
+    "provider": "BetMGM",
+    "spread": -20.5,
+    "over_under": 51.5,
+    "home_ml": -1600,
+    "away_ml": 1000
+   },
+   {
+    "provider": "MyBookie.ag",
+    "spread": -21.0,
+    "over_under": 50.5,
+    "home_ml": -1587,
+    "away_ml": 740
+   },
+   {
+    "provider": "BetRivers",
+    "spread": -20.5,
+    "over_under": 50.5,
+    "home_ml": -2000,
+    "away_ml": 900
+   },
+   {
+    "provider": "BetUS",
+    "spread": -20.0,
+    "over_under": 51.0
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": -21.0,
+  "over_under_open": 49.5
  },
  "401856795": {
-  "spread": 20.5,
-  "spread_open": 21.0,
+  "spread": 20.2,
   "over_under": 52.5,
-  "over_under_open": 52.5,
-  "home_ml": 800.0,
-  "away_ml": -1350.0,
+  "home_ml": 828,
+  "away_ml": -1570,
   "books": [
+   {
+    "provider": "FanDuel",
+    "spread": 20.5,
+    "over_under": 52.5,
+    "home_ml": 920,
+    "away_ml": -1800
+   },
    {
     "provider": "DraftKings",
     "spread": 20.5,
-    "spread_open": 21,
     "over_under": 52.5,
-    "over_under_open": 52.5,
     "home_ml": 800,
     "away_ml": -1350
+   },
+   {
+    "provider": "BetOnline.ag",
+    "spread": 20.0,
+    "over_under": 52.5
+   },
+   {
+    "provider": "LowVig.ag",
+    "spread": 20.0,
+    "over_under": 52.5
+   },
+   {
+    "provider": "BetMGM",
+    "spread": 20.0,
+    "over_under": 52.5,
+    "home_ml": 900,
+    "away_ml": -1400
+   },
+   {
+    "provider": "MyBookie.ag",
+    "spread": 20.5,
+    "over_under": 52.5,
+    "home_ml": 670,
+    "away_ml": -1299
+   },
+   {
+    "provider": "BetRivers",
+    "spread": 20.5,
+    "over_under": 52.5,
+    "home_ml": 850,
+    "away_ml": -2000
+   },
+   {
+    "provider": "BetUS",
+    "spread": 20.0,
+    "over_under": 52.5
    }
-  ]
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-09-13T21:07:38+00:00",
+  "spread_open": 21.0,
+  "over_under_open": 52.5
  }
 }

@@ -8,13 +8,18 @@ Needs a key in .env or the environment:  CFBD_API_KEY=...
     python3 fetch.py 2026 --force    # refetch even if cached
     python3 fetch.py --venues        # one-time: every venue's coordinates
 
-One API call per season fetched.
+One API call per season fetched. The lines refresh also calls
+the-odds-api.com through market.py, which wants ODDS_API_KEY and degrades
+to CFBD alone without it.
 """
+import collections
 import datetime
 import json
 import os
 import subprocess
 import sys
+
+import market as market_mod
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
@@ -287,10 +292,8 @@ def fetch_ratings(year):
     return {"systems": systems}
 
 
-def fetch_lines(year):
-    """The market for games involving Big 12 teams: every book CFBD
-    carries, by name, plus the averages the pages display. CFBD convention
-    is the home-team spread (negative = home favored).
+def _cfbd_lines(year):
+    """CFBD's market for games involving Big 12 teams, by book.
 
     One call returns spread, spreadOpen, overUnder, overUnderOpen and both
     moneylines per provider, and this used to keep the averages and throw
@@ -298,26 +301,44 @@ def fetch_lines(year):
     never which two. Keeping each book costs nothing extra: same endpoint,
     same call, same quota.
 
-    Writes data/lines_<year>.json = {game_id: {spread, spread_open,
-    over_under, over_under_open, home_ml, away_ml, books: [{provider,
-    spread, ...}]}}. Older files hold a bare spread number, or a dict whose
-    `books` is an integer count; load_lines and the book_* helpers
-    normalize all three shapes.
+    CFBD convention is the home-team spread (negative = home favored), and
+    everything downstream is built on that. market.py converts to it.
+
+    TWO PROVIDER STRINGS, ONE BOOK. CFBD reports "DraftKings" and "Draft
+    Kings" separately: the first is its own scrape, the second is ESPN's
+    feed passed through (ESPN's odds endpoint for a game returns exactly
+    the latter, to the decimal). On 2026-09-13 both were present on 31 of
+    42 games and disagreed on 9 of those, so the average was weighting one
+    book two thirds against Bovada's one third and landing on numbers
+    nobody was posting. Folded here rather than at the display layer,
+    because book_count and book_names in build.py read the list directly
+    and the pick'em freezes its length into a D1 column.
     """
-    os.makedirs(DATA, exist_ok=True)
     raw = get(f"lines?year={year}", key())
 
     def avg(vals):
         vals = [v for v in vals if v is not None]
         return round(sum(vals) / len(vals), 1) if vals else None
 
+    def canon(name):
+        """One spelling per book, so a duplicate cannot be averaged twice."""
+        return "".join((name or "").split()).lower()
+
     out = {}
     for g in raw if isinstance(raw, list) else []:
         if g.get("homeConference") != "Big 12" \
                 and g.get("awayConference") != "Big 12":
             continue
-        books = []
+        books, seen = [], set()
         for l in g.get("lines") or []:
+            c = canon(l.get("provider"))
+            if not c or c in seen:
+                # First wins. CFBD's own scrape is listed before the ESPN
+                # passthrough and carries the opening numbers, which the
+                # passthrough does not, so keeping the first is also
+                # keeping the richer of the two.
+                continue
+            seen.add(c)
             b = {"provider": l.get("provider"),
                  "spread": l.get("spread"),
                  "spread_open": l.get("spreadOpen"),
@@ -334,27 +355,198 @@ def fetch_lines(year):
             "home_ml": avg(b.get("home_ml") for b in books),
             "away_ml": avg(b.get("away_ml") for b in books),
             "books": books,
+            "source": "collegefootballdata.com",
         }
         if rec["spread"] is not None or rec["over_under"] is not None:
             out[str(g["id"])] = {k: v for k, v in rec.items()
                                  if v not in (None, [])}
+    return out
+
+
+# What a record's openers are called, wherever it came from. CFBD is the
+# only source for these: the-odds-api reports what a book is posting now
+# and has no concept of where it opened.
+_OPENERS = ("spread_open", "over_under_open")
+
+CFBD_SOURCE = "collegefootballdata.com"
+
+# How stale CFBD's half of the merge has to be before it is refetched.
+#
+# THIS EXISTS BECAUSE THE TWO HALVES ARE METERED DIFFERENTLY. fetch_lines
+# used to be reached only from the two daily crons, so its CFBD call cost
+# about 65 a month and nobody had to think about it. pages.yml now also
+# asks for a lines refresh from the hourly weekend builds, to sample the
+# market often enough that a noon kickoff does not freeze on a 4:30am
+# line. Ungated, that would have put a CFBD call on ~305 runs a month
+# against a hard cap of 1,000 that the budget tool already forecasts at
+# 555, and the market half would have dragged the CFBD half over a cliff
+# it has no reason to be near.
+#
+# Twenty hours, because what CFBD uniquely supplies barely moves. An
+# opening line is fixed the moment it is set and never changes again; the
+# look-ahead weeks post over days, not hours. Once a day is generous for
+# both, and it lands at ~31 CFBD calls a month, which is fewer than the
+# ~65 this spent before the weekend slots existed.
+#
+# Under the 24 hours between one morning cron and the next, so the daily
+# refresh is never the run that gets skipped. Over the 9.5 between the
+# morning and the evening catch-all, so the catch-all does not spend a
+# second one on the same day.
+CFBD_MIN_AGE_HOURS = 20
+
+
+def fetch_lines(year, force_cfbd=False, force_market=False):
+    """The market, merged from two sources, forward only.
+
+    MERGED, NOT OVERWRITTEN, which is the change. the-odds-api carries a
+    dozen books against CFBD's two but only reaches about a week ahead
+    (see market.py), so neither source alone covers the season. Each
+    refresh layers what it learned onto the file rather than replacing it:
+
+      CFBD          every game it has a line for, including the week 10
+                    marquee games books have posted and the-odds-api has
+                    not reached. Also the only source of openers.
+      the-odds-api  the week actually being played, at 7 to 12 books,
+                    which is the week a pick'em slate freezes.
+
+    Precedence is by book count, not by source: once a game has an
+    the-odds-api record, CFBD does not overwrite it, because replacing
+    eleven books with two is a downgrade whichever arrived later. CFBD
+    still contributes the openers to that record.
+
+    EACH HALF IS RATE LIMITED ON ITS OWN CLOCK, because they are metered
+    against different caps and move at different speeds. The market is
+    sampled every few hours (market.MIN_AGE_HOURS); CFBD, whose unique
+    contribution is opening lines that never move again, once a day
+    (CFBD_MIN_AGE_HOURS). `force_cfbd` is for the Tuesday weekly refresh,
+    which publishes the slate and should not freeze it against openers it
+    declined to check. `force_market` is for a run made by hand, where the
+    point is to see the market as it stands right now and the gate is a
+    schedule's economy rather than this caller's.
+
+    FORWARD ONLY. Neither source may touch a record whose game has already
+    kicked off. A line that was in the file before its game started stays
+    exactly as it was, so nothing here can move a number a published slate
+    or a finished week was built from. This is also why the file no longer
+    shrinks and _refuse_shrink no longer applies to it: a merge cannot
+    lose a game, and an empty response now writes nothing instead of
+    everything.
+
+    Writes data/lines_<year>.json = {game_id: {spread, spread_open,
+    over_under, over_under_open, home_ml, away_ml, source, as_of, books:
+    [{provider, spread, ...}]}}. Older files hold a bare spread number, or
+    a dict whose `books` is an integer count; load_lines and the book_*
+    helpers normalize all three shapes.
+    """
+    os.makedirs(DATA, exist_ok=True)
     p = os.path.join(DATA, f"lines_{year}.json")
-    _refuse_shrink(p, f"lines {year}", len(out))
+    existing = json.load(open(p)) if os.path.exists(p) else {}
+
+    games = []
+    gp = os.path.join(DATA, f"games_{year}.json")
+    if os.path.exists(gp):
+        games = json.load(open(gp))
+    now = datetime.datetime.now(datetime.timezone.utc)
+    started = set()
+    for g in games:
+        try:
+            if datetime.datetime.fromisoformat(
+                    g["start"].replace("Z", "+00:00")) <= now:
+                started.add(str(g["id"]))
+        except (KeyError, ValueError):
+            pass
+
+    if force_cfbd or market_mod.due(existing, now, CFBD_MIN_AGE_HOURS,
+                                    CFBD_SOURCE):
+        cfbd = _cfbd_lines(year)
+    else:
+        # Skipped, not failed. The openers already in the file carry
+        # forward through the merge below, and the look-ahead weeks keep
+        # the records they have.
+        cfbd = {}
+        print(f"{year}: CFBD lines are under {CFBD_MIN_AGE_HOURS}h old, "
+              f"no call made")
+    as_of = now.replace(microsecond=0).isoformat()
+
+    market = {}
+    if games:
+        try:
+            market, quota = market_mod.fetch(year, games, existing,
+                                             force=force_market)
+            if market:
+                deep = max(len(r.get("books", [])) for r in market.values())
+                left = quota.get("x-requests-remaining")
+                print(f"{year}: the-odds-api has {len(market)} game(s), "
+                      f"{deep} books at most"
+                      + (f"; {left} credits left" if left else ""))
+            else:
+                print(f"{year}: the-odds-api "
+                      f"{quota.get('skipped', 'returned no Big 12 games')}")
+        except (RuntimeError, SystemExit) as e:
+            # Same posture as every other fetcher here: stale beats gutted.
+            # The CFBD half of the merge still lands, and the previous
+            # capture stays in the file with its own as_of saying how old
+            # it is.
+            print(f"{year}: the-odds-api unavailable ({e}); keeping CFBD")
+
+    out = dict(existing)
+    for gid, rec in cfbd.items():
+        if gid in started:
+            continue
+        prev = out.get(gid)
+        # Do not trade a deep book count for a shallow one. The odds
+        # record keeps its numbers and takes CFBD's openers.
+        if (isinstance(prev, dict)
+                and prev.get("source") == market_mod.SOURCE
+                and gid not in market):
+            for k in _OPENERS:
+                if rec.get(k) is not None:
+                    prev[k] = rec[k]
+            continue
+        out[gid] = {**rec, "as_of": as_of}
+    for gid, rec in market.items():
+        if gid in started:
+            continue
+        rec = dict(rec)
+        for k in _OPENERS:
+            v = (cfbd.get(gid) or {}).get(k)
+            if v is None:
+                v = (existing.get(gid) or {}).get(k) \
+                    if isinstance(existing.get(gid), dict) else None
+            if v is not None:
+                rec[k] = v
+        out[gid] = rec
+
+    if not out:
+        raise RuntimeError(f"lines {year}: both sources empty, keeping file")
+
+    # A RUN THAT LEARNED NOTHING WRITES NOTHING, which matters now that this
+    # is reached from the hourly weekend builds rather than twice a day.
+    # Both halves are gated, so most of those runs make no call at all and
+    # `out` comes back byte-identical to what was already on disk. Rewriting
+    # the file anyway would be harmless; rewriting the SIDECAR would not,
+    # because its stamp moves every time and the deploy's keep step commits
+    # lines_*.json. That is a commit an hour, all weekend, saying nothing
+    # except what time it was — several hundred a season in a history that
+    # is meant to be readable.
+    if out == existing:
+        print(f"{year}: lines unchanged, nothing written")
+        return out
+
     with open(p, "w") as f:
         json.dump(out, f, indent=1)
-    # When, beside what. The file itself carries no date and is overwritten in
-    # place, so a stale one — a refresh that failed, a quota that ran out
-    # mid-season — is indistinguishable from a fresh one by looking at it.
-    # That was harmless while lines only decorated a page. The pick'em freezes
-    # a line into a slate people are scored against, and freezing last month's
-    # market as this week's is the kind of wrong that looks right. Kept as a
-    # sidecar rather than a key inside the file so nothing reading the old
-    # shape has to learn about it.
+    # The sidecar stays for files that predate per-record stamps; anything
+    # written now carries its own `as_of`, because a merged file holds
+    # captures of several ages at once and one file-level stamp would be a
+    # claim about the newest record printed against the oldest. The
+    # pick'em freezes a line into a slate people are scored against, and
+    # freezing last month's market as this week's is the kind of wrong
+    # that looks right.
     with open(os.path.join(DATA, f"lines_{year}.meta.json"), "w") as f:
-        json.dump({"fetched_at": datetime.datetime.now(datetime.timezone.utc)
-                                          .replace(microsecond=0).isoformat(),
-                   "count": len(out)}, f, indent=1)
-    print(f"{year}: closing lines for {len(out)} games -> {p}")
+        json.dump({"fetched_at": as_of, "count": len(out)}, f, indent=1)
+    src = collections.Counter(v.get("source", "?") for v in out.values()
+                              if isinstance(v, dict))
+    print(f"{year}: {len(out)} games lined ({dict(src)}) -> {p}")
     return out
 
 

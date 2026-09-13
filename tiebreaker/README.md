@@ -11,6 +11,15 @@ game.
   [collegefootballdata.com](https://collegefootballdata.com) (one API call)
   into `data/games_<year>.json`. Needs `CFBD_API_KEY` in `.env` or the
   environment.
+- `market.py` — the betting market from
+  [the-odds-api.com](https://the-odds-api.com), a dozen books against
+  CFBD's two, joined onto the same game ids. Needs `ODDS_API_KEY`; without
+  it the lines refresh still runs and falls back to CFBD. The feed only
+  reaches about a week ahead and has no opening lines, so CFBD still
+  supplies both: `fetch.py` merges the two into `data/lines_<year>.json`,
+  forward only, never rewriting a game that has kicked off. Every raw
+  response is kept in `data/odds/<year>-week-NN.json` so a re-parse never
+  costs another call.
 - `tiebreaker.py` — the rules engine. Implements the two-team ladder
   (head-to-head → common opponents → next-highest-placed common opponent →
   opponents' conference win% → total wins with the one-FCS-win cap →
@@ -102,7 +111,8 @@ the late-night Thu/Fri/Sun windows, and daily otherwise; Tuesday's run also
 refreshes ratings and closing lines. The schedule is the tiebreaker's — it is
 the only part of the site with a reason to rebuild on a clock. Setup:
 
-1. Repo → Settings → Secrets and variables → Actions → add `CFBD_API_KEY`.
+1. Repo → Settings → Secrets and variables → Actions → add `CFBD_API_KEY`
+   and `ODDS_API_KEY`.
 2. Repo → Settings → Pages → Source: **GitHub Actions**.
 
 Team and conference marks are from Wikimedia Commons (provenance in

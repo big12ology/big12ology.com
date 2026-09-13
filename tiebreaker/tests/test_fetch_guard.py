@@ -95,24 +95,85 @@ e = refetch([])
 check(e is None, f"bootstrap: refused an empty first fetch ({e})")
 check(json.load(open(path)) == [], "bootstrap: did not write the empty season")
 
-# Lines: four committed games' lines, then an empty answer. Refused, and the
-# meta sidecar is not stamped either, so the stale file still reads as stale.
+# Lines do not use _refuse_shrink, because they are merged rather than
+# overwritten and a merge cannot lose a game. The guarantee the shrink guard
+# bought them is now structural: an empty or partial answer writes nothing
+# instead of writing everything, so the committed records survive without
+# anyone having to raise. Pinned here because it is the same failure the
+# rest of this file is about, reached a different way.
 lines_path = os.path.join(TMP, "lines_2030.json")
 meta_path = os.path.join(TMP, "lines_2030.meta.json")
+# fetch_lines reaches for the-odds-api whenever a schedule is on disk, and
+# the forward-only scenario below puts one there. Stubbed for the same
+# reason CFBD is: an unstubbed run here spent 6 of a 500-credit month, and
+# did it through a parser bug that made the call look like it had failed.
+fetcher.market_mod.fetch = lambda year, games, existing=None, force=False: (
+    {}, {"skipped": "stubbed"})
 line = lambda i: {"id": i, "homeConference": "Big 12",     # noqa: E731
                   "lines": [{"provider": "book", "spread": -3.5}]}
 fetcher.get = lambda p, k: [line(i + 1) for i in range(4)]
 fetcher.fetch_lines(2030)
-before = open(lines_path).read()
-os.remove(meta_path)
+before = json.load(open(lines_path))
+check(len(before) == 4, f"lines: wrote {len(before)} of 4")
+
+# force_cfbd on the scenarios that are about the MERGE, because the CFBD
+# half is rate limited too (fetch.CFBD_MIN_AGE_HOURS) and records written a
+# moment ago are not stale. Without it these would exercise the gate rather
+# than the thing they were written to pin.
 fetcher.get = lambda p, k: []
-try:
-    fetcher.fetch_lines(2030)
-    check(False, "empty lines: fetch_lines did not raise")
-except RuntimeError:
-    pass
-check(open(lines_path).read() == before, "empty lines: the committed file moved")
-check(not os.path.exists(meta_path), "empty lines: stamped the meta sidecar")
+fetcher.fetch_lines(2030, force_cfbd=True)
+check(json.load(open(lines_path)) == before, "empty lines: the file moved")
+
+# A partial answer adds what it knows and leaves the rest alone, where the
+# overwrite model would have dropped three games and the shrink guard would
+# have refused the one real update along with them.
+fetcher.get = lambda p, k: [line(9)]
+fetcher.fetch_lines(2030, force_cfbd=True)
+after = json.load(open(lines_path))
+check(len(after) == 5, f"partial lines: {len(after)} records, wanted 5")
+check(all(after[k] == v for k, v in before.items()),
+      "partial lines: rewrote a record the answer did not mention")
+
+# FORWARD ONLY. A game that has already kicked off is never rewritten, so a
+# number a published slate was built from cannot move under it. The schedule
+# is what says which those are, so it has to be on disk for the rule to bite.
+json.dump([{"id": 1, "start": "2020-01-01T00:00:00.000Z",
+            "home": "Baylor", "away": "TCU"}],
+          open(os.path.join(TMP, "games_2030.json"), "w"))
+fetcher.get = lambda p, k: [{"id": 1, "homeConference": "Big 12",
+                             "lines": [{"provider": "book", "spread": 99.0}]}]
+fetcher.fetch_lines(2030, force_cfbd=True)
+check(json.load(open(lines_path))["1"] == before["1"],
+      "forward only: rewrote a line for a game that already kicked off")
+
+check(os.path.exists(meta_path), "lines: no meta sidecar")
+
+# A RUN THAT LEARNED NOTHING WRITES NOTHING. fetch_lines is reached from the
+# hourly weekend builds now, and both its sources are rate limited, so most
+# of those runs have nothing new to say. If they rewrote the meta sidecar
+# anyway its stamp would move every hour and the deploy's keep step would
+# commit it, which is several hundred commits a season saying only what time
+# it was.
+import time                                               # noqa: E402
+before_m = os.path.getmtime(meta_path)
+before_l = os.path.getmtime(lines_path)
+time.sleep(0.01)
+
+
+def refuse(path, k):
+    raise AssertionError("CFBD called inside the gate window")
+
+
+# Unforced, so the CFBD gate holds: the records were written seconds ago.
+# `refuse` makes that assertion rather than assuming it — a gate that
+# quietly stopped working would otherwise still pass the mtime checks by
+# returning the same rows.
+fetcher.get = refuse
+fetcher.fetch_lines(2030)
+check(os.path.getmtime(meta_path) == before_m,
+      "no-op run: rewrote the meta sidecar")
+check(os.path.getmtime(lines_path) == before_l,
+      "no-op run: rewrote the lines file")
 
 shutil.rmtree(TMP)
 
@@ -121,6 +182,7 @@ if FAIL:
     for m in FAIL:
         print("  FAIL:", m)
     sys.exit(1)
-print("shrink guard: 6 scenarios: a 200 with under half the committed rows "
-      "raises instead of writing, half survives, and an uncommitted season "
-      "still bootstraps from nothing")
+print("shrink guard: 11 scenarios: a 200 with under half the committed rows "
+      "raises instead of writing, half survives, an uncommitted season still "
+      "bootstraps from nothing, lines merge forward only, and a run "
+      "that learned nothing writes nothing")
