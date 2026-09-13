@@ -23,6 +23,10 @@
  ],
  "401856683": [
   {
+   "outlet": "ERADM",
+   "type": "radio"
+  },
+  {
    "outlet": "ABC",
    "type": "tv"
   }

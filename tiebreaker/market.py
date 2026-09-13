@@ -299,16 +299,33 @@ def _digest(event):
 
     Every book carries a last_update that moves on every call whether or
     not a number did, so comparing whole events would archive an identical
-    snapshot twice a day all season. This reduces one event to the numbers
-    only, which is what a re-parse would ever want to read back.
+    snapshot twice a day all season. This reduces one event to the numbers,
+    which is what a re-parse would ever want to read back.
+
+    PLUS EACH BOOK'S EVENT LINK, and that is not a detail. The numbers-only
+    digest silently dropped the links on the first capture that carried
+    them: five of thirteen games had not moved since the previous call, so
+    five were judged identical and never stored. A field the dedupe cannot
+    see is a field that only lands by luck, on whichever capture happens to
+    follow a price change, and a game whose line never moves again would
+    never have stored one at all.
+
+    The OUTCOME-level links stay out on purpose. Those are addToBetslip
+    URLs carrying marketId and selectionId, which the book reissues as its
+    market changes, so digesting them would put an unstable value in the
+    comparison and archive on churn again. They still ride along inside
+    whatever captures do get stored; they are just not what decides.
     """
     rows = []
     for b in event.get("bookmakers") or []:
+        rows.append((b.get("title"), "_link", b.get("link"), None, None))
         for m in b.get("markets") or []:
             for o in m.get("outcomes") or []:
                 rows.append((b.get("title"), m.get("key"), o.get("name"),
                              o.get("point"), o.get("price")))
-    return sorted(rows)
+    # None sorts against str on the link rows when a book omits one, so the
+    # key is stringified rather than compared raw.
+    return sorted(rows, key=repr)
 
 
 ARCHIVE = os.path.join(DATA, "odds")
@@ -401,9 +418,17 @@ def fetch(year, games, existing=None, force=False):
     if not force and not due(existing):
         return {}, {"skipped": "recent capture"}
 
+    # includeLinks costs nothing: the credit formula is markets x regions
+    # and this is neither. It adds each book's own event, market and betslip
+    # URLs to the response, which go into the archive verbatim and are not
+    # otherwise recoverable — the feed carries about seven days, so a link
+    # not captured while a game is in the window cannot be asked for later.
+    # Nothing reads them yet. They are here because they are free now and
+    # would cost a re-fetch that this tier cannot serve.
     raw, quota = _get(f"sports/{SPORT}/odds/",
                       {"regions": REGIONS, "markets": MARKETS,
-                       "oddsFormat": "american"}, key())
+                       "oddsFormat": "american",
+                       "includeLinks": "true"}, key())
     now = datetime.datetime.now(datetime.timezone.utc)
     as_of = now.replace(microsecond=0).isoformat()
     out, skipped, captured = {}, [], {}

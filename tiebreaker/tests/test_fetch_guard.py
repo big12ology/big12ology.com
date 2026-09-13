@@ -17,6 +17,7 @@ whatever the API says.
 Everything here is stubbed. A test that called CFBD would spend from a
 1,000-call month.
 """
+import datetime
 import json
 import os
 import shutil
@@ -175,6 +176,43 @@ check(os.path.getmtime(meta_path) == before_m,
 check(os.path.getmtime(lines_path) == before_l,
       "no-op run: rewrote the lines file")
 
+# MEDIA IS DAILY, NOT WEEKLY, and the gate is what makes that one call a
+# day rather than one a run: fetch_media is now reached from every run that
+# refreshes lines. Broadcast assignments land on a rolling 12-/6-day window,
+# so a weekly refetch was up to a week behind one.
+mp = os.path.join(TMP, "media_2030.json")
+media_row = lambda i: {"id": i, "outlet": "ESPN",          # noqa: E731
+                       "mediaType": "tv"}
+json.dump([{"id": 1, "week": 1, "startDate": "2030-09-01T00:00:00Z",
+            "homeTeam": "Kansas", "awayTeam": "TCU"}],
+          open(os.path.join(TMP, "games_2030.json"), "w"))
+fetcher.get = lambda p, k: [media_row(1)]
+fetcher.fetch_media(2030, force=True)
+check(os.path.exists(fetcher.media_meta_path(2030)),
+      "media: no sidecar written")
+_age = fetcher.media_age_hours(2030)
+check(_age is not None and _age < 1,
+      f"media: sidecar stamp is not fresh ({_age})")
+
+
+def refuse_media(path, k):
+    raise AssertionError("CFBD called inside the media gate window")
+
+
+fetcher.get = refuse_media
+fetcher.fetch_media(2030)                       # fresh: must not call
+
+# ...and asks again once the stamp is old enough. Not the file's mtime: a CI
+# checkout makes every file seconds old, so an mtime gate would skip forever.
+stale = (datetime.datetime.now(datetime.timezone.utc)
+         - datetime.timedelta(hours=fetcher.MEDIA_MIN_AGE_HOURS + 1))
+json.dump({"fetched_at": stale.replace(microsecond=0).isoformat(), "count": 1},
+          open(fetcher.media_meta_path(2030), "w"))
+hit = []
+fetcher.get = lambda p, k: (hit.append(p) or [media_row(1)])
+fetcher.fetch_media(2030)
+check(len(hit) == 1, f"media: stale file did not refetch ({len(hit)} calls)")
+
 shutil.rmtree(TMP)
 
 if FAIL:
@@ -182,7 +220,8 @@ if FAIL:
     for m in FAIL:
         print("  FAIL:", m)
     sys.exit(1)
-print("shrink guard: 11 scenarios: a 200 with under half the committed rows "
+print("shrink guard: 15 scenarios: a 200 with under half the committed rows "
       "raises instead of writing, half survives, an uncommitted season still "
       "bootstraps from nothing, lines merge forward only, and a run "
-      "that learned nothing writes nothing")
+      "that learned nothing writes nothing; broadcasts refetch daily "
+      "on a sidecar stamp, never on mtime")

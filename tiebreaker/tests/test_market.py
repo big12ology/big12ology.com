@@ -222,11 +222,36 @@ book = load()
 check(len(book.get("8", [])) == 1,
       "archive: stored an identical capture twice")
 
+# A LINK THAT APPEARED IS A CHANGE, even when no number did. includeLinks
+# arrived on a capture where five of thirteen games had not moved, and a
+# numbers-only digest called those identical and stored none of them. The
+# feed only carries about seven days, so a link missed that way is not
+# recoverable for a game whose line never moves again.
+linked = event("Baylor Bears", "TCU Horned Frogs", spread=-3.5)
+linked["bookmakers"][0]["link"] = "https://example.test/baylor-tcu"
+run([linked], sched)
+book = load()
+check(len(book.get("8", [])) == 2, "archive: dropped a capture that added a link")
+check((book.get("8") or [{}])[-1].get("event", {})
+      .get("bookmakers", [{}])[0].get("link") == "https://example.test/baylor-tcu",
+      "archive: stored the capture without its link")
+
+# ...but a betslip link churning under an unchanged market is not. Those
+# carry marketId/selectionId that the book reissues, and digesting them
+# would archive on churn, which is the thing the digest exists to stop.
+churn = event("Baylor Bears", "TCU Horned Frogs", spread=-3.5)
+churn["bookmakers"][0]["link"] = "https://example.test/baylor-tcu"
+churn["bookmakers"][0]["markets"][0]["outcomes"][0]["link"] = "https://x/?mid=99"
+run([churn], sched)
+check(len(load().get("8", [])) == 2,
+      "archive: a reissued betslip id counted as a market move")
+
 moved = event("Baylor Bears", "TCU Horned Frogs", spread=-4.5)
+moved["bookmakers"][0]["link"] = "https://example.test/baylor-tcu"
 run([moved], sched)
 book = load()
-check(len(book.get("8", [])) == 2, "archive: did not store a moved line")
-check(points(book) == [-3.5, -4.5],
+check(len(book.get("8", [])) == 3, "archive: did not store a moved line")
+check(points(book) == [-3.5, -3.5, -4.5],
       f"archive: captures out of order or overwritten ({points(book)})")
 
 # A week that has passed is a file nothing touches again, which is what keeps
@@ -245,6 +270,6 @@ if FAIL:
     for m in FAIL:
         print("  FAIL:", m)
     sys.exit(1)
-print("market join: 24 scenarios: neutral-site flips re-side, prefix "
+print("market join: 28 scenarios: neutral-site flips re-side, prefix "
       "collisions resolve, kicked-off games are never written, and the "
       "credit gate holds; the raw archive dedupes and shards by week")
