@@ -366,6 +366,17 @@ def _cfbd_lines(year):
             # zero would read as a measured one.
             "spread_open_books": sum(
                 1 for b in books if b.get("spread_open") is not None) or None,
+            # Who opened it, for the same reason ESPN rows carry `via`:
+            # the number outlives the record it was written into. An
+            # opener carried onto an the-odds-api record is CFBD's, and
+            # without this the file says so only by implication — that
+            # none of the eight books beside it reported one. Stated
+            # rather than inferred, so a reader of the JSON needs no rule
+            # and a future source of openers has somewhere to say itself.
+            "spread_open_src": CFBD_SOURCE if any(
+                b.get("spread_open") is not None
+                or b.get("over_under_open") is not None
+                for b in books) else None,
         }
         if rec["spread"] is not None or rec["over_under"] is not None:
             out[str(g["id"])] = {k: v for k, v in rec.items()
@@ -376,7 +387,8 @@ def _cfbd_lines(year):
 # What a record's openers are called, wherever it came from. CFBD is the
 # only source for these: the-odds-api reports what a book is posting now
 # and has no concept of where it opened.
-_OPENERS = ("spread_open", "over_under_open", "spread_open_books")
+_OPENERS = ("spread_open", "over_under_open", "spread_open_books",
+            "spread_open_src")
 
 CFBD_SOURCE = "collegefootballdata.com"
 

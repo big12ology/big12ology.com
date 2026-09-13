@@ -291,14 +291,22 @@ def opener_src(ln):
         return ""
     if any(b.get("spread_open") is not None for b in books):
         return ""          # the line's own books opened it; no gloss needed
-    # Carried down from CFBD, so the count travels with it: the record's
-    # own books cannot say how many opened the number, because none of
-    # them did. Records written before that count existed say only that
-    # the opener came from somewhere else, which is the part that matters.
+    # Carried down from CFBD, so the count and the source travel with it:
+    # the record's own books can say neither, because none of them opened
+    # anything. Records written before those keys existed still say the
+    # opener came from somewhere else, which is the part that matters.
     n = (ln or {}).get("spread_open_books")
-    if not n:
-        return " · other books"
-    return f" · {n} book" + ("" if n == 1 else "s")
+    src = (ln or {}).get("spread_open_src")
+    short = f" · {n} book" + ("" if n == 1 else "s") if n else " · other books"
+    # The count is what fits on the line; the source is what a reader
+    # actually wants when the count surprises them, and it only has room
+    # on hover. Not load-bearing: the visible text is already true without
+    # it, which is the test for putting anything in a title.
+    if not src:
+        return short
+    who = f"{n} book" + ("" if n == 1 else "s") if n else "other books"
+    return (f"<span title=\"Opening line from {esc(who)} via "
+            f"{esc(src)}, not the books above\">{short}</span>")
 
 
 def book_table(ln, g, teams):
