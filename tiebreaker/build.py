@@ -290,27 +290,58 @@ def book_table(ln, g, teams):
     books = (ln or {}).get("books")
     if not isinstance(books, list) or len(books) < 2:
         return ""
-    ml_head = (f"{team_abbr(teams, g['home'])}/"
-               f"{team_abbr(teams, g['away'])}")
+    # WHOSE NUMBER THE COLUMN HOLDS, said in the header, and it is the same
+    # team the card's headline names. Stored spreads are home-relative, so
+    # printing them raw put "Arizona State -5.9" above a column of +6, +5.5,
+    # +6.5: those were Kansas's numbers, correct and about the other team.
+    # A reader comparing books against the average should not have to
+    # negate in their head, and an unlabelled "spread" column gave them no
+    # way to know they had to.
+    #
+    # The favorite, because that is the side a spread is conventionally
+    # quoted from and what the headline above already chose. A pick'em has
+    # no favorite, so it falls back to the home team and says so.
+    spread = (ln or {}).get("spread")
+    ref = g["home"] if (spread or 0) < 0 else g["away"]
+    if not spread:
+        ref = g["home"]
+    other = g["away"] if ref == g["home"] else g["home"]
+    flip = 1 if ref == g["home"] else -1
+    ra = team_abbr(teams, ref)
+
+    def signed(v):
+        # `or 0.0` so a flipped zero prints "0" rather than "-0".
+        return f"{(v * flip) or 0.0:+g}"
+
     rows = []
     for b in sorted(books, key=lambda x: (x.get("provider") or "").lower()):
         sp, ou = b.get("spread"), b.get("over_under")
         hm, aw = b.get("home_ml"), b.get("away_ml")
+        rm, om = (hm, aw) if ref == g["home"] else (aw, hm)
         # An em space rather than a hyphen for a number a book did not
         # post: BetOnline.ag and LowVig.ag carry spreads and totals but no
         # moneyline, and a dash in a column of signed numbers reads as one.
-        ml = (f"{hm:+g}/{aw:+g}" if hm is not None and aw is not None
+        ml = (f"{rm:+g}/{om:+g}" if rm is not None and om is not None
               else "&emsp;")
         rows.append(f"<tr><td>{esc(b.get('provider') or '?')}</td>"
-                    f"<td>{'' if sp is None else f'{sp:+g}'}</td>"
+                    f"<td>{'' if sp is None else signed(sp)}</td>"
                     f"<td>{'' if ou is None else f'{ou:g}'}</td>"
                     f"<td>{ml}</td></tr>")
     return (f"<details class=bookbox><summary>"
             f"<span>{len(books)} books</span>"
             f"{icon('chev', 'gi bookchev')}</summary>"
             f"<div class=booktabwrap><table class=booktab>"
-            f"<thead><tr><th>book</th><th>spread</th><th>total</th>"
-            f"<th>{ml_head}</th></tr></thead>"
+            # "ML" rather than both names: teams.json carries the sixteen
+            # Big 12 abbreviations and nothing else, so all 46 opponents
+            # print in full and "BYU/COLORADO STATE ML" pushed the column
+            # off a phone. Truncating to make one is what team_abbr refuses
+            # to do, because Colorado and Colorado State collide at three
+            # letters and at four. The order is the same as the spread
+            # column beside it, the title says so, and no name is invented.
+            f"<thead><tr><th>book</th><th>{esc(ra)} spread</th>"
+            f"<th>total</th>"
+            f"<th title=\"{esc(ref)} / {esc(other)} moneyline\">ML</th>"
+            f"</tr></thead>"
             f"<tbody>{''.join(rows)}</tbody></table></div></details>")
 
 
@@ -4198,6 +4229,18 @@ def load_games(year, refetch=False, refresh=False, refresh_lines=False):
                 if os.environ.get("GITHUB_ACTIONS"):
                     print(f"::warning::{warn}")
                 print(f"WARNING: {warn}")
+            # Broadcasts ride along on the same runs, gated on their own
+            # clock (fetcher.MEDIA_MIN_AGE_HOURS) so this costs one call a
+            # day rather than one a run. They used to move only on the
+            # Tuesday refresh, which is up to a week behind a rolling
+            # 12-/6-day selection window. Guarded separately: a broadcast
+            # is the least load-bearing thing on the card, and it must not
+            # take the lines refresh down with it.
+            try:
+                fetcher.fetch_media(year)
+            except Exception as e:
+                print(f"WARNING: media refresh failed ({e}) — "
+                      f"using committed broadcasts")
         # ASK ONLY WHEN THE ANSWER COULD HAVE MOVED. --refresh is exempt: the
         # weekly run also pulls ratings and lines, which change on their own
         # schedule rather than when a game ends, and it doubles as the

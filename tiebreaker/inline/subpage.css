@@ -104,12 +104,28 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
      phrase per row, and the week is sixteen of these. Below 520px the card is
      already narrow enough that a second column would only truncate. */
   @media (min-width:520px) {
-    .slatemeta { grid-template-columns:1fr 1fr; gap:4px 14px }
-    /* The kickoff spans. It carries two clocks — the venue's and the
-       reader's — and is the longest line on the card by some way; halved it
-       lost the zone off the end, which is the part that makes it a time
-       rather than a number. The other four facts pair up beneath it. */
-    .slatemeta > .slatewhen { grid-column:1 / -1 }
+    /* NAMED CELLS, NOT AUTO-FLOW, because three of the five facts can be
+       absent. where(), broadcast() and weather_line() each return "" when
+       they have nothing to say, and an auto-flowed grid closes the gap by
+       pulling every later fact forward: Colorado at Northwestern has no
+       announced broadcast, so its weather slid up into the TV slot and its
+       line dropped to a row of its own. Down a week of sixteen cards that
+       means the same fact sits in a different place on each one, and the
+       column you are scanning is not a column.
+
+       A fact with nothing to say now leaves its own cell empty and moves
+       nothing. The kickoff still spans: it carries two clocks, the venue's
+       and the reader's, and halved it lost the zone off the end, which is
+       the part that makes it a time rather than a number. */
+    .slatemeta { grid-template-columns:1fr 1fr; gap:4px 14px;
+      grid-template-areas:"when when" "where tv" "wx line" }
+    .slatemeta > .slatewhen  { grid-area:when }
+    .slatemeta > .slatewhere { grid-area:where }
+    .slatemeta > .slatetv    { grid-area:tv }
+    .slatemeta > .slatewx    { grid-area:wx }
+    /* Scoped to the grid: pickem_line() draws a .slateline of its own as a
+       sibling of .slatemeta, and it is not a cell in here. */
+    .slatemeta > .slateline  { grid-area:line }
   }
 .slatemeta > div { display:flex; align-items:center; gap:7px;
   min-width:0; white-space:nowrap }

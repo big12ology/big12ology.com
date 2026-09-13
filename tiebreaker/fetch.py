@@ -19,6 +19,7 @@ import os
 import subprocess
 import sys
 
+import espn as espn_mod
 import market as market_mod
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -569,6 +570,43 @@ def media_path(year):
     return os.path.join(DATA, f"media_{year}.json")
 
 
+# How stale the broadcast file has to be before it is refetched.
+#
+# WEEKLY WAS THE WRONG SHAPE, and the reason is upstream rather than here.
+# Networks pick games on a rolling 12-/6-day in-season window, and a 6-day
+# window for a Saturday game closes the preceding SUNDAY. Refetched once a
+# week on Tuesday, an assignment made on Sunday sat invisible for two days,
+# and a week with several of them was wrong for most of its run-up.
+#
+# Twenty hours, matching CFBD_MIN_AGE_HOURS, for the same reasons: under the
+# 24 between one morning cron and the next so the daily refresh is never the
+# run that gets skipped, over the 9.5 between the morning and the evening
+# catch-all so the catch-all does not spend a second call the same day. ~31
+# calls a month, one endpoint, against a 1,000-call cap.
+MEDIA_MIN_AGE_HOURS = 20
+
+
+def media_meta_path(year):
+    return os.path.join(DATA, f"media_{year}.meta.json")
+
+
+def media_age_hours(year, now=None):
+    """How long since the broadcast file was fetched, or None if unknown.
+
+    A sidecar rather than the file's mtime, because mtime does not survive
+    a CI checkout: every runner starts with a fresh clone and every file
+    looks seconds old, so a gate reading mtime would skip forever.
+    """
+    try:
+        with open(media_meta_path(year)) as f:
+            stamp = json.load(f).get("fetched_at")
+        when = datetime.datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+    except (OSError, ValueError, AttributeError, TypeError):
+        return None
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    return (now - when).total_seconds() / 3600
+
+
 def load_media(year):
     """{game_id: [{type, outlet}, ...]}. Read from disk; the build never
     calls for these."""
@@ -583,18 +621,22 @@ def fetch_media(year, force=False):
     the ones already in games_<year>.json — the file stays small and a game
     we do not track cannot appear on a page.
 
-    Radio is not in this feed. CFBD carries tv and web (and historically
-    'ppv'); there is no radio row for any 2026 game, so the page says what
-    it knows and stays quiet about the rest rather than showing an empty
-    Radio label on every row.
+    Radio is RARE rather than absent, which is a correction: this said there
+    was no radio row for any 2026 game, and on 2026-09-13 one arrived
+    (ERADM, on a week 2 game already played). Nothing displays it — the
+    slate reads tv and web and ignores the rest — so it is stored as it
+    comes and filtered at the page.
 
-    Assignments firm up roughly two weeks out and move, so this belongs on
-    the weekly --refresh, beside ratings and lines, not on the hourly build.
+    DAILY, NOT WEEKLY. Assignments land on a rolling 12-/6-day window, so a
+    weekly refetch is up to a week behind one; see MEDIA_MIN_AGE_HOURS.
+    `force` is the Tuesday --refresh, which asks regardless.
     """
     p = media_path(year)
-    if os.path.exists(p) and not force:
+    age = media_age_hours(year)
+    if os.path.exists(p) and not force and age is not None \
+            and age < MEDIA_MIN_AGE_HOURS:
         have = load_media(year)
-        print(f"media {year}: {len(have)} games already cached, no call made")
+        print(f"media {year}: fetched {age:.0f}h ago, no call made")
         return have
     ours = set()
     cache = os.path.join(DATA, f"games_{year}.json")
@@ -613,9 +655,39 @@ def fetch_media(year, force=False):
         row = {"type": kind, "outlet": outlet}
         if row not in out.setdefault(gid, []):
             out[gid].append(row)
+    # BEFORE the fill, so it still measures CFBD against CFBD. Run after,
+    # a CFBD response gutted to a handful of rows could be padded back over
+    # the threshold by ESPN and the outage would never be reported.
     _refuse_shrink(p, f"media {year}", len(out))
+
+    # ESPN fills what CFBD left blank, and only that. CFBD wins wherever it
+    # said anything, including on games where it is the one with a window.
+    # See espn.py for why this is here at all; the short version is that
+    # CFBD's feed is the preseason announcement and the season is assigned
+    # on a rolling 12-/6-day window it does not follow.
+    #
+    # Guarded whole: this is a best-effort second source on an undocumented
+    # endpoint, and it must never be the reason the CFBD half is lost.
+    try:
+        sched = json.load(open(cache)) if os.path.exists(cache) else []
+        gap, note = espn_mod.fill(sched, out)
+        for gid, rows in gap.items():
+            out.setdefault(gid, []).extend(rows)
+        if gap:
+            print(f"media {year}: ESPN filled {len(gap)} blank(s) "
+                  f"({note})")
+    except Exception as e:
+        print(f"media {year}: ESPN fallback unavailable ({e})")
+
     with open(p, "w") as f:
         json.dump(out, f, indent=1, sort_keys=True)
+    # The stamp the gate reads. Written after the file, so a failed write
+    # cannot leave a fresh stamp over stale contents and suppress the next
+    # fetch for a day.
+    with open(media_meta_path(year), "w") as f:
+        json.dump({"fetched_at": datetime.datetime.now(datetime.timezone.utc)
+                                         .replace(microsecond=0).isoformat(),
+                   "count": len(out)}, f, indent=1)
     tv = sum(1 for v in out.values() if any(m["type"] == "tv" for m in v))
     print(f"media {year}: {len(out)} games, {tv} with a TV window -> {p}")
     return out
