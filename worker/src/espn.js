@@ -116,6 +116,17 @@ export async function fetchEspnSchedule(from, to, fetchImpl = fetch) {
   const doc = await scoreboard(from, to, fetchImpl);
   const out = {};
   for (const e of doc.events || []) {
+    // timeValid false is ESPN saying the window is not announced yet, and the
+    // date it carries is then its own placeholder: 04:00Z, midnight Eastern,
+    // the very same hour CFBD invents for the very same games. Week 4 on
+    // 2026-09-13 had seven of eight reading false, all at 04:00Z, matching the
+    // slate exactly. Taking one would swap a placeholder for a placeholder,
+    // and if the two ever drifted it would write a fake hour into the column
+    // whose whole job is to say when the game starts. Checked strictly, so a
+    // scoreboard that stops sending the field is read as before rather than
+    // going silent.
+    const c = (e.competitions || [])[0];
+    if (c && c.timeValid === false) continue;
     const t = Date.parse(e.date);
     // A date that does not parse is dropped rather than becoming NaN and then
     // a NOT NULL violation four statements later.

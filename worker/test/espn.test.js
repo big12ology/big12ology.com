@@ -161,6 +161,25 @@ test("a kept final keeps a game graded, so the void clock cannot reach it",
   assert.equal(row.ats, "home");
 });
 
+test("an unannounced window is not a kickoff, however plausible it looks",
+     async () => {
+  // ESPN marks these timeValid false and hands out 04:00Z, midnight Eastern,
+  // which is the same placeholder CFBD invents for the same games. Taking it
+  // would swap one made-up hour for another and call the result a correction.
+  const got = await fetchEspnSchedule(NOW(), NOW(), ok([
+    { id: "11", date: "2026-09-26T04:00Z",
+      competitions: [{ timeValid: false }] },
+    { id: "12", date: "2026-09-26T23:30Z",
+      competitions: [{ timeValid: true }] },
+    // No field at all, which is how the older shape reads. Still taken.
+    { id: "13", date: "2026-09-26T20:00Z", competitions: [{}] },
+  ]));
+  assert.deepEqual(got, {
+    "12": Date.parse("2026-09-26T23:30Z") / 1000,
+    "13": Date.parse("2026-09-26T20:00Z") / 1000,
+  });
+});
+
 test("the schedule reader takes e.date and drops what will not parse",
      async () => {
   // A date that does not parse would become NaN, and NaN reaches kickoff_at,
