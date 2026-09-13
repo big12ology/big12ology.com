@@ -1,10 +1,10 @@
 {
- "games_complete": 29,
- "generated": "2026-09-13T03:31:47+00:00",
+ "games_complete": 30,
+ "generated": "2026-09-13T04:31:57+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
-  "rating_sigma": 5.776,
+  "rating_sigma": 5.745,
   "systems": {
    "Elo": {
     "regressed": null,
@@ -27,68 +27,68 @@
  "season": 2026,
  "teams": {
   "Arizona": {
-   "exp_w": 4.406,
-   "p_ccg": 0.0695
+   "exp_w": 4.412,
+   "p_ccg": 0.0683
   },
   "Arizona State": {
-   "exp_w": 4.259,
-   "p_ccg": 0.0658
+   "exp_w": 4.245,
+   "p_ccg": 0.0629
   },
   "BYU": {
-   "exp_w": 6.336,
-   "p_ccg": 0.3386
+   "exp_w": 6.32,
+   "p_ccg": 0.3363
   },
   "Baylor": {
-   "exp_w": 3.865,
-   "p_ccg": 0.0517
+   "exp_w": 3.881,
+   "p_ccg": 0.0536
   },
   "Cincinnati": {
-   "exp_w": 3.602,
-   "p_ccg": 0.0424
+   "exp_w": 3.596,
+   "p_ccg": 0.0413
   },
   "Colorado": {
-   "exp_w": 3.452,
-   "p_ccg": 0.033
+   "exp_w": 3.441,
+   "p_ccg": 0.032
   },
   "Houston": {
-   "exp_w": 4.632,
-   "p_ccg": 0.0854
+   "exp_w": 4.634,
+   "p_ccg": 0.0853
   },
   "Iowa State": {
-   "exp_w": 4.074,
-   "p_ccg": 0.0534
+   "exp_w": 4.101,
+   "p_ccg": 0.0554
   },
   "Kansas": {
-   "exp_w": 4.071,
-   "p_ccg": 0.0577
-  },
-  "Kansas State": {
-   "exp_w": 5.038,
-   "p_ccg": 0.1189
-  },
-  "Oklahoma State": {
-   "exp_w": 3.2,
-   "p_ccg": 0.0196
-  },
-  "TCU": {
-   "exp_w": 4.455,
-   "p_ccg": 0.0971
-  },
-  "Texas Tech": {
-   "exp_w": 7.456,
-   "p_ccg": 0.6214
-  },
-  "UCF": {
-   "exp_w": 4.064,
+   "exp_w": 4.07,
    "p_ccg": 0.0547
   },
+  "Kansas State": {
+   "exp_w": 5.058,
+   "p_ccg": 0.1216
+  },
+  "Oklahoma State": {
+   "exp_w": 3.193,
+   "p_ccg": 0.0192
+  },
+  "TCU": {
+   "exp_w": 4.464,
+   "p_ccg": 0.0966
+  },
+  "Texas Tech": {
+   "exp_w": 7.455,
+   "p_ccg": 0.6276
+  },
+  "UCF": {
+   "exp_w": 4.049,
+   "p_ccg": 0.0552
+  },
   "Utah": {
-   "exp_w": 6.062,
-   "p_ccg": 0.2892
+   "exp_w": 6.067,
+   "p_ccg": 0.2879
   },
   "West Virginia": {
-   "exp_w": 3.027,
-   "p_ccg": 0.0146
+   "exp_w": 3.014,
+   "p_ccg": 0.0141
   }
  },
  "through_week": 2

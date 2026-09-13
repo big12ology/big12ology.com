@@ -614,7 +614,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-13T00:08:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "McLane Stadium",
   "venue_id": 4727,
@@ -626,8 +626,8 @@
   "away_conf": "SWAC",
   "home_class": "fbs",
   "away_class": "fcs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 44,
+  "away_points": 3
  },
  {
   "id": 401856670,
