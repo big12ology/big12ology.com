@@ -42,10 +42,11 @@ async function sha256Hex(text) {
  *
  * Insert-only for the games, by design. The frozen-line trigger will abort any
  * attempt to move a spread that already has one, so this does not need to be
- * careful — it needs to be honest, and let the database refuse. The one update
- * it does perform, filling a NULL spread in, is the transition the trigger
- * explicitly permits: a game published on Tuesday with no market becoming
- * playable on Thursday.
+ * careful — it needs to be honest, and let the database refuse. The updates it
+ * does perform are the transitions the trigger explicitly permits: filling a
+ * NULL spread in, which is a game published on Tuesday with no market becoming
+ * playable on Thursday, and correcting a kickoff that has not happened yet
+ * (0013).
  *
  * Returns what changed, so the cron log says something useful.
  */
@@ -120,6 +121,18 @@ export async function importWeek(env, season, week) {
          --                            line must not wedge the cron into
          --                            failing the same import every hour.
          spread_x2  = COALESCE(excluded.spread_x2, slate_games.spread_x2),
+         -- A kickoff that has not happened yet may be corrected; see 0013 for
+         -- what a wrong one costs. Guarded here as well as in the trigger, and
+         -- deliberately not written as an honest attempt that lets the
+         -- database refuse: an upstream file that disagrees about a kickoff
+         -- already in the past would abort this batch every hour for the rest
+         -- of the week, which is the wedge the NULL-line case above is written
+         -- to avoid. So the unsafe direction keeps ours, quietly, and the
+         -- trigger stays as the thing that stops anyone else moving it.
+         kickoff_at = CASE WHEN slate_games.kickoff_at > unixepoch()
+                            AND excluded.kickoff_at   > unixepoch()
+                           THEN excluded.kickoff_at
+                           ELSE slate_games.kickoff_at END,
          -- Audit columns keep what they first saw: spread_raw is the
          -- un-rounded mean that PRODUCED the frozen number, and it drifts
          -- between fetches even when the rounded line does not.

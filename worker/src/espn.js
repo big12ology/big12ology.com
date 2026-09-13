@@ -42,6 +42,20 @@ const GROUPS = 80;
 // game simply is not completed yet and nothing is written.
 const SETTLE = 3 * 3600;
 
+// A correction is a correction, not a reschedule. A placeholder hour is wrong
+// by hours; a game that has genuinely moved to another date has almost
+// certainly changed week with it, and re-weeking a game is the publisher's
+// business and slate_game_unique's, not something a scoreboard read decides
+// unattended. Anything further out is left alone and counted, so the cron says
+// it happened rather than swallowing it.
+const RESCHEDULE = 36 * 3600;
+
+// Far enough ahead to cover the week the publisher has written and the next
+// one it writes once the lines land. It exists to bound the date range the
+// scoreboard is asked for: without it one stray far-future row would turn a
+// single call into a request for half a season.
+const HORIZON = 14 * 86400;
+
 export function espnKey(season) {
   return `espn:${season}`;
 }
@@ -60,12 +74,16 @@ function yyyymmdd(ts) {
  * stored in and the Eastern dates ESPN files games under: a 01:00 UTC kickoff
  * is the previous evening's game to them.
  */
-export async function fetchEspn(from, to, fetchImpl = fetch) {
+async function scoreboard(from, to, fetchImpl) {
   const url = `${SCOREBOARD}?dates=${yyyymmdd(from - 86400)}`
             + `-${yyyymmdd(to + 86400)}&groups=${GROUPS}&limit=400`;
   const r = await fetchImpl(url, { headers: { Accept: "application/json" } });
   if (!r.ok) throw new Error(`espn_${r.status}`);
-  const doc = await r.json();
+  return r.json();
+}
+
+export async function fetchEspn(from, to, fetchImpl = fetch) {
+  const doc = await scoreboard(from, to, fetchImpl);
   const out = {};
   for (const e of doc.events || []) {
     const c = (e.competitions || [])[0];
@@ -85,6 +103,103 @@ export async function fetchEspn(from, to, fetchImpl = fetch) {
     out[String(e.id)] = [home, away, true];
   }
   return out;
+}
+
+/**
+ * The scoreboard's SCHEDULED kickoffs, as {game_id: epoch_seconds}.
+ *
+ * e.date is the scheduled time and stays the scheduled time: a game that ends
+ * up delayed still carries the hour it was meant to start, which is the right
+ * thing for a lock to key off. Completion is irrelevant here and not read.
+ */
+export async function fetchEspnSchedule(from, to, fetchImpl = fetch) {
+  const doc = await scoreboard(from, to, fetchImpl);
+  const out = {};
+  for (const e of doc.events || []) {
+    const t = Date.parse(e.date);
+    // A date that does not parse is dropped rather than becoming NaN and then
+    // a NOT NULL violation four statements later.
+    if (Number.isFinite(t)) out[String(e.id)] = Math.floor(t / 1000);
+  }
+  return out;
+}
+
+/**
+ * Correct slate kickoffs that have not happened yet, from ESPN.
+ *
+ * WHY THIS EXISTS. kickoff_at reaches the slate from CFBD, and CFBD gets it
+ * wrong in two different ways. An unannounced window arrives as a placeholder
+ * hour with start_tbd set, which is why pickem.py publishes such a game
+ * unpickable: locking at an hour nobody set is not a thing to sell. When the
+ * window is announced the game gets a line and goes playable, and the
+ * placeholder was its kickoff. Separately a time can just be wrong with
+ * start_tbd false, which is 2026 week 2's Oklahoma State at Oregon: the slate
+ * said 16:00Z, ESPN said 17:30Z, and the first snap came at 17:28Z.
+ *
+ * The same scoreboard the finals come from carries the scheduled time under
+ * the same ids, with no key and no quota. Checked against all fifteen week 2
+ * games: twelve exact, and in the three that differed ESPN was the one that
+ * matched the snap.
+ *
+ * ONLY BEFORE THE GAME. That is 0013's rule and slate_games_frozen enforces
+ * it: a kickoff that has passed is what the card locked on, and moving it
+ * later would reopen picking on a game being played.
+ */
+export async function sweepKickoffs(env, season,
+                                    now = Math.floor(Date.now() / 1000)) {
+  const { results: games } = await env.DB.prepare(
+    `SELECT game_id, week, kickoff_at FROM slate_games
+      WHERE season = ? AND kickoff_at > ? AND kickoff_at < ?`)
+    .bind(season, now, now + HORIZON).all();
+  if (!games || !games.length) return { skipped: "nothing_upcoming" };
+
+  const kicks = games.map((g) => g.kickoff_at);
+  const sched = await fetchEspnSchedule(Math.min(...kicks), Math.max(...kicks),
+                                        env.ESPN_FETCH || fetch);
+
+  const moved = [];
+  let far = 0;
+  for (const g of games) {
+    const at = sched[String(g.game_id)];
+    if (at == null || at === g.kickoff_at) continue;
+    // Both sides in the future, the same test the trigger applies. A
+    // scoreboard claiming a game we have not started yet kicked an hour ago
+    // is not something to act on unattended.
+    if (at <= now) continue;
+    if (Math.abs(at - g.kickoff_at) > RESCHEDULE) { far++; continue; }
+    moved.push({ game_id: g.game_id, week: g.week, to: at });
+  }
+  if (!moved.length) return { checked: games.length, moved: 0, far };
+
+  const stmts = moved.map((m) => env.DB.prepare(
+    // The guards are inside the statement rather than around it. Between the
+    // SELECT above and this write the old kickoff can pass, and a row that
+    // falls out of the window has to become a no-op here: as a bare UPDATE it
+    // would trip slate_games_frozen and take the whole batch with it.
+    `UPDATE slate_games SET kickoff_at = ?
+      WHERE season = ? AND game_id = ?
+        AND kickoff_at > unixepoch() AND ? > unixepoch()`)
+    .bind(m.to, season, m.game_id, m.to));
+
+  // lock_at is the first kickoff of a playable game, so correcting one can
+  // move it, and a stale lock_at is what /api answers `locked` from. Earlier
+  // only: weeks_lock_monotonic refuses later and is right to, because a lock
+  // that moves out reopens a card. A week whose earliest game moved later
+  // simply locks sooner than it strictly has to, which is the safe half.
+  for (const week of new Set(moved.map((m) => m.week))) {
+    stmts.push(env.DB.prepare(
+      `UPDATE weeks SET lock_at = (SELECT MIN(kickoff_at) FROM slate_games
+                                    WHERE season = ? AND week = ?
+                                      AND spread_x2 IS NOT NULL)
+        WHERE season = ? AND week = ?
+          AND lock_at > (SELECT MIN(kickoff_at) FROM slate_games
+                          WHERE season = ? AND week = ?
+                            AND spread_x2 IS NOT NULL)`)
+      .bind(season, week, season, week, season, week));
+  }
+
+  await env.DB.batch(stmts);
+  return { checked: games.length, moved: moved.length, far, games: moved };
 }
 
 /**

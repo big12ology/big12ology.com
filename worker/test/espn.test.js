@@ -5,7 +5,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { makeEnv, seedWeek, forceLock, NOW, HOUR } from "./helpers/env.js";
-import { fetchEspn, sweepEspn, withEspn, espnKey } from "../src/espn.js";
+import { fetchEspn, fetchEspnSchedule, sweepEspn, sweepKickoffs, withEspn,
+         espnKey } from "../src/espn.js";
 import { scoreWeek } from "../src/scoring.js";
 
 // The binding the fake env does not carry, because most of the suite has no
@@ -38,6 +39,15 @@ function event(id, { home, away, completed = true, homeScore, awayScore }) {
 const ok = (events) => async () => ({
   ok: true, json: async () => ({ events }),
 });
+
+/** A scheduled game, which is all the kickoff sweep reads. */
+function scheduled(id, at) {
+  return { id: String(id), date: new Date(at * 1000).toISOString() };
+}
+
+/** Read a kickoff back out, for the assertions below. */
+const kickoffOf = (env, id) => env.raw.prepare(
+  "SELECT kickoff_at k FROM slate_games WHERE game_id=?").get(id).k;
 
 test("only finished games with both scores are taken", async () => {
   const got = await fetchEspn(NOW(), NOW(), ok([
@@ -149,4 +159,174 @@ test("a kept final keeps a game graded, so the void clock cannot reach it",
   assert.equal(row.status, "final", "a game ESPN had graded was voided anyway");
   assert.equal(row.hp, 31);
   assert.equal(row.ats, "home");
+});
+
+test("the schedule reader takes e.date and drops what will not parse",
+     async () => {
+  // A date that does not parse would become NaN, and NaN reaches kickoff_at,
+  // which is NOT NULL. Dropped here instead.
+  const got = await fetchEspnSchedule(NOW(), NOW(), ok([
+    { id: "11", date: "2026-09-12T17:30Z" },
+    { id: "12", date: "whenever" },
+    { id: "13" },
+  ]));
+  assert.deepEqual(got, { "11": Date.parse("2026-09-12T17:30Z") / 1000 });
+});
+
+// ---------------------------------------------------------------------------
+// The kickoff correction. Same scoreboard, opposite end of the game: these run
+// before kickoff and may only ever touch a game that has not started.
+
+test("a kickoff that has not happened yet is corrected from the scoreboard",
+     async () => {
+  // 2026 week 2's Oklahoma State at Oregon, in miniature: the slate an hour
+  // and a half early, ESPN right.
+  const env = makeEnv();
+  const real = NOW() + 10 * HOUR;
+  seedWeek(env, { lockAt: NOW() + 8 * HOUR, games: [
+    { game_id: 401, home: "Oregon", away: "Oklahoma State", spread_x2: -13,
+      kickoff_at: NOW() + 8 * HOUR },
+  ] });
+  env.ESPN_FETCH = ok([scheduled(401, real)]);
+
+  const r = await sweepKickoffs(env, 2026);
+  assert.equal(r.moved, 1);
+  assert.equal(kickoffOf(env, 401), real);
+});
+
+test("a kickoff that has already passed is never moved", async () => {
+  // The trigger would refuse this anyway. The sweep must not even offer it,
+  // because a refusal inside a batch takes the other corrections with it.
+  const env = makeEnv();
+  seedWeek(env, { lockAt: NOW() - 2 * HOUR, games: [
+    { game_id: 401, home: "Baylor", away: "Houston", spread_x2: -7,
+      kickoff_at: NOW() - 2 * HOUR },
+  ] });
+  env.ESPN_FETCH = ok([scheduled(401, NOW() + 6 * HOUR)]);
+
+  const r = await sweepKickoffs(env, 2026);
+  assert.equal(r.skipped, "nothing_upcoming");
+  assert.equal(kickoffOf(env, 401), NOW() - 2 * HOUR);
+});
+
+test("a scoreboard time in the past is not a correction either", async () => {
+  // The other side of the same rule: the row is still ahead of us, but the
+  // time offered is behind us, and taking it would lock a card retroactively.
+  const env = makeEnv();
+  const ours = NOW() + 6 * HOUR;
+  seedWeek(env, { lockAt: ours, games: [
+    { game_id: 401, home: "TCU", away: "Utah", spread_x2: 3,
+      kickoff_at: ours },
+  ] });
+  env.ESPN_FETCH = ok([scheduled(401, NOW() - HOUR)]);
+
+  const r = await sweepKickoffs(env, 2026);
+  assert.equal(r.moved, 0);
+  assert.equal(kickoffOf(env, 401), ours);
+});
+
+test("a move big enough to be a reschedule is refused and counted", async () => {
+  // A game that has genuinely moved to another date has changed week too, and
+  // that is the publisher's call. This only ever fixes the hour.
+  const env = makeEnv();
+  const ours = NOW() + 6 * HOUR;
+  seedWeek(env, { lockAt: ours, games: [
+    { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13,
+      kickoff_at: ours },
+  ] });
+  env.ESPN_FETCH = ok([scheduled(401, ours + 8 * 24 * HOUR)]);
+
+  const r = await sweepKickoffs(env, 2026);
+  assert.equal(r.moved, 0);
+  assert.equal(r.far, 1);
+  assert.equal(kickoffOf(env, 401), ours);
+});
+
+test("a game the scoreboard does not carry is left exactly as it was",
+     async () => {
+  const env = makeEnv();
+  const ours = NOW() + 6 * HOUR;
+  seedWeek(env, { lockAt: ours, games: [
+    { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13,
+      kickoff_at: ours },
+  ] });
+  env.ESPN_FETCH = ok([scheduled(999, NOW() + 7 * HOUR)]);
+
+  const r = await sweepKickoffs(env, 2026);
+  assert.equal(r.moved, 0);
+  assert.equal(kickoffOf(env, 401), ours);
+});
+
+test("correcting the earliest game moves the week's lock earlier with it",
+     async () => {
+  // lock_at is the first kickoff of a playable game, and /api answers `locked`
+  // from it. A correction that leaves it behind would report a card open past
+  // the point its first game had started.
+  const env = makeEnv();
+  const early = NOW() + 5 * HOUR;
+  seedWeek(env, { lockAt: NOW() + 8 * HOUR, games: [
+    { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13,
+      kickoff_at: NOW() + 8 * HOUR },
+    { game_id: 402, home: "Baylor", away: "Houston", spread_x2: 7,
+      kickoff_at: NOW() + 9 * HOUR },
+  ] });
+  env.ESPN_FETCH = ok([scheduled(401, early)]);
+
+  await sweepKickoffs(env, 2026);
+  assert.equal(env.raw.prepare(
+    "SELECT lock_at l FROM weeks WHERE season=2026 AND week=3").get().l, early);
+});
+
+test("a lock never moves later, however the kickoffs move", async () => {
+  // weeks_lock_monotonic would abort the batch; the statement is written so
+  // the case is a no-op instead, and the correction it came in with still
+  // lands. A card that locks sooner than it must is the safe half.
+  const env = makeEnv();
+  const lock = NOW() + 8 * HOUR;
+  seedWeek(env, { lockAt: lock, games: [
+    { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13,
+      kickoff_at: lock },
+  ] });
+  env.ESPN_FETCH = ok([scheduled(401, lock + 3 * HOUR)]);
+
+  const r = await sweepKickoffs(env, 2026);
+  assert.equal(r.moved, 1);
+  assert.equal(kickoffOf(env, 401), lock + 3 * HOUR);
+  assert.equal(env.raw.prepare(
+    "SELECT lock_at l FROM weeks WHERE season=2026 AND week=3").get().l, lock);
+});
+
+test("an unpickable game is corrected but does not set the lock", async () => {
+  // The kickoff_tbd case end to end: the placeholder is fixed while the game
+  // is still unpickable, and lock_at keeps following the playable games only,
+  // exactly as the publisher computes it.
+  const env = makeEnv();
+  const lock = NOW() + 8 * HOUR;
+  const real = NOW() + 4 * HOUR;
+  seedWeek(env, { lockAt: lock, games: [
+    { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13,
+      kickoff_at: lock },
+    { game_id: 403, home: "TCU", away: "Utah", spread_x2: null,
+      kickoff_at: NOW() + 6 * HOUR },
+  ] });
+  env.ESPN_FETCH = ok([scheduled(403, real)]);
+
+  await sweepKickoffs(env, 2026);
+  assert.equal(kickoffOf(env, 403), real);
+  assert.equal(env.raw.prepare(
+    "SELECT lock_at l FROM weeks WHERE season=2026 AND week=3").get().l, lock);
+});
+
+test("nothing upcoming means no scoreboard call at all", async () => {
+  const env = makeEnv();
+  let called = 0;
+  seedWeek(env, { lockAt: NOW() - 2 * HOUR, games: [
+    { game_id: 401, home: "Iowa State", away: "Kansas", spread_x2: -13,
+      kickoff_at: NOW() - 2 * HOUR },
+  ] });
+  env.ESPN_FETCH = async () => { called++; return { ok: true,
+    json: async () => ({ events: [] }) }; };
+
+  assert.equal((await sweepKickoffs(env, 2026)).skipped, "nothing_upcoming");
+  assert.equal(called, 0);
 });

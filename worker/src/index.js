@@ -18,7 +18,7 @@ import {
 } from "./cookies.js";
 import { importWeek } from "./slate.js";
 import { fetchScores, scoreAll } from "./scoring.js";
-import { sweepEspn } from "./espn.js";
+import { sweepEspn, sweepKickoffs } from "./espn.js";
 
 const { json, fail } = api;
 
@@ -558,6 +558,18 @@ export default {
         if (!r.unchanged) console.log(`import ${season} w${w}: ${r.games} games`);
       }
       if (!imported) console.log(`import ${season}: nothing published yet`);
+      // KICKOFFS FIRST, because everything under here measures from them: the
+      // settle window below, the void clock in scoring, and the lock the API
+      // answers with. Same terms as the sweep after it — one scoreboard call,
+      // no key, no quota — and never fatal for the same reason: a wrong time
+      // is what we already have, so failing to correct it must not stop the
+      // grading. A tick with nothing upcoming costs one D1 read and no fetch.
+      try {
+        const k = await sweepKickoffs(env, season);
+        if (k.moved || k.far) console.log(`kickoffs ${season}: ${JSON.stringify(k)}`);
+      } catch (e) {
+        console.log(`kickoffs ${season}: ${e && (e.message || e)}`);
+      }
       // ESPN BEFORE THE GRADING, and only for games the publisher has not
       // graded yet. A quiet sweep costs one D1 read and no fetch at all; a
       // busy one costs a single scoreboard call with no key and no quota

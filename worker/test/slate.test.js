@@ -89,6 +89,103 @@ test("a line that was missing can be filled in later", async () => {
     "SELECT spread_x2 s FROM slate_games WHERE game_id=902").get().s, 5);
 });
 
+// A week whose only game has already kicked, for the cases below that need
+// the past side of the rule. lock_at matches the kickoff and never moves, so
+// weeks_lock_monotonic has nothing to say about a re-import.
+const PLAYED = (over = {}) => ({
+  season: 2026, week: 5, status: "published",
+  lock_at: T0 - 2 * HOUR, game_count: 1, pickable_count: 1,
+  games: [
+    { game_id: 911, home: "Baylor", away: "Houston",
+      kickoff_at: T0 - 2 * HOUR, spread_x2: -7, spread_raw: -3.5, books: 4 },
+  ],
+  ...over,
+});
+
+test("a kickoff that has not happened yet can be corrected", async () => {
+  // 2026 week 2 had Oklahoma State at Oregon on the slate at 16:00Z against a
+  // 17:30Z kickoff. Caught before the game, that is a correction the slate
+  // must be able to take.
+  const env = makeEnv();
+  let stop = serving(WEEK());
+  try { await importWeek(env, 2026, 4); } finally { stop(); }
+
+  const moved = WEEK();
+  moved.games[1].kickoff_at = T0 + 51 * HOUR;
+  stop = serving(moved);
+  try {
+    const r = await importWeek(env, 2026, 4);
+    assert.equal(r.ok, true);
+  } finally { stop(); }
+
+  assert.equal(env.raw.prepare(
+    "SELECT kickoff_at k FROM slate_games WHERE game_id=902").get().k,
+    T0 + 51 * HOUR);
+});
+
+test("a kickoff_tbd game goes playable on the real time, not the placeholder",
+  async () => {
+    // The sequence this migration exists for. CFBD hands out a placeholder
+    // hour for an unannounced window; pickem.py publishes the game with it and
+    // marks it unpickable. When the window is announced the game arrives with
+    // a line AND a real kickoff, and both have to land in the same import.
+    // Before 0013 the spread filled in and the placeholder stayed, so the game
+    // locked at an hour that was never real.
+    const env = makeEnv();
+    const tbd = WEEK();
+    tbd.games[1].unpickable = "kickoff_tbd";
+    let stop = serving(tbd);
+    try { await importWeek(env, 2026, 4); } finally { stop(); }
+
+    const announced = WEEK();
+    announced.games[1].kickoff_at = T0 + 54 * HOUR;
+    announced.games[1].spread_x2 = 5;
+    announced.pickable_count = 2;
+    stop = serving(announced);
+    try {
+      const r = await importWeek(env, 2026, 4);
+      assert.equal(r.ok, true);
+    } finally { stop(); }
+
+    const g = env.raw.prepare(
+      "SELECT kickoff_at, spread_x2 FROM slate_games WHERE game_id=902").get();
+    assert.equal(g.kickoff_at, T0 + 54 * HOUR);
+    assert.equal(g.spread_x2, 5);
+  });
+
+test("a kickoff that has passed is kept, and the import still succeeds",
+  async () => {
+    // The wedge this is written against: letting the database refuse would
+    // abort the batch, and the same file is re-fetched every hour for the
+    // rest of the week. Ours wins quietly instead.
+    const env = makeEnv();
+    let stop = serving(PLAYED());
+    try { await importWeek(env, 2026, 5); } finally { stop(); }
+
+    const moved = PLAYED();
+    moved.games[0].kickoff_at = T0 - HOUR;
+    stop = serving(moved);
+    try {
+      const r = await importWeek(env, 2026, 5);
+      assert.equal(r.ok, true);
+    } finally { stop(); }
+
+    assert.equal(env.raw.prepare(
+      "SELECT kickoff_at k FROM slate_games WHERE game_id=911").get().k,
+      T0 - 2 * HOUR);
+  });
+
+test("the trigger still refuses to move a kickoff that has passed", async () => {
+  // The import routes around this case; nothing else may.
+  const env = makeEnv();
+  const stop = serving(PLAYED());
+  try { await importWeek(env, 2026, 5); } finally { stop(); }
+
+  assert.throws(() => env.raw.prepare(
+    "UPDATE slate_games SET kickoff_at=? WHERE game_id=911")
+    .run(T0 + 48 * HOUR), /slate_frozen/);
+});
+
 test("a line that already exists cannot be moved, and takes the batch with it",
   async () => {
     const env = makeEnv();
