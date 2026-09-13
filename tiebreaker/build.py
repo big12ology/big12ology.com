@@ -267,6 +267,40 @@ def book_src(ln):
             + f" via {src}{tail}")
 
 
+def opener_src(ln):
+    """How the 'opened' figure is qualified, or "" when it needs no gloss.
+
+    THE OPENING LINE IS NOT THE SAME BOOKS AS THE LINE ABOVE IT, and on
+    most games now it is not even an overlapping set. Openers can only come
+    from CFBD: the-odds-api reports what a book is posting and has no
+    concept of where it opened, so a record sourced from it carries an
+    opener handed down from CFBD's one or two books. Measured 2026-09-13,
+    13 of 51 games displayed "an average of 8 books" over an opener that
+    none of those eight had reported.
+
+    Printed bare, that reads as the same market at an earlier time, which
+    is the one thing it is not. So when the opener came from a different
+    set than the line, say how many books it was; when the record's own
+    books carry it, the count is already right and nothing is added.
+    """
+    op = (ln or {}).get("spread_open")
+    if op is None:
+        return ""
+    books = (ln or {}).get("books")
+    if not isinstance(books, list):
+        return ""
+    if any(b.get("spread_open") is not None for b in books):
+        return ""          # the line's own books opened it; no gloss needed
+    # Carried down from CFBD, so the count travels with it: the record's
+    # own books cannot say how many opened the number, because none of
+    # them did. Records written before that count existed say only that
+    # the opener came from somewhere else, which is the part that matters.
+    n = (ln or {}).get("spread_open_books")
+    if not n:
+        return " · other books"
+    return f" · {n} book" + ("" if n == 1 else "s")
+
+
 def book_table(ln, g, teams):
     """Every book behind the average, folded away until asked for.
 
@@ -3239,7 +3273,7 @@ def build_game_page(g, ctx):
                    else f"{esc(g['home'] if spread < 0 else g['away'])} "
                         f"{-abs(spread):g}")
             op = ln.get("spread_open")
-            cells.append((fav, f"opened {-abs(op):g}"
+            cells.append((fav, f"opened {-abs(op):g}{opener_src(ln)}"
                           if op not in (None, spread) else "spread"))
         if ln.get("over_under") is not None:
             op = ln.get("over_under_open")

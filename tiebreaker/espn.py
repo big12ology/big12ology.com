@@ -82,7 +82,22 @@ def scoreboard(yyyymmdd):
             outlet = ((b.get("media") or {}).get("shortName") or "").strip()
             if not kind or not outlet:
                 continue
-            row = {"type": kind, "outlet": outlet}
+            # `via` is provenance, and it is load-bearing rather than
+            # decorative. The media file otherwise records only type and
+            # outlet, so nothing in the committed data says which source
+            # supplied a row, and the only proof the fallback ever fired
+            # was a line in a build log. GitHub serves this repo's Actions
+            # run list unauthenticated but refuses the logs themselves
+            # (403), so that proof needed a credential to read. A key in
+            # the file needs none, and it answers the question for every
+            # game, forever, rather than for the one run still in the log
+            # retention window.
+            #
+            # Inert on the page: broadcast() reads type and outlet and
+            # ignores the rest. CFBD rows carry no `via` and stay as they
+            # are, so the absence of the key means CFBD, which is the
+            # right default for every row written before this existed.
+            row = {"type": kind, "outlet": outlet, "via": SOURCE}
             if row not in rows:
                 rows.append(row)
         if rows:
