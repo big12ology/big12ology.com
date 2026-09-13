@@ -32,6 +32,7 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 
 import json                                              # noqa: E402
+import re                                                # noqa: E402
 import market                                            # noqa: E402
 
 FAIL = []
@@ -294,6 +295,42 @@ check(build.opener_src({"books": eight}) == "",
 check(build.opener_src({"spread_open": -3, "books": 2}) == "",
       "opener: tripped on a legacy integer book count")
 
+# PROVENANCE ON THE OPENER TOO, for the same reason ESPN rows carry `via`:
+# the number outlives the record it was written into, and "2 books" does
+# not say WHOSE. The count is what fits on the line, so the source rides in
+# a title — and only there, because the visible text must stay true without
+# it. That is the test for putting anything on hover.
+withsrc = build.opener_src({"spread_open": -13.5, "spread_open_books": 2,
+                            "spread_open_src": "collegefootballdata.com",
+                            "books": eight})
+check("title=" in withsrc and "collegefootballdata.com" in withsrc,
+      "opener: source recorded but never surfaced")
+# EQUAL, not startswith: an earlier version of this check let a mutation
+# append " via CFBD" inside the span and still pass, which is exactly the
+# drift it exists to catch.
+bare = build.opener_src({"spread_open": -13.5, "spread_open_books": 2,
+                         "books": eight})
+check(bare == " · 2 books", "opener: a record with no source stopped rendering")
+visible = re.sub(r"<[^>]+>", "", withsrc)
+check(visible == bare,
+      f"opener: visible text changed when a source was present "
+      f"({visible!r} vs {bare!r})")
+
+# Recorded at fetch time, not invented at render time. Without this the
+# display has nothing to name and silently falls back to the bare count.
+import fetch as fetcher_                                  # noqa: E402
+fetcher_.get = lambda p, k: [
+    {"id": 1, "homeConference": "Big 12",
+     "lines": [{"provider": "DK", "spread": -7.0, "spreadOpen": -6.5}]},
+    {"id": 2, "homeConference": "Big 12",
+     "lines": [{"provider": "DK", "spread": -3.0}]}]
+fetcher_.key = lambda: "stub"
+recs = fetcher_._cfbd_lines(2099)
+check(recs["1"].get("spread_open_src") == fetcher_.CFBD_SOURCE,
+      "opener: CFBD did not stamp the source on a record that has an opener")
+check("spread_open_src" not in recs["2"],
+      "opener: stamped a source on a record with no opening line")
+
 # PROVENANCE IN THE DATA, so the committed file says which source supplied a
 # broadcast. GitHub serves this repo's Actions run list unauthenticated but
 # refuses the logs (403), so a build-log line needed a credential to read;
@@ -308,6 +345,6 @@ if FAIL:
     for m in FAIL:
         print("  FAIL:", m)
     sys.exit(1)
-print("market join: 35 scenarios: neutral-site flips re-side, prefix "
+print("market join: 40 scenarios: neutral-site flips re-side, prefix "
       "collisions resolve, kicked-off games are never written, and the "
       "credit gate holds; the raw archive dedupes and shards by week")
