@@ -111,6 +111,16 @@ main > .card, main > .cols { max-width: 880px; width: 100%;
   padding: 6px 10px 10px 2px; }
 .tname { letter-spacing: -.01em; }
 .vs { color: var(--dim); font-weight: 400; font-size: var(--t-subhead); padding: 0 6px; }
+/* A seat the procedure has not filled, same as the Brief's card. See the
+   note in brief.css: the geometry matches a named side so the card does not
+   move when the seed resolves. */
+.side.tbd { color: var(--dim); border-bottom-style: dashed;
+  border-bottom-color: var(--dim); }
+.side.tbd .tbdmark { display: inline-flex; align-items: center;
+  justify-content: center; width: 56px; height: 56px; margin-right: 7px;
+  border: 2px dashed var(--dim); border-radius: 6px;
+  font-size: var(--t-subhead); font-weight: 700; color: var(--dim); }
+.side.tbd .seed { background: var(--dim); }
 /* One tile, both themes — see the note on .mark in the main sheet. */
 .mark { vertical-align: -3px; margin-right: 7px; object-fit: contain;
   background: #f0ede6; border-radius: 4px; padding: 2px; }

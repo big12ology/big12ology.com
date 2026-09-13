@@ -117,7 +117,14 @@ for year, want in sorted(FIXTURE["rules"].items()):
     games = load(int(year))
     check(f"{year} standings", digest(engine.standings(games, {})),
           want["standings"])
-    check(f"{year} championship", engine.championship(games, {}),
+    # Every key the fixture recorded, and only those. The answer must not
+    # move; the payload around it may grow, and has: the card can now decline
+    # to name a seed it has no basis for, which needed `pending` and `reason`
+    # beside the two names. A fixture taken before those existed cannot
+    # testify about them, so it is not asked to.
+    got = engine.championship(games, {})
+    check(f"{year} championship",
+          None if got is None else {k: got.get(k) for k in want["championship"]},
           want["championship"])
     check(f"{year} placement_groups", engine.placement_groups(games),
           want["placement_groups"])
@@ -409,8 +416,9 @@ except engine.EngineError:
     pass
 # A build asks the engine hundreds of questions; one bad one must not poison
 # the rest.
-check("still answering after two errors", engine.championship(g24, {}),
-      FIXTURE["rules"]["2024"]["championship"])
+want24 = FIXTURE["rules"]["2024"]["championship"]
+check("still answering after two errors",
+      {k: engine.championship(g24, {}).get(k) for k in want24}, want24)
 
 # Checked by running a child with an empty PATH rather than by reading the
 # source: what is being tested is that the message arrives instead of a

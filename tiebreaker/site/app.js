@@ -314,17 +314,31 @@
     }
     var badge = ccg.resolved
       ? "<span class='badge ok'>resolved</span>"
+      : ccg.reason === "unplayed"
+      ? "<span class='badge warn'>not settled yet</span>"
       : "<span class='badge warn'>needs SportSource rating or coin toss</span>";
     var n = Object.keys(picks).length;
     var status = unlocked
       ? "Rewritten season (" + n + (n === 1 ? " game" : " games") + " changed)"
       : nLeft === 0 ? "What-if championship matchup"
       : "What-if projection (" + nLeft + " games still unpicked)";
-    var html = "<h2>" + status + " " + badge + "</h2><div class=matchup>";
+    var html = "<h2>" + status + " " + badge + "</h2>";
+    // A seed the engine would not name is drawn as a seed nobody holds. It
+    // used to be drawn as whichever team sorted first, which in an eight-way
+    // tie is the alphabet with a logo on it. Two open slots is not a matchup
+    // at all, so that case is the note by itself.
+    if (!ccg.seed1) {
+      return html + (ccg.note ? "<p class=note>" + esc(ccg.note) + "</p>" : "");
+    }
+    html += "<div class=matchup>";
     [ccg.seed1, ccg.seed2].forEach(function (t, i) {
-      html += "<div class=side style='border-bottom-color:" + color(t) + "'>" +
-        mark(t, 56) + "<div><span class=seed>" + (i + 1) + "</span> " +
-        "<span class=tname>" + esc(t) + "</span></div></div>";
+      html += t
+        ? "<div class=side style='border-bottom-color:" + color(t) + "'>" +
+          mark(t, 56) + "<div><span class=seed>" + (i + 1) + "</span> " +
+          "<span class=tname>" + esc(t) + "</span></div></div>"
+        : "<div class='side tbd'><span class=tbdmark>?</span>" +
+          "<div><span class=seed>" + (i + 1) + "</span> " +
+          "<span class=tname>TBD</span></div></div>";
       if (i === 0) html += "<span class=vs>vs</span>";
     });
     html += "</div>";
@@ -332,67 +346,15 @@
     return html;
   }
 
-  // Mirror of pad_standings in build.py: every team appears from the first
-  // visit, with the unplayed ones alphabetical at the bottom.
-  function padRows(rows) {
-    var listed = {};
-    rows.forEach(function (r) { listed[r.team] = true; });
-    var missing = Object.keys(teams).filter(function (t) { return !listed[t]; })
-      .sort();
-    if (!missing.length) return rows;
-    var tally = {};
-    missing.forEach(function (t) { tally[t] = { nw: 0, nl: 0, ow: 0, ol: 0 }; });
-    payload.games.forEach(function (g) {
-      if (!g.completed || g.ccg || !B12Engine.hasScore(g)) return;
-      var w = g.home_points > g.away_points ? g.home
-        : g.away_points > g.home_points ? g.away : null;
-      if (!w) return;
-      var l = w === g.home ? g.away : g.home;
-      [[w, true], [l, false]].forEach(function (pair) {
-        var t = pair[0];
-        if (!tally[t]) return;
-        tally[t][pair[1] ? "ow" : "ol"] += 1;
-        if (!g.conference_game) tally[t][pair[1] ? "nw" : "nl"] += 1;
-      });
-    });
-    return rows.concat(missing.map(function (t) {
-      return { rank: null, team: t, conf_w: 0, conf_l: 0,
-               nonconf_w: tally[t].nw, nonconf_l: tally[t].nl,
-               overall_w: tally[t].ow, overall_l: tally[t].ol,
-               tie_group: null, log: null, events: null, resolved: true };
-    }));
-  }
-
-  /* {team: rank text}, honest about what the ladder proved — build.py's
-     display_ranks, ported. The unresolved remainder of a tie has no order
-     (the engine hands it back alphabetically, a storage order), so those
-     rows share one position ("T1"); teams the ladder seeded before running
-     out of data keep their real ranks, and events counts how many it made. */
-  function displayRanks(rows) {
-    var out = {};
-    var i = 0;
-    while (i < rows.length) {
-      var r = rows[i];
-      if (r.resolved || !r.tie_group) {
-        out[r.team] = r.rank ? String(r.rank) : "—";
-        i += 1;
-        continue;
-      }
-      var grp = rows.filter(function (x) {
-        return x.tie_group === r.tie_group;
-      });
-      var seeded = (r.events || []).length;
-      grp.forEach(function (x, j) {
-        out[x.team] = j < seeded ? String(x.rank) : "T" + grp[seeded].rank;
-      });
-      i += grp.length;
-    }
-    return out;
-  }
-
+  /* Both calls below used to be local functions: padRows mirrored build.py's
+     pad_standings, which the engine also had its own copy of, and
+     displayRanks mirrored build.py's display_ranks. Three implementations of
+     where a team stands and two of what its rank cell says, which is the
+     arrangement site/engine.js's own header calls the bug. The engine owns
+     both now. */
   function renderRows(allRows) {
-    var rows = padRows(allRows);
-    var ranks = displayRanks(rows);
+    var rows = B12Engine.pad(allRows, payload.games);
+    var ranks = B12Engine.displayRanks(rows);
     var tieColors = {};
     var html = rows.map(function (r) {
       var cls = "";
@@ -405,7 +367,7 @@
         mk = "<sup>" + (tieColors[r.tie_group] + 1) + "</sup>";
       }
       var p = (r.conf_w + r.conf_l) ? r.conf_w / (r.conf_w + r.conf_l) : null;
-      return "<tr class='" + cls + "' data-rank=" + (r.rank || 99) +
+      return "<tr class='" + cls + "' data-rank=" + r.rank +
         " data-w=" + r.conf_w + " data-l=" + r.conf_l + ">" +
         "<td>" + ranks[r.team] + "</td>" +
         "<td class=teamcell><span class=cbar style='background:" +
@@ -542,6 +504,26 @@
       return;
     }
 
+    // A team with no conference game has a position on the board and no
+    // standing to explain: the ladder has never been asked about them. This
+    // used to fall through to the general case, which divided by a played
+    // count of zero and read "Baylor is nullth at 0-0 (NaN in conference
+    // play)". Reachable the moment the board carried all sixteen teams.
+    if (row.unplayed) {
+      var level = rows.filter(function (r) { return r.unplayed; }).length;
+      out.innerHTML = "<div class=whyhead>" + mark(team, 22) + esc(team) +
+        "</div><p>" + esc(scenario) + esc(team) + " has not played a " +
+        "conference game. They sit <b>" + ordinal(row.rank) + "</b> at " +
+        "<b>0\u20130</b>" +
+        (level > 1
+          ? ", a position they share with the " + (level - 1) + " other " +
+            "teams who have not played one either."
+          : ", on record alone.") +
+        " No tiebreaker is involved: the procedure has nothing to separate " +
+        "teams it has no results for.</p>";
+      return;
+    }
+
     var p = row.conf_w / (row.conf_w + row.conf_l);
     var html = "<div class=whyhead>" + mark(team, 22) + esc(team) + "</div>";
     html += "<p>" + esc(scenario) + esc(team) + " is <b>" +
@@ -561,17 +543,29 @@
     html += "</p>";
 
     if (!row.tie_group) {
+      // The nearest DIFFERENT position either side, found by walking the
+      // board rather than by looking for rank +/- 1. Positions are shared
+      // now: fourteen teams sit on the same number early in the year, so
+      // rank + 1 either missed entirely or landed on whichever member of
+      // the group was last in the list, and the page named one team out of
+      // fourteen as the one BYU led.
+      var idx = rows.indexOf(row);
       var above = null, below = null;
-      rows.forEach(function (r) {
-        if (r.rank === row.rank - 1) above = r;
-        if (r.rank === row.rank + 1) below = r;
-      });
+      for (var i = idx - 1; i >= 0; i--) {
+        if (rows[i].rank !== row.rank) { above = rows[i]; break; }
+      }
+      for (var j = idx + 1; j < rows.length; j++) {
+        if (rows[j].rank !== row.rank) { below = rows[j]; break; }
+      }
+      var neighbor = function (r) {
+        var n = rows.filter(function (x) { return x.rank === r.rank; }).length;
+        return n > 1 ? n + " teams at " + fmtRec(r)
+          : esc(r.team) + " (" + fmtRec(r) + ")";
+      };
       html += "<p>No tiebreaker involved — no other team has their exact " +
         "winning percentage" +
-        (above ? ", trailing " + esc(above.team) + " (" + fmtRec(above) + ")"
-               : "") +
-        (below ? (above ? " and" : ",") + " leading " + esc(below.team) +
-          " (" + fmtRec(below) + ")" : "") +
+        (above ? ", trailing " + neighbor(above) : "") +
+        (below ? (above ? " and" : ",") + " leading " + neighbor(below) : "") +
         " on record alone. The official standard is winning percentage, " +
         "not raw wins, so games-played differences don't matter.</p>";
     } else {

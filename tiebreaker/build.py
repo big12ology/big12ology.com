@@ -1296,64 +1296,20 @@ def h2h_card(games, teams, stand_rows):
 
 
 def pad_standings(rows, games):
-    """Show all sixteen teams from the first visit, not only the ones with a
-    conference result. The engine deliberately ranks only teams it has
-    evidence for, so padding happens here, in the display: unplayed teams
-    follow the ranked ones in alphabetical order with a dash for rank and
-    percentage, carrying whatever non-conference games they have played."""
-    listed = {r["team"] for r in rows}
-    missing = sorted(t for t in engine.conf_teams(games) if t not in listed)
-    if not missing:
-        return rows
-    tally = {t: {"nw": 0, "nl": 0, "ow": 0, "ol": 0} for t in missing}
-    for g in games:
-        if not g["completed"] or g.get("ccg") or not rules.has_score(g):
-            continue
-        w = rules.winner(g)
-        if not w:
-            continue
-        loser = g["away"] if w == g["home"] else g["home"]
-        for t, won in ((w, True), (loser, False)):
-            if t not in tally:
-                continue
-            tally[t]["ow" if won else "ol"] += 1
-            if not g["conference_game"]:
-                tally[t]["nw" if won else "nl"] += 1
-    return rows + [{
-        "rank": None, "team": t, "conf_w": 0, "conf_l": 0,
-        "nonconf_w": tally[t]["nw"], "nonconf_l": tally[t]["nl"],
-        "overall_w": tally[t]["ow"], "overall_l": tally[t]["ol"],
-        "tie_group": None, "log": None, "events": None, "resolved": True,
-    } for t in missing]
+    """The full sixteen-team board, from the engine.
+
+    This used to be a Python copy of engine.js's pad(). Correcting where an
+    unplayed 0-0 team sorts meant correcting it in both, and app.js held a
+    third copy of the same rule. The engine owns it now, the way it already
+    owns the ladder.
+    """
+    return engine.pad(rows, games)
 
 
 def display_ranks(rows):
-    """{team: rank text}, honest about what the ladder proved.
-
-    A tie the procedure could not finish has no order inside its unresolved
-    remainder — the engine hands those teams back alphabetically, which is a
-    storage order, not a placement. Numbering them 1..6 publishes the
-    alphabet as a ranking, so the remainder shares one position ("T1") the
-    way the official board already writes shared positions. Teams the ladder
-    DID seed before running out of data keep their real ranks: those
-    placements are the procedure's own, and events records exactly how many
-    it made.
-    """
-    out = {}
-    i = 0
-    while i < len(rows):
-        r = rows[i]
-        if r["resolved"] or not r["tie_group"]:
-            out[r["team"]] = str(r["rank"]) if r["rank"] else "—"
-            i += 1
-            continue
-        grp = [x for x in rows if x["tie_group"] == r["tie_group"]]
-        seeded = len(r["events"] or [])
-        for j, x in enumerate(grp):
-            out[x["team"]] = (str(x["rank"]) if j < seeded
-                              else f"T{grp[seeded]['rank']}")
-        i += len(grp)
-    return out
+    """{team: rank text} for a padded board. Lives in the engine now; see
+    pad_standings above for why."""
+    return engine.display_ranks(rows)
 
 
 def tie_headline(group):
@@ -1384,36 +1340,46 @@ def official_board(games, overrides, display_rows):
     """Positions the way the conference actually keeps them: the tiebreakers
     run only far enough to name the two championship-game participants, and
     every tie below that is simply a tie. Teams sharing a record share a
-    position (T3, T3, T3, then 6th)."""
+    position (T3, T3, T3, then 6th).
+
+    A team with no conference game is not a footnote under the board, it is
+    0-0, and 0-0 is a record like any other. It used to be stacked at the
+    bottom under a dash, which is how the fourteen teams that had not played
+    ended up below the one that had lost.
+
+    Only the seats the procedure has actually filled are named. Early in the
+    year the second one is not, because the team standing at position two
+    shares it with everyone else who has not played.
+    """
     played = [r for r in display_rows if r["conf_w"] + r["conf_l"] > 0]
     if not played:
         return [{"pos": "—", "teams": [r["team"] for r in display_rows],
                  "rec": "0–0", "tied": True}]
     ccg = engine.championship(games, overrides)
-    seeds = [ccg["seed1"], ccg["seed2"]] if ccg else []
+    seeds = [t for t in ((ccg or {}).get("seed1"), (ccg or {}).get("seed2"))
+             if t]
     by_team = {r["team"]: r for r in display_rows}
     out = []
     for i, t in enumerate(seeds):
         r = by_team[t]
         out.append({"pos": str(i + 1), "teams": [t],
                     "rec": f"{r['conf_w']}–{r['conf_l']}", "tied": False})
-    rest = [r for r in played if r["team"] not in seeds]
+    rest = [r for r in display_rows if r["team"] not in seeds]
     groups = {}
     for r in rest:
         groups.setdefault((r["conf_w"], r["conf_l"]), []).append(r["team"])
     pos = len(seeds) + 1
+    # Percentage, then wins, then LOSSES. The third key is new and it is the
+    # whole point: 0-0 and 0-1 are both .000 with zero wins, so the first two
+    # keys tie and the sort would fall back on insertion order. Fewer losses
+    # is what separates them, on this board and on every other one.
     for key in sorted(groups, key=lambda k: (-(k[0] / max(k[0] + k[1], 1)),
-                                             -k[0])):
+                                             -k[0], k[1])):
         teams = sorted(groups[key])
         out.append({"pos": (f"T{pos}" if len(teams) > 1 else str(pos)),
                     "teams": teams, "rec": f"{key[0]}–{key[1]}",
                     "tied": len(teams) > 1})
         pos += len(teams)
-    unplayed = sorted(r["team"] for r in display_rows
-                      if r["conf_w"] + r["conf_l"] == 0)
-    if unplayed:
-        out.append({"pos": "—", "teams": unplayed, "rec": "0–0",
-                    "tied": len(unplayed) > 1})
     return out
 
 
@@ -1606,7 +1572,10 @@ def standings_page(games, overrides, display_rows, teams):
     ranks = display_ranks(display_rows)
     right = "".join(
         f"<tr><td class=posc>{ranks[r['team']]}</td>"
-        f"{cells(r, str(r['rank'] or '—'))}</tr>" for r in display_rows)
+        # The label, not the number. status_class italicizes the top seed
+        # on a match with "1", and a shared "T1" is not that: nothing has
+        # put any one of those teams first.
+        f"{cells(r, ranks[r['team']])}</tr>" for r in display_rows)
 
     replay = ""
     if len(frames) > 1:
@@ -1650,10 +1619,12 @@ def standings_page(games, overrides, display_rows, teams):
   <div class=tablewrap><table class=stbl>{head}
   <tbody id=board-right>{right}</tbody></table></div>
   <p class=note>The same procedure carried all the way down, one team per
-  position. The conference never publishes this and it decides nothing — it
-  is what the rules produce if you ask them to sort the whole league, and it
-  is the order the rest of this site uses so every team has a place to
-  stand. <a href=how.html>The Rules</a> walks the steps.</p>
+  position wherever the rules can name one. The conference never publishes
+  this and it decides nothing: it is what they produce if you ask them to
+  sort the whole league. A shared position is one the ladder has nothing to
+  break, which early in the year is most of them, and it is the order the
+  rest of this site uses so every team has a place to stand.
+  <a href=how.html>The Rules</a> walks the steps.</p>
 </div>
 </div>
 </div>
@@ -3448,22 +3419,43 @@ def render(year, games):
                 "<p>No conference results yet. The projected championship "
                 "matchup will appear after the first Big 12 game.</p></div>")
     else:
+        # THREE STATES, NOT TWO. The card used to know "no conference games"
+        # and "here are two teams", and the gap between them is most of
+        # September: a leader exists and the field behind it has not sorted
+        # itself. Asked for a second seed then, the engine answered with the
+        # team that had just lost, over fourteen teams that had not lost at
+        # all. It now answers with nothing, and nothing has to be drawable.
         badge = ("<span class='badge ok'>resolved</span>" if ccg["resolved"]
+                 else "<span class='badge warn'>not settled yet</span>"
+                 if ccg.get("reason") == "unplayed"
                  else "<span class='badge warn'>needs SportSource rating "
                       "or coin toss</span>")
         status = "Final championship matchup" if not remaining \
             else "Projected championship matchup (if the season ended today)"
         note = f"<p class=note>{esc(ccg['note'])}</p>" if ccg.get("note") else ""
-        panels = []
-        for seed, t in ((1, ccg["seed1"]), (2, ccg["seed2"])):
-            c = team_color(teams, t)
-            panels.append(
-                f"<div class=side style='border-bottom-color:{c}'>"
-                f"{logo_img(t, 56)}<div><span class=seed>{seed}</span> "
-                f"<span class=tname>{esc(t)}</span></div></div>")
-        card = (f"<div class=card id=matchcard><h2>{status} {badge}</h2>"
-                f"<div class=matchup>{panels[0]}<span class=vs>vs</span>"
-                f"{panels[1]}</div>{note}</div>")
+        if not ccg["seed1"]:
+            # Two empty slots is not a matchup, it is a sentence. The note
+            # already is that sentence, so the panels are dropped rather than
+            # drawn twice as question marks.
+            card = (f"<div class=card id=matchcard><h2>{status} {badge}</h2>"
+                    f"{note}</div>")
+        else:
+            panels = []
+            for seed, t in ((1, ccg["seed1"]), (2, ccg["seed2"])):
+                if not t:
+                    panels.append(
+                        f"<div class='side tbd'><span class=tbdmark>?</span>"
+                        f"<div><span class=seed>{seed}</span> "
+                        f"<span class=tname>TBD</span></div></div>")
+                    continue
+                c = team_color(teams, t)
+                panels.append(
+                    f"<div class=side style='border-bottom-color:{c}'>"
+                    f"{logo_img(t, 56)}<div><span class=seed>{seed}</span> "
+                    f"<span class=tname>{esc(t)}</span></div></div>")
+            card = (f"<div class=card id=matchcard><h2>{status} {badge}</h2>"
+                    f"<div class=matchup>{panels[0]}<span class=vs>vs</span>"
+                    f"{panels[1]}</div>{note}</div>")
 
     # -- standings table --------------------------------------------------
     body = []
@@ -3478,7 +3470,7 @@ def render(year, games):
         p = rules.pct(r["conf_w"], r["conf_l"])
         c = team_color(teams, r["team"])
         body.append(
-            f"<tr class='{cls}' data-rank={r['rank'] or 99} "
+            f"<tr class='{cls}' data-rank={r['rank']} "
             f"data-w={r['conf_w']} data-l={r['conf_l']}>"
             f"<td>{ranks[r['team']]}</td>"
             f"<td class=teamcell><span class=cbar style='background:{c}'>"
@@ -4405,8 +4397,14 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
         "generated": datetime.datetime.now(datetime.timezone.utc)
             .isoformat(timespec="seconds"),
         "season": year,
+        # THE PADDED BOARD, all sixteen. This published the engine's ranked
+        # rows, which in September is a two-team payload beside a sixteen-row
+        # page, and the two disagreed about rank as well as about length:
+        # tools/verify-consistency.py compares standings.csv, data.json and
+        # the table people read, and they are only one board if they come
+        # from one list.
         "standings": [{k: v for k, v in r.items() if k != "log"}
-                      for r in rows],
+                      for r in display_rows],
         "championship": ccg,
         # The single game that moves the title race most in the next week
         # that HAS a conference game — next_conf_week_ids already skips
@@ -4436,14 +4434,20 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
         re.compile(r'"generated": "[^"]*"'))
     write_forecast(year, games, systems, sims)
     with open(os.path.join(outdir, "standings.csv"), "w") as f:
-        # `tied` is true for the unresolved remainder of a tie, where `rank`
-        # is only the alphabet: the pages show those rows as a shared "T1",
-        # and a consumer sorting on rank deserves the same warning. Appended
-        # last so position-indexed readers of the old shape keep working.
+        # `tied` is true wherever a position is shared rather than won: the
+        # unresolved remainder of a tie, where `rank` is only the alphabet,
+        # and the teams with no conference game yet, who are level at 0-0.
+        # The pages show both as "T1", and a consumer sorting on rank
+        # deserves the same warning. Appended last so position-indexed
+        # readers of the old shape keep working.
+        #
+        # display_rows, not rows, for the reason data.json publishes it: the
+        # CSV is one of the three things verify-consistency holds against
+        # each other, and a season three weeks old had two lines in it.
         f.write("rank,team,conf_w,conf_l,nonconf_w,nonconf_l,"
                 "overall_w,overall_l,p_ccg,tied\n")
-        ranks = display_ranks(rows)
-        for r in rows:
+        ranks = display_ranks(display_rows)
+        for r in display_rows:
             p = (sims.get(r["team"], {}) or {}).get("p_ccg", "")
             tied = "true" if ranks[r["team"]].startswith("T") else "false"
             f.write(f"{r['rank']},{r['team']},{r['conf_w']},{r['conf_l']},"

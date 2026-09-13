@@ -433,6 +433,23 @@
     return Object.keys(seen);
   }
 
+  // WHERE THE UNPLAYED TEAMS GO, which is not the bottom. A team with no
+  // conference game is 0-0, and 0-0 is ahead of 0-1 on every standings board
+  // anyone has ever published: the sort is winning percentage descending,
+  // then losses ascending. Appending the block put the single team that had
+  // LOST a conference game above the fourteen that had not, so after the
+  // first Saturday of Big 12 play the board read as though Arizona were
+  // second in the conference on the strength of losing to BYU.
+  //
+  // rows arrives in percentage order, so the block belongs immediately above
+  // the first team with no conference wins: everything from there down is
+  // .000 with at least one loss.
+  //
+  // Ranks are renumbered to board position afterwards, because the engine's
+  // own ranks count only the teams it had evidence for. Left alone they say
+  // 1 and 2 on a board where those teams sit first and sixteenth, and
+  // data.json, standings.csv and the rank column would each publish a
+  // different number for the same row.
   function pad(rows, games) {
     var listed = {};
     rows.forEach(function (r) { listed[r.team] = 1; });
@@ -456,14 +473,86 @@
       });
     });
 
-    return rows.concat(missing.map(function (t) {
+    var block = missing.map(function (t) {
       return {
         rank: null, team: t, conf_w: 0, conf_l: 0,
         nonconf_w: tally[t][0], nonconf_l: tally[t][1],
         overall_w: tally[t][2], overall_l: tally[t][3],
-        tie_group: null, log: null, events: null, resolved: true,
+        tie_group: null, log: null, events: null,
+        // One unplayed team slots in at a position of its own on record
+        // alone; two or more share it, and nothing about them is settled.
+        resolved: missing.length === 1,
+        // The marker the display reads. `rank: null` used to serve as it,
+        // and cannot any more now that these rows carry a real position.
+        unplayed: true,
       };
-    }));
+    });
+
+    var cut = rows.length;
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].conf_w === 0) { cut = i; break; }
+    }
+    var blockRank = cut + 1;
+    var out = [];
+    rows.slice(0, cut).concat(block, rows.slice(cut)).forEach(function (r, j) {
+      // Copied, not renumbered in place: the caller still holds the rows
+      // standings() gave it, where rank means "the procedure placed you
+      // here" over the teams it had evidence for.
+      var c = {};
+      for (var k in r) {
+        if (Object.prototype.hasOwnProperty.call(r, k)) c[k] = r[k];
+      }
+      c.rank = c.unplayed ? blockRank : j + 1;
+      out.push(c);
+    });
+    return out;
+  }
+
+  // The rank column, honest about what the ladder proved.
+  //
+  // A tie the procedure could not finish has no order inside its unresolved
+  // remainder: the engine hands those teams back alphabetically, which is a
+  // storage order and not a placement. Numbering them 1..6 publishes the
+  // alphabet as a ranking, so the remainder shares one position ("T1") the
+  // way the official board already writes shared positions. Teams the ladder
+  // DID seed before running out of data keep their real ranks, and `events`
+  // records exactly how many it made.
+  //
+  // The unplayed block is the same problem arriving from the other side.
+  // Those teams are level at 0-0 with nothing to separate them, so they
+  // share a position too.
+  //
+  // This lived in three places: here, in build.py and in app.js. That is
+  // exactly the duplication the rest of this file exists to have deleted,
+  // and it is load-bearing now, because the matchup card is computed from
+  // these labels. Two copies could put a team on the board at one position
+  // and in the title game from another.
+  function displayRanks(rows) {
+    var out = {};
+    var i = 0;
+    while (i < rows.length) {
+      var r = rows[i];
+      if (r.unplayed) {
+        var n = 0;
+        while (i + n < rows.length && rows[i + n].unplayed) n += 1;
+        var label = n > 1 ? "T" + r.rank : String(r.rank);
+        for (var k = 0; k < n; k++) out[rows[i + k].team] = label;
+        i += n;
+        continue;
+      }
+      if (r.resolved || !r.tie_group) {
+        out[r.team] = r.rank ? String(r.rank) : "\u2014";
+        i += 1;
+        continue;
+      }
+      var grp = rows.filter(function (x) { return x.tie_group === r.tie_group; });
+      var seeded = (r.events || []).length;
+      grp.forEach(function (x, j) {
+        out[x.team] = j < seeded ? String(x.rank) : "T" + grp[seeded].rank;
+      });
+      i += grp.length;
+    }
+    return out;
   }
 
   function standings(games, overrides) {
@@ -524,12 +613,62 @@
     return rows;
   }
 
+  var COUNT_WORDS = ["", "one", "two", "three", "four", "five", "six",
+    "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen",
+    "fourteen", "fifteen", "sixteen"];
+
+  function countWord(n) {
+    return COUNT_WORDS[n] || String(n);
+  }
+
+  function cap(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  /* The two teams that would play for the title if the season ended now, or
+   * an honest refusal to name one of them.
+   *
+   * IT USED TO READ THE TOP TWO ROWS OF standings() AND STOP. standings()
+   * ranks only the teams it has conference evidence for, so on the Sunday
+   * after the first Big 12 game that board was two rows long: the winner and
+   * the loser. The card therefore announced the team that had just lost as
+   * the #2 seed, with a green "resolved" badge on it, while fourteen teams
+   * with no conference loss sat below them.
+   *
+   * The same shortcut named an unresolved tie. breakTie hands its remainder
+   * back in storage order, so eight teams tied at 1-0 came out of here as
+   * "Arizona vs Baylor", which is the alphabet with two logos on it. The
+   * warn badge under it is a caption; the logos are the claim, and the claim
+   * was made up.
+   *
+   * So: computed off the padded board, where all sixteen teams are placed by
+   * record, and a slot is filled only when displayRanks says one team holds
+   * that position outright. A shared position ("T2") fills nothing. What
+   * goes in the slot then is the candidate list, and `reason` says which
+   * kind of not-knowing it is, because "needs SportSource rating or coin
+   * toss" is a true sentence about a tie the ladder could not break and a
+   * false one about teams that have not played yet.
+   */
   function championship(games, overrides) {
-    var rows = standings(games, overrides);
+    var ranked = standings(games, overrides);
+    if (!ranked.length) return null;
+    var rows = pad(ranked, games);
     if (rows.length < 2) return null;
+    var labels = displayRanks(rows);
+
+    function held(i) {
+      return labels[rows[i].team].charAt(0) !== "T";
+    }
+
+    function sharing(i) {
+      var label = labels[rows[i].team];
+      return rows.filter(function (r) { return labels[r.team] === label; })
+        .map(function (r) { return r.team; });
+    }
+
     var groups = placementGroups(games);
     var top = groups[0];
-    if (top.length === 2) {
+    if (top.length === 2 && held(0) && held(1)) {
       var a = top[0], b = top[1];
       var ra = recordVs(a, toSet([b]), games);
       var rb = recordVs(b, toSet([a]), games);
@@ -537,16 +676,41 @@
         var one = ra[0] ? a : b;
         var two = ra[0] ? b : a;
         return {
-          seed1: one, seed2: two,
+          seed1: one, seed2: two, pending: null, reason: null,
           note: "Two teams tied for first: both play in the championship " +
             "game; " + one + " is the #1 seed by head-to-head win.",
           resolved: true,
         };
       }
     }
+
+    var seed1 = held(0) ? rows[0].team : null;
+    var seed2 = seed1 && held(1) ? rows[1].team : null;
+    if (seed1 && seed2) {
+      return {
+        seed1: seed1, seed2: seed2, pending: null, reason: null, note: null,
+        resolved: rows[0].resolved && rows[1].resolved,
+      };
+    }
+
+    // One slot open at most matters: a position nobody holds outright is
+    // shared by everyone in the group, and the first open slot is the one
+    // the card has to explain.
+    var open = seed1 ? 1 : 0;
+    var group = sharing(open);
+    var row = rows[open];
+    var rec = row.conf_w + "\u2013" + row.conf_l;
+    var many = countWord(group.length);
+    var note = row.unplayed
+      ? cap(many) + " teams have not played a conference game yet, so " +
+        "nothing separates them and " +
+        (seed1 ? "the second seed is open." : "neither seed is settled.")
+      : cap(many) + " teams are tied at " + rec + " and the procedure " +
+        "cannot separate them with the data available.";
     return {
-      seed1: rows[0].team, seed2: rows[1].team, note: null,
-      resolved: rows[0].resolved && rows[1].resolved,
+      seed1: seed1, seed2: seed2, pending: group,
+      reason: row.unplayed ? "unplayed" : "unresolved",
+      note: note, resolved: false,
     };
   }
 
@@ -556,6 +720,7 @@
     breakTie: breakTie,
     standings: standings,
     pad: pad,
+    displayRanks: displayRanks,
     championship: championship,
     pct: pct,
     winner: winner,

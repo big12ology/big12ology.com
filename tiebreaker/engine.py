@@ -140,11 +140,21 @@ def conf_records(games):
 
 
 def pad(rows, games):
-    """Standings with the teams that have no conference result yet appended.
+    """The full sixteen-team board: the ranked teams with the ones that have
+    no conference result yet slotted in at 0-0, which is above 0-1 and below
+    anything better.
 
     The display half, and it reads scores of its own, so tests/test_malformed
-    exercises it on the same bad rows the ladder gets."""
+    exercises it on the same bad rows the ladder gets. Ranks come back
+    renumbered to board position; the rows handed in are left alone.
+    """
     return _call("pad", rows, games)
+
+
+def display_ranks(rows):
+    """{team: rank text} for a padded board, with a shared position written
+    "T3" wherever nothing has separated the teams holding it."""
+    return _call("displayRanks", rows)
 
 
 # The engine's own view of the two predicates rules_lite keeps a Python copy

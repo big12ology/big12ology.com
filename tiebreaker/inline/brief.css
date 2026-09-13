@@ -5,6 +5,19 @@
   padding:6px 10px 10px 2px }
 .tname { letter-spacing:-.01em }
 .vs { color:var(--dim); font-weight:400; font-size:var(--t-subhead); padding:0 6px }
+/* A SEAT THE PROCEDURE HAS NOT FILLED. The matchup card can now say it does
+   not know the second participant, which it has to be able to draw: for most
+   of September the leader is real and the field behind it has not played a
+   conference game. Same geometry as a named side, so nothing on the card
+   moves when the seed resolves, and dashed rather than empty so the slot
+   reads as open instead of broken. */
+.side.tbd { color:var(--dim); border-bottom-style:dashed;
+  border-bottom-color:var(--dim) }
+.side.tbd .tbdmark { display:inline-flex; align-items:center;
+  justify-content:center; width:56px; height:56px; margin-right:6px;
+  border:2px dashed var(--dim); border-radius:6px;
+  font-size:var(--t-subhead); font-weight:700; color:var(--dim) }
+.side.tbd .seed { background:var(--dim) }
 .seed { display:inline-block; background:var(--accent); color:#fff;
   border-radius:6px; font-size:var(--t-label); width:22px; height:22px;
   line-height:22px; text-align:center; vertical-align:3px; margin-right:4px }

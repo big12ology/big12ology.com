@@ -78,6 +78,7 @@ const OPS = {
     engine.breakTie(tied, games, overrides || {}),
   confRecords: (games) => engine.confRecords(games),
   pad: (rows, games) => engine.pad(rows, games),
+  displayRanks: (rows) => engine.displayRanks(rows),
   pct: (w, l) => engine.pct(w, l),
   winner: (g) => engine.winner(g),
   hasScore: (g) => engine.hasScore(g),
