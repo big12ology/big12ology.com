@@ -265,11 +265,49 @@ check(os.path.exists(os.path.join(market.ARCHIVE, "2099-week-08.json")),
 
 shutil.rmtree(TMP, ignore_errors=True)
 
+# THE OPENER IS NOT THE LINE'S OWN BOOKS, and the card has to say so.
+# the-odds-api reports no opening line, so a record sourced from it carries
+# one handed down from CFBD's one or two books while sitting beside eight
+# that opened nothing. Printed bare that reads as the same market earlier,
+# which is the one thing it is not.
+import build                                             # noqa: E402
+
+eight = [{"provider": f"B{i}", "spread": -9} for i in range(8)]
+check(build.opener_src({"spread_open": -13.5, "spread_open_books": 2,
+                        "books": eight}) == " · 2 books",
+      "opener: carried-down opener did not name its book count")
+check(build.opener_src({"spread_open": -6.5, "spread_open_books": 1,
+                        "books": eight}) == " · 1 book",
+      "opener: singular book count is not singular")
+check(build.opener_src({"spread_open": -13.5, "books": eight})
+      == " · other books",
+      "opener: a carried opener with no count claimed the line's books")
+# ...and stays quiet when the line's own books are the ones that opened it,
+# because then the count above it is already the right one.
+own = [{"provider": "DraftKings", "spread": -14, "spread_open": -15},
+       {"provider": "Bovada", "spread": -14.5, "spread_open": -15}]
+check(build.opener_src({"spread_open": -15, "spread_open_books": 2,
+                        "books": own}) == "",
+      "opener: glossed an opener its own books reported")
+check(build.opener_src({"books": eight}) == "",
+      "opener: glossed a record with no opener")
+check(build.opener_src({"spread_open": -3, "books": 2}) == "",
+      "opener: tripped on a legacy integer book count")
+
+# PROVENANCE IN THE DATA, so the committed file says which source supplied a
+# broadcast. GitHub serves this repo's Actions run list unauthenticated but
+# refuses the logs (403), so a build-log line needed a credential to read;
+# a key in the file needs none. Inert on the page by design.
+row = {"type": "tv", "outlet": "FS1", "via": "espn.com"}
+check("FS1" in build.broadcast({"id": 1, "home": "Kansas", "away": "TCU",
+                                "media": [row]}),
+      "provenance: the extra key broke the slate's broadcast line")
+
 if FAIL:
     print("market join: FAILED")
     for m in FAIL:
         print("  FAIL:", m)
     sys.exit(1)
-print("market join: 28 scenarios: neutral-site flips re-side, prefix "
+print("market join: 35 scenarios: neutral-site flips re-side, prefix "
       "collisions resolve, kicked-off games are never written, and the "
       "credit gate holds; the raw archive dedupes and shards by week")

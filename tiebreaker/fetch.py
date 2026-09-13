@@ -357,6 +357,15 @@ def _cfbd_lines(year):
             "away_ml": avg(b.get("away_ml") for b in books),
             "books": books,
             "source": "collegefootballdata.com",
+            # How many books opened it, kept because the number outlives
+            # the books that reported it: an opener carried onto an
+            # the-odds-api record sits beside eight books, none of which
+            # opened anything, and the card has no other way to say so.
+            # Left out entirely at zero rather than stored as 0, because a
+            # record with no opener has no count to report and a stored
+            # zero would read as a measured one.
+            "spread_open_books": sum(
+                1 for b in books if b.get("spread_open") is not None) or None,
         }
         if rec["spread"] is not None or rec["over_under"] is not None:
             out[str(g["id"])] = {k: v for k, v in rec.items()
@@ -367,7 +376,7 @@ def _cfbd_lines(year):
 # What a record's openers are called, wherever it came from. CFBD is the
 # only source for these: the-odds-api reports what a book is posting now
 # and has no concept of where it opened.
-_OPENERS = ("spread_open", "over_under_open")
+_OPENERS = ("spread_open", "over_under_open", "spread_open_books")
 
 CFBD_SOURCE = "collegefootballdata.com"
 
