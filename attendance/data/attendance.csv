@@ -1406,7 +1406,10 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,BYU,1,2026-09-05,Utah Tech,false,LaVell Edwards Stadium,64077,62073,1.0323,false
 2026,BYU,2,2026-09-12,Arizona,true,LaVell Edwards Stadium,64409,62073,1.0376,false
 2026,Cincinnati,1,2026-09-05,Boston College,false,Nippert Stadium,37097,38088,0.9740,false
+2026,Cincinnati,2,2026-09-12,Western Carolina,false,Nippert Stadium,34827,38088,0.9144,false
+2026,Colorado,2,2026-09-12,Weber State,false,Folsom Field,49363,50183,0.9837,false
 2026,Houston,1,2026-09-05,Oregon State,false,TDECU Stadium,28742,40000,0.7186,false
+2026,Houston,2,2026-09-12,Southern,false,TDECU Stadium,28936,40000,0.7234,false
 2026,Iowa State,1,2026-09-05,Southeast Missouri State,false,Jack Trice Stadium,51802,61500,0.8423,false
 2026,Kansas,1,2026-09-04,Long Island University,false,David Booth Kansas Memorial Stadium,30904,32000,0.9657,false
 2026,Kansas,2,2026-09-11,Missouri,false,David Booth Kansas Memorial Stadium,32000,32000,1.0000,false
@@ -1416,4 +1419,6 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Texas Tech,1,2026-09-05,Abilene Christian,false,Jones AT&T Stadium,60229,60229,1.0000,false
 2026,UCF,1,2026-09-03,Bethune-Cookman,false,Acrisure Bounce House,43127,44206,0.9756,false
 2026,Utah,1,2026-09-03,Idaho,false,Rice-Eccles Stadium,51444,51444,1.0000,false
+2026,Utah,2,2026-09-12,Arkansas,false,Rice-Eccles Stadium,51532,51444,1.0017,false
 2026,West Virginia,1,2026-09-05,Coastal Carolina,false,Milan Puskar Stadium,54158,60000,0.9026,false
+2026,West Virginia,2,2026-09-12,UT Martin,false,Milan Puskar Stadium,47049,60000,0.7842,false

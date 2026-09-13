@@ -344,7 +344,7 @@
       "pointsAgainst": 17,
       "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 83,
+        "tempF": 84,
         "windMph": 8,
         "precipIn": 0
       }
@@ -357,7 +357,14 @@
       "espnId": 401856784,
       "conferenceGame": false,
       "opponent": "Prairie View A&M",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 44,
+      "pointsAgainst": 3,
+      "weather": {
+        "tempF": 92,
+        "windMph": 8,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
@@ -367,7 +374,15 @@
       "espnId": 401856786,
       "conferenceGame": false,
       "opponent": "Western Carolina",
-      "attendance": null
+      "attendance": 34827,
+      "pointsFor": 62,
+      "pointsAgainst": 10,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 76,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -377,12 +392,13 @@
       "espnId": 401856785,
       "conferenceGame": false,
       "opponent": "Weber State",
-      "attendance": null,
+      "attendance": 49363,
       "pointsFor": 52,
       "pointsAgainst": 21,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 72,
-        "windMph": 6,
+        "tempF": 70,
+        "windMph": 3,
         "precipIn": 0
       }
     },
@@ -394,7 +410,15 @@
       "espnId": 401856787,
       "conferenceGame": false,
       "opponent": "Southern",
-      "attendance": null
+      "attendance": 28936,
+      "pointsFor": 77,
+      "pointsAgainst": 6,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 89,
+        "windMph": 7,
+        "precipIn": 0.0
+      }
     },
     {
       "team": "Iowa State",
@@ -408,7 +432,9 @@
       "role": "away",
       "venue": "Kinnick Stadium",
       "city": "Iowa City",
-      "state": "IA"
+      "state": "IA",
+      "pointsFor": 13,
+      "pointsAgainst": 16
     },
     {
       "team": "Kansas",
@@ -472,7 +498,14 @@
       "espnId": 401856789,
       "conferenceGame": false,
       "opponent": "Grambling",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 63,
+      "pointsAgainst": 7,
+      "weather": {
+        "tempF": 96,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
@@ -486,7 +519,9 @@
       "role": "away",
       "venue": "Reser Stadium",
       "city": "Corvallis",
-      "state": "OR"
+      "state": "OR",
+      "pointsFor": 35,
+      "pointsAgainst": 24
     },
     {
       "team": "UCF",
@@ -500,7 +535,9 @@
       "role": "away",
       "venue": "Acrisure Stadium",
       "city": "Pittsburgh",
-      "state": "PA"
+      "state": "PA",
+      "pointsFor": 7,
+      "pointsAgainst": 12
     },
     {
       "team": "Utah",
@@ -510,7 +547,15 @@
       "espnId": 401856670,
       "conferenceGame": false,
       "opponent": "Arkansas",
-      "attendance": null
+      "attendance": 51532,
+      "pointsFor": 43,
+      "pointsAgainst": 10,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 81,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
@@ -520,9 +565,10 @@
       "espnId": 401856791,
       "conferenceGame": false,
       "opponent": "UT Martin",
-      "attendance": null,
+      "attendance": 47049,
       "pointsFor": 52,
       "pointsAgainst": 7,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
         "tempF": 77,
         "windMph": 9,

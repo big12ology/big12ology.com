@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 16,
+    "agree": 21,
     "missing_both": 2
   },
   "games": [
@@ -149,15 +149,48 @@
       "status": "agree"
     },
     {
+      "team": "Baylor",
+      "week": 2,
+      "opponent": "Prairie View A&M",
+      "date": "2026-09-12",
+      "espnId": 401856784,
+      "ours": null,
+      "espn": null,
+      "source": "CFBD",
+      "status": "missing_both"
+    },
+    {
+      "team": "Cincinnati",
+      "week": 2,
+      "opponent": "Western Carolina",
+      "date": "2026-09-12",
+      "espnId": 401856786,
+      "ours": 34827,
+      "espn": 34827,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "Colorado",
       "week": 2,
       "opponent": "Weber State",
       "date": "2026-09-12",
       "espnId": 401856785,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 49363,
+      "espn": 49363,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Houston",
+      "week": 2,
+      "opponent": "Southern",
+      "date": "2026-09-12",
+      "espnId": 401856787,
+      "ours": 28936,
+      "espn": 28936,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "Kansas",
@@ -193,15 +226,37 @@
       "status": "agree"
     },
     {
+      "team": "TCU",
+      "week": 2,
+      "opponent": "Grambling",
+      "date": "2026-09-12",
+      "espnId": 401856789,
+      "ours": null,
+      "espn": null,
+      "source": "CFBD",
+      "status": "missing_both"
+    },
+    {
+      "team": "Utah",
+      "week": 2,
+      "opponent": "Arkansas",
+      "date": "2026-09-12",
+      "espnId": 401856670,
+      "ours": 51532,
+      "espn": 51532,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "West Virginia",
       "week": 2,
       "opponent": "UT Martin",
       "date": "2026-09-12",
       "espnId": 401856791,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 47049,
+      "espn": 47049,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     }
   ]
 }

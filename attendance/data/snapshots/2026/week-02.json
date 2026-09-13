@@ -70,6 +70,30 @@
       "pct": 1.0075561111214761
     },
     {
+      "team": "Utah",
+      "stadium": "Rice-Eccles Stadium",
+      "capacity": 51444,
+      "capacityEstimate": null,
+      "color": "#ea002a",
+      "logo": "assets/logos/utah.svg",
+      "multiVenue": false,
+      "games": 2,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 51444,
+          "pct": 1
+        },
+        {
+          "week": 2,
+          "attendance": 51532,
+          "pct": 1.0017105979317316
+        }
+      ],
+      "total": 102976,
+      "pct": 1.000855298965866
+    },
+    {
       "team": "Texas Tech",
       "stadium": "Jones AT&T Stadium",
       "capacity": 60229,
@@ -89,23 +113,23 @@
       "pct": 1
     },
     {
-      "team": "Utah",
-      "stadium": "Rice-Eccles Stadium",
-      "capacity": 51444,
+      "team": "Colorado",
+      "stadium": "Folsom Field",
+      "capacity": 50183,
       "capacityEstimate": null,
-      "color": "#ea002a",
-      "logo": "assets/logos/utah.svg",
+      "color": "#cfb87c",
+      "logo": "assets/logos/cu.svg",
       "multiVenue": false,
       "games": 1,
       "weeks": [
         {
-          "week": 1,
-          "attendance": 51444,
-          "pct": 1
+          "week": 2,
+          "attendance": 49363,
+          "pct": 0.9836598051132853
         }
       ],
-      "total": 51444,
-      "pct": 1
+      "total": 49363,
+      "pct": 0.9836598051132853
     },
     {
       "team": "Kansas",
@@ -177,16 +201,21 @@
       "color": "#e00122",
       "logo": "assets/logos/cin.svg",
       "multiVenue": false,
-      "games": 1,
+      "games": 2,
       "weeks": [
         {
           "week": 1,
           "attendance": 37097,
           "pct": 0.9739813064482251
+        },
+        {
+          "week": 2,
+          "attendance": 34827,
+          "pct": 0.9143824826717076
         }
       ],
-      "total": 37097,
-      "pct": 0.9739813064482251
+      "total": 71924,
+      "pct": 0.9441818945599664
     },
     {
       "team": "West Virginia",
@@ -196,16 +225,21 @@
       "color": "#002855",
       "logo": "assets/logos/wvu.svg",
       "multiVenue": false,
-      "games": 1,
+      "games": 2,
       "weeks": [
         {
           "week": 1,
           "attendance": 54158,
           "pct": 0.9026333333333333
+        },
+        {
+          "week": 2,
+          "attendance": 47049,
+          "pct": 0.78415
         }
       ],
-      "total": 54158,
-      "pct": 0.9026333333333333
+      "total": 101207,
+      "pct": 0.8433916666666667
     },
     {
       "team": "Iowa State",
@@ -253,16 +287,21 @@
       "color": "#c92a39",
       "logo": "assets/logos/hou.svg",
       "multiVenue": false,
-      "games": 1,
+      "games": 2,
       "weeks": [
         {
           "week": 1,
           "attendance": 28742,
           "pct": 0.71855
+        },
+        {
+          "week": 2,
+          "attendance": 28936,
+          "pct": 0.7234
         }
       ],
-      "total": 28742,
-      "pct": 0.71855
+      "total": 57678,
+      "pct": 0.720975
     },
     {
       "team": "Baylor",
@@ -271,19 +310,6 @@
       "capacityEstimate": null,
       "color": "#154734",
       "logo": "assets/logos/bay.svg",
-      "multiVenue": false,
-      "games": 0,
-      "weeks": [],
-      "total": 0,
-      "pct": 0
-    },
-    {
-      "team": "Colorado",
-      "stadium": "Folsom Field",
-      "capacity": 50183,
-      "capacityEstimate": null,
-      "color": "#cfb87c",
-      "logo": "assets/logos/cu.svg",
       "multiVenue": false,
       "games": 0,
       "weeks": [],
@@ -321,10 +347,10 @@
     },
     {
       "week": 2,
-      "games": 4,
-      "attendance": 199203,
-      "capacity": 196275,
-      "pct": 1.0149178448605274
+      "games": 9,
+      "attendance": 410910,
+      "capacity": 435990,
+      "pct": 0.9424757448565334
     },
     {
       "week": 3,
@@ -405,9 +431,9 @@
     }
   ],
   "totals": {
-    "games": 16,
-    "attendance": 766635,
-    "capacity": 800196,
-    "pct": 0.958059025538743
+    "games": 21,
+    "attendance": 978342,
+    "capacity": 1039911,
+    "pct": 0.9407939717918168
   }
 }
