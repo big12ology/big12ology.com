@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="488" viewBox="0 0 900 488" role="img" aria-label="Big 12 home crowds, week 2. 9 of 11 home games, sorted by percent of capacity">
-<rect width="900" height="488" fill="#f6f4ef"/>
-<rect x="12" y="12" width="876" height="464" rx="14" fill="#ffffff" stroke="#e2ddd3"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="556" viewBox="0 0 900 556" role="img" aria-label="Big 12 home crowds, week 2. 11 home games, sorted by percent of capacity">
+<rect width="900" height="556" fill="#f6f4ef"/>
+<rect x="12" y="12" width="876" height="532" rx="14" fill="#ffffff" stroke="#e2ddd3"/>
 <text x="32" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#16181A">Big 12 home crowds, week 2</text>
-<text x="32" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#5b6169">9 of 11 home games, sorted by percent of capacity</text>
+<text x="32" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#5b6169">11 home games, sorted by percent of capacity</text>
 <rect x="32" y="114" width="5" height="14" rx="2" fill="#003da5"/>
 <text x="46" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">BYU</text>
 <rect x="210" y="112" width="526" height="18" rx="4" fill="#f6f4ef"/>
@@ -45,18 +45,30 @@
 <rect x="210" y="316" width="464" height="18" rx="4" fill="#4a9a3f"/>
 <text x="748" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">91.4%</text>
 <text x="868" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">34,827</text>
-<rect x="32" y="352" width="5" height="14" rx="2" fill="#002855"/>
-<text x="46" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">West Virginia</text>
+<rect x="32" y="352" width="5" height="14" rx="2" fill="#154734"/>
+<text x="46" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Baylor</text>
 <rect x="210" y="350" width="526" height="18" rx="4" fill="#f6f4ef"/>
-<rect x="210" y="350" width="398" height="18" rx="4" fill="#9a9a2f"/>
-<text x="748" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">78.4%</text>
-<text x="868" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">47,049</text>
-<rect x="32" y="386" width="5" height="14" rx="2" fill="#c92a39"/>
-<text x="46" y="398" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Houston</text>
+<rect x="210" y="350" width="434" height="18" rx="4" fill="#9a9a2f"/>
+<text x="748" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">85.6%</text>
+<text x="868" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">38,642</text>
+<rect x="32" y="386" width="5" height="14" rx="2" fill="#4d1979"/>
+<text x="46" y="398" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">TCU</text>
 <rect x="210" y="384" width="526" height="18" rx="4" fill="#f6f4ef"/>
-<rect x="210" y="384" width="367" height="18" rx="4" fill="#b8802e"/>
-<text x="748" y="398" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">72.3%</text>
-<text x="868" y="398" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">28,936</text>
-<text x="32" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169">2026 season, week 2</text>
-<text x="868" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#0B6E77" text-anchor="end" font-weight="600">big12ology.com/attendance</text>
+<rect x="210" y="384" width="414" height="18" rx="4" fill="#9a9a2f"/>
+<text x="748" y="398" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">81.7%</text>
+<text x="868" y="398" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">37,600</text>
+<rect x="32" y="420" width="5" height="14" rx="2" fill="#002855"/>
+<text x="46" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">West Virginia</text>
+<rect x="210" y="418" width="526" height="18" rx="4" fill="#f6f4ef"/>
+<rect x="210" y="418" width="398" height="18" rx="4" fill="#9a9a2f"/>
+<text x="748" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">78.4%</text>
+<text x="868" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">47,049</text>
+<rect x="32" y="454" width="5" height="14" rx="2" fill="#c92a39"/>
+<text x="46" y="466" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Houston</text>
+<rect x="210" y="452" width="526" height="18" rx="4" fill="#f6f4ef"/>
+<rect x="210" y="452" width="367" height="18" rx="4" fill="#b8802e"/>
+<text x="748" y="466" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">72.3%</text>
+<text x="868" y="466" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">28,936</text>
+<text x="32" y="528" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169">2026 season, week 2</text>
+<text x="868" y="528" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#0B6E77" text-anchor="end" font-weight="600">big12ology.com/attendance</text>
 </svg>

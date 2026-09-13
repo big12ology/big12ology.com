@@ -357,9 +357,10 @@
       "espnId": 401856784,
       "conferenceGame": false,
       "opponent": "Prairie View A&M",
-      "attendance": null,
+      "attendance": 38642,
       "pointsFor": 44,
       "pointsAgainst": 3,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
         "tempF": 92,
         "windMph": 8,
@@ -498,9 +499,10 @@
       "espnId": 401856789,
       "conferenceGame": false,
       "opponent": "Grambling",
-      "attendance": null,
+      "attendance": 37600,
       "pointsFor": 63,
       "pointsAgainst": 7,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
         "tempF": 96,
         "windMph": 7,

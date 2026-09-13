@@ -1,8 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 21,
-    "missing_both": 2
+    "agree": 23
   },
   "games": [
     {
@@ -154,10 +153,10 @@
       "opponent": "Prairie View A&M",
       "date": "2026-09-12",
       "espnId": 401856784,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 38642,
+      "espn": 38642,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "Cincinnati",
@@ -231,10 +230,10 @@
       "opponent": "Grambling",
       "date": "2026-09-12",
       "espnId": 401856789,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 37600,
+      "espn": 37600,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "Utah",
