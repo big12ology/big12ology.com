@@ -1,11 +1,15 @@
 {
  "games_complete": 31,
- "generated": "2026-09-13T06:11:03+00:00",
+ "generated": "2026-09-14T23:23:34+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
   "rating_sigma": 5.715,
   "systems": {
+   "Big12ology": {
+    "regressed": 0.65,
+    "year": 2025
+   },
    "Elo": {
     "regressed": null,
     "year": 2026
@@ -27,68 +31,68 @@
  "season": 2026,
  "teams": {
   "Arizona": {
-   "exp_w": 4.412,
-   "p_ccg": 0.0649
+   "exp_w": 4.432,
+   "p_ccg": 0.0671
   },
   "Arizona State": {
-   "exp_w": 4.248,
-   "p_ccg": 0.0641
+   "exp_w": 4.334,
+   "p_ccg": 0.0658
   },
   "BYU": {
-   "exp_w": 6.329,
-   "p_ccg": 0.3376
+   "exp_w": 6.311,
+   "p_ccg": 0.3341
   },
   "Baylor": {
-   "exp_w": 3.87,
-   "p_ccg": 0.0533
+   "exp_w": 3.799,
+   "p_ccg": 0.0484
   },
   "Cincinnati": {
-   "exp_w": 3.605,
-   "p_ccg": 0.0411
+   "exp_w": 3.698,
+   "p_ccg": 0.045
   },
   "Colorado": {
-   "exp_w": 3.452,
-   "p_ccg": 0.033
+   "exp_w": 3.393,
+   "p_ccg": 0.0297
   },
   "Houston": {
-   "exp_w": 4.617,
-   "p_ccg": 0.0845
+   "exp_w": 4.58,
+   "p_ccg": 0.0776
   },
   "Iowa State": {
-   "exp_w": 4.084,
-   "p_ccg": 0.0542
+   "exp_w": 4.247,
+   "p_ccg": 0.0621
   },
   "Kansas": {
-   "exp_w": 4.084,
-   "p_ccg": 0.0564
+   "exp_w": 4.09,
+   "p_ccg": 0.0543
   },
   "Kansas State": {
-   "exp_w": 5.05,
-   "p_ccg": 0.119
+   "exp_w": 4.957,
+   "p_ccg": 0.1076
   },
   "Oklahoma State": {
-   "exp_w": 3.199,
-   "p_ccg": 0.0196
+   "exp_w": 2.963,
+   "p_ccg": 0.0143
   },
   "TCU": {
-   "exp_w": 4.444,
-   "p_ccg": 0.0964
+   "exp_w": 4.387,
+   "p_ccg": 0.0905
   },
   "Texas Tech": {
-   "exp_w": 7.458,
-   "p_ccg": 0.624
+   "exp_w": 7.507,
+   "p_ccg": 0.6352
   },
   "UCF": {
-   "exp_w": 4.061,
-   "p_ccg": 0.0555
+   "exp_w": 4.113,
+   "p_ccg": 0.0576
   },
   "Utah": {
-   "exp_w": 6.074,
-   "p_ccg": 0.2935
+   "exp_w": 6.149,
+   "p_ccg": 0.3083
   },
   "West Virginia": {
-   "exp_w": 3.012,
-   "p_ccg": 0.0149
+   "exp_w": 3.04,
+   "p_ccg": 0.0141
   }
  },
  "through_week": 2
