@@ -254,6 +254,41 @@ def mark_ccg(games):
     return games
 
 
+OWN_RATINGS = os.path.join(DATA, "own_ratings.json")
+
+
+def load_own(year=None):
+    """Our own rating, by season: {year: {ratings, hfa, per_pt, ...}}.
+
+    KEPT OUT OF ratings_<year>.json ON PURPOSE. Those files are inputs to
+    tests/engine_fixture.json's oracle, and a fifth system in a finished
+    season moves hfa_points, which fails a check that exists to notice the
+    engine moving. One store, every season, and the per-season files stay
+    exactly what the oracle was taken against.
+
+    It is also the only place a finished season's rating survives: the fit
+    needs every FBS game and this repo commits only the Big 12's, so a
+    season that is not stored here cannot be recomputed from what is
+    checked in.
+    """
+    try:
+        blob = json.load(open(OWN_RATINGS))
+    except (OSError, ValueError):
+        return {} if year is None else None
+    return blob if year is None else blob.get(str(year))
+
+
+def _load_own(year):
+    return load_own(year)
+
+
+def _save_own(year, system):
+    blob = load_own() or {}
+    blob[str(year)] = system
+    with open(OWN_RATINGS, "w") as f:
+        json.dump(blob, f, indent=1, sort_keys=True)
+
+
 def fetch_ratings(year):
     """Rating systems for the what-if favorites. One call per system, for the
     target year only. Preseason numbers appear in late August (Elo and SRS
@@ -314,6 +349,7 @@ def fetch_ratings(year):
         ours = massey_mod.system(allg, year)
         if ours["ratings"]:
             systems[OURS] = ours
+            _save_own(year, ours)
             print(f"{year}: {OURS} fitted on {ours['games']} FBS games, "
                   f"home field {ours['hfa']} points")
         else:
@@ -328,7 +364,7 @@ def fetch_ratings(year):
             # margins by about 45%, and keeping 65% of the spread is within a
             # few points of the inverse. The existing constant is already
             # about right for this.
-            prev = have.get(OURS) or prior.get(OURS)
+            prev = _load_own(year - 1) or have.get(OURS) or prior.get(OURS)
             if prev and prev.get("ratings"):
                 systems[OURS] = dict(prev)
                 print(f"{year}: {OURS} not fittable yet; using "

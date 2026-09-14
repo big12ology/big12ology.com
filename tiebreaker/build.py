@@ -2691,7 +2691,6 @@ def pickem_line(g):
         return ""
     if not (g.get("line") or {}).get("spread"):
         return ""
-    teams_ = load_teams()
     # Full names, not abbreviations. These are no longer drawn: they are what
     # the tooltip and the screen-reader sentence say, and both want the name
     # the reader would use out loud.
@@ -4173,6 +4172,122 @@ href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
 """
 
 
+RATINGS_PAGE = """<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>Big12ology ratings \u2014 every FBS team</title>
+<meta name=description content="This site's own team ratings, in points of margin, for every FBS team. Filter to the Big 12.">
+<link rel=canonical href="https://big12ology.com/tiebreaker/model.html">
+<link rel=icon type=image/svg+xml href="{base}favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
+<link rel=apple-touch-icon href="{base}favicon-180.png">
+{BOOT_THEME}
+{BOOT_CARDS}
+<link rel=stylesheet href="{base}{v_brand}">
+<script defer src="{base}{v_theme}"></script>
+<script src="{base}{v_state}"></script>
+<script src="{base}{v_metrics}"></script>
+<script defer src="{base}{v_cards}"></script>
+<meta property=og:type content=website>
+<meta property=og:site_name content=Big12ology>
+<meta property=og:title content="Big12ology ratings">
+<meta property=og:description content="This site's own team ratings, in points of margin, for every FBS team.">
+<meta property=og:url content="https://big12ology.com/tiebreaker/model.html">
+<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta name=twitter:card content=summary_large_image>
+<style>
+{how_css}
+{ratings_css}
+</style>
+</head>
+<body>
+<a class=skip-link href="#main">Skip to content</a>
+{topbar}
+{top}
+
+<p class=lead>{lead}</p>
+
+<div class=rtbar>
+  {filter_btn}
+  <a class=wbtn href="model-how.html">{i_note}<span>How this is calculated</span></a>
+</div>
+{table}
+<p class=rtnote>{note}</p>
+{footer}
+<script>
+(function () {{
+  var btn = document.getElementById("r-b12");
+  var tab = document.getElementById("rtab");
+  if (!btn || !tab) return;
+  var only = false;
+  btn.onclick = function () {{
+    only = !only;
+    var rows = tab.querySelectorAll("tbody tr");
+    for (var i = 0; i < rows.length; i++) {{
+      rows[i].hidden = only && rows[i].className.indexOf("b12") < 0;
+    }}
+    btn.setAttribute("aria-pressed", only ? "true" : "false");
+    btn.title = only ? "Show every FBS team" : "Show only Big 12 teams";
+    var lab = btn.querySelector(".blab");
+    if (lab) lab.textContent = only ? "All FBS" : "Big 12 only";
+    var use = btn.querySelector("use");
+    if (use) use.setAttribute("href", only ? "#i-filteroff" : "#i-filter");
+  }};
+}})();
+</script>
+</body>
+</html>
+"""
+
+
+RATINGS_CSS = """
+/* The ratings table. Fixed columns so rank, rating and record line up down
+   the page rather than drifting with the widest team name. */
+.rtwrap { overflow-x:auto; margin:10px 0 6px }
+.rtab { border-collapse:collapse; width:100%; min-width:26rem;
+  font-size:var(--t-label); font-variant-numeric:tabular-nums }
+.rtab th, .rtab td { padding:6px 12px 6px 0; white-space:nowrap;
+  border-bottom:1px solid var(--line) }
+.rtab thead th { font-size:var(--t-fine); text-transform:uppercase;
+  letter-spacing:.05em; color:var(--dim); font-weight:600;
+  border-bottom:2px solid var(--line); position:sticky; top:0;
+  background:var(--bg) }
+.rtab .rk { color:var(--dim); width:3.5rem; text-align:right }
+.rtab .rv, .rtab thead th.rv { text-align:right; font-weight:600 }
+.rtab .rc { color:var(--dim); font-size:var(--t-meta) }
+.rtab tbody tr.b12 td { background:color-mix(in srgb, var(--accent) 7%,
+  transparent) }
+/* Ranks are over all of FBS and do not renumber when the list is filtered:
+   a Big 12 team's number is its place in the country, which is the only
+   thing it could usefully mean. */
+.rtab tr[hidden] { display:none }
+.rtnote { color:var(--dim); font-size:var(--t-meta); margin:2px 0 0 }
+.rtbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+  margin:14px 0 4px }
+/* CARRIED, NOT INHERITED. .wbtn and .gi live in inline/subpage.css, which
+   the schedule pages load and this one does not: it is built on the
+   explainer's stylesheet. Without them the buttons rendered as two enormous
+   unsized SVGs with the labels adrift beneath. Copied rather than pulling
+   the whole sheet in, because this page needs two rules out of four hundred
+   lines, and duplicating two is cheaper to read than loading the rest. */
+.rtbar .gi { width:15px; height:15px; flex:0 0 15px; color:var(--dim);
+  opacity:.85 }
+.rtbar .wbtn { font:inherit; font-size:var(--t-row); font-weight:600;
+  line-height:1.5; border:1px solid var(--line); background:var(--panel);
+  color:var(--ink); border-radius:7px; padding:5px 11px; cursor:pointer;
+  white-space:nowrap; display:inline-flex; align-items:center; gap:6px;
+  text-decoration:none; box-shadow:0 1px 0 rgba(0,0,0,.05) }
+.rtbar .wbtn:hover { border-color:var(--accent); background:var(--bg) }
+.rtbar button.wbtn:active { transform:translateY(1px); box-shadow:none }
+.rtbar .wbtn:focus-visible { outline:2px solid var(--accent);
+  outline-offset:2px }
+.rtbar .wbtn[aria-pressed=true] { border-color:var(--accent);
+  color:var(--accent) }
+"""
+
+
 MODEL_CSS = """/* The one table on this page. Figures right-aligned under their headers and
    in the same tabular figures the rest of the site uses for numbers, so the
    columns line up instead of drifting with the digits. */
@@ -4198,7 +4313,7 @@ MODEL_PAGE = """<!doctype html>
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>How our rating is calculated \u2014 Big12ology</title>
 <meta name=description content="The one rating on this site we compute ourselves: least squares over every result, home field measured rather than assumed, and the out-of-sample numbers that justify it.">
-<link rel=canonical href="https://big12ology.com/tiebreaker/model.html">
+<link rel=canonical href="https://big12ology.com/tiebreaker/model-how.html">
 <link rel=icon type=image/svg+xml href="{base}favicon.svg">
 <link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
 <link rel=apple-touch-icon href="{base}favicon-180.png">
@@ -4213,7 +4328,7 @@ MODEL_PAGE = """<!doctype html>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="How our rating is calculated">
 <meta property=og:description content="Least squares over every result, home field measured rather than assumed, and the out-of-sample numbers that justify it.">
-<meta property=og:url content="https://big12ology.com/tiebreaker/model.html">
+<meta property=og:url content="https://big12ology.com/tiebreaker/model-how.html">
 <meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
 <meta name=twitter:card content=summary_large_image>
 <style>
@@ -4225,6 +4340,8 @@ MODEL_PAGE = """<!doctype html>
 <a class=skip-link href="#main">Skip to content</a>
 {topbar}
 {top}
+
+<p class=backlink><a href="model.html">&#8592; The ratings</a></p>
 
 <p class=lead>The Lab weighs several ratings of who is better. Most of them
 are published elsewhere and quoted here. One is computed on this site, from
@@ -4320,8 +4437,98 @@ ahead of some and level with the best of them.</p>
 """
 
 
-def build_model_page(year, matchcard, outdir=None):
-    """Render site/model.html: how the one rating we compute ourselves works.
+def build_model_ratings(year, matchcard, outdir=None):
+    """Render site/model.html: this site's own ratings, every FBS team.
+
+    The numbers shown are the ones the rest of the site reasons about, after
+    engine.regress_stale — not the raw fit. A reader comparing a team here
+    against the margin on its game page should see the same arithmetic, and
+    publishing the unregressed figures would quietly make those two disagree
+    whenever the rating is still last season's.
+    """
+    # A FINISHED SEASON SHOWS ITS OWN FINAL RATING, unregressed. Regression
+    # exists to say "this is last year's, and a year has passed" — which is
+    # true on the live page and nonsense on the 2025 archive, where 2025's
+    # rating is not stale, it is the answer. The live season shows what the
+    # rest of the site actually reasons about, regressed or not.
+    own = fetcher.load_own(year)
+    live = load_ratings(year).get("systems", {}).get(fetcher.OURS) or {}
+    s = own if own and own.get("ratings") else live
+    archived = bool(own and own.get("ratings"))
+    ratings = s.get("ratings") or {}
+    teams_ = load_teams()
+    b12 = set(fetcher.BIG12)
+    rows = []
+    for rank, (t, v) in enumerate(
+            sorted(ratings.items(), key=lambda kv: -kv[1]), 1):
+        # No conference column. teams.json carries the sixteen Big 12
+        # schools and nothing else, so it would have been blank on 120 of
+        # 136 rows — worse than not asking. Big 12 teams are marked by the
+        # row tint instead, which is also what the filter keys on.
+        cls = " class=b12" if t in b12 else ""
+        rows.append(f"<tr{cls}><td class=rk>{rank}</td><td>{esc(t)}</td>"
+                    f"<td class=rv>{v:+.1f}</td></tr>")
+    src_year = s.get("year")
+    stale = not archived and src_year is not None and src_year != year
+    shown = (f"<b>These are the {src_year} ratings</b>, pulled "
+             f"{int(round((1 - (s.get('regressed') or 1)) * 100))}% toward "
+             f"average because a season has passed. {year}\u2019s own "
+             f"ratings replace them once teams have played about five games "
+             f"each \u2014 until then there is no way to tell a good team "
+             f"from a team that has been at home. " if stale else "")
+    lead = (
+        shown +
+        "Every FBS team, rated in points of margin: the difference between "
+        "two teams is the margin this site expects on a neutral field, "
+        "before home advantage. Zero is an average FBS team."
+        if ratings else
+        # Two different nothings. A finished season that predates the rating
+        # has no numbers and never will; the live one has none YET. Saying
+        # "not published yet" on the 2024 archive would promise a table that
+        # is never coming.
+        "This season\u2019s ratings are not published yet. They need about "
+        "five games per team before the fit can tell a good team from a home "
+        "team, and until then the race and the game pages use last "
+        "season\u2019s, regressed."
+        if s else
+        "This rating was not computed for this season.")
+    note = "" if not ratings else (
+        (f"Final {src_year} ratings, fitted to all {s.get('games', 0)} "
+         f"FBS-against-FBS games that season. " if archived else "")
+        + (f"Home advantage is measured at {s['hfa']:.1f} points and is not "
+           f"included above. " if s.get("hfa") else "")
+        + "Ranks are over all of FBS and do not renumber when filtered.")
+    out = os.path.join(outdir or SITE, "model.html")
+    with open(out, "w") as f:
+        f.write(RATINGS_PAGE.format(
+            base=BASE, how_css=HOW_CSS, ratings_css=RATINGS_CSS,
+            lead=lead, note=note, i_note=icon("note"),
+            # No filter and no table furniture with nothing to filter: an
+            # empty table prints its headers and a rule under them, which
+            # reads as a table that failed to load rather than a season
+            # that has none.
+            filter_btn=("" if not rows else
+                        '<button id=r-b12 class=wbtn aria-pressed=false '
+                        'title="Show only Big 12 teams">'
+                        + icon("filter")
+                        + '<span class=blab>Big 12 only</span></button>'),
+            table=("" if not rows else
+                   '<div class=rtwrap><table class=rtab id=rtab>'
+                   '<thead><tr><th class=rk>rank</th><th>team</th>'
+                   '<th class=rv>rating</th></tr></thead><tbody>'
+                   + "".join(rows) + '</tbody></table></div>'),
+            BOOT_THEME=BOOT_THEME, BOOT_CARDS=BOOT_CARDS,
+            v_brand=asset_v("brand.css"), v_theme=asset_v("theme.js"),
+            v_cards=asset_v("cards.js"), v_state=asset_v("state.js"),
+            v_metrics=asset_v("metrics.js"),
+            topbar=topbar("tiebreaker", year, BASE),
+            footer=footer(),
+            top=tracker_top(year, "model", matchcard, page="model.html")))
+    print(f"built {out} ({len(rows)} teams)")
+
+
+def build_model_how(year, matchcard, outdir=None):
+    """Render site/model-how.html: how the rating is computed.
 
     The scoreboard is written out here rather than measured live. Running a
     rolling-origin backtest over two finished seasons is seconds of work on
@@ -4348,7 +4555,7 @@ def build_model_page(year, matchcard, outdir=None):
         f"<tbody>{body}</tbody></table></div>"
         "<p class=note>Average miss per game, in points \u2014 lower is "
         "better. The interval is a paired bootstrap over every prediction.</p>")
-    out = os.path.join(outdir or SITE, "model.html")
+    out = os.path.join(outdir or SITE, "model-how.html")
     with open(out, "w") as f:
         f.write(MODEL_PAGE.format(
             base=BASE, how_css=HOW_CSS, model_css=MODEL_CSS,
@@ -4360,7 +4567,8 @@ def build_model_page(year, matchcard, outdir=None):
             v_metrics=asset_v("metrics.js"),
             topbar=topbar("tiebreaker", year, BASE),
             footer=footer(),
-            top=tracker_top(year, "model", matchcard, page="model.html")))
+            top=tracker_top(year, "model", matchcard,
+                            page="model-how.html")))
     print(f"built {out}")
 
 
@@ -4758,7 +4966,10 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                       f, separators=(",", ":"), sort_keys=True)
 
     build_explainer(year, matchcard_for("how.html", year, ctx), outdir)
-    build_model_page(year, matchcard_for("model.html", year, ctx), outdir)
+    build_model_ratings(year, matchcard_for("model.html", year, ctx),
+                        outdir)
+    build_model_how(year, matchcard_for("model-how.html", year, ctx),
+                    outdir)
 
     if feed:
         write_if_unchanged_skip(
