@@ -164,11 +164,24 @@ check(len(rec.get("books", [])) == 2, "lost a book")
 
 # due(): the gate that keeps a twice-daily refresh inside a 500-credit month.
 import datetime                                          # noqa: E402
+# Relative to MIN_AGE_HOURS, not fixed hours. Written against a hardcoded
+# 2h and 16h these still passed when the gate moved from 4 to 6, but they
+# had stopped testing the boundary and would have gone on passing at any
+# value between. The knob is meant to be tuned; the test has to follow it.
 now = datetime.datetime(2026, 9, 13, 18, 0, tzinfo=datetime.timezone.utc)
-fresh = {"1": {"source": market.SOURCE, "as_of": "2026-09-13T16:00:00+00:00"}}
-old = {"1": {"source": market.SOURCE, "as_of": "2026-09-13T02:00:00+00:00"}}
-check(not market.due(fresh, now), "due: spent a call on a 2-hour-old capture")
-check(market.due(old, now), "due: skipped a 16-hour-old capture")
+
+
+def aged(hours):
+    stamp = now - datetime.timedelta(hours=hours)
+    return {"1": {"source": market.SOURCE, "as_of": stamp.isoformat()}}
+
+
+check(not market.due(aged(market.MIN_AGE_HOURS - 0.5), now),
+      "due: spent a call just inside the gate")
+check(market.due(aged(market.MIN_AGE_HOURS + 0.5), now),
+      "due: skipped a capture just past the gate")
+check(market.due(aged(market.MIN_AGE_HOURS * 4), now),
+      "due: skipped a badly stale capture")
 check(market.due({}, now), "due: skipped an empty file")
 # The gate is per source, which is what lets fetch.py run the CFBD half on
 # a much longer clock than this one. A CFBD record must not read as ours.
@@ -345,6 +358,6 @@ if FAIL:
     for m in FAIL:
         print("  FAIL:", m)
     sys.exit(1)
-print("market join: 40 scenarios: neutral-site flips re-side, prefix "
+print("market join: 41 scenarios: neutral-site flips re-side, prefix "
       "collisions resolve, kicked-off games are never written, and the "
       "credit gate holds; the raw archive dedupes and shards by week")

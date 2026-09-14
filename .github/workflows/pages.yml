@@ -91,6 +91,27 @@ on:
     # costs a day of staleness, not an unbounded one. About 60 extra calls
     # a month for the pair.
     - cron: "30 8 * 8-12 *"        # daily — morning lines refresh
+    # REDUNDANCY, NOT FREQUENCY, and the distinction is the whole point.
+    # Midweek was two scheduled runs a day: 08:30 and 18:00, a 14.5-hour hole
+    # between them and 9.5 more overnight. GitHub drops about one slot in ten
+    # and delivers the rest a median 19 minutes late, so on 2026-09-14 the
+    # 18:00 arrived at 21:14 and the market sat 19 hours old while every run
+    # in the history showed green. One slot carrying a whole day is a single
+    # point of failure however reliable the fetch behind it is.
+    #
+    # Every two hours, weekdays, 09:00 to 23:00. Saturday and Sunday already
+    # run hourly and need nothing. The extra slots do not mean extra calls:
+    # both halves of fetch_lines are gated on the age of what is already on
+    # disk, so a run that arrives too soon costs a build and no quota. What
+    # they buy is that a dropped 18:00 now waits two hours for the next
+    # chance instead of fourteen.
+    #
+    # Simulated against September with the observed drift and a 1-in-10 miss
+    # rate, paired with market.MIN_AGE_HOURS raised to 6: the worst gap
+    # between captures falls from 36.6h to 17.4h while the bill stays put at
+    # ~291 of the free tier's 500. The pairing is deliberate — more slots at
+    # the old 4-hour gate would have been 401 credits for a worse gap.
+    - cron: "0 9-23/2 * 8-12 1-5"  # weekdays — cover the midday hole
 
 permissions:
   contents: write   # to commit the week's forecast back; see the step below
