@@ -21,6 +21,7 @@ import sys
 
 import espn as espn_mod
 import market as market_mod
+import massey as massey_mod
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
@@ -206,6 +207,17 @@ def fetch_season(year, force=False):
 
 # system -> (endpoint, rating field, home-field bump in the system's units,
 #            system units per scoring point — for showing margins as points)
+# The name our own rating goes by, in one place: fetch writes it, build
+# orders it, and a typo between the two would silently drop it off the page
+# rather than erroring.
+#
+# NAMED FOR THE SITE, NOT THE METHOD. The arithmetic is Massey's and is
+# credited as his on the model page, but the numbers are this site's: its
+# choice of results, its handling of blowouts and FCS opponents, its
+# regularisation. Calling the row "Massey" beside SP+ and FPI would read as
+# a fifth rating quoted from somewhere, which is exactly what it is not.
+OURS = "Big12ology"
+
 SYSTEMS = {
     "SP+": ("ratings/sp", "rating", 2.5, 1.0),
     "FPI": ("ratings/fpi", "fpi", 2.5, 1.0),
@@ -286,6 +298,44 @@ def fetch_ratings(year):
             # constant tuned here is never pinned to a cached value
             systems[name] = {"year": prev["year"], "hfa": hfa,
                              "per_pt": per_pt, "ratings": prev["ratings"]}
+    # OUR OWN, computed rather than quoted. One more CFBD call, for every
+    # FBS game rather than just the Big 12's: massey.py fits a rating to
+    # the margins directly, which needs the whole country's results and not
+    # a sixteen-team slice of them. See massey.py for why this exists at
+    # all — the short version is that Sagarin and Fremeau both reserve all
+    # rights, Massey refuses automated access, and CFBD's own CORE failed
+    # its out-of-sample check.
+    #
+    # Guarded like every other second source here: a rating we compute is
+    # the most expendable thing on the page, and it must not be the reason
+    # the four we quote are lost.
+    try:
+        allg = get(f"games?year={year}&seasonType=regular", k)
+        ours = massey_mod.system(allg, year)
+        if ours["ratings"]:
+            systems[OURS] = ours
+            print(f"{year}: {OURS} fitted on {ours['games']} FBS games, "
+                  f"home field {ours['hfa']} points")
+        else:
+            # LAST SEASON'S FIT UNTIL THIS ONE CONNECTS, which is what SRS
+            # already does and for the same reason: a stale rating regressed
+            # toward its mean is a worse answer than a current one and a much
+            # better answer than none. engine.regress_stale keeps 65% of each
+            # team's deviation, and the page labels it with the year it came
+            # from, so nobody is told September's guess is December's fact.
+            #
+            # Measured, as it happens: a 2025 fit predicting 2026 overstated
+            # margins by about 45%, and keeping 65% of the spread is within a
+            # few points of the inverse. The existing constant is already
+            # about right for this.
+            prev = have.get(OURS) or prior.get(OURS)
+            if prev and prev.get("ratings"):
+                systems[OURS] = dict(prev)
+                print(f"{year}: {OURS} not fittable yet; using "
+                      f"{prev.get('year')} regressed")
+    except Exception as e:
+        print(f"{year}: {OURS} not computed ({e})")
+
     with open(out, "w") as f:
         json.dump({"systems": systems}, f, indent=1)
     years = {n: s["year"] for n, s in systems.items()}

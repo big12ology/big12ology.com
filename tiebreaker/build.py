@@ -387,7 +387,10 @@ def book_table(ln, g, teams):
             f"<tbody>{''.join(rows)}</tbody></table></div></details>")
 
 
-MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS"]
+# Ours last, deliberately. The four before it are published systems this
+# site quotes; the fifth is arithmetic it does itself, and putting it at the
+# end keeps the borrowed opinions in the order readers already know them.
+MODEL_ORDER = ["SP+", "FPI", "Elo", "SRS", "Big12ology"]
 # The four rating systems averaged, and the name the Lab shows for it. Kept
 # as a constant because it is both a key in `favorites` and a label on three
 # controls. Named rather than described because the list it sits in reads as
@@ -491,7 +494,13 @@ def favorites_for(games, systems):
                 hr = floor
             if ar is None:
                 ar = floor
-            d = hr - ar + hfa
+            # NO HOME FIELD AT A NEUTRAL SITE, which is not a refinement
+            # but the difference between right and wrong. Arizona State vs
+            # Kansas at Wembley: every system rated Arizona State higher,
+            # and four of the five printed "Kansas" because a bump nobody
+            # had earned was added anyway. The market had Arizona State by
+            # nearly six. The models agreed with it and the card did not.
+            d = hr - ar + (0.0 if g.get("neutral_site") else hfa)
             m[str(g["id"])] = {
                 "team": g["home"] if d >= 0 else g["away"],
                 "margin": round(abs(d) / per, 1),
@@ -964,6 +973,7 @@ SUBNAV_LINKS = [("brief", "./", "The Brief"),
                 ("cutline", "cutline.html", "The Cut Line"),
                 ("ladder", "ladder.html", "The Ladder"),
                 ("how", "how.html", "The Rules"),
+                ("model", "model.html", "The Model"),
                 ("history", "history.html", "The Archive")]
 
 SCHEDULE_NAV = [("schedule", "./", "The Schedule"),
@@ -4163,6 +4173,197 @@ href="mailto:dept@big12ology.com">dept@big12ology.com</a>.</p>
 """
 
 
+MODEL_CSS = """/* The one table on this page. Figures right-aligned under their headers and
+   in the same tabular figures the rest of the site uses for numbers, so the
+   columns line up instead of drifting with the digits. */
+.scorewrap { overflow-x:auto; margin:14px 0 4px }
+.scoretab { border-collapse:collapse; font-size:var(--t-label);
+  font-variant-numeric:tabular-nums; min-width:32rem }
+.scoretab th, .scoretab td { padding:7px 16px 7px 0; white-space:nowrap;
+  border-bottom:1px solid var(--line) }
+.scoretab thead th { font-size:var(--t-fine); text-transform:uppercase;
+  letter-spacing:.05em; color:var(--dim); font-weight:600;
+  border-bottom:2px solid var(--line) }
+.scoretab .num, .scoretab thead th:not(:first-child) { text-align:right }
+.scoretab tbody th { text-align:left; font-weight:600 }
+.scoretab tbody tr:last-child th,
+.scoretab tbody tr:last-child td { border-bottom:0 }
+"""
+
+
+MODEL_PAGE = """<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>How our rating is calculated \u2014 Big12ology</title>
+<meta name=description content="The one rating on this site we compute ourselves: least squares over every result, home field measured rather than assumed, and the out-of-sample numbers that justify it.">
+<link rel=canonical href="https://big12ology.com/tiebreaker/model.html">
+<link rel=icon type=image/svg+xml href="{base}favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
+<link rel=apple-touch-icon href="{base}favicon-180.png">
+{BOOT_THEME}
+{BOOT_CARDS}
+<link rel=stylesheet href="{base}{v_brand}">
+<script defer src="{base}{v_theme}"></script>
+<script src="{base}{v_state}"></script>
+<script src="{base}{v_metrics}"></script>
+<script defer src="{base}{v_cards}"></script>
+<meta property=og:type content=article>
+<meta property=og:site_name content=Big12ology>
+<meta property=og:title content="How our rating is calculated">
+<meta property=og:description content="Least squares over every result, home field measured rather than assumed, and the out-of-sample numbers that justify it.">
+<meta property=og:url content="https://big12ology.com/tiebreaker/model.html">
+<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta name=twitter:card content=summary_large_image>
+<style>
+{how_css}
+{model_css}
+</style>
+</head>
+<body>
+<a class=skip-link href="#main">Skip to content</a>
+{topbar}
+{top}
+
+<p class=lead>The Lab weighs several ratings of who is better. Most of them
+are published elsewhere and quoted here. One is computed on this site, from
+the same results everything else on it is built from, and this page is what
+it does.</p>
+
+<h2>One sentence</h2>
+<p>Every game says <b>the home team won by this much</b>. The rating is the
+set of team numbers that comes closest to explaining all of them at once.</p>
+<p class=note>Formally: choose ratings and a home-field number minimizing the
+squared error of <code>margin = rating(home) \u2212 rating(away) + home
+field</code> across every result.</p>
+
+<h2>Whose method this is</h2>
+<p>The method is <b>Kenneth Massey\u2019s</b> least-squares rating, set out in
+his 1997 thesis
+<a href="https://masseyratings.com/theory/massey97.pdf">Statistical Models
+Applied to the Rating of Sports Teams</a> and used in various forms ever
+since, including as a component of the old BCS formula. Massey publishes his
+own ratings at <a href="https://masseyratings.com/">masseyratings.com</a>;
+those are his and are not reproduced here. What follows is his method applied
+to this site\u2019s own results.</p>
+
+<p>Three things depart from the plain version:</p>
+<ul>
+  <li><b>Ratings are shrunk toward zero.</b> Textbook least squares believes
+  every result completely. A penalty on large ratings means a team only
+  travels far from average when the evidence keeps insisting, which matters
+  most when there is least evidence.</li>
+  <li><b>Non-FBS opponents are kept, pooled into one team.</b> The usual
+  treatment is to drop those games. Keeping them recovers roughly 126
+  results a season.</li>
+  <li><b>Home field is measured, not assumed.</b> It is fitted alongside the
+  ratings rather than set to a constant beforehand.</li>
+</ul>
+<p class=note>Each is described below, with what it is worth.</p>
+
+<h2>What comes out</h2>
+<ul>
+  <li><b>Ratings in points.</b> A team rated 8 higher than another is an
+  eight-point favorite on a neutral field. No conversion and no scaling
+  constant \u2014 the number already is the margin it predicts.</li>
+  <li><b>A measured home field.</b> It is a free parameter of the fit rather
+  than a constant chosen in advance, so the games decide it. Over a full
+  season it settles near three points.</li>
+  <li><b>Zero is average.</b> Ratings are centered: positive is better than a
+  typical FBS team, negative is worse.</li>
+</ul>
+
+<h2>How it treats a season</h2>
+<p><b>Every game counts the same, whenever it was played.</b> A result from
+September carries the same weight in December as one from last week. Recency
+weighting was tested and made the rating less accurate, not more.</p>
+
+<p><b>Ratings are pulled toward the middle.</b> A team that has won once by 40
+is not four touchdowns better than the field; it has one result. The fit is
+charged for large ratings, so a rating only travels far from zero when the
+evidence keeps insisting. The effect is large in September and fades on its
+own as games accumulate.</p>
+
+<p><b>Games against FCS opposition count, together.</b> Beating an FCS side by
+three says something, so those results are used, with every non-FBS opponent
+treated as a single pooled team. Rated individually they would contribute
+mostly the noise of teams that played one FBS game all year.</p>
+
+<p><b>Blowouts are not capped.</b> A 45-point win is entered as 45. Damping
+them was tested and, alongside the pull toward the middle, changed nothing.</p>
+
+<h2>Early in a season</h2>
+<p>For the first month, no arithmetic can separate <em>this team is
+better</em> from <em>this team was at home</em>. The give-away is the home
+field number: fitted on two weeks it reads around twelve points, four times
+what it should be, because it is absorbing differences the games have not
+yet pinned on anyone. It settles once teams have played five.</p>
+<p>Until then the rating is not published, and last season\u2019s is shown in
+its place, pulled toward average to reflect that a year has passed. The Lab
+labels it with the season it came from, as it does for any rating still on
+last year\u2019s numbers.</p>
+
+<h2>How accurate it is</h2>
+<p>Measured the way it is used: rate the weeks already played, predict the
+week ahead, repeat for every week of a finished season. Against the same
+games, with and without the two adjustments above:</p>
+{scoreboard}
+<p class=note>Roughly a point and a quarter of accuracy per game, holding
+across two independent seasons and winning 10 of 12 weeks in 2024 and 9 of 12
+in 2025. Against the published systems on the same out-of-sample games it is
+ahead of some and level with the best of them.</p>
+
+{footer}
+</body>
+</html>
+"""
+
+
+def build_model_page(year, matchcard, outdir=None):
+    """Render site/model.html: how the one rating we compute ourselves works.
+
+    The scoreboard is written out here rather than measured live. Running a
+    rolling-origin backtest over two finished seasons is seconds of work on
+    every build to re-derive numbers that cannot move: 2024 and 2025 are
+    over, and massey.py's constants were chosen from exactly these figures.
+    They are in tests/test_massey.py as the fixture the model is pinned to,
+    so a change that would make this page wrong fails the suite instead.
+    """
+    rows = [("2024", "13.96", "12.60", "1.24", "0.76", "1.72", "10", "12"),
+            ("2025", "13.70", "12.43", "1.33", "0.77", "1.91", "9", "12")]
+    body = "".join(
+        f"<tr><th scope=row>{y}</th>"
+        f"<td class=num>{a}</td><td class=num>{b}</td>"
+        f"<td class=num><b>{g}</b></td>"
+        f"<td class=num>{lo} to {hi}</td>"
+        f"<td class=num>{w} of {n}</td></tr>"
+        for y, a, b, g, lo, hi, w, n in rows)
+    scoreboard = (
+        "<div class=scorewrap><table class=scoretab>"
+        "<thead><tr><th scope=col>season</th>"
+        "<th scope=col>without</th><th scope=col>with</th>"
+        "<th scope=col>improvement</th><th scope=col>95% interval</th>"
+        "<th scope=col>weeks better</th></tr></thead>"
+        f"<tbody>{body}</tbody></table></div>"
+        "<p class=note>Average miss per game, in points \u2014 lower is "
+        "better. The interval is a paired bootstrap over every prediction.</p>")
+    out = os.path.join(outdir or SITE, "model.html")
+    with open(out, "w") as f:
+        f.write(MODEL_PAGE.format(
+            base=BASE, how_css=HOW_CSS, model_css=MODEL_CSS,
+            scoreboard=scoreboard,
+            gain24="1.24", gain25="1.33",
+            BOOT_THEME=BOOT_THEME, BOOT_CARDS=BOOT_CARDS,
+            v_brand=asset_v("brand.css"), v_theme=asset_v("theme.js"),
+            v_cards=asset_v("cards.js"), v_state=asset_v("state.js"),
+            v_metrics=asset_v("metrics.js"),
+            topbar=topbar("tiebreaker", year, BASE),
+            footer=footer(),
+            top=tracker_top(year, "model", matchcard, page="model.html")))
+    print(f"built {out}")
+
+
 def build_explainer(year, matchcard, outdir=None):
     """Render site/how.html. The 2024 worked example is generated live by the
     rules engine from the frozen season data in history/."""
@@ -4557,6 +4758,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                       f, separators=(",", ":"), sort_keys=True)
 
     build_explainer(year, matchcard_for("how.html", year, ctx), outdir)
+    build_model_page(year, matchcard_for("model.html", year, ctx), outdir)
 
     if feed:
         write_if_unchanged_skip(
