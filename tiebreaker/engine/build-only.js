@@ -303,8 +303,14 @@ function systemMargin(s, g) {
   floor -= 10 * per;
   const hr = r[g.home], ar = r[g.away];
   if (hr === undefined && ar === undefined) return null;
+  // No home field at a neutral site. Applied unconditionally this gave the
+  // nominal home team a bump it had not earned, which is enough to flip the
+  // favorite: Arizona State vs Kansas at Wembley came out as Kansas on four
+  // of five systems that all rated Arizona State higher. It matters more
+  // here than on the card, because these margins feed the simulations.
+  const edge = g.neutral_site ? 0 : s.hfa;
   return ((hr === undefined ? floor : hr) -
-          (ar === undefined ? floor : ar) + s.hfa) / per;
+          (ar === undefined ? floor : ar) + edge) / per;
 }
 
 /* {game_id: expected home margin}, averaged across systems.

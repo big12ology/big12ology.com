@@ -280,13 +280,19 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
   border-bottom:1px solid var(--line) }
 /* Model against market: the same bar the race card uses, so a reader who
    knows one knows the other. */
-/* 58px, not 44. The label track was cut to fit SP+, FPI, ELO and SRS, and
-   then the market row arrived with a six-letter word in it: "MARKET" is wider
-   than the column, so it ran straight into the team name and printed
-   "MARKETTCU". Fixed rather than max-content, because each row is its own
-   grid — a track that sizes to its own content stops the bars lining up down
-   the card, which is the only reason this is a grid at all. */
-.mline { display:grid; grid-template-columns:58px minmax(0,1fr);
+/* 86px, and this is the second time the track has been outgrown. It was cut
+   to 44 to fit SP+, FPI, ELO and SRS; the market row arrived with a
+   six-letter word and printed "MARKETTCU", so it went to 58; then this
+   site's own rating arrived with ten letters and ellipsised to "BIG12...".
+   Measured rather than guessed: the labels need 21, 25, 26, 27, 53 and 82
+   pixels, so 86 clears the longest with a little air.
+
+   Fixed rather than max-content, because each row is its own grid — a track
+   that sizes to its own content stops the bars lining up down the card,
+   which is the only reason this is a grid at all. Anything longer than
+   "Big12ology" will ellipsise, which is the right failure: a name nobody
+   can read beats bars that do not line up. */
+.mline { display:grid; grid-template-columns:86px minmax(0,1fr);
   align-items:center; gap:10px; margin:6px 0; font-size:var(--t-row) }
 .msys { color:var(--dim); font-size:var(--t-meta); text-transform:uppercase;
   letter-spacing:.04em; overflow:hidden; text-overflow:ellipsis }
