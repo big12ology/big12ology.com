@@ -2691,6 +2691,7 @@ def pickem_line(g):
         return ""
     if not (g.get("line") or {}).get("spread"):
         return ""
+    teams_ = load_teams()
     # Full names, not abbreviations. These are no longer drawn: they are what
     # the tooltip and the screen-reader sentence say, and both want the name
     # the reader would use out loud.
