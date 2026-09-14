@@ -213,6 +213,56 @@ fetcher.get = lambda p, k: (hit.append(p) or [media_row(1)])
 fetcher.fetch_media(2030)
 check(len(hit) == 1, f"media: stale file did not refetch ({len(hit)} calls)")
 
+# A SILENT DEGRADATION IS NOT A DEGRADATION, IT IS AN OUTAGE. fetch_lines
+# falls back to CFBD when the-odds-api is unreachable, which keeps the domain
+# up and is right. It also meant that with ODDS_API_KEY never added to the
+# repo secrets, every scheduled run for seventeen hours fell through, hit
+# CFBD's own gate, wrote nothing, and reported success — the only evidence
+# being one line in a log nobody reads. It escalates now.
+import contextlib                                         # noqa: E402
+import io                                                 # noqa: E402
+
+
+def lines_output(exc, in_ci):
+    """fetch_lines' stdout when the market half raises `exc`."""
+    if in_ci:
+        os.environ["GITHUB_ACTIONS"] = "true"
+    else:
+        os.environ.pop("GITHUB_ACTIONS", None)
+
+    def boom(*a, **k):
+        raise exc
+
+    fetcher.market_mod.fetch = boom
+    fetcher.get = lambda p, k: [line(1)]
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        fetcher.fetch_lines(2030, force_cfbd=True)
+    return buf.getvalue()
+
+
+missing = SystemExit("ODDS_API_KEY not set. Put it in .env or export it.")
+out_ci = lines_output(missing, True)
+check("::warning::" in out_ci,
+      "market outage: did not escalate to a GitHub annotation")
+check("ODDS_API_KEY repo secret" in out_ci,
+      "market outage: a missing key did not say how to fix it")
+check("old" in out_ci or "nothing captured yet" in out_ci,
+      "market outage: warning did not say how stale the data now is")
+
+# Outside CI the annotation is noise, but the warning still prints.
+out_local = lines_output(missing, False)
+check("::warning::" not in out_local and "WARNING:" in out_local,
+      "market outage: wrong shape outside Actions")
+
+# And a refusal that is NOT a key problem must not tell anyone to set a key.
+out_other = lines_output(RuntimeError("the-odds-api.com refused: quota"), True)
+check("::warning::" in out_other,
+      "market outage: a non-key failure did not escalate")
+check("ODDS_API_KEY repo secret" not in out_other,
+      "market outage: blamed the key for a quota refusal")
+os.environ.pop("GITHUB_ACTIONS", None)
+
 shutil.rmtree(TMP)
 
 if FAIL:
@@ -220,8 +270,9 @@ if FAIL:
     for m in FAIL:
         print("  FAIL:", m)
     sys.exit(1)
-print("shrink guard: 15 scenarios: a 200 with under half the committed rows "
+print("shrink guard: 21 scenarios: a 200 with under half the committed rows "
       "raises instead of writing, half survives, an uncommitted season still "
       "bootstraps from nothing, lines merge forward only, and a run "
       "that learned nothing writes nothing; broadcasts refetch daily "
-      "on a sidecar stamp, never on mtime")
+      "on a sidecar stamp, never on mtime; and a market outage "
+      "escalates instead of degrading in silence")
