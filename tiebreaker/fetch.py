@@ -509,7 +509,28 @@ def fetch_lines(year, force_cfbd=False, force_market=False):
             # The CFBD half of the merge still lands, and the previous
             # capture stays in the file with its own as_of saying how old
             # it is.
-            print(f"{year}: the-odds-api unavailable ({e}); keeping CFBD")
+            #
+            # BUT IT SAYS SO WHERE SOMEBODY LOOKS. Degrading quietly was the
+            # right call for the build and the wrong one for noticing: with
+            # ODDS_API_KEY never added to the repo secrets, every scheduled
+            # run for seventeen hours fell through to CFBD, hit CFBD's own
+            # 20-hour gate, wrote nothing, and reported success. The only
+            # evidence was this line, in a log nobody reads. Every other
+            # failure path in this pipeline escalates; this one now does too.
+            #
+            # The age rides in the message because it is the part that says
+            # whether this matters. One failed call is a blip; a failed call
+            # over a capture two days old is a pipeline that has stopped.
+            last = market_mod.newest_capture(existing)
+            age = (f", newest capture {(now - last).total_seconds() / 3600:.0f}h"
+                   f" old" if last else ", and nothing captured yet")
+            hint = (" — set the ODDS_API_KEY repo secret"
+                    if "ODDS_API_KEY" in str(e) else "")
+            warn = (f"{year}: the-odds-api unavailable ({e}); keeping "
+                    f"CFBD{age}{hint}")
+            if os.environ.get("GITHUB_ACTIONS"):
+                print(f"::warning::{warn}")
+            print(f"WARNING: {warn}")
 
     out = dict(existing)
     for gid, rec in cfbd.items():
