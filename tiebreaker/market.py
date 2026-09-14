@@ -71,12 +71,25 @@ CREDITS_PER_CALL = len(MARKETS.split(",")) * len(REGIONS.split(","))
 # in September against a budget that affords ~165 calls.
 #
 # So the gate sets the real cadence and the crons only set the
-# opportunities. Four hours means the market is sampled roughly six times
-# a day where the schedule offers it, which on a Saturday is hourly
-# builds from midnight to midnight and therefore a capture every four
-# hours right through the slate. Simulated over September's slots with
-# the observed drift (median 19 minutes late, 130 at the 90th percentile)
-# and a 1-in-10 miss rate: ~93 calls, 279 of the free tier's 500.
+# opportunities, which is what makes it safe to add opportunities. Midweek
+# used to be two slots a day, 08:30 and 18:00, with a 14.5-hour hole
+# between them: on 2026-09-14 the 18:00 arrived at 21:14 and the market
+# sat 19 hours old while every run showed green. pages.yml now also runs
+# every two hours on weekday afternoons, and this moved from 4 to 6 so
+# those extra chances buy resilience rather than quota.
+#
+# The pairing is the trick, and the numbers are why. Simulated over
+# September with the observed drift (median 19 minutes late, 130 at the
+# 90th percentile) and a 1-in-10 miss rate:
+#
+#   thin slots, 4h gate     282 credits   worst gap between captures 36.6h
+#   weekday slots, 4h gate  401 credits                              18.9h
+#   weekday slots, 6h gate  291 credits                              17.4h
+#
+# Same bill, half the worst case. It costs about half an hour of median
+# staleness at kickoff (3.7h to 4.2h), which is the right side of that
+# trade: a line half an hour older is the same line, and a line a day
+# older is a different market.
 #
 # It also still does the job it was first written for, which was Tuesday:
 # the weekly refresh at 07:00 and the daily at 08:30 would otherwise take
@@ -84,7 +97,7 @@ CREDITS_PER_CALL = len(MARKETS.split(",")) * len(REGIONS.split(","))
 #
 # The tier resets monthly and the season spans four of them, so the figure
 # that has to fit is the month, not the season.
-MIN_AGE_HOURS = 4
+MIN_AGE_HOURS = 6
 
 
 def key():
