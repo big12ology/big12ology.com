@@ -110,9 +110,25 @@ def truncate(games, cutoff):
 # easy half. Standings are digested because sixteen seasons of narrative logs
 # is a megabyte; the championship pairing and the tie groups are small enough
 # to store and read.
+# A SEASON THE FIXTURE PREDATES CANNOT TESTIFY ABOUT THE PORT. The oracle is
+# only evidence because it was taken before the rewrite — but 2026 had not
+# been played when it was taken, so its entry records an empty season rather
+# than an answer: standings of nobody, no placement groups, no pairing. That
+# was true on the day and stayed true until week 1 finished, at which point
+# the check began comparing live results against a snapshot of "nothing has
+# happened yet" and failed for exactly the reason it should have.
+#
+# The entry is not refreshed — refreshing it from the current engine is what
+# the docstring above rules out, and it would turn the oracle circular. It is
+# retired from the per-season loop and re-checked below as the thing it
+# actually asserts: that an unplayed schedule produces empty output. Stated
+# against a synthetic emptied season, that is deterministic and stays true in
+# December, which the live comparison never could.
+UNPLAYED_WHEN_TAKEN = {"2026"}
+
 seasons = 0
 for year, want in sorted(FIXTURE["rules"].items()):
-    if not year.isdigit():
+    if not year.isdigit() or year in UNPLAYED_WHEN_TAKEN:
         continue
     games = load(int(year))
     check(f"{year} standings", digest(engine.standings(games, {})),
@@ -123,14 +139,41 @@ for year, want in sorted(FIXTURE["rules"].items()):
     # beside the two names. A fixture taken before those existed cannot
     # testify about them, so it is not asked to.
     got = engine.championship(games, {})
+    # Guarded on BOTH sides. A fixture entry of null is a season that had no
+    # pairing when it was taken, and iterating it to pick keys raised a
+    # TypeError three frames from anything that named the year — which is how
+    # the 2026 placeholder above announced itself.
     check(f"{year} championship",
-          None if got is None else {k: got.get(k) for k in want["championship"]},
+          None if got is None or want["championship"] is None
+          else {k: got.get(k) for k in want["championship"]},
           want["championship"])
     check(f"{year} placement_groups", engine.placement_groups(games),
           want["placement_groups"])
     check(f"{year} conf_records", digest(engine.conf_records(games)),
           want["conf_records"])
     seasons += 1
+
+# What the retired entries actually assert: an unplayed schedule produces
+# empty output. Checked against a synthetic emptied season rather than the
+# live one, so it is deterministic, and so it keeps holding once the season
+# it was taken from is finished — which the live comparison could not.
+for year in sorted(UNPLAYED_WHEN_TAKEN):
+    want = FIXTURE["rules"][year]
+    blank = []
+    for g in load(int(year)):
+        g = dict(g)
+        g["completed"] = False
+        g.pop("home_points", None)
+        g.pop("away_points", None)
+        blank.append(g)
+    check(f"{year} unplayed standings", digest(engine.standings(blank, {})),
+          want["standings"])
+    check(f"{year} unplayed placement_groups", engine.placement_groups(blank),
+          want["placement_groups"])
+    check(f"{year} unplayed conf_records", digest(engine.conf_records(blank)),
+          want["conf_records"])
+    check(f"{year} unplayed championship", engine.championship(blank, {}),
+          want["championship"])
 
 # The 2024 four-way at 7-2, in full — the tie the explainer page is built on,
 # and the one whose narrative log a reader actually reads.
