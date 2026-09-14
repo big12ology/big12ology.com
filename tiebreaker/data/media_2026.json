@@ -277,6 +277,13 @@
    "type": "tv"
   }
  ],
+ "401856805": [
+  {
+   "outlet": "TNT",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
  "401856810": [
   {
    "outlet": "FOX",
@@ -293,6 +300,13 @@
   {
    "outlet": "FS1",
    "type": "tv"
+  }
+ ],
+ "401856814": [
+  {
+   "outlet": "ESPN2",
+   "type": "tv",
+   "via": "espn.com"
   }
  ],
  "401856826": [
