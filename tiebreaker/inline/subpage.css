@@ -262,18 +262,21 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
    the card, so they can never fit; on a narrow card the percentage falls below
    the floor and the floor takes over, dropping the card to one column rather
    than breaking a favorite's name across two lines.
-     170, not the 150 above, and measured rather than guessed: at 20/600 the
+     230, not the 150 above, and measured rather than guessed: at 20/600 the
    favorites run "Kansas State -7" 149, "Texas Tech -43.7" 158, "Arizona State
    -5.9" 168, "West Virginia -19.5" 178, "Coastal Carolina -3" 182, "Oklahoma
    State -10.5" 203, "Bethune-Cookman -44.5" 229. At 150 a 322px card took two
-   tracks of 155 and broke "Arizona State" off its number; 170 holds the
-   conference favorites on one line. The longest non-conference names still
-   wrap, and clearing those would need 230, which costs the card its second
-   column at every width a phone or a narrow column ever has.
+   tracks of 155 and broke "Arizona State" off its number. 230 clears the whole
+   list, the long non-conference names included, so no favorite this site can
+   print gets split from its number.
+     What it costs is the second column below a 472px grid (two tracks plus the
+   gap), so a phone and a narrow window get one figure per row where they used
+   to get two. Paid deliberately: a stacked card is still four figures read in
+   order, and a broken name is a number that looks like two.
      Raised here rather than on .mkgrid on purpose: the venue card's "12 mph"
-   never needed the room, and at a 483px card the wider floor drops its three
-   figures to two columns. */
-.mkpair { --mkmin:170px;
+   never needed the room, and a floor this wide would leave it one figure per
+   row at any width short of a desktop. */
+.mkpair { --mkmin:230px;
   grid-template-columns:repeat(auto-fit,minmax(max(var(--mkmin),45%),1fr)) }
 .mkval { font-size:var(--t-lead); font-weight:600 }
 .mkgrid .dim { font-size:var(--t-meta) }
