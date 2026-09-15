@@ -444,6 +444,30 @@ main > *, .duo > *, .cols > * { min-width: 0; }
   /* It held a column open on a row that no longer has one to line up with. */
   .wmeta .nctag.ghost { display: none; }
   .wgame .wdate { margin-left: auto; }
+  /* AND THE TWO BUTTONS DO NOT FIT EITHER, which the paragraph above hoped
+     they would. Moving the tag and the date down bought the pair a whole line
+     and that line is 267px on a 375px phone: split two ways, minus a logo, a
+     score and the padding, a name got 44px. Measured across the season, 107
+     of 240 names were cut, and the ones that lost most are the ones nobody
+     can guess from a prefix — "Southeast Missouri State" had 44px for 145,
+     "Long Island University" 51 for 128. The conference is recognisable in
+     three letters; a September opponent is not.
+   *
+   * So one team per line, and `at` rides in front of the second rather than
+   * taking a line of its own, which reads the way it is spoken and costs 19px
+   * less than the obvious version. Every name in the season now fits: 0 of
+   * 240 cut. The price is 34px a game, 65 to 99, and a season list that is
+   * 49% taller on a phone. Worth it: scrolling past a name you can read beats
+   * arriving at one you cannot, and the list is already a scroll.
+   *
+   * Not abbreviations. teams.json carries `abbr` for the sixteen and nothing
+   * else, and the truncation that matters is all non-conference, so it would
+   * mean inventing short forms for arbitrary opponents — which is how two
+   * teams end up sharing one label, the exact thing tests/test_abbr.py was
+   * written about after Arizona and Arizona State both shipped as ARI. */
+  .wgame .pick { flex: 1 0 100%; }
+  .wgame .at { flex: 0 0 auto; }
+  .wgame .at ~ .pick { flex: 1 1 0; min-width: 0; }
 }
 
 /* A played game in a live season. The row is still listed, because a week
