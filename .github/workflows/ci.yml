@@ -72,22 +72,6 @@ jobs:
       - name: Pickem client
         run: node --test tiebreaker/tests/pickem_render.test.mjs
 
-      # The Lab's race card is a browser port of clinch.py, odds.py and
-      # chaos.py, so the Python suite above cannot reach it. Reads the
-      # payload out of the built pages, so it runs after the build step.
-      - name: Race card client
-        working-directory: tiebreaker
-        run: node --test tests/race_client.test.mjs
-
-      # Shared what-if links, which no Python test can reach either: the bug
-      # this catches lived in the gap between writing a link and reading it
-      # back after a weekend of football, so it needs the real app.js run
-      # twice against two different versions of the same season. Reads the
-      # built payload, so it belongs after the build step with the one above.
-      - name: Lab scenario links
-        working-directory: tiebreaker
-        run: node --test tests/lab_scenario.test.mjs
-
       - name: Attendance
         working-directory: attendance
         run: |
@@ -141,6 +125,29 @@ jobs:
       - name: Build the tiebreaker
         working-directory: tiebreaker
         run: python3 build.py
+
+      # BOTH OF THESE READ THE BUILT PAGES, so both belong here and not with
+      # the suites above. They sat above the build step for three weeks, where
+      # site/ is whatever the last person happened to commit: output this
+      # workflow does not commit and nobody rebuilds by hand every time the
+      # data moves. So they were reading a payload that was weeks old, went
+      # green on every run, and the first of them was green about a season
+      # that had not been played yet. A test that reads a build artifact has
+      # to run after the step that writes it, or it is testing the checkout.
+      #
+      # The race card is a browser port of clinch.py, odds.py and chaos.py,
+      # so the Python suite above cannot reach it.
+      - name: Race card client
+        working-directory: tiebreaker
+        run: node --test tests/race_client.test.mjs
+
+      # Shared what-if links, which no Python test can reach either: the bug
+      # this catches lived in the gap between writing a link and reading it
+      # back after a weekend of football, so it needs the real app.js run
+      # twice against two different versions of the same season.
+      - name: Lab scenario links
+        working-directory: tiebreaker
+        run: node --test tests/lab_scenario.test.mjs
 
       # The build gates are themselves untested code, and one of them now
       # stands between a Worker's client secrets and the public web. Assembling
