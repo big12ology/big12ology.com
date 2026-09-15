@@ -105,6 +105,43 @@ def scoreboard(yyyymmdd):
     return out
 
 
+def teams():
+    """{school: abbreviation} for every team ESPN lists, or {} on any failure.
+
+    One request, no key, 762 teams. The join is the school name in ESPN's
+    `location` field, which is the name without the mascot and is what CFBD
+    calls `school`: checked against the 2026 schedule, all 62 teams matched,
+    and against data/teams.json all 16 Big 12 abbreviations agree with CFBD's
+    exactly. So this extends that file rather than arguing with it.
+
+    ABBREVIATION AND NOT shortDisplayName, which is the field that looks like
+    the answer. ESPN's short forms collapse the -ern adjectives onto the
+    cardinal letters — "Northern Illinois" becomes "N Illinois", "Georgia
+    Southern" becomes "GA Southern" — and Northern Illinois is not North
+    Illinois. Others drop the half that distinguishes them: Bethune-Cookman
+    to "Bethune", Coastal Carolina to "Coastal", Long Island University to
+    "Long Island". A label that names the wrong team is worse than a long one,
+    so the only field taken is the code, which is curated and does not pretend
+    to be a name.
+
+    NEARLY unique, and the caller checks. ESPN lists satellite campuses beside
+    the programs they belong to, and "Ohio State" and "Ohio State Newark" both
+    answer OSU. Neither plays FBS so nothing joins to the wrong one today, but
+    that is a fact about this season's list and not a property of the feed, so
+    fetch_abbr names any code two schools share rather than trusting it.
+    """
+    blob = _get(f"{API}/teams?limit=1000")
+    out = {}
+    for sport in (blob or {}).get("sports") or []:
+        for league in sport.get("leagues") or []:
+            for row in league.get("teams") or []:
+                t = row.get("team") or {}
+                school, abbr = t.get("location"), t.get("abbreviation")
+                if school and abbr:
+                    out[school] = abbr
+    return out
+
+
 def _dates_needed(games, have, now):
     """The Eastern dates holding a game that would render with no window.
 

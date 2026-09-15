@@ -7,6 +7,7 @@ Needs a key in .env or the environment:  CFBD_API_KEY=...
     python3 fetch.py 2026            # fetch season, cache to data/games_2026.json
     python3 fetch.py 2026 --force    # refetch even if cached
     python3 fetch.py --venues        # one-time: every venue's coordinates
+    python3 fetch.py --abbr          # one-time: every team's short code (free)
 
 One API call per season fetched. The lines refresh also calls
 the-odds-api.com through market.py, which wants ODDS_API_KEY and degrades
@@ -822,6 +823,7 @@ def fetch_media(year, force=False):
 
 
 VENUES = os.path.join(DATA, "venues.json")
+ABBR = os.path.join(DATA, "abbr.json")
 
 
 def load_venues():
@@ -830,6 +832,60 @@ def load_venues():
     if not os.path.exists(VENUES):
         return {}
     return json.load(open(VENUES))
+
+
+def load_abbr():
+    try:
+        with open(ABBR) as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+def fetch_abbr(force=False):
+    """Every team's short code -> data/abbr.json.
+
+    Same shape as fetch_venues below and for the same reason: one call for a
+    catalog that barely moves, kept in the repo, never made by a build. What
+    is different is the source. This is ESPN rather than CFBD, so it costs
+    nothing against the 1,000 calls a month — see espn.py, which already
+    fetches from there for broadcast windows without a key.
+
+    WHY IT EXISTS. data/teams.json carries `abbr` for the sixteen and stops,
+    because fetch_teams asks CFBD with ?conference=B12. Every page that wants
+    a short label for a September opponent has had nothing to read, so the
+    only options were the full name or a truncation, and a truncation is how
+    Arizona and Arizona State both once shipped as ARI. All 16 codes here
+    agree with CFBD's exactly, so this widens that file rather than competing
+    with it, and a caller should prefer teams.json for a Big 12 team and fall
+    back to this for everyone else.
+    """
+    if os.path.exists(ABBR) and not force:
+        have = load_abbr()
+        print(f"abbr: {len(have)} already cached, no call made "
+              f"(--force to refetch)")
+        return have
+    os.makedirs(DATA, exist_ok=True)
+    out = espn_mod.teams()
+    if not out:
+        print("abbr: ESPN returned nothing, keeping what is on disk")
+        return load_abbr()
+    _refuse_shrink(ABBR, "abbr", len(out))
+    with open(ABBR, "w") as f:
+        json.dump(out, f, indent=1, sort_keys=True)
+    print(f"abbr: {len(out)} team codes -> {ABBR}")
+    # A code two schools share is the failure this catalog exists to prevent,
+    # so it is said out loud rather than discovered on a page. ESPN lists
+    # satellite campuses beside their parents and Ohio State shares OSU with
+    # Ohio State Newark; neither plays FBS, so today this prints one line
+    # nobody has to act on. The day it prints a line naming two teams that do
+    # play, a grid somewhere is about to label them identically.
+    shared = collections.Counter(out.values())
+    for code, n in shared.items():
+        if n > 1:
+            who = sorted(k for k, v in out.items() if v == code)
+            print(f"abbr: WARNING {code} is shared by {len(who)}: {', '.join(who)}")
+    return out
 
 
 def fetch_venues(force=False):
@@ -876,6 +932,11 @@ def fetch_venues(force=False):
 if __name__ == "__main__":
     if "--venues" in sys.argv:
         fetch_venues(force="--force" in sys.argv)
+        sys.exit(0)
+    # Before the year is read, like --venues: neither takes one, and both are
+    # catalogs rather than seasons. This one spends no CFBD call at all.
+    if "--abbr" in sys.argv:
+        fetch_abbr(force="--force" in sys.argv)
         sys.exit(0)
     year = int(sys.argv[1]) if len(sys.argv) > 1 else 2026
     if "--media" in sys.argv:
