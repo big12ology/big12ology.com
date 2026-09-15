@@ -108,6 +108,19 @@ if total:
 
 echo "pageviews for $SITE — last ${DAYS} days"
 
+# EVERY HOST THE ACCOUNT SAW, ours marked, and it runs first on purpose.
+# The filter below is exact and the mapping is one site tag per host, so the
+# page counts cannot cross sites. But a comment claiming that is not evidence,
+# and the way it goes wrong is silent in both directions: a second site appears
+# and inflates the totals, or this site starts serving a host the filter does
+# not name and the totals quietly shrink. Printing the boundary on every run
+# makes both visible in the one place somebody is already looking.
+#
+# The site tag is not derivable from this repo. It is not the beacon token in
+# the pages, which is a different value, so there is nothing to check it
+# against here and the host is what the filter keys on.
+run "hosts in this account" "rumPageloadEventsAdaptiveGroups(limit:20,filter:{datetime_geq:\\\"$FROM\\\",datetime_leq:\\\"$TO\\\"},orderBy:[count_DESC]){count,dimensions{siteTag,requestHost}}"
+
 # The whole question, and usually the only one worth asking. Paths, not
 # sections: the section rollup is what events-report.sh already gives and it
 # is the per-page number that nothing else on this site can answer.
