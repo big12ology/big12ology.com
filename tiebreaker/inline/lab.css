@@ -429,7 +429,6 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 .pick.stands { border-color: var(--dim); border-style: dashed;
   color: var(--ink); }
 @media (max-width: 700px) {
-  .pick { flex: 1 1 40%; min-width: 0; }
   .wgame .wdate { margin-left: 0; }
 }
 /* A phone cannot hold a game on one line. Six items across 331px left each
@@ -438,7 +437,14 @@ main > *, .duo > *, .cols > * { min-width: 0; }
    "E at U", every row a pair of initials. The two buttons take the line and
    the tag, the date and the ⋮ take the next one, which is 200px a name
    instead of 35. */
-@media (max-width: 520px) {
+/* 700, NOT THE 520 THIS SHIPPED AT. The band between them keeps the two
+   buttons side by side and is no roomier for it: at 560 a name gets 74px,
+   which cuts "North Carolina" at 84 and "Georgia Tech" at 77 — 31 of 240
+   names, and mostly short ones, because the column is ~150px before a logo,
+   a score and the padding come out of it. The names were never the problem;
+   two of them in one row is. `.pick { flex: 1 1 40% }` lived here and is
+   gone: it set up the side-by-side split this replaces. */
+@media (max-width: 700px) {
   .wgame { flex-wrap: wrap; row-gap: 4px; }
   .wmeta { display: flex; align-items: center; gap: 8px; flex: 1 0 100%; }
   /* It held a column open on a row that no longer has one to line up with. */
