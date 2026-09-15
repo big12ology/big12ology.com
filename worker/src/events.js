@@ -58,13 +58,13 @@ export const EVENTS = {
   //
   // The other four were being sent by the Lab and thrown away here, because
   // this list never learned them: `resumed` is the reader's own board coming
-  // back, `pasted`/`pasted-stale` are a link dropped into a page already
+  // back, `pasted`/`pasted_stale` are a link dropped into a page already
   // open, and `retired` is a link in a packing this page no longer reads.
   // That last one has to stay out of `stale` or the number that says whether
   // sharing works would spend a season counting links the fix obsoleted.
   scenario: {
     detail: ["opened", "stale", "retired", "resumed", "pasted",
-             "pasted-stale"],
+             "pasted_stale"],
     value: null,
   },
 

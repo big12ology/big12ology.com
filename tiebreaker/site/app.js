@@ -1562,7 +1562,7 @@
     // ARRIVAL, which is the measurement that says the sharing feature is
     // broken; a paste failing later is a different event and folding them
     // together would make the first number impossible to read.
-    if (M) M.send("scenario", problem ? "pasted-stale" : "pasted");
+    if (M) M.send("scenario", problem ? "pasted_stale" : "pasted");
   });
 
   renderPickList();
