@@ -4180,7 +4180,7 @@ RATINGS_PAGE = """<!doctype html>
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>Big12ology ratings \u2014 every FBS team</title>
 <meta name=description content="This site's own team ratings, in points of margin, for every FBS team. Filter to the Big 12.">
-<link rel=canonical href="https://big12ology.com/tiebreaker/model.html">
+<link rel=canonical href="{canon}">
 <link rel=icon type=image/svg+xml href="{base}favicon.svg">
 <link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
 <link rel=apple-touch-icon href="{base}favicon-180.png">
@@ -4195,7 +4195,7 @@ RATINGS_PAGE = """<!doctype html>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="Big12ology ratings">
 <meta property=og:description content="This site's own team ratings, in points of margin, for every FBS team.">
-<meta property=og:url content="https://big12ology.com/tiebreaker/model.html">
+<meta property=og:url content="{canon}">
 <meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
 <meta name=twitter:card content=summary_large_image>
 <style>
@@ -4231,6 +4231,10 @@ RATINGS_PAGE = """<!doctype html>
     }}
     btn.setAttribute("aria-pressed", only ? "true" : "false");
     btn.title = only ? "Show every FBS team" : "Show only Big 12 teams";
+    // Guarded, like every other caller: a page shipped without metrics.js
+    // must keep working. Nothing about who pressed it is sent, only that
+    // the table was narrowed or widened.
+    if (window.B12Metrics) window.B12Metrics.send("ratings", only ? "b12" : "all");
     var lab = btn.querySelector(".blab");
     if (lab) lab.textContent = only ? "All FBS" : "Big 12 only";
     var use = btn.querySelector("use");
@@ -4504,6 +4508,15 @@ def build_model_ratings(year, matchcard, outdir=None):
         f.write(RATINGS_PAGE.format(
             base=BASE, how_css=HOW_CSS, ratings_css=RATINGS_CSS,
             lead=lead, note=note, i_note=icon("note"),
+            # PER SEASON, not the live URL. Each year's table is different
+            # data — 2024 shows 2024's final ratings — so three pages all
+            # declaring themselves canonical at /tiebreaker/model.html would
+            # tell a crawler two of them are duplicates of a page they do not
+            # match. The explainer is genuinely the same every year and keeps
+            # a single canonical, which is what the evergreen list is for.
+            canon=("https://big12ology.com/tiebreaker/model.html"
+                   if year == LIVE_YEAR else
+                   f"https://big12ology.com/tiebreaker/{year}/model.html"),
             # No filter and no table furniture with nothing to filter: an
             # empty table prints its headers and a rule under them, which
             # reads as a table that failed to load rather than a season
@@ -6688,11 +6701,11 @@ def write_discovery(years):
     year pills, and the pages carry no dated signal of their own."""
     site = "https://big12ology.com/tiebreaker/"
     sched = "https://big12ology.com/schedule/"
-    subs = ["", "lab.html", "race.html", "standings.html"]
+    subs = ["", "lab.html", "race.html", "standings.html", "model.html"]
     sched_subs = ["", "matrix.html", "draw.html", "rotation.html"]
     # Listed once, under the live season — every year serves the same bytes.
     evergreen = ["how.html", "history.html", "cutline.html",
-                 "ladder.html"]
+                 "ladder.html", "model-how.html"]
     today = datetime.date.today().isoformat()
     urls = []
     for y in years:
