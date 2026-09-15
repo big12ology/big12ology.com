@@ -39,6 +39,19 @@ cd "$ROOT"
 PATHS=(tiebreaker/site tiebreaker/site_schedule tiebreaker/site_pools
        tiebreaker/forecasts)
 
+# NOT EVERYTHING UNDER site/ IS GENERATED, which this script assumed and which
+# is the one way it could destroy work. One chrome exists in three copies, at
+# the root and again under attendance/ and tiebreaker/site/, because each
+# subtree is served from its own path and was once its own repo. Nothing syncs
+# them; assemble.sh only notices afterwards that they drifted.
+#
+# So the copy under site/ is SOURCE sitting inside a generated tree, and
+# reverting the tree reverts it. The failure that produces is the quiet kind:
+# edit all three, clean up, and two edits survive while the third is rolled
+# back, so the next assemble fails on a sync check and the thing that undid it
+# has already printed the word "clean". These are held out and put back.
+SHARED=(brand.css tokens.css theme.js cards.js state.js metrics.js)
+
 GO=""
 [ "${1:-}" = "--yes" ] && GO=1
 [ "${1:-}" = "-y" ] && GO=1
@@ -73,8 +86,28 @@ if [ -z "$GO" ]; then
 fi
 
 echo
+keep="$(mktemp -d)"
+held=0
+for f in "${SHARED[@]}"; do
+  src="tiebreaker/site/$f"
+  [ -f "$src" ] || continue
+  git diff --quiet -- "$src" 2>/dev/null && continue
+  mkdir -p "$keep/$(dirname "$src")"
+  cp "$src" "$keep/$src"
+  held=$((held + 1))
+done
+
 git checkout -- "${PATHS[@]}" 2>/dev/null || true
 echo "reverted tracked output"
+
+if [ "$held" -gt 0 ]; then
+  for f in "${SHARED[@]}"; do
+    [ -f "$keep/tiebreaker/site/$f" ] || continue
+    cp "$keep/tiebreaker/site/$f" "tiebreaker/site/$f"
+    echo "KEPT tiebreaker/site/$f, which is source and not output"
+  done
+fi
+rm -rf "$keep"
 
 find tiebreaker -name .inputs -not -path '*/.git/*' -delete
 echo "removed $stamps .inputs stamp(s), so the next build rebuilds every season"
@@ -84,8 +117,12 @@ echo "removed untracked output"
 
 echo
 left="$(git status --porcelain -- "${PATHS[@]}" | wc -l | tr -d ' ')"
-if [ "$left" = "0" ]; then
-  echo "clean: the generated trees match HEAD"
+if [ "$left" = "$held" ]; then
+  if [ "$held" = "0" ]; then
+    echo "clean: the generated trees match HEAD"
+  else
+    echo "clean: the generated trees match HEAD, and $held shared source file(s) kept"
+  fi
 else
   echo "STILL DIRTY in the generated trees, which this script cannot explain:"
   git status --porcelain -- "${PATHS[@]}" | sed 's/^/  /'
