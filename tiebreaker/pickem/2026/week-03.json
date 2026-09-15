@@ -1,0 +1,997 @@
+{
+ "game_count": 14,
+ "games": [
+  {
+   "away": "Houston",
+   "b12": "both",
+   "book_lines": [
+    {
+     "away_ml": 245,
+     "home_ml": -310,
+     "over_under": 53.5,
+     "provider": "FanDuel",
+     "spread": -7.5
+    },
+    {
+     "away_ml": 242,
+     "home_ml": -330,
+     "over_under": 53.5,
+     "provider": "MyBookie.ag",
+     "spread": -7.5
+    },
+    {
+     "away_ml": 245,
+     "home_ml": -305,
+     "over_under": 53.5,
+     "provider": "DraftKings",
+     "spread": -7.5
+    },
+    {
+     "away_ml": 250,
+     "home_ml": -335,
+     "over_under": 53.0,
+     "provider": "BetRivers",
+     "spread": -7.5
+    },
+    {
+     "away_ml": 234,
+     "home_ml": -285,
+     "over_under": 53.0,
+     "provider": "LowVig.ag",
+     "spread": -7.5
+    },
+    {
+     "away_ml": 234,
+     "home_ml": -285,
+     "over_under": 53.0,
+     "provider": "BetOnline.ag",
+     "spread": -7.5
+    },
+    {
+     "away_ml": 240,
+     "home_ml": -300,
+     "over_under": 53.5,
+     "provider": "BetMGM",
+     "spread": -7.5
+    },
+    {
+     "away_ml": 238,
+     "home_ml": -285,
+     "over_under": 53.0,
+     "provider": "BetUS",
+     "spread": -7.5
+    },
+    {
+     "away_ml": 255,
+     "home_ml": -310,
+     "over_under": 53.5,
+     "provider": "Bovada",
+     "spread": -7.5
+    }
+   ],
+   "books": 9,
+   "game_id": 401856811,
+   "home": "Texas Tech",
+   "kickoff": "2026-09-19T00:00:00.000Z",
+   "kickoff_at": 1789776000,
+   "neutral": false,
+   "spread_raw": -7.5,
+   "spread_x2": -15
+  },
+  {
+   "away": "Tulane",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 920,
+     "home_ml": -1800,
+     "over_under": 49.5,
+     "provider": "FanDuel",
+     "spread": -19.5
+    },
+    {
+     "away_ml": 950,
+     "home_ml": -2500,
+     "over_under": 49.5,
+     "provider": "BetRivers",
+     "spread": -20.5
+    },
+    {
+     "away_ml": 1000,
+     "home_ml": -1800,
+     "over_under": 49.5,
+     "provider": "DraftKings",
+     "spread": -20.5
+    },
+    {
+     "away_ml": 836,
+     "home_ml": -1400,
+     "over_under": 49.0,
+     "provider": "BetOnline.ag",
+     "spread": -20.0
+    },
+    {
+     "away_ml": 836,
+     "home_ml": -1400,
+     "over_under": 49.0,
+     "provider": "LowVig.ag",
+     "spread": -20.0
+    },
+    {
+     "away_ml": 859,
+     "home_ml": -2019,
+     "over_under": 49.5,
+     "provider": "MyBookie.ag",
+     "spread": -20.5
+    },
+    {
+     "away_ml": 900,
+     "home_ml": -1400,
+     "over_under": 49.5,
+     "provider": "BetMGM",
+     "spread": -20.0
+    },
+    {
+     "away_ml": 825,
+     "home_ml": -1400,
+     "over_under": 49.0,
+     "provider": "BetUS",
+     "spread": -20.0
+    },
+    {
+     "away_ml": 750,
+     "home_ml": -1400,
+     "over_under": 49.5,
+     "provider": "Bovada",
+     "spread": -20.5
+    }
+   ],
+   "books": 9,
+   "game_id": 401856792,
+   "home": "Kansas State",
+   "kickoff": "2026-09-19T16:00:00.000Z",
+   "kickoff_at": 1789833600,
+   "neutral": false,
+   "spread_raw": -20.2,
+   "spread_x2": -40
+  },
+  {
+   "away": "Bowling Green",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 1400,
+     "home_ml": -4000,
+     "over_under": 44.5,
+     "provider": "FanDuel",
+     "spread": -23.5
+    },
+    {
+     "away_ml": 1150,
+     "home_ml": -3335,
+     "over_under": 45.5,
+     "provider": "BetRivers",
+     "spread": -24.0
+    },
+    {
+     "away_ml": 1500,
+     "home_ml": -3600,
+     "over_under": 44.5,
+     "provider": "DraftKings",
+     "spread": -23.5
+    },
+    {
+     "away_ml": 1156,
+     "home_ml": -2500,
+     "over_under": 44.5,
+     "provider": "LowVig.ag",
+     "spread": -23.5
+    },
+    {
+     "away_ml": 1156,
+     "home_ml": -2500,
+     "over_under": 44.5,
+     "provider": "BetOnline.ag",
+     "spread": -23.5
+    },
+    {
+     "away_ml": 1350,
+     "home_ml": -2500,
+     "over_under": 44.5,
+     "provider": "BetMGM",
+     "spread": -23.5
+    },
+    {
+     "away_ml": 1025,
+     "home_ml": -3030,
+     "over_under": 45.0,
+     "provider": "MyBookie.ag",
+     "spread": -23.5
+    },
+    {
+     "away_ml": 1175,
+     "home_ml": -2500,
+     "over_under": 45.0,
+     "provider": "BetUS",
+     "spread": -23.5
+    },
+    {
+     "away_ml": 1000,
+     "home_ml": -2200,
+     "over_under": 45.5,
+     "provider": "Bovada",
+     "spread": -23.5
+    }
+   ],
+   "books": 9,
+   "game_id": 401856798,
+   "home": "Iowa State",
+   "kickoff": "2026-09-19T16:00:00.000Z",
+   "kickoff_at": 1789833600,
+   "neutral": false,
+   "spread_raw": -23.6,
+   "spread_x2": -47
+  },
+  {
+   "away": "Arizona State",
+   "b12": "both",
+   "book_lines": [
+    {
+     "away_ml": -225,
+     "home_ml": 185,
+     "over_under": 51.5,
+     "provider": "DraftKings",
+     "spread": 6.0
+    },
+    {
+     "away_ml": -240,
+     "home_ml": 182,
+     "over_under": 51.5,
+     "provider": "MyBookie.ag",
+     "spread": 6.0
+    },
+    {
+     "away_ml": -205,
+     "home_ml": 168,
+     "over_under": 51.5,
+     "provider": "FanDuel",
+     "spread": 5.5
+    },
+    {
+     "away_ml": -225,
+     "home_ml": 170,
+     "over_under": 51.5,
+     "provider": "BetRivers",
+     "spread": 6.0
+    },
+    {
+     "away_ml": -228,
+     "home_ml": 191,
+     "over_under": 51.5,
+     "provider": "LowVig.ag",
+     "spread": 6.0
+    },
+    {
+     "away_ml": -228,
+     "home_ml": 191,
+     "over_under": 51.5,
+     "provider": "BetOnline.ag",
+     "spread": 6.0
+    },
+    {
+     "away_ml": -220,
+     "home_ml": 180,
+     "over_under": 51.5,
+     "provider": "BetMGM",
+     "spread": 6.0
+    },
+    {
+     "away_ml": -230,
+     "home_ml": 195,
+     "over_under": 51.5,
+     "provider": "BetUS",
+     "spread": 6.0
+    },
+    {
+     "away_ml": -210,
+     "home_ml": 175,
+     "over_under": 51.5,
+     "provider": "Bovada",
+     "spread": 5.5
+    }
+   ],
+   "books": 9,
+   "game_id": 401856812,
+   "home": "Kansas",
+   "kickoff": "2026-09-19T16:00:00.000Z",
+   "kickoff_at": 1789833600,
+   "neutral": true,
+   "spread_raw": 5.9,
+   "spread_x2": 12
+  },
+  {
+   "away": "Miami (OH)",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 520,
+     "home_ml": -750,
+     "over_under": 50.5,
+     "provider": "FanDuel",
+     "spread": -14.5
+    },
+    {
+     "away_ml": 490,
+     "home_ml": -675,
+     "over_under": 50.5,
+     "provider": "DraftKings",
+     "spread": -14.5
+    },
+    {
+     "away_ml": 491,
+     "home_ml": -675,
+     "over_under": 50.5,
+     "provider": "LowVig.ag",
+     "spread": -14.5
+    },
+    {
+     "away_ml": 491,
+     "home_ml": -675,
+     "over_under": 50.5,
+     "provider": "BetOnline.ag",
+     "spread": -14.5
+    },
+    {
+     "away_ml": 500,
+     "home_ml": -650,
+     "over_under": 50.5,
+     "provider": "BetMGM",
+     "spread": -14.5
+    },
+    {
+     "away_ml": 480,
+     "home_ml": -800,
+     "over_under": 50.5,
+     "provider": "MyBookie.ag",
+     "spread": -14.5
+    },
+    {
+     "away_ml": 525,
+     "home_ml": -835,
+     "over_under": 50.5,
+     "provider": "BetRivers",
+     "spread": -14.5
+    },
+    {
+     "away_ml": 490,
+     "home_ml": -675,
+     "over_under": 50.5,
+     "provider": "BetUS",
+     "spread": -14.5
+    },
+    {
+     "away_ml": 475,
+     "home_ml": -700,
+     "over_under": 51.0,
+     "provider": "Bovada",
+     "spread": -14.5
+    }
+   ],
+   "books": 9,
+   "game_id": 401856797,
+   "home": "Cincinnati",
+   "kickoff": "2026-09-19T19:30:00.000Z",
+   "kickoff_at": 1789846200,
+   "neutral": false,
+   "spread_raw": -14.5,
+   "spread_x2": -29
+  },
+  {
+   "away": "Utah State",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 2000,
+     "home_ml": -7000,
+     "over_under": 56.5,
+     "provider": "FanDuel",
+     "spread": -27.5
+    },
+    {
+     "away_ml": 1800,
+     "home_ml": -10000,
+     "over_under": 56.5,
+     "provider": "BetRivers",
+     "spread": -28.0
+    },
+    {
+     "away_ml": 2000,
+     "home_ml": -6500,
+     "over_under": 56.5,
+     "provider": "DraftKings",
+     "spread": -28.5
+    },
+    {
+     "over_under": 57.0,
+     "provider": "BetOnline.ag",
+     "spread": -28.0
+    },
+    {
+     "away_ml": 2200,
+     "home_ml": -5000,
+     "over_under": 57.5,
+     "provider": "BetMGM",
+     "spread": -28.0
+    },
+    {
+     "away_ml": 1125,
+     "home_ml": -5000,
+     "over_under": 57.0,
+     "provider": "MyBookie.ag",
+     "spread": -28.0
+    },
+    {
+     "over_under": 57.0,
+     "provider": "BetUS",
+     "spread": -28.0
+    },
+    {
+     "over_under": 57.0,
+     "provider": "Bovada",
+     "spread": -28.0
+    }
+   ],
+   "books": 8,
+   "game_id": 401856801,
+   "home": "Utah",
+   "kickoff": "2026-09-19T19:30:00.000Z",
+   "kickoff_at": 1789846200,
+   "neutral": false,
+   "spread_raw": -28.0,
+   "spread_x2": -56
+  },
+  {
+   "away": "Louisiana Tech",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 800,
+     "home_ml": -1400,
+     "over_under": 52.5,
+     "provider": "FanDuel",
+     "spread": -18.5
+    },
+    {
+     "away_ml": 800,
+     "home_ml": -1350,
+     "over_under": 53.5,
+     "provider": "DraftKings",
+     "spread": -19.5
+    },
+    {
+     "away_ml": 686,
+     "home_ml": -1050,
+     "over_under": 53.5,
+     "provider": "LowVig.ag",
+     "spread": -19.5
+    },
+    {
+     "away_ml": 686,
+     "home_ml": -1050,
+     "over_under": 53.5,
+     "provider": "BetOnline.ag",
+     "spread": -19.5
+    },
+    {
+     "away_ml": 775,
+     "home_ml": -1100,
+     "over_under": 53.5,
+     "provider": "BetMGM",
+     "spread": -19.0
+    },
+    {
+     "away_ml": 640,
+     "home_ml": -1205,
+     "over_under": 53.0,
+     "provider": "MyBookie.ag",
+     "spread": -19.0
+    },
+    {
+     "away_ml": 750,
+     "home_ml": -1430,
+     "over_under": 53.5,
+     "provider": "BetRivers",
+     "spread": -19.5
+    },
+    {
+     "away_ml": 680,
+     "home_ml": -1050,
+     "over_under": 53.5,
+     "provider": "BetUS",
+     "spread": -19.5
+    },
+    {
+     "away_ml": 700,
+     "home_ml": -1200,
+     "over_under": 53.0,
+     "provider": "Bovada",
+     "spread": -19.5
+    }
+   ],
+   "books": 9,
+   "game_id": 401867804,
+   "home": "Baylor",
+   "kickoff": "2026-09-19T20:00:00.000Z",
+   "kickoff_at": 1789848000,
+   "neutral": false,
+   "spread_raw": -19.3,
+   "spread_x2": -39
+  },
+  {
+   "away": "Georgia State",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 800,
+     "home_ml": -1400,
+     "over_under": 51.5,
+     "provider": "FanDuel",
+     "spread": -18.5
+    },
+    {
+     "away_ml": 750,
+     "home_ml": -1200,
+     "over_under": 51.5,
+     "provider": "DraftKings",
+     "spread": -18.5
+    },
+    {
+     "away_ml": 776,
+     "home_ml": -1250,
+     "over_under": 51.5,
+     "provider": "LowVig.ag",
+     "spread": -18.5
+    },
+    {
+     "away_ml": 776,
+     "home_ml": -1250,
+     "over_under": 51.5,
+     "provider": "BetOnline.ag",
+     "spread": -18.5
+    },
+    {
+     "away_ml": 825,
+     "home_ml": -1200,
+     "over_under": 51.5,
+     "provider": "BetMGM",
+     "spread": -18.5
+    },
+    {
+     "away_ml": 640,
+     "home_ml": -1205,
+     "over_under": 51.5,
+     "provider": "MyBookie.ag",
+     "spread": -18.5
+    },
+    {
+     "away_ml": 700,
+     "home_ml": -1250,
+     "over_under": 51.5,
+     "provider": "BetRivers",
+     "spread": -18.5
+    },
+    {
+     "away_ml": 800,
+     "home_ml": -1250,
+     "over_under": 51.5,
+     "provider": "BetUS",
+     "spread": -18.0
+    },
+    {
+     "away_ml": 725,
+     "home_ml": -1300,
+     "over_under": 51.0,
+     "provider": "Bovada",
+     "spread": -18.5
+    }
+   ],
+   "books": 9,
+   "game_id": 401856800,
+   "home": "UCF",
+   "kickoff": "2026-09-19T23:00:00.000Z",
+   "kickoff_at": 1789858800,
+   "neutral": false,
+   "spread_raw": -18.4,
+   "spread_x2": -37
+  },
+  {
+   "away": "Murray State",
+   "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 69.5,
+     "provider": "FanDuel",
+     "spread": -55.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401856803,
+   "home": "Oklahoma State",
+   "kickoff": "2026-09-19T23:00:00.000Z",
+   "kickoff_at": 1789858800,
+   "neutral": false,
+   "spread_raw": -55.5,
+   "spread_x2": -111
+  },
+  {
+   "away": "BYU",
+   "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": -1200,
+     "home_ml": 740,
+     "over_under": 52.5,
+     "provider": "FanDuel",
+     "spread": 17.5
+    },
+    {
+     "away_ml": -1000,
+     "home_ml": 650,
+     "over_under": 52.5,
+     "provider": "DraftKings",
+     "spread": 17.5
+    },
+    {
+     "away_ml": -1000,
+     "home_ml": 661,
+     "over_under": 52.5,
+     "provider": "BetOnline.ag",
+     "spread": 18.0
+    },
+    {
+     "away_ml": -1000,
+     "home_ml": 661,
+     "over_under": 52.5,
+     "provider": "LowVig.ag",
+     "spread": 18.0
+    },
+    {
+     "away_ml": -1000,
+     "home_ml": 700,
+     "over_under": 52.5,
+     "provider": "BetMGM",
+     "spread": 18.0
+    },
+    {
+     "away_ml": -1099,
+     "home_ml": 590,
+     "over_under": 52.0,
+     "provider": "MyBookie.ag",
+     "spread": 18.0
+    },
+    {
+     "away_ml": -1000,
+     "home_ml": 575,
+     "over_under": 52.5,
+     "provider": "BetRivers",
+     "spread": 17.5
+    },
+    {
+     "away_ml": -1000,
+     "home_ml": 650,
+     "over_under": 52.5,
+     "provider": "BetUS",
+     "spread": 18.0
+    },
+    {
+     "away_ml": -1100,
+     "home_ml": 650,
+     "over_under": 52.0,
+     "provider": "Bovada",
+     "spread": 17.5
+    }
+   ],
+   "books": 9,
+   "game_id": 401856795,
+   "home": "Colorado State",
+   "kickoff": "2026-09-19T23:30:00.000Z",
+   "kickoff_at": 1789860600,
+   "neutral": false,
+   "spread_raw": 17.8,
+   "spread_x2": 36
+  },
+  {
+   "away": "Colorado",
+   "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": 146,
+     "home_ml": -178,
+     "over_under": 48.5,
+     "provider": "FanDuel",
+     "spread": -3.5
+    },
+    {
+     "away_ml": 150,
+     "home_ml": -180,
+     "over_under": 48.5,
+     "provider": "DraftKings",
+     "spread": -3.5
+    },
+    {
+     "away_ml": 150,
+     "home_ml": -171,
+     "over_under": 49.0,
+     "provider": "LowVig.ag",
+     "spread": -4.0
+    },
+    {
+     "away_ml": 150,
+     "home_ml": -171,
+     "over_under": 49.0,
+     "provider": "BetOnline.ag",
+     "spread": -4.0
+    },
+    {
+     "away_ml": 150,
+     "home_ml": -185,
+     "over_under": 48.5,
+     "provider": "BetMGM",
+     "spread": -3.5
+    },
+    {
+     "away_ml": 155,
+     "home_ml": -202,
+     "over_under": 49.0,
+     "provider": "MyBookie.ag",
+     "spread": -3.5
+    },
+    {
+     "away_ml": 148,
+     "home_ml": -186,
+     "over_under": 49.5,
+     "provider": "BetRivers",
+     "spread": -3.5
+    },
+    {
+     "away_ml": 146,
+     "home_ml": -170,
+     "over_under": 49.0,
+     "provider": "BetUS",
+     "spread": -3.5
+    },
+    {
+     "away_ml": 155,
+     "home_ml": -180,
+     "over_under": 49.0,
+     "provider": "Bovada",
+     "spread": -3.5
+    }
+   ],
+   "books": 9,
+   "game_id": 401856796,
+   "home": "Northwestern",
+   "kickoff": "2026-09-19T23:30:00.000Z",
+   "kickoff_at": 1789860600,
+   "neutral": false,
+   "spread_raw": -3.6,
+   "spread_x2": -7
+  },
+  {
+   "away": "West Virginia",
+   "b12": "away",
+   "book_lines": [
+    {
+     "away_ml": 310,
+     "home_ml": -395,
+     "over_under": 52.5,
+     "provider": "DraftKings",
+     "spread": -10.0
+    },
+    {
+     "away_ml": 285,
+     "home_ml": -365,
+     "over_under": 53.5,
+     "provider": "FanDuel",
+     "spread": -9.5
+    },
+    {
+     "away_ml": 320,
+     "home_ml": -435,
+     "over_under": 54.0,
+     "provider": "BetRivers",
+     "spread": -10.0
+    },
+    {
+     "away_ml": 299,
+     "home_ml": -375,
+     "over_under": 53.5,
+     "provider": "LowVig.ag",
+     "spread": -10.0
+    },
+    {
+     "away_ml": 299,
+     "home_ml": -375,
+     "over_under": 53.5,
+     "provider": "BetOnline.ag",
+     "spread": -10.0
+    },
+    {
+     "away_ml": 280,
+     "home_ml": -350,
+     "over_under": 54.5,
+     "provider": "BetMGM",
+     "spread": -10.0
+    },
+    {
+     "away_ml": 310,
+     "home_ml": -450,
+     "over_under": 53.0,
+     "provider": "MyBookie.ag",
+     "spread": -10.5
+    },
+    {
+     "away_ml": 300,
+     "home_ml": -375,
+     "over_under": 53.0,
+     "provider": "BetUS",
+     "spread": -10.0
+    },
+    {
+     "away_ml": 300,
+     "home_ml": -400,
+     "over_under": 53.5,
+     "provider": "Bovada",
+     "spread": -10.0
+    }
+   ],
+   "books": 9,
+   "game_id": 401856802,
+   "home": "Virginia",
+   "kickoff": "2026-09-19T23:30:00.000Z",
+   "kickoff_at": 1789860600,
+   "neutral": true,
+   "spread_raw": -10.0,
+   "spread_x2": -20
+  },
+  {
+   "away": "Arkansas State",
+   "b12": "home",
+   "book_lines": [
+    {
+     "away_ml": 810,
+     "home_ml": -1450,
+     "over_under": 55.5,
+     "provider": "FanDuel",
+     "spread": -20.5
+    },
+    {
+     "away_ml": 800,
+     "home_ml": -1350,
+     "over_under": 55.5,
+     "provider": "DraftKings",
+     "spread": -20.5
+    },
+    {
+     "away_ml": 856,
+     "home_ml": -1450,
+     "over_under": 56.0,
+     "provider": "LowVig.ag",
+     "spread": -20.5
+    },
+    {
+     "away_ml": 856,
+     "home_ml": -1450,
+     "over_under": 56.0,
+     "provider": "BetOnline.ag",
+     "spread": -20.5
+    },
+    {
+     "away_ml": 850,
+     "home_ml": -1200,
+     "over_under": 55.5,
+     "provider": "BetMGM",
+     "spread": -20.0
+    },
+    {
+     "away_ml": 660,
+     "home_ml": -1299,
+     "over_under": 55.5,
+     "provider": "MyBookie.ag",
+     "spread": -20.5
+    },
+    {
+     "away_ml": 800,
+     "home_ml": -1667,
+     "over_under": 55.5,
+     "provider": "BetRivers",
+     "spread": -20.5
+    },
+    {
+     "away_ml": 875,
+     "home_ml": -1450,
+     "over_under": 56.0,
+     "provider": "BetUS",
+     "spread": -20.5
+    },
+    {
+     "away_ml": 750,
+     "home_ml": -1400,
+     "over_under": 55.5,
+     "provider": "Bovada",
+     "spread": -20.0
+    }
+   ],
+   "books": 9,
+   "game_id": 401856799,
+   "home": "TCU",
+   "kickoff": "2026-09-20T00:00:00.000Z",
+   "kickoff_at": 1789862400,
+   "neutral": false,
+   "spread_raw": -20.4,
+   "spread_x2": -41
+  },
+  {
+   "away": "Northern Illinois",
+   "b12": "home",
+   "book_lines": [
+    {
+     "over_under": 49.5,
+     "provider": "FanDuel",
+     "spread": -34.5
+    },
+    {
+     "over_under": 49.5,
+     "provider": "DraftKings",
+     "spread": -34.5
+    },
+    {
+     "over_under": 49.5,
+     "provider": "LowVig.ag",
+     "spread": -34.0
+    },
+    {
+     "over_under": 49.5,
+     "provider": "BetOnline.ag",
+     "spread": -34.0
+    },
+    {
+     "away_ml": 4500,
+     "home_ml": -35000,
+     "over_under": 49.5,
+     "provider": "BetMGM",
+     "spread": -34.5
+    },
+    {
+     "over_under": 49.5,
+     "provider": "BetUS",
+     "spread": -34.0
+    },
+    {
+     "over_under": 50.5,
+     "provider": "BetRivers",
+     "spread": -34.5
+    },
+    {
+     "over_under": 50.0,
+     "provider": "Bovada",
+     "spread": -34.5
+    }
+   ],
+   "books": 8,
+   "game_id": 401856793,
+   "home": "Arizona",
+   "kickoff": "2026-09-20T02:30:00.000Z",
+   "kickoff_at": 1789871400,
+   "neutral": false,
+   "spread_raw": -34.3,
+   "spread_x2": -69
+  }
+ ],
+ "lock_at": 1789776000,
+ "pickable_count": 14,
+ "published": "2026-09-15T12:35:19+00:00",
+ "season": 2026,
+ "status": "published",
+ "week": 3
+}
