@@ -1370,15 +1370,47 @@ def scorecard_caveat(games, systems, tal):
     return f"<p class=note>{lead}{body}{gap}</p>"
 
 
+_ABBR = None
+
+
+def _abbr_catalog():
+    """data/abbr.json, read once. {} if it was never fetched."""
+    global _ABBR
+    if _ABBR is None:
+        try:
+            with open(os.path.join(HERE, "data", "abbr.json")) as f:
+                _ABBR = json.load(f)
+        except (OSError, ValueError):
+            _ABBR = {}
+    return _ABBR
+
+
 def team_abbr(teams, t):
-    """The short label for a team, from teams.json.
+    """The short label for a team: teams.json, then abbr.json, then the name.
 
     Never truncate as a fallback — Arizona and Arizona State collide at three
     letters (both ARI) and at four (both ARIZ), which is the bug this
     replaces. A team missing an abbreviation shows its full name, so the gap
     is visible instead of silently ambiguous.
+
+    THE SECOND SOURCE IS FOR THE TEAMS THE FIRST ONE NEVER HAD. teams.json
+    stops at the sixteen, because fetch_teams asks CFBD with ?conference=B12,
+    so every non-conference opponent fell through to its full name. That is
+    safe but inconsistent, and it showed: the book table on a game page quotes
+    the spread from the favorite, and a build prints "TTU" on one row and
+    "Georgia Tech" on the next. Nine such names in a build of this season.
+    data/abbr.json is ESPN's code for all 759 teams and costs no CFBD call.
+    See fetch.py --abbr.
+    
+    teams.json still wins where it has an answer: its sixteen came from CFBD,
+    all sixteen agree with ESPN anyway, and a single source of truth for the
+    conference is worth keeping even when the two agree. Checked against this
+    season: 46 non-conference teams, all 46 have a code, none of those codes
+    collides with a Big 12 one.
     """
-    return (teams.get(t) or {}).get("abbr") or t
+    return ((teams.get(t) or {}).get("abbr")
+            or _abbr_catalog().get(t)
+            or t)
 
 
 def h2h_card(games, teams, stand_rows):
