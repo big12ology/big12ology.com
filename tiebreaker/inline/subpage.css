@@ -246,22 +246,35 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
 #venuecard .mkgrid .dim { display:flex; align-items:center; gap:0 }
 /* The market is four figures, and figures want columns rather than a
    paragraph: the number first, what it is underneath. */
-/* 150, not 120: at 120 a favourite with a long name broke across two lines
-   ("West Virginia" / "-19.5"), which reads as two figures rather than one. */
-.mkgrid { display:grid; gap:12px;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+/* THE FLOOR, named once so a card can raise it for its own contents. A track
+   narrower than this breaks a value across two lines, which reads as two
+   figures rather than one. 150 is the venue card's: its figures are "68F",
+   "12 mph", "27%", and a wider floor only costs it a column. */
+.mkgrid { display:grid; gap:12px; --mkmin:150px;
+  grid-template-columns:repeat(auto-fit,minmax(var(--mkmin),1fr));
   font-variant-numeric:tabular-nums }
 /* The market card is two pairs rather than four loose figures: what the line
    is, then what it costs to take it. Left to auto-fit it wrapped 3 + 1, which
    reads as a card that ran out of room, with a lone moneyline stranded under
    three siblings. Two columns puts both prices on their own row, each under
    the number it prices.
-     max(150px,45%) is what caps it at two. Three tracks would need 135% of the
-   card, so they can never fit; on a phone the percentage falls below the 150px
-   floor and the same floor as everywhere else takes over, dropping the card to
-   one column rather than breaking a favorite's name across two lines. The
-   venue card keeps the plain .mkgrid: its three figures want three columns. */
-.mkpair { grid-template-columns:repeat(auto-fit,minmax(max(150px,45%),1fr)) }
+     max(--mkmin,45%) is what caps it at two. Three tracks would need 135% of
+   the card, so they can never fit; on a narrow card the percentage falls below
+   the floor and the floor takes over, dropping the card to one column rather
+   than breaking a favorite's name across two lines.
+     170, not the 150 above, and measured rather than guessed: at 20/600 the
+   favorites run "Kansas State -7" 149, "Texas Tech -43.7" 158, "Arizona State
+   -5.9" 168, "West Virginia -19.5" 178, "Coastal Carolina -3" 182, "Oklahoma
+   State -10.5" 203, "Bethune-Cookman -44.5" 229. At 150 a 322px card took two
+   tracks of 155 and broke "Arizona State" off its number; 170 holds the
+   conference favorites on one line. The longest non-conference names still
+   wrap, and clearing those would need 230, which costs the card its second
+   column at every width a phone or a narrow column ever has.
+     Raised here rather than on .mkgrid on purpose: the venue card's "12 mph"
+   never needed the room, and at a 483px card the wider floor drops its three
+   figures to two columns. */
+.mkpair { --mkmin:170px;
+  grid-template-columns:repeat(auto-fit,minmax(max(var(--mkmin),45%),1fr)) }
 .mkval { font-size:var(--t-lead); font-weight:600 }
 .mkgrid .dim { font-size:var(--t-meta) }
 /* The books behind the average, shut by default. The averages above are the
