@@ -55,7 +55,18 @@ export const EVENTS = {
   // `stale` is one the page refused because the schedule moved under it —
   // the difference between a feature people use and a feature that quietly
   // breaks every time a game is rescheduled.
-  scenario: { detail: ["opened", "stale"], value: null },
+  //
+  // The other four were being sent by the Lab and thrown away here, because
+  // this list never learned them: `resumed` is the reader's own board coming
+  // back, `pasted`/`pasted-stale` are a link dropped into a page already
+  // open, and `retired` is a link in a packing this page no longer reads.
+  // That last one has to stay out of `stale` or the number that says whether
+  // sharing works would spend a season counting links the fix obsoleted.
+  scenario: {
+    detail: ["opened", "stale", "retired", "resumed", "pasted",
+             "pasted-stale"],
+    value: null,
+  },
 
   // The top of the pools funnel, which the database cannot see: how many
   // people reached a page offering a sign-in and how many pressed it. Every
@@ -65,6 +76,13 @@ export const EVENTS = {
   // Collapsible cards. Cheap to record and it answers a real question about
   // page length: whether readers fold sections away or never touch them.
   card: { detail: ["collapse", "expand"], value: null },
+
+  // The ratings table's filter. The page lists all 136 FBS teams and offers
+  // a cut down to the sixteen, and there is no way to tell from a pageview
+  // which of those two a reader came for. If nobody ever presses it the
+  // default is wrong; if everybody does, the default is wrong the other way.
+  // `b12` is the narrowing, `all` is the way back.
+  ratings: { detail: ["b12", "all"], value: null },
 };
 
 /** No batch may be larger than this, and the client sends far smaller ones. */
