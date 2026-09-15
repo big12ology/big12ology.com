@@ -131,6 +131,55 @@ fi
 mkdir -p "$DIST/pickem"
 cp "$ROOT/tiebreaker/site_pools/_moved/pickem.html" "$DIST/pickem/index.html"
 
+# --- the paths this site had before its sections were grouped --------------
+#
+# Every one of these 404s and every one is still being asked for. Measured
+# over the 30 days to 2026-09-15: eleven dead root-level paths drew fourteen
+# requests between them, which is small but is not nobody, and they are the
+# URLs a search engine indexed back when the pages really were at the root.
+# A 404 spends that link rather than following it.
+#
+# A meta refresh rather than a 301 because there is nowhere to write one.
+# The origin is GitHub Pages, which serves files and has no redirect config,
+# and the Worker's route is /api/* only, so nothing in this stack can set a
+# status on a path that has no file. A crawler follows an instant refresh and
+# honors the canonical beside it; noindex keeps the stub itself out of the
+# index and `follow` still passes the link through to the real page.
+#
+# Same shape as the /pickem/ stub above, and that is load-bearing rather than
+# tidy: no <head>, so the content-security-policy step skips them, and the
+# check under it holds that exemption to stubs carrying no script.
+moved_stub() {
+  local from="$1" to="$2" label="$3"
+  mkdir -p "$DIST$(dirname "$from")"
+  printf '%s' \
+    '<!doctype html><meta charset=utf-8>' \
+    "<meta http-equiv=refresh content=\"0; url=$to\">" \
+    "<link rel=canonical href=\"$to\">" \
+    '<meta name=robots content="noindex, follow">' \
+    "<title>$label, moved</title>" \
+    "<p><a href=\"$to\">$label has moved to $to</a></p>" \
+    > "$DIST$from"
+}
+
+moved_stub /standings.html /tiebreaker/standings.html "The Standings"
+moved_stub /race.html      /tiebreaker/race.html      "The Race"
+moved_stub /ladder.html    /tiebreaker/ladder.html    "The Ladder"
+moved_stub /history.html   /tiebreaker/history.html   "The Archive"
+moved_stub /how.html       /tiebreaker/how.html       "How the tiebreakers work"
+moved_stub /lab.html       /tiebreaker/lab.html       "The Lab"
+moved_stub /cutline.html   /tiebreaker/cutline.html   "The Cut Line"
+moved_stub /draw.html      /schedule/draw.html        "The Draw"
+moved_stub /matrix.html    /schedule/matrix.html      "The Matrix"
+moved_stub /rotation.html  /schedule/rotation.html    "The Rotation"
+
+# /survivor only has somewhere to go once the section is published. Dark, it
+# stays the 404 it is today, which beats sending a reader who asked for the
+# survivor pool to a teaser that cannot answer them.
+if [ "${B12_PICKEM:-}" = "1" ]; then
+  moved_stub /survivor/index.html /pools/survivor "Survivor"
+fi
+
 # The published slates, under /pickem/data/ so they cannot collide with the
 # section's pages. These are the frozen lines — the record of what each week
 # was played on, which the grader reads back and which is the only durable
