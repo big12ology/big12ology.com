@@ -15,6 +15,14 @@ predates it. Regenerating it from JavaScript would turn it into a note saying
 "the code does what the code does" — so if a check here fails, the question is
 what changed in the engine, never whether the fixture needs refreshing.
 
+The file is therefore never edited. An answer the engine has legitimately
+improved on is superseded in memory instead, by a named line in SUPERSEDED
+below that asserts the old value before replacing it and carries the reason
+with it. The distinction is the whole point: rewriting the file hides the
+departure, and listing it keeps the rest of the file worth trusting. Every
+correction there was checked against an exhaustive enumeration, not against
+the code that produced it.
+
 Three kinds of check, and they fail for different reasons:
 
   * AGAINST THE FIXTURE — standings, tie logs, the championship pairing,
@@ -44,6 +52,84 @@ import rules_lite as rules                               # noqa: E402
 
 FIXTURE = json.load(open(os.path.join(HERE, "engine_fixture.json")))
 fails = []
+
+# --- where the engine now answers better than the oracle did ----------------
+#
+# The file on disk is never edited. It is evidence about the port only because
+# it predates the port, and an entry rewritten to match today's JavaScript is
+# an entry that has stopped being evidence. What happens instead is here, in
+# code: each answer that has legitimately moved is named, the value it used to
+# hold is asserted before it is replaced, and the reason travels with it. A
+# reader can see exactly how far the engine has walked from the Python, one
+# line per step, and a step nobody could justify has nowhere to hide.
+#
+# Every entry below is the SAME correction, arriving in three places.
+# clinch.cut_membership read breakTie's `resolved` flag as whether the ladder
+# had done anything at all: one False and the whole tied group went into
+# `maybe` together, the team the ladder had already seeded out of them
+# included. breakTie keeps a finer record than that -- `events`, one entry per
+# seeding it actually made -- and engine.championship() has read it that way
+# since the matchup card stopped publishing the alphabet as a pairing. The cut
+# reads it now too, so a proof is no longer weaker than the board printed
+# beside it.
+#
+# Conservative is not the same as correct, which is what these three show.
+# Each was checked by enumerating every completion of the remaining conference
+# games and asking engine.championship() -- untouched by that change, so not a
+# witness to itself -- who was actually in the title game:
+#
+#   * TCU, 2024-11-24, over all 256 completions: never a seed, never sharing a
+#     seat. The oracle called that "alive" because it could not finish the tie,
+#     not because TCU had a route.
+#   * Texas Tech, 2025-11-16 and -18, over all 32,768: in every one of the
+#     8,192 completions where BYU beat Cincinnati and Colorado beat Arizona
+#     State, a named seed. The oracle needed a third game named as well and
+#     offered three different ones to choose from, which is the tell: the
+#     third game was never load-bearing, the old cut just could not prove it.
+#
+# The chaos components move because TCU stops being alive, and for no other
+# reason: nine of sixteen alive becomes eight, so breadth is 6/14 where it was
+# 7/14 and tangle drops the one tied row TCU was holding open.
+SUPERSEDED = []
+
+
+def supersede(path, was, now, why):
+    """Point one recorded answer at a better one, in memory, loudly.
+
+    Raises rather than checks if the fixture no longer holds `was`: that
+    means the file has been edited under a correction written against it,
+    and quietly replacing whatever is there now would launder the edit.
+    """
+    node = FIXTURE
+    for k in path[:-1]:
+        node = node[k]
+    if node[path[-1]] != was:
+        raise SystemExit(f"supersede {'/'.join(map(str, path))}: the fixture "
+                         f"no longer holds {was!r}, so this correction is "
+                         f"written against a file that has changed")
+    node[path[-1]] = now
+    SUPERSEDED.append("/".join(map(str, path)) + " -- " + why)
+
+
+supersede(("clinch", "2024-11-24", "teams", "TCU", "status"),
+          "alive", "eliminated",
+          "no route in any of 256 completions")
+
+_TT_WAS = [
+    "TCU over Houston + BYU over Cincinnati + Colorado over Arizona State",
+    "UCF over Oklahoma State + BYU over Cincinnati + Colorado over Arizona State",
+    "Kansas State over Utah + BYU over Cincinnati + Colorado over Arizona State",
+]
+_TT_NOW = ["BYU over Cincinnati + Colorado over Arizona State"]
+for _cut in ("2025-11-16", "2025-11-18"):
+    supersede(("clinch", _cut, "teams", "Texas Tech", "scenarios"),
+              _TT_WAS, _TT_NOW,
+              "the two games that do the work, without the third that never did")
+
+supersede(("chaos", "2024-11-24", "components", "tangle"), 0.5625, 0.5,
+          "one fewer tied row held open, downstream of TCU")
+supersede(("chaos", "2024-11-24", "components", "breadth"), 0.5, 6 / 14,
+          "eight alive of sixteen, not nine, downstream of TCU")
 
 
 def normalize(o):
@@ -481,8 +567,16 @@ if fails:
     for f in fails:
         print(f"  {f}")
     sys.exit(1)
+# Printed on a pass, not only on a failure. A correction the suite carries
+# quietly is a correction nobody re-reads, and the list is short on purpose:
+# if it ever stops being short, the oracle has stopped being one. Above the
+# summary rather than below it, because CI reports each suite by its last line.
+if SUPERSEDED:
+    print(f"{len(SUPERSEDED)} recorded answers superseded by a better one:")
+    for line in SUPERSEDED:
+        print(f"  {line}")
 print(f"engine: {seasons} seasons match the recorded answers, clinch matches at "
       f"{len(FIXTURE['clinch'])} truncations ({exact_seen} exact, "
-      f"{scenarios_seen} with scenario prose), the odds model is exact where it "
-      f"is deterministic and sound where it is not, rules_lite agrees over "
-      f"{games_all} games")
+      f"{scenarios_seen} with scenario prose), {len(SUPERSEDED)} superseded, "
+      f"the odds model is exact where it is deterministic and sound where it "
+      f"is not, rules_lite agrees over {games_all} games")

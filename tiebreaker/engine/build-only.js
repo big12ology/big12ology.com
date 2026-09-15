@@ -465,8 +465,14 @@ function simulate(games, systems, overrides, opts) {
     }
     const cm = R.cutMembership(base, overrides || {}, ncf);
     const rec = E.confRecords(base);
+    // R.berthShare, not a 0.5 restated here. A tie the procedure could not
+    // cut is split by how many teams are in it and how many seats it is
+    // contesting, and the card divides it the same way. The two pages report
+    // one model, so the arithmetic is one function.
+    const share = R.berthShare(R.SPOTS - R.countKeys(cm.sure),
+                               R.countKeys(cm.maybe));
     for (const t of teams) {
-      const v = cm.sure[t] ? 1.0 : (cm.maybe[t] ? 0.5 : 0.0);
+      const v = cm.sure[t] ? 1.0 : (cm.maybe[t] ? share : 0.0);
       inCount[t] += v;
       winSum[t] += rec[t] ? rec[t][0] : 0;
       for (const gid of trackIds) cond[gid].in[t][outcomes[gid] ? 0 : 1] += v;

@@ -53,6 +53,14 @@
   var CHAOS_LABELS = [[15, "Settled"], [35, "Orderly"], [55, "Simmering"],
                       [75, "Chaotic"], [101, "Pandemonium"]];
 
+  function countKeys(o) {
+    var n = 0;
+    for (var k in o) {
+      if (Object.prototype.hasOwnProperty.call(o, k)) n += 1;
+    }
+    return n;
+  }
+
   function esc(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
       .replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
@@ -107,22 +115,71 @@
       }
       var res = E.breakTie(grp, games, overrides);
       var hazard = grp.some(function (t) { return ncf[t]; });
-      var risky = !res.resolved;
-      if (!risky) {
-        var evs = (res.events || []).slice(0, seats);
-        for (var j = 0; j < evs.length; j++) {
-          var st = evs[j].step;
-          if (hazard && (st === "e" || st === "f" || st === "g")) {
-            risky = true;
-            break;
-          }
-        }
+      /* How far down res.order the ladder's own work carries.
+       *
+       * `resolved` says whether the procedure finished the WHOLE group, and
+       * this used to read it as whether the procedure did anything at all:
+       * one `false` sent eight teams into `maybe` together, the team the
+       * ladder had already seeded out of them included. engine.breakTie
+       * keeps a better record than that. `events` is one entry per seeding
+       * it actually made, in order, and a seeding it made is a placement
+       * whether or not it went on to place everyone else; displayRanks and
+       * championship() have read it that way since the matchup card stopped
+       * publishing the alphabet.
+       *
+       * So the cut reads it too, and a proof stops being weaker than the
+       * board printed beside it. It is the same refusal either way: fill the
+       * slots the procedure reached, share out the ones it did not.
+       *
+       * The hazard rule survives whole, applied to the prefix instead of the
+       * group. Total wins is not safe while a tied team has a non-conference
+       * game left, so trust stops at the first seeding that leans on one of
+       * those steps, and everything the ladder did after it stops with it.
+       */
+      var evs = res.events || [];
+      var trusted = 0;
+      while (trusted < evs.length) {
+        var st = evs[trusted].step;
+        if (hazard && (st === "e" || st === "f" || st === "g")) break;
+        trusted += 1;
       }
-      if (risky) grp.forEach(function (t) { maybe[t] = 1; });
-      else res.order.slice(0, seats).forEach(function (t) { sure[t] = 1; });
+      // Seats the ladder reached are filled; the rest of the group shares
+      // what is left. Past `seats` there is nothing to say either way, which
+      // is why a group seeded that far leaves no `maybe` behind it: those
+      // teams are under the line on the procedure's own word.
+      res.order.slice(0, Math.min(trusted, seats)).forEach(function (t) {
+        sure[t] = 1;
+      });
+      if (trusted < seats) {
+        res.order.slice(trusted).forEach(function (t) { maybe[t] = 1; });
+      }
       seats = 0;
     }
     return { sure: sure, maybe: maybe };
+  }
+
+  /* What one member of a tie the procedure could not cut is worth, as a
+   * fraction of a berth.
+   *
+   * EVENLY, because the ladder's last step is a SportSource rating or a coin
+   * toss and neither is in the data. With nothing left to separate the tied
+   * teams, equal shares is the only split that claims no more than is known.
+   *
+   * ONE FUNCTION, because the same question is asked in three places that
+   * must not answer it differently: the settled card reading a season with
+   * nothing left to play, the page's simulation, and the build's. It used to
+   * be a flat 0.5 in the two simulations, which is the right answer only for
+   * a group of exactly two contesting one seat. Eight teams contesting two
+   * seats each took half a berth and that season handed out four of them. On
+   * the live 2026 payload it inflated the column by 0.9 points of a berth in
+   * the 1.6% of simulated seasons that end this way.
+   *
+   * Capped at one for a group that fits inside the cut whole: two teams
+   * sharing first place both play, and "1.5 berths each" is not a number.
+   */
+  function berthShare(seats, group) {
+    if (!group || seats <= 0) return 0;
+    return Math.min(1, seats / group);
   }
 
   // ---------------------------------------------------------------- bounds
@@ -330,9 +387,13 @@
     }
     var cm = cutMembership(ctx.base, ctx.overrides, ctx.ncf);
     var rec = E.confRecords(ctx.base);
+    // Per season, not per team: the seats a tie is contesting depend on how
+    // many the procedure already filled in THIS season, so the split has to
+    // be taken once the cut is known and before the teams are walked.
+    var share = berthShare(SPOTS - countKeys(cm.sure), countKeys(cm.maybe));
     for (i = 0; i < ctx.teams.length; i++) {
       var t = ctx.teams[i];
-      ctx.inCount[t] += cm.sure[t] ? 1 : (cm.maybe[t] ? 0.5 : 0);
+      ctx.inCount[t] += cm.sure[t] ? 1 : (cm.maybe[t] ? share : 0);
       ctx.winSum[t] += rec[t] ? rec[t][0] : 0;
     }
     for (i = 0; i < ctx.rem.length; i++) {
@@ -547,6 +608,13 @@
       notes.push("Clinch/elimination statuses are proven across all " +
         model.nOutcomes.toLocaleString() + " remaining outcomes with the " +
         "full official tiebreaker procedure.");
+    } else if (model.proof === "settled" && model.unbroken) {
+      var ub = model.unbroken;
+      notes.push("Every game is picked, so the table is final, but the " +
+        "tiebreaker is not. " + esc(ub.note) + " They split the " +
+        (ub.seats === 1 ? "one remaining berth" : ub.seats + " remaining " +
+          "berths") + " evenly, because the procedure ends at a SportSource " +
+        "rating or a coin toss and neither of those is a result.");
     } else if (model.proof === "settled") {
       notes.push("Every game is picked, so there is nothing left to " +
         "prove — this is the finished table for the season you built.");
@@ -637,13 +705,47 @@
     };
   }
 
-  function applySettled(p) {
-    var top = {};
-    p.rows.slice(0, SPOTS).forEach(function (r) { top[r.team] = 1; });
+  /* The finished table, when no game is left to decide anything.
+   *
+   * IT USED TO TAKE THE TOP TWO ROWS OF standings() AND CALL THEM CLINCHED.
+   * That is the shortcut engine.championship() was written to stop taking,
+   * and for the same reason: breakTie hands back the teams it could not
+   * separate in storage order, so rows 0 and 1 of an unbroken tie are the
+   * alphabet, not a placement. Pick every 2026 game for the home side and
+   * eight teams finish 5-4 in one tie group the procedure cannot cut. The
+   * card read that as "Arizona clinched, probability 1" and eliminated the
+   * six teams standing behind Arizona in the alphabet, while the matchup
+   * card, built from the same engine, said the second seed was nobody.
+   *
+   * So placement comes from the engine, which already refuses to fill a slot
+   * no team holds outright, and `resolved: false` is what that refusal looks
+   * like from here. A seed the ladder did name is a clinch; the group it ran
+   * out of data inside is alive, sharing the berths that are left.
+   *
+   * EVENLY, because the procedure's last step is a SportSource rating or a
+   * coin toss and neither is in the data. With nothing left to separate the
+   * tied teams, equal shares is the only split that claims no more than is
+   * known. The berths still sum to two.
+   *
+   * Returns the unbroken group, or null when the season really is decided,
+   * so the note under the card can say which of the two this was.
+   */
+  function applySettled(p, games, overrides) {
+    var ccg = E.championship(games, overrides);
+    var seeds = ccg ? [ccg.seed1, ccg.seed2].filter(Boolean) : [];
+    var pending = (ccg && ccg.pending) || [];
+    var seats = SPOTS - seeds.length;
+    var share = berthShare(seats, pending.length);
+    var seeded = {}, open = {};
+    seeds.forEach(function (t) { seeded[t] = 1; });
+    pending.forEach(function (t) { open[t] = 1; });
     p.teams.forEach(function (t) {
-      p.statuses[t] = top[t] ? "clinched" : "eliminated";
-      p.probs[t] = top[t] ? 1 : 0;
+      var inCut = seeded[t] || (open[t] && share >= 1);
+      p.statuses[t] = inCut ? "clinched" : open[t] ? "alive" : "eliminated";
+      p.probs[t] = inCut ? 1 : open[t] ? share : 0;
     });
+    if (!pending.length || share >= 1) return null;
+    return { teams: pending, seats: seats, note: ccg.note };
   }
 
   function applyExact(p, ex) {
@@ -663,7 +765,11 @@
   function modelOf(p, extra) {
     var m = {
       bounds: p.bounds, statuses: p.statuses, probs: p.probs, expw: p.expw,
-      chaos: null, proof: "bounds", nSims: 0, pending: 0,
+      chaos: null, proof: "bounds", nSims: 0, pending: 0, unbroken: null,
+      // How many conference games the picks left open. Read by anything
+      // deciding whether a number on this card is a proof or an estimate;
+      // it was the one input to that question the model did not carry.
+      remaining: p.remaining.length,
       systems: state ? state.systems : [],
     };
     Object.keys(extra || {}).forEach(function (k) { m[k] = extra[k]; });
@@ -684,9 +790,10 @@
     // no enumeration — this is the state "Use favorites for all" produces
     // and it has to feel instant.
     if (!p.remaining.length) {
-      applySettled(p);
+      var unbroken = applySettled(p, games, overrides);
       paint(modelOf(p, {
-        proof: "settled", chaos: chaosIndex(p.rows, p.statuses, p.probs),
+        proof: "settled", unbroken: unbroken,
+        chaos: chaosIndex(p.rows, p.statuses, p.probs),
       }));
       return;
     }
@@ -791,9 +898,10 @@
     var p = prepare(games, overrides);
 
     if (!p.remaining.length) {
-      applySettled(p);
+      var unbroken = applySettled(p, games, overrides);
       return modelOf(p, {
-        proof: "settled", chaos: chaosIndex(p.rows, p.statuses, p.probs),
+        proof: "settled", unbroken: unbroken,
+        chaos: chaosIndex(p.rows, p.statuses, p.probs),
       });
     }
 
@@ -856,6 +964,9 @@
     confTeams: confTeams, remainingConf: remainingConf,
     unplayedNonconf: unplayedNonconf,
     makeRng: makeRng, ratingSigma: ratingSigma, MARGIN_SIGMA: MARGIN_SIGMA,
+    // Shared with the build's simulation, which tallies its own seasons and
+    // must divide a contested berth exactly the way this one does.
+    berthShare: berthShare, countKeys: countKeys, SPOTS: SPOTS,
     // tangleComponent on its own, because its edges are worth testing
     // directly: an empty board is maximum tangle and a one-team conference is
     // none, and neither of those is reachable through chaosIndex.
