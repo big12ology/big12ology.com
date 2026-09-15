@@ -79,6 +79,15 @@ jobs:
         working-directory: tiebreaker
         run: node --test tests/race_client.test.mjs
 
+      # Shared what-if links, which no Python test can reach either: the bug
+      # this catches lived in the gap between writing a link and reading it
+      # back after a weekend of football, so it needs the real app.js run
+      # twice against two different versions of the same season. Reads the
+      # built payload, so it belongs after the build step with the one above.
+      - name: Lab scenario links
+        working-directory: tiebreaker
+        run: node --test tests/lab_scenario.test.mjs
+
       - name: Attendance
         working-directory: attendance
         run: |

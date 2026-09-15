@@ -71,8 +71,26 @@
   var URL_KEY = "lab";
   var B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
-  function pickOrder() {
-    return pickable().map(function (g) { return String(g.id); }).sort();
+  // A version letter in front of the fingerprint, so the next change to any
+  // of this can say so instead of blaming the schedule. Links written before
+  // it existed carry a bare hash and are told what actually happened to them.
+  var SCENARIO_V = "b";
+
+  // EVERY GAME IN THE SEASON, which is what the paragraph above always said
+  // and what the code did not do. Positions used to be packed against the
+  // games still OPEN, and that set shrinks every Saturday: the fingerprint
+  // moved the moment any game kicked off, so a link shared on Tuesday was
+  // refused by Sunday under a message blaming a schedule change that had
+  // never happened. Measured 2026-09-14, with 31 of 120 games played: the
+  // fingerprint had already moved 31 times that season and would move 89
+  // more, and 4 of the 6 links that arrived in a week died on arrival.
+  //
+  // Packing the whole season instead costs ten characters of URL and buys a
+  // link that only breaks when the schedule really does move. The CCG stays
+  // out because it has no fixed participants to pick.
+  function scenarioOrder() {
+    return payload.games.filter(function (g) { return !g.ccg; })
+      .map(function (g) { return String(g.id); }).sort();
   }
 
   /** FNV-1a over the ordered ids. Short, stable, and not a security claim. */
@@ -104,8 +122,19 @@
     return out;
   }
 
+  // {picks, aged}, or null if the packing is not readable. `aged` counts the
+  // picks thrown away because the game has been played since the link was
+  // written — the thing that used to retire the whole scenario and is now
+  // just the part of it the season has answered.
+  //
+  // They have to be thrown away rather than kept: simGames() rewrites any
+  // game carrying a pick, so an old pick on a finished game would put 28-17
+  // over the real result on a row the locked board draws no lever for, and
+  // the reader would have no way to see it, let alone undo it.
   function decodePicks(ids, packed) {
-    var got = {};
+    var got = {}, aged = 0;
+    var open = {};
+    pickable().forEach(function (g) { open[String(g.id)] = true; });
     for (var i = 0; i < ids.length; i++) {
       var ch = packed[Math.floor(i / 3)];
       if (ch === undefined) break;
@@ -114,10 +143,12 @@
       var v = (byte >> (2 * (2 - (i % 3)))) & 3;
       if (v === 1 || v === 2) {
         var g = byId[ids[i]];
-        if (g) got[ids[i]] = v === 1 ? g.home : g.away;
+        if (!g) continue;
+        if (!open[ids[i]]) { aged += 1; continue; }
+        got[ids[i]] = v === 1 ? g.home : g.away;
       }
     }
-    return got;
+    return { picks: got, aged: aged };
   }
 
   var urlHold = false;
@@ -138,7 +169,7 @@
 
   function syncUrl() {
     if (urlHold || !window.B12State) return;
-    var ids = pickOrder();
+    var ids = scenarioOrder();
     if (!Object.keys(picks).length) {
       B12State.hashWrite(URL_KEY, "");
       // Clearing is a decision, so it clears the copy too. Otherwise "Clear
@@ -146,7 +177,7 @@
       B12State.set(STORE_KEY, null);
       return;
     }
-    var raw = [payload.year, fingerprint(ids),
+    var raw = [payload.year, SCENARIO_V + fingerprint(ids),
       modelSlug(model), encodePicks(ids)].join(".");
     B12State.hashWrite(URL_KEY, raw);
     B12State.set(STORE_KEY, raw);
@@ -157,16 +188,30 @@
       ? applyScenario(B12State.hashRead(URL_KEY)) : null;
   }
 
-  /** Returns a message when a scenario could not be honoured, else null. */
+  // Set by applyScenario, read by whoever is about to write the notice.
+  // Neither is a failure: `aged` is a scenario that applied with part of it
+  // now history, `retired` is a link in the old packing, which is a refusal
+  // but not the schedule's fault and should not be counted as one.
+  var scenarioAged = 0;
+  var scenarioRetired = false;
+
+  /** Returns a message when a scenario could not be honored, else null. */
   function applyScenario(raw) {
+    scenarioAged = 0;
+    scenarioRetired = false;
     if (!raw) return null;
     var bits = raw.split(".");
     if (bits.length < 4) return "That link is not a scenario this page reads.";
-    var ids = pickOrder();
+    var ids = scenarioOrder();
     if (String(payload.year) !== bits[0]) {
       return "That scenario is from the " + esc(bits[0]) + " season.";
     }
-    if (fingerprint(ids) !== bits[1]) {
+    if (bits[1].charAt(0) !== SCENARIO_V) {
+      scenarioRetired = true;
+      return "That link was made before the Lab changed how it packs a " +
+        "scenario, so this page cannot read it.";
+    }
+    if (SCENARIO_V + fingerprint(ids) !== bits[1]) {
       return "That scenario was made before the schedule changed, so it " +
         "cannot be applied to these games.";
     }
@@ -175,8 +220,19 @@
     models.forEach(function (m) {
       if (modelSlug(m.name) === bits[2]) model = m.name;
     });
-    picks = got;
+    picks = got.picks;
+    scenarioAged = got.aged;
     return null;
+  }
+
+  /** What a scenario lost to the calendar, said once, or "". */
+  function agedNote() {
+    if (!scenarioAged) return "";
+    return scenarioAged === 1
+      ? "One game in that scenario has been played since it was shared, so " +
+        "the real result stands for it."
+      : scenarioAged + " games in that scenario have been played since it " +
+        "was shared, so the real results stand for them.";
   }
 
 
@@ -1444,7 +1500,8 @@
   // failure is invisible from here otherwise: the sender sees a working link
   // and the recipient sees a polite paragraph, and nobody reports it.
   if (arrivedWithScenario && M) {
-    M.send("scenario", urlProblem ? "stale" : "opened");
+    M.send("scenario", urlProblem
+      ? (scenarioRetired ? "retired" : "stale") : "opened");
   } else if (resumed && M) {
     // Its own value, not folded into "opened". Those two count different
     // things — one says the sharing feature is used, the other says people
@@ -1455,7 +1512,7 @@
   notice(urlProblem
     ? urlProblem + " Showing the season as it stands."
     : (resumed ? "Picked up where you left off. Clear picks starts over."
-       : ""));
+       : agedNote()));
 
   /** The one line above the game list. Replaces rather than appends, because
       the hash can change more than once without the page reloading. */
@@ -1499,7 +1556,8 @@
     updateNote();
     refresh();
     if (problem && keep) B12State.set(STORE_KEY, keep);
-    notice(problem ? problem + " Showing the season as it stands." : "");
+    notice(problem ? problem + " Showing the season as it stands."
+                   : agedNote());
     // Its own pair of values. "stale" already counts links that failed ON
     // ARRIVAL, which is the measurement that says the sharing feature is
     // broken; a paste failing later is a different event and folding them
