@@ -298,6 +298,22 @@
      and cost 61px of vertical chrome on every page — three rows where two
      will do, on the screen with the least room to spare. */
   .b12-topbar .b12-right { order: 2; }
+    /* Same move as the Lab's peek handle, for the same reason: these drew an
+       18px-tall target, fine under a cursor and thin under a thumb, on the one
+       bar that appears on every page of the site. Growing the anchors would
+       mean padding, and padding costs vertical chrome on a bar whose comment
+       above counts it in single pixels. A pseudo-element spends none.
+     *
+     * 34 rather than the 44 the guidelines ask for, because the room is the
+     * 13px above the row plus the 6px of bar padding below it, and that is
+     * all there is. Going further means making the bar taller, which is a
+     * different decision than this one and belongs to whoever budgeted it.
+     * Sideways it stops at 6px: the tightest gap between two links is 14px,
+     * so this leaves 2 and no two links can claim the same tap. */
+  .b12-topbar a:not(.b12-brand) { position: relative; }
+  .b12-topbar a:not(.b12-brand)::after { content: ""; position: absolute;
+    left: -6px; right: -6px; top: 50%; height: 34px;
+    transform: translateY(-50%); }
   .b12-topbar a:not(.b12-brand) { order: 3; }
   /* Force the break after the toggle.
      order alone did not do it. Flex decides where a line ends from the items'
