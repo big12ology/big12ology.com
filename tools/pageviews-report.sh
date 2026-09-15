@@ -65,14 +65,14 @@ query() {
 }
 
 run() {
-  local title="$1" selection="$2"
+  local title="$1" selection="$2" total="${3:-total}"
   echo
   echo "$title"
   printf -- '-%.0s' $(seq ${#title}); echo
   curl -sS -m 40 https://api.cloudflare.com/client/v4/graphql \
     -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
     -H "Content-Type: application/json" \
-    --data "$(query "$selection")" | python3 -c '
+    --data "$(query "$selection")" | B12_TOTAL="$total" python3 -c '
 import json, sys
 raw = sys.stdin.read().strip()
 try:
@@ -97,7 +97,20 @@ for r in rows:
     flat.append(out)
 cols = list(flat[0].keys())
 w = {c: max(len(c), *(len(str(r.get(c, ""))) for r in flat)) for c in cols}
-total = sum(r.get("count", 0) for r in flat)
+import os
+# THESE ARE SAMPLED ESTIMATES AND THE SAMPLE MOVES. Repeat a query inside a
+# few minutes and it returns the same figure every time, which makes it look
+# exact; ask the same 30-day question an hour apart and it can land somewhere
+# else entirely. Measured 2026-09-15: the same window returned 14900 and then
+# 18310 for this host, a 23% swing that a window sliding by an hour cannot
+# account for. Counts also arrive rounded, to tens over 30 days and to
+# hundreds on some queries, which is the other tell.
+#
+# So read the ORDER and the ORDER OF MAGNITUDE, not the digits, and never
+# reconcile one section against another. The host section prints no total for
+# that reason: it is there to name which hosts the account saw, and a number
+# under it would invite arithmetic across two different samples.
+total = 0 if os.environ.get("B12_TOTAL") == "none" else sum(r.get("count", 0) for r in flat)
 print("  " + "  ".join(c.ljust(w[c]) for c in cols))
 for r in flat:
     print("  " + "  ".join(str(r.get(c, "")).ljust(w[c]) for c in cols))
@@ -119,7 +132,7 @@ echo "pageviews for $SITE — last ${DAYS} days"
 # The site tag is not derivable from this repo. It is not the beacon token in
 # the pages, which is a different value, so there is nothing to check it
 # against here and the host is what the filter keys on.
-run "hosts in this account" "rumPageloadEventsAdaptiveGroups(limit:20,filter:{datetime_geq:\\\"$FROM\\\",datetime_leq:\\\"$TO\\\"},orderBy:[count_DESC]){count,dimensions{siteTag,requestHost}}"
+run "hosts in this account" "rumPageloadEventsAdaptiveGroups(limit:20,filter:{datetime_geq:\\\"$FROM\\\",datetime_leq:\\\"$TO\\\"},orderBy:[count_DESC]){count,dimensions{siteTag,requestHost}}" none
 
 # The whole question, and usually the only one worth asking. Paths, not
 # sections: the section rollup is what events-report.sh already gives and it
