@@ -251,6 +251,17 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
 .mkgrid { display:grid; gap:12px;
   grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
   font-variant-numeric:tabular-nums }
+/* The market card is two pairs rather than four loose figures: what the line
+   is, then what it costs to take it. Left to auto-fit it wrapped 3 + 1, which
+   reads as a card that ran out of room, with a lone moneyline stranded under
+   three siblings. Two columns puts both prices on their own row, each under
+   the number it prices.
+     max(150px,45%) is what caps it at two. Three tracks would need 135% of the
+   card, so they can never fit; on a phone the percentage falls below the 150px
+   floor and the same floor as everywhere else takes over, dropping the card to
+   one column rather than breaking a favorite's name across two lines. The
+   venue card keeps the plain .mkgrid: its three figures want three columns. */
+.mkpair { grid-template-columns:repeat(auto-fit,minmax(max(150px,45%),1fr)) }
 .mkval { font-size:var(--t-lead); font-weight:600 }
 .mkgrid .dim { font-size:var(--t-meta) }
 /* The books behind the average, shut by default. The averages above are the

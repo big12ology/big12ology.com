@@ -3339,7 +3339,7 @@ def build_game_page(g, ctx):
                        f"<div class=dim>{k}</div></div>" for v, k in cells)
         src = book_src(ln)
         mk = (f"<div class=card><h2>The market</h2>"
-              f"<div class=mkgrid>{grid}</div>"
+              f"<div class='mkgrid mkpair'>{grid}</div>"
               f"{book_table(ln, g, ctx.get('teams') or {})}"
               f"<p class=note>{src[0].upper() + src[1:]}.</p></div>")
 
