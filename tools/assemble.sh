@@ -177,7 +177,7 @@ moved_stub /rotation.html  /schedule/rotation.html    "The Rotation"
 # stays the 404 it is today, which beats sending a reader who asked for the
 # survivor pool to a teaser that cannot answer them.
 if [ "${B12_PICKEM:-}" = "1" ]; then
-  moved_stub /survivor/index.html /pools/survivor "Survivor"
+  moved_stub /survivor/index.html /pools/survivor/ "Survivor"
 fi
 
 # The published slates, under /pickem/data/ so they cannot collide with the
