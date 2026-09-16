@@ -82,6 +82,13 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .movepts { text-align:right; font-variant-numeric:tabular-nums }
 @media (max-width:640px) {
   .movemain { grid-template-columns:22px 1fr auto; row-gap:2px }
+  /* The same bug .clrec was fixed for below, in the row above it, missed
+     because the two are siblings that look alike rather than one rule. Four
+     children, three tracks: the note auto-placed onto the next row into
+     column 1, a 22px track cut for a logo, and rendered "27.5% -> 33.1% to
+     reach the title game" one word per line, 186px tall on a 23px line. Four
+     movers turned a card into most of a phone screen. */
+  .movemain .dim { grid-column:2/-1 }
 }
 .levmain { display:grid; align-items:center; gap:0 10px;
   grid-template-columns:minmax(0,1fr) auto 112px 34px }
