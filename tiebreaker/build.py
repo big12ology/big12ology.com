@@ -3158,6 +3158,24 @@ def jsonld(obj):
     return f'<script type="application/ld+json">{safe}</script>'
 
 
+# The og:image is inlined in five page templates already. This is the sixth
+# place that needs it, and the only one that is not an HTML template, so it
+# gets the name rather than a sixth copy of the literal.
+OG_IMAGE = "https://big12ology.com/tiebreaker/og.png"
+
+
+def game_desc(g, year):
+    """The one-sentence summary of a game page.
+
+    Shared because it is in two places now: the meta description, and the
+    SportsEvent, which had no description at all. One string means the
+    snippet and the structured data cannot drift apart.
+    """
+    return (f"{g['away']} {joiner(g)} {g['home']}, week {g['week']} "
+            f"of the {year} Big 12 season: kickoff, venue, broadcast, "
+            f"the line, and what four rating models make of it.")
+
+
 def game_jsonld(g, year, url):
     """SportsEvent for one game, and the trail that gets you to it.
 
@@ -3180,8 +3198,13 @@ def game_jsonld(g, year, url):
         "@context": "https://schema.org",
         "@type": "SportsEvent",
         "name": f"{g['away']} {joiner(g)} {g['home']}",
+        "description": game_desc(g, year),
         "sport": "American Football",
         "url": url,
+        # Not art for this game: it is the same card every page on the site
+        # shares. It is accurate as the page's image and Search Console counts
+        # it, which is the whole of why it is here.
+        "image": OG_IMAGE,
         "competitor": [
             {"@type": "SportsTeam", "name": g["away"]},
             {"@type": "SportsTeam", "name": g["home"]},
@@ -3193,11 +3216,37 @@ def game_jsonld(g, year, url):
         ev["homeTeam"] = {"@type": "SportsTeam", "name": g["home"]}
         ev["awayTeam"] = {"@type": "SportsTeam", "name": g["away"]}
     if g.get("venue"):
-        ev["location"] = {"@type": "Place", "name": g["venue"]}
-    if not g.get("completed"):
-        ev["eventStatus"] = "https://schema.org/EventScheduled"
-        ev["eventAttendanceMode"] = \
-            "https://schema.org/OfflineEventAttendanceMode"
+        place = {"@type": "Place", "name": g["venue"]}
+        # A Place with a name and no address is the thing Google reads as an
+        # incomplete location. Every game on the slate resolves its venue_id
+        # against the committed catalog, so the locality is always there; the
+        # region and country are not, for the handful of venues abroad.
+        addr = {"@type": "PostalAddress"}
+        for key, field in (("addressLocality", "venue_locality"),
+                           ("addressRegion", "venue_region"),
+                           ("addressCountry", "venue_country")):
+            if g.get(field):
+                addr[key] = g[field]
+        if len(addr) > 1:
+            place["address"] = addr
+        ev["location"] = place
+    # Both of these were conditional on the game being unplayed, which left
+    # every finished game with neither. There is no schema.org status for
+    # "already happened": EventScheduled means it is going ahead as planned,
+    # which stays true after the fact, and a game played in a stadium was an
+    # offline event whether or not the clock has run out.
+    ev["eventStatus"] = "https://schema.org/EventScheduled"
+    ev["eventAttendanceMode"] = \
+        "https://schema.org/OfflineEventAttendanceMode"
+    # The conference runs its own games and not the rest of the slate. Notre
+    # Dame at BYU is nobody here's production, so this is not a site-wide
+    # constant however much it would tidy the report.
+    if g.get("conference_game"):
+        ev["organizer"] = {
+            "@type": "SportsOrganization",
+            "name": "Big 12 Conference",
+            "url": "https://big12sports.com/",
+        }
 
     crumbs = {
         "@context": "https://schema.org",
@@ -3509,6 +3558,40 @@ def game_row(g, pages=False):
     return f"<li class={cls}>{row}</li>"
 
 
+# Almost every venue in the catalog sits in the United States, and CFBD's row
+# carries a region code with no country beside it. The exceptions are few
+# enough to name: two region codes that are not US states, and the rows with
+# no region at all, where the timezone is the only signal left. Nassau has
+# neither, so it gets no country rather than a guessed one, which is also why
+# this returns None instead of defaulting to "US".
+US_STATES = frozenset(
+    "AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN "
+    "MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA "
+    "WA WV WI WY DC".split())
+NON_US_REGIONS = {"BC": "CA", "NSW": "AU"}
+COUNTRY_BY_TZ = {
+    "Europe/London": "GB",
+    "Europe/Dublin": "IE",
+    "Australia/Sydney": "AU",
+}
+
+
+# Carried on the game record for the structured data and nothing else. The
+# Lab serializes the whole record into the page, so anything added here ships
+# to every reader's browser: these three say nothing app.js or engine.js can
+# use, and venue_city is already there as the display form.
+JSONLD_ONLY_FIELDS = ("venue_locality", "venue_region", "venue_country")
+
+
+def venue_country(state, tz):
+    """Two-letter country for a venue row, or None when it cannot be known."""
+    if state in US_STATES:
+        return "US"
+    if state in NON_US_REGIONS:
+        return NON_US_REGIONS[state]
+    return COUNTRY_BY_TZ.get(tz or "")
+
+
 def place_and_forecast(year, games):
     """Give each game its city, its broadcast, its line and — if it is
     close enough for one — its forecast.
@@ -3525,6 +3608,17 @@ def place_and_forecast(year, games):
                 continue
             g["venue_city"] = ", ".join(
                 x for x in (v.get("city"), v.get("state")) if x)
+            # The joined "City, ST" above is what the pages print. The parts
+            # ride along separately because a PostalAddress wants them apart,
+            # and splitting the display string back up is a parser nobody
+            # should have to own.
+            if v.get("city"):
+                g["venue_locality"] = v["city"]
+            if v.get("state"):
+                g["venue_region"] = v["state"]
+            country = venue_country(v.get("state"), v.get("tz"))
+            if country:
+                g["venue_country"] = country
             if v.get("tz"):
                 g["venue_tz"] = v["tz"]
             # Carried onto the game because that is where every renderer
@@ -3736,7 +3830,10 @@ def render(year, games):
     # headed "Week 1" and the season had no week 0 in it at all, while the
     # schedule and the pick'em both had one. engine.js never reads this field
     # (app.js does, for the heading), so only the grouping moves.
-    lab_games = [dict(g, week=lab_week(g, year)) for g in games]
+    lab_games = [dict({k: v for k, v in g.items()
+                       if k not in JSONLD_ONLY_FIELDS},
+                      week=lab_week(g, year))
+                 for g in games]
     payload = json.dumps({
         "year": year,
         "teams": team_meta,
@@ -4962,11 +5059,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                         f"{g['away']} {joiner(g)} {g['home']}",
                         "schedule", body, year,
                         "", canon=f"{sched_canon}game/{slug}",
-                        desc=(f"{g['away']} {joiner(g)} {g['home']}, "
-                              f"week {g['week']} "
-                              f"of the {year} Big 12 season: kickoff, venue, "
-                              f"broadcast, the line, and what four rating "
-                              f"models make of it."),
+                        desc=game_desc(g, year),
                         # The only script on a game page, and the only place
                         # the schedule section touches /api/*. Deferred and
                         # entirely optional: it fills the consensus card or
