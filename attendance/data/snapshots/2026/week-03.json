@@ -3,6 +3,35 @@
   "throughWeek": 3,
   "rows": [
     {
+      "team": "Kansas State",
+      "stadium": "Bill Snyder Family Football Stadium",
+      "capacity": 50000,
+      "capacityEstimate": null,
+      "color": "#3c0969",
+      "logo": "assets/logos/ksu.svg",
+      "multiVenue": false,
+      "games": 3,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 51719,
+          "pct": 1.03438
+        },
+        {
+          "week": 2,
+          "attendance": 51759,
+          "pct": 1.03518
+        },
+        {
+          "week": 3,
+          "attendance": 51846,
+          "pct": 1.03692
+        }
+      ],
+      "total": 155324,
+      "pct": 1.0354933333333334
+    },
+    {
       "team": "BYU",
       "stadium": "LaVell Edwards Stadium",
       "capacity": 62073,
@@ -25,30 +54,6 @@
       ],
       "total": 128486,
       "pct": 1.03495883878659
-    },
-    {
-      "team": "Kansas State",
-      "stadium": "Bill Snyder Family Football Stadium",
-      "capacity": 50000,
-      "capacityEstimate": null,
-      "color": "#3c0969",
-      "logo": "assets/logos/ksu.svg",
-      "multiVenue": false,
-      "games": 2,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 51719,
-          "pct": 1.03438
-        },
-        {
-          "week": 2,
-          "attendance": 51759,
-          "pct": 1.03518
-        }
-      ],
-      "total": 103478,
-      "pct": 1.03478
     },
     {
       "team": "Arizona State",
@@ -77,7 +82,7 @@
       "color": "#ea002a",
       "logo": "assets/logos/utah.svg",
       "multiVenue": false,
-      "games": 2,
+      "games": 3,
       "weeks": [
         {
           "week": 1,
@@ -88,10 +93,15 @@
           "week": 2,
           "attendance": 51532,
           "pct": 1.0017105979317316
+        },
+        {
+          "week": 3,
+          "attendance": 51455,
+          "pct": 1.0002138247414665
         }
       ],
-      "total": 102976,
-      "pct": 1.000855298965866
+      "total": 154431,
+      "pct": 1.0006414742243994
     },
     {
       "team": "Texas Tech",
@@ -273,16 +283,21 @@
       "color": "#822433",
       "logo": "assets/logos/isu.svg",
       "multiVenue": false,
-      "games": 1,
+      "games": 2,
       "weeks": [
         {
           "week": 1,
           "attendance": 51802,
           "pct": 0.8423089430894309
+        },
+        {
+          "week": 3,
+          "attendance": 50395,
+          "pct": 0.8194308943089431
         }
       ],
-      "total": 51802,
-      "pct": 0.8423089430894309
+      "total": 102197,
+      "pct": 0.830869918699187
     },
     {
       "team": "TCU",
@@ -371,10 +386,10 @@
     },
     {
       "week": 3,
-      "games": 1,
-      "attendance": 60229,
-      "capacity": 60229,
-      "pct": 1
+      "games": 4,
+      "attendance": 213925,
+      "capacity": 223173,
+      "pct": 0.9585612954972151
     },
     {
       "week": 4,
@@ -448,9 +463,9 @@
     }
   ],
   "totals": {
-    "games": 24,
-    "attendance": 1114813,
-    "capacity": 1191280,
-    "pct": 0.9358110603720368
+    "games": 27,
+    "attendance": 1268509,
+    "capacity": 1354224,
+    "pct": 0.9367054490246813
   }
 }

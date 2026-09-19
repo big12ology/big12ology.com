@@ -1,7 +1,8 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 24
+    "agree": 27,
+    "missing_both": 2
   },
   "games": [
     {
@@ -258,6 +259,50 @@
       "status": "agree"
     },
     {
+      "team": "Baylor",
+      "week": 3,
+      "opponent": "Louisiana Tech",
+      "date": "2026-09-19",
+      "espnId": 401867804,
+      "ours": null,
+      "espn": null,
+      "source": "CFBD",
+      "status": "missing_both"
+    },
+    {
+      "team": "Cincinnati",
+      "week": 3,
+      "opponent": "Miami (OH)",
+      "date": "2026-09-19",
+      "espnId": 401856797,
+      "ours": null,
+      "espn": null,
+      "source": "CFBD",
+      "status": "missing_both"
+    },
+    {
+      "team": "Iowa State",
+      "week": 3,
+      "opponent": "Bowling Green",
+      "date": "2026-09-19",
+      "espnId": 401856798,
+      "ours": 50395,
+      "espn": 50395,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Kansas State",
+      "week": 3,
+      "opponent": "Tulane",
+      "date": "2026-09-19",
+      "espnId": 401856792,
+      "ours": 51846,
+      "espn": 51846,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "Texas Tech",
       "week": 3,
       "opponent": "Houston",
@@ -265,6 +310,17 @@
       "espnId": 401856811,
       "ours": 60229,
       "espn": 60229,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Utah",
+      "week": 3,
+      "opponent": "Utah State",
+      "date": "2026-09-19",
+      "espnId": 401856801,
+      "ours": 51455,
+      "espn": 51455,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }
