@@ -740,7 +740,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-19T19:30:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "TQL Stadium",
   "venue_id": 7173,
@@ -752,8 +752,8 @@
   "away_conf": "Mid-American",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 35,
+  "away_points": 31
  },
  {
   "id": 401856801,
@@ -761,7 +761,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-19T19:30:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Rice-Eccles Stadium",
   "venue_id": 587,
@@ -773,8 +773,8 @@
   "away_conf": "Pac-12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 33,
+  "away_points": 0
  },
  {
   "id": 401867804,
@@ -782,7 +782,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-19T20:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "McLane Stadium",
   "venue_id": 4727,
@@ -794,8 +794,8 @@
   "away_conf": "Sun Belt",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 36,
+  "away_points": 19
  },
  {
   "id": 401856800,
