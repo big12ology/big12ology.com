@@ -283,7 +283,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-09-18T13:01:58+00:00"
+  "as_of": "2026-09-19T09:19:11+00:00"
  },
  "401856812": {
   "spread": 5.4,
@@ -537,7 +537,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-09-18T13:01:58+00:00"
+  "as_of": "2026-09-19T09:19:11+00:00"
  },
  "401856793": {
   "spread": -33.8,
@@ -1068,7 +1068,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-09-18T13:01:58+00:00"
+  "as_of": "2026-09-19T09:19:11+00:00"
  },
  "401856683": {
   "spread": -15.0,
@@ -1671,7 +1671,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-09-18T13:01:58+00:00"
+  "as_of": "2026-09-19T09:19:11+00:00"
  },
  "401856771": {
   "spread": -41.3,
@@ -1745,7 +1745,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-09-18T13:01:58+00:00"
+  "as_of": "2026-09-19T09:19:11+00:00"
  },
  "401856767": {
   "spread": -43.5,
@@ -1813,7 +1813,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-09-18T13:01:58+00:00"
+  "as_of": "2026-09-19T09:19:11+00:00"
  },
  "401856849": {
   "spread": -3.0,
@@ -1836,7 +1836,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-09-18T13:01:58+00:00"
+  "as_of": "2026-09-19T09:19:11+00:00"
  },
  "401856788": {
   "spread": -14.0,
@@ -2006,9 +2006,9 @@
   ],
   "source": "the-odds-api.com",
   "as_of": "2026-09-19T03:22:58+00:00",
-  "spread_open": -56.5,
-  "over_under_open": 70.5,
-  "spread_open_books": 1,
+  "spread_open": -56.0,
+  "over_under_open": 70.2,
+  "spread_open_books": 2,
   "spread_open_src": "collegefootballdata.com"
  },
  "401856881": {
