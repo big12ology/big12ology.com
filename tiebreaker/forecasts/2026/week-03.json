@@ -1,0 +1,99 @@
+{
+ "games_complete": 32,
+ "generated": "2026-09-19T03:31:39+00:00",
+ "model": {
+  "margin_sigma": 13.5,
+  "n_sims": 40000,
+  "rating_sigma": 5.657,
+  "systems": {
+   "Big12ology": {
+    "regressed": 0.65,
+    "year": 2025
+   },
+   "Elo": {
+    "regressed": null,
+    "year": 2026
+   },
+   "FPI": {
+    "regressed": null,
+    "year": 2026
+   },
+   "SP+": {
+    "regressed": null,
+    "year": 2026
+   },
+   "SRS": {
+    "regressed": 0.65,
+    "year": 2025
+   }
+  }
+ },
+ "season": 2026,
+ "teams": {
+  "Arizona": {
+   "exp_w": 4.179,
+   "p_ccg": 0.0576
+  },
+  "Arizona State": {
+   "exp_w": 4.284,
+   "p_ccg": 0.0634
+  },
+  "BYU": {
+   "exp_w": 6.296,
+   "p_ccg": 0.3249
+  },
+  "Baylor": {
+   "exp_w": 3.954,
+   "p_ccg": 0.0533
+  },
+  "Cincinnati": {
+   "exp_w": 3.863,
+   "p_ccg": 0.0565
+  },
+  "Colorado": {
+   "exp_w": 3.272,
+   "p_ccg": 0.0255
+  },
+  "Houston": {
+   "exp_w": 4.418,
+   "p_ccg": 0.0477
+  },
+  "Iowa State": {
+   "exp_w": 4.239,
+   "p_ccg": 0.0623
+  },
+  "Kansas": {
+   "exp_w": 3.711,
+   "p_ccg": 0.0342
+  },
+  "Kansas State": {
+   "exp_w": 5.414,
+   "p_ccg": 0.1513
+  },
+  "Oklahoma State": {
+   "exp_w": 2.886,
+   "p_ccg": 0.0121
+  },
+  "TCU": {
+   "exp_w": 4.37,
+   "p_ccg": 0.0896
+  },
+  "Texas Tech": {
+   "exp_w": 7.386,
+   "p_ccg": 0.5878
+  },
+  "UCF": {
+   "exp_w": 4.139,
+   "p_ccg": 0.0546
+  },
+  "Utah": {
+   "exp_w": 6.463,
+   "p_ccg": 0.3637
+  },
+  "West Virginia": {
+   "exp_w": 3.125,
+   "p_ccg": 0.0156
+  }
+ },
+ "through_week": 3
+}

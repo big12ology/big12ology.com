@@ -656,7 +656,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-19T00:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": true,
   "venue": "Jones AT&T Stadium",
   "venue_id": 3784,
@@ -668,8 +668,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 28,
+  "away_points": 26
  },
  {
   "id": 401856792,
