@@ -661,7 +661,9 @@
       "role": "away",
       "venue": "Jones AT&T Stadium",
       "city": "Lubbock",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 26,
+      "pointsAgainst": 28
     },
     {
       "team": "Iowa State",
@@ -725,7 +727,15 @@
       "espnId": 401856811,
       "conferenceGame": true,
       "opponent": "Houston",
-      "attendance": null
+      "attendance": 60229,
+      "pointsFor": 28,
+      "pointsAgainst": 26,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 90,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",

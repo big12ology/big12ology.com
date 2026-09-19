@@ -1419,6 +1419,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Oklahoma State,2,2026-09-12,Oregon,false,Boone Pickens Stadium,51035,52202,0.9776,false
 2026,TCU,2,2026-09-12,Grambling,false,Amon G. Carter Stadium,37600,46000,0.8174,false
 2026,Texas Tech,1,2026-09-05,Abilene Christian,false,Jones AT&T Stadium,60229,60229,1.0000,false
+2026,Texas Tech,3,2026-09-18,Houston,true,Jones AT&T Stadium,60229,60229,1.0000,false
 2026,UCF,1,2026-09-03,Bethune-Cookman,false,Acrisure Bounce House,43127,44206,0.9756,false
 2026,Utah,1,2026-09-03,Idaho,false,Rice-Eccles Stadium,51444,51444,1.0000,false
 2026,Utah,2,2026-09-12,Arkansas,false,Rice-Eccles Stadium,51532,51444,1.0017,false

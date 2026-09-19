@@ -8,5 +8,10 @@
     "week": 2,
     "file": "week-02.json",
     "games": 23
+  },
+  {
+    "week": 3,
+    "file": "week-03.json",
+    "games": 24
   }
 ]
