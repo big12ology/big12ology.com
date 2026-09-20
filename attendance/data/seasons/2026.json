@@ -585,7 +585,15 @@
       "espnId": 401856793,
       "conferenceGame": false,
       "opponent": "Northern Illinois",
-      "attendance": null
+      "attendance": 40413,
+      "pointsFor": 42,
+      "pointsAgainst": 17,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 89,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
@@ -615,7 +623,9 @@
       "role": "away",
       "venue": "Canvas Stadium",
       "city": "Fort Collins",
-      "state": "CO"
+      "state": "CO",
+      "pointsFor": 41,
+      "pointsAgainst": 23
     },
     {
       "team": "Baylor",
@@ -625,11 +635,12 @@
       "espnId": 401867804,
       "conferenceGame": false,
       "opponent": "Louisiana Tech",
-      "attendance": null,
+      "attendance": 41343,
       "pointsFor": 36,
       "pointsAgainst": 19,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 93,
+        "tempF": 94,
         "windMph": 6,
         "precipIn": 0
       }
@@ -642,13 +653,14 @@
       "espnId": 401856797,
       "conferenceGame": false,
       "opponent": "Miami (OH)",
-      "attendance": null,
+      "attendance": 19188,
       "pointsFor": 35,
       "pointsAgainst": 31,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 82,
-        "windMph": 5,
-        "precipIn": 0.01
+        "tempF": 83,
+        "windMph": 6,
+        "precipIn": 0.02
       }
     },
     {
@@ -663,7 +675,9 @@
       "role": "away",
       "venue": "Lanny and Sharon Martin Stadium",
       "city": "Evanston",
-      "state": "IL"
+      "state": "IL",
+      "pointsFor": 7,
+      "pointsAgainst": 41
     },
     {
       "team": "Houston",
@@ -741,7 +755,15 @@
       "espnId": 401856803,
       "conferenceGame": false,
       "opponent": "Murray State",
-      "attendance": null
+      "attendance": 52168,
+      "pointsFor": 59,
+      "pointsAgainst": 0,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 91,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
@@ -751,7 +773,15 @@
       "espnId": 401856799,
       "conferenceGame": false,
       "opponent": "Arkansas State",
-      "attendance": null
+      "attendance": 46139,
+      "pointsFor": 31,
+      "pointsAgainst": 7,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 94,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
@@ -779,7 +809,15 @@
       "espnId": 401856800,
       "conferenceGame": false,
       "opponent": "Georgia State",
-      "attendance": null
+      "attendance": 44620,
+      "pointsFor": 44,
+      "pointsAgainst": 30,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 78,
+        "windMph": 3,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "Utah",
@@ -794,8 +832,8 @@
       "pointsAgainst": 0,
       "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 63,
-        "windMph": 3,
+        "tempF": 64,
+        "windMph": 4,
         "precipIn": 0.01
       }
     },
@@ -811,7 +849,9 @@
       "role": "neutral",
       "venue": "Bank of America Stadium",
       "city": "Charlotte",
-      "state": "NC"
+      "state": "NC",
+      "pointsFor": 38,
+      "pointsAgainst": 27
     },
     {
       "team": "Arizona",

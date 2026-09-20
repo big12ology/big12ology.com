@@ -128,6 +128,54 @@
       "pct": 1
     },
     {
+      "team": "UCF",
+      "stadium": "Acrisure Bounce House",
+      "capacity": 44206,
+      "capacityEstimate": null,
+      "color": "#ba9b37",
+      "logo": "assets/logos/ucf.svg",
+      "multiVenue": false,
+      "games": 2,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 43127,
+          "pct": 0.9755915486585531
+        },
+        {
+          "week": 3,
+          "attendance": 44620,
+          "pct": 1.0093652445369408
+        }
+      ],
+      "total": 87747,
+      "pct": 0.992478396597747
+    },
+    {
+      "team": "Oklahoma State",
+      "stadium": "Boone Pickens Stadium",
+      "capacity": 52202,
+      "capacityEstimate": null,
+      "color": "#ff7300",
+      "logo": "assets/logos/okst.svg",
+      "multiVenue": false,
+      "games": 2,
+      "weeks": [
+        {
+          "week": 2,
+          "attendance": 51035,
+          "pct": 0.9776445346921574
+        },
+        {
+          "week": 3,
+          "attendance": 52168,
+          "pct": 0.999348683958469
+        }
+      ],
+      "total": 103203,
+      "pct": 0.9884966093253132
+    },
+    {
       "team": "Colorado",
       "stadium": "Folsom Field",
       "capacity": 50183,
@@ -171,66 +219,28 @@
       "pct": 0.982875
     },
     {
-      "team": "Oklahoma State",
-      "stadium": "Boone Pickens Stadium",
-      "capacity": 52202,
+      "team": "TCU",
+      "stadium": "Amon G. Carter Stadium",
+      "capacity": 46000,
       "capacityEstimate": null,
-      "color": "#ff7300",
-      "logo": "assets/logos/okst.svg",
-      "multiVenue": false,
-      "games": 1,
-      "weeks": [
-        {
-          "week": 2,
-          "attendance": 51035,
-          "pct": 0.9776445346921574
-        }
-      ],
-      "total": 51035,
-      "pct": 0.9776445346921574
-    },
-    {
-      "team": "UCF",
-      "stadium": "Acrisure Bounce House",
-      "capacity": 44206,
-      "capacityEstimate": null,
-      "color": "#ba9b37",
-      "logo": "assets/logos/ucf.svg",
-      "multiVenue": false,
-      "games": 1,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 43127,
-          "pct": 0.9755915486585531
-        }
-      ],
-      "total": 43127,
-      "pct": 0.9755915486585531
-    },
-    {
-      "team": "Cincinnati",
-      "stadium": "Nippert Stadium",
-      "capacity": 38088,
-      "capacityEstimate": null,
-      "color": "#e00122",
-      "logo": "assets/logos/cin.svg",
+      "color": "#4d1979",
+      "logo": "assets/logos/tcu.svg",
       "multiVenue": false,
       "games": 2,
       "weeks": [
         {
-          "week": 1,
-          "attendance": 37097,
-          "pct": 0.9739813064482251
+          "week": 2,
+          "attendance": 37600,
+          "pct": 0.8173913043478261
         },
         {
-          "week": 2,
-          "attendance": 34827,
-          "pct": 0.9143824826717076
+          "week": 3,
+          "attendance": 46139,
+          "pct": 1.0030217391304348
         }
       ],
-      "total": 71924,
-      "pct": 0.9441818945599664
+      "total": 83739,
+      "pct": 0.9102065217391304
     },
     {
       "team": "Baylor",
@@ -240,16 +250,21 @@
       "color": "#154734",
       "logo": "assets/logos/bay.svg",
       "multiVenue": false,
-      "games": 1,
+      "games": 2,
       "weeks": [
         {
           "week": 2,
           "attendance": 38642,
           "pct": 0.8560478511298183
+        },
+        {
+          "week": 3,
+          "attendance": 41343,
+          "pct": 0.9158839167035888
         }
       ],
-      "total": 38642,
-      "pct": 0.8560478511298183
+      "total": 79985,
+      "pct": 0.8859658839167036
     },
     {
       "team": "West Virginia",
@@ -300,23 +315,33 @@
       "pct": 0.830869918699187
     },
     {
-      "team": "TCU",
-      "stadium": "Amon G. Carter Stadium",
-      "capacity": 46000,
+      "team": "Cincinnati",
+      "stadium": "Nippert Stadium",
+      "capacity": 38088,
       "capacityEstimate": null,
-      "color": "#4d1979",
-      "logo": "assets/logos/tcu.svg",
+      "color": "#e00122",
+      "logo": "assets/logos/cin.svg",
       "multiVenue": false,
-      "games": 1,
+      "games": 3,
       "weeks": [
         {
+          "week": 1,
+          "attendance": 37097,
+          "pct": 0.9739813064482251
+        },
+        {
           "week": 2,
-          "attendance": 37600,
-          "pct": 0.8173913043478261
+          "attendance": 34827,
+          "pct": 0.9143824826717076
+        },
+        {
+          "week": 3,
+          "attendance": 19188,
+          "pct": 0.503780718336484
         }
       ],
-      "total": 37600,
-      "pct": 0.8173913043478261
+      "total": 91112,
+      "pct": 0.7973815024854722
     },
     {
       "team": "Arizona",
@@ -326,16 +351,21 @@
       "color": "#0c234b",
       "logo": "assets/logos/ariz.svg",
       "multiVenue": false,
-      "games": 1,
+      "games": 2,
       "weeks": [
         {
           "week": 1,
           "attendance": 40129,
           "pct": 0.7902209444291284
+        },
+        {
+          "week": 3,
+          "attendance": 40413,
+          "pct": 0.7958134772163366
         }
       ],
-      "total": 40129,
-      "pct": 0.7902209444291284
+      "total": 80542,
+      "pct": 0.7930172108227325
     },
     {
       "team": "Houston",
@@ -386,10 +416,10 @@
     },
     {
       "week": 3,
-      "games": 4,
-      "attendance": 213925,
-      "capacity": 223173,
-      "pct": 0.9585612954972151
+      "games": 10,
+      "attendance": 457796,
+      "capacity": 499591,
+      "pct": 0.9163415674021349
     },
     {
       "week": 4,
@@ -463,9 +493,9 @@
     }
   ],
   "totals": {
-    "games": 27,
-    "attendance": 1268509,
-    "capacity": 1354224,
-    "pct": 0.9367054490246813
+    "games": 33,
+    "attendance": 1512380,
+    "capacity": 1630642,
+    "pct": 0.9274751907530899
   }
 }

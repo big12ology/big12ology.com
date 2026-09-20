@@ -1402,12 +1402,15 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2025,West Virginia,11,2025-11-08,Colorado,true,Milan Puskar Stadium,55510,60000,0.9252,false
 2025,West Virginia,14,2025-11-29,Texas Tech,true,Milan Puskar Stadium,44250,60000,0.7375,false
 2026,Arizona,1,2026-09-05,Northern Arizona,false,Casino Del Sol Stadium,40129,50782,0.7902,false
+2026,Arizona,3,2026-09-19,Northern Illinois,false,Casino Del Sol Stadium,40413,50782,0.7958,false
 2026,Arizona State,1,2026-09-05,Morgan State,false,Mountain America Stadium,54004,53599,1.0076,false
 2026,BYU,1,2026-09-05,Utah Tech,false,LaVell Edwards Stadium,64077,62073,1.0323,false
 2026,BYU,2,2026-09-12,Arizona,true,LaVell Edwards Stadium,64409,62073,1.0376,false
 2026,Baylor,2,2026-09-12,Prairie View A&M,false,McLane Stadium,38642,45140,0.8560,false
+2026,Baylor,3,2026-09-19,Louisiana Tech,false,McLane Stadium,41343,45140,0.9159,false
 2026,Cincinnati,1,2026-09-05,Boston College,false,Nippert Stadium,37097,38088,0.9740,false
 2026,Cincinnati,2,2026-09-12,Western Carolina,false,Nippert Stadium,34827,38088,0.9144,false
+2026,Cincinnati,3,2026-09-19,Miami (OH),false,Nippert Stadium,19188,38088,0.5038,false
 2026,Colorado,2,2026-09-12,Weber State,false,Folsom Field,49363,50183,0.9837,false
 2026,Houston,1,2026-09-05,Oregon State,false,TDECU Stadium,28742,40000,0.7186,false
 2026,Houston,2,2026-09-12,Southern,false,TDECU Stadium,28936,40000,0.7234,false
@@ -1419,10 +1422,13 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Kansas State,2,2026-09-12,Washington State,false,Bill Snyder Family Football Stadium,51759,50000,1.0352,false
 2026,Kansas State,3,2026-09-19,Tulane,false,Bill Snyder Family Football Stadium,51846,50000,1.0369,false
 2026,Oklahoma State,2,2026-09-12,Oregon,false,Boone Pickens Stadium,51035,52202,0.9776,false
+2026,Oklahoma State,3,2026-09-19,Murray State,false,Boone Pickens Stadium,52168,52202,0.9993,false
 2026,TCU,2,2026-09-12,Grambling,false,Amon G. Carter Stadium,37600,46000,0.8174,false
+2026,TCU,3,2026-09-19,Arkansas State,false,Amon G. Carter Stadium,46139,46000,1.0030,false
 2026,Texas Tech,1,2026-09-05,Abilene Christian,false,Jones AT&T Stadium,60229,60229,1.0000,false
 2026,Texas Tech,3,2026-09-18,Houston,true,Jones AT&T Stadium,60229,60229,1.0000,false
 2026,UCF,1,2026-09-03,Bethune-Cookman,false,Acrisure Bounce House,43127,44206,0.9756,false
+2026,UCF,3,2026-09-19,Georgia State,false,Acrisure Bounce House,44620,44206,1.0094,false
 2026,Utah,1,2026-09-03,Idaho,false,Rice-Eccles Stadium,51444,51444,1.0000,false
 2026,Utah,2,2026-09-12,Arkansas,false,Rice-Eccles Stadium,51532,51444,1.0017,false
 2026,Utah,3,2026-09-19,Utah State,false,Rice-Eccles Stadium,51455,51444,1.0002,false

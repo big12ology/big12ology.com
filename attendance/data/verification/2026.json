@@ -1,8 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 27,
-    "missing_both": 2
+    "agree": 33
   },
   "games": [
     {
@@ -259,15 +258,26 @@
       "status": "agree"
     },
     {
+      "team": "Arizona",
+      "week": 3,
+      "opponent": "Northern Illinois",
+      "date": "2026-09-19",
+      "espnId": 401856793,
+      "ours": 40413,
+      "espn": 40413,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "Baylor",
       "week": 3,
       "opponent": "Louisiana Tech",
       "date": "2026-09-19",
       "espnId": 401867804,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 41343,
+      "espn": 41343,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "Cincinnati",
@@ -275,10 +285,10 @@
       "opponent": "Miami (OH)",
       "date": "2026-09-19",
       "espnId": 401856797,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 19188,
+      "espn": 19188,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "Iowa State",
@@ -303,6 +313,28 @@
       "status": "agree"
     },
     {
+      "team": "Oklahoma State",
+      "week": 3,
+      "opponent": "Murray State",
+      "date": "2026-09-19",
+      "espnId": 401856803,
+      "ours": 52168,
+      "espn": 52168,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "TCU",
+      "week": 3,
+      "opponent": "Arkansas State",
+      "date": "2026-09-19",
+      "espnId": 401856799,
+      "ours": 46139,
+      "espn": 46139,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "Texas Tech",
       "week": 3,
       "opponent": "Houston",
@@ -310,6 +342,17 @@
       "espnId": 401856811,
       "ours": 60229,
       "espn": 60229,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "UCF",
+      "week": 3,
+      "opponent": "Georgia State",
+      "date": "2026-09-19",
+      "espnId": 401856800,
+      "ours": 44620,
+      "espn": 44620,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     },
