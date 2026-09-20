@@ -289,6 +289,13 @@
    "type": "tv"
   }
  ],
+ "401856806": [
+  {
+   "outlet": "ESPNU",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
  "401856810": [
   {
    "outlet": "FOX",
