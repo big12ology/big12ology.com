@@ -150,6 +150,16 @@
    "tempF": 89.1,
    "windMph": 10.8
   },
+  "401856795": {
+   "precipChance": 33,
+   "tempF": 60.8,
+   "windMph": 15.0
+  },
+  "401856796": {
+   "precipChance": 38,
+   "tempF": 65.7,
+   "windMph": 4.3
+  },
   "401856797": {
    "precipChance": 2,
    "tempF": 87.0,
@@ -160,10 +170,25 @@
    "tempF": 75.3,
    "windMph": 11.9
   },
+  "401856799": {
+   "precipChance": 0,
+   "tempF": 92.2,
+   "windMph": 10.1
+  },
+  "401856800": {
+   "precipChance": 9,
+   "tempF": 83.9,
+   "windMph": 10.8
+  },
   "401856801": {
    "precipChance": 6,
    "tempF": 67.4,
    "windMph": 6.4
+  },
+  "401856802": {
+   "precipChance": 7,
+   "tempF": 83.2,
+   "windMph": 4.8
   },
   "401856803": {
    "precipChance": 0,

@@ -803,7 +803,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-19T23:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "FBC Mortgage Stadium",
   "venue_id": 3652,
@@ -815,8 +815,8 @@
   "away_conf": "Sun Belt",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 44,
+  "away_points": 30
  },
  {
   "id": 401856803,
@@ -845,7 +845,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-19T23:30:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Canvas Stadium",
   "venue_id": 5388,
@@ -857,8 +857,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 23,
+  "away_points": 41
  },
  {
   "id": 401856796,
@@ -866,7 +866,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-19T23:30:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Lanny and Sharon Martin Stadium",
   "venue_id": 5960,
@@ -878,8 +878,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 41,
+  "away_points": 7
  },
  {
   "id": 401856802,
@@ -887,7 +887,7 @@
   "notes": "Duke\u2019s Mayo Classic",
   "ccg": false,
   "start": "2026-09-19T23:30:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Bank of America Stadium",
   "venue_id": 3628,
@@ -899,8 +899,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 27,
+  "away_points": 38
  },
  {
   "id": 401856799,
@@ -908,7 +908,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-20T00:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Amon G. Carter Stadium",
   "venue_id": 3616,
@@ -920,8 +920,8 @@
   "away_conf": "Sun Belt",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 31,
+  "away_points": 7
  },
  {
   "id": 401856793,
