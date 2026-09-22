@@ -33,6 +33,24 @@ def main():
     vw, vl = tal["Vegas"]["w"], tal["Vegas"]["l"]
     acc = vw / (vw + vl)
     ok &= check(acc > 0.6, f"Vegas favorites {acc:.3f} — sign convention sane")
+
+    # The record's two signs run opposite ways: a positive margin and a
+    # negative spread both mean the home side is favored. Four games, one
+    # per outcome, with a push and an unrecorded game that must not count.
+    def game(i, hp, ap):
+        return {"id": i, "completed": True, "ccg": False, "home": "H",
+                "away": "A", "home_points": hp, "away_points": ap}
+    played = [game(1, 28, 10), game(2, 10, 28), game(3, 28, 10),
+              game(4, 10, 28), game(5, 28, 10)]
+    recs = {"1": {"systems": {"X": 3.0}, "spread": -3.0},   # H favored, H won
+            "2": {"systems": {"X": 3.0}, "spread": -3.0},   # H favored, A won
+            "3": {"systems": {"X": -3.0}, "spread": 3.0},   # A favored, H won
+            "4": {"systems": {"X": 0.0}, "spread": 0.0}}    # push
+    t = scorecard.tally_records(played, recs)
+    ok &= check(t["X"] == {"w": 1, "l": 2, "push": 1}
+                and t["Vegas"] == {"w": 1, "l": 2, "push": 1},
+                f"records grade both signs the same way: {t}")
+    ok &= check(sum(t["X"].values()) == 4, "a game with no record is not counted")
     print("OK" if ok else "FAILURES")
     sys.exit(0 if ok else 1)
 

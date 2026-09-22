@@ -6,6 +6,13 @@
    "margin": -5.97,
    "p_home": 0.345,
    "spread": 10.2,
+   "systems": {
+    "Big12ology": -1.84,
+    "Elo": -0.74,
+    "FPI": -11.18,
+    "SP+": -14.7,
+    "SRS": -1.4
+   },
    "week": 4
   },
   "401856805": {
@@ -14,6 +21,13 @@
    "margin": 33.77,
    "p_home": 0.991,
    "spread": -34.6,
+   "systems": {
+    "Big12ology": 33.83,
+    "Elo": 27.37,
+    "FPI": 33.18,
+    "SP+": 42.7,
+    "SRS": 31.75
+   },
    "week": 4
   },
   "401856806": {
@@ -22,6 +36,13 @@
    "margin": -9.22,
    "p_home": 0.262,
    "spread": 18.6,
+   "systems": {
+    "Big12ology": -4.75,
+    "Elo": -3.96,
+    "FPI": -14.52,
+    "SP+": -15.7,
+    "SRS": -7.18
+   },
    "week": 4
   },
   "401856807": {
@@ -29,6 +50,13 @@
    "home": "Kansas",
    "margin": 17.84,
    "p_home": 0.886,
+   "systems": {
+    "Big12ology": 15.65,
+    "Elo": 9.74,
+    "FPI": 18.77,
+    "SP+": 28.5,
+    "SRS": 16.54
+   },
    "week": 5
   },
   "401856808": {
@@ -36,6 +64,13 @@
    "home": "Arizona State",
    "margin": 10.63,
    "p_home": 0.772,
+   "systems": {
+    "Big12ology": 7.18,
+    "Elo": 5.7,
+    "FPI": 15.73,
+    "SP+": 16.1,
+    "SRS": 8.41
+   },
    "week": 6
   },
   "401856809": {
@@ -44,6 +79,13 @@
    "margin": -7.41,
    "p_home": 0.3,
    "spread": 10.0,
+   "systems": {
+    "Big12ology": -1.59,
+    "Elo": -12.3,
+    "FPI": -10.03,
+    "SP+": -9.7,
+    "SRS": -3.42
+   },
    "week": 7
   },
   "401856813": {
@@ -52,6 +94,13 @@
    "margin": 5.97,
    "p_home": 0.671,
    "spread": -9.9,
+   "systems": {
+    "Big12ology": 7.2,
+    "Elo": 5.93,
+    "FPI": 6.22,
+    "SP+": 6.2,
+    "SRS": 4.32
+   },
    "week": 4
   },
   "401856814": {
@@ -60,6 +109,13 @@
    "margin": -0.51,
    "p_home": 0.485,
    "spread": 6.4,
+   "systems": {
+    "Big12ology": 5.49,
+    "Elo": -4.19,
+    "FPI": 0.25,
+    "SP+": -3.8,
+    "SRS": -0.29
+   },
    "week": 4
   },
   "401856815": {
@@ -68,6 +124,13 @@
    "margin": -1.6,
    "p_home": 0.453,
    "spread": 3.1,
+   "systems": {
+    "Big12ology": 0.65,
+    "Elo": -2.78,
+    "FPI": 0.85,
+    "SP+": -3.2,
+    "SRS": -3.55
+   },
    "week": 4
   },
   "401856816": {
@@ -76,6 +139,13 @@
    "margin": -7.84,
    "p_home": 0.284,
    "spread": 7.7,
+   "systems": {
+    "Big12ology": -4.89,
+    "Elo": -8.56,
+    "FPI": -11.84,
+    "SP+": -8.8,
+    "SRS": -5.1
+   },
    "week": 4
   },
   "401856817": {
@@ -83,6 +153,13 @@
    "home": "Arizona State",
    "margin": 3.4,
    "p_home": 0.598,
+   "systems": {
+    "Big12ology": 6.1,
+    "Elo": 2.85,
+    "FPI": -0.76,
+    "SP+": 2.9,
+    "SRS": 5.88
+   },
    "week": 5
   },
   "401856818": {
@@ -90,6 +167,13 @@
    "home": "TCU",
    "margin": -3.07,
    "p_home": 0.411,
+   "systems": {
+    "Big12ology": -3.01,
+    "Elo": -1.11,
+    "FPI": -6.52,
+    "SP+": -3.0,
+    "SRS": -1.72
+   },
    "week": 5
   },
   "401856819": {
@@ -97,6 +181,13 @@
    "home": "Houston",
    "margin": 6.52,
    "p_home": 0.685,
+   "systems": {
+    "Big12ology": 6.02,
+    "Elo": 4.0,
+    "FPI": 6.98,
+    "SP+": 8.5,
+    "SRS": 7.12
+   },
    "week": 5
   },
   "401856820": {
@@ -104,6 +195,13 @@
    "home": "Arizona",
    "margin": 5.18,
    "p_home": 0.647,
+   "systems": {
+    "Big12ology": 6.83,
+    "Elo": 5.44,
+    "FPI": -0.12,
+    "SP+": 5.2,
+    "SRS": 8.54
+   },
    "week": 5
   },
   "401856821": {
@@ -111,6 +209,13 @@
    "home": "Colorado",
    "margin": -13.25,
    "p_home": 0.167,
+   "systems": {
+    "Big12ology": -16.53,
+    "Elo": -14.3,
+    "FPI": -9.09,
+    "SP+": -12.9,
+    "SRS": -13.43
+   },
    "week": 5
   },
   "401856822": {
@@ -118,6 +223,13 @@
    "home": "Iowa State",
    "margin": 7.31,
    "p_home": 0.699,
+   "systems": {
+    "Big12ology": 10.69,
+    "Elo": 10.3,
+    "FPI": 2.14,
+    "SP+": 3.0,
+    "SRS": 10.43
+   },
    "week": 5
   },
   "401856823": {
@@ -125,6 +237,13 @@
    "home": "West Virginia",
    "margin": -5.41,
    "p_home": 0.345,
+   "systems": {
+    "Big12ology": -5.77,
+    "Elo": -6.96,
+    "FPI": -2.4,
+    "SP+": -4.8,
+    "SRS": -7.12
+   },
    "week": 6
   },
   "401856824": {
@@ -132,6 +251,13 @@
    "home": "Oklahoma State",
    "margin": -2.05,
    "p_home": 0.441,
+   "systems": {
+    "Big12ology": -5.2,
+    "Elo": -5.15,
+    "FPI": 0.79,
+    "SP+": 3.6,
+    "SRS": -4.32
+   },
    "week": 6
   },
   "401856825": {
@@ -139,6 +265,13 @@
    "home": "Kansas State",
    "margin": 4.84,
    "p_home": 0.639,
+   "systems": {
+    "Big12ology": 4.03,
+    "Elo": 8.07,
+    "FPI": 4.21,
+    "SP+": 4.8,
+    "SRS": 3.09
+   },
    "week": 6
   },
   "401856826": {
@@ -146,6 +279,13 @@
    "home": "BYU",
    "margin": 10.88,
    "p_home": 0.775,
+   "systems": {
+    "Big12ology": 9.92,
+    "Elo": 5.56,
+    "FPI": 17.11,
+    "SP+": 15.8,
+    "SRS": 6.01
+   },
    "week": 6
   },
   "401856827": {
@@ -153,6 +293,13 @@
    "home": "Utah",
    "margin": 14.94,
    "p_home": 0.864,
+   "systems": {
+    "Big12ology": 14.63,
+    "Elo": 16.44,
+    "FPI": 16.74,
+    "SP+": 12.6,
+    "SRS": 14.26
+   },
    "week": 6
   },
   "401856828": {
@@ -160,6 +307,13 @@
    "home": "Texas Tech",
    "margin": 14.61,
    "p_home": 0.858,
+   "systems": {
+    "Big12ology": 18.71,
+    "Elo": 13.67,
+    "FPI": 13.63,
+    "SP+": 13.8,
+    "SRS": 13.23
+   },
    "week": 7
   },
   "401856829": {
@@ -167,6 +321,13 @@
    "home": "West Virginia",
    "margin": -2.91,
    "p_home": 0.415,
+   "systems": {
+    "Big12ology": -2.81,
+    "Elo": -3.56,
+    "FPI": -5.02,
+    "SP+": -2.1,
+    "SRS": -1.08
+   },
    "week": 7
   },
   "401856830": {
@@ -175,6 +336,13 @@
    "margin": 8.57,
    "p_home": 0.731,
    "spread": -7.5,
+   "systems": {
+    "Big12ology": 4.12,
+    "Elo": 9.41,
+    "FPI": 12.53,
+    "SP+": 11.7,
+    "SRS": 5.1
+   },
    "week": 7
   },
   "401856831": {
@@ -182,6 +350,13 @@
    "home": "Houston",
    "margin": 11.26,
    "p_home": 0.792,
+   "systems": {
+    "Big12ology": 15.09,
+    "Elo": 11.19,
+    "FPI": 8.69,
+    "SP+": 7.4,
+    "SRS": 13.94
+   },
    "week": 7
   },
   "401856832": {
@@ -189,6 +364,13 @@
    "home": "Baylor",
    "margin": -0.06,
    "p_home": 0.498,
+   "systems": {
+    "Big12ology": 0.64,
+    "Elo": -1.26,
+    "FPI": 4.36,
+    "SP+": -1.4,
+    "SRS": -2.64
+   },
    "week": 7
   },
   "401856833": {
@@ -196,6 +378,13 @@
    "home": "Colorado",
    "margin": -11.43,
    "p_home": 0.203,
+   "systems": {
+    "Big12ology": -12.29,
+    "Elo": -15.37,
+    "FPI": -8.12,
+    "SP+": -8.6,
+    "SRS": -12.78
+   },
    "week": 7
   },
   "401856834": {
@@ -203,6 +392,13 @@
    "home": "Kansas",
    "margin": 1.25,
    "p_home": 0.536,
+   "systems": {
+    "Big12ology": 5.94,
+    "Elo": 1.15,
+    "FPI": -4.84,
+    "SP+": -0.2,
+    "SRS": 4.19
+   },
    "week": 8
   },
   "401856835": {
@@ -210,6 +406,13 @@
    "home": "UCF",
    "margin": -7.36,
    "p_home": 0.293,
+   "systems": {
+    "Big12ology": -6.23,
+    "Elo": -5.93,
+    "FPI": -8.17,
+    "SP+": -8.7,
+    "SRS": -7.77
+   },
    "week": 8
   },
   "401856836": {
@@ -217,6 +420,13 @@
    "home": "Oklahoma State",
    "margin": -0.31,
    "p_home": 0.49,
+   "systems": {
+    "Big12ology": -1.85,
+    "Elo": -2.78,
+    "FPI": 1.01,
+    "SP+": 5.5,
+    "SRS": -3.41
+   },
    "week": 8
   },
   "401856837": {
@@ -225,6 +435,13 @@
    "margin": 11.21,
    "p_home": 0.789,
    "spread": -6.5,
+   "systems": {
+    "Big12ology": 14.55,
+    "Elo": 15.11,
+    "FPI": 8.42,
+    "SP+": 5.7,
+    "SRS": 12.25
+   },
    "week": 8
   },
   "401856838": {
@@ -232,6 +449,13 @@
    "home": "Arizona",
    "margin": 6.14,
    "p_home": 0.673,
+   "systems": {
+    "Big12ology": 6.7,
+    "Elo": 2.78,
+    "FPI": 7.76,
+    "SP+": 9.3,
+    "SRS": 4.19
+   },
    "week": 8
   },
   "401856839": {
@@ -239,6 +463,13 @@
    "home": "Arizona State",
    "margin": -1.06,
    "p_home": 0.469,
+   "systems": {
+    "Big12ology": 3.79,
+    "Elo": -3.63,
+    "FPI": -3.45,
+    "SP+": -3.6,
+    "SRS": 1.59
+   },
    "week": 8
   },
   "401856840": {
@@ -246,6 +477,13 @@
    "home": "Cincinnati",
    "margin": -8.69,
    "p_home": 0.262,
+   "systems": {
+    "Big12ology": -9.27,
+    "Elo": -10.15,
+    "FPI": -4.93,
+    "SP+": -9.0,
+    "SRS": -10.11
+   },
    "week": 8
   },
   "401856841": {
@@ -253,6 +491,13 @@
    "home": "TCU",
    "margin": 9.75,
    "p_home": 0.764,
+   "systems": {
+    "Big12ology": 9.85,
+    "Elo": 10.67,
+    "FPI": 7.73,
+    "SP+": 10.8,
+    "SRS": 9.71
+   },
    "week": 8
   },
   "401856842": {
@@ -260,6 +505,13 @@
    "home": "Texas Tech",
    "margin": 11.56,
    "p_home": 0.802,
+   "systems": {
+    "Big12ology": 14.05,
+    "Elo": 10.81,
+    "FPI": 12.55,
+    "SP+": 11.3,
+    "SRS": 9.07
+   },
    "week": 9
   },
   "401856843": {
@@ -267,6 +519,13 @@
    "home": "BYU",
    "margin": 10.46,
    "p_home": 0.778,
+   "systems": {
+    "Big12ology": 11.75,
+    "Elo": 7.67,
+    "FPI": 12.93,
+    "SP+": 11.5,
+    "SRS": 8.48
+   },
    "week": 9
   },
   "401856844": {
@@ -274,6 +533,13 @@
    "home": "UCF",
    "margin": 1.14,
    "p_home": 0.533,
+   "systems": {
+    "Big12ology": 3.88,
+    "Elo": 0.52,
+    "FPI": -1.0,
+    "SP+": 0.7,
+    "SRS": 1.59
+   },
    "week": 9
   },
   "401856845": {
@@ -281,6 +547,13 @@
    "home": "TCU",
    "margin": 6.86,
    "p_home": 0.693,
+   "systems": {
+    "Big12ology": 5.03,
+    "Elo": 6.22,
+    "FPI": 7.99,
+    "SP+": 9.1,
+    "SRS": 5.95
+   },
    "week": 9
   },
   "401856846": {
@@ -288,6 +561,13 @@
    "home": "Colorado",
    "margin": -5.07,
    "p_home": 0.356,
+   "systems": {
+    "Big12ology": -1.77,
+    "Elo": -8.33,
+    "FPI": -3.91,
+    "SP+": -7.7,
+    "SRS": -3.61
+   },
    "week": 9
   },
   "401856847": {
@@ -295,6 +575,13 @@
    "home": "Iowa State",
    "margin": 9.26,
    "p_home": 0.722,
+   "systems": {
+    "Big12ology": 17.0,
+    "Elo": 13.67,
+    "FPI": 0.27,
+    "SP+": -0.7,
+    "SRS": 16.09
+   },
    "week": 9
   },
   "401856848": {
@@ -302,6 +589,13 @@
    "home": "Cincinnati",
    "margin": -6.87,
    "p_home": 0.31,
+   "systems": {
+    "Big12ology": -5.03,
+    "Elo": -11.22,
+    "FPI": -3.96,
+    "SP+": -4.7,
+    "SRS": -9.46
+   },
    "week": 9
   },
   "401856849": {
@@ -310,6 +604,13 @@
    "margin": 5.01,
    "p_home": 0.641,
    "spread": -3.0,
+   "systems": {
+    "Big12ology": 6.59,
+    "Elo": 9.11,
+    "FPI": 2.24,
+    "SP+": 0.5,
+    "SRS": 6.59
+   },
    "week": 10
   },
   "401856850": {
@@ -317,6 +618,13 @@
    "home": "Kansas",
    "margin": 2.79,
    "p_home": 0.581,
+   "systems": {
+    "Big12ology": 5.93,
+    "Elo": 2.67,
+    "FPI": -1.34,
+    "SP+": 1.6,
+    "SRS": 5.1
+   },
    "week": 10
   },
   "401856851": {
@@ -324,6 +632,13 @@
    "home": "Houston",
    "margin": 3.71,
    "p_home": 0.607,
+   "systems": {
+    "Big12ology": 2.1,
+    "Elo": 2.22,
+    "FPI": 3.04,
+    "SP+": 6.5,
+    "SRS": 4.71
+   },
    "week": 10
   },
   "401856852": {
@@ -331,6 +646,13 @@
    "home": "Arizona State",
    "margin": 6.69,
    "p_home": 0.688,
+   "systems": {
+    "Big12ology": 9.44,
+    "Elo": 6.74,
+    "FPI": 2.96,
+    "SP+": 6.6,
+    "SRS": 7.7
+   },
    "week": 10
   },
   "401856853": {
@@ -338,6 +660,13 @@
    "home": "Baylor",
    "margin": 2.38,
    "p_home": 0.564,
+   "systems": {
+    "Big12ology": -0.2,
+    "Elo": -0.89,
+    "FPI": 9.94,
+    "SP+": 6.4,
+    "SRS": -3.35
+   },
    "week": 10
   },
   "401856854": {
@@ -345,6 +674,13 @@
    "home": "Kansas State",
    "margin": 13.42,
    "p_home": 0.834,
+   "systems": {
+    "Big12ology": 15.24,
+    "Elo": 17.22,
+    "FPI": 10.4,
+    "SP+": 9.7,
+    "SRS": 14.53
+   },
    "week": 10
   },
   "401856855": {
@@ -352,6 +688,13 @@
    "home": "Arizona",
    "margin": 3.71,
    "p_home": 0.607,
+   "systems": {
+    "Big12ology": 7.54,
+    "Elo": 2.41,
+    "FPI": 2.17,
+    "SP+": 1.5,
+    "SRS": 4.9
+   },
    "week": 10
   },
   "401856856": {
@@ -359,6 +702,13 @@
    "home": "Texas Tech",
    "margin": 19.65,
    "p_home": 0.925,
+   "systems": {
+    "Big12ology": 23.69,
+    "Elo": 19.81,
+    "FPI": 17.45,
+    "SP+": 18.6,
+    "SRS": 18.69
+   },
    "week": 10
   },
   "401856857": {
@@ -366,6 +716,13 @@
    "home": "UCF",
    "margin": 0.42,
    "p_home": 0.512,
+   "systems": {
+    "Big12ology": 1.65,
+    "Elo": -0.3,
+    "FPI": 2.25,
+    "SP+": 0.3,
+    "SRS": -1.79
+   },
    "week": 11
   },
   "401856858": {
@@ -373,6 +730,13 @@
    "home": "BYU",
    "margin": 11.18,
    "p_home": 0.794,
+   "systems": {
+    "Big12ology": 13.98,
+    "Elo": 8.48,
+    "FPI": 9.67,
+    "SP+": 11.9,
+    "SRS": 11.86
+   },
    "week": 11
   },
   "401856859": {
@@ -380,6 +744,13 @@
    "home": "Iowa State",
    "margin": 1.72,
    "p_home": 0.549,
+   "systems": {
+    "Big12ology": 4.01,
+    "Elo": 4.7,
+    "FPI": -5.38,
+    "SP+": -1.6,
+    "SRS": 6.86
+   },
    "week": 11
   },
   "401856860": {
@@ -387,6 +758,13 @@
    "home": "Colorado",
    "margin": -2.91,
    "p_home": 0.415,
+   "systems": {
+    "Big12ology": -1.62,
+    "Elo": -2.3,
+    "FPI": -2.2,
+    "SP+": -5.4,
+    "SRS": -3.03
+   },
    "week": 11
   },
   "401856861": {
@@ -394,6 +772,13 @@
    "home": "West Virginia",
    "margin": -0.21,
    "p_home": 0.494,
+   "systems": {
+    "Big12ology": -0.95,
+    "Elo": -2.41,
+    "FPI": 2.76,
+    "SP+": 0.8,
+    "SRS": -1.27
+   },
    "week": 11
   },
   "401856862": {
@@ -401,6 +786,13 @@
    "home": "TCU",
    "margin": 0.97,
    "p_home": 0.528,
+   "systems": {
+    "Big12ology": 4.78,
+    "Elo": -1.15,
+    "FPI": -2.04,
+    "SP+": -0.1,
+    "SRS": 3.35
+   },
    "week": 11
   },
   "401856863": {
@@ -409,6 +801,13 @@
    "margin": -16.24,
    "p_home": 0.13,
    "spread": 15.5,
+   "systems": {
+    "Big12ology": -22.26,
+    "Elo": -19.11,
+    "FPI": -10.58,
+    "SP+": -9.9,
+    "SRS": -19.34
+   },
    "week": 11
   },
   "401856864": {
@@ -416,6 +815,13 @@
    "home": "Arizona",
    "margin": -4.38,
    "p_home": 0.375,
+   "systems": {
+    "Big12ology": -2.07,
+    "Elo": -7.81,
+    "FPI": -6.58,
+    "SP+": -2.0,
+    "SRS": -3.41
+   },
    "week": 11
   },
   "401856865": {
@@ -423,6 +829,13 @@
    "home": "Kansas State",
    "margin": 3.37,
    "p_home": 0.596,
+   "systems": {
+    "Big12ology": -0.71,
+    "Elo": 4.85,
+    "FPI": 7.37,
+    "SP+": 6.1,
+    "SRS": -0.75
+   },
    "week": 12
   },
   "401856866": {
@@ -430,6 +843,13 @@
    "home": "Kansas",
    "margin": -7.25,
    "p_home": 0.3,
+   "systems": {
+    "Big12ology": -4.17,
+    "Elo": -5.3,
+    "FPI": -12.01,
+    "SP+": -9.6,
+    "SRS": -5.17
+   },
    "week": 12
   },
   "401856867": {
@@ -437,6 +857,13 @@
    "home": "Cincinnati",
    "margin": 7.24,
    "p_home": 0.702,
+   "systems": {
+    "Big12ology": 11.14,
+    "Elo": 6.19,
+    "FPI": 6.66,
+    "SP+": 6.4,
+    "SRS": 5.82
+   },
    "week": 12
   },
   "401856868": {
@@ -444,6 +871,13 @@
    "home": "West Virginia",
    "margin": -3.94,
    "p_home": 0.386,
+   "systems": {
+    "Big12ology": -1.03,
+    "Elo": -3.74,
+    "FPI": -5.56,
+    "SP+": -6.1,
+    "SRS": -3.28
+   },
    "week": 12
   },
   "401856869": {
@@ -451,6 +885,13 @@
    "home": "UCF",
    "margin": 0.84,
    "p_home": 0.523,
+   "systems": {
+    "Big12ology": -0.19,
+    "Elo": -2.41,
+    "FPI": 6.44,
+    "SP+": 4.6,
+    "SRS": -4.26
+   },
    "week": 12
   },
   "401856870": {
@@ -458,6 +899,13 @@
    "home": "Arizona State",
    "margin": 9.68,
    "p_home": 0.75,
+   "systems": {
+    "Big12ology": 15.16,
+    "Elo": 11.56,
+    "FPI": 4.45,
+    "SP+": 3.6,
+    "SRS": 13.62
+   },
    "week": 12
   },
   "401856871": {
@@ -465,6 +913,13 @@
    "home": "Baylor",
    "margin": -9.96,
    "p_home": 0.235,
+   "systems": {
+    "Big12ology": -13.2,
+    "Elo": -10.41,
+    "FPI": -5.37,
+    "SP+": -9.2,
+    "SRS": -11.61
+   },
    "week": 12
   },
   "401856872": {
@@ -472,6 +927,13 @@
    "home": "TCU",
    "margin": -5.4,
    "p_home": 0.347,
+   "systems": {
+    "Big12ology": -5.73,
+    "Elo": -8.19,
+    "FPI": -6.26,
+    "SP+": -1.0,
+    "SRS": -5.82
+   },
    "week": 12
   },
   "401856873": {
@@ -480,6 +942,13 @@
    "margin": 5.73,
    "p_home": 0.663,
    "spread": -4.5,
+   "systems": {
+    "Big12ology": 8.53,
+    "Elo": 4.89,
+    "FPI": 3.58,
+    "SP+": 5.0,
+    "SRS": 6.66
+   },
    "week": 13
   },
   "401856874": {
@@ -487,6 +956,13 @@
    "home": "Houston",
    "margin": 4.98,
    "p_home": 0.643,
+   "systems": {
+    "Big12ology": 6.03,
+    "Elo": 2.48,
+    "FPI": 3.48,
+    "SP+": 6.7,
+    "SRS": 6.21
+   },
    "week": 13
   },
   "401856875": {
@@ -494,6 +970,13 @@
    "home": "Colorado",
    "margin": 0.93,
    "p_home": 0.528,
+   "systems": {
+    "Big12ology": 0.53,
+    "Elo": -0.33,
+    "FPI": 2.28,
+    "SP+": 0.6,
+    "SRS": 1.59
+   },
    "week": 13
   },
   "401856876": {
@@ -501,6 +984,13 @@
    "home": "BYU",
    "margin": 9.91,
    "p_home": 0.768,
+   "systems": {
+    "Big12ology": 10.05,
+    "Elo": 8.22,
+    "FPI": 9.23,
+    "SP+": 11.7,
+    "SRS": 10.37
+   },
    "week": 13
   },
   "401856877": {
@@ -508,6 +998,13 @@
    "home": "Oklahoma State",
    "margin": -2.17,
    "p_home": 0.44,
+   "systems": {
+    "Big12ology": -7.26,
+    "Elo": -5.78,
+    "FPI": 4.63,
+    "SP+": 4.5,
+    "SRS": -6.93
+   },
    "week": 13
   },
   "401856878": {
@@ -515,6 +1012,13 @@
    "home": "Iowa State",
    "margin": -1.47,
    "p_home": 0.46,
+   "systems": {
+    "Big12ology": 5.63,
+    "Elo": -1.52,
+    "FPI": -7.63,
+    "SP+": -7.9,
+    "SRS": 4.06
+   },
    "week": 13
   },
   "401856879": {
@@ -523,6 +1027,13 @@
    "margin": 12.58,
    "p_home": 0.82,
    "spread": -16.5,
+   "systems": {
+    "Big12ology": 17.72,
+    "Elo": 11.19,
+    "FPI": 12.22,
+    "SP+": 10.3,
+    "SRS": 11.47
+   },
    "week": 13
   },
   "401856880": {
@@ -530,6 +1041,13 @@
    "home": "Utah",
    "margin": 17.83,
    "p_home": 0.904,
+   "systems": {
+    "Big12ology": 19.45,
+    "Elo": 20.89,
+    "FPI": 16.49,
+    "SP+": 14.3,
+    "SRS": 18.04
+   },
    "week": 13
   },
   "401856881": {
@@ -538,11 +1056,18 @@
    "margin": 4.63,
    "p_home": 0.628,
    "spread": -1.5,
+   "systems": {
+    "Big12ology": 10.18,
+    "Elo": 5.41,
+    "FPI": 0.63,
+    "SP+": -1.2,
+    "SRS": 8.16
+   },
    "week": 4
   }
  },
  "games_complete": 45,
- "generated": "2026-09-22T03:05:02+00:00",
+ "generated": "2026-09-22T03:10:20+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,

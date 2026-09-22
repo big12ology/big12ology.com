@@ -473,37 +473,54 @@ def blend_favorites(favorites, games):
     return out
 
 
+def system_margin(s, g, strict=False):
+    """One system's expected home margin for a game, in scoring points, or
+    None when it has nothing to say. The system's rating gap, its home-field
+    bump, its per_pt scale: one rule, used by the favorites, the forecast
+    record and the team pages, so the three cannot disagree about a game.
+
+    NO HOME FIELD AT A NEUTRAL SITE, which is not a refinement but the
+    difference between right and wrong. Arizona State vs Kansas at Wembley:
+    every system rated Arizona State higher, and four of the five printed
+    "Kansas" because a bump nobody had earned was added anyway. The market
+    had Arizona State by nearly six. The models agreed with it and the card
+    did not.
+
+    An opponent the system does not rate (FCS and lower) gets a floor
+    rating well below its worst rated team, unless `strict`: the scorecard
+    skips those games, because every model picks them and nobody gets
+    credit, and the record it grades from has to skip them the same way.
+    """
+    r, hfa, per = s["ratings"], s["hfa"], s.get("per_pt", 1.0) or 1.0
+    hr, ar = r.get(g["home"]), r.get(g["away"])
+    if hr is None and ar is None:
+        return None
+    if strict and (hr is None or ar is None):
+        return None
+    floor = min(r.values()) - 10 * per
+    if hr is None:
+        hr = floor
+    if ar is None:
+        ar = floor
+    return (hr - ar + (0.0 if g.get("neutral_site") else hfa)) / per
+
+
 def favorites_for(games, systems):
     """{system: {game_id: {team, margin}}} for every unplayed game (conference
-    and non-conference). Margin is converted to scoring points via the
-    system's per_pt scale and includes its home-field bump. Opponents the
-    system doesn't rate (FCS and lower) get a floor rating well below the
-    worst rated team."""
+    and non-conference). Margin is in scoring points and includes the
+    system's home-field bump; see system_margin."""
     out = {}
     for name, s in systems.items():
-        r, hfa, per = s["ratings"], s["hfa"], s.get("per_pt", 1.0) or 1.0
-        floor = min(r.values()) - 10 * per
         m = {}
         for g in games:
             if g.get("ccg") or g["completed"]:
                 continue
-            hr, ar = r.get(g["home"]), r.get(g["away"])
-            if hr is None and ar is None:
+            d = system_margin(s, g)
+            if d is None:
                 continue
-            if hr is None:
-                hr = floor
-            if ar is None:
-                ar = floor
-            # NO HOME FIELD AT A NEUTRAL SITE, which is not a refinement
-            # but the difference between right and wrong. Arizona State vs
-            # Kansas at Wembley: every system rated Arizona State higher,
-            # and four of the five printed "Kansas" because a bump nobody
-            # had earned was added anyway. The market had Arizona State by
-            # nearly six. The models agreed with it and the card did not.
-            d = hr - ar + (0.0 if g.get("neutral_site") else hfa)
             m[str(g["id"])] = {
                 "team": g["home"] if d >= 0 else g["away"],
-                "margin": round(abs(d) / per, 1),
+                "margin": round(abs(d), 1),
             }
         if m:
             out[name] = m
@@ -1312,8 +1329,43 @@ def sos_card(games, systems):
             "</div>")
 
 
-def scorecard_card(games, systems, lines=None):
-    tal = scorecard_mod.tally(games, systems, lines)
+def forecast_records(year, games):
+    """{game_id: pre-kickoff record} for the completed games that have one."""
+    out = {}
+    for g in games:
+        if g["completed"] and not g.get("ccg"):
+            rec = forecast_for(year, g)
+            if rec:
+                out[str(g["id"])] = rec
+    return out
+
+
+def scorecard_card(games, systems, lines=None, year=None):
+    # The live season grades from the forecast record: what each system
+    # said before the week began, against what happened. A season without
+    # records grades on the ratings it has, and says what that costs.
+    recs = forecast_records(year, games) if year == LIVE_YEAR else {}
+    if recs:
+        tal = scorecard_mod.tally_records(games, recs)
+        done = [g for g in games if g["completed"] and not g.get("ccg")]
+        unrec = len(done) - len(recs)
+        note = ("<p class=note>Each system's favorite as it stood before "
+                "kickoff, from the week's forecast record, against the "
+                "result; Vegas is the market's line in the same record. "
+                "Games the system did not rate both sides of are skipped."
+                + (f" {unrec} completed game{'s' if unrec != 1 else ''} "
+                   f"predate{'s' if unrec == 1 else ''} the records and "
+                   f"{'is' if unrec == 1 else 'are'} not counted."
+                   if unrec else "")
+                + "</p>")
+        vlabel = "<b>Vegas</b> <span class=dim>(line before the week)</span>"
+    else:
+        tal = scorecard_mod.tally(games, systems, lines)
+        note = ("<p class=note>Each system's favorites in completed games "
+                "involving Big 12 teams (both sides rated; FCS games "
+                "skipped). Judged against the market's closing-line "
+                "favorites.</p>" + scorecard_caveat(games, systems, tal))
+        vlabel = "<b>Vegas</b> <span class=dim>(closing line)</span>"
     played = any(v["w"] + v["l"] > 0 for v in tal.values())
     if not played:
         return ("<div class=card id=modelcard><h2>Model scorecard</h2>"
@@ -1328,18 +1380,16 @@ def scorecard_card(games, systems, lines=None):
         pct = v["w"] / tot if tot else 0
         # Same convention as the what-if picker and the game cards: the name
         # carries the season its ratings came from.
-        label = ("<b>Vegas</b> <span class=dim>(closing line)</span>"
-                 if name == "Vegas" else esc(model_label(name, systems)))
+        label = (vlabel if name == "Vegas"
+                 else esc(model_label(name, systems) if name in systems
+                          else name))
         rows.append(
             f"<tr><td>{label}</td><td>{v['w']}–{v['l']}</td>"
             f"<td style='color:{winpct_color(pct)}'>{pct:.3f}</td></tr>")
     return ("<div class=card id=modelcard><h2>Model scorecard</h2>"
             "<table><thead><tr><th>Model</th><th>Favorites</th><th>Pct</th>"
             "</tr></thead><tbody>" + "".join(rows) + "</tbody></table>"
-            "<p class=note>Each system's favorites in completed games "
-            "involving Big 12 teams (both sides rated; FCS games skipped). "
-            "Judged against the market's closing-line favorites.</p>"
-            + scorecard_caveat(games, systems, tal) + "</div>")
+            + note + "</div>")
 
 
 def scorecard_caveat(games, systems, tal):
@@ -3994,7 +4044,7 @@ def render(year, games):
         "clinchcard": clinch_card(games, overrides, systems, rows, sims),
         "levcard": leverage_card(games, sims, teams) if sims else "",
         "soscard": sos_card(games, systems),
-        "modelcard": scorecard_card(games, systems, closing_lines),
+        "modelcard": scorecard_card(games, systems, closing_lines, year),
         "h2hcard": h2h_card(games, teams, rows),
         "matchcard": card,
         "standingspage": standings_page(games, overrides, display_rows, teams),
@@ -4146,13 +4196,8 @@ def blend_now(g, systems):
     on today's ratings. favorites_for's arithmetic for a game already
     played, which favorites_for skips on purpose: this is the re-judged
     line the scorecard's note owns up to."""
-    ms = []
-    for s in systems.values():
-        r, hfa, per = s["ratings"], s["hfa"], s.get("per_pt", 1.0) or 1.0
-        hr, ar = r.get(g["home"]), r.get(g["away"])
-        if hr is None or ar is None:
-            continue
-        ms.append((hr - ar + (0.0 if g.get("neutral_site") else hfa)) / per)
+    ms = [d for d in (system_margin(s, g, strict=True)
+                      for s in systems.values()) if d is not None]
     return sum(ms) / len(ms) if ms else None
 
 
@@ -4339,7 +4384,11 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
     # --- the nerds ------------------------------------------------------------
     nerds = ""
     if systems:
-        tally = scorecard_mod.tally(mine, systems, extras["lines"])
+        # Same grading as the scorecard: the record before kickoff for the
+        # live season, the season's ratings for an archived one.
+        recs = forecast_records(year, mine) if live else {}
+        tally = (scorecard_mod.tally_records(mine, recs) if recs
+                 else scorecard_mod.tally(mine, systems, extras["lines"]))
         big12 = sorted(teams)
         trs = []
         for name in MODEL_ORDER:
@@ -4371,9 +4420,9 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
                  f"{esc(ab)} games</th></tr></thead><tbody>{''.join(trs)}</tbody>"
                  f"</table><p class=note>Points better than an average FBS "
                  f"team, each system on its own scale. The record is each "
-                 f"system's favorites in {esc(team)}'s games this season, judged "
-                 f"on {'today' if live else 'the season'}'s "
-                 f"{'numbers' if live else 'final ratings'}. "
+                 f"system's favorite in {esc(team)}'s games this season, "
+                 f"{'as it stood before kickoff' if live else 'on the season'}"
+                 f"{'' if live else chr(39) + 's final ratings'}. "
                  f"See <a href={BASE}model.html>The Model</a>.</p></div>")
 
     # --- the draw and the rotation ------------------------------------------
@@ -6149,9 +6198,14 @@ def forecast_games(games, systems):
     the way its source signs it: a positive margin favors the home side, a
     negative spread does.
 
+    `systems` is each system's own expected home margin, for the games it
+    rates both sides of, which is what the scorecard grades: the per-system
+    favorite as it stood before kickoff, not the one today's ratings would
+    name after seeing the result.
+
     The team pages read these back to put the pre-kickoff line beside the
     result. Today's ratings cannot do that honestly once they have seen the
-    game, which is the caveat the scorecard carries and this removes.
+    game, which was the caveat the scorecard carried and this removes.
     """
     margins = engine.ensemble_margin(games, systems)
     probs = engine.win_probs(games, systems)
@@ -6163,6 +6217,13 @@ def forecast_games(games, systems):
         rec = {"week": g["week"], "home": g["home"], "away": g["away"],
                "margin": round(margins[gid], 2),
                "p_home": round(probs.get(gid, 0.5), 3)}
+        per_system = {}
+        for name, s in systems.items():
+            d = system_margin(s, g, strict=True)
+            if d is not None:
+                per_system[name] = round(d, 2)
+        if per_system:
+            rec["systems"] = per_system
         if g.get("neutral_site"):
             rec["neutral"] = True
         sp = (g.get("line") or {}).get("spread")
