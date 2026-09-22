@@ -2754,7 +2754,7 @@ def team_href(team):
     return f"{root}team/{team_slug(team)}"
 
 
-def team_name(team, size=16, text=None, logo=True):
+def team_name(team, size=16, text=None, logo=True, link=True):
     """A team, named: its mark and its name, the name a link to its page.
 
     ONE renderer for every place a team is named on a built page. There
@@ -2762,9 +2762,12 @@ def team_name(team, size=16, text=None, logo=True):
     at a time would have left the twelfth unlinked. `text` is for the
     places that show the abbreviation; `logo` off is for a table head with
     no room for a mark. A team without a page is named exactly as before.
+    `link` off is for a row that is already a link, such as game_row's
+    preview link: an anchor inside an anchor is not HTML, and the browser
+    resolves it by breaking the outer one apart.
     """
     label = esc(team if text is None else text)
-    href = team_href(team)
+    href = team_href(team) if link else None
     if href:
         label = f"<a class=teamlink href='{href}'>{label}</a>"
     return f"{logo_img(team, size) if logo else ''}{label}"
@@ -3651,7 +3654,9 @@ def game_row(g, pages=False):
     briefs and schedules. Root-relative, like section_href: the rows appear
     under /tiebreaker/ and /schedule/ both, and the pages live at
     /schedule/game/ regardless of who is asking."""
-    hn, an = team_name(g["home"]), team_name(g["away"])
+    # Names only: with `pages` the whole row is the link to the game.
+    hn, an = (team_name(g["home"], link=False),
+              team_name(g["away"], link=False))
     if g["completed"] and rules.has_score(g):
         hw = g["home_points"] > g["away_points"]
         home = f"<b>{hn} {g['home_points']}</b>" if hw \
@@ -4090,7 +4095,9 @@ def render(year, games):
         "levcard": leverage_card(games, sims, teams) if sims else "",
         "soscard": sos_card(games, systems),
         "modelcard": scorecard_card(games, systems, closing_lines, year),
-        "h2hcard": h2h_card(games, teams, rows),
+        # The PADDED board, or a September grid has six rows: the teams
+        # with a conference result, which is not what "every meeting" means.
+        "h2hcard": h2h_card(games, teams, display_rows),
         "matchcard": card,
         "standingspage": standings_page(games, overrides, display_rows, teams),
         "sims": sims,
