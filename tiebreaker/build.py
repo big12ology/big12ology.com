@@ -3582,6 +3582,17 @@ COUNTRY_BY_TZ = {
 # use, and venue_city is already there as the display form.
 JSONLD_ONLY_FIELDS = ("venue_locality", "venue_region", "venue_country")
 
+# A building that changed its name after the catalog learned it. CFBD's venue
+# record and every game that references it still carry the old one, and the
+# catalog is only refetched when a venue goes MISSING, so a renaming never
+# arrives on its own. Keyed by venue_id and the first season the new name
+# applies to, because the archive is right to keep the old one: a 2024 page
+# saying Jones AT&T Stadium is what the building was called in 2024.
+VENUE_RENAMES = {
+    # Lubbock. AT&T let its deal lapse in June 2026; Galaxy signed 15 years.
+    3784: (2026, "Galaxy Stadium"),
+}
+
 
 def venue_country(state, tz):
     """Two-letter country for a venue row, or None when it cannot be known."""
@@ -3600,6 +3611,13 @@ def place_and_forecast(year, games):
     quota and a finished season costs nothing at all: every game is played,
     so nothing is in forecast range and no request is made.
     """
+    # Before the catalog is consulted, so the name on the game is the one
+    # every renderer and the JSON-LD then read. The catalog row keeps its
+    # own name; only the city, coordinates and roof are taken from it.
+    for g in games:
+        renamed = VENUE_RENAMES.get(g.get("venue_id"))
+        if renamed and year >= renamed[0]:
+            g["venue"] = renamed[1]
     venues = fetcher.load_venues()
     if venues:
         for g in games:
