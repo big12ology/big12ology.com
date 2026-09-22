@@ -969,6 +969,7 @@ SUBNAV_LINKS = [("brief", "./", "The Brief"),
                 ("race", "race.html", "The Race"),
                 ("standings", "standings.html", "The Standings"),
                 ("tracker", "lab.html", "The Lab"),
+                ("teams", "teams.html", "The Teams"),
 
                 ("cutline", "cutline.html", "The Cut Line"),
                 ("ladder", "ladder.html", "The Ladder"),
@@ -1045,7 +1046,7 @@ def subnav(active, section="tiebreaker", prefix=""):
     return f"<nav class=subnav>{links}</nav>"
 
 
-def simulate_week(games, systems, overrides, track):
+def simulate_week(games, systems, overrides, track, cond_track=None):
     """The baseline run, and two readings of every game it tracks.
 
     WHAT A RESULT DOES and WHAT IT TEACHES are different numbers, and this
@@ -1058,11 +1059,20 @@ def simulate_week(games, systems, overrides, track):
     Both ride on the sims dict because that is already threaded to every
     caller that wants them, and everything walking it either checks shape or
     skips the underscore keys. Same reason simulate() puts "_n" there.
+
+    `cond_track` widens the SECOND reading without touching the first. The
+    causal one costs two runs per game, so it stays on the week ahead; the
+    conditional one is a filter over the baseline run and costs nothing per
+    game, so the team pages can have it for every game left in the season.
+    Recording more outcomes does not move the run: checked, the baseline
+    odds are identical to the last decimal with five games tracked or 69.
     """
-    sims = engine.simulate(games, systems, overrides, track=track)
+    sims = engine.simulate(games, systems, overrides,
+                           track=cond_track or track)
     if track:
         sims["_lev"] = engine.causal_leverage(
             games, systems, overrides, track)
+    if track or cond_track:
         sims["_lev_cond"] = engine.leverage(sims, games)
     return sims
 
@@ -1738,9 +1748,13 @@ def standings_page(games, overrides, display_rows, teams):
         p = rules.pct(r["conf_w"], r["conf_l"])
         c = team_color(teams, r["team"])
         st = status_class(state.get(r["team"]), pos)
+        # The name is the way to the team's page. Relative to the season
+        # directory, which is where both this board and team/ live.
         return (f"<td class='teamcell{st}'><span class=cbar "
                 f"style='background:{c}'>"
-                f"</span>{logo_img(r['team'])}{esc(r['team'])}</td>"
+                f"</span>{logo_img(r['team'])}"
+                f"<a class=teamlink href='team/{team_slug(r['team'])}'>"
+                f"{esc(r['team'])}</a></td>"
                 f"<td>{r['conf_w']}–{r['conf_l']}</td>"
                 + ("<td>—</td>" if p is None else
                    f"<td style='color:{winpct_color(p)}'>{p:.3f}</td>")
@@ -2645,13 +2659,22 @@ def espn_link(g):
             f"{gid}'>{icon('out')}{label}</a>")
 
 
+def slug_part(name):
+    """A team name as it appears in a URL: "Texas A&M" -> "texas-a-m"."""
+    keep = [c.lower() if c.isalnum() else "-" for c in name]
+    return "".join(keep).strip("-").replace("--", "-")
+
+
 def game_slug(g):
     """<id>-<away>-at-<home>.html — the id makes it unambiguous and stable,
     the names make a shared link readable."""
-    def part(name):
-        keep = [c.lower() if c.isalnum() else "-" for c in name]
-        return "".join(keep).strip("-").replace("--", "-")
-    return f"{g['id']}-{part(g['away'])}-at-{part(g['home'])}.html"
+    return f"{g['id']}-{slug_part(g['away'])}-at-{slug_part(g['home'])}.html"
+
+
+def team_slug(team):
+    """<team>.html under team/. No id: a team's name is its own stable key
+    here, the same string every data file uses."""
+    return f"{slug_part(team)}.html"
 
 
 def joiner(g):
@@ -2741,12 +2764,15 @@ def pickem_line(g):
             f"<span class=pcmk>{logo_img(g['home'], 13)}</span></div>")
 
 
-def slate_card(g, pages=True):
+def slate_card(g, pages=True, extra=""):
     """One game, with everything a reader needs to go and watch it.
 
     Sixteen of these are the week. Every line holds one fact and stays on
     one line — the grid is two up rather than four precisely so that the
     longest stadium name still fits.
+
+    `extra` is one more meta row, already marked up, for a caller with one
+    more fact about the game: the team pages put the model's line here.
     """
     # Game pages exist for the live season only, so an archived slate must
     # not offer a Preview link — it would point at a 404, and the page that
@@ -2757,7 +2783,7 @@ def slate_card(g, pages=True):
             f"<div class=slateteams>{matchup(g)}</div>"
             f"<div class=slatemeta>{when_line(g)}{where(g)}"
             f"{broadcast(g)}"
-            f"{weather_line(g)}{market(g)}</div>"
+            f"{weather_line(g)}{market(g)}{extra}</div>"
             f"{pickem_line(g)}"
             f"<div class=slatelinks>{ours}{espn_link(g)}</div></div>")
 
@@ -3680,7 +3706,12 @@ def render(year, games):
     systems = load_ratings(year).get("systems", {})
     closing_lines = load_lines(year)
     track, _wk = next_conf_week_ids(games)
-    sims = simulate_week(games, systems, overrides, track) if systems else {}
+    # Every conference game still to play, for the team pages' "what matters
+    # next": the conditional reading is free per game, so take all of them.
+    left = [g["id"] for g in games if g["conference_game"]
+            and not g.get("ccg") and not g["completed"]]
+    sims = (simulate_week(games, systems, overrides, track, cond_track=left)
+            if systems else {})
     favorites = favorites_for(games, systems)
     # `kind` is load-bearing, not documentation. payload.favorites is the
     # pick source for the UI and now holds three different things — the four
@@ -3984,6 +4015,519 @@ def render(year, games):
         "series": series_records(year, teams, games),
     }
     return page, ctx
+
+
+# ---------------------------------------------------------------------------
+# TEAM PAGES. One per team per season at team/<slug>.html, and an index at
+# teams.html, beside the season's other pages.
+#
+# Every other page here answers a conference-level question and a team is a
+# row in the answer. These read the same numbers the other way round, with
+# one team as the subject. Nothing is computed that the season build has not
+# already computed: the odds are the race's run, the leverage is the
+# conditional reading the Lab shows on a fork, the ratings are the Nerds',
+# the draw and the rotation are their own pages' rows. The cost is rendering,
+# which is why every season gets them and not only the live one. A finished
+# season has no ratings and so no odds, and the cards that would show them
+# are left out rather than rendered empty.
+
+TEAM_CSS = """<style>
+.teamhead{border-top:6px solid var(--tc)}
+.teamtitle{display:flex;gap:16px;align-items:center;margin-bottom:12px}
+.teamtitle h2{margin:0;font-size:var(--t-title,1.5rem);text-transform:none;letter-spacing:0}
+.teamtitle .mark{width:56px;height:56px}
+.teamsub{margin:2px 0 0;opacity:.75}
+.teamstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:8px 0}
+.teamstat{display:flex;flex-direction:column;gap:2px}
+.teamstat b{font-size:1.7rem;font-weight:700;line-height:1.1;color:var(--tc)}
+.teamstat span{font-size:var(--t-meta,.8rem);opacity:.75}
+.spark{display:block}
+.wklabel{display:block;font-size:var(--t-micro,.72rem);text-transform:uppercase;letter-spacing:.04em;opacity:.7;margin:10px 0 4px}
+.teamgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.teamgrid .card{margin:0}
+@media(max-width:820px){
+  .teamgrid{grid-template-columns:1fr}
+}
+.teamlink{color:inherit;text-decoration:none}
+.teamlink:hover{text-decoration:underline}
+.teamidx td.num,.teamidx th.num{text-align:right;font-variant-numeric:tabular-nums}
+</style>"""
+
+ATT_SEASONS = os.path.join(HERE, "..", "attendance", "data", "seasons")
+
+
+def ordinal(n):
+    if 10 <= n % 100 <= 20:
+        return f"{n}th"
+    suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
+
+
+def odds_pct(p):
+    """One decimal under ten percent, none above: "7.5%" and "53%"."""
+    return f"{p * 100:.1f}%" if p < 0.095 else f"{p * 100:.0f}%"
+
+
+def forecast_history(year, team):
+    """[(through_week, p_ccg, exp_w)] as published each week, from the
+    forecast records the build commits. Empty for a season without them."""
+    out = []
+    d = os.path.join(HERE, "forecasts", str(year))
+    if not os.path.isdir(d):
+        return out
+    for name in sorted(os.listdir(d)):
+        if not name.startswith("week-") or not name.endswith(".json"):
+            continue
+        try:
+            f = json.load(open(os.path.join(d, name)))
+        except (OSError, ValueError):
+            continue
+        t = (f.get("teams") or {}).get(team)
+        if t and t.get("p_ccg") is not None:
+            out.append((f.get("through_week"), t["p_ccg"], t.get("exp_w")))
+    return out
+
+
+def sparkline(points, color, w=220, h=44):
+    """A line through the points, scaled to their own range. The range is
+    the point: a team at 7% all season should read as flat, not as a
+    hairline at the bottom of a chart drawn to 100."""
+    if len(points) < 2:
+        return ""
+    lo, hi = min(points), max(points)
+    span = (hi - lo) or 1
+    xs = [i * (w - 8) / (len(points) - 1) + 4 for i in range(len(points))]
+    ys = [h - 6 - ((p - lo) / span) * (h - 14) for p in points]
+    path = " ".join(f"{'M' if i == 0 else 'L'}{x:.1f},{y:.1f}"
+                    for i, (x, y) in enumerate(zip(xs, ys)))
+    dots = "".join(f"<circle cx='{x:.1f}' cy='{y:.1f}' r='2.5' fill='{color}'/>"
+                   for x, y in zip(xs, ys))
+    return (f"<svg class=spark viewBox='0 0 {w} {h}' width={w} height={h} "
+            f"aria-hidden=true><path d='{path}' fill=none stroke='{color}' "
+            f"stroke-width=2/>{dots}</svg>")
+
+
+def home_gates(team, years):
+    """{year: [attendance record]} for the team's home games, from the
+    attendance section's season files. A home game is one with no `role`:
+    away and neutral games carry the word, home games do not."""
+    out = {}
+    for y in years:
+        try:
+            a = json.load(open(os.path.join(ATT_SEASONS, f"{y}.json")))
+        except (OSError, ValueError):
+            continue
+        out[y] = [g for g in a.get("games", []) if g.get("team") == team
+                  and not g.get("role")]
+    return out
+
+
+def team_history(year):
+    """{team: [(season, standings row, title game or None)]} for every
+    season before this one that the tracker holds. Computed once per
+    season build and read sixteen times, because each season's standings
+    are a JS round trip and sixteen of those per season is not free."""
+    out = {}
+    overrides = rules.load_overrides()
+    for y in fetcher.usable_seasons(range(2011, year)):
+        gy = load_games(y)
+        if not gy:
+            continue
+        ccgs = [g for g in gy if g.get("ccg")]
+        for r in engine.standings(gy, overrides):
+            ccg = next((g for g in ccgs
+                        if r["team"] in (g["home"], g["away"])), None)
+            out.setdefault(r["team"], []).append((y, r, ccg))
+    return out
+
+
+def blend_now(g, systems):
+    """The five systems' average margin for a game, home-signed, in points,
+    on today's ratings. favorites_for's arithmetic for a game already
+    played, which favorites_for skips on purpose: this is the re-judged
+    line the scorecard's note owns up to."""
+    ms = []
+    for s in systems.values():
+        r, hfa, per = s["ratings"], s["hfa"], s.get("per_pt", 1.0) or 1.0
+        hr, ar = r.get(g["home"]), r.get(g["away"])
+        if hr is None or ar is None:
+            continue
+        ms.append((hr - ar + (0.0 if g.get("neutral_site") else hfa)) / per)
+    return sum(ms) / len(ms) if ms else None
+
+
+def team_page_body(team, year, games, ctx, rows, clinch, extras):
+    """The page. `extras` carries what write_team_pages computed once for
+    all sixteen: draw rows, rotation rows, history, blend and market
+    favorites."""
+    systems = ctx["systems"]
+    teams = ctx["teams"]
+    sims = ctx.get("sims") or {}
+    live = year == LIVE_YEAR
+    color = team_color(teams, team)
+    ab = team_abbr(teams, team)
+    me = next((r for r in rows if r["team"] == team), None)
+    if me is None:
+        return ""
+    mine = [g for g in games if team in (g["home"], g["away"])
+            and not g.get("ccg")]
+    race = sims.get(team) or {}
+    state = (clinch.get(team) or {})
+
+    # --- header -----------------------------------------------------------
+    # The board's own rank text: "T4" is ten teams at 0-0 in September, and
+    # calling each of them "4th" would be the board disagreeing with itself.
+    rk = extras["ranks"].get(team, str(me["rank"]))
+    place = (f"tied for {ordinal(int(rk[1:]))}" if rk.startswith("T")
+             else ordinal(int(rk)))
+    sub = (f"{me['overall_w']}-{me['overall_l']} overall · "
+           f"{me['conf_w']}-{me['conf_l']} Big 12 · "
+           f"{place} in the standings")
+    # The title game, once it has been played. The season's own result
+    # belongs at the top; the history card is for the seasons before it.
+    ccg = next((g for g in games if g.get("ccg")
+                and team in (g["home"], g["away"])), None)
+    if ccg and ccg.get("completed") and rules.has_score(ccg):
+        w = (ccg["home_points"] > ccg["away_points"]) == (ccg["home"] == team)
+        other = ccg["away"] if ccg["home"] == team else ccg["home"]
+        sub += (f" · <b>{'won' if w else 'lost'} the title game "
+                f"{ccg['home_points']}-{ccg['away_points']} vs {esc(other)}</b>")
+    stats = ""
+    note = ""
+    # Odds are a live-season quantity. A finished season's page says how it
+    # finished, which the record and the title game already do; "0.0% title
+    # game" under a team that lost in December is a simulation of nothing.
+    if race and live:
+        hist = forecast_history(year, team)
+        status = {"alive": "Alive", "clinched": "Clinched",
+                  "eliminated": "Eliminated"}.get(state.get("status"), "Alive")
+        under = ("clinched a berth" if state.get("status") == "clinched"
+                 else "out of the race" if state.get("status") == "eliminated"
+                 else "controls its own fate" if state.get("destiny")
+                 else "needs help")
+        spark = ""
+        if len(hist) >= 2:
+            spark = (f"<div class=teamstat>{sparkline([h[1] for h in hist], color)}"
+                     f"<span>odds by week · "
+                     f"{' → '.join(odds_pct(h[1]) for h in hist)}</span></div>")
+        stats = (f"<div class=teamstats>"
+                 f"<div class=teamstat><b>{odds_pct(race['p_ccg'])}</b>"
+                 f"<span>title game</span></div>"
+                 f"<div class=teamstat><b>{race['exp_w']:.1f}</b>"
+                 f"<span>expected conf. wins</span></div>"
+                 f"<div class=teamstat><b>{status}</b><span>{under}</span></div>"
+                 f"{spark}</div>")
+        n = sims.get("_n") or engine.constants()["N_SIMS"]
+        note = (f"<p class=note>Title-game odds from {n:,} season simulations "
+                f"on the blend of {len(systems)} rating systems, the same run "
+                f"behind <a href={BASE}race.html>The Race</a>. The sparkline is "
+                f"the number as it was published each week.</p>")
+    head = (f"<div class='card teamhead' style='--tc:{color}'>"
+            f"<div class=teamtitle>{logo_img(team, 56)}<div>"
+            f"<h2>{esc(team)} <span class=dim>"
+            f"{esc((teams.get(team) or {}).get('mascot', ''))}</span></h2>"
+            f"<p class=teamsub>{sub}</p></div></div>{stats}{note}</div>")
+
+    # --- the schedule -----------------------------------------------------
+    blend, market = extras["blend"], extras["market"]
+    cards = []
+    for g in sorted(mine, key=lambda g: (g["week"], g["start"] or "")):
+        gid = str(g["id"])
+        line = ""
+        if g["completed"] and rules.has_score(g) and systems:
+            d = blend_now(g, systems)
+            if d is not None:
+                mine_m = d if g["home"] == team else -d
+                act = ((g["home_points"] - g["away_points"])
+                       * (1 if g["home"] == team else -1))
+                line = (f"<div class='slatemodel dim'>{icon('note')}<span>"
+                        f"model {esc(ab)} {mine_m:+.1f} · actual {act:+d} · "
+                        f"{'covered' if act > mine_m else 'fell short'} by "
+                        f"{abs(act - mine_m):.1f}</span></div>")
+        elif not g["completed"]:
+            bits = []
+            for label, src in (("Nerds", blend), ("Vegas", market)):
+                f = src.get(gid)
+                if f:
+                    bits.append(f"{label}: {esc(team_abbr(teams, f['team']))} "
+                                f"by {f['margin']:.1f}")
+            if bits:
+                line = (f"<div class='slatemodel dim'>{icon('note')}<span>"
+                        f"{' · '.join(bits)}</span></div>")
+        card = slate_card(g, pages=ctx.get("game_pages", False), extra=line)
+        # The card's preview link is written for /schedule/, where the
+        # game pages are. From here that is a hop to the other section.
+        card = card.replace("href='game/", f"href='{BASE}../schedule/game/")
+        cards.append(f"<div><span class=wklabel>Week {g['week']}</span>{card}</div>")
+    caveat = ("" if not systems else
+              " Played games carry the blend's line as it stands today "
+              "against the result; ratings move, so this re-judges rather "
+              "than remembers. Unplayed games carry the blend and the market."
+              if live else
+              " Each game carries the blend's line on the season's final "
+              "ratings against the result: what the systems made of the "
+              "matchup with the whole season known, not what they said "
+              "before kickoff.")
+    sched = (f"<div class=card id=schedule><h2>The schedule</h2>"
+             f"<div class=slategrid>{''.join(cards)}</div>"
+             f"<p class=note>Every game, conference and not.{caveat}</p></div>")
+
+    # --- what matters next --------------------------------------------------
+    nxt = ""
+    lev = ctx.get("leverage_cond") or {}
+    if race and lev:
+        own, others = [], []
+        for e in lev.values():
+            g = e.get("game") or {}
+            if not g or g.get("completed"):
+                continue
+            if team in (g["home"], g["away"]):
+                p = (e.get("pair") or {}).get(team)
+                if not p:
+                    continue
+                ph, pa = p
+                w, l = (ph, pa) if g["home"] == team else (pa, ph)
+                own.append((w - l, g, w, l))
+            else:
+                m = next((m for m in e.get("movers", []) if m[0] == team), None)
+                if m:
+                    others.append((abs(m[2] - m[3]), g, m[2], m[3]))
+        own.sort(key=lambda r: -r[0])
+        others.sort(key=lambda r: -r[0])
+
+        def trow(g, a, b):
+            return (f"<tr><td>Wk {g['week']}</td>"
+                    f"<td class=teamcell>{matchup(g, 16)}</td>"
+                    f"<td class=num>{odds_pct(a)}</td><td class=num>{odds_pct(b)}</td>"
+                    f"<td class=num><b>{(a - b) * 100:+.0f}</b></td></tr>")
+        own_t = (f"<h3>{esc(ab)}'s own games</h3><table><thead><tr><th></th>"
+                 f"<th>Game</th><th class=num>if {esc(ab)} wins</th>"
+                 f"<th class=num>if {esc(ab)} loses</th><th class=num>swing</th>"
+                 f"</tr></thead><tbody>{''.join(trow(g, w, l) for _, g, w, l in own)}"
+                 f"</tbody></table>" if own else "")
+        oth_t = (f"<h3>Everyone else's</h3><table><thead><tr><th></th>"
+                 f"<th>Game</th><th class=num>home wins</th>"
+                 f"<th class=num>away wins</th><th class=num>swing</th>"
+                 f"</tr></thead><tbody>"
+                 f"{''.join(trow(g, a, b) for _, g, a, b in others[:6])}"
+                 f"</tbody></table>" if others else "")
+        if own_t or oth_t:
+            nxt = (f"<div class=card id=next><h2>What matters next</h2>{own_t}{oth_t}"
+                   f"<p class=note>{esc(team)}'s title-game odds under each "
+                   f"result, in points of probability, read off the seasons in "
+                   f"the baseline run where it went that way: what the board "
+                   f"would say on Sunday. A game's own preview shows the other "
+                   f"reading, the result asserted and the season run around it."
+                   f"</p></div>")
+
+    # --- the nerds ------------------------------------------------------------
+    nerds = ""
+    if systems:
+        tally = scorecard_mod.tally(mine, systems, extras["lines"])
+        big12 = sorted(teams)
+        trs = []
+        for name in MODEL_ORDER:
+            s = systems.get(name)
+            if not s or team not in s["ratings"]:
+                continue
+            per = s.get("per_pt", 1.0) or 1.0
+            # Centered on the FBS mean, so Elo's 1500 and SP+'s 0 both read
+            # as "points better than an average team". FBS specifically:
+            # SRS rates 265 teams, and a mean over the FCS as well put every
+            # Big 12 side twenty points clear of "average".
+            fbs = [v for t, v in s["ratings"].items() if t in extras["fbs"]]
+            mid = sum(fbs) / len(fbs) if fbs else 0.0
+            conf = sorted((s["ratings"].get(t, -1e9) for t in big12), reverse=True)
+            rk = conf.index(s["ratings"][team]) + 1
+            rec = tally.get(name, {})
+            trs.append(f"<tr><td>{esc(model_label(name, systems))}"
+                       f"{' <span class=dim>regressed</span>' if s.get('regressed') else ''}"
+                       f"</td><td class=num>{(s['ratings'][team] - mid) / per:+.1f}</td>"
+                       f"<td class=num>{rk} of {len(big12)}</td>"
+                       f"<td class=num>{rec.get('w', 0)}-{rec.get('l', 0)}</td></tr>")
+        vg = tally.get("Vegas")
+        if vg:
+            trs.append(f"<tr><td>Vegas</td><td class=num>—</td><td class=num>—</td>"
+                       f"<td class=num>{vg['w']}-{vg['l']}</td></tr>")
+        nerds = (f"<div class=card id=nerds><h2>The Nerds on {esc(ab)}</h2>"
+                 f"<table><thead><tr><th>System</th><th class=num>rating (pts)</th>"
+                 f"<th class=num>in the Big 12</th><th class=num>picking "
+                 f"{esc(ab)} games</th></tr></thead><tbody>{''.join(trs)}</tbody>"
+                 f"</table><p class=note>Points better than an average FBS "
+                 f"team, each system on its own scale. The record is each "
+                 f"system's favorites in {esc(team)}'s games this season, judged "
+                 f"on {'today' if live else 'the season'}'s "
+                 f"{'numbers' if live else 'final ratings'}. "
+                 f"See <a href={BASE}model.html>The Model</a>.</p></div>")
+
+    # --- the draw and the rotation ------------------------------------------
+    draw = next((r for r in extras["draw"] if r["team"] == team), None)
+    drank = next((i + 1 for i, r in enumerate(extras["draw"])
+                  if r["team"] == team), None)
+    rot = next((r for r in extras["rotation"] if r["team"] == team), None)
+    dr = ""
+    if draw:
+        dr = (f"<p>Expected conference wins on this slate: <b>{draw['own']:.1f}</b>, "
+              f"<b>{draw['vs_average']:+.2f}</b> against the same team on the "
+              f"average draw, the {ordinal(drank)} hardest of {len(extras['draw'])}. "
+              f"Hardest slate for {esc(ab)} would be "
+              f"{esc(draw['hardest'][1])}'s ({draw['hardest'][0]:.1f}), easiest "
+              f"{esc(draw['easiest'][1])}'s ({draw['easiest'][0]:.1f}).</p>")
+    miss = ""
+    if rot and rot.get("missing"):
+        def last_met(m):
+            return ("never met in conference play" if m["last"] is None
+                    else f"last met {m['last']}")
+        items = "".join(
+            f"<li>{logo_img(m['opponent'], 16)}{esc(m['opponent'])} "
+            f"<span class=dim>{last_met(m)}</span></li>"
+            for m in rot["missing"])
+        miss = f"<p>Misses this season:</p><ul class=firstlist>{items}</ul>"
+    drawcard = ""
+    if dr or miss:
+        sched_base = f"{BASE}../schedule/" if live else f"{BASE}../schedule/{year}/"
+        drawcard = (f"<div class=card id=draw><h2>The draw and the rotation</h2>"
+                    f"{dr}{miss}<p class=note>From "
+                    f"<a href={sched_base}draw.html>The Draw</a> and "
+                    f"<a href={sched_base}rotation.html>The Rotation</a>.</p></div>")
+
+    # --- home gates -----------------------------------------------------------
+    gates = home_gates(team, range(year - 2, year + 1))
+    this = "".join(
+        f"<li>Wk {g['week']} vs {esc(g['opponent'])}: <b>{g['attendance']:,}</b>"
+        + (f" <span class=dim>({g['weather']['tempF']}°F)</span>"
+           if g.get("weather") and g["weather"].get("tempF") is not None else "")
+        + "</li>"
+        for g in gates.get(year, []) if g.get("attendance"))
+    trs = []
+    for y in sorted(gates):
+        got = [g["attendance"] for g in gates[y] if g.get("attendance")]
+        if got:
+            trs.append(f"<tr><td>{y}</td><td class=num>{len(got)}</td>"
+                       f"<td class=num>{sum(got) / len(got):,.0f}</td>"
+                       f"<td class=num>{max(got):,}</td></tr>")
+    gatecard = ""
+    if this or trs:
+        gatecard = (f"<div class=card id=gates><h2>Home gates</h2>"
+                    f"<ul class=firstlist>{this or '<li class=dim>No home gate reported yet.</li>'}</ul>"
+                    + (f"<table><thead><tr><th>Season</th><th class=num>home games</th>"
+                       f"<th class=num>average</th><th class=num>best</th></tr></thead>"
+                       f"<tbody>{''.join(trs)}</tbody></table>" if trs else "")
+                    + f"<p class=note>From <a href={BASE}../attendance/>Attendance</a>."
+                    f"</p></div>")
+
+    # --- in the big 12 --------------------------------------------------------
+    hist_rows = ""
+    for y, r, ccg in extras["history"].get(team, []):
+        what = ""
+        if ccg and ccg.get("completed") and rules.has_score(ccg):
+            w = (ccg["home_points"] > ccg["away_points"]) == (ccg["home"] == team)
+            other = ccg["away"] if ccg["home"] == team else ccg["home"]
+            what = (f"{'won' if w else 'lost'} the title game "
+                    f"{ccg['home_points']}-{ccg['away_points']} vs {esc(other)}")
+        # Only seasons kept online get a link; the rest are a fact in a
+        # table, not a page.
+        cell = (f"<a href='{BASE}{y}/team/{team_slug(team)}'>{y}</a>"
+                if y in ARCHIVE_YEARS else str(y))
+        hist_rows += (f"<tr><td>{cell}</td>"
+                      f"<td class=num>{r['conf_w']}-{r['conf_l']}</td>"
+                      f"<td class=num>{r['overall_w']}-{r['overall_l']}</td>"
+                      f"<td class=num>{r['rank']}</td><td class=dim>{what}</td></tr>")
+    histcard = ""
+    if hist_rows:
+        histcard = (f"<div class=card id=history><h2>In the Big 12</h2>"
+                    f"<table><thead><tr><th>Season</th><th class=num>conf.</th>"
+                    f"<th class=num>overall</th><th class=num>finish</th><th></th>"
+                    f"</tr></thead><tbody>{hist_rows}</tbody></table>"
+                    f"<p class=note>Regular season, as the tracker keeps it, "
+                    f"with ties left standing. Seasons this team was not in the "
+                    f"conference are not listed.</p></div>")
+
+    side = "".join(c for c in (nerds, drawcard, gatecard, histcard) if c)
+    return head + sched + nxt + (f"<div class=teamgrid>{side}</div>" if side else "")
+
+
+def teams_index_body(year, rows, sims, clinch):
+    """Sixteen rows, one link each, in standings order."""
+    live_cols = bool(sims)
+    trs = []
+    for r in rows:
+        t = r["team"]
+        s = sims.get(t) or {}
+        st = (clinch.get(t) or {}).get("status", "")
+        word = {"clinched": "Clinched", "eliminated": "Eliminated"}.get(st, "")
+        odds = (f"<td class=num>{odds_pct(s['p_ccg'])}</td>"
+                f"<td class=num>{s['exp_w']:.1f}</td><td>{word}</td>"
+                if live_cols and s else
+                ("<td class=num>—</td><td class=num>—</td><td></td>" if live_cols else ""))
+        trs.append(f"<tr><td>{r['rank']}</td><td class=teamcell>{logo_img(t, 16)}"
+                   f"<a class=teamlink href='team/{team_slug(t)}'>{esc(t)}</a></td>"
+                   f"<td class=num>{r['conf_w']}-{r['conf_l']}</td>"
+                   f"<td class=num>{r['overall_w']}-{r['overall_l']}</td>{odds}</tr>")
+    head = ("<th class=num>title game</th><th class=num>exp. wins</th><th></th>"
+            if live_cols else "")
+    return (f"<div class='card teamidx'><h2>The teams</h2>"
+            f"<table><thead><tr><th></th><th>Team</th><th class=num>conf.</th>"
+            f"<th class=num>overall</th>{head}</tr></thead><tbody>{''.join(trs)}"
+            f"</tbody></table><p class=note>One page per team: the record, the "
+            f"odds, every game with the model's line, what matters next, the "
+            f"draw, the gates and the history. Standings order, ties sorted for "
+            f"readability as on <a href=standings.html>The Standings</a>.</p></div>")
+
+
+def write_team_pages(year, games, ctx, rows, clinch, outdir, base, canon):
+    """team/<slug>.html for every team in the season's standings."""
+    tdir = os.path.join(outdir, "team")
+    os.makedirs(tdir, exist_ok=True)
+    systems, teams = ctx["systems"], ctx["teams"]
+    names = [r["team"] for r in rows]
+    extras = {
+        "draw": swap_mod.matrix(games, systems, names)[1] if systems else [],
+        "rotation": rotation_mod.report(
+            games, teams, fetcher.usable_seasons(range(2011, year)))[0],
+        "history": team_history(year),
+        # The rating systems only. render() has already added the blend and
+        # the market to ctx["favorites"]; averaging those back in would
+        # double-weight the blend and fold in a line that is not a rating,
+        # the exact mistake the `kind` field exists to prevent.
+        "blend": blend_favorites(
+            {k: v for k, v in (ctx.get("favorites") or {}).items()
+             if k in systems}, games),
+        "market": market_favorites(games),
+        "lines": load_lines(year),
+        "ranks": display_ranks(rows),
+        # Who counts as FBS this season, from the games themselves.
+        "fbs": {g[side] for g in games for side in ("home", "away")
+                if g.get(f"{side}_class") == "fbs"},
+    }
+    # One directory deeper than the season's pages, so the asset base
+    # climbs once more, the same way the game pages do under /schedule/.
+    BASE_was, globals()["BASE"] = BASE, "../" + base
+    try:
+        head = TEAM_CSS + LOCAL_TIME_JS + (
+            f'<script defer src="/tiebreaker/{asset_v("gauge.js")}"></script>'
+            f'<script defer src="/tiebreaker/{asset_v("pickcon.js")}"></script>'
+            if PICKEM_ENABLED and year == LIVE_YEAR else "")
+        n = 0
+        for team in names:
+            body = team_page_body(team, year, games, ctx, rows, clinch, extras)
+            if not body:
+                continue
+            slug = team_slug(team)
+            with open(os.path.join(tdir, slug), "w") as f:
+                f.write(build_subpage(
+                    team, "teams", body, year, "",
+                    canon=f"{canon}team/{slug}",
+                    desc=(f"{team} in the {year} Big 12 season: record, "
+                          f"title-game odds, every game with the model's line, "
+                          f"what matters next, the draw, the gates and the "
+                          f"history."),
+                    head=head, section="tiebreaker",
+                    page=f"team/{slug}", up="../"))
+            n += 1
+    finally:
+        globals()["BASE"] = BASE_was
+    print(f"built {n} team pages -> {tdir}")
 
 
 STAND_CARD = """<div class="card standcard">
@@ -5002,6 +5546,16 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                       "the Big 12 championship game — and the three seasons a "
                       "team on the identical record stayed home.",
                       ""))
+    # The PADDED board, so a team that has not played a conference game yet
+    # still has a page in September; engine.standings alone has six rows
+    # in week 3.
+    clinch = engine.clinch_analyze(games, overrides)["teams"]
+    pages.append(("teams.html", "The Teams", "teams",
+                  teams_index_body(year, display_rows, sims, clinch),
+                  f"Every Big 12 team in {yr}, one page each: record, "
+                  "title-game odds, the schedule with the model's line, "
+                  "what matters next, the draw, the gates and the history.",
+                  ""))
     # Both lists below are the evergreen set and they are independent copies:
     # this one decides the canonical URL, the one in write_discovery decides
     # the sitemap. Updating one and not the other is the standing trap.
@@ -5121,6 +5675,9 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                                                  key=lambda g: g.get("id") or 0)
                                  if g.get("id")}},
                       f, separators=(",", ":"), sort_keys=True)
+
+    write_team_pages(year, games, ctx, display_rows, clinch, outdir, base,
+                     canon)
 
     build_explainer(year, matchcard_for("how.html", year, ctx), outdir)
     build_model_ratings(year, matchcard_for("model.html", year, ctx),
@@ -6844,7 +7401,11 @@ def write_discovery(years):
     year pills, and the pages carry no dated signal of their own."""
     site = "https://big12ology.com/tiebreaker/"
     sched = "https://big12ology.com/schedule/"
-    subs = ["", "lab.html", "race.html", "standings.html", "model.html"]
+    subs = ["", "lab.html", "race.html", "standings.html", "model.html",
+            "teams.html"]
+    # One per team per season. Built for every season, so listed for every
+    # season; a finished year's page is its record, not its odds.
+    subs += [f"team/{team_slug(t)}" for t in sorted(load_teams())]
     sched_subs = ["", "matrix.html", "draw.html", "rotation.html"]
     # Listed once, under the live season — every year serves the same bytes.
     evergreen = ["how.html", "history.html", "cutline.html",

@@ -126,6 +126,10 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
     /* Scoped to the grid: pickem_line() draws a .slateline of its own as a
        sibling of .slatemeta, and it is not a cell in here. */
     .slatemeta > .slateline  { grid-area:line }
+    /* The team pages' extra row (slate_card's `extra`): the model's line
+       beside the result. Auto-placed under the named rows and spanning
+       both columns, so a card without one is laid out exactly as before. */
+    .slatemeta > .slatemodel { grid-column:1 / -1 }
   }
 .slatemeta > div { display:flex; align-items:center; gap:7px;
   min-width:0; white-space:nowrap }
