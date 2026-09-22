@@ -4235,15 +4235,30 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
         gid = str(g["id"])
         line = ""
         if g["completed"] and rules.has_score(g) and systems:
-            d = blend_now(g, systems)
+            # The live season reads what the build said BEFORE the game, from
+            # the forecast record; a game with no record says nothing rather
+            # than re-judging it. An archived season has no records and the
+            # whole season's ratings, and says which it is using.
+            sp = None
+            if live:
+                rec = forecast_for(year, g)
+                d = rec["margin"] if rec else None
+                sp = rec.get("spread") if rec else None
+            else:
+                d = blend_now(g, systems)
             if d is not None:
-                mine_m = d if g["home"] == team else -d
-                act = ((g["home_points"] - g["away_points"])
-                       * (1 if g["home"] == team else -1))
+                sign = 1 if g["home"] == team else -1
+                mine_m = d * sign
+                act = (g["home_points"] - g["away_points"]) * sign
+                bits = [f"model {esc(ab)} {mine_m:+.1f}"]
+                if sp is not None:
+                    # A home spread of -3 is the home side by three.
+                    bits.append(f"Vegas {esc(ab)} {-sp * sign:+.1f}")
+                bits += [f"actual {act:+d}",
+                         f"{'covered' if act > mine_m else 'fell short'} by "
+                         f"{abs(act - mine_m):.1f}"]
                 line = (f"<div class='slatemodel dim'>{icon('note')}<span>"
-                        f"model {esc(ab)} {mine_m:+.1f} · actual {act:+d} · "
-                        f"{'covered' if act > mine_m else 'fell short'} by "
-                        f"{abs(act - mine_m):.1f}</span></div>")
+                        f"{' · '.join(bits)}</span></div>")
         elif not g["completed"]:
             bits = []
             for label, src in (("Nerds", blend), ("Vegas", market)):
@@ -4260,9 +4275,10 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
         card = card.replace("href='game/", f"href='{BASE}../schedule/game/")
         cards.append(f"<div><span class=wklabel>Week {g['week']}</span>{card}</div>")
     caveat = ("" if not systems else
-              " Played games carry the blend's line as it stands today "
-              "against the result; ratings move, so this re-judges rather "
-              "than remembers. Unplayed games carry the blend and the market."
+              " Played games carry the model's line and the market's as they "
+              "stood before kickoff, from the week's forecast record, against "
+              "the result. Unplayed games carry the blend and the market as "
+              "of this build."
               if live else
               " Each game carries the blend's line on the season's final "
               "ratings against the result: what the systems made of the "
@@ -6122,6 +6138,75 @@ def redirect_stub(to, title):
             f'<p><a href="{to}">{esc(title)} has moved to {to}</a></p>')
 
 
+def forecast_games(games, systems):
+    """{game_id: what the model said}, for every game still to be played.
+
+    The team odds are graded per season; these are graded per game, and a
+    game is the unit a reader remembers. `margin` is the ensemble's expected
+    home margin in points, the number the simulations draw around; `p_home`
+    is the ensemble's home win probability; `spread` is the market's home
+    line at the same moment, absent when no book had one. Each is signed
+    the way its source signs it: a positive margin favors the home side, a
+    negative spread does.
+
+    The team pages read these back to put the pre-kickoff line beside the
+    result. Today's ratings cannot do that honestly once they have seen the
+    game, which is the caveat the scorecard carries and this removes.
+    """
+    margins = engine.ensemble_margin(games, systems)
+    probs = engine.win_probs(games, systems)
+    out = {}
+    for g in games:
+        gid = g.get("id")
+        if g["completed"] or g.get("ccg") or gid not in margins:
+            continue
+        rec = {"week": g["week"], "home": g["home"], "away": g["away"],
+               "margin": round(margins[gid], 2),
+               "p_home": round(probs.get(gid, 0.5), 3)}
+        if g.get("neutral_site"):
+            rec["neutral"] = True
+        sp = (g.get("line") or {}).get("spread")
+        if sp is not None:
+            rec["spread"] = sp
+        out[str(gid)] = rec
+    return out
+
+
+_FORECAST_GAMES = {}
+
+
+def forecast_for(year, g):
+    """What the model said about a game before it was played, from the
+    forecast records, or None.
+
+    The record for week N is written while N is the last week with a
+    result in it, and stops being written the moment a week N+1 game has
+    one. So the last state of week-(N).json is the last thing the build
+    said before any week-(N+1) game had a result: for a week-W game, the
+    week-(W-1) record is the pre-kickoff forecast, and that is the file
+    this reads. A game the file does not hold, a kickoff moved between
+    weeks, falls back to the latest earlier record that does.
+    """
+    if year not in _FORECAST_GAMES:
+        by_week = {}
+        d = os.path.join(HERE, "forecasts", str(year))
+        for name in (os.listdir(d) if os.path.isdir(d) else []):
+            if not name.startswith("week-") or not name.endswith(".json"):
+                continue
+            try:
+                f = json.load(open(os.path.join(d, name)))
+            except (OSError, ValueError):
+                continue
+            if f.get("games") and f.get("through_week") is not None:
+                by_week[f["through_week"]] = f["games"]
+        _FORECAST_GAMES[year] = by_week
+    gid = str(g.get("id"))
+    for tw in sorted(_FORECAST_GAMES[year], reverse=True):
+        if tw < g["week"] and gid in _FORECAST_GAMES[year][tw]:
+            return _FORECAST_GAMES[year][tw][gid]
+    return None
+
+
 def write_forecast(year, games, systems, sims):
     """Keep what we predicted, so it can be graded later.
 
@@ -6164,6 +6249,8 @@ def write_forecast(year, games, systems, sims):
                       "exp_w": round(v["exp_w"], 3)}
                   for t, v in sims.items()
                   if isinstance(v, dict) and "p_ccg" in v},
+        # Per game, for the same reason as per team. See forecast_games.
+        "games": forecast_games(games, systems),
     }
     p = os.path.join(out, f"week-{week:02d}.json")
     # Overwritten within a week on purpose: the hourly build keeps refining
@@ -6173,7 +6260,9 @@ def write_forecast(year, games, systems, sims):
     # between results the payload is identical apart from `generated` — and
     # rewriting it anyway would hand CI a one-line diff to commit on every
     # hourly build, roughly three hundred a month, every one of them saying
-    # nothing. Compare without the timestamp and leave the file alone.
+    # nothing. Compare without the timestamp and leave the file alone. The
+    # market spreads in `games` move on the daily lines refresh, so a
+    # rewrite a day is now the expected rate rather than one a week.
     if os.path.exists(p):
         try:
             old = json.load(open(p))
