@@ -170,8 +170,13 @@ ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
 /* The whole row is the link to the game's page. Ink, not accent: a list
    where every word is link-colored says nothing; the hover underline says
    it for the row under the pointer. */
-ul.games li a.gamelink { color:inherit; text-decoration:none; display:block }
-ul.games li a.gamelink:hover { text-decoration:underline }
+/* The Preview link at the end of a game row. Small and dim: the names
+   beside it are links too, and the row is read before it is clicked. */
+ul.games li a.gamelink { color:var(--dim); text-decoration:none;
+  margin-left:8px; font-size:var(--t-meta); white-space:nowrap;
+  display:inline-flex; align-items:center; gap:4px; vertical-align:baseline }
+ul.games li a.gamelink .gi { width:13px; height:13px }
+ul.games li a.gamelink:hover { text-decoration:underline; color:var(--accent) }
 /* One non-conference marker for the whole site. It was a pill in the Lab's
    own stylesheet and bare parenthetical text everywhere else, so the same
    fact about the same game looked like two different things depending on

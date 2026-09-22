@@ -3648,15 +3648,17 @@ def pretty_date(iso, style="short"):
 def game_row(g, pages=False):
     """One game on one line, wherever a card lists many.
 
-    `pages` wraps the row in a link to the game's page — same gate as
-    slate_card's Preview link, passed by each caller because game pages
-    exist for the live season only and this row also renders on archived
-    briefs and schedules. Root-relative, like section_href: the rows appear
-    under /tiebreaker/ and /schedule/ both, and the pages live at
-    /schedule/game/ regardless of who is asking."""
-    # Names only: with `pages` the whole row is the link to the game.
-    hn, an = (team_name(g["home"], link=False),
-              team_name(g["away"], link=False))
+    Each Big 12 name is a link to its team page and, with `pages`, the row
+    ends in a Preview link to the game's page: two destinations, two links,
+    the same pair the slate card offers. The row used to BE the game link,
+    which left no room for the names to go anywhere; an anchor around
+    anchors is not HTML. `pages` is the same gate as slate_card's Preview,
+    passed by each caller because game pages exist for the live season only
+    and this row also renders on archived briefs and schedules.
+    Root-relative, like section_href: the rows appear under /tiebreaker/
+    and /schedule/ both, and the pages live at /schedule/game/ regardless
+    of who is asking."""
+    hn, an = team_name(g["home"]), team_name(g["away"])
     if g["completed"] and rules.has_score(g):
         hw = g["home_points"] > g["away_points"]
         home = f"<b>{hn} {g['home_points']}</b>" if hw \
@@ -3676,8 +3678,8 @@ def game_row(g, pages=False):
         tag = " <span class=ccgtag>Championship</span>"
     row = f"{score}{tag}"
     if pages:
-        row = (f"<a class=gamelink href='/schedule/game/{game_slug(g)}'>"
-               f"{row}</a>")
+        row += (f" <a class=gamelink href='/schedule/game/{game_slug(g)}'>"
+                f"{icon('note')}Preview</a>")
     return f"<li class={cls}>{row}</li>"
 
 
