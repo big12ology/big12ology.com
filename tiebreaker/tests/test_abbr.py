@@ -57,7 +57,10 @@ for mod in ("build.py", "gen_history.py"):
 YEAR = 2025
 card = build.alltime_h2h_card(YEAR, build.load_games(YEAR), teams)
 
-heads = re.findall(r"<th title='([^']*)'>([^<]+)</th>", card)
+# The label is a link to the team's page (team_name); the test is about
+# the text, so the anchor is optional here and ignored.
+heads = re.findall(r"<th title='([^']*)'>(?:<a [^>]*>)?([^<]+)(?:</a>)?</th>",
+                   card)
 check(len(heads) == len(teams),
       f"the grid has {len(heads)} column headers for {len(teams)} teams — "
       f"it is not the grid this test was written for")
@@ -73,7 +76,8 @@ for name, label in heads:
           f"'{build.team_abbr(teams, name)}'")
 # Row labels carry the full name; a[:12] used to cut three of them off
 # mid-word ("Arizona Stat").
-body = re.findall(r"<td class=teamcell>.*?>([A-Za-z .'&-]+)</td>", card)
+body = re.findall(r"<td class=teamcell>.*?>([A-Za-z .'&-]+)(?:</a>)?</td>",
+                  card)
 check(len(body) == len(teams),
       f"the grid has {len(body)} row labels for {len(teams)} teams")
 for label in body:

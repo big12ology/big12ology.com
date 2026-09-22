@@ -47,9 +47,14 @@
 
   function teamCell(r, pos, trail) {
     var t = r.t;
+    // Linked like the row the server drew, or the first repaint would
+    // silently take sixteen links off the board.
+    var page = teams[t] && teams[t].page;
+    var text = page ? "<a class=teamlink href='" + page + "'>" + esc(t) + "</a>"
+                    : esc(t);
     return "<td class='teamcell" + statusClass(r.s, pos) +
       "'><span class=cbar style='background:" + color(t) + "'></span>" +
-      mark(t) + esc(t) + (trail || "") + "</td>";
+      mark(t) + text + (trail || "") + "</td>";
   }
 
   // Four cells, matching the head standings_page writes. The last two are

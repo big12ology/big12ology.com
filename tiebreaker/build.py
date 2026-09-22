@@ -625,6 +625,15 @@ def rebase_from(html, old, new):
         for q in ("'", '"', ""):
             html = html.replace(f"{attr}={q}{old}logos/",
                                 f"{attr}={q}{new}logos/")
+    # The team pages live beside the marks, under the tiebreaker root, and
+    # team_name links to them from the same base the marks are drawn from:
+    # "team/" in the live season, "<year>/team/" in an archived one. Walk
+    # those the same way, or every name on a schedule page points into a
+    # team/ directory that /schedule/ does not have.
+    for prefix in ("team/", f"{SEASON}/team/"):
+        for q in ("'", '"', ""):
+            html = html.replace(f"href={q}{old}{prefix}",
+                                f"href={q}{new}{prefix}")
     return html
 
 
@@ -1163,7 +1172,7 @@ def fork_block(g, lev, sims, teams, compact=False):
             delta = (f"<span class='forkd {way}'>{arrow}"
                      f"{n if n else ''}</span>")
         return (f"<div class=forkcell><span class=forkteam>"
-                f"{logo_img(t, 16)}{esc(t)}</span>"
+                f"{team_name(t)}</span>"
                 f"<b class=forkp>{p * 100:.0f}%</b>{delta}</div>")
 
     cols = []
@@ -1224,7 +1233,7 @@ def teach_block(g, lev, cond, teams):
             sign = "&mdash;" if not n else ("+" if dv > 0 else "&minus;")
             cells.append(
                 f"<div class=forkcell><span class=forkteam>"
-                f"{logo_img(t, 16)}{esc(t)}</span>"
+                f"{team_name(t)}</span>"
                 f"<b class=forkp>{p * 100:.0f}%</b>"
                 f"<span class='forkd {way}'>{sign}{n if n else ''}</span>"
                 f"</div>")
@@ -1262,9 +1271,9 @@ def leverage_card(games, sims, teams=None):
         # the middle of "biggest swing: BYU +26% if BYU wins".
         rows.append(
             f"<div class=clrow><div class=levmain>"
-            f"<span class=levgame>{logo_img(g['away'], 16)}{esc(g['away'])} "
-            f"<span class=dim>{joiner(g)}</span> {logo_img(g['home'], 16)}"
-            f"{esc(g['home'])}</span>"
+            f"<span class=levgame>{team_name(g['away'])} "
+            f"<span class=dim>{joiner(g)}</span> {team_name(g['home'])}"
+            f"</span>"
             f"<span class=levdate>{date}</span>"
             f"<span class=levbar><span class=obar><i style='width:{pct:.0f}%;"
             f"background:{winpct_color(min(e['total'], 1.0))}'></i></span>"
@@ -1316,8 +1325,8 @@ def sos_card(games, systems):
     for i, t in enumerate(ranked):
         avg = sum(sched[t]) / len(sched[t])
         rows.append(
-            f"<tr><td>{i + 1}</td><td class=teamcell>{logo_img(t, 16)}"
-            f"{esc(t)}</td><td>{len(sched[t])}</td>"
+            f"<tr><td>{i + 1}</td><td class=teamcell>{team_name(t)}"
+            f"</td><td>{len(sched[t])}</td>"
             f"<td>{avg:+.1f}</td></tr>")
     return ("<div class=card id=soscard><h2>Remaining schedule difficulty"
             "</h2><table><thead><tr><th></th><th>Team</th><th>Left</th>"
@@ -1489,7 +1498,7 @@ def h2h_card(games, teams, stand_rows):
         meet[frozenset((g["home"], g["away"]))] = g
 
     head = "".join(
-        f"<th title='{esc(t)}'>{esc(team_abbr(teams, t))}</th>" for t in order)
+        f"<th title='{esc(t)}'>{team_name(t, text=team_abbr(teams, t), logo=False)}</th>" for t in order)
     body = []
     for a in order:
         cells = []
@@ -1533,8 +1542,8 @@ def h2h_card(games, teams, stand_rows):
                     f"<td class=dim title='{esc(g['away'])} {joiner(g)} "
                     f"{esc(g['home'])}, {date}'>"
                     f"<span class=hatag>{where}</span>wk {g['week']}</td>")
-        body.append(f"<tr><td class=teamcell>{logo_img(a, 14)}"
-                    f"{esc(a)}</td>{''.join(cells)}</tr>")
+        body.append(f"<tr><td class=teamcell>{team_name(a, 14)}"
+                    f"</td>{''.join(cells)}</tr>")
     return ("<div class=card id=h2hcard><h2>Head-to-head grid</h2>"
             '<div class="tablescroll scrollbox"><table class=h2h>'
             '<thead><tr><th></th>'
@@ -1798,13 +1807,9 @@ def standings_page(games, overrides, display_rows, teams):
         p = rules.pct(r["conf_w"], r["conf_l"])
         c = team_color(teams, r["team"])
         st = status_class(state.get(r["team"]), pos)
-        # The name is the way to the team's page. Relative to the season
-        # directory, which is where both this board and team/ live.
         return (f"<td class='teamcell{st}'><span class=cbar "
                 f"style='background:{c}'>"
-                f"</span>{logo_img(r['team'])}"
-                f"<a class=teamlink href='team/{team_slug(r['team'])}'>"
-                f"{esc(r['team'])}</a></td>"
+                f"</span>{team_name(r['team'], 20)}</td>"
                 f"<td>{r['conf_w']}–{r['conf_l']}</td>"
                 + ("<td>—</td>" if p is None else
                    f"<td style='color:{winpct_color(p)}'>{p:.3f}</td>")
@@ -1838,7 +1843,8 @@ def standings_page(games, overrides, display_rows, teams):
     if len(frames) > 1:
         marks = {t: {"color": team_color(teams, t),
                      "logo": f"{BASE}logos/{TEAM_KEY[t]}."
-                             f"{'png' if TEAM_KEY[t] == 'byu' else 'svg'}"}
+                             f"{'png' if TEAM_KEY[t] == 'byu' else 'svg'}",
+                     "page": team_href(t)}
                  for t in sorted(TEAM_KEY) if t in
                  {r["t"] for r in frames[-1]["right"]}}
         replay = ("<div class=card id=replaycard>"
@@ -1966,7 +1972,7 @@ def clinch_card(games, overrides, systems, stand_rows, sims,
         rows.append(
             f"<div class=clrow><div class=clmain>"
             f"{logo_img(t, 18)}"
-            f"<b class=clteam>{esc(t)}</b>"
+            f"<b class=clteam>{team_name(t, logo=False)}</b>"
             f"<span class=clbar>{bar}</span>"
             f"<span class=clpct>{pctcell}</span>"
             f"<span class=cltags>{' '.join(b for b in bits if b)}</span>"
@@ -2204,7 +2210,8 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
                 # and the before/after landed on each line.
                 out.append(
                     f"<div class=clrow><div class=movemain>"
-                    f"{logo_img(t, 16)}<b class=clteam>{esc(t)}</b>"
+                    f"{logo_img(t, 16)}<b class=clteam>"
+                    f"{team_name(t, logo=False)}</b>"
                     f"<span class=movepts style='color:{col}'>"
                     f"{'+' if d > 0 else ''}{d * 100:.0f} pts</span>"
                     f"<span class=dim>{fmt_prob(was)} &rarr; {fmt_prob(now)}"
@@ -2247,8 +2254,8 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
     lev = leverage_of(sims)
     if lev:
         items = "".join(
-            f"<li>{logo_img(e['away'], 14)}{esc(e['away'])} at "
-            f"{logo_img(e['home'], 14)}{esc(e['home'])} <span class=dim>"
+            f"<li>{team_name(e['away'], 14)} at "
+            f"{team_name(e['home'], 14)} <span class=dim>"
             f"&mdash; {e['total'] * 100:.0f} points of a title-game berth "
             f"change hands</span></li>" for e in lev[:3])
         parts.append(f"<div class=card><h2>What to watch next</h2>"
@@ -2727,6 +2734,42 @@ def team_slug(team):
     return f"{slug_part(team)}.html"
 
 
+# The season whose pages are being written. build_season sets it beside
+# BASE, and for the same reason: a link to a team's page has to know which
+# season's team/ directory it is pointing at, and that is a fact about the
+# build in progress, not about the caller.
+SEASON = None
+
+
+def team_href(team):
+    """The team's page, relative to the page being written, or None for a
+    team that has none: an opponent from outside the conference.
+
+    BASE is the tiebreaker root from here, whichever section this is; the
+    season's directory sits under it for an archived year and IS it for
+    the live one, which is the same rule year_href applies to the pills."""
+    if team not in TEAM_KEY:
+        return None
+    root = BASE if SEASON in (None, LIVE_YEAR) else f"{BASE}{SEASON}/"
+    return f"{root}team/{team_slug(team)}"
+
+
+def team_name(team, size=16, text=None, logo=True):
+    """A team, named: its mark and its name, the name a link to its page.
+
+    ONE renderer for every place a team is named on a built page. There
+    were eleven, each a mark beside an escaped string, and linking them one
+    at a time would have left the twelfth unlinked. `text` is for the
+    places that show the abbreviation; `logo` off is for a table head with
+    no room for a mark. A team without a page is named exactly as before.
+    """
+    label = esc(team if text is None else text)
+    href = team_href(team)
+    if href:
+        label = f"<a class=teamlink href='{href}'>{label}</a>"
+    return f"{logo_img(team, size) if logo else ''}{label}"
+
+
 def joiner(g):
     """"at" for a home game, "vs" for a neutral site.
 
@@ -2742,19 +2785,19 @@ def joiner(g):
 
 def matchup(g, size=18):
     """Both teams with their marks, scored if it has been played."""
-    hm, am = logo_img(g["home"], size), logo_img(g["away"], size)
+    hn, an = team_name(g["home"], size), team_name(g["away"], size)
     # The else branch already renders exactly what a half-scored game should
     # look like — both names, no figures — so switching the test here does not
     # need a new case, it just stops the comparison below from being reached
     # with a None on one side of it.
     if g["completed"] and rules.has_score(g):
         hw = g["home_points"] > g["away_points"]
-        away = (f"{am}<b>{esc(g['away'])}</b> {g['away_points']}" if not hw
-                else f"{am}{esc(g['away'])} {g['away_points']}")
-        home = (f"{hm}<b>{esc(g['home'])}</b> {g['home_points']}" if hw
-                else f"{hm}{esc(g['home'])} {g['home_points']}")
+        away = (f"<b>{an}</b> {g['away_points']}" if not hw
+                else f"{an} {g['away_points']}")
+        home = (f"<b>{hn}</b> {g['home_points']}" if hw
+                else f"{hn} {g['home_points']}")
     else:
-        away, home = f"{am}{esc(g['away'])}", f"{hm}{esc(g['home'])}"
+        away, home = an, hn
     tag = ""
     if g.get("ccg"):
         tag = " <span class=ccgtag>Championship</span>"
@@ -3608,20 +3651,19 @@ def game_row(g, pages=False):
     briefs and schedules. Root-relative, like section_href: the rows appear
     under /tiebreaker/ and /schedule/ both, and the pages live at
     /schedule/game/ regardless of who is asking."""
-    hm, am = logo_img(g["home"], 16), logo_img(g["away"], 16)
+    hn, an = team_name(g["home"]), team_name(g["away"])
     if g["completed"] and rules.has_score(g):
         hw = g["home_points"] > g["away_points"]
-        home = f"<b>{esc(g['home'])} {g['home_points']}</b>" if hw \
-            else f"{esc(g['home'])} {g['home_points']}"
-        away = f"<b>{esc(g['away'])} {g['away_points']}</b>" if not hw \
-            else f"{esc(g['away'])} {g['away_points']}"
-        score = f"{am}{away} <span class=dim>{joiner(g)}</span> {hm}{home}"
+        home = f"<b>{hn} {g['home_points']}</b>" if hw \
+            else f"{hn} {g['home_points']}"
+        away = f"<b>{an} {g['away_points']}</b>" if not hw \
+            else f"{an} {g['away_points']}"
+        score = f"{away} <span class=dim>{joiner(g)}</span> {home}"
         cls = "done"
     else:
         when = game_date(g)
-        score = (f"{am}{esc(g['away'])} "
-                 f"<span class=dim>{joiner(g)}</span> "
-                 f"{hm}{esc(g['home'])} <span class=dim>({when})</span>")
+        score = (f"{an} <span class=dim>{joiner(g)}</span> "
+                 f"{hn} <span class=dim>({when})</span>")
         cls = "upcoming"
     tag = ("" if g["conference_game"]
            else " <span class=nctag>non-conf</span>")
@@ -3844,7 +3886,8 @@ def render(year, games):
                 panels.append(
                     f"<div class=side style='border-bottom-color:{c}'>"
                     f"{logo_img(t, 56)}<div><span class=seed>{seed}</span> "
-                    f"<span class=tname>{esc(t)}</span></div></div>")
+                    f"<span class=tname>{team_name(t, logo=False)}</span>"
+                    f"</div></div>")
             card = (f"<div class=card id=matchcard><h2>{status} {badge}</h2>"
                     f"<div class=matchup>{panels[0]}<span class=vs>vs</span>"
                     f"{panels[1]}</div>{note}</div>")
@@ -3866,7 +3909,7 @@ def render(year, games):
             f"data-w={r['conf_w']} data-l={r['conf_l']}>"
             f"<td>{ranks[r['team']]}</td>"
             f"<td class=teamcell><span class=cbar style='background:{c}'>"
-            f"</span>{logo_img(r['team'])}{esc(r['team'])}{mark}</td>"
+            f"</span>{team_name(r['team'], 20)}{mark}</td>"
             f"<td>{r['conf_w']}–{r['conf_l']}</td>"
             + ("<td>—</td>" if p is None else
                f"<td style='color:{winpct_color(p)}'>{p:.3f}</td>") +
@@ -3912,6 +3955,8 @@ def render(year, games):
             "logo": f"{BASE}logos/{k}.{'png' if k == 'byu' else 'svg'}",
             "color": team_color(teams, t),
             "abbr": (teams.get(t) or {}).get("abbr") or t,
+            # The what-if board names teams the way every built table does.
+            "page": team_href(t),
         }
     # Marks for everyone else on the schedule. `teams` is the sixteen and the
     # page counts it — "all sixteen are 0–0", the list of teams not yet
@@ -4098,8 +4143,6 @@ TEAM_CSS = """<style>
 @media(max-width:820px){
   .teamgrid{grid-template-columns:1fr}
 }
-.teamlink{color:inherit;text-decoration:none}
-.teamlink:hover{text-decoration:underline}
 .teamidx td.num,.teamidx th.num{text-align:right;font-variant-numeric:tabular-nums}
 </style>"""
 
@@ -4444,7 +4487,7 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
             return ("never met in conference play" if m["last"] is None
                     else f"last met {m['last']}")
         items = "".join(
-            f"<li>{logo_img(m['opponent'], 16)}{esc(m['opponent'])} "
+            f"<li>{team_name(m['opponent'])} "
             f"<span class=dim>{last_met(m)}</span></li>"
             for m in rot["missing"])
         miss = f"<p>Misses this season:</p><ul class=firstlist>{items}</ul>"
@@ -4525,8 +4568,8 @@ def teams_index_body(year, rows, sims, clinch):
                 f"<td class=num>{s['exp_w']:.1f}</td><td>{word}</td>"
                 if live_cols and s else
                 ("<td class=num>—</td><td class=num>—</td><td></td>" if live_cols else ""))
-        trs.append(f"<tr><td>{r['rank']}</td><td class=teamcell>{logo_img(t, 16)}"
-                   f"<a class=teamlink href='team/{team_slug(t)}'>{esc(t)}</a></td>"
+        trs.append(f"<tr><td>{r['rank']}</td><td class=teamcell>"
+                   f"{team_name(t)}</td>"
                    f"<td class=num>{r['conf_w']}-{r['conf_l']}</td>"
                    f"<td class=num>{r['overall_w']}-{r['overall_l']}</td>{odds}</tr>")
     head = ("<th class=num>title game</th><th class=num>exp. wins</th><th></th>"
@@ -5227,7 +5270,8 @@ def build_model_ratings(year, matchcard, outdir=None):
         # 136 rows — worse than not asking. Big 12 teams are marked by the
         # row tint instead, which is also what the filter keys on.
         cls = " class=b12" if t in b12 else ""
-        rows.append(f"<tr{cls}><td class=rk>{rank}</td><td>{esc(t)}</td>"
+        rows.append(f"<tr{cls}><td class=rk>{rank}</td>"
+                    f"<td>{team_name(t, logo=False)}</td>"
                     f"<td class=rv>{v:+.1f}</td></tr>")
     src_year = s.get("year")
     stale = not archived and src_year is not None and src_year != year
@@ -5522,8 +5566,9 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                  sched_base=None):
     """Write one season's whole page set. `base` is the relative path back to
     the shared assets — empty at the root, "../" inside an archived year."""
-    global BASE
+    global BASE, SEASON
     BASE = base
+    SEASON = year
     os.makedirs(outdir, exist_ok=True)
     site_url = "https://big12ology.com/tiebreaker/"
     canon = site_url if year == LIVE_YEAR else f"{site_url}{year}/"
@@ -5860,7 +5905,7 @@ def alltime_h2h_card(year, games, teams, series=None):
                  for g in games)
     through = year if played else max(seasons, default=year)
     order = sorted(teams)
-    head = "".join(f"<th title='{esc(t)}'>{esc(team_abbr(teams, t))}</th>"
+    head = "".join(f"<th title='{esc(t)}'>{team_name(t, text=team_abbr(teams, t), logo=False)}</th>"
                    for t in order)
     body, never, once = [], 0, 0
     for a in order:
@@ -5883,7 +5928,7 @@ def alltime_h2h_card(year, games, teams, series=None):
                 f"<td style='color:{winpct_color(w / n)}' title='{esc(a)} "
                 f"{w}&ndash;{l} vs {esc(b)} in {n} conference "
                 f"meeting{'' if n == 1 else 's'}'>{w}&ndash;{l}</td>")
-        body.append(f"<tr><td class=teamcell>{logo_img(a, 14)}{esc(a)}</td>"
+        body.append(f"<tr><td class=teamcell>{team_name(a, 14)}</td>"
                     f"{''.join(cells)}</tr>")
     # Both counts walk the grid twice, once from each team's side.
     pairs = len(order) * (len(order) - 1) // 2
@@ -5934,8 +5979,8 @@ def build_rotation_page(year, games, teams, series=None):
     sitting = st["pairs_total"] - st["pairs_played"]
 
     def pair_line(a, b):
-        return (f"{logo_img(a, 16)}{esc(a)} <span class=dim>and</span> "
-                f"{logo_img(b, 16)}{esc(b)}")
+        return (f"{team_name(a)} <span class=dim>and</span> "
+                f"{team_name(b)}")
 
     firsts = ""
     if st["firsts"]:
@@ -5957,13 +6002,14 @@ def build_rotation_page(year, games, teams, series=None):
     for r in rows:
         cells = "".join(
             f"<li>{logo_img(m['opponent'], 16)}"
-            f"<span class=mabbr>{esc(team_abbr(teams, m['opponent']))}</span>"
+            f"<span class=mabbr>"
+            f"{team_name(m['opponent'], text=team_abbr(teams, m['opponent']), logo=False)}"
+            f"</span>"
             + (f"<span class=myr>{m['last']}</span>" if m["last"]
                else "<span class='myr warnpill'>never</span>")
             + "</li>"
             for m in r["missing"])
-        body.append(f"<tr><td class=teamcell>{logo_img(r['team'], 16)}"
-                    f"{esc(r['team'])}</td>"
+        body.append(f"<tr><td class=teamcell>{team_name(r['team'])}</td>"
                     f"<td><ul class=misslist>{cells}</ul></td></tr>")
 
     return f"""{firsts}
@@ -6081,7 +6127,7 @@ def build_draw_page(year, games, systems, teams):
     hardest, easiest = rows[0], rows[-1]
 
     summary = "".join(
-        f"<tr><td class=teamcell>{logo_img(r['team'], 16)}{esc(r['team'])}</td>"
+        f"<tr><td class=teamcell>{team_name(r['team'])}</td>"
         f"<td class=num style='color:{draw_color(r['vs_average'], span)};"
         f"font-weight:700'>{r['vs_average']:+.2f}</td>"
         f"<td class=num>{r['own']:.1f}</td>"
@@ -6091,7 +6137,7 @@ def build_draw_page(year, games, systems, teams):
         f"<td class=dim>{esc(team_abbr(teams, r['easiest'][1]))}</td></tr>"
         for r in rows)
 
-    head = "".join(f"<th title='{esc(t)}'>{esc(team_abbr(teams, t))}</th>"
+    head = "".join(f"<th title='{esc(t)}'>{team_name(t, text=team_abbr(teams, t), logo=False)}</th>"
                    for t in sorted(m))
     body = []
     for t in sorted(m):
@@ -6112,8 +6158,9 @@ def build_draw_page(year, games, systems, teams):
                 f"{draw_color(v - avg, span)}' "
                 f"title='{esc(t)} on {esc(owner)}&#39;s schedule: {v:.1f} "
                 f"wins, {v - avg:+.1f} vs its own average'>{v:.1f}</td>")
-        body.append(f"<tr><td class=teamcell>{logo_img(t, 16)}"
-                    f"{esc(team_abbr(teams, t))}</td>{''.join(cells)}</tr>")
+        body.append(f"<tr><td class=teamcell>"
+                    f"{team_name(t, text=team_abbr(teams, t))}</td>"
+                    f"{''.join(cells)}</tr>")
 
     return f"""<div class=card id=drawlede>
 <h2>What the draw was worth</h2>

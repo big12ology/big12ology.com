@@ -287,6 +287,15 @@
     return (teams[team] && teams[team].color) || "#888888";
   }
 
+  // The name as a link to the team's page, the way build.py's team_name
+  // prints it in every server-drawn table. The href comes with the payload
+  // because only the build knows which season directory it points into.
+  function name(team) {
+    var page = teams[team] && teams[team].page;
+    var text = esc(team);
+    return page ? "<a class=teamlink href='" + page + "'>" + text + "</a>" : text;
+  }
+
   // ---------------------------------------------------------------- sorting
 
   function applySort() {
@@ -427,7 +436,7 @@
         " data-w=" + r.conf_w + " data-l=" + r.conf_l + ">" +
         "<td>" + ranks[r.team] + "</td>" +
         "<td class=teamcell><span class=cbar style='background:" +
-        color(r.team) + "'></span>" + mark(r.team, 20) + esc(r.team) + mk +
+        color(r.team) + "'></span>" + mark(r.team, 20) + name(r.team) + mk +
         "</td><td>" + r.conf_w + "–" + r.conf_l + "</td>" +
         "<td" + (p === null ? "" : " style='color:" + winPctColor(p) + "'") +
         ">" + fmtPct(p) + "</td>" +
