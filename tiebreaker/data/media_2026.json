@@ -298,8 +298,7 @@
  "401856807": [
   {
    "outlet": "ESPNU",
-   "type": "tv",
-   "via": "espn.com"
+   "type": "tv"
   }
  ],
  "401856810": [
@@ -347,29 +346,25 @@
  "401856817": [
   {
    "outlet": "ESPN",
-   "type": "tv",
-   "via": "espn.com"
+   "type": "tv"
   }
  ],
  "401856819": [
   {
    "outlet": "ESPN2",
-   "type": "tv",
-   "via": "espn.com"
+   "type": "tv"
   }
  ],
  "401856820": [
   {
    "outlet": "FOX",
-   "type": "tv",
-   "via": "espn.com"
+   "type": "tv"
   }
  ],
  "401856822": [
   {
    "outlet": "TNT",
-   "type": "tv",
-   "via": "espn.com"
+   "type": "tv"
   }
  ],
  "401856826": [
