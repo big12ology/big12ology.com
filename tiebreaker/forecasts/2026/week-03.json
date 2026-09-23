@@ -5,7 +5,7 @@
    "home": "Washington State",
    "margin": -5.62,
    "p_home": 0.35,
-   "spread": 10.1,
+   "spread": 10.2,
    "systems": {
     "Big12ology": -1.84,
     "Elo": -1.59,
@@ -20,7 +20,7 @@
    "home": "Texas Tech",
    "margin": 31.51,
    "p_home": 0.988,
-   "spread": -34.6,
+   "spread": -34.5,
    "systems": {
     "Big12ology": 33.83,
     "Elo": 27.44,
@@ -108,7 +108,7 @@
    "home": "Cincinnati",
    "margin": -1.23,
    "p_home": 0.464,
-   "spread": 6.5,
+   "spread": 6.3,
    "systems": {
     "Big12ology": 5.49,
     "Elo": -4.63,
@@ -1067,7 +1067,7 @@
   }
  },
  "games_complete": 45,
- "generated": "2026-09-23T13:45:11+00:00",
+ "generated": "2026-09-23T20:57:03+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
