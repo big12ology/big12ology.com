@@ -5,7 +5,7 @@
    "home": "Washington State",
    "margin": -5.62,
    "p_home": 0.35,
-   "spread": 10.2,
+   "spread": 10.3,
    "systems": {
     "Big12ology": -1.84,
     "Elo": -1.59,
@@ -20,7 +20,7 @@
    "home": "Texas Tech",
    "margin": 31.51,
    "p_home": 0.988,
-   "spread": -34.5,
+   "spread": -34.3,
    "systems": {
     "Big12ology": 33.83,
     "Elo": 27.44,
@@ -35,7 +35,7 @@
    "home": "Georgia Southern",
    "margin": -9.58,
    "p_home": 0.256,
-   "spread": 18.5,
+   "spread": 17.8,
    "systems": {
     "Big12ology": -4.75,
     "Elo": -3.89,
@@ -93,7 +93,7 @@
    "home": "Baylor",
    "margin": 8.58,
    "p_home": 0.734,
-   "spread": -10.0,
+   "spread": -9.8,
    "systems": {
     "Big12ology": 7.2,
     "Elo": 9.59,
@@ -1056,7 +1056,7 @@
    "home": "West Virginia",
    "margin": 5.35,
    "p_home": 0.647,
-   "spread": -1.6,
+   "spread": -1.7,
    "systems": {
     "Big12ology": 10.18,
     "Elo": 8.0,
@@ -1068,7 +1068,7 @@
   }
  },
  "games_complete": 45,
- "generated": "2026-09-24T13:39:34+00:00",
+ "generated": "2026-09-24T21:01:12+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
