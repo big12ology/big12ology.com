@@ -35,7 +35,7 @@
    "home": "Georgia Southern",
    "margin": -9.58,
    "p_home": 0.256,
-   "spread": 17.8,
+   "spread": 17.4,
    "systems": {
     "Big12ology": -4.75,
     "Elo": -3.89,
@@ -108,7 +108,7 @@
    "home": "Cincinnati",
    "margin": -1.23,
    "p_home": 0.464,
-   "spread": 6.3,
+   "spread": 6.2,
    "systems": {
     "Big12ology": 5.49,
     "Elo": -4.63,
@@ -1068,7 +1068,7 @@
   }
  },
  "games_complete": 45,
- "generated": "2026-09-24T21:01:12+00:00",
+ "generated": "2026-09-25T03:42:58+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
