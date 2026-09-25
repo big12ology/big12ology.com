@@ -35,7 +35,7 @@
    "home": "Georgia Southern",
    "margin": -9.58,
    "p_home": 0.256,
-   "spread": 17.4,
+   "spread": 17.5,
    "systems": {
     "Big12ology": -4.75,
     "Elo": -3.89,
@@ -138,7 +138,7 @@
    "home": "Iowa State",
    "margin": -6.91,
    "p_home": 0.306,
-   "spread": 8.1,
+   "spread": 8.0,
    "systems": {
     "Big12ology": -4.89,
     "Elo": -6.26,
@@ -1056,7 +1056,7 @@
    "home": "West Virginia",
    "margin": 5.35,
    "p_home": 0.647,
-   "spread": -1.7,
+   "spread": -1.8,
    "systems": {
     "Big12ology": 10.18,
     "Elo": 8.0,
@@ -1068,7 +1068,7 @@
   }
  },
  "games_complete": 45,
- "generated": "2026-09-25T03:42:58+00:00",
+ "generated": "2026-09-25T13:59:02+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
