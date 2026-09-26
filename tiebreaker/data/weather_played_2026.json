@@ -205,6 +205,11 @@
    "tempF": 76.7,
    "windMph": 10.9
   },
+  "401856806": {
+   "precipChance": 0,
+   "tempF": 82.3,
+   "windMph": 8.2
+  },
   "401856810": {
    "precipChance": 0,
    "tempF": 88.3,
@@ -224,6 +229,16 @@
    "precipChance": 0,
    "tempF": 86.2,
    "windMph": 5.9
+  },
+  "401856815": {
+   "precipChance": 0,
+   "tempF": 81.8,
+   "windMph": 4.2
+  },
+  "401856816": {
+   "precipChance": 5,
+   "tempF": 62.2,
+   "windMph": 14.0
   },
   "401867804": {
    "precipChance": 0,
