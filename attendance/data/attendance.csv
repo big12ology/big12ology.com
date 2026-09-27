@@ -1412,6 +1412,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Cincinnati,1,2026-09-05,Boston College,false,Nippert Stadium,37097,38088,0.9740,false
 2026,Cincinnati,2,2026-09-12,Western Carolina,false,Nippert Stadium,34827,38088,0.9144,false
 2026,Cincinnati,3,2026-09-19,Miami (OH),false,Nippert Stadium,19188,38088,0.5038,false
+2026,Cincinnati,4,2026-09-26,Kansas State,true,Nippert Stadium,37562,38088,0.9862,false
 2026,Colorado,2,2026-09-12,Weber State,false,Folsom Field,49363,50183,0.9837,false
 2026,Houston,1,2026-09-05,Oregon State,false,TDECU Stadium,28742,40000,0.7186,false
 2026,Houston,2,2026-09-12,Southern,false,TDECU Stadium,28936,40000,0.7234,false
@@ -1438,3 +1439,4 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Utah,3,2026-09-19,Utah State,false,Rice-Eccles Stadium,51455,51444,1.0002,false
 2026,West Virginia,1,2026-09-05,Coastal Carolina,false,Milan Puskar Stadium,54158,60000,0.9026,false
 2026,West Virginia,2,2026-09-12,UT Martin,false,Milan Puskar Stadium,47049,60000,0.7842,false
+2026,West Virginia,4,2026-09-26,Oklahoma State,true,Milan Puskar Stadium,57756,60000,0.9626,false

@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 37
+    "agree": 39
   },
   "games": [
     {
@@ -379,6 +379,17 @@
       "status": "agree"
     },
     {
+      "team": "Cincinnati",
+      "week": 4,
+      "opponent": "Kansas State",
+      "date": "2026-09-26",
+      "espnId": 401856814,
+      "ours": 37562,
+      "espn": 37562,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "Iowa State",
       "week": 4,
       "opponent": "Utah",
@@ -408,6 +419,17 @@
       "espnId": 401856815,
       "ours": 43212,
       "espn": 43212,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "West Virginia",
+      "week": 4,
+      "opponent": "Oklahoma State",
+      "date": "2026-09-26",
+      "espnId": 401856881,
+      "ours": 57756,
+      "espn": 57756,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

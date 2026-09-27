@@ -865,7 +865,9 @@
       "role": "away",
       "venue": "Gesa Field",
       "city": "Pullman",
-      "state": "WA"
+      "state": "WA",
+      "pointsFor": 34,
+      "pointsAgainst": 24
     },
     {
       "team": "Baylor",
@@ -893,7 +895,15 @@
       "espnId": 401856814,
       "conferenceGame": true,
       "opponent": "Kansas State",
-      "attendance": null
+      "attendance": 37562,
+      "pointsFor": 31,
+      "pointsAgainst": 26,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 68,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -940,7 +950,7 @@
       "pointsAgainst": 31,
       "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 69,
+        "tempF": 68,
         "windMph": 14,
         "precipIn": 0
       }
@@ -957,7 +967,9 @@
       "role": "away",
       "venue": "Nippert Stadium",
       "city": "Cincinnati",
-      "state": "OH"
+      "state": "OH",
+      "pointsFor": 26,
+      "pointsAgainst": 31
     },
     {
       "team": "Oklahoma State",
@@ -971,7 +983,9 @@
       "role": "away",
       "venue": "Milan Puskar Stadium",
       "city": "Morgantown",
-      "state": "WV"
+      "state": "WV",
+      "pointsFor": 41,
+      "pointsAgainst": 24
     },
     {
       "team": "TCU",
@@ -1049,7 +1063,15 @@
       "espnId": 401856881,
       "conferenceGame": true,
       "opponent": "Oklahoma State",
-      "attendance": null
+      "attendance": 57756,
+      "pointsFor": 24,
+      "pointsAgainst": 41,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 63,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",

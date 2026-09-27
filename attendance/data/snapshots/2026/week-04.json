@@ -289,7 +289,7 @@
       "color": "#002855",
       "logo": "assets/logos/wvu.svg",
       "multiVenue": false,
-      "games": 2,
+      "games": 3,
       "weeks": [
         {
           "week": 1,
@@ -300,10 +300,49 @@
           "week": 2,
           "attendance": 47049,
           "pct": 0.78415
+        },
+        {
+          "week": 4,
+          "attendance": 57756,
+          "pct": 0.9626
         }
       ],
-      "total": 101207,
-      "pct": 0.8433916666666667
+      "total": 158963,
+      "pct": 0.8831277777777777
+    },
+    {
+      "team": "Cincinnati",
+      "stadium": "Nippert Stadium",
+      "capacity": 38088,
+      "capacityEstimate": null,
+      "color": "#e00122",
+      "logo": "assets/logos/cin.svg",
+      "multiVenue": false,
+      "games": 4,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 37097,
+          "pct": 0.9739813064482251
+        },
+        {
+          "week": 2,
+          "attendance": 34827,
+          "pct": 0.9143824826717076
+        },
+        {
+          "week": 3,
+          "attendance": 19188,
+          "pct": 0.503780718336484
+        },
+        {
+          "week": 4,
+          "attendance": 37562,
+          "pct": 0.9861898760764545
+        }
+      ],
+      "total": 128674,
+      "pct": 0.8445835958832179
     },
     {
       "team": "Iowa State",
@@ -333,35 +372,6 @@
       ],
       "total": 154347,
       "pct": 0.8365691056910569
-    },
-    {
-      "team": "Cincinnati",
-      "stadium": "Nippert Stadium",
-      "capacity": 38088,
-      "capacityEstimate": null,
-      "color": "#e00122",
-      "logo": "assets/logos/cin.svg",
-      "multiVenue": false,
-      "games": 3,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 37097,
-          "pct": 0.9739813064482251
-        },
-        {
-          "week": 2,
-          "attendance": 34827,
-          "pct": 0.9143824826717076
-        },
-        {
-          "week": 3,
-          "attendance": 19188,
-          "pct": 0.503780718336484
-        }
-      ],
-      "total": 91112,
-      "pct": 0.7973815024854722
     },
     {
       "team": "Arizona",
@@ -443,10 +453,10 @@
     },
     {
       "week": 4,
-      "games": 4,
-      "attendance": 195081,
-      "capacity": 211075,
-      "pct": 0.9242259860239251
+      "games": 6,
+      "attendance": 290399,
+      "capacity": 309163,
+      "pct": 0.9393070969035752
     },
     {
       "week": 5,
@@ -513,9 +523,9 @@
     }
   ],
   "totals": {
-    "games": 37,
-    "attendance": 1707461,
-    "capacity": 1841717,
-    "pct": 0.9271028067830183
+    "games": 39,
+    "attendance": 1802779,
+    "capacity": 1939805,
+    "pct": 0.9293609409193192
   }
 }
