@@ -2644,21 +2644,21 @@
   "spread_open_src": "collegefootballdata.com"
  },
  "401856818": {
-  "spread": 5.5,
+  "spread": 6.5,
   "over_under": 52.5,
-  "home_ml": 164,
-  "away_ml": -198,
+  "home_ml": 185,
+  "away_ml": -225,
   "books": [
    {
     "provider": "DraftKings",
-    "spread": 5.5,
+    "spread": 6.5,
     "over_under": 52.5,
-    "home_ml": 164,
-    "away_ml": -198
+    "home_ml": 185,
+    "away_ml": -225
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-09-26T13:14:40+00:00",
+  "as_of": "2026-09-27T06:27:18+00:00",
   "spread_open": 5.5,
   "over_under_open": 52.5,
   "spread_open_books": 1,

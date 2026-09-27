@@ -62,7 +62,7 @@
    "home": "TCU",
    "margin": -2.86,
    "p_home": 0.417,
-   "spread": 5.5,
+   "spread": 6.5,
    "systems": {
     "Big12ology": -3.01,
     "Elo": -0.3,
@@ -948,7 +948,7 @@
   }
  },
  "games_complete": 53,
- "generated": "2026-09-27T03:32:53+00:00",
+ "generated": "2026-09-27T06:28:47+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
