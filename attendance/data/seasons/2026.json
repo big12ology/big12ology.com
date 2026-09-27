@@ -875,7 +875,15 @@
       "espnId": 401856813,
       "conferenceGame": true,
       "opponent": "Colorado",
-      "attendance": null
+      "attendance": 40015,
+      "pointsFor": 23,
+      "pointsAgainst": 13,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 84,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
@@ -899,7 +907,9 @@
       "role": "away",
       "venue": "McLane Stadium",
       "city": "Waco",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 13,
+      "pointsAgainst": 23
     },
     {
       "team": "Houston",
@@ -913,7 +923,9 @@
       "role": "away",
       "venue": "Allen E. Paulson Stadium",
       "city": "Statesboro",
-      "state": "GA"
+      "state": "GA",
+      "pointsFor": 42,
+      "pointsAgainst": 28
     },
     {
       "team": "Iowa State",
@@ -923,7 +935,15 @@
       "espnId": 401856816,
       "conferenceGame": true,
       "opponent": "Utah",
-      "attendance": null
+      "attendance": 52150,
+      "pointsFor": 17,
+      "pointsAgainst": 31,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 69,
+        "windMph": 14,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
@@ -965,7 +985,9 @@
       "role": "away",
       "venue": "FBC Mortgage Stadium",
       "city": "Orlando",
-      "state": "FL"
+      "state": "FL",
+      "pointsFor": 13,
+      "pointsAgainst": 21
     },
     {
       "team": "Texas Tech",
@@ -975,7 +997,15 @@
       "espnId": 401856805,
       "conferenceGame": false,
       "opponent": "Sam Houston",
-      "attendance": null
+      "attendance": 59704,
+      "pointsFor": 49,
+      "pointsAgainst": 14,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 74,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
@@ -985,7 +1015,15 @@
       "espnId": 401856815,
       "conferenceGame": true,
       "opponent": "TCU",
-      "attendance": null
+      "attendance": 43212,
+      "pointsFor": 21,
+      "pointsAgainst": 13,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 82,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
@@ -999,7 +1037,9 @@
       "role": "away",
       "venue": "Jack Trice Stadium",
       "city": "Ames",
-      "state": "IA"
+      "state": "IA",
+      "pointsFor": 31,
+      "pointsAgainst": 17
     },
     {
       "team": "West Virginia",
