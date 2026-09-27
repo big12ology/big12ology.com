@@ -1055,7 +1055,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-26T23:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": true,
   "venue": "Nippert Stadium",
   "venue_id": 3854,
@@ -1067,8 +1067,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 31,
+  "away_points": 26
  },
  {
   "id": 401856881,
@@ -1097,7 +1097,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-09-26T23:30:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Gesa Field",
   "venue_id": 3820,
@@ -1109,8 +1109,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 24,
+  "away_points": 34
  },
  {
   "id": 401856807,
