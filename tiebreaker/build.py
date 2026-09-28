@@ -2169,11 +2169,32 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
         else:
             lede_bits.append(f"the Chaos Index held at <b>{cx['score']}</b> "
                              f"({esc(cx['label'].lower())})")
+    # rank 1 is only a leader when the tiebreaker put it there. An unresolved
+    # tie still hands out ranks 1 through n, alphabetically, so after week 4
+    # of 2026 this named Arizona State as leading eight teams at 1-0 that
+    # nothing had separated. display_ranks is what the standings table
+    # prints, "T1" for exactly that case, so the lede reads from it too.
     lead = [r for r in stand_rows if r["rank"] == 1]
     if lead:
         r = lead[0]
-        lede_bits.append(f"<b>{esc(r['team'])}</b> leads the standings at "
-                         f"{r['conf_w']}&ndash;{r['conf_l']}")
+        rec = f"{r['conf_w']}&ndash;{r['conf_l']}"
+        ranks = display_ranks(stand_rows)
+        tied = [x["team"] for x in stand_rows if ranks.get(x["team"]) == "T1"]
+        words = ["zero", "one", "two", "three", "four", "five", "six",
+                 "seven", "eight", "nine", "ten", "eleven", "twelve",
+                 "thirteen", "fourteen", "fifteen", "sixteen"]
+        if len(tied) > 3:
+            n = len(tied)
+            lede_bits.append(f"{words[n] if n < len(words) else n} teams "
+                             f"share the lead at {rec}")
+        elif len(tied) > 1:
+            names = [f"<b>{esc(t)}</b>" for t in tied]
+            joined = (" and ".join(names) if len(names) == 2
+                      else f"{names[0]}, {names[1]} and {names[2]}")
+            lede_bits.append(f"{joined} share the lead at {rec}")
+        else:
+            lede_bits.append(f"<b>{esc(r['team'])}</b> leads the standings "
+                             f"at {rec}")
     parts.append(f"<div class=card><h2>Week {last_week}</h2>"
                  f"<p>{'; '.join(lede_bits)}.</p></div>")
 
