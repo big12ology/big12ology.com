@@ -79,7 +79,7 @@
    "home": "Houston",
    "margin": 6.56,
    "p_home": 0.685,
-   "spread": -11.4,
+   "spread": -11.3,
    "systems": {
     "Big12ology": 6.02,
     "Elo": 3.41,
@@ -109,7 +109,7 @@
    "home": "Colorado",
    "margin": -15.61,
    "p_home": 0.125,
-   "spread": 13.8,
+   "spread": 13.7,
    "systems": {
     "Big12ology": -16.53,
     "Elo": -16.89,
@@ -954,7 +954,7 @@
   }
  },
  "games_complete": 53,
- "generated": "2026-09-28T03:58:26+00:00",
+ "generated": "2026-09-28T10:45:05+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
