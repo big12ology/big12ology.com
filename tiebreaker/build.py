@@ -2621,6 +2621,26 @@ def precip_kind(w):
     return "rain", "rain"
 
 
+def fell(w):
+    """What a played game's record says fell in the kickoff hour, or None.
+
+    The amount, never the chance. A record used to carry only the forecast's
+    probability, and the page printed it under a final score as "rain that
+    hour", which reads as a measurement and was not one. A record with no
+    amount (written before amounts were kept, and past the ~92 days Open-Meteo
+    still serves) says nothing about precipitation rather than that.
+
+    Snow is its depth and rain its water, which is how either is ever
+    reported. Under a hundredth of an inch of water is dry."""
+    if w.get("precipIn") is None:
+        return None
+    if w.get("precipType") == "snow" and (w.get("snowIn") or 0) >= 0.1:
+        return f"{w['snowIn']:.1f} in", "snow"
+    if w["precipIn"] < 0.01:
+        return "Dry", None
+    return f"{w['precipIn']:.2f} in", "rain"
+
+
 def weather_line(g):
     """The forecast inside sixteen days, the venue's average beyond it.
 
@@ -2672,8 +2692,12 @@ def weather_line(g):
             said = [f"{round(w['tempF'])}&deg;F"]
             if wind is not None:
                 said.append(f"{round(wind)} mph")
-            if rain is not None:
-                said.append(f"{round(rain)}% {kind}")
+            f = fell(w)
+            if f:
+                amt, what = f
+                said.append(f"{amt} {what}" if what else amt.lower())
+                if w.get("thunder"):
+                    said.append("thunder")
             return (f"<div class=slatewx title='Recorded at the venue for the "
                     f"kickoff hour.'>{icon('history', 'gi')}<span>"
                     + ", ".join(said) + " at kickoff</span></div>")
@@ -3481,15 +3505,21 @@ def venue_card(g):
             cells.append((f"<span class=wxwarn>{round(wind)} mph</span>"
                           if windy else f"{round(wind)} mph",
                           "wind", "wind"))
-        if rain is not None:
-            kind, kglyph = precip_kind(w)
-            wet = not was and (bool(w.get("thunder"))
-                               or round(rain) >= RAIN_WARN)
+        kind, kglyph = precip_kind(w)
+        if was:
+            f = fell(w)
+            if f:
+                amt, what = f
+                label = (f"{what} that hour" if what
+                         else "no rain that hour")
+                if w.get("thunder"):
+                    label += ", with thunder"
+                cells.append((amt, label, kglyph))
+        elif rain is not None:
+            wet = bool(w.get("thunder")) or round(rain) >= RAIN_WARN
             cells.append((f"<span class=wxwarn>{round(rain)}%</span>"
                           if wet else f"{round(rain)}%",
-                          f"{kind} that hour" if was
-                          else f"chance of {kind}",
-                          kglyph))
+                          f"chance of {kind}", kglyph))
         note = ("Recorded at the venue for the hour of kickoff, via "
                 "Open-Meteo." if was else
                 "Forecast for the hour of kickoff, via Open-Meteo.")

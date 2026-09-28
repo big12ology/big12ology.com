@@ -155,7 +155,7 @@ def _get(url):
 def _url(lats, lons, start, end):
     return (f"{API}?latitude={lats}&longitude={lons}"
             "&hourly=temperature_2m,wind_speed_10m,precipitation_probability,"
-            "rain,showers,snowfall,weather_code"
+            "precipitation,rain,showers,snowfall,weather_code"
             "&temperature_unit=fahrenheit&wind_speed_unit=mph"
             f"&models={','.join(MODELS)}"
             f"&timezone=UTC&start_date={start}&end_date={end}")
@@ -235,8 +235,12 @@ def attach(games, venues, quiet=False, season=None):
             if w:
                 g["weather"] = dict(w, observed=True)
 
-    # Only what is still missing an answer.
-    due = [(g, w) for g, w in in_range(games) if not g.get("weather")]
+    # Only what is still missing an answer. That includes a record written
+    # before the amounts were: it printed a pre-kickoff PROBABILITY under a
+    # final score, labeled "rain that hour" as though it had been measured.
+    # While Open-Meteo still serves the hour, fetch it again for the amounts.
+    due = [(g, w) for g, w in in_range(games)
+           if not g.get("weather") or _needs_amount(g["weather"])]
     if not due:
         return sum(1 for g in games if g.get("weather"))
 
@@ -324,6 +328,12 @@ def attach(games, venues, quiet=False, season=None):
             # Played games carry the same three numbers, but they are a record
             # rather than a forecast and the page has to be able to say so.
             was = bool(g.get("completed"))
+            # A backfilled record keeps what it already said and gains only
+            # the fields it lacked: the temperature and wind were written
+            # down once, and a later fetch does not get to rewrite them.
+            old = played.get(str(g.get("id"))) if was else None
+            if old:
+                w = dict(w, **old)
             g["weather"] = dict(w, observed=was)
             # And a record gets written down. Only played games: a forecast
             # committed to the repo would be an hourly churn of numbers
@@ -428,11 +438,22 @@ def _at_hour(hourly, when):
         # majority of the models that answered for the hour, so one model
         # alone cannot put a storm on a card, and past ICON's horizon it
         # takes both of the two that remain.
+        # What actually fell, for the played game that reads this as a
+        # record. A probability is a forecast's word, not an observation's.
+        # Inches, because that is what the rest of the line is in: the water
+        # for rain, the depth for snow.
+        out["precipIn"] = round(mean("precipitation") / 25.4, 2)
+        out["snowIn"] = round(mean("snowfall") / 2.54, 1)
         codes = values("weather_code")
         storms = sum(1 for c in codes if c >= 95)
         if codes and storms * 2 > len(codes):
             out["thunder"] = True
     return out
+
+
+def _needs_amount(w):
+    """A played game's record from before amounts were kept."""
+    return bool(w.get("observed")) and "precipIn" not in w
 
 
 def _kind(liquid_mm, snow_cm, temp_f):
