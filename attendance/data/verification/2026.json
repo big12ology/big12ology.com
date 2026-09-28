@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 33
+    "agree": 39
   },
   "games": [
     {
@@ -364,6 +364,72 @@
       "espnId": 401856801,
       "ours": 51455,
       "espn": 51455,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Baylor",
+      "week": 4,
+      "opponent": "Colorado",
+      "date": "2026-09-26",
+      "espnId": 401856813,
+      "ours": 40015,
+      "espn": 40015,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Cincinnati",
+      "week": 4,
+      "opponent": "Kansas State",
+      "date": "2026-09-26",
+      "espnId": 401856814,
+      "ours": 37562,
+      "espn": 37562,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Iowa State",
+      "week": 4,
+      "opponent": "Utah",
+      "date": "2026-09-26",
+      "espnId": 401856816,
+      "ours": 52150,
+      "espn": 52150,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Texas Tech",
+      "week": 4,
+      "opponent": "Sam Houston",
+      "date": "2026-09-26",
+      "espnId": 401856805,
+      "ours": 59704,
+      "espn": 59704,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "UCF",
+      "week": 4,
+      "opponent": "TCU",
+      "date": "2026-09-26",
+      "espnId": 401856815,
+      "ours": 43212,
+      "espn": 43212,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "West Virginia",
+      "week": 4,
+      "opponent": "Oklahoma State",
+      "date": "2026-09-26",
+      "espnId": 401856881,
+      "ours": 57756,
+      "espn": 57756,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

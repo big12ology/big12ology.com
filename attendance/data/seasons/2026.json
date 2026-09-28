@@ -96,13 +96,14 @@
       "espnId": 401856636,
       "conferenceGame": false,
       "opponent": "Auburn",
-      "attendance": null,
+      "attendance": 55068,
       "role": "neutral",
       "venue": "Mercedes-Benz Stadium",
       "city": "Atlanta",
       "state": "GA",
       "pointsFor": 16,
-      "pointsAgainst": 17
+      "pointsAgainst": 17,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Cincinnati",
@@ -219,13 +220,14 @@
       "espnId": 401856772,
       "conferenceGame": false,
       "opponent": "Tulsa",
-      "attendance": null,
+      "attendance": 28520,
       "role": "away",
       "venue": "Chapman Stadium",
       "city": "Tulsa",
       "state": "OK",
       "pointsFor": 10,
-      "pointsAgainst": 24
+      "pointsAgainst": 24,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Texas Tech",
@@ -307,13 +309,14 @@
       "espnId": 401856810,
       "conferenceGame": true,
       "opponent": "BYU",
-      "attendance": null,
+      "attendance": 64409,
       "role": "away",
       "venue": "LaVell Edwards Stadium",
       "city": "Provo",
       "state": "UT",
       "pointsFor": 17,
-      "pointsAgainst": 28
+      "pointsAgainst": 28,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Arizona State",
@@ -323,13 +326,14 @@
       "espnId": 401856683,
       "conferenceGame": false,
       "opponent": "Texas A&M",
-      "attendance": null,
+      "attendance": 107523,
       "role": "away",
       "venue": "Kyle Field",
       "city": "College Station",
       "state": "TX",
       "pointsFor": 20,
-      "pointsAgainst": 48
+      "pointsAgainst": 48,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "BYU",
@@ -429,13 +433,14 @@
       "espnId": 401856788,
       "conferenceGame": false,
       "opponent": "Iowa",
-      "attendance": null,
+      "attendance": 69250,
       "role": "away",
       "venue": "Kinnick Stadium",
       "city": "Iowa City",
       "state": "IA",
       "pointsFor": 13,
-      "pointsAgainst": 16
+      "pointsAgainst": 16,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Kansas",
@@ -517,13 +522,14 @@
       "espnId": 401856783,
       "conferenceGame": false,
       "opponent": "Oregon State",
-      "attendance": null,
+      "attendance": 30539,
       "role": "away",
       "venue": "Reser Stadium",
       "city": "Corvallis",
       "state": "OR",
       "pointsFor": 35,
-      "pointsAgainst": 24
+      "pointsAgainst": 24,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "UCF",
@@ -533,13 +539,14 @@
       "espnId": 401856790,
       "conferenceGame": false,
       "opponent": "Pittsburgh",
-      "attendance": null,
+      "attendance": 45926,
       "role": "away",
       "venue": "Acrisure Stadium",
       "city": "Pittsburgh",
       "state": "PA",
       "pointsFor": 7,
-      "pointsAgainst": 12
+      "pointsAgainst": 12,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Utah",
@@ -603,13 +610,14 @@
       "espnId": 401856812,
       "conferenceGame": true,
       "opponent": "Kansas",
-      "attendance": null,
+      "attendance": 46523,
       "role": "neutral",
       "venue": "Wembley Stadium",
       "city": "London",
       "state": "",
       "pointsFor": 24,
-      "pointsAgainst": 17
+      "pointsAgainst": 17,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "BYU",
@@ -619,13 +627,14 @@
       "espnId": 401856795,
       "conferenceGame": false,
       "opponent": "Colorado State",
-      "attendance": null,
+      "attendance": 38759,
       "role": "away",
       "venue": "Canvas Stadium",
       "city": "Fort Collins",
       "state": "CO",
       "pointsFor": 41,
-      "pointsAgainst": 23
+      "pointsAgainst": 23,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Baylor",
@@ -671,13 +680,14 @@
       "espnId": 401856796,
       "conferenceGame": false,
       "opponent": "Northwestern",
-      "attendance": null,
+      "attendance": 12023,
       "role": "away",
       "venue": "Lanny and Sharon Martin Stadium",
       "city": "Evanston",
       "state": "IL",
       "pointsFor": 7,
-      "pointsAgainst": 41
+      "pointsAgainst": 41,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Houston",
@@ -687,13 +697,14 @@
       "espnId": 401856811,
       "conferenceGame": true,
       "opponent": "Texas Tech",
-      "attendance": null,
+      "attendance": 60229,
       "role": "away",
       "venue": "Jones AT&T Stadium",
       "city": "Lubbock",
       "state": "TX",
       "pointsFor": 26,
-      "pointsAgainst": 28
+      "pointsAgainst": 28,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Iowa State",
@@ -721,13 +732,14 @@
       "espnId": 401856812,
       "conferenceGame": true,
       "opponent": "Arizona State",
-      "attendance": null,
+      "attendance": 46523,
       "role": "neutral",
       "venue": "Wembley Stadium",
       "city": "London",
       "state": "",
       "pointsFor": 17,
-      "pointsAgainst": 24
+      "pointsAgainst": 24,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Kansas State",
@@ -845,13 +857,14 @@
       "espnId": 401856802,
       "conferenceGame": false,
       "opponent": "Virginia",
-      "attendance": null,
+      "attendance": 39377,
       "role": "neutral",
       "venue": "Bank of America Stadium",
       "city": "Charlotte",
       "state": "NC",
       "pointsFor": 38,
-      "pointsAgainst": 27
+      "pointsAgainst": 27,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Arizona",
@@ -861,11 +874,14 @@
       "espnId": 401856804,
       "conferenceGame": false,
       "opponent": "Washington State",
-      "attendance": null,
+      "attendance": 23903,
       "role": "away",
       "venue": "Gesa Field",
       "city": "Pullman",
-      "state": "WA"
+      "state": "WA",
+      "pointsFor": 34,
+      "pointsAgainst": 24,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Baylor",
@@ -875,7 +891,15 @@
       "espnId": 401856813,
       "conferenceGame": true,
       "opponent": "Colorado",
-      "attendance": null
+      "attendance": 40015,
+      "pointsFor": 23,
+      "pointsAgainst": 13,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 84,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
@@ -885,7 +909,15 @@
       "espnId": 401856814,
       "conferenceGame": true,
       "opponent": "Kansas State",
-      "attendance": null
+      "attendance": 37562,
+      "pointsFor": 31,
+      "pointsAgainst": 26,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 68,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -895,11 +927,14 @@
       "espnId": 401856813,
       "conferenceGame": true,
       "opponent": "Baylor",
-      "attendance": null,
+      "attendance": 40015,
       "role": "away",
       "venue": "McLane Stadium",
       "city": "Waco",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 13,
+      "pointsAgainst": 23,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Houston",
@@ -909,11 +944,14 @@
       "espnId": 401856806,
       "conferenceGame": false,
       "opponent": "Georgia Southern",
-      "attendance": null,
+      "attendance": 24112,
       "role": "away",
       "venue": "Allen E. Paulson Stadium",
       "city": "Statesboro",
-      "state": "GA"
+      "state": "GA",
+      "pointsFor": 42,
+      "pointsAgainst": 28,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Iowa State",
@@ -923,7 +961,15 @@
       "espnId": 401856816,
       "conferenceGame": true,
       "opponent": "Utah",
-      "attendance": null
+      "attendance": 52150,
+      "pointsFor": 17,
+      "pointsAgainst": 31,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 68,
+        "windMph": 14,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
@@ -933,11 +979,14 @@
       "espnId": 401856814,
       "conferenceGame": true,
       "opponent": "Cincinnati",
-      "attendance": null,
+      "attendance": 37562,
       "role": "away",
       "venue": "Nippert Stadium",
       "city": "Cincinnati",
-      "state": "OH"
+      "state": "OH",
+      "pointsFor": 26,
+      "pointsAgainst": 31,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Oklahoma State",
@@ -947,11 +996,14 @@
       "espnId": 401856881,
       "conferenceGame": true,
       "opponent": "West Virginia",
-      "attendance": null,
+      "attendance": 57756,
       "role": "away",
       "venue": "Milan Puskar Stadium",
       "city": "Morgantown",
-      "state": "WV"
+      "state": "WV",
+      "pointsFor": 41,
+      "pointsAgainst": 24,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "TCU",
@@ -961,11 +1013,14 @@
       "espnId": 401856815,
       "conferenceGame": true,
       "opponent": "UCF",
-      "attendance": null,
+      "attendance": 43212,
       "role": "away",
       "venue": "FBC Mortgage Stadium",
       "city": "Orlando",
-      "state": "FL"
+      "state": "FL",
+      "pointsFor": 13,
+      "pointsAgainst": 21,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "Texas Tech",
@@ -975,7 +1030,15 @@
       "espnId": 401856805,
       "conferenceGame": false,
       "opponent": "Sam Houston",
-      "attendance": null
+      "attendance": 59704,
+      "pointsFor": 49,
+      "pointsAgainst": 14,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 74,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
@@ -985,7 +1048,15 @@
       "espnId": 401856815,
       "conferenceGame": true,
       "opponent": "TCU",
-      "attendance": null
+      "attendance": 43212,
+      "pointsFor": 21,
+      "pointsAgainst": 13,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 82,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
@@ -995,11 +1066,14 @@
       "espnId": 401856816,
       "conferenceGame": true,
       "opponent": "Iowa State",
-      "attendance": null,
+      "attendance": 52150,
       "role": "away",
       "venue": "Jack Trice Stadium",
       "city": "Ames",
-      "state": "IA"
+      "state": "IA",
+      "pointsFor": 31,
+      "pointsAgainst": 17,
+      "attendanceSource": "ESPN gamepackage (CFBD unavailable)"
     },
     {
       "team": "West Virginia",
@@ -1009,13 +1083,21 @@
       "espnId": 401856881,
       "conferenceGame": true,
       "opponent": "Oklahoma State",
-      "attendance": null
+      "attendance": 57756,
+      "pointsFor": 24,
+      "pointsAgainst": 41,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 63,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "20:00",
       "espnId": 401856820,
       "conferenceGame": true,
       "opponent": "Cincinnati",
@@ -1024,8 +1106,8 @@
     {
       "team": "Arizona State",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "19:30",
       "espnId": 401856817,
       "conferenceGame": true,
       "opponent": "Baylor",
@@ -1034,8 +1116,8 @@
     {
       "team": "BYU",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "18:00",
       "espnId": 401856818,
       "conferenceGame": true,
       "opponent": "TCU",
@@ -1048,8 +1130,8 @@
     {
       "team": "Baylor",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "19:30",
       "espnId": 401856817,
       "conferenceGame": true,
       "opponent": "Arizona State",
@@ -1062,8 +1144,8 @@
     {
       "team": "Cincinnati",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "20:00",
       "espnId": 401856820,
       "conferenceGame": true,
       "opponent": "Arizona",
@@ -1076,8 +1158,8 @@
     {
       "team": "Colorado",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "17:30",
       "espnId": 401856821,
       "conferenceGame": true,
       "opponent": "Texas Tech",
@@ -1086,8 +1168,8 @@
     {
       "team": "Houston",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "11:00",
       "espnId": 401856819,
       "conferenceGame": true,
       "opponent": "UCF",
@@ -1096,8 +1178,8 @@
     {
       "team": "Iowa State",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "11:00",
       "espnId": 401856822,
       "conferenceGame": true,
       "opponent": "West Virginia",
@@ -1106,8 +1188,8 @@
     {
       "team": "Kansas",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "11:00",
       "espnId": 401856807,
       "conferenceGame": false,
       "opponent": "Middle Tennessee",
@@ -1116,8 +1198,8 @@
     {
       "team": "TCU",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "18:00",
       "espnId": 401856818,
       "conferenceGame": true,
       "opponent": "BYU",
@@ -1126,8 +1208,8 @@
     {
       "team": "Texas Tech",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "17:30",
       "espnId": 401856821,
       "conferenceGame": true,
       "opponent": "Colorado",
@@ -1140,8 +1222,8 @@
     {
       "team": "UCF",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "11:00",
       "espnId": 401856819,
       "conferenceGame": true,
       "opponent": "Houston",
@@ -1154,8 +1236,8 @@
     {
       "team": "West Virginia",
       "week": 5,
-      "date": "2026-10-02",
-      "time": null,
+      "date": "2026-10-03",
+      "time": "11:00",
       "espnId": 401856822,
       "conferenceGame": true,
       "opponent": "Iowa State",
