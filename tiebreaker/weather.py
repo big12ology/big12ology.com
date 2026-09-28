@@ -58,6 +58,16 @@ def _played_path(season):
     return os.path.join(DATA, f"weather_played_{season}.json")
 API = "https://api.open-meteo.com/v1/forecast"
 
+# Three models, averaged hour by hour. Left to its default ("best_match"),
+# Open-Meteo answers a US venue with GFS alone, and GFS ran the driest of the
+# majors on the game that prompted this: 35% at TCU's kickoff hour against
+# ECMWF's 53% and ICON's 43%. A blend beats any single model at a point,
+# which is the whole premise of the NWS's own National Blend. Still one
+# request: the models ride along in the same call, each field coming back
+# suffixed with the model's name. ICON stops at about 7.5 days and ECMWF at
+# 15, so past those edges the average is over whichever models answered.
+MODELS = ("gfs_seamless", "ecmwf_ifs025", "icon_seamless")
+
 # As far as the forecast model actually goes, counted as days AHEAD of today.
 # Open-Meteo serves sixteen days including today, so the last date it will
 # accept is today+15 — and asking for today+16 does not return fifteen days
@@ -144,8 +154,10 @@ def _get(url):
 
 def _url(lats, lons, start, end):
     return (f"{API}?latitude={lats}&longitude={lons}"
-            "&hourly=temperature_2m,wind_speed_10m,precipitation_probability"
+            "&hourly=temperature_2m,wind_speed_10m,precipitation_probability,"
+            "rain,showers,snowfall,weather_code"
             "&temperature_unit=fahrenheit&wind_speed_unit=mph"
+            f"&models={','.join(MODELS)}"
             f"&timezone=UTC&start_date={start}&end_date={end}")
 
 
@@ -378,8 +390,26 @@ def _at_hour(hourly, when):
         return None
 
     def at(field):
-        vals = hourly.get(field) or []
-        return vals[i] if i < len(vals) and vals[i] is not None else None
+        # The mean of every model that has a value for this hour. The bare
+        # name is the fallback for a response that came back unsuffixed,
+        # which is what a single-model request looks like.
+        got = values(field)
+        return round(sum(got) / len(got), 1) if got else None
+
+    def values(field):
+        keys = [f"{field}_{m}" for m in MODELS]
+        if not any(k in hourly for k in keys):
+            keys = [field]
+        got = []
+        for k in keys:
+            vals = hourly.get(k) or []
+            if i < len(vals) and vals[i] is not None:
+                got.append(vals[i])
+        return got
+
+    def mean(field):
+        got = values(field)
+        return sum(got) / len(got) if got else 0.0
 
     temp = at("temperature_2m")
     if temp is None:
@@ -391,7 +421,32 @@ def _at_hour(hourly, when):
     pop = at("precipitation_probability")
     if pop is not None:
         out["precipChance"] = pop
+        out["precipType"] = _kind(mean("rain") + mean("showers"),
+                                  mean("snowfall"), temp)
+        # Thunder by vote, not by average: a weather code is a category, and
+        # the mean of "drizzle" and "thunderstorm" is not anything. It takes a
+        # majority of the models that answered for the hour, so one model
+        # alone cannot put a storm on a card, and past ICON's horizon it
+        # takes both of the two that remain.
+        codes = values("weather_code")
+        storms = sum(1 for c in codes if c >= 95)
+        if codes and storms * 2 > len(codes):
+            out["thunder"] = True
     return out
+
+
+def _kind(liquid_mm, snow_cm, temp_f):
+    """Rain or snow, from what the models expect to fall in the hour.
+
+    Open-Meteo gives snowfall as a DEPTH in centimeters and rain as WATER in
+    millimeters; dividing the depth by 0.7 is its own stated conversion to
+    water, so the two are compared like for like. Whichever brings more water
+    names the hour. An hour with a chance but no modeled amount, which is
+    common at 20% and below, falls back to the thermometer."""
+    snow_mm = snow_cm / 0.7
+    if liquid_mm + snow_mm > 0:
+        return "snow" if snow_mm > liquid_mm else "rain"
+    return "snow" if temp_f <= 32 else "rain"
 
 
 if __name__ == "__main__":

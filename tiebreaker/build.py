@@ -2406,6 +2406,14 @@ ICONS = {
              "<path d='M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24'/>"),
     "rain": ("<path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0"
              " 0 1 0 7h-1'/><path d='M11 20v1m4 -3v1m-8 -1v1'/>"),
+    # Tabler's "cloud-snow" and "cloud-storm": the rain glyph's cloud with
+    # flakes or a bolt under it, so the three read as one family and the
+    # thing that changes is the thing that fell.
+    "snow": ("<path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0"
+             " 0 1 0 7h-1'/><path d='M11 15v.01m0 3v.01m0 3v.01m4 -4v.01m0"
+             " 3v.01m-8 -4v.01m0 3v.01'/>"),
+    "storm": ("<path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5"
+              " 0 0 1 0 7h-1'/><path d='M13 14l-2 4l3 0l-2 4'/>"),
     "history": ("<path d='M12 8v4l3 3'/><path d='M3.05 11a9 9 0 1 1 .5 4m-.5"
                 " 5v-5h5'/>"),
     "chart": ("<path d='M3 20h18'/><rect x='5' y='12' width='4' height='8'/>"
@@ -2576,6 +2584,22 @@ WIND_WARN = 20      # mph
 RAIN_WARN = 50      # percent
 
 
+def precip_kind(w):
+    """(word, glyph) for what the chance is a chance OF.
+
+    Open-Meteo's probability covers anything falling, so "rain" was wrong for
+    a November night in Ames. weather.py names the type from the models'
+    expected amounts and votes on thunder; a record written before it did
+    either carries neither, and reads as rain, which is what it always said.
+    Thunder outranks the type: a storm at kickoff means lightning holds, and
+    that is the fact a reader needs whether what falls is rain or snow."""
+    if w.get("thunder"):
+        return "storms", "storm"
+    if w.get("precipType") == "snow":
+        return "snow", "snow"
+    return "rain", "rain"
+
+
 def weather_line(g):
     """The forecast inside sixteen days, the venue's average beyond it.
 
@@ -2604,15 +2628,20 @@ def weather_line(g):
         wind = w.get("windMph")
         rain = w.get("precipChance")
         windy = wind is not None and round(wind) >= WIND_WARN
-        wet = rain is not None and round(rain) >= RAIN_WARN
+        # A modeled thunderstorm warns at any percentage. It took a majority
+        # of the models to put it there, and the percentage is the chance of
+        # anything falling, not the chance of the storm.
+        storm = bool(w.get("thunder"))
+        wet = storm or (rain is not None and round(rain) >= RAIN_WARN)
+        kind, kglyph = precip_kind(w)
         parts = [f"{round(w['tempF'])}&deg;F"]
         if wind is not None:
             mph = f"{round(wind)} mph"
             parts.append(f"<span class=wxwarn>{mph}</span>" if windy else mph)
         if rain is not None:
-            pct = f"{round(rain)}% rain"
+            pct = f"{round(rain)}% {kind}"
             parts.append(f"<span class=wxwarn>{pct}</span>" if wet else pct)
-        glyph = "rain" if wet else ("wind" if windy else "sun")
+        glyph = kglyph if wet else ("wind" if windy else "sun")
         cls = "gi wxwarn" if wet or windy else "gi"
         # A played game's numbers are what happened, not what was expected,
         # and the two must not read alike. The wet/windy warning colours come
@@ -2623,7 +2652,7 @@ def weather_line(g):
             if wind is not None:
                 said.append(f"{round(wind)} mph")
             if rain is not None:
-                said.append(f"{round(rain)}% rain")
+                said.append(f"{round(rain)}% {kind}")
             return (f"<div class=slatewx title='Recorded at the venue for the "
                     f"kickoff hour.'>{icon('history', 'gi')}<span>"
                     + ", ".join(said) + " at kickoff</span></div>")
@@ -2637,14 +2666,15 @@ def weather_line(g):
     if n.get("windMph") is not None:
         parts.append(f"{n['windMph']} mph")
     if n.get("rainPct") is not None:
-        parts.append(f"{n['rainPct']}% rain")
-    # The rain figure is the share of days that saw measurable rain, not a
-    # chance of rain at kickoff — Miami in September reads 93% and is not
+        parts.append(f"{n['rainPct']}% wet days")
+    # The share of days that saw measurable precipitation, snow included
+    # (normals.py counts precipitation_sum, which is melted snow and rain
+    # alike), and not a chance of rain at kickoff — Miami in September reads 93% and is not
     # wrong. Say which one it is, because the two look identical.
     return (f"<div class='slatewx dim' title='Ten seasons at this venue for "
             f"this two-week window: mean temperature and wind, and the share "
             f"of "
-            f"days with measurable rain. Not a forecast.'>"
+            f"days with measurable rain or snow. Not a forecast.'>"
             f"{icon('history')}<span>Average " + ", ".join(parts)
             + "</span></div>")
 
@@ -3431,11 +3461,14 @@ def venue_card(g):
                           if windy else f"{round(wind)} mph",
                           "wind", "wind"))
         if rain is not None:
-            wet = not was and round(rain) >= RAIN_WARN
+            kind, kglyph = precip_kind(w)
+            wet = not was and (bool(w.get("thunder"))
+                               or round(rain) >= RAIN_WARN)
             cells.append((f"<span class=wxwarn>{round(rain)}%</span>"
                           if wet else f"{round(rain)}%",
-                          "rain that hour" if was else "chance of rain",
-                          "rain"))
+                          f"{kind} that hour" if was
+                          else f"chance of {kind}",
+                          kglyph))
         note = ("Recorded at the venue for the hour of kickoff, via "
                 "Open-Meteo." if was else
                 "Forecast for the hour of kickoff, via Open-Meteo.")
@@ -3447,9 +3480,11 @@ def venue_card(g):
         if n.get("rainPct") is not None:
             # Said in full here, because the card has the room the slate's
             # title attribute did not: this is the share of DAYS that saw
-            # rain, not a chance of rain at kickoff. Miami in September reads
-            # 93% and is not wrong.
-            cells.append((f"{n['rainPct']}%", "of days see rain", "rain"))
+            # rain or snow, not a chance of either at kickoff. Miami in
+            # September reads 93% and is not wrong. "Or snow" because the
+            # count is precipitation_sum, which does not tell them apart.
+            cells.append((f"{n['rainPct']}%", "of days see rain or snow",
+                          "rain"))
         note = ("Ten seasons at this venue for this two-week window &mdash; "
                 "a fact about the place, not a forecast for the day.")
 
