@@ -136,6 +136,13 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
        beside the result. Auto-placed under the named rows and spanning
        both columns, so a card without one is laid out exactly as before. */
     .slatemeta > .slatemodel { grid-column:1 / -1 }
+    /* The game page's head carries two of the five facts, kickoff and TV,
+       and spans the full page. The slate's grid put the TV in its right-hand
+       cell, halfway across a 1900px card with nothing to its left, so it
+       read as floating rather than as a second column. One column here: the
+       channel sits under the kickoff it belongs to. */
+    #gamehead .slatemeta { grid-template-columns:1fr;
+      grid-template-areas:"when" "tv" }
   }
 .slatemeta > div { display:flex; align-items:center; gap:7px;
   min-width:0; white-space:nowrap }
