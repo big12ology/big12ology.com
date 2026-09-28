@@ -5,7 +5,7 @@
    "home": "Kansas",
    "margin": 16.19,
    "p_home": 0.87,
-   "spread": -18.8,
+   "spread": -18.9,
    "systems": {
     "Big12ology": 15.65,
     "Elo": 8.81,
@@ -64,7 +64,7 @@
    "home": "TCU",
    "margin": -2.86,
    "p_home": 0.417,
-   "spread": 6.6,
+   "spread": 6.5,
    "systems": {
     "Big12ology": -3.01,
     "Elo": -0.3,
@@ -79,7 +79,7 @@
    "home": "Houston",
    "margin": 6.56,
    "p_home": 0.685,
-   "spread": -12.3,
+   "spread": -12.2,
    "systems": {
     "Big12ology": 6.02,
     "Elo": 3.41,
@@ -109,7 +109,7 @@
    "home": "Colorado",
    "margin": -15.61,
    "p_home": 0.125,
-   "spread": 13.5,
+   "spread": 13.3,
    "systems": {
     "Big12ology": -16.53,
     "Elo": -16.89,
@@ -124,7 +124,7 @@
    "home": "Iowa State",
    "margin": 7.89,
    "p_home": 0.712,
-   "spread": -3.3,
+   "spread": -3.1,
    "systems": {
     "Big12ology": 10.69,
     "Elo": 12.22,
@@ -954,7 +954,7 @@
   }
  },
  "games_complete": 53,
- "generated": "2026-09-28T16:51:42+00:00",
+ "generated": "2026-09-28T23:36:52+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
