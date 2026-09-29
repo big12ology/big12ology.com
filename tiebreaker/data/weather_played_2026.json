@@ -2,261 +2,417 @@
  "games": {
   "401856670": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 82.0,
    "windMph": 7.8
   },
   "401856678": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 80.9,
    "windMph": 4.4
   },
   "401856683": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 90.9,
    "windMph": 11.5
   },
   "401856766": {
    "precipChance": 80,
+   "precipIn": 0.01,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 63.8,
    "windMph": 2.5
   },
   "401856767": {
    "precipChance": 12,
+   "precipIn": 0.04,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 81.2,
    "windMph": 4.3
   },
   "401856768": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 82.7,
    "windMph": 10.1
   },
   "401856769": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 95.6,
    "windMph": 5.6
   },
   "401856770": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 97.5,
    "windMph": 8.6
   },
   "401856771": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 95.8,
    "windMph": 6.5
   },
   "401856772": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 98.8,
    "windMph": 4.5
   },
   "401856773": {
    "precipChance": 2,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 94.0,
    "windMph": 10.3
   },
   "401856774": {
    "precipChance": 1,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 97.2,
    "windMph": 8.2
   },
   "401856775": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 88.3,
    "windMph": 9.3
   },
   "401856776": {
    "precipChance": 10,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 84.2,
    "windMph": 5.5
   },
   "401856777": {
    "precipChance": 2,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 91.4,
    "windMph": 6.4
   },
   "401856778": {
    "precipChance": 8,
+   "precipIn": 0.01,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 88.7,
    "windMph": 3.2
   },
   "401856779": {
    "precipChance": 1,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 82.2,
    "windMph": 7.1
   },
   "401856780": {
    "precipChance": 23,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 73.7,
    "windMph": 0.0
   },
   "401856781": {
    "precipChance": 3,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 75.4,
    "windMph": 10.9
   },
   "401856782": {
    "precipChance": 13,
+   "precipIn": 0.04,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 85.4,
    "windMph": 8.9
   },
   "401856783": {
    "precipChance": 21,
+   "precipIn": 0.01,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 60.4,
    "windMph": 6.9
   },
   "401856784": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 99.9,
    "windMph": 12.7
   },
   "401856785": {
    "precipChance": 1,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 74.1,
    "windMph": 6.2
   },
   "401856786": {
    "precipChance": 21,
+   "precipIn": 0.01,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 76.1,
    "windMph": 2.4
   },
   "401856787": {
    "precipChance": 14,
+   "precipIn": 0.01,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 93.5,
    "windMph": 13.0
   },
   "401856788": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 79.9,
    "windMph": 8.5
   },
   "401856789": {
    "precipChance": 1,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 98.1,
    "windMph": 11.7
   },
   "401856790": {
    "precipChance": 11,
+   "precipIn": 0.04,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 82.7,
    "windMph": 8.5
   },
   "401856791": {
    "precipChance": 2,
+   "precipIn": 0.03,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 84.9,
    "windMph": 6.3
   },
   "401856792": {
    "precipChance": 2,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 89.1,
    "windMph": 10.8
   },
   "401856793": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 88.8,
    "windMph": 4.1
   },
   "401856795": {
    "precipChance": 33,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 60.8,
    "windMph": 15.0
   },
   "401856796": {
    "precipChance": 38,
+   "precipIn": 0.01,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 65.7,
    "windMph": 4.3
   },
   "401856797": {
    "precipChance": 2,
+   "precipIn": 0.01,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 87.0,
    "windMph": 5.3
   },
   "401856798": {
    "precipChance": 10,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 75.3,
    "windMph": 11.9
   },
   "401856799": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 92.2,
    "windMph": 10.1
   },
   "401856800": {
    "precipChance": 9,
+   "precipIn": 0.01,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 83.9,
    "windMph": 10.8
   },
   "401856801": {
    "precipChance": 6,
+   "precipIn": 0.01,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 67.4,
    "windMph": 6.4
   },
   "401856802": {
    "precipChance": 7,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 83.2,
    "windMph": 4.8
   },
   "401856803": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 96.6,
    "windMph": 9.6
   },
   "401856804": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 58.4,
    "windMph": 1.3
   },
   "401856805": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 76.7,
    "windMph": 10.9
   },
   "401856806": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 82.3,
    "windMph": 8.2
   },
   "401856810": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 88.3,
    "windMph": 9.7
   },
   "401856811": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 89.5,
    "windMph": 10.8
   },
   "401856812": {
    "precipChance": 5,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 68.6,
    "windMph": 10.3
   },
   "401856813": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 86.2,
    "windMph": 5.9
   },
   "401856814": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 71.7,
    "windMph": 5.8
   },
   "401856815": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 81.8,
    "windMph": 4.2
   },
   "401856816": {
    "precipChance": 5,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 62.2,
    "windMph": 14.0
   },
   "401856881": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 65.8,
    "windMph": 5.1
   },
   "401867804": {
    "precipChance": 0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
    "tempF": 97.3,
    "windMph": 6.0
   }
