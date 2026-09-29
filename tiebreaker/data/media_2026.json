@@ -301,6 +301,12 @@
    "type": "tv"
   }
  ],
+ "401856808": [
+  {
+   "outlet": "FS1",
+   "type": "tv"
+  }
+ ],
  "401856810": [
   {
    "outlet": "FOX",
@@ -353,6 +359,10 @@
   {
    "outlet": "ESPN",
    "type": "tv"
+  },
+  {
+   "outlet": "Disney+",
+   "type": "web"
   }
  ],
  "401856819": [
@@ -379,7 +389,33 @@
    "type": "tv"
   }
  ],
+ "401856823": [
+  {
+   "outlet": "TNT",
+   "type": "tv"
+  },
+  {
+   "outlet": "truTV",
+   "type": "tv"
+  },
+  {
+   "outlet": "HBO Max",
+   "type": "web"
+  }
+ ],
+ "401856825": [
+  {
+   "outlet": "FOX",
+   "type": "tv"
+  }
+ ],
  "401856826": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856827": [
   {
    "outlet": "ESPN",
    "type": "tv"
