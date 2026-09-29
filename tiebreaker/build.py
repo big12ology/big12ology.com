@@ -3799,10 +3799,12 @@ JSONLD_ONLY_FIELDS = ("venue_locality", "venue_region", "venue_country")
 # arrives on its own. Keyed by venue_id and the first season the new name
 # applies to, because the archive is right to keep the old one: a 2024 page
 # saying Jones AT&T Stadium is what the building was called in 2024.
-VENUE_RENAMES = {
-    # Lubbock. AT&T let its deal lapse in June 2026; Galaxy signed 15 years.
-    3784: (2026, "Galaxy Stadium"),
-}
+# The table is data/venue-renames.json, shared with the attendance fetcher so
+# the two sites cannot disagree about a building's name. Current entry: 3784,
+# Lubbock, where AT&T let its deal lapse in June 2026 and Galaxy signed 15 years.
+with open(os.path.join(HERE, "data", "venue-renames.json")) as _f:
+    VENUE_RENAMES = {int(k): (v["from"], v["name"])
+                     for k, v in json.load(_f).items()}
 
 
 def venue_country(state, tz):

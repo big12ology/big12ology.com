@@ -201,7 +201,8 @@
   {
    "team": "Texas Tech",
    "stadium": {
-    "2012": "Jones AT&T Stadium"
+    "2012": "Jones AT&T Stadium",
+    "2026": "Galaxy Stadium"
    },
    "capacity": {
     "2012": 60454,

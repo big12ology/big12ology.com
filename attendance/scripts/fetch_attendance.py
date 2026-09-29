@@ -118,6 +118,19 @@ def load_api_key() -> str:
 VENUE_CATALOG = ROOT.parent / "tiebreaker" / "data" / "venues.json"
 
 
+# A building renamed after CFBD learned it. CFBD keeps the old name on the
+# venue and on every game, so it is corrected here by venue id and the first
+# season the new name applies to; earlier seasons keep the name they had.
+# Shared with tiebreaker/build.py, which applies the same table.
+VENUE_RENAMES = ROOT.parent / "tiebreaker" / "data" / "venue-renames.json"
+
+
+def renamed_venue(venue_id, year: int, name):
+    """The name a venue went by in `year`, or `name` when it was never renamed."""
+    r = json.loads(VENUE_RENAMES.read_text()).get(str(venue_id))
+    return r["name"] if r and year >= r["from"] else name
+
+
 def load_venue_catalog() -> dict | None:
     """The committed venue catalog, keyed by CFBD venue id (as int).
 
@@ -455,7 +468,7 @@ def main(year: int) -> None:
         home = g.get("homeTeam") or g.get("home_team")
         away = g.get("awayTeam") or g.get("away_team")
         neutral = g.get("neutralSite", g.get("neutral_site", False))
-        venue = g.get("venue")
+        venue = renamed_venue(g.get("venueId"), year, g.get("venue"))
         venue_info = venues_by_id.get(g.get("venueId"), {})
         completed = g.get("completed", g.get("homePoints") is not None)
 
