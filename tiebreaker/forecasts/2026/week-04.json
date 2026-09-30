@@ -79,7 +79,7 @@
    "home": "Houston",
    "margin": 3.77,
    "p_home": 0.607,
-   "spread": -12.1,
+   "spread": -12.2,
    "systems": {
     "Big12ology": 6.02,
     "Elo": 3.22,
@@ -109,7 +109,7 @@
    "home": "Colorado",
    "margin": -16.61,
    "p_home": 0.114,
-   "spread": 13.0,
+   "spread": 12.5,
    "systems": {
     "Big12ology": -16.53,
     "Elo": -17.7,
@@ -124,7 +124,7 @@
    "home": "Iowa State",
    "margin": 7.41,
    "p_home": 0.699,
-   "spread": -3.4,
+   "spread": -3.3,
    "systems": {
     "Big12ology": 10.69,
     "Elo": 13.89,
@@ -954,7 +954,7 @@
   }
  },
  "games_complete": 53,
- "generated": "2026-09-30T15:02:34+00:00",
+ "generated": "2026-09-30T21:06:20+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
