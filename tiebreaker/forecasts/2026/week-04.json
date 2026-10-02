@@ -64,7 +64,7 @@
    "home": "TCU",
    "margin": -3.68,
    "p_home": 0.394,
-   "spread": 6.0,
+   "spread": 6.1,
    "systems": {
     "Big12ology": -3.01,
     "Elo": -1.11,
@@ -109,7 +109,7 @@
    "home": "Colorado",
    "margin": -16.61,
    "p_home": 0.114,
-   "spread": 12.8,
+   "spread": 13.0,
    "systems": {
     "Big12ology": -16.53,
     "Elo": -17.7,
@@ -181,7 +181,7 @@
    "home": "BYU",
    "margin": 9.8,
    "p_home": 0.755,
-   "spread": -14.0,
+   "spread": -14.5,
    "systems": {
     "Big12ology": 9.92,
     "Elo": 2.78,
@@ -955,7 +955,7 @@
   }
  },
  "games_complete": 53,
- "generated": "2026-10-01T22:13:35+00:00",
+ "generated": "2026-10-02T04:20:33+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
