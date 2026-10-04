@@ -34,7 +34,7 @@
    "home": "Arizona State",
    "margin": -0.24,
    "p_home": 0.492,
-   "spread": -3.5,
+   "spread": -3.4,
    "systems": {
     "Big12ology": 6.1,
     "Elo": 1.96,
@@ -910,7 +910,7 @@
   }
  },
  "games_complete": 56,
- "generated": "2026-10-03T20:09:53+00:00",
+ "generated": "2026-10-04T02:29:48+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
