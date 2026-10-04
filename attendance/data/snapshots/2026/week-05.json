@@ -63,16 +63,21 @@
       "color": "#8e0c3a",
       "logo": "assets/logos/asu.svg",
       "multiVenue": false,
-      "games": 1,
+      "games": 2,
       "weeks": [
         {
           "week": 1,
           "attendance": 54004,
           "pct": 1.0075561111214761
+        },
+        {
+          "week": 5,
+          "attendance": 54063,
+          "pct": 1.008656877926827
         }
       ],
-      "total": 54004,
-      "pct": 1.0075561111214761
+      "total": 108067,
+      "pct": 1.0081064945241516
     },
     {
       "team": "Utah",
@@ -131,6 +136,30 @@
       ],
       "total": 180162,
       "pct": 0.9970944229523984
+    },
+    {
+      "team": "Colorado",
+      "stadium": "Folsom Field",
+      "capacity": 50183,
+      "capacityEstimate": null,
+      "color": "#cfb87c",
+      "logo": "assets/logos/cu.svg",
+      "multiVenue": false,
+      "games": 2,
+      "weeks": [
+        {
+          "week": 2,
+          "attendance": 49363,
+          "pct": 0.9836598051132853
+        },
+        {
+          "week": 5,
+          "attendance": 50106,
+          "pct": 0.9984656158460036
+        }
+      ],
+      "total": 99469,
+      "pct": 0.9910627104796444
     },
     {
       "team": "Kansas",
@@ -215,49 +244,6 @@
       "pct": 0.9874903859204632
     },
     {
-      "team": "Colorado",
-      "stadium": "Folsom Field",
-      "capacity": 50183,
-      "capacityEstimate": null,
-      "color": "#cfb87c",
-      "logo": "assets/logos/cu.svg",
-      "multiVenue": false,
-      "games": 1,
-      "weeks": [
-        {
-          "week": 2,
-          "attendance": 49363,
-          "pct": 0.9836598051132853
-        }
-      ],
-      "total": 49363,
-      "pct": 0.9836598051132853
-    },
-    {
-      "team": "TCU",
-      "stadium": "Amon G. Carter Stadium",
-      "capacity": 46000,
-      "capacityEstimate": null,
-      "color": "#4d1979",
-      "logo": "assets/logos/tcu.svg",
-      "multiVenue": false,
-      "games": 2,
-      "weeks": [
-        {
-          "week": 2,
-          "attendance": 37600,
-          "pct": 0.8173913043478261
-        },
-        {
-          "week": 3,
-          "attendance": 46139,
-          "pct": 1.0030217391304348
-        }
-      ],
-      "total": 83739,
-      "pct": 0.9102065217391304
-    },
-    {
       "team": "Baylor",
       "stadium": "McLane Stadium",
       "capacity": 45140,
@@ -285,6 +271,35 @@
       ],
       "total": 120000,
       "pct": 0.8861320336730173
+    },
+    {
+      "team": "TCU",
+      "stadium": "Amon G. Carter Stadium",
+      "capacity": 46000,
+      "capacityEstimate": null,
+      "color": "#4d1979",
+      "logo": "assets/logos/tcu.svg",
+      "multiVenue": false,
+      "games": 3,
+      "weeks": [
+        {
+          "week": 2,
+          "attendance": 37600,
+          "pct": 0.8173913043478261
+        },
+        {
+          "week": 3,
+          "attendance": 46139,
+          "pct": 1.0030217391304348
+        },
+        {
+          "week": 5,
+          "attendance": 38327,
+          "pct": 0.833195652173913
+        }
+      ],
+      "total": 122066,
+      "pct": 0.8845362318840579
     },
     {
       "team": "West Virginia",
@@ -391,7 +406,7 @@
       "color": "#0c234b",
       "logo": "assets/logos/ariz.svg",
       "multiVenue": false,
-      "games": 2,
+      "games": 3,
       "weeks": [
         {
           "week": 1,
@@ -402,10 +417,15 @@
           "week": 3,
           "attendance": 40413,
           "pct": 0.7958134772163366
+        },
+        {
+          "week": 5,
+          "attendance": 43760,
+          "pct": 0.861722657634595
         }
       ],
-      "total": 80542,
-      "pct": 0.7930172108227325
+      "total": 124302,
+      "pct": 0.8159190264266866
     },
     {
       "team": "Houston",
@@ -475,10 +495,10 @@
     },
     {
       "week": 5,
-      "games": 3,
-      "attendance": 110317,
-      "capacity": 133500,
-      "pct": 0.8263445692883895
+      "games": 7,
+      "attendance": 296573,
+      "capacity": 334064,
+      "pct": 0.8877730015805355
     },
     {
       "week": 6,
@@ -538,9 +558,9 @@
     }
   ],
   "totals": {
-    "games": 42,
-    "attendance": 1913096,
-    "capacity": 2073305,
-    "pct": 0.9227277221634058
+    "games": 46,
+    "attendance": 2099352,
+    "capacity": 2273869,
+    "pct": 0.9232510755896668
   }
 }

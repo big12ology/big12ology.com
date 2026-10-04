@@ -1101,7 +1101,15 @@
       "espnId": 401856820,
       "conferenceGame": true,
       "opponent": "Cincinnati",
-      "attendance": null
+      "attendance": 43760,
+      "pointsFor": 34,
+      "pointsAgainst": 7,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 81,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
@@ -1111,7 +1119,15 @@
       "espnId": 401856817,
       "conferenceGame": true,
       "opponent": "Baylor",
-      "attendance": null
+      "attendance": 54063,
+      "pointsFor": 19,
+      "pointsAgainst": 55,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 91,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
@@ -1125,7 +1141,9 @@
       "role": "away",
       "venue": "Amon G. Carter Stadium",
       "city": "Fort Worth",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 17,
+      "pointsAgainst": 10
     },
     {
       "team": "Baylor",
@@ -1139,7 +1157,9 @@
       "role": "away",
       "venue": "Mountain America Stadium",
       "city": "Tempe",
-      "state": "AZ"
+      "state": "AZ",
+      "pointsFor": 55,
+      "pointsAgainst": 19
     },
     {
       "team": "Cincinnati",
@@ -1153,7 +1173,9 @@
       "role": "away",
       "venue": "Arizona Stadium",
       "city": "Tucson",
-      "state": "AZ"
+      "state": "AZ",
+      "pointsFor": 7,
+      "pointsAgainst": 34
     },
     {
       "team": "Colorado",
@@ -1163,7 +1185,15 @@
       "espnId": 401856821,
       "conferenceGame": true,
       "opponent": "Texas Tech",
-      "attendance": null
+      "attendance": 50106,
+      "pointsFor": 7,
+      "pointsAgainst": 29,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 82,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
@@ -1227,7 +1257,15 @@
       "espnId": 401856818,
       "conferenceGame": true,
       "opponent": "BYU",
-      "attendance": null
+      "attendance": 38327,
+      "pointsFor": 10,
+      "pointsAgainst": 17,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 73,
+        "windMph": 5,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "Texas Tech",
@@ -1241,7 +1279,9 @@
       "role": "away",
       "venue": "Folsom Field",
       "city": "Boulder",
-      "state": "CO"
+      "state": "CO",
+      "pointsFor": 29,
+      "pointsAgainst": 7
     },
     {
       "team": "UCF",

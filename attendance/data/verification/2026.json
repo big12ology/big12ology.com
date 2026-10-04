@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 42
+    "agree": 46
   },
   "games": [
     {
@@ -434,6 +434,39 @@
       "status": "agree"
     },
     {
+      "team": "Arizona",
+      "week": 5,
+      "opponent": "Cincinnati",
+      "date": "2026-10-03",
+      "espnId": 401856820,
+      "ours": 43760,
+      "espn": 43760,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Arizona State",
+      "week": 5,
+      "opponent": "Baylor",
+      "date": "2026-10-03",
+      "espnId": 401856817,
+      "ours": 54063,
+      "espn": 54063,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Colorado",
+      "week": 5,
+      "opponent": "Texas Tech",
+      "date": "2026-10-03",
+      "espnId": 401856821,
+      "ours": 50106,
+      "espn": 50106,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "Houston",
       "week": 5,
       "opponent": "UCF",
@@ -463,6 +496,17 @@
       "espnId": 401856807,
       "ours": 32000,
       "espn": 32000,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "TCU",
+      "week": 5,
+      "opponent": "BYU",
+      "date": "2026-10-03",
+      "espnId": 401856818,
+      "ours": 38327,
+      "espn": 38327,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

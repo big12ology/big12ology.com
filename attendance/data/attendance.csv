@@ -1403,7 +1403,9 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2025,West Virginia,14,2025-11-29,Texas Tech,true,Milan Puskar Stadium,44250,60000,0.7375,false
 2026,Arizona,1,2026-09-05,Northern Arizona,false,Casino Del Sol Stadium,40129,50782,0.7902,false
 2026,Arizona,3,2026-09-19,Northern Illinois,false,Casino Del Sol Stadium,40413,50782,0.7958,false
+2026,Arizona,5,2026-10-03,Cincinnati,true,Casino Del Sol Stadium,43760,50782,0.8617,false
 2026,Arizona State,1,2026-09-05,Morgan State,false,Mountain America Stadium,54004,53599,1.0076,false
+2026,Arizona State,5,2026-10-03,Baylor,true,Mountain America Stadium,54063,53599,1.0087,false
 2026,BYU,1,2026-09-05,Utah Tech,false,LaVell Edwards Stadium,64077,62073,1.0323,false
 2026,BYU,2,2026-09-12,Arizona,true,LaVell Edwards Stadium,64409,62073,1.0376,false
 2026,Baylor,2,2026-09-12,Prairie View A&M,false,McLane Stadium,38642,45140,0.8560,false
@@ -1414,6 +1416,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Cincinnati,3,2026-09-19,Miami (OH),false,Nippert Stadium,19188,38088,0.5038,false
 2026,Cincinnati,4,2026-09-26,Kansas State,true,Nippert Stadium,37562,38088,0.9862,false
 2026,Colorado,2,2026-09-12,Weber State,false,Folsom Field,49363,50183,0.9837,false
+2026,Colorado,5,2026-10-03,Texas Tech,true,Folsom Field,50106,50183,0.9985,false
 2026,Houston,1,2026-09-05,Oregon State,false,TDECU Stadium,28742,40000,0.7186,false
 2026,Houston,2,2026-09-12,Southern,false,TDECU Stadium,28936,40000,0.7234,false
 2026,Houston,5,2026-10-03,UCF,true,TDECU Stadium,25593,40000,0.6398,false
@@ -1431,6 +1434,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Oklahoma State,3,2026-09-19,Murray State,false,Boone Pickens Stadium,52168,52202,0.9993,false
 2026,TCU,2,2026-09-12,Grambling,false,Amon G. Carter Stadium,37600,46000,0.8174,false
 2026,TCU,3,2026-09-19,Arkansas State,false,Amon G. Carter Stadium,46139,46000,1.0030,false
+2026,TCU,5,2026-10-03,BYU,true,Amon G. Carter Stadium,38327,46000,0.8332,false
 2026,Texas Tech,1,2026-09-05,Abilene Christian,false,Galaxy Stadium,60229,60229,1.0000,false
 2026,Texas Tech,3,2026-09-18,Houston,true,Galaxy Stadium,60229,60229,1.0000,false
 2026,Texas Tech,4,2026-09-26,Sam Houston,false,Galaxy Stadium,59704,60229,0.9913,false
