@@ -408,6 +408,14 @@
    "tempF": 62.2,
    "windMph": 14.0
   },
+  "401856817": {
+   "precipChance": 0.0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
+   "tempF": 89.7,
+   "windMph": 5.8
+  },
   "401856818": {
    "precipChance": 54.7,
    "precipIn": 0.01,
@@ -423,6 +431,14 @@
    "snowIn": 0.0,
    "tempF": 83.2,
    "windMph": 8.9
+  },
+  "401856820": {
+   "precipChance": 0.0,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
+   "tempF": 81.0,
+   "windMph": 10.1
   },
   "401856821": {
    "precipChance": 0.3,
