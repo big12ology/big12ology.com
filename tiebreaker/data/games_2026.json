@@ -1202,7 +1202,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-10-03T23:30:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": true,
   "venue": "Folsom Field",
   "venue_id": 3726,
@@ -1214,8 +1214,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 7,
+  "away_points": 29
  },
  {
   "id": 401856817,
