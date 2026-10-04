@@ -1173,7 +1173,15 @@
       "espnId": 401856819,
       "conferenceGame": true,
       "opponent": "UCF",
-      "attendance": null
+      "attendance": 25593,
+      "pointsFor": 27,
+      "pointsAgainst": 17,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 83,
+        "windMph": 7,
+        "precipIn": 0.02
+      }
     },
     {
       "team": "Iowa State",
@@ -1183,7 +1191,15 @@
       "espnId": 401856822,
       "conferenceGame": true,
       "opponent": "West Virginia",
-      "attendance": null
+      "attendance": 52724,
+      "pointsFor": 45,
+      "pointsAgainst": 42,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 61,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
@@ -1193,7 +1209,15 @@
       "espnId": 401856807,
       "conferenceGame": false,
       "opponent": "Middle Tennessee",
-      "attendance": null
+      "attendance": 32000,
+      "pointsFor": 55,
+      "pointsAgainst": 0,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 64,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "TCU",
@@ -1231,7 +1255,9 @@
       "role": "away",
       "venue": "TDECU Stadium",
       "city": "Houston",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 17,
+      "pointsAgainst": 27
     },
     {
       "team": "West Virginia",
@@ -1245,7 +1271,9 @@
       "role": "away",
       "venue": "Jack Trice Stadium",
       "city": "Ames",
-      "state": "IA"
+      "state": "IA",
+      "pointsFor": 42,
+      "pointsAgainst": 45
     },
     {
       "team": "Arizona",

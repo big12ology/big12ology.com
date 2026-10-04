@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 39
+    "agree": 42
   },
   "games": [
     {
@@ -430,6 +430,39 @@
       "espnId": 401856881,
       "ours": 57756,
       "espn": 57756,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Houston",
+      "week": 5,
+      "opponent": "UCF",
+      "date": "2026-10-03",
+      "espnId": 401856819,
+      "ours": 25593,
+      "espn": 25593,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Iowa State",
+      "week": 5,
+      "opponent": "West Virginia",
+      "date": "2026-10-03",
+      "espnId": 401856822,
+      "ours": 52724,
+      "espn": 52724,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Kansas",
+      "week": 5,
+      "opponent": "Middle Tennessee",
+      "date": "2026-10-03",
+      "espnId": 401856807,
+      "ours": 32000,
+      "espn": 32000,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

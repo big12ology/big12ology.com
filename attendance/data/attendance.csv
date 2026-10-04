@@ -1416,11 +1416,14 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Colorado,2,2026-09-12,Weber State,false,Folsom Field,49363,50183,0.9837,false
 2026,Houston,1,2026-09-05,Oregon State,false,TDECU Stadium,28742,40000,0.7186,false
 2026,Houston,2,2026-09-12,Southern,false,TDECU Stadium,28936,40000,0.7234,false
+2026,Houston,5,2026-10-03,UCF,true,TDECU Stadium,25593,40000,0.6398,false
 2026,Iowa State,1,2026-09-05,Southeast Missouri State,false,Jack Trice Stadium,51802,61500,0.8423,false
 2026,Iowa State,3,2026-09-19,Bowling Green,false,Jack Trice Stadium,50395,61500,0.8194,false
 2026,Iowa State,4,2026-09-26,Utah,true,Jack Trice Stadium,52150,61500,0.8480,false
+2026,Iowa State,5,2026-10-03,West Virginia,true,Jack Trice Stadium,52724,61500,0.8573,false
 2026,Kansas,1,2026-09-04,Long Island University,false,David Booth Kansas Memorial Stadium,30904,32000,0.9657,false
 2026,Kansas,2,2026-09-11,Missouri,false,David Booth Kansas Memorial Stadium,32000,32000,1.0000,false
+2026,Kansas,5,2026-10-03,Middle Tennessee,false,David Booth Kansas Memorial Stadium,32000,32000,1.0000,false
 2026,Kansas State,1,2026-09-05,Nicholls,false,Bill Snyder Family Football Stadium,51719,50000,1.0344,false
 2026,Kansas State,2,2026-09-12,Washington State,false,Bill Snyder Family Football Stadium,51759,50000,1.0352,false
 2026,Kansas State,3,2026-09-19,Tulane,false,Bill Snyder Family Football Stadium,51846,50000,1.0369,false
