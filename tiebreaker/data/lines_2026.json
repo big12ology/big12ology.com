@@ -290,7 +290,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-03T13:32:38+00:00"
+  "as_of": "2026-10-04T09:33:12+00:00"
  },
  "401856812": {
   "spread": 5.4,
@@ -551,7 +551,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-03T13:32:38+00:00"
+  "as_of": "2026-10-04T09:33:12+00:00"
  },
  "401856793": {
   "spread": -34.1,
@@ -1096,7 +1096,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-03T13:32:38+00:00"
+  "as_of": "2026-10-04T09:33:12+00:00"
  },
  "401856683": {
   "spread": -15.0,
@@ -1713,7 +1713,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-03T13:32:38+00:00"
+  "as_of": "2026-10-04T09:33:12+00:00"
  },
  "401856771": {
   "spread": -41.3,
@@ -1787,7 +1787,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-03T13:32:38+00:00"
+  "as_of": "2026-10-04T09:33:12+00:00"
  },
  "401856767": {
   "spread": -43.5,
@@ -1855,7 +1855,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-03T13:32:38+00:00"
+  "as_of": "2026-10-04T09:33:12+00:00"
  },
  "401856849": {
   "spread": -3.0,
@@ -1878,7 +1878,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-03T13:32:38+00:00"
+  "as_of": "2026-10-04T09:33:12+00:00"
  },
  "401856788": {
   "spread": -14.0,
@@ -3183,31 +3183,99 @@
   "spread_open_src": "collegefootballdata.com"
  },
  "401856826": {
-  "spread": -14.0,
-  "over_under": 50.5,
-  "home_ml": -670,
-  "away_ml": 448,
+  "spread": -10.5,
+  "over_under": 49.0,
+  "home_ml": -428,
+  "away_ml": 330,
   "books": [
    {
     "provider": "DraftKings",
-    "spread": -14.5,
-    "over_under": 50.5,
-    "home_ml": -625,
-    "away_ml": 455
+    "spread": -11.5,
+    "over_under": 49.5,
+    "home_ml": -425,
+    "away_ml": 330
    },
    {
-    "provider": "BetRivers",
-    "spread": -13.5,
-    "over_under": 50.5,
-    "home_ml": -715,
-    "away_ml": 440
+    "provider": "FanDuel",
+    "spread": -9.5,
+    "over_under": 48.5,
+    "home_ml": -430,
+    "away_ml": 330
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-10-03T10:13:21+00:00",
+  "as_of": "2026-10-04T09:33:13+00:00",
   "spread_open": -14.5,
   "over_under_open": 50.5,
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com"
+ },
+ "401856823": {
+  "spread": 3.5,
+  "over_under": 57.5,
+  "home_ml": 125,
+  "away_ml": -150,
+  "books": [
+   {
+    "provider": "FanDuel",
+    "spread": 3.5,
+    "over_under": 57.5,
+    "home_ml": 125,
+    "away_ml": -150
+   }
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-10-04T09:33:13+00:00"
+ },
+ "401856824": {
+  "spread": -9.5,
+  "over_under": 51.5,
+  "home_ml": -345,
+  "away_ml": 270,
+  "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -9.5,
+    "over_under": 51.5,
+    "home_ml": -345,
+    "away_ml": 270
+   }
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-10-04T09:33:13+00:00"
+ },
+ "401856825": {
+  "spread": -2.5,
+  "over_under": 51.5,
+  "home_ml": -128,
+  "away_ml": 106,
+  "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -2.5,
+    "over_under": 51.5,
+    "home_ml": -128,
+    "away_ml": 106
+   }
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-10-04T09:33:13+00:00"
+ },
+ "401856827": {
+  "spread": -14.5,
+  "over_under": 51.5,
+  "home_ml": -630,
+  "away_ml": 450,
+  "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -14.5,
+    "over_under": 51.5,
+    "home_ml": -630,
+    "away_ml": 450
+   }
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-10-04T09:33:13+00:00"
  }
 }
