@@ -5,6 +5,7 @@
    "home": "Arizona State",
    "margin": 15.26,
    "p_home": 0.839,
+   "spread": -21.0,
    "systems": {
     "Big12ology": 7.18,
     "Elo": 7.85,
@@ -34,7 +35,7 @@
    "home": "West Virginia",
    "margin": -2.99,
    "p_home": 0.416,
-   "spread": 2.9,
+   "spread": 2.8,
    "systems": {
     "Big12ology": -5.77,
     "Elo": -8.85,
@@ -49,7 +50,7 @@
    "home": "Oklahoma State",
    "margin": -0.81,
    "p_home": 0.477,
-   "spread": -9.7,
+   "spread": -9.6,
    "systems": {
     "Big12ology": -5.2,
     "Elo": -4.37,
@@ -94,7 +95,7 @@
    "home": "Utah",
    "margin": 21.75,
    "p_home": 0.932,
-   "spread": -15.1,
+   "spread": -15.2,
    "systems": {
     "Big12ology": 14.63,
     "Elo": 18.22,
@@ -854,7 +855,7 @@
   }
  },
  "games_complete": 60,
- "generated": "2026-10-05T01:49:05+00:00",
+ "generated": "2026-10-05T12:05:02+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
