@@ -417,11 +417,11 @@
  ],
  "401856825": [
   {
-   "outlet": "FOX",
+   "outlet": "Fox",
    "type": "tv"
   },
   {
-   "outlet": "Fox",
+   "outlet": "FOX",
    "type": "tv"
   }
  ],
@@ -437,9 +437,33 @@
    "type": "tv"
   }
  ],
+ "401856828": [
+  {
+   "outlet": "Fox",
+   "type": "tv"
+  }
+ ],
  "401856829": [
   {
    "outlet": "TNT",
+   "type": "tv"
+  }
+ ],
+ "401856830": [
+  {
+   "outlet": "FS1",
+   "type": "tv"
+  }
+ ],
+ "401856831": [
+  {
+   "outlet": "Fox",
+   "type": "tv"
+  }
+ ],
+ "401856832": [
+  {
+   "outlet": "FS1",
    "type": "tv"
   }
  ],
