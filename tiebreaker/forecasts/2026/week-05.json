@@ -50,7 +50,7 @@
    "home": "Oklahoma State",
    "margin": 1.38,
    "p_home": 0.54,
-   "spread": -10.7,
+   "spread": -10.9,
    "systems": {
     "Big12ology": 4.37,
     "Elo": -3.81,
@@ -80,7 +80,7 @@
    "home": "BYU",
    "margin": 11.51,
    "p_home": 0.792,
-   "spread": -10.1,
+   "spread": -10.2,
    "systems": {
     "Big12ology": 14.45,
     "Elo": 3.15,
@@ -95,7 +95,7 @@
    "home": "Utah",
    "margin": 18.27,
    "p_home": 0.898,
-   "spread": -15.4,
+   "spread": -15.6,
    "systems": {
     "Big12ology": 14.59,
     "Elo": 12.89,
@@ -138,7 +138,7 @@
    "home": "Kansas State",
    "margin": 9.03,
    "p_home": 0.739,
-   "spread": -7.5,
+   "spread": -9.5,
    "systems": {
     "Big12ology": 10.06,
     "Elo": 4.04,
@@ -153,7 +153,7 @@
    "home": "Houston",
    "margin": 7.97,
    "p_home": 0.72,
-   "spread": -2.5,
+   "spread": -3.0,
    "systems": {
     "Big12ology": 10.05,
     "Elo": 10.19,
@@ -856,7 +856,7 @@
   }
  },
  "games_complete": 60,
- "generated": "2026-10-07T21:41:47+00:00",
+ "generated": "2026-10-08T15:45:22+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
