@@ -56,14 +56,17 @@ def season(year):
                       f"({was[0]}-{was[1]} -> {r['w']}-{r['l']})")
             prev[r["t"]] = (r["w"], r["l"])
 
-        # A shared position must be shared by everyone holding that record.
+        # A shared position is shared on percentage, so 2-0 and 1-0 sit
+        # together. The exception is 0-0, which is unplayed and not .000.
         by_pos = {}
         for r in f["left"]:
             by_pos.setdefault(r["p"], []).append(r)
         for pos, group in by_pos.items():
-            recs = {(r["w"], r["l"]) for r in group}
-            check(len(recs) == 1,
-                  f"{year} wk{f['w']}: position {pos} mixes records {recs}")
+            pcts = {(r["w"] / (r["w"] + r["l"]), True) if r["w"] + r["l"]
+                    else (0.0, False) for r in group}
+            check(len(pcts) == 1,
+                  f"{year} wk{f['w']}: position {pos} mixes percentages "
+                  f"{pcts}")
             check(len(group) == group[0]["n"],
                   f"{year} wk{f['w']}: position {pos} rowspan disagrees "
                   f"with its group size")

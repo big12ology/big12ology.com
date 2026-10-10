@@ -117,6 +117,22 @@ check(len(ccg["pending"]) == 8,
 check("Arizona" not in (ccg["seed1"], ccg["seed2"]),
       "and nobody is seeded for sorting first alphabetically")
 
+# --- unbeaten on different game counts --------------------------------------
+print("2-0 and 1-0 are the same percentage:")
+games = [game("Baylor", "Arizona", 30, 20), game("Baylor", "Colorado", 30, 20),
+         game("BYU", "Houston", 30, 20), game("BYU", "Iowa State", 30, 20),
+         game("Oklahoma State", "Kansas", 30, 20)] + schedule()
+rows, ranks = board(games)
+left = build.official_board(games, {}, rows)
+pos = {t: b["pos"] for b in left for t in b["teams"]}
+got = [pos[t] for t in ("Baylor", "BYU", "Oklahoma State")]
+check(got == ["T1", "T1", "T1"],
+      f"every unbeaten team shares first, whatever its game count and "
+      f"whatever the ladder would say today (got {got})")
+check(pos["Texas Tech"] != pos["Arizona"],
+      f"and 0-0 still does not share one with 0-1 "
+      f"(got {pos['Texas Tech']} for both)")
+
 # --- the finished seasons still answer --------------------------------------
 print("a finished season is unchanged:")
 import json                                              # noqa: E402

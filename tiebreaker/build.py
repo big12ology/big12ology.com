@@ -1599,27 +1599,33 @@ def tie_headline(group):
 
 
 def official_board(games, overrides, display_rows):
-    """Positions the way the conference actually keeps them: the tiebreakers
-    run only far enough to name the two championship-game participants, and
-    every tie below that is simply a tie. Teams sharing a record share a
-    position (T3, T3, T3, then 6th).
+    """Positions the way the conference actually keeps them: on conference
+    winning percentage and nothing else, until the regular season is over.
+    Teams tied on percentage share a position (T3, T3, T3, then 6th),
+    whatever their game counts.
+
+    The tiebreakers run once, when the last conference game has been played,
+    and only far enough to name the two championship-game participants. Every
+    tie below that is simply a tie. This board used to seat those two every
+    week, which in October put a 1-0 team first and a 2-0 team second out of
+    five tied at 1.000: a true account of the procedure and a false one of
+    the standings, because nobody has invoked the procedure yet. What the
+    ladder would say today is the other board's job.
 
     A team with no conference game is not a footnote under the board, it is
     0-0, and 0-0 is a record like any other. It used to be stacked at the
     bottom under a dash, which is how the fourteen teams that had not played
     ended up below the one that had lost.
-
-    Only the seats the procedure has actually filled are named. Early in the
-    year the second one is not, because the team standing at position two
-    shares it with everyone else who has not played.
     """
     played = [r for r in display_rows if r["conf_w"] + r["conf_l"] > 0]
     if not played:
         return [{"pos": "—", "teams": [r["team"] for r in display_rows],
                  "rec": "0–0", "tied": True}]
-    ccg = engine.championship(games, overrides)
-    seeds = [t for t in ((ccg or {}).get("seed1"), (ccg or {}).get("seed2"))
-             if t]
+    seeds = []
+    if not engine.remaining_conf(games):
+        ccg = engine.championship(games, overrides)
+        seeds = [t for t in ((ccg or {}).get("seed1"),
+                             (ccg or {}).get("seed2")) if t]
     by_team = {r["team"]: r for r in display_rows}
     out = []
     for i, t in enumerate(seeds):
@@ -1627,21 +1633,31 @@ def official_board(games, overrides, display_rows):
         out.append({"pos": str(i + 1), "teams": [t],
                     "rec": f"{r['conf_w']}–{r['conf_l']}", "tied": False})
     rest = [r for r in display_rows if r["team"] not in seeds]
+    # Grouped on PERCENTAGE, which is what the conference sorts on, and not on
+    # the record. Keyed on (wins, losses) this put a 1-0 team a position below
+    # two 2-0 teams it was tied with at 1.000, in the weeks when byes leave
+    # the unbeaten on different game counts. The one record that is not its
+    # percentage is 0-0: it is .000 by arithmetic and unplayed in fact, so it
+    # keeps a group of its own, above the teams that have lost.
     groups = {}
     for r in rest:
-        groups.setdefault((r["conf_w"], r["conf_l"]), []).append(r["team"])
+        w, l = r["conf_w"], r["conf_l"]
+        key = (w / (w + l), 1) if w + l else (0.0, 0)
+        groups.setdefault(key, []).append(r)
     pos = len(seeds) + 1
-    # Percentage, then wins, then LOSSES. The third key is new and it is the
-    # whole point: 0-0 and 0-1 are both .000 with zero wins, so the first two
-    # keys tie and the sort would fall back on insertion order. Fewer losses
-    # is what separates them, on this board and on every other one.
-    for key in sorted(groups, key=lambda k: (-(k[0] / max(k[0] + k[1], 1)),
-                                             -k[0], k[1])):
-        teams = sorted(groups[key])
-        out.append({"pos": (f"T{pos}" if len(teams) > 1 else str(pos)),
-                    "teams": teams, "rec": f"{key[0]}–{key[1]}",
-                    "tied": len(teams) > 1})
-        pos += len(teams)
+    for key in sorted(groups, key=lambda k: (-k[0], k[1])):
+        # More wins first inside a group and then fewer losses, so 2-0 reads
+        # above 1-0 and 0-1 above 0-2. That is how the list is laid out, not
+        # a ranking: they share the position.
+        by_rec = lambda r: (-r["conf_w"], r["conf_l"])
+        grp = sorted(groups[key], key=lambda r: (by_rec(r), r["team"]))
+        recs = sorted({(r["conf_w"], r["conf_l"]) for r in grp},
+                      key=lambda k: (-k[0], k[1]))
+        out.append({"pos": (f"T{pos}" if len(grp) > 1 else str(pos)),
+                    "teams": [r["team"] for r in grp],
+                    "rec": ", ".join(f"{w}–{l}" for w, l in recs),
+                    "tied": len(grp) > 1})
+        pos += len(grp)
     return out
 
 
@@ -1870,11 +1886,13 @@ def standings_page(games, overrides, display_rows, teams):
 <div class=card><h2>As the conference keeps it</h2>
   <div class=tablewrap><table class=stbl>{head}
   <tbody id=board-left>{"".join(left)}</tbody></table></div>
-  <p class=note>The Big 12 runs its tiebreaking procedure for one purpose:
-  naming the two teams that play in the championship game. Every other tie
-  in the standings is left standing, so third place can be shared by four
-  programs and the conference simply lists them together. That is why its
-  published standings show co-positions instead of an order.</p>
+  <p class=note>These standings are kept on conference winning percentage
+  alone, so teams tied on percentage share a position even when they have
+  played a different number of games: 2–0 and 1–0 are both 1.000. The Big 12
+  runs its tiebreaking procedure once the regular season is over, and for
+  one purpose: naming the two teams that play in the championship game.
+  Every other tie is left standing, which is why its published standings
+  show co-positions instead of an order.</p>
 </div>
 </div>
 <div class=stack>
