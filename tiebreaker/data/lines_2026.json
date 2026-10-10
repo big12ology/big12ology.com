@@ -290,7 +290,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-09T15:22:47+00:00"
+  "as_of": "2026-10-10T12:15:48+00:00"
  },
  "401856812": {
   "spread": 5.4,
@@ -1101,7 +1101,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-09T15:22:47+00:00"
+  "as_of": "2026-10-10T12:15:48+00:00"
  },
  "401856683": {
   "spread": -15.0,
@@ -1797,7 +1797,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-09T15:22:47+00:00"
+  "as_of": "2026-10-10T12:15:48+00:00"
  },
  "401856767": {
   "spread": -43.5,
@@ -1865,7 +1865,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-09T15:22:47+00:00"
+  "as_of": "2026-10-10T12:15:48+00:00"
  },
  "401856849": {
   "spread": -3.0,
@@ -1888,7 +1888,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-09T15:22:47+00:00"
+  "as_of": "2026-10-10T12:15:48+00:00"
  },
  "401856788": {
   "spread": -14.0,
@@ -3571,7 +3571,7 @@
   "spread_open_src": "collegefootballdata.com"
  },
  "401856808": {
-  "spread": -20.8,
+  "spread": -21.0,
   "spread_open": -21.2,
   "over_under": 50.5,
   "over_under_open": 50.8,
@@ -3580,7 +3580,7 @@
   "books": [
    {
     "provider": "DraftKings",
-    "spread": -20.5,
+    "spread": -21,
     "spread_open": -20.5,
     "over_under": 50.5,
     "over_under_open": 50.5,
@@ -3600,7 +3600,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 2,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-10-09T15:22:47+00:00"
+  "as_of": "2026-10-10T12:15:48+00:00"
  },
  "401856831": {
   "spread": -3.2,
