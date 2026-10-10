@@ -307,6 +307,12 @@
    "type": "tv"
   }
  ],
+ "401856809": [
+  {
+   "outlet": "ABC",
+   "type": "tv"
+  }
+ ],
  "401856810": [
   {
    "outlet": "FOX",
@@ -403,7 +409,17 @@
    "type": "web"
   }
  ],
+ "401856824": [
+  {
+   "outlet": "ESPN2",
+   "type": "tv"
+  }
+ ],
  "401856825": [
+  {
+   "outlet": "Fox",
+   "type": "tv"
+  },
   {
    "outlet": "FOX",
    "type": "tv"
@@ -418,6 +434,36 @@
  "401856827": [
   {
    "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856828": [
+  {
+   "outlet": "Fox",
+   "type": "tv"
+  }
+ ],
+ "401856829": [
+  {
+   "outlet": "TNT",
+   "type": "tv"
+  }
+ ],
+ "401856830": [
+  {
+   "outlet": "FS1",
+   "type": "tv"
+  }
+ ],
+ "401856831": [
+  {
+   "outlet": "Fox",
+   "type": "tv"
+  }
+ ],
+ "401856832": [
+  {
+   "outlet": "FS1",
    "type": "tv"
   }
  ],
@@ -452,6 +498,10 @@
   }
  ],
  "401856880": [
+  {
+   "outlet": "Fox",
+   "type": "tv"
+  },
   {
    "outlet": "FOX",
    "type": "tv"
