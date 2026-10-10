@@ -1408,6 +1408,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Arizona State,5,2026-10-03,Baylor,true,Mountain America Stadium,54063,53599,1.0087,false
 2026,BYU,1,2026-09-05,Utah Tech,false,LaVell Edwards Stadium,64077,62073,1.0323,false
 2026,BYU,2,2026-09-12,Arizona,true,LaVell Edwards Stadium,64409,62073,1.0376,false
+2026,BYU,6,2026-10-09,Iowa State,true,LaVell Edwards Stadium,64632,62073,1.0412,false
 2026,Baylor,2,2026-09-12,Prairie View A&M,false,McLane Stadium,38642,45140,0.8560,false
 2026,Baylor,3,2026-09-19,Louisiana Tech,false,McLane Stadium,41343,45140,0.9159,false
 2026,Baylor,4,2026-09-26,Colorado,true,McLane Stadium,40015,45140,0.8865,false

@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 46
+    "agree": 47
   },
   "games": [
     {
@@ -507,6 +507,17 @@
       "espnId": 401856818,
       "ours": 38327,
       "espn": 38327,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "BYU",
+      "week": 6,
+      "opponent": "Iowa State",
+      "date": "2026-10-09",
+      "espnId": 401856826,
+      "ours": 64632,
+      "espn": 64632,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

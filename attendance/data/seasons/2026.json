@@ -1347,7 +1347,15 @@
       "espnId": 401856826,
       "conferenceGame": true,
       "opponent": "Iowa State",
-      "attendance": null
+      "attendance": 64632,
+      "pointsFor": 24,
+      "pointsAgainst": 10,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 70,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
@@ -1375,13 +1383,15 @@
       "role": "away",
       "venue": "LaVell Edwards Stadium",
       "city": "Provo",
-      "state": "UT"
+      "state": "UT",
+      "pointsFor": 10,
+      "pointsAgainst": 24
     },
     {
       "team": "Kansas",
       "week": 6,
       "date": "2026-10-10",
-      "time": "20:15",
+      "time": "18:00",
       "espnId": 401856827,
       "conferenceGame": true,
       "opponent": "Utah",
@@ -1429,7 +1439,7 @@
       "team": "Utah",
       "week": 6,
       "date": "2026-10-10",
-      "time": "20:15",
+      "time": "18:00",
       "espnId": 401856827,
       "conferenceGame": true,
       "opponent": "Kansas",
