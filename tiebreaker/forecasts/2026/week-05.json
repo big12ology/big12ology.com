@@ -20,7 +20,7 @@
    "home": "BYU",
    "margin": -8.58,
    "p_home": 0.266,
-   "spread": 12.8,
+   "spread": 12.5,
    "systems": {
     "Big12ology": -4.25,
     "Elo": -11.11,
@@ -35,7 +35,7 @@
    "home": "West Virginia",
    "margin": -4.42,
    "p_home": 0.378,
-   "spread": 3.3,
+   "spread": 3.5,
    "systems": {
     "Big12ology": 3.2,
     "Elo": -10.81,
@@ -95,7 +95,7 @@
    "home": "Utah",
    "margin": 18.27,
    "p_home": 0.898,
-   "spread": -15.5,
+   "spread": -15.4,
    "systems": {
     "Big12ology": 14.59,
     "Elo": 12.89,
@@ -153,7 +153,7 @@
    "home": "Houston",
    "margin": 7.97,
    "p_home": 0.72,
-   "spread": -3.5,
+   "spread": -3.2,
    "systems": {
     "Big12ology": 10.05,
     "Elo": 10.19,
@@ -856,7 +856,7 @@
   }
  },
  "games_complete": 60,
- "generated": "2026-10-09T21:23:55+00:00",
+ "generated": "2026-10-10T04:35:27+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
