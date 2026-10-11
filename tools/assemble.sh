@@ -720,7 +720,16 @@ for root, _, files in os.walk(DIST):
         # The blind spot this buys is a missing space between two words either
         # side of a tag. That is cosmetic, and it is the right trade against a
         # check that cries drift over an indent.
-        body = " ".join(m.group(1).split())
+        #
+        # ONE CLAUSE A PAGE MAY ADD, and it has to be marked to count. The
+        # Model's footer says when its ratings were last fit, because that
+        # page's numbers are older than its build stamp. footer(asof=...)
+        # wraps the clause in <span class=b12-asof>, and it is taken out
+        # here before comparing, so everything either side of it is still
+        # held to the one footer. An unmarked difference is still drift.
+        body = re.sub(r'<span class=["\']?b12-asof["\']?>.*?</span>', "",
+                      m.group(1), flags=re.S)
+        body = " ".join(body.split())
         body = re.sub(r">\s+", ">", re.sub(r"\s+<", "<", body))
         i = body.find("Results from")
         groups[body[i:] if i >= 0 else body].append(os.path.relpath(p, DIST))

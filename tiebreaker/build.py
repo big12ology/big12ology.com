@@ -698,7 +698,10 @@ def footer(asof=""):
             f'<a href="{POLICY_URL}">official Big 12 tiebreaker policy</a> · '
             'marks via Wikimedia Commons '
             '(<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · '
-            + (f'{esc(asof)} · ' if asof else '') +
+            # In a span of its own so assemble.sh's one-footer check can set
+            # it aside: this clause is the one thing a page may add, and
+            # everything around it still has to match every other page.
+            + (f'<span class=b12-asof>{esc(asof)} · </span>' if asof else '') +
             'updated {{BUILD_STAMP}}.<br>'
             'Not affiliated with the Big 12 Conference; marks belong to their '
             'owners, shown for identification only. · '
