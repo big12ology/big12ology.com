@@ -1699,27 +1699,20 @@
  },
  "401856809": {
   "spread": 12.5,
-  "over_under": 48.5,
-  "home_ml": 410,
-  "away_ml": -588,
+  "over_under": 49.5,
+  "home_ml": 390,
+  "away_ml": -520,
   "books": [
    {
     "provider": "DraftKings",
     "spread": 12.5,
-    "over_under": 48.5,
-    "home_ml": 410,
-    "away_ml": -550
-   },
-   {
-    "provider": "BetRivers",
-    "spread": 12.5,
-    "over_under": 48.5,
-    "home_ml": 410,
-    "away_ml": -625
+    "over_under": 49.5,
+    "home_ml": 390,
+    "away_ml": -520
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-10-10T04:34:23+00:00",
+  "as_of": "2026-10-11T00:46:12+00:00",
   "spread_open": 10.0,
   "over_under_open": 54.5,
   "spread_open_books": 1,
