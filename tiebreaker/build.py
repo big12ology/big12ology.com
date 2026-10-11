@@ -5840,6 +5840,46 @@ def pending_results(games, now=None):
     return due
 
 
+# How far ahead an unannounced kickoff is worth a call. Windows are assigned
+# twelve or six days out, and the six-day ones are the ones that are still
+# open in game week, so this reaches the coming Saturday from the Sunday
+# before it and no further. A game a fortnight away with no time is not news.
+TBD_WINDOW = datetime.timedelta(days=7)
+
+
+def unannounced_soon(games, now=None):
+    """Games inside the coming week whose kickoff time is still a placeholder.
+
+    THE HOLE pending_results LEAVES. That rule fetches when a game should
+    have a result and does not, which is right for scores and blind to the
+    other thing the provider changes: a kickoff time being announced. Windows
+    held to the six-day selection are set after the previous Saturday's
+    games, which is after the weekend's last final has already been fetched,
+    so nothing was due and nothing asked until the Tuesday refresh. On
+    2026-10-11 the slate read "Sat, Oct 17 · time TBD" for Utah at Colorado
+    with ESPN printed beside it, and the provider had had 8:15 for hours.
+
+    This only says which games are worth asking about. How often the build
+    may act on it is load_games' business, and the answer there is once a
+    day.
+    """
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    soon = []
+    for g in games:
+        if g.get("completed") or not g.get("start_tbd") or not g.get("start"):
+            continue
+        try:
+            t = datetime.datetime.fromisoformat(
+                g["start"].replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        # The placeholder is midnight Eastern on game day, so a game is
+        # still "ahead" for most of the day it is played on.
+        if now - datetime.timedelta(days=1) <= t <= now + TBD_WINDOW:
+            soon.append(g)
+    return soon
+
+
 def load_games(year, refetch=False, refresh=False, refresh_lines=False):
     """data/ is committed, so a build normally reads it and calls nothing.
 
@@ -5853,6 +5893,7 @@ def load_games(year, refetch=False, refresh=False, refresh_lines=False):
     the team list are never refetched at all: they cannot change, and they
     are in the repo."""
     path = os.path.join(HERE, "data", f"games_{year}.json")
+    asked_media = False
     if refetch:
         if refresh_lines and not refresh:
             # Before the no-new-results skip below, which returns without
@@ -5874,9 +5915,19 @@ def load_games(year, refetch=False, refresh=False, refresh_lines=False):
             # 12-/6-day selection window. Guarded separately: a broadcast
             # is the least load-bearing thing on the card, and it must not
             # take the lines refresh down with it.
+            #
+            # WHETHER IT ASKED is remembered, because that is the clock the
+            # kickoff check below runs on. A broadcast window and a kickoff
+            # time are the same announcement, so the run that goes looking
+            # for one is the run that may go looking for the other, and the
+            # broadcast gate is already "once a day" with a stamp that
+            # survives a CI checkout. A second stamp would be a second thing
+            # to commit back and keep in step for no gain.
             try:
+                asked_media = fetcher.media_due(year)
                 fetcher.fetch_media(year)
             except Exception as e:
+                asked_media = False
                 print(f"WARNING: media refresh failed ({e}) — "
                       f"using committed broadcasts")
         # ASK ONLY WHEN THE ANSWER COULD HAVE MOVED. --refresh is exempt: the
@@ -5891,13 +5942,26 @@ def load_games(year, refetch=False, refresh=False, refresh_lines=False):
                 have = None
             if have is not None:
                 due = pending_results(have)
-                if not due:
+                # Once a day at most, and only when the day's broadcast
+                # check has just run: see unannounced_soon for the hole
+                # this closes and the media fetch above for the clock.
+                tbd = unannounced_soon(have) if asked_media else []
+                if not due and not tbd:
                     print(f"{year}: no game has finished since the last "
                           f"fetch — no call made")
                     return fetcher.mark_ccg(have)
-                names = ", ".join(f"{g['away']} at {g['home']}" for g in due[:3])
-                print(f"{year}: {len(due)} game(s) due a result "
-                      f"({names}{'...' if len(due) > 3 else ''}) — fetching")
+                if due:
+                    names = ", ".join(f"{g['away']} at {g['home']}"
+                                      for g in due[:3])
+                    print(f"{year}: {len(due)} game(s) due a result "
+                          f"({names}{'...' if len(due) > 3 else ''}) "
+                          f"— fetching")
+                else:
+                    names = ", ".join(f"{g['away']} at {g['home']}"
+                                      for g in tbd[:3])
+                    print(f"{year}: {len(tbd)} kickoff(s) this week not "
+                          f"announced ({names}{'...' if len(tbd) > 3 else ''})"
+                          f" — fetching")
         try:
             # Explicit: --fetch is a request for fresh scores, and
             # fetch_season now reads its cache unless told otherwise.

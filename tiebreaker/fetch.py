@@ -752,6 +752,16 @@ def load_media(year):
     return json.load(open(p)) if os.path.exists(p) else {}
 
 
+def media_due(year):
+    """Whether fetch_media would spend its call right now. The build asks
+    before calling it, because the day's broadcast check is also the day's
+    one chance to ask about a kickoff nobody had announced; see
+    build.unannounced_soon."""
+    age = media_age_hours(year)
+    return (not os.path.exists(media_path(year)) or age is None
+            or age >= MEDIA_MIN_AGE_HOURS)
+
+
 def fetch_media(year, force=False):
     """Who is carrying each game -> data/media_<year>.json.
 
