@@ -66,30 +66,6 @@
       "pct": 1.034465
     },
     {
-      "team": "Arizona State",
-      "stadium": "Mountain America Stadium",
-      "capacity": 53599,
-      "capacityEstimate": null,
-      "color": "#8e0c3a",
-      "logo": "assets/logos/asu.svg",
-      "multiVenue": false,
-      "games": 2,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 54004,
-          "pct": 1.0075561111214761
-        },
-        {
-          "week": 5,
-          "attendance": 54063,
-          "pct": 1.008656877926827
-        }
-      ],
-      "total": 108067,
-      "pct": 1.0081064945241516
-    },
-    {
       "team": "Utah",
       "stadium": "Rice-Eccles Stadium",
       "capacity": 51444,
@@ -97,7 +73,7 @@
       "color": "#ea002a",
       "logo": "assets/logos/utah.svg",
       "multiVenue": false,
-      "games": 3,
+      "games": 4,
       "weeks": [
         {
           "week": 1,
@@ -113,10 +89,15 @@
           "week": 3,
           "attendance": 51455,
           "pct": 1.0002138247414665
+        },
+        {
+          "week": 6,
+          "attendance": 51467,
+          "pct": 1.0004470880957934
         }
       ],
-      "total": 154431,
-      "pct": 1.0006414742243994
+      "total": 205898,
+      "pct": 1.000592877692248
     },
     {
       "team": "Texas Tech",
@@ -257,6 +238,35 @@
       ],
       "total": 130959,
       "pct": 0.9874903859204632
+    },
+    {
+      "team": "Arizona State",
+      "stadium": "Mountain America Stadium",
+      "capacity": 53599,
+      "capacityEstimate": null,
+      "color": "#8e0c3a",
+      "logo": "assets/logos/asu.svg",
+      "multiVenue": false,
+      "games": 3,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 54004,
+          "pct": 1.0075561111214761
+        },
+        {
+          "week": 5,
+          "attendance": 54063,
+          "pct": 1.008656877926827
+        },
+        {
+          "week": 6,
+          "attendance": 47931,
+          "pct": 0.8942517584283289
+        }
+      ],
+      "total": 155998,
+      "pct": 0.970154915825544
     },
     {
       "team": "Baylor",
@@ -522,10 +532,10 @@
     },
     {
       "week": 6,
-      "games": 4,
-      "attendance": 218490,
-      "capacity": 224275,
-      "pct": 0.974205774161186
+      "games": 6,
+      "attendance": 317888,
+      "capacity": 329318,
+      "pct": 0.96529190630333
     },
     {
       "week": 7,
@@ -578,9 +588,9 @@
     }
   ],
   "totals": {
-    "games": 50,
-    "attendance": 2317842,
-    "capacity": 2498144,
-    "pct": 0.9278256177386092
+    "games": 52,
+    "attendance": 2417240,
+    "capacity": 2603187,
+    "pct": 0.9285694804099743
   }
 }

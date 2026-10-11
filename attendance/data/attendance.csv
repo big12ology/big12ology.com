@@ -1406,6 +1406,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Arizona,5,2026-10-03,Cincinnati,true,Casino Del Sol Stadium,43760,50782,0.8617,false
 2026,Arizona State,1,2026-09-05,Morgan State,false,Mountain America Stadium,54004,53599,1.0076,false
 2026,Arizona State,5,2026-10-03,Baylor,true,Mountain America Stadium,54063,53599,1.0087,false
+2026,Arizona State,6,2026-10-10,Hawai'i,false,Mountain America Stadium,47931,53599,0.8943,false
 2026,BYU,1,2026-09-05,Utah Tech,false,LaVell Edwards Stadium,64077,62073,1.0323,false
 2026,BYU,2,2026-09-12,Arizona,true,LaVell Edwards Stadium,64409,62073,1.0376,false
 2026,BYU,6,2026-10-09,Iowa State,true,LaVell Edwards Stadium,64632,62073,1.0412,false
@@ -1447,6 +1448,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Utah,1,2026-09-03,Idaho,false,Rice-Eccles Stadium,51444,51444,1.0000,false
 2026,Utah,2,2026-09-12,Arkansas,false,Rice-Eccles Stadium,51532,51444,1.0017,false
 2026,Utah,3,2026-09-19,Utah State,false,Rice-Eccles Stadium,51455,51444,1.0002,false
+2026,Utah,6,2026-10-10,Kansas,true,Rice-Eccles Stadium,51467,51444,1.0004,false
 2026,West Virginia,1,2026-09-05,Coastal Carolina,false,Milan Puskar Stadium,54158,60000,0.9026,false
 2026,West Virginia,2,2026-09-12,UT Martin,false,Milan Puskar Stadium,47049,60000,0.7842,false
 2026,West Virginia,4,2026-09-26,Oklahoma State,true,Milan Puskar Stadium,57756,60000,0.9626,false

@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 50
+    "agree": 52
   },
   "games": [
     {
@@ -511,6 +511,17 @@
       "status": "agree"
     },
     {
+      "team": "Arizona State",
+      "week": 6,
+      "opponent": "Hawai'i",
+      "date": "2026-10-10",
+      "espnId": 401856808,
+      "ours": 47931,
+      "espn": 47931,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "BYU",
       "week": 6,
       "opponent": "Iowa State",
@@ -540,6 +551,17 @@
       "espnId": 401856824,
       "ours": 52168,
       "espn": 52168,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Utah",
+      "week": 6,
+      "opponent": "Kansas",
+      "date": "2026-10-10",
+      "espnId": 401856827,
+      "ours": 51467,
+      "espn": 51467,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     },

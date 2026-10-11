@@ -1339,7 +1339,15 @@
       "espnId": 401856808,
       "conferenceGame": false,
       "opponent": "Hawai'i",
-      "attendance": null
+      "attendance": 47931,
+      "pointsFor": 30,
+      "pointsAgainst": 12,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 82,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
@@ -1403,7 +1411,9 @@
       "role": "away",
       "venue": "Rice-Eccles Stadium",
       "city": "Salt Lake City",
-      "state": "UT"
+      "state": "UT",
+      "pointsFor": 24,
+      "pointsAgainst": 41
     },
     {
       "team": "Kansas State",
@@ -1465,7 +1475,15 @@
       "espnId": 401856827,
       "conferenceGame": true,
       "opponent": "Kansas",
-      "attendance": null
+      "attendance": 51467,
+      "pointsFor": 41,
+      "pointsAgainst": 24,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 72,
+        "windMph": 14,
+        "precipIn": 0
+      }
     },
     {
       "team": "West Virginia",
