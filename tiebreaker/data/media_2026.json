@@ -1,12 +1,12 @@
 {
  "401856636": [
   {
-   "outlet": "ABC",
-   "type": "tv"
-  },
-  {
    "outlet": "Disney+",
    "type": "web"
+  },
+  {
+   "outlet": "ABC",
+   "type": "tv"
   }
  ],
  "401856670": [
@@ -23,22 +23,22 @@
  ],
  "401856683": [
   {
-   "outlet": "ABC",
-   "type": "tv"
-  },
-  {
    "outlet": "ERADM",
    "type": "radio"
+  },
+  {
+   "outlet": "ABC",
+   "type": "tv"
   }
  ],
  "401856766": [
   {
-   "outlet": "ESPN",
-   "type": "tv"
-  },
-  {
    "outlet": "Disney+",
    "type": "web"
+  },
+  {
+   "outlet": "ESPN",
+   "type": "tv"
   }
  ],
  "401856767": [
@@ -109,12 +109,12 @@
  ],
  "401856778": [
   {
-   "outlet": "ESPN",
-   "type": "tv"
-  },
-  {
    "outlet": "Disney+",
    "type": "web"
+  },
+  {
+   "outlet": "ESPN",
+   "type": "tv"
   }
  ],
  "401856779": [
@@ -125,32 +125,32 @@
  ],
  "401856780": [
   {
-   "outlet": "HBO Max",
-   "type": "web"
-  },
-  {
    "outlet": "TNT",
    "type": "tv"
+  },
+  {
+   "outlet": "HBO Max",
+   "type": "web"
   }
  ],
  "401856781": [
   {
-   "outlet": "HBO Max",
-   "type": "web"
-  },
-  {
    "outlet": "TNT",
    "type": "tv"
+  },
+  {
+   "outlet": "HBO Max",
+   "type": "web"
   }
  ],
  "401856782": [
   {
-   "outlet": "ESPN",
-   "type": "tv"
-  },
-  {
    "outlet": "Disney+",
    "type": "web"
+  },
+  {
+   "outlet": "ESPN",
+   "type": "tv"
   }
  ],
  "401856783": [
@@ -215,12 +215,12 @@
  ],
  "401856793": [
   {
-   "outlet": "HBO Max",
-   "type": "web"
-  },
-  {
    "outlet": "TNT",
    "type": "tv"
+  },
+  {
+   "outlet": "HBO Max",
+   "type": "web"
   }
  ],
  "401856795": [
@@ -363,12 +363,12 @@
  ],
  "401856818": [
   {
-   "outlet": "Disney+",
-   "type": "web"
-  },
-  {
    "outlet": "ESPN",
    "type": "tv"
+  },
+  {
+   "outlet": "Disney+",
+   "type": "web"
   }
  ],
  "401856819": [
@@ -397,16 +397,16 @@
  ],
  "401856823": [
   {
-   "outlet": "HBO Max",
-   "type": "web"
+   "outlet": "TNT",
+   "type": "tv"
   },
   {
    "outlet": "truTV",
    "type": "tv"
   },
   {
-   "outlet": "TNT",
-   "type": "tv"
+   "outlet": "HBO Max",
+   "type": "web"
   }
  ],
  "401856824": [
@@ -417,11 +417,11 @@
  ],
  "401856825": [
   {
-   "outlet": "FOX",
+   "outlet": "Fox",
    "type": "tv"
   },
   {
-   "outlet": "Fox",
+   "outlet": "FOX",
    "type": "tv"
   }
  ],
@@ -467,6 +467,12 @@
    "type": "tv"
   }
  ],
+ "401856833": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
  "401856844": [
   {
    "outlet": "ESPN",
@@ -499,11 +505,11 @@
  ],
  "401856880": [
   {
-   "outlet": "FOX",
+   "outlet": "Fox",
    "type": "tv"
   },
   {
-   "outlet": "Fox",
+   "outlet": "FOX",
    "type": "tv"
   }
  ],
