@@ -654,8 +654,15 @@ POLICY_URL = ("https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/"
               "Big_12_Football_2024_Tiebreaker_Policy.pdf")
 
 
-def footer():
+def footer(asof=""):
     """The stamp is left as a {{BUILD_STAMP}} token for assemble.sh to fill.
+
+    `asof` is for a page whose numbers are older than its build, and goes in
+    ahead of the stamp: "ratings last fit October 6". The stamp says when the
+    page was made, which on most pages is when its contents changed and on
+    The Model is not. The ratings are refitted on Tuesdays and the page is
+    rebuilt many times a day, so without this it read "updated" this
+    afternoon over numbers from last week.
 
     Stamping it here instead put two different times on the domain — the
     generated pages said 00:56 and the hand-written ones 00:57, because the
@@ -691,6 +698,7 @@ def footer():
             f'<a href="{POLICY_URL}">official Big 12 tiebreaker policy</a> · '
             'marks via Wikimedia Commons '
             '(<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · '
+            + (f'{esc(asof)} · ' if asof else '') +
             'updated {{BUILD_STAMP}}.<br>'
             'Not affiliated with the Big 12 Conference; marks belong to their '
             'owners, shown for identification only. · '
@@ -5656,6 +5664,15 @@ def build_model_ratings(year, matchcard, outdir=None):
         + (f"Home advantage is measured at {s['hfa']:.1f} points and is not "
            f"included above. " if s.get("hfa") else "")
         + "Ranks are over all of FBS and do not renumber when filtered.")
+    # When the numbers above were last fitted, for the footer. Only where a
+    # fit recorded it: the archived seasons are final and say so in the note,
+    # and a fit from before the stamp existed has nothing to quote.
+    asof = ""
+    try:
+        d = datetime.date.fromisoformat((s.get("fitted") or "")[:10])
+        asof = f"ratings last fit {_MON[d.month - 1]} {d.day}"
+    except ValueError:
+        pass
     out = os.path.join(outdir or SITE, "model.html")
     with open(out, "w") as f:
         f.write(RATINGS_PAGE.format(
@@ -5689,7 +5706,7 @@ def build_model_ratings(year, matchcard, outdir=None):
             v_cards=asset_v("cards.js"), v_state=asset_v("state.js"),
             v_metrics=asset_v("metrics.js"),
             topbar=topbar("tiebreaker", year, BASE),
-            footer=footer(),
+            footer=footer(asof if not archived else ""),
             top=tracker_top(year, "model", matchcard, page="model.html")))
     print(f"built {out} ({len(rows)} teams)")
 

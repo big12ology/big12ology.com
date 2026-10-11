@@ -301,6 +301,8 @@ def fetch_ratings(year):
 
     Writes data/ratings_<year>.json =
         {"systems": {name: {year, hfa, per_pt, ratings: {team: r}}}}
+    and our own system also carries games (how many it was fitted on) and
+    fitted (when, UTC).
     """
     os.makedirs(DATA, exist_ok=True)
     k = key()
@@ -349,6 +351,13 @@ def fetch_ratings(year):
         allg = get(f"games?year={year}&seasonType=regular", k)
         ours = massey_mod.system(allg, year)
         if ours["ratings"]:
+            # WHEN, because nothing else on the site can say it. The page
+            # this feeds is rebuilt on every deploy and stamped with the
+            # build's time, so a rating fitted on Tuesday read "updated"
+            # all week long. Stamped here and not in massey.system: the fit
+            # is a function of the games, and the clock is not one of them.
+            ours["fitted"] = datetime.datetime.now(
+                datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
             systems[OURS] = ours
             _save_own(year, ours)
             print(f"{year}: {OURS} fitted on {ours['games']} FBS games, "
