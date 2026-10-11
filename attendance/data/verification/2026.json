@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 46
+    "agree": 52
   },
   "games": [
     {
@@ -507,6 +507,72 @@
       "espnId": 401856818,
       "ours": 38327,
       "espn": 38327,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Arizona State",
+      "week": 6,
+      "opponent": "Hawai'i",
+      "date": "2026-10-10",
+      "espnId": 401856808,
+      "ours": 47931,
+      "espn": 47931,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "BYU",
+      "week": 6,
+      "opponent": "Iowa State",
+      "date": "2026-10-09",
+      "espnId": 401856826,
+      "ours": 64632,
+      "espn": 64632,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Kansas State",
+      "week": 6,
+      "opponent": "Houston",
+      "date": "2026-10-10",
+      "espnId": 401856825,
+      "ours": 51569,
+      "espn": 51569,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 6,
+      "opponent": "UCF",
+      "date": "2026-10-10",
+      "espnId": 401856824,
+      "ours": 52168,
+      "espn": 52168,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Utah",
+      "week": 6,
+      "opponent": "Kansas",
+      "date": "2026-10-10",
+      "espnId": 401856827,
+      "ours": 51467,
+      "espn": 51467,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "West Virginia",
+      "week": 6,
+      "opponent": "Arizona",
+      "date": "2026-10-10",
+      "espnId": 401856823,
+      "ours": 50121,
+      "espn": 50121,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }
