@@ -1554,8 +1554,8 @@
     {
       "team": "Colorado",
       "week": 7,
-      "date": "2026-10-16",
-      "time": null,
+      "date": "2026-10-17",
+      "time": "20:15",
       "espnId": 401856833,
       "conferenceGame": true,
       "opponent": "Utah",
@@ -1636,8 +1636,8 @@
     {
       "team": "Utah",
       "week": 7,
-      "date": "2026-10-16",
-      "time": null,
+      "date": "2026-10-17",
+      "time": "20:15",
       "espnId": 401856833,
       "conferenceGame": true,
       "opponent": "Colorado",
