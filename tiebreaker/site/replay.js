@@ -136,9 +136,14 @@
       var cls = movedClass(d);
       // Same placement as the official board: movement trails the team
       // name on both, so the eye finds it in one place.
+      // The chip and the panel under the row are why.js's, drawn from the
+      // note the frame carries. Left out, the first repaint would take the
+      // tiebreak off every row the server had just put it on.
+      var why = r.tb && window.B12WHY;
       return "<tr" + (cls ? " class='" + cls.trim() + "'" : "") +
         "><td class=posc>" + esc(r.p) + "</td>" +
-        teamCell(r, r.p, arrow(d)) + recCells(r) + "</tr>";
+        teamCell(r, r.p, arrow(d) + (why ? why.chip(r.tb) : "")) +
+        recCells(r) + "</tr>" + (why ? why.panel(r.tb, r.t) : "");
     }).join("");
   }
 

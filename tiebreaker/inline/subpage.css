@@ -436,6 +436,65 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .teamcell.st-in { font-weight:700 }
 .teamcell.st-top { font-style:italic }
 
+/* ---- why a tied team sits where it does ----
+   The chip under a team on the fully-broken board, and the panel it opens.
+   The chip always sits under the name: in a half-width card the two do
+   not fit on a line, and a row that wrapped only for the long names would
+   leave the board with two row heights. inline-flex and not flex, because
+   an eliminated team's name is struck through and a block inside the cell
+   inherits the line through it; an inline box does not. */
+.tbwrap { container-type:inline-size }
+.tbwrap .teamcell { white-space:normal }
+.tbwrap .teamlink, .tbwrap .mv { white-space:nowrap }
+.tbchip { display:inline-flex; align-items:center; gap:5px;
+  margin:3px 0 3px 26px; padding:1px 7px 1px 2px; font:inherit;
+  font-size:var(--t-fine); font-style:normal; font-weight:400;
+  color:var(--dim); background:none; cursor:pointer;
+  border:1px solid var(--line); border-radius:20px; white-space:nowrap;
+  font-variant-numeric:tabular-nums }
+.tbchip b { min-width:17px; padding:0 4px; border-radius:20px;
+  text-align:center; background:var(--line); color:var(--ink);
+  font-weight:700; box-sizing:border-box }
+.tbchev { fill:none; stroke:currentColor; stroke-width:2.5;
+  stroke-linecap:round; stroke-linejoin:round; transition:transform .15s }
+.tbchip:hover, .tbchip[aria-expanded=true] { border-color:var(--accent);
+  color:var(--ink) }
+.tbchip:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.tbchip[aria-expanded=true] b { background:var(--accent);
+  color:var(--panel) }
+.tbchip[aria-expanded=true] .tbchev { transform:rotate(180deg) }
+.stbl tr.tbopen td { border-bottom-color:transparent }
+.stbl tr.tbrow td { height:auto; padding:0 0 12px; text-align:left }
+/* Pinned to the visible width of the card, not to the table's: on a phone
+   the table is wider than its card and scrolls sideways, and a panel laid
+   out to the table ran off the right edge with it. */
+.tbbox { position:sticky; left:44px; box-sizing:border-box;
+  width:min(34rem, calc(100cqi - 48px)); padding:2px 0 2px 12px;
+  border-left:3px solid var(--accent); font-size:var(--t-meta);
+  white-space:normal }
+.tbbox p { margin:0 0 8px; color:var(--dim) }
+.tbsteps { list-style:none; margin:0; padding:0; display:grid; gap:6px;
+  color:var(--dim) }
+.tbsteps li { display:grid; grid-template-columns:20px minmax(0,1fr);
+  gap:8px; align-items:start }
+.tbsteps li > b { width:20px; height:20px; line-height:20px;
+  border-radius:50%; text-align:center; font-size:var(--t-fine);
+  background:var(--line); color:var(--dim) }
+.tbsteps li.won { color:var(--ink) }
+.tbsteps li.won > b { background:var(--accent); color:var(--panel) }
+.tbcmp { display:grid; gap:3px; margin-top:6px; color:var(--dim) }
+.tbline { display:grid; gap:6px; align-items:center;
+  grid-template-columns:minmax(70px,128px) 30px minmax(24px,1fr) 42px }
+.tbnum { text-align:right; font-variant-numeric:tabular-nums }
+.tbbar { height:6px; border-radius:3px; background:var(--line);
+  overflow:hidden }
+.tbbar i { display:block; height:100%; background:var(--dim); opacity:.55 }
+.tbline.win { color:var(--ink); font-weight:700 }
+.tbline.win .tbbar i { background:var(--accent); opacity:1 }
+.tbline.me > span:first-child { text-decoration:underline;
+  text-decoration-color:var(--accent); text-underline-offset:3px }
+@media (prefers-reduced-motion:reduce) { .tbchev { transition:none } }
+
 /* the replay's own controls, same chrome as the Lab's — one rule, two pages,
    so a control never looks like two different kinds of thing on a site where
    the reader crosses between them in a click. Denser than it was and pressable

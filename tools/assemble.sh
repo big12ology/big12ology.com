@@ -531,7 +531,7 @@ DIST = os.path.abspath(sys.argv[1])
 # the attendance modules that are only ever reached from inside other modules.
 BUSTED = {"brand.css", "tokens.css", "theme.js", "cards.js", "state.js",
           "metrics.js", "app.js", "engine.js", "pct.js", "replay.js",
-          "scrollcue.js", "styles.css", "charts.js", "gametip.js", "stats.js",
+          "why.js", "scrollcue.js", "styles.css", "charts.js", "gametip.js", "stats.js",
           "html.js"}
 
 # Data that a module fetches at runtime rather than links to. Nothing in any
@@ -831,7 +831,7 @@ done
 
 # Cache-busting is not optional (HANDOFF.md). Every reference to one of the
 # shared, mutable assets must carry a query string.
-BUSTED='brand\.css|tokens\.css|theme\.js|cards\.js|state\.js|metrics\.js|app\.js|engine\.js|pct\.js|replay\.js|scrollcue\.js|styles\.css|charts\.js|gametip\.js|stats\.js'
+BUSTED='brand\.css|tokens\.css|theme\.js|cards\.js|state\.js|metrics\.js|app\.js|engine\.js|pct\.js|replay\.js|why\.js|scrollcue\.js|styles\.css|charts\.js|gametip\.js|stats\.js'
 
 while IFS= read -r page; do
   # Both quoting styles: the hub writes href="…", build.py emits some

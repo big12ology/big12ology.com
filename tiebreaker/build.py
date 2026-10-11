@@ -1661,6 +1661,227 @@ def official_board(games, overrides, display_rows):
     return out
 
 
+# What each step of the ladder is called on the chip a row carries. Short on
+# purpose: the chip shares a line with a team name in a half-width card, and
+# the panel under it has the room to say the long version.
+TB_LABEL = {"a": "head-to-head", "b": "common opponents", "c": "next-highest",
+            "d": "opp. record", "e": "total wins", "f": "SportSource",
+            "g": "coin toss"}
+TB_COUNT = {2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven",
+            8: "Eight", 9: "Nine", 10: "Ten", 11: "Eleven", 12: "Twelve",
+            13: "Thirteen", 14: "Fourteen", 15: "Fifteen", 16: "Sixteen"}
+
+
+def _tb_split(line):
+    """One line of the engine's log as (step letter, what it found, verdict).
+
+    The engine writes "(d) Opponents' combined conference record: ... —
+    Baylor seeded." and the dash is the seam: what was measured on the left,
+    what came of it on the right."""
+    letter = line[1] if line[:1] == "(" and line[2:3] == ")" else None
+    text = line[4:] if letter else line
+    body, _, tail = text.partition(" — ")
+    return letter, body.rstrip("."), tail.strip()
+
+
+def _tb_values(body, pool):
+    """Each tied team's figure at one step, read back out of the sentence the
+    engine wrote: {team: (record, value, number)}, or None when the step is
+    not a comparison of figures at all (a head-to-head result, a coin toss).
+
+    Read from the prose because the prose is what the engine keeps. The names
+    are known, so each is looked for by name with a figure after it, which is
+    what stops "Kansas" from matching the front of "Kansas State 3-2"."""
+    if ": " not in body:
+        return None
+    detail = body.rsplit(": ", 1)[1]
+    out = {}
+    for t in pool:
+        m = re.search(r"(?:^|, )" + re.escape(t) + r" (?=[\d#—])([^,]+)",
+                      detail)
+        if not m:
+            return None
+        raw = m.group(1).strip()
+        rec = re.fullmatch(r"(\d+)-(\d+)(?: \(([\d.]+|—)\))?", raw)
+        if rec and rec.group(3):
+            num = None if rec.group(3) == "—" else float(rec.group(3))
+            out[t] = (f"{rec.group(1)}–{rec.group(2)}", rec.group(3), num)
+        elif rec:
+            w, l = int(rec.group(1)), int(rec.group(2))
+            out[t] = ("", f"{w}–{l}", w / (w + l) if w + l else None)
+        elif raw.startswith("#"):
+            # A ranking: lower is better, and a bar would say the opposite.
+            out[t] = ("", raw, None)
+        elif raw == "—":
+            out[t] = ("", raw, None)
+        else:
+            out[t] = ("", raw, float(raw))
+    return out
+
+
+def _tb_failed(body, tail):
+    """A step that named nobody, in the engine's own words minus the stage
+    direction: "proceed to next step" is the engine talking to itself."""
+    text = body + "."
+    if tail and not tail.startswith("proceed"):
+        text += " " + tail[0].upper() + tail[1:]
+    return text
+
+
+def tie_notes(display_rows):
+    """Why each tied team sits where it does on the fully-broken board:
+    {team: note}, for every team the ladder had to place.
+
+    The procedure seats ONE team per pass and then starts over with the rest,
+    so a five-way tie is four passes and each can end on a different step.
+    That is why a note belongs to a row and not to the group: Utah can be
+    seated on step (d) and the team under it on step (e).
+
+    A note is everything the row needs, already in words, so the server and
+    the replay draw the same thing from it and neither decides anything:
+
+      s      the step that settled this team's place, or "?" where the ladder
+             ran out of public data and the position is shared
+      l, v   that step's short name, and this team's figure at it
+      lead   one sentence on who was still tied when the pass ran
+      st     the pass, step by step: [letter, text, 1 if it decided]
+      rows   the deciding step's figures: [team, record, value, bar %,
+             winner]
+
+    The last team of a broken tie is placed by the pass that seated the team
+    above it, so it carries that pass and says so.
+    """
+    groups = {}
+    for r in display_rows:
+        if r.get("tie_group"):
+            groups.setdefault(r["tie_group"], []).append(r)
+    notes = {}
+    for members in groups.values():
+        first = members[0]
+        events = first.get("events") or []
+        passes = [[]]
+        for line in first.get("log") or []:
+            if line.startswith("Restarting procedure"):
+                passes.append([])
+            elif not line.startswith("UNRESOLVED:"):
+                passes[-1].append(line)
+        resolved = bool(first.get("resolved"))
+        names = [m["team"] for m in members]
+        # The log and the board have to be telling the same story before
+        # either is quoted next to the other. If they are not, the row goes
+        # without a chip, which is a gap and not a wrong answer.
+        if (len(passes) != len(events) + (0 if resolved else 1)
+                or [e["team"] for e in events] != names[:len(events)]):
+            continue
+        w, l = first["conf_w"], first["conf_l"]
+        pct = f"{w / (w + l):.3f}"
+
+        for i, lines in enumerate(passes):
+            pool = names[i:]
+            if i == 0:
+                lead = (f"{TB_COUNT.get(len(pool), len(pool))} teams are "
+                        f"tied at {pct}. The ladder runs until one step puts "
+                        f"a single team ahead, and that team takes "
+                        f"{ordinal(members[i]['rank'])}.")
+            else:
+                lead = (f"With the teams above placed, the ladder starts "
+                        f"over for the {TB_COUNT.get(len(pool), len(pool)).lower()} "
+                        f"still tied at {pct}: {', '.join(pool)}.")
+            parsed = [_tb_split(x) for x in lines]
+            if i >= len(events):
+                # The pass nothing came out of. Every step failed, and what
+                # is left needs a rating or a coin only the conference has.
+                st = [[a or "", _tb_failed(b, t), 0] for a, b, t in parsed]
+                note = {"s": "?", "l": "unbroken", "v": "",
+                        "lead": (f"{TB_COUNT.get(len(pool), len(pool))} teams "
+                                 f"are tied at {pct} and nothing public "
+                                 f"separates them, so they share a position. "
+                                 f"The steps that are left are the "
+                                 f"conference's SportSource rating and a "
+                                 f"coin toss."),
+                        "st": st, "rows": []}
+                for t in pool:
+                    notes[t] = note
+                continue
+
+            ev = events[i]
+            seat = ordinal(members[i]["rank"])
+            st = [[a or "", _tb_failed(b, t), 0] for a, b, t in parsed[:-1]]
+            letter, body, _tail = parsed[-1]
+            vals = _tb_values(body, pool)
+            rows = []
+            if vals:
+                top = max((v[2] for v in vals.values() if v[2]), default=None)
+                order = sorted(pool, key=lambda t: (
+                    t != ev["team"], -(vals[t][2] or 0), t))
+                rows = [[t, vals[t][0], vals[t][1],
+                         # A whole percent, settled here: Python and
+                         # JavaScript round a half differently, and the two
+                         # of them draw this bar.
+                         (max(int(vals[t][2] / top * 100 + 0.5), 2)
+                          if top and vals[t][2] is not None else None),
+                         1 if t == ev["team"] else 0] for t in order]
+                title = body.rsplit(": ", 1)[0]
+                st.append([letter, f"{title[0].upper()}{title[1:]}. "
+                           f"{ev['team']} comes out ahead and takes {seat}.",
+                           1])
+            else:
+                st.append([letter, f"{body}. {ev['team']} takes {seat}.", 1])
+            label = TB_LABEL.get(letter, "")
+            if letter == "a" and vals:
+                label = "among tied"
+
+            def note_for(t, lead):
+                return {"s": letter, "l": label,
+                        "v": vals[t][1] if vals else "",
+                        "lead": lead, "st": st, "rows": rows}
+
+            notes[ev["team"]] = note_for(ev["team"], lead)
+            if resolved and i == len(events) - 1:
+                last = members[-1]
+                notes[last["team"]] = note_for(last["team"], (
+                    f"{last['team']} is {ordinal(last['rank'])} as the last "
+                    f"team left in the tie at {pct}. {ev['team']} took "
+                    f"{seat} at step ({letter})."))
+    return notes
+
+
+def tie_chip(note):
+    """The chip a tied row carries: the step that placed it and its figure
+    there. A button, because it opens the pass under the row. Drawn again by
+    site/why.js for the replay; the two have to stay the same string."""
+    text = esc(note["l"]) + (f" {esc(note['v'])}" if note["v"] else "")
+    # The break is what puts it under the name at every width. Left to wrap
+    # on its own it sat beside the short names and under the long ones.
+    return (f"<br><button class=tbchip type=button aria-expanded=false>"
+            f"<b>{esc(note['s'])}</b><span>{text}</span>"
+            f"<svg class=tbchev viewBox='0 0 24 24' width=12 height=12 "
+            f"aria-hidden=true><path d='M6 9l6 6l6 -6'/></svg></button>")
+
+
+def tie_panel(note, team):
+    """The row under a tied row: the pass that placed it, a step to a line,
+    and the deciding step's figures as a small comparison."""
+    steps = []
+    for letter, text, won in note["st"]:
+        cmp_ = ""
+        if won and note["rows"]:
+            cmp_ = "<div class=tbcmp>" + "".join(
+                f"<div class='tbline{' win' if win else ''}"
+                f"{' me' if t == team else ''}'><span>{esc(t)}</span>"
+                f"<span class=tbnum>{esc(rec)}</span>"
+                + ("<span></span>" if bar is None else
+                   f"<span class=tbbar><i style='width:{bar}%'></i>"
+                   f"</span>")
+                + f"<span class=tbnum>{esc(val)}</span></div>"
+                for t, rec, val, bar, win in note["rows"]) + "</div>"
+        steps.append(f"<li{' class=won' if won else ''}><b>{esc(letter)}</b>"
+                     f"<div>{esc(text)}{cmp_}</div></li>")
+    return (f"<tr class=tbrow hidden><td></td><td colspan=5><div class=tbbox>"
+            f"<p>{esc(note['lead'])}</p>"
+            f"<ol class=tbsteps>{''.join(steps)}</ol></div></td></tr>")
+
+
 def season_frames(games, overrides):
     """One snapshot per conference week: both boards exactly as the engine
     would have drawn them that Sunday morning. Computed here, in Python, so
@@ -1706,6 +1927,7 @@ def season_frames(games, overrides):
                              "ow": r["overall_w"], "ol": r["overall_l"],
                              "i": i, "s": status[t]})
         wk_ranks = display_ranks(display)
+        wk_notes = tie_notes(display)
         out.append({
             "w": w,
             "label": f"Week {w}",
@@ -1715,11 +1937,17 @@ def season_frames(games, overrides):
             # too. Without them the replay repaints both boards with four
             # columns into a table whose head has six, and the two new ones
             # come out blank the moment the page finishes loading.
-            "right": [{"t": r["team"], "p": wk_ranks[r["team"]],
-                       "w": r["conf_w"], "l": r["conf_l"],
-                       "nw": r["nonconf_w"], "nl": r["nonconf_l"],
-                       "ow": r["overall_w"], "ol": r["overall_l"],
-                       "s": status[r["team"]]} for r in display],
+            # And the note on why a tied team sits where it does, for the
+            # same reason: the replay repaints this board on load, so a chip
+            # only the server drew would be gone before anyone saw it.
+            "right": [dict({"t": r["team"], "p": wk_ranks[r["team"]],
+                            "w": r["conf_w"], "l": r["conf_l"],
+                            "nw": r["nonconf_w"], "nl": r["nonconf_l"],
+                            "ow": r["overall_w"], "ol": r["overall_l"],
+                            "s": status[r["team"]]},
+                           **({"tb": wk_notes[r["team"]]}
+                              if r["team"] in wk_notes else {}))
+                      for r in display],
         })
     return out
 
@@ -1819,13 +2047,13 @@ def standings_page(games, overrides, display_rows, teams):
     frames = season_frames(games, overrides)
     state = ({r["t"]: r["s"] for r in frames[-1]["right"]} if frames else {})
 
-    def cells(r, pos=None):
+    def cells(r, pos=None, trail=""):
         p = rules.pct(r["conf_w"], r["conf_l"])
         c = team_color(teams, r["team"])
         st = status_class(state.get(r["team"]), pos)
         return (f"<td class='teamcell{st}'><span class=cbar "
                 f"style='background:{c}'>"
-                f"</span>{team_name(r['team'], 20)}</td>"
+                f"</span>{team_name(r['team'], 20)}{trail}</td>"
                 f"<td>{r['conf_w']}–{r['conf_l']}</td>"
                 + ("<td>—</td>" if p is None else
                    f"<td style='color:{winpct_color(p)}'>{p:.3f}</td>")
@@ -1848,12 +2076,20 @@ def standings_page(games, overrides, display_rows, teams):
             left.append(f"<tr{cls}>{pos}{cells(by_team[t], b['pos'])}</tr>")
 
     ranks = display_ranks(display_rows)
+    notes = tie_notes(display_rows)
     right = "".join(
         f"<tr><td class=posc>{ranks[r['team']]}</td>"
         # The label, not the number. status_class italicizes the top seed
         # on a match with "1", and a shared "T1" is not that: nothing has
         # put any one of those teams first.
-        f"{cells(r, ranks[r['team']])}</tr>" for r in display_rows)
+        + cells(r, ranks[r["team"]],
+                tie_chip(notes[r["team"]]) if r["team"] in notes else "")
+        + "</tr>"
+        # A tied team's row is followed by the pass that placed it, closed
+        # until the chip is pressed.
+        + (tie_panel(notes[r["team"]], r["team"])
+           if r["team"] in notes else "")
+        for r in display_rows)
 
     replay = ""
     if len(frames) > 1:
@@ -1897,10 +2133,12 @@ def standings_page(games, overrides, display_rows, teams):
 </div>
 <div class=stack>
 <div class=card><h2>If every tie were broken</h2>
-  <div class=tablewrap><table class=stbl>{head}
+  <div class="tablewrap tbwrap"><table class=stbl>{head}
   <tbody id=board-right>{right}</tbody></table></div>
   <p class=note>The same procedure carried all the way down, one team per
-  position wherever the rules can name one. The conference never publishes
+  position wherever the rules can name one. The letter under a tied team is
+  the step that placed it, with that team's figure at the step, and pressing
+  it opens the whole pass. The conference never publishes
   this and it decides nothing: it is what they produce if you ask them to
   sort the whole league. A shared position is one the ladder has nothing to
   break, which early in the year is most of them, and it is the order the
@@ -5715,6 +5953,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          f"standing, next to the same {year} board with every tie broken — "
          "plus a week-by-week replay of how the season moved.",
          f'<script defer src="{base}{asset_v("pct.js")}"></script>'
+         f'<script defer src="{base}{asset_v("why.js")}"></script>'
          f'<script defer src="{base}{asset_v("replay.js")}"></script>'),
         ("schedule.html", "The Schedule", "schedule",
          build_schedule_page(games, ctx),
