@@ -1370,7 +1370,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-10-11T02:30:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": false,
   "venue": "Mountain America Stadium",
   "venue_id": 3947,
@@ -1382,8 +1382,8 @@
   "away_conf": "Mountain West",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 30,
+  "away_points": 12
  },
  {
   "id": 401856833,

@@ -531,28 +531,28 @@
   ]
  },
  "401856830": {
-  "spread": -8.8,
-  "over_under": 55.5,
-  "home_ml": -340,
-  "away_ml": 262,
+  "spread": -8.0,
+  "over_under": 54.0,
+  "home_ml": -305,
+  "away_ml": 245,
   "books": [
    {
     "provider": "DraftKings",
-    "spread": -9.5,
-    "over_under": 55.5,
-    "home_ml": -345,
-    "away_ml": 275
+    "spread": -8.5,
+    "over_under": 54.5,
+    "home_ml": -325,
+    "away_ml": 260
    },
    {
-    "provider": "BetRivers",
-    "spread": -8.0,
-    "over_under": 55.5,
-    "home_ml": -335,
-    "away_ml": 250
+    "provider": "FanDuel",
+    "spread": -7.5,
+    "over_under": 53.5,
+    "home_ml": -285,
+    "away_ml": 230
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-10-10T10:57:23+00:00",
+  "as_of": "2026-10-11T06:57:35+00:00",
   "spread_open": -7.5,
   "over_under_open": 54.5,
   "spread_open_books": 1,
@@ -1699,20 +1699,34 @@
  },
  "401856809": {
   "spread": 12.5,
-  "over_under": 49.5,
-  "home_ml": 390,
+  "over_under": 48.2,
+  "home_ml": 380,
   "away_ml": -520,
   "books": [
    {
     "provider": "DraftKings",
     "spread": 12.5,
-    "over_under": 49.5,
+    "over_under": 48.5,
     "home_ml": 390,
     "away_ml": -520
+   },
+   {
+    "provider": "FanDuel",
+    "spread": 11.5,
+    "over_under": 47.5,
+    "home_ml": 340,
+    "away_ml": -450
+   },
+   {
+    "provider": "BetRivers",
+    "spread": 13.5,
+    "over_under": 48.5,
+    "home_ml": 410,
+    "away_ml": -590
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-10-11T00:46:12+00:00",
+  "as_of": "2026-10-11T06:57:35+00:00",
   "spread_open": 10.0,
   "over_under_open": 54.5,
   "spread_open_books": 1,
@@ -3596,38 +3610,106 @@
   "as_of": "2026-10-10T12:15:48+00:00"
  },
  "401856831": {
-  "spread": -3.2,
-  "over_under": 57.5,
-  "home_ml": -159,
-  "away_ml": 130,
+  "spread": -3.7,
+  "over_under": 58.8,
+  "home_ml": -171,
+  "away_ml": 141,
   "books": [
    {
     "provider": "FanDuel",
-    "spread": -2.5,
-    "over_under": 57.5,
-    "home_ml": -140,
-    "away_ml": 116
+    "spread": -3.5,
+    "over_under": 59.5,
+    "home_ml": -164,
+    "away_ml": 136
    },
    {
     "provider": "DraftKings",
     "spread": -3.5,
-    "over_under": 57.5,
-    "home_ml": -162,
-    "away_ml": 136
+    "over_under": 58.5,
+    "home_ml": -170,
+    "away_ml": 142
    },
    {
     "provider": "BetRivers",
-    "spread": -3.5,
-    "over_under": 57.5,
-    "home_ml": -175,
-    "away_ml": 138
+    "spread": -4.0,
+    "over_under": 58.5,
+    "home_ml": -180,
+    "away_ml": 145
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-10-10T10:57:23+00:00",
+  "as_of": "2026-10-11T06:57:35+00:00",
   "spread_open": -3.5,
   "over_under_open": 57.5,
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com"
+ },
+ "401856829": {
+  "spread": -2.5,
+  "over_under": 62.5,
+  "home_ml": -132,
+  "away_ml": 110,
+  "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -2.5,
+    "over_under": 62.5,
+    "home_ml": -132,
+    "away_ml": 110
+   }
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-10-11T06:57:35+00:00"
+ },
+ "401856828": {
+  "spread": -12.5,
+  "over_under": 50.5,
+  "home_ml": -520,
+  "away_ml": 385,
+  "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -12.5,
+    "over_under": 50.5,
+    "home_ml": -520,
+    "away_ml": 385
+   }
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-10-11T06:57:35+00:00"
+ },
+ "401856832": {
+  "spread": -6.5,
+  "over_under": 52.5,
+  "home_ml": -225,
+  "away_ml": 184,
+  "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -6.5,
+    "over_under": 52.5,
+    "home_ml": -225,
+    "away_ml": 184
+   }
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-10-11T06:57:35+00:00"
+ },
+ "401856833": {
+  "spread": 14.5,
+  "over_under": 50.5,
+  "home_ml": 500,
+  "away_ml": -720,
+  "books": [
+   {
+    "provider": "FanDuel",
+    "spread": 14.5,
+    "over_under": 50.5,
+    "home_ml": 500,
+    "away_ml": -720
+   }
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-10-11T06:57:35+00:00"
  }
 }
