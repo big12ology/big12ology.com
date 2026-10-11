@@ -39,7 +39,7 @@
       "color": "#3c0969",
       "logo": "assets/logos/ksu.svg",
       "multiVenue": false,
-      "games": 3,
+      "games": 4,
       "weeks": [
         {
           "week": 1,
@@ -55,10 +55,15 @@
           "week": 3,
           "attendance": 51846,
           "pct": 1.03692
+        },
+        {
+          "week": 6,
+          "attendance": 51569,
+          "pct": 1.03138
         }
       ],
-      "total": 155324,
-      "pct": 1.0354933333333334
+      "total": 206893,
+      "pct": 1.034465
     },
     {
       "team": "Arizona State",
@@ -143,6 +148,35 @@
       "pct": 0.9970944229523984
     },
     {
+      "team": "Oklahoma State",
+      "stadium": "Boone Pickens Stadium",
+      "capacity": 52202,
+      "capacityEstimate": null,
+      "color": "#ff7300",
+      "logo": "assets/logos/okst.svg",
+      "multiVenue": false,
+      "games": 3,
+      "weeks": [
+        {
+          "week": 2,
+          "attendance": 51035,
+          "pct": 0.9776445346921574
+        },
+        {
+          "week": 3,
+          "attendance": 52168,
+          "pct": 0.999348683958469
+        },
+        {
+          "week": 6,
+          "attendance": 52168,
+          "pct": 0.999348683958469
+        }
+      ],
+      "total": 155371,
+      "pct": 0.9921139675363652
+    },
+    {
       "team": "Colorado",
       "stadium": "Folsom Field",
       "capacity": 50183,
@@ -194,30 +228,6 @@
       ],
       "total": 94904,
       "pct": 0.9885833333333334
-    },
-    {
-      "team": "Oklahoma State",
-      "stadium": "Boone Pickens Stadium",
-      "capacity": 52202,
-      "capacityEstimate": null,
-      "color": "#ff7300",
-      "logo": "assets/logos/okst.svg",
-      "multiVenue": false,
-      "games": 2,
-      "weeks": [
-        {
-          "week": 2,
-          "attendance": 51035,
-          "pct": 0.9776445346921574
-        },
-        {
-          "week": 3,
-          "attendance": 52168,
-          "pct": 0.999348683958469
-        }
-      ],
-      "total": 103203,
-      "pct": 0.9884966093253132
     },
     {
       "team": "UCF",
@@ -314,7 +324,7 @@
       "color": "#002855",
       "logo": "assets/logos/wvu.svg",
       "multiVenue": false,
-      "games": 3,
+      "games": 4,
       "weeks": [
         {
           "week": 1,
@@ -330,10 +340,15 @@
           "week": 4,
           "attendance": 57756,
           "pct": 0.9626
+        },
+        {
+          "week": 6,
+          "attendance": 50121,
+          "pct": 0.83535
         }
       ],
-      "total": 158963,
-      "pct": 0.8831277777777777
+      "total": 209084,
+      "pct": 0.8711833333333333
     },
     {
       "team": "Cincinnati",
@@ -507,10 +522,10 @@
     },
     {
       "week": 6,
-      "games": 1,
-      "attendance": 64632,
-      "capacity": 62073,
-      "pct": 1.041225653665845
+      "games": 4,
+      "attendance": 218490,
+      "capacity": 224275,
+      "pct": 0.974205774161186
     },
     {
       "week": 7,
@@ -563,9 +578,9 @@
     }
   ],
   "totals": {
-    "games": 47,
-    "attendance": 2163984,
-    "capacity": 2335942,
-    "pct": 0.9263860147212559
+    "games": 50,
+    "attendance": 2317842,
+    "capacity": 2498144,
+    "pct": 0.9278256177386092
   }
 }

@@ -1327,7 +1327,9 @@
       "role": "away",
       "venue": "Milan Puskar Stadium",
       "city": "Morgantown",
-      "state": "WV"
+      "state": "WV",
+      "pointsFor": 52,
+      "pointsAgainst": 31
     },
     {
       "team": "Arizona State",
@@ -1369,7 +1371,9 @@
       "role": "away",
       "venue": "Bill Snyder Family Stadium",
       "city": "Manhattan",
-      "state": "KS"
+      "state": "KS",
+      "pointsFor": 35,
+      "pointsAgainst": 16
     },
     {
       "team": "Iowa State",
@@ -1409,7 +1413,15 @@
       "espnId": 401856825,
       "conferenceGame": true,
       "opponent": "Houston",
-      "attendance": null
+      "attendance": 51569,
+      "pointsFor": 16,
+      "pointsAgainst": 35,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 89,
+        "windMph": 18,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
@@ -1419,7 +1431,15 @@
       "espnId": 401856824,
       "conferenceGame": true,
       "opponent": "UCF",
-      "attendance": null
+      "attendance": 52168,
+      "pointsFor": 42,
+      "pointsAgainst": 28,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 77,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
@@ -1433,7 +1453,9 @@
       "role": "away",
       "venue": "Boone Pickens Stadium",
       "city": "Stillwater",
-      "state": "OK"
+      "state": "OK",
+      "pointsFor": 28,
+      "pointsAgainst": 42
     },
     {
       "team": "Utah",
@@ -1453,7 +1475,15 @@
       "espnId": 401856823,
       "conferenceGame": true,
       "opponent": "Arizona",
-      "attendance": null
+      "attendance": 50121,
+      "pointsFor": 31,
+      "pointsAgainst": 52,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 67,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
