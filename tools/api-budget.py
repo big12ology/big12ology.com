@@ -8,7 +8,12 @@ DERIVED, NOT LOGGED, and that is the whole design. Most CFBD calls this
 project makes come from a workflow run whose cost is known and fixed:
 
     pages.yml            1 call   the live season's scores
-      ...with --refresh  +9       four ratings, the lines, the broadcasts
+      ...the ratings     +5       four systems and our own fit, once a week,
+                                  on the first scheduled run after Monday
+                                  07:00 UTC, or on a manual "ratings" run
+      ...with --refresh  +4       Tuesday: the lines, the broadcasts
+                                  (+9 before 2026-10-12, when the Tuesday
+                                  run still carried the ratings)
     attendance-data.yml  1 call   one /games for the season
                                   (2 before 2026-08-24: each run also
                                   re-fetched /venues until 12fc00a cached it)
@@ -55,8 +60,32 @@ ROOT = os.path.dirname(HERE)
 LOCAL_LOG = os.path.join(ROOT, "tiebreaker", "data", ".api-local.log")
 
 LIMIT = 1000                       # calls per month on the free plan
-REFRESH_CRON = "0 12 * 8-12 2"     # the Tuesday run that also pulls lines
+REFRESH_CRON = "0 7 * 8-12 2"      # the Tuesday run that also pulls lines
 REFRESH_EXTRA = 9                  # ratings x4 (x2 years worst case), lines, media
+
+# THE RATINGS LEFT THE TUESDAY RUN on this date. They are refitted by the
+# first scheduled run after Monday 07:00 UTC instead (build.ratings_due), so
+# the same nine calls a week are now five on Monday and four on Tuesday.
+# Nothing about the month's total changed; which day it lands on did, and a
+# forecast that still billed all nine to Tuesday read every Monday as
+# overspent and every Tuesday as a saving.
+RATINGS_MOVED = "2026-10-12"
+RATINGS_CALLS = 5                  # SP+, FPI, Elo, SRS, and /games for our fit
+RATINGS_HOUR = 7                   # UTC, Monday: build.RATINGS_HOUR
+
+# What pages.yml names a run that was started by hand with one of its
+# spending inputs ticked (its run-name). Inputs are not in the run history,
+# so the title is the only way a manual refit can be told from a manual
+# deploy that cost one call.
+TITLE_RATINGS = "ratings refit"
+TITLE_REFRESH = "manual refresh"
+
+
+def refresh_extra(day):
+    """What the Tuesday refresh costs on top of its deploy, on a given date."""
+    if day.isoformat() < RATINGS_MOVED:
+        return REFRESH_EXTRA
+    return REFRESH_EXTRA - RATINGS_CALLS
 
 # When 12fc00a landed and attendance runs stopped re-fetching /venues every
 # time. Before this instant each run spent 2 calls (/games + /venues); after
@@ -136,8 +165,11 @@ def expected(y, m, through=None):
                 # forecast" drift on a schedule behaving exactly as designed.
                 n += 9
             n += 1                                 # daily catch-all
+            day = datetime.date(y, m, d)
             if w == 1:
-                n += 1 + REFRESH_EXTRA             # Tuesday + its refresh
+                n += 1 + refresh_extra(day)        # Tuesday + its refresh
+            if w == 0 and day.isoformat() >= RATINGS_MOVED:
+                n += RATINGS_CALLS                 # Monday's ratings refit
             # attendance: Fri/Sat x1, Sun x3, Mon x2. Doubled on days up
             # through the venues-cache cutoff (day granularity is enough:
             # the cutoff day's scheduled run fired hours before the fix
@@ -170,18 +202,57 @@ def main(month=None):
            if r.get("event") == "schedule"
            and datetime.date.fromisoformat(r["createdAt"][:10]).weekday() == 1}
     refreshes = sorted(tue)
+    refresh_calls = sum(refresh_extra(datetime.date.fromisoformat(d))
+                        for d in refreshes)
+
+    # THE RATINGS, since they moved. One refit a week, made by whichever
+    # scheduled run comes first after Monday 07:00 UTC and no later than
+    # Friday night, so count the weeks that saw such a run. Same reasoning as
+    # the Tuesdays above: it survives any delay, and it errs high.
+    #
+    # A refit started by hand is counted as well, by its title. If it was
+    # made before that week's scheduled one, the scheduled run found a fresh
+    # stamp and spent nothing, and the week is counted twice. That is five
+    # calls high, in the direction a budget should err. The one manual refit
+    # from before the title existed (2026-10-12) is covered the same way,
+    # from the other side: it has no title, and its week is counted.
+    refit_weeks = set()
+    for r in pages:
+        if r.get("event") != "schedule":
+            continue
+        t = datetime.datetime.fromisoformat(
+            r["createdAt"].replace("Z", "+00:00"))
+        if t.date().isoformat() < RATINGS_MOVED or t.weekday() > 4:
+            continue
+        if t.weekday() == 0 and t.hour < RATINGS_HOUR:
+            continue
+        refit_weeks.add(t.date() - datetime.timedelta(days=t.weekday()))
+    by_hand_refits = sum(1 for r in pages if r.get("event") != "schedule"
+                         and TITLE_RATINGS in (r.get("displayTitle") or ""))
+    by_hand_refreshes = sum(1 for r in pages if r.get("event") != "schedule"
+                            and TITLE_REFRESH in (r.get("displayTitle") or ""))
+    n_refits = len(refit_weeks) + by_hand_refits
+    refit_calls = n_refits * RATINGS_CALLS
+    # A manual refresh is priced at the old full nine: it is the one run
+    # that may still refit as well, and it cannot be told from here whether
+    # it did.
+    refresh_calls += by_hand_refreshes * REFRESH_EXTRA
 
     manual = local_calls(month)
     n_pages, n_att = len(pages), len(att)
     # Runs from before the venues cache each spent a second call on /venues.
     att_pre = sum(1 for r in att if r.get("createdAt", "") < VENUES_CACHED)
     att_calls = n_att + att_pre
-    used = n_pages + len(refreshes) * REFRESH_EXTRA + att_calls + len(manual)
+    used = n_pages + refresh_calls + refit_calls + att_calls + len(manual)
 
     print(f"CFBD budget — {month}\n")
     print(f"  {'deploy runs (1 call each)':<34} {n_pages:>5}")
-    print(f"  {'weekly refresh (+9 each)':<34} {len(refreshes) * REFRESH_EXTRA:>5}"
-          f"   ({len(refreshes)} run{'s' if len(refreshes) != 1 else ''})")
+    n_ref = len(refreshes) + by_hand_refreshes
+    print(f"  {'weekly refresh (+4, +9 if older)':<34} {refresh_calls:>5}"
+          f"   ({n_ref} run{'s' if n_ref != 1 else ''})")
+    if n_refits:
+        print(f"  {'ratings refit (+5 each)':<34} {refit_calls:>5}"
+              f"   ({n_refits} refit{'s' if n_refits != 1 else ''})")
     if att_pre:
         print(f"  {'attendance runs':<34} {att_calls:>5}"
               f"   ({att_pre} x2 pre venues cache, {n_att - att_pre} x1)")
