@@ -5880,14 +5880,66 @@ def unannounced_soon(games, now=None):
     return soon
 
 
-def load_games(year, refetch=False, refresh=False, refresh_lines=False):
+# The week's ratings turn over at 07:00 UTC on Monday, which is midnight
+# Pacific on Sunday night: every FBS game of the weekend is final by then,
+# the late Hawaii kickoff included. They used to wait for the Tuesday
+# refresh, a day and a half after the last result they depend on.
+RATINGS_WEEKDAY, RATINGS_HOUR = 0, 7
+# And how long after that a missed refit is still worth making. Past Friday
+# night the next weekend has started, and a fit taken with half of Saturday
+# played is worse than last Monday's.
+RATINGS_WINDOW = datetime.timedelta(days=5)
+
+
+def ratings_due(fitted, now=None):
+    """Whether the ratings should be refitted on this run.
+
+    A RULE ABOUT THE CLOCK, NOT ABOUT WHICH CRON FIRED. The refit used to
+    belong to one scheduled slot a week, and this repo's own measurements say
+    a slot arrives a median 19 minutes late and one in ten never arrives. So
+    it is asked on every scheduled run instead and answered from the stamp on
+    the file: due if the last fit is older than this week's Monday turnover
+    and the turnover is less than five days gone. The first run after
+    midnight Pacific does the work, every later one sees the new stamp and
+    is free, and a dropped run costs an hour, not a week.
+
+    `fitted` is fetcher.ratings_fitted(year). None, meaning no stamp at all,
+    is due: a file that cannot say when it was fitted is not known to be
+    fresh.
+    """
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    turn = (now - datetime.timedelta(days=(now.weekday() - RATINGS_WEEKDAY) % 7)
+            ).replace(hour=RATINGS_HOUR, minute=0, second=0, microsecond=0)
+    if turn > now:
+        turn -= datetime.timedelta(days=7)
+    if now - turn > RATINGS_WINDOW:
+        return False
+    return fitted is None or fitted < turn
+
+
+def _refit_ratings(year):
+    """Refetch and refit, and never take the build down doing it: a spent
+    quota or an outage leaves the committed ratings in place and says so."""
+    try:
+        fetcher.fetch_ratings(year)
+    except Exception as e:
+        warn = f"ratings refresh failed ({e}) — using committed ratings"
+        if os.environ.get("GITHUB_ACTIONS"):
+            print(f"::warning::{warn}")
+        print(f"WARNING: {warn}")
+
+
+def load_games(year, refetch=False, refresh=False, refresh_lines=False,
+               refresh_ratings=False):
     """data/ is committed, so a build normally reads it and calls nothing.
 
     The CFBD key allows 1,000 calls a month. Only one thing changes on the
     hour — the live season's scores — so --fetch buys exactly that, one
-    call. Ratings are published weekly; --refresh picks those up (one call
-    per system, prior seasons come from disk) and with lines and media is
-    worth six more calls on a weekly cron, not every hour. Lines drift
+    call. Ratings are published weekly; the first scheduled run after the
+    Monday turnover picks those up (ratings_due: one call per system and one
+    for our own fit, prior seasons from disk), and --refresh-ratings does it
+    on demand. --refresh is the Tuesday run that opens the week: lines and
+    media, forced, on a weekly cron and not every hour. Lines drift
     daily, and one call buys the whole season's market, so --refresh-lines
     spends exactly that call on the crons in between. Finished seasons and
     the team list are never refetched at all: they cannot change, and they
@@ -5895,6 +5947,16 @@ def load_games(year, refetch=False, refresh=False, refresh_lines=False):
     path = os.path.join(HERE, "data", f"games_{year}.json")
     asked_media = False
     if refetch:
+        # THE RATINGS, on their own clock: see ratings_due. --refresh-ratings
+        # is the manual run, which asks regardless. Scheduled runs come
+        # through as --refresh-lines or --refresh and ask only when the week
+        # has turned over, so a push or a Worker-dispatched deploy never
+        # spends these calls. Here, ahead of the no-new-results return
+        # below, for the same reason the lines are: Monday morning is
+        # exactly when no game is due and the ratings are.
+        if refresh_ratings or ((refresh_lines or refresh) and ratings_due(
+                fetcher.ratings_fitted(year))):
+            _refit_ratings(year)
         if refresh_lines and not refresh:
             # Before the no-new-results skip below, which returns without
             # reaching the main fetch: a Saturday morning with no game
@@ -5967,7 +6029,9 @@ def load_games(year, refetch=False, refresh=False, refresh_lines=False):
             # fetch_season now reads its cache unless told otherwise.
             games = fetcher.fetch_season(year, force=True)
             if refresh:
-                fetcher.fetch_ratings(year)
+                # The ratings are not refetched here any more. They turn
+                # over on Monday (ratings_due, above), and this run has
+                # already asked that question on its way in.
                 # force_cfbd: this is the run that publishes the slate, and
                 # the openers it freezes into the page should be checked
                 # rather than inherited from whenever the daily gate last
@@ -8137,7 +8201,8 @@ def main():
     LIVE_YEAR = year
     games = load_games(year, refetch="--fetch" in sys.argv,
                        refresh="--refresh" in sys.argv,
-                       refresh_lines="--refresh-lines" in sys.argv)
+                       refresh_lines="--refresh-lines" in sys.argv,
+                       refresh_ratings="--refresh-ratings" in sys.argv)
     build_season(year, games, SITE, "", sched_outdir=SCHEDULE_SITE,
                  sched_base="../tiebreaker/")
 

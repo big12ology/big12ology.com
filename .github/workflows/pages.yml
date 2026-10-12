@@ -20,7 +20,11 @@ on:
         type: boolean
         default: true
       refresh:
-        description: "Also refetch ratings, closing lines and TV windows (+10 CFBD calls)"
+        description: "The weekly refresh: refetch lines and TV windows, and OPEN the next pools week (up to +10 CFBD calls)"
+        type: boolean
+        default: false
+      ratings:
+        description: "Refit the ratings now, and nothing else (+5 CFBD calls)"
         type: boolean
         default: false
       pools:
@@ -78,7 +82,15 @@ on:
     # import sweep. Publishing at 07:00 puts the slate live by ~08:30 UTC at
     # the very worst, ahead of the 09:00 UTC (5am ET) live-by the pages
     # count down to. Same one weekly CFBD spend, earlier alarm.
-    - cron: "0 7 * 8-12 2"         # Tue — the weekly ratings/lines refresh
+    #
+    # THE RATINGS LEFT THIS SLOT on 2026-10-12. They are refitted by whichever
+    # scheduled run comes first after 07:00 UTC Monday (midnight Pacific on
+    # Sunday night), decided from the stamp on the file and not from which
+    # cron fired: build.ratings_due. So there is no Monday cron to add here,
+    # and a dropped slot costs an hour of staleness, not a week. What this
+    # one still owns is the forced lines and media and the opening of the
+    # pools week.
+    - cron: "0 7 * 8-12 2"         # Tue — the weekly refresh: opens the week
     # The market drifts daily and one CFBD call buys the whole season's
     # lines — so every morning gets a lines-only refresh (--refresh-lines
     # below), promised live by 7am ET (11:00 UTC). 08:30, not 10:30: by
@@ -244,8 +256,10 @@ jobs:
         # continuations below are explicit and the expressions unwrappable.
         #
         # --refresh-lines is now EVERY scheduled run except Tuesday's, which
-        # passes --refresh instead and does the same work plus ratings and
-        # media. It used to name the two daily crons explicitly; naming the
+        # passes --refresh instead and does the same work with the lines and
+        # media forced, and opens the pools week. Either one refits the
+        # ratings when the week has turned over (build.ratings_due);
+        # --refresh-ratings is the manual input, which refits regardless. It used to name the two daily crons explicitly; naming the
         # one exception is shorter, and it means a cron added later picks up
         # the market without anybody remembering to come back here.
         #
@@ -258,7 +272,8 @@ jobs:
         run: |
           python3 build.py --fetch \
             ${{ (github.event.schedule == '0 7 * 8-12 2' || inputs.refresh) && '--refresh' || '' }} \
-            ${{ (github.event_name == 'schedule' && github.event.schedule != '0 7 * 8-12 2') && '--refresh-lines' || '' }}
+            ${{ (github.event_name == 'schedule' && github.event.schedule != '0 7 * 8-12 2') && '--refresh-lines' || '' }} \
+            ${{ inputs.ratings && '--refresh-ratings' || '' }}
 
       # The build writes tiebreaker/forecasts/<season>/week-NN.json. Odds are
       # recomputed and discarded every run, so a week that is not committed

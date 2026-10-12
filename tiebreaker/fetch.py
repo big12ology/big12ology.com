@@ -290,6 +290,20 @@ def _save_own(year, system):
         json.dump(blob, f, indent=1, sort_keys=True)
 
 
+def ratings_fitted(year):
+    """When our own rating was last fitted, as an aware UTC datetime, or None
+    if the file has no stamp. The stamp is what fetch_ratings writes; a
+    date with no time (the one fit that predates it) reads as that midnight."""
+    try:
+        raw = json.load(open(os.path.join(DATA, f"ratings_{year}.json")))
+        stamp = raw["systems"][OURS]["fitted"]
+        if len(stamp) == 10:
+            stamp += "T00:00:00Z"
+        return datetime.datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
 def fetch_ratings(year):
     """Rating systems for the what-if favorites. One call per system, for the
     target year only. Preseason numbers appear in late August (Elo and SRS

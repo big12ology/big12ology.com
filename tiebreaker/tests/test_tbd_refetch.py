@@ -72,6 +72,14 @@ class Stub:
     def fetch_lines(self, year):
         pass
 
+    # The ratings have their own clock and their own test. Here they were
+    # fitted a moment ago, so no run in this file is asked to refit them.
+    def ratings_fitted(self, year):
+        return NOW
+
+    def fetch_ratings(self, year):
+        raise AssertionError("no run in this file should refit the ratings")
+
     def media_due(self, year):
         return self._due
 
