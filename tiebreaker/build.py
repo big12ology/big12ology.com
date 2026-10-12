@@ -5619,7 +5619,12 @@ def build_model_ratings(year, matchcard, outdir=None):
     # true on the live page and nonsense on the 2025 archive, where 2025's
     # rating is not stale, it is the answer. The live season shows what the
     # rest of the site actually reasons about, regressed or not.
-    own = fetcher.load_own(year)
+    # Only for a season that is over. The refit writes the live season into
+    # the same store, in the checkout of the run that made it, so that one
+    # build found a 2026 entry there and published the live page as "Final
+    # 2026 ratings" until the next deploy replaced it. The store having an
+    # entry does not make a season finished; the calendar does.
+    own = fetcher.load_own(year) if year != LIVE_YEAR else None
     live = load_ratings(year).get("systems", {}).get(fetcher.OURS) or {}
     s = own if own and own.get("ratings") else live
     archived = bool(own and own.get("ratings"))
