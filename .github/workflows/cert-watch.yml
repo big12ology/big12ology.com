@@ -1,30 +1,39 @@
 name: Origin certificate watch
 
-# Fail loudly before the GitHub Pages certificate expires.
+# Reports how long the GitHub Pages certificate for big12ology.com has left.
 #
-# Why this exists: big12ology.com is served through Cloudflare's proxy, so
-# visitors are presented with Cloudflare's edge certificate. The GitHub Pages
-# certificate is still required — Cloudflare's SSL mode is Full (strict), which
-# validates the origin — but nobody sees it, so its expiry is invisible until
-# every visitor gets a 526 at once.
+# NOT ON A SCHEDULE since 2026-10-12, and the reason is that its premise was
+# wrong. This was written as an outage alarm: it said Cloudflare's SSL mode was
+# Full (strict), which validates the origin, so an expired Pages certificate
+# would give every visitor a 526 at once. The dashboard says otherwise. The
+# mode is Automatic SSL/TLS and it runs as Full, which encrypts to the origin
+# and accepts whatever certificate it is shown, an expired one included.
+# Nothing a visitor sees depends on this certificate being in date.
 #
-# It can genuinely fail to renew. GitHub issues and renews the Pages
-# certificate only after "an automatic DNS check" succeeds, and while the apex
-# is proxied that check resolves big12ology.com to Cloudflare's addresses rather
-# than GitHub's. The renewal job may simply never queue.
+# So when it fired at 18 days, for a certificate that expires 2026-10-30, the
+# decision was to let it lapse. A weekly failure about something that is not a
+# risk only teaches people to ignore the red mark.
 #
-# So this checks the certificate GitHub is serving, not the one Cloudflare is:
-# it connects to big12ology.github.io (never proxied) while sending SNI for
-# big12ology.com, which is exactly the handshake Cloudflare performs.
+# What it found is still true and worth knowing. GitHub does fail to renew:
+# the Pages API reported the certificate as bad_authz, "The ACME authorization
+# is in a bad state. We need to start over." GitHub proves control of the
+# domain by resolving it, and while the records are proxied it resolves to
+# Cloudflare's addresses and not GitHub's.
 #
-# When it fires: grey-cloud the apex A records in Cloudflare for about an hour
-# so GitHub's DNS check sees 185.199.x, let Let's Encrypt reissue, then re-enable
-# the proxy. Confirm with a manual run of this workflow before walking away.
+# PUT THE SCHEDULE BACK IF THE MODE EVER BECOMES FULL (STRICT), by hand or by
+# an Automatic upgrade. Under strict everything the old header said is right,
+# and the certificate has to be valid first:
+#   1. Set the big12ology.com and www records to DNS only in Cloudflare.
+#   2. Remove and re-add the custom domain in the repo's Pages settings, which
+#      is what "start over" takes. The site is off the domain while it is out.
+#   3. Wait for Pages to show the certificate issued, then proxy again.
+#   4. Run this by hand to read the new expiry.
+#
+# How it checks: it connects to big12ology.github.io (never proxied) while
+# sending SNI for big12ology.com, which is the handshake Cloudflare performs,
+# so it reads the certificate GitHub serves and not the one Cloudflare does.
 
 on:
-  schedule:
-    # Mondays 15:00 UTC (08:00 Arizona). Weekly is ample for a 21-day warning.
-    - cron: "0 15 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -70,15 +79,14 @@ jobs:
           # for "CN=${SNI}" and failed on the runner, which prints "CN = ..."
           # with spaces where macOS prints it without.
           openssl x509 -noout -checkhost "${SNI}" <<<"$cert" || {
-            echo "::error::origin certificate is not valid for ${SNI} — Full (strict) will reject it"
+            echo "::error::origin certificate is not valid for ${SNI}. Full (strict) would reject it; Full does not check."
             exit 1
           }
 
           if [ "$days" -lt "${MIN_DAYS}" ]; then
             echo "::error::Pages certificate expires in ${days} days (< ${MIN_DAYS})." \
-                 "Renewal may be blocked by the Cloudflare proxy." \
-                 "Fix: set the apex A records to DNS only for ~1 hour so GitHub's" \
-                 "DNS check sees 185.199.x, wait for reissue, then re-enable the proxy."
+                 "Not an outage while Cloudflare runs Full; it is one under Full (strict)." \
+                 "To renew, follow the four steps at the top of this workflow."
             exit 1
           fi
 
