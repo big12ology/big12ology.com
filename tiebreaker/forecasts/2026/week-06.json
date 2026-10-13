@@ -20,7 +20,7 @@
    "home": "Texas Tech",
    "margin": 19.37,
    "p_home": 0.923,
-   "spread": -14.9,
+   "spread": -14.8,
    "systems": {
     "Big12ology": 17.88,
     "Elo": 16.78,
@@ -35,7 +35,7 @@
    "home": "West Virginia",
    "margin": -0.46,
    "p_home": 0.486,
-   "spread": -1.6,
+   "spread": -1.7,
    "systems": {
     "Big12ology": 4.22,
     "Elo": -2.81,
@@ -80,7 +80,7 @@
    "home": "Baylor",
    "margin": 5.71,
    "p_home": 0.662,
-   "spread": -5.7,
+   "spread": -6.1,
    "systems": {
     "Big12ology": 8.66,
     "Elo": 3.63,
@@ -770,7 +770,7 @@
   }
  },
  "games_complete": 66,
- "generated": "2026-10-13T00:02:05+00:00",
+ "generated": "2026-10-13T14:57:36+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
