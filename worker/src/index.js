@@ -541,12 +541,21 @@ export default {
   async scheduled(event, env, ctx) {
     const season = Number(env.SEASON || new Date().getUTCFullYear());
 
-    // A tick with no slot time is not one Cloudflare sent: it is a test or a
-    // hand-run `wrangler dev --test-scheduled`, and it means "run the sweep".
-    // It dispatches nothing and records nothing, because there is no slot to
-    // decide from or to write down.
-    const slot = event && typeof event.scheduledTime === "number"
+    // A REAL TICK ARRIVES ON THE MINUTE, and that is how one is told from a
+    // run somebody started by hand. Cloudflare's scheduledTime is the slot
+    // the tick was meant for, 07:30:00.000 exactly. wrangler dev's
+    // /__scheduled sends Date.now(), whatever millisecond it was called in,
+    // and the unit tests send no time at all. Both of those mean "run the
+    // sweep, now": they dispatch nothing and record nothing, because there
+    // is no slot to decide from or to write down.
+    //
+    // The first version of this took any number as a slot. The end-to-end
+    // harness imports its slates through /__scheduled, so at twenty past
+    // midnight on a Wednesday the table said the tick was idle, nothing was
+    // imported, and the run failed on a slate that was never read.
+    const sent = event && typeof event.scheduledTime === "number"
       ? event.scheduledTime : null;
+    const slot = sent !== null && sent % 60000 === 0 ? sent : null;
     const jobs = slot === null
       ? { sweep: true, deploy: false, refresh: false, scores: false }
       : jobsAt(slot);

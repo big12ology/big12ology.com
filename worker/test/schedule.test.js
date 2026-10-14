@@ -360,6 +360,28 @@ test("a tick with a job is written down, and health reads it back",
     assert.equal(typeof after.last_tick_at, "number");
   });
 
+test("a hand-run from wrangler dev sweeps whatever the clock says",
+  async () => {
+    // /__scheduled sends the moment it was called, to the millisecond. Here
+    // that moment is an hour the table calls idle, and a Tuesday tick the
+    // table would dispatch a refresh on: neither may decide anything.
+    for (const at of ["2026-10-14T00:20:55.742Z", "2026-10-13T07:30:00.431Z"]) {
+      const env = env0();
+      week(env, 6, SAT);
+      const seen = net();
+      await worker.scheduled(
+        { scheduledTime: Date.parse(at), cron: "30 7-23 * 8-12 3" },
+        env, { waitUntil() {} });
+      assert.ok(seen.urls.some((u) => u.includes("/tiebreaker/pickem/")),
+        `a hand-run at ${at} did not import`);
+      assert.equal(seen.dispatches.length, 0,
+        `a hand-run at ${at} dispatched ${JSON.stringify(seen.dispatches)}`);
+      const n = env.raw.prepare(
+        "SELECT COUNT(*) AS n FROM audit_log WHERE action = 'cron.tick'").get().n;
+      assert.equal(n, 0, "a hand-run was written down as a tick");
+    }
+  });
+
 test("a run with no slot is a sweep, and leaves no tick behind", async () => {
   // What the rest of the suite and `wrangler dev --test-scheduled` send. It
   // has to keep sweeping, and it has no slot to decide a dispatch from.
