@@ -273,6 +273,22 @@ def _merge(old, new):
     return merged, changed
 
 
+def week_is_open(season, games, lines):
+    """Whether the week publish_slate would write next is already on disk.
+
+    For the refresh that arrives second. The week is opened by whichever
+    refresh gets there first, and since 2026-10-13 that is meant to be the one
+    the Worker dispatches on Cloudflare's clock, with pages.yml's own Tuesday
+    cron hours behind it as the backstop. The backstop still has to run, and
+    it has nothing left to freeze, so it should not pay to recheck openers
+    that are already in the page."""
+    slate = build_slate(season, games, lines)
+    if slate is None:
+        return False
+    return os.path.exists(
+        os.path.join(OUT, str(season), f"week-{slate['week']:02d}.json"))
+
+
 def publish_slate(season, games, lines, week=None, now=None, republish=False,
                   may_open=False):
     """Write pickem/<season>/week-NN.json. Returns the path, or None.

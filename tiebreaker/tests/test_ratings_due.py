@@ -85,6 +85,7 @@ class Stub:
 
     def __init__(self, fitted):
         self.fitted, self.refits = fitted, 0
+        self.forced = {}
 
     def ratings_fitted(self, year):
         return self.fitted
@@ -93,13 +94,13 @@ class Stub:
         self.refits += 1
 
     def fetch_lines(self, year, force_cfbd=False):
-        pass
+        self.forced["lines"] = force_cfbd
 
     def media_due(self, year):
         return False
 
     def fetch_media(self, year, force=False):
-        pass
+        self.forced["media"] = force
 
     def fetch_season(self, year, force=False):
         return []
@@ -108,7 +109,7 @@ class Stub:
         return games
 
 
-def refits(fitted, **flags):
+def refits(fitted, want="refits", **flags):
     real_here, real_fetcher = build.HERE, build.fetcher
     with tempfile.TemporaryDirectory() as d:
         os.makedirs(os.path.join(d, "data"))
@@ -121,7 +122,7 @@ def refits(fitted, **flags):
             build.load_games(2099, refetch=True, **flags)
         finally:
             build.HERE, build.fetcher = real_here, real_fetcher
-        return stub.refits
+        return getattr(stub, want)
 
 
 now = datetime.datetime.now(datetime.timezone.utc)
@@ -141,6 +142,30 @@ check(refits(stale) == 0,
       "a push or a dispatched deploy never refits, however stale")
 check(refits(now, refresh_ratings=True) == 1,
       "and the manual run refits regardless")
+
+# --- the refresh that arrives second ----------------------------------------
+# Two refreshes can land on a Tuesday: the Worker's, on time, and this
+# workflow's own cron, hours late. Only the one that opens the week forces the
+# lines and the broadcasts.
+real_open = build.pickem_mod.week_is_open
+try:
+    build.pickem_mod.week_is_open = lambda *a: False
+    check(refits(now, want="forced", refresh=True)
+          == {"lines": True, "media": True},
+          "the refresh that opens the week forces the lines and broadcasts")
+    build.pickem_mod.week_is_open = lambda *a: True
+    check(refits(now, want="forced", refresh=True)
+          == {"lines": False, "media": False},
+          "one that finds the week already open forces neither")
+
+    def boom(*a):
+        raise RuntimeError("cannot tell")
+    build.pickem_mod.week_is_open = boom
+    check(refits(now, want="forced", refresh=True)
+          == {"lines": True, "media": True},
+          "and one that cannot tell forces both, as it always did")
+finally:
+    build.pickem_mod.week_is_open = real_open
 
 if FAIL:
     print(f"\n{len(FAIL)} FAILED")

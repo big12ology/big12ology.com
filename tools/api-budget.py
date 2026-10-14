@@ -73,12 +73,12 @@ RATINGS_MOVED = "2026-10-12"
 RATINGS_CALLS = 5                  # SP+, FPI, Elo, SRS, and /games for our fit
 RATINGS_HOUR = 7                   # UTC, Monday: build.RATINGS_HOUR
 
-# What pages.yml names a run that was started by hand with one of its
-# spending inputs ticked (its run-name). Inputs are not in the run history,
+# What pages.yml names a run that was dispatched with one of its spending
+# inputs set (its run-name), by a person or by the Worker. Inputs are not in the run history,
 # so the title is the only way a manual refit can be told from a manual
 # deploy that cost one call.
 TITLE_RATINGS = "ratings refit"
-TITLE_REFRESH = "manual refresh"
+TITLE_REFRESH = "dispatched refresh"
 
 
 def refresh_extra(day):
@@ -229,14 +229,20 @@ def main(month=None):
         refit_weeks.add(t.date() - datetime.timedelta(days=t.weekday()))
     by_hand_refits = sum(1 for r in pages if r.get("event") != "schedule"
                          and TITLE_RATINGS in (r.get("displayTitle") or ""))
+    # Dispatched refreshes: one a person started, or the one the Worker asks
+    # for on Tuesday when the week has not been opened. Priced like the
+    # Tuesday cron of the same date. On a Tuesday where both ran, the cron is
+    # counted too, though it found the week open and forced nothing: a few
+    # calls high, in the direction a budget should err.
     by_hand_refreshes = sum(1 for r in pages if r.get("event") != "schedule"
                             and TITLE_REFRESH in (r.get("displayTitle") or ""))
+    by_hand_refresh_calls = sum(
+        refresh_extra(datetime.date.fromisoformat(r["createdAt"][:10]))
+        for r in pages if r.get("event") != "schedule"
+        and TITLE_REFRESH in (r.get("displayTitle") or ""))
     n_refits = len(refit_weeks) + by_hand_refits
     refit_calls = n_refits * RATINGS_CALLS
-    # A manual refresh is priced at the old full nine: it is the one run
-    # that may still refit as well, and it cannot be told from here whether
-    # it did.
-    refresh_calls += by_hand_refreshes * REFRESH_EXTRA
+    refresh_calls += by_hand_refresh_calls
 
     manual = local_calls(month)
     n_pages, n_att = len(pages), len(att)

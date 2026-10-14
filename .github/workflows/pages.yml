@@ -1,10 +1,11 @@
 name: Build and deploy big12ology.com
-# A run started by hand with one of the spending inputs ticked says so in its
-# title. tools/api-budget.py reads the run history to price the month, and an
+# A run dispatched with one of the spending inputs set says so in its title,
+# whether a person ticked the box or the Worker asked for the Tuesday refresh
+# (worker/src/schedule.js). tools/api-budget.py reads the run history to price the month, and an
 # input is not in that history: without this a manual ratings refit looks
 # like any other one-call deploy. Empty for every other run, which leaves
 # GitHub's own title in place.
-run-name: ${{ inputs.ratings && 'Build and deploy (ratings refit)' || inputs.refresh && 'Build and deploy (manual refresh)' || '' }}
+run-name: ${{ inputs.ratings && 'Build and deploy (ratings refit)' || inputs.refresh && 'Build and deploy (dispatched refresh)' || '' }}
 
 # One workflow for the whole domain. It rebuilds the tiebreaker, assembles
 # the hub, the tiebreaker and the attendance tracker into dist/, and deploys

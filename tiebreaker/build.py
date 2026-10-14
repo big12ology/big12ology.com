@@ -6037,16 +6037,33 @@ def load_games(year, refetch=False, refresh=False, refresh_lines=False,
                 # The ratings are not refetched here any more. They turn
                 # over on Monday (ratings_due, above), and this run has
                 # already asked that question on its way in.
+                # FORCED ONLY IF THIS IS THE RUN THAT OPENS THE WEEK. Two
+                # refreshes can arrive on a Tuesday now: the one the Worker
+                # dispatches on time, and pages.yml's own cron, which GitHub
+                # has been delivering five to eight hours late. Whichever is
+                # second finds the slate already on disk and has nothing to
+                # freeze, so it takes the same age-gated path as any other
+                # run and usually spends nothing. Unknown reads as not open:
+                # forcing twice costs two calls, and skipping the check on
+                # the run that does open the week costs the openers.
+                try:
+                    opened = pickem_mod.week_is_open(
+                        year, fetcher.mark_ccg(games), load_lines(year))
+                except Exception:
+                    opened = False
+                if opened:
+                    print(f"{year}: the week is already open, so the lines "
+                          f"and broadcasts are not forced")
                 # force_cfbd: this is the run that publishes the slate, and
                 # the openers it freezes into the page should be checked
                 # rather than inherited from whenever the daily gate last
                 # let a CFBD call through.
-                fetcher.fetch_lines(year, force_cfbd=True)
+                fetcher.fetch_lines(year, force_cfbd=not opened)
                 # Broadcast windows are announced about two weeks out and
                 # move after that. Weekly is the right cadence: on the
                 # hourly build it would be 300 calls a month to learn the
                 # same thing the Tuesday run already knows.
-                fetcher.fetch_media(year, force=True)
+                fetcher.fetch_media(year, force=not opened)
             if not os.path.exists(os.path.join(HERE, "data", "teams.json")):
                 fetcher.fetch_teams()
             return fetcher.mark_ccg(games)
