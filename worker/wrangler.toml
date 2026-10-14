@@ -87,7 +87,10 @@ AMAZON_CLIENT_ID = "amzn1.application-oa2-client.0c2a9b4efa8c48a09f399ea96420223
 # and an identity decision nobody wanted. Adding it later is a row in REGISTRY
 # and a button; there is nothing else to undo.
 GITHUB_REPO = "big12ology/big12ology.com"
-DEPLOY_CRONS = "30 * * 8-12 1,7|30 0-8/2 * 8-12 2,6,7"
+# DEPLOY_CRONS used to live here: the cron strings whose ticks should also
+# dispatch a deploy, matched against event.cron. Which ticks do what is
+# src/schedule.js's decision now, made from the tick's time, so it no longer
+# depends on how the [triggers] below happen to be written.
 
 [[d1_databases]]
 binding = "DB"
@@ -158,6 +161,14 @@ dataset = "b12_events"
 #
 # The times are UTC. A US Saturday runs from Saturday noon UTC into Sunday
 # morning UTC, which is why the sweep covers both days.
+# THESE ONLY DELIVER TICKS. What each tick does is decided in
+# src/schedule.js from the time it was scheduled for, and
+# test/schedule.test.js checks that every firing below is a tick that
+# file has a job for. The four can be replaced by a single trigger every ten
+# minutes without changing behavior; that swap is a schedule change, and it
+# was held back on 2026-10-13 while Cloudflare had an open incident on newly
+# modified cron triggers.
+#
 # THE SWEEPS ARE A BACKSTOP NOW, NOT THE PATH.
 #
 # They used to be how a final reached a board, and the :30 offset was load

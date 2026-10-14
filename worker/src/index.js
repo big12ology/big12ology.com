@@ -19,6 +19,7 @@ import {
 import { importWeek } from "./slate.js";
 import { fetchScores, scoreAll } from "./scoring.js";
 import { sweepEspn, sweepKickoffs } from "./espn.js";
+import { jobsAt, anyJob, weekNeedsOpening } from "./schedule.js";
 
 const { json, fail } = api;
 
@@ -450,12 +451,18 @@ async function handle(req, env, ctx) {
  * get triggered is a stale page, and throwing here would also skip the
  * grading below it, which is worse.
  */
-async function triggerDeploy(env) {
+/**
+ * Ask GitHub to run one of this repo's workflows, now.
+ *
+ * `inputs` is sent only when there are some: a workflow that declares no
+ * inputs refuses a dispatch that carries any, and scores.yml declares none.
+ */
+async function dispatch(env, workflow, inputs) {
   if (!env.GITHUB_DISPATCH_TOKEN || !env.GITHUB_REPO) return "not configured";
   try {
     const r = await fetch(
       `https://api.github.com/repos/${env.GITHUB_REPO}` +
-      `/actions/workflows/pages.yml/dispatches`,
+      `/actions/workflows/${workflow}/dispatches`,
       {
         method: "POST",
         headers: {
@@ -466,11 +473,46 @@ async function triggerDeploy(env) {
           "User-Agent": "big12ology-worker",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ref: "main", inputs: { deploy: "true" } }),
+        body: JSON.stringify(inputs ? { ref: "main", inputs } : { ref: "main" }),
       });
     return r.status === 204 ? "dispatched" : `github ${r.status}`;
   } catch (e) {
     return `failed: ${e && (e.message || e)}`;
+  }
+}
+
+// `extra` is how a tick asks for more than a rebuild: refresh: "true" is the
+// weekly refresh, the run that opens the pools week. Strings, because that is
+// what a dispatch's inputs are.
+function triggerDeploy(env, extra = {}) {
+  return dispatch(env, "pages.yml", { deploy: "true", ...extra });
+}
+
+
+/**
+ * Write down that a tick ran, where /api/health can read it back.
+ *
+ * The tail log is the only other account of the cron, and it is gone in
+ * hours and unreadable from anywhere but the dashboard. This is one row for
+ * each tick that had a job: its slot, how late Cloudflare started it, and
+ * what it dispatched and imported. An idle tick writes nothing, and neither
+ * does a run with no slot.
+ *
+ * In audit_log because it is one: who did what, and when. A table of its own
+ * would have needed a migration run by hand before this could deploy.
+ * Never fatal, for the reason nothing else optional in the cron is.
+ */
+async function recordTick(env, slot, drift, did) {
+  if (slot === null) return;
+  try {
+    await env.DB.prepare(
+      `INSERT INTO audit_log (at, actor, action, subject, detail)
+       VALUES (?, 'cron', 'cron.tick', ?, ?)`)
+      .bind(Math.floor(Date.now() / 1000), new Date(slot).toISOString(),
+            JSON.stringify({ drift_s: drift, did }))
+      .run();
+  } catch (e) {
+    console.log(`tick not recorded: ${e && (e.message || e)}`);
   }
 }
 
@@ -488,14 +530,29 @@ export default {
   },
 
   /**
-   * The cron. Two jobs on one schedule, in order.
+   * The cron. What a tick does is schedule.js's decision, made from the time
+   * the tick was scheduled for and not from which trigger delivered it.
    *
    * Importing before scoring matters: a week that has just been published
-   * needs its rows before anything can be graded against them, and the Tuesday
-   * trigger exists precisely to run an hour after pages.yml publishes.
+   * needs its rows before anything can be graded against them. Importing
+   * before asking whether the week needs opening matters for the same
+   * reason: a slate that landed since the last tick is the answer.
    */
   async scheduled(event, env, ctx) {
     const season = Number(env.SEASON || new Date().getUTCFullYear());
+
+    // A tick with no slot time is not one Cloudflare sent: it is a test or a
+    // hand-run `wrangler dev --test-scheduled`, and it means "run the sweep".
+    // It dispatches nothing and records nothing, because there is no slot to
+    // decide from or to write down.
+    const slot = event && typeof event.scheduledTime === "number"
+      ? event.scheduledTime : null;
+    const jobs = slot === null
+      ? { sweep: true, deploy: false, refresh: false, scores: false }
+      : jobsAt(slot);
+    // Most ticks, once one trigger delivers all of them. Nothing is read,
+    // written or logged: an idle tick has to cost nothing.
+    if (!anyJob(jobs)) return;
 
     // WHAT TIME CLOUDFLARE ACTUALLY THINKS IT IS. event.scheduledTime is the
     // slot this run was meant to occupy; Date.now() is when it started. The
@@ -503,14 +560,33 @@ export default {
     // only way to know whether moving the clock here was worth doing —
     // GitHub's drift was measurable from its run history, and this has no
     // equivalent until something records it.
-    const drift = Math.round((Date.now() - event.scheduledTime) / 1000);
-    console.log(`cron ${event.cron} fired ${drift}s after its slot`);
+    const drift = slot === null ? null : Math.round((Date.now() - slot) / 1000);
+    if (slot !== null) {
+      console.log(`cron ${event.cron || "tick"} fired ${drift}s after its slot`);
+    }
+    const did = [];
 
-    // The deploy trigger runs on its own schedule and does not wait for the
-    // scoring below it: publishing scores and grading them are two jobs, and
-    // the grading sweep deliberately runs half an hour behind the publish.
-    if (env.DEPLOY_CRONS && env.DEPLOY_CRONS.split("|").includes(event.cron)) {
-      console.log(`deploy trigger: ${await triggerDeploy(env)}`);
+    // The deploy trigger does not wait for the scoring below it: publishing
+    // scores and grading them are two jobs, and the grading sweep
+    // deliberately runs half an hour behind the publish.
+    if (jobs.deploy) {
+      const r = await triggerDeploy(env);
+      console.log(`deploy trigger: ${r}`);
+      did.push(`deploy:${r}`);
+    }
+
+    // The score channel, on the same terms: asked for and not waited on.
+    // scores.yml fetches, posts what it learned to /api/ingest/scores, and
+    // that request does the grading, so nothing below depends on it.
+    if (jobs.scores) {
+      const r = await dispatch(env, "scores.yml");
+      console.log(`scores trigger: ${r}`);
+      did.push(`scores:${r}`);
+    }
+
+    if (!jobs.sweep) {
+      await recordTick(env, slot, drift, did);
+      return;
     }
 
     try {
@@ -558,6 +634,26 @@ export default {
         if (!r.unchanged) console.log(`import ${season} w${w}: ${r.games} games`);
       }
       if (!imported) console.log(`import ${season}: nothing published yet`);
+      did.push(`import:${imported}`);
+      // THE WEEK, IF NOBODY HAS OPENED IT. pages.yml's own Tuesday cron is
+      // the other thing that does this, and GitHub delivered it between five
+      // and eight hours late every week of this season; on 2026-10-13 the
+      // pools opened at 15:31 UTC against a promise of 09:00. So on the
+      // Tuesday ticks schedule.js names, if the newest week held is one that
+      // has already locked, this asks for the refresh itself. After the
+      // import above, so a slate that has landed counts. Never fatal: failing
+      // to ask must not stop the grading under it.
+      if (jobs.refresh) {
+        try {
+          if (await weekNeedsOpening(env, season, Math.floor(Date.now() / 1000))) {
+            const r = await triggerDeploy(env, { refresh: "true" });
+            console.log(`refresh trigger: ${r}`);
+            did.push(`refresh:${r}`);
+          }
+        } catch (e) {
+          console.log(`refresh trigger: ${e && (e.message || e)}`);
+        }
+      }
       // KICKOFFS FIRST, because everything under here measures from them: the
       // settle window below, the void clock in scoring, and the lock the API
       // answers with. Same terms as the sweep after it — one scoreboard call,
@@ -588,6 +684,8 @@ export default {
       }
       const moved = report.filter((r) => r.changed).length;
       await heartbeat(env, `${imported} weeks, ${moved} changed`);
+      did.push(`scored:${moved}`);
+      await recordTick(env, slot, drift, did);
     } catch (e) {
       console.error("cron", e && (e.stack || e.message || e));
       // Deliberately no heartbeat here. Silence is the signal: a monitor that

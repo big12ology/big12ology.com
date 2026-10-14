@@ -1150,6 +1150,19 @@ export async function getHealth(env) {
     db = "ok";
   } catch { /* reported as down */ }
 
+  // The last cron tick that had a job, as index.js's recordTick wrote it.
+  // Read on its own and allowed to fail on its own: it is the newest thing
+  // here and must not be what takes the counts above down with it.
+  let tick = null;
+  try {
+    tick = await env.DB.prepare(
+      `SELECT at, subject, detail FROM audit_log
+        WHERE action = 'cron.tick' ORDER BY id DESC LIMIT 1`).first();
+  } catch { /* reported as null */ }
+  let tickDetail = null;
+  try { tickDetail = tick && tick.detail ? JSON.parse(tick.detail) : null; }
+  catch { /* a detail that will not parse is reported as null */ }
+
   const now = Math.floor(Date.now() / 1000);
   const waiting = stats && stats.oldest != null ? now - stats.oldest : 0;
   return json({
@@ -1163,6 +1176,12 @@ export async function getHealth(env) {
     unscored: stats ? stats.unscored : null,
     waiting_s: waiting,
     last_scored_at: stats ? stats.last_scored : null,
+    // When the cron last ran a job, which slot that was, how late Cloudflare
+    // started it, and what it did. Null until the first tick after a deploy.
+    // This is the one account of the schedule that can be read from outside:
+    // the tail log needs the dashboard.
+    last_tick_at: tick ? tick.at : null,
+    last_tick: tick ? { slot: tick.subject, ...(tickDetail || {}) } : null,
     // Counts, and only counts. The board already names everyone playing, so
     // none of these discloses anything new; they exist so the hub and the
     // pools pages can say how many people are in without fetching the whole
