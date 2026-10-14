@@ -62,17 +62,62 @@ test("only finished games with both scores are taken", async () => {
   assert.deepEqual(got, { "11": [28, 3, true] });
 });
 
-test("the URL asks by date with a day of slack, never by week", async () => {
-  let asked = null;
-  await fetchEspn(1788476400, 1788483600, async (u) => {
-    asked = String(u);
-    return { ok: true, json: async () => ({ events: [] }) };
+test("the URLs ask one date at a time, with a day of slack, never by week",
+  async () => {
+    const asked = [];
+    await fetchEspn(1788476400, 1788483600, async (u) => {
+      asked.push(String(u));
+      return { ok: true, json: async () => ({ events: [] }) };
+    });
+    // ESPN has no week 0 (week=0&seasontype=2 returns nothing, and the 2026
+    // opener in Dublin is a week 0 game), so dates are the only query that
+    // finds every slate game. The slack absorbs the UTC/Eastern date skew.
+    // One date per request: since 2026-10-14 ESPN answers any range with 400.
+    const dates = asked.map((u) => u.match(/dates=(\d+)(&|$)/)[1]);
+    assert.deepEqual(dates, ["20260902", "20260903", "20260904", "20260905"]);
+    for (const u of asked) {
+      assert.doesNotMatch(u, /week=/);
+      assert.doesNotMatch(u, /dates=\d+-\d+/, "a date range crept back in");
+    }
   });
-  // ESPN has no week 0 — week=0&seasontype=2 returns nothing, and the 2026
-  // opener in Dublin is a week 0 game — so the range is the only query that
-  // finds every slate game. The slack absorbs the UTC/Eastern date skew.
-  assert.match(asked, /dates=20260902-20260905/);
-  assert.doesNotMatch(asked, /week=/);
+
+test("the sweeps ask only about the days around their kickoffs", async () => {
+  // Two game days a week apart, the way the kickoff sweep sees two weeks of
+  // slate. Walking the span would be ten requests; three per game day,
+  // shared where they overlap, is all it takes.
+  const sat = Date.parse("2026-10-17T23:30:00Z") / 1000;
+  const next = sat + 7 * 86400;
+  const env = makeEnv();
+  seedWeek(env, { season: 2026, week: 7, lockAt: sat, games: [
+    { game_id: 501, home: "Utah", away: "BYU", spread_x2: -7, kickoff_at: sat },
+  ] });
+  seedWeek(env, { season: 2026, week: 8, lockAt: next, games: [
+    { game_id: 601, home: "TCU", away: "Kansas", spread_x2: 3, kickoff_at: next },
+  ] });
+  const asked = [];
+  env.ESPN_FETCH = async (u) => {
+    asked.push(String(u).match(/dates=(\d+)/)[1]);
+    return { ok: true, json: async () => ({ events: [] }) };
+  };
+  await sweepKickoffs(env, 2026, sat - 2 * 86400);
+  assert.deepEqual(asked, ["20261016", "20261017", "20261018",
+                           "20261023", "20261024", "20261025"]);
+});
+
+test("one date that fails does not blind the sweep to the others", async () => {
+  const got = await fetchEspn(1788476400, 1788483600, async (u) => {
+    if (String(u).includes("dates=20260903")) return { ok: false, status: 500 };
+    return { ok: true, json: async () => ({ events: [
+      event(11, { home: "KU", away: "ISU", homeScore: "28", awayScore: "3" }),
+    ] }) };
+  });
+  assert.deepEqual(got, { "11": [28, 3, true] });
+});
+
+test("every date failing is an error, and says what ESPN said", async () => {
+  await assert.rejects(
+    fetchEspn(1788476400, 1788483600, async () => ({ ok: false, status: 400 })),
+    /espn_400/);
 });
 
 test("a kept final fills a gap and never overwrites the publisher", async () => {

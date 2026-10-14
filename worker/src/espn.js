@@ -64,26 +64,76 @@ function yyyymmdd(ts) {
   return new Date(ts * 1000).toISOString().slice(0, 10).replace(/-/g, "");
 }
 
+const DAY = 86400;
+
+/** Every date from a day before `from` to a day after `to`, as YYYYMMDD. */
+function spanDays(from, to) {
+  const out = [];
+  for (let t = from - DAY; t <= to + DAY; t += DAY) out.push(yyyymmdd(t));
+  const last = yyyymmdd(to + DAY);
+  if (out[out.length - 1] !== last) out.push(last);
+  return out;
+}
+
 /**
- * The scoreboard, as {game_id: [home, away, completed]}, for finals only.
+ * The dates worth asking about for a set of kickoffs: each kickoff's own date
+ * and the one either side of it, and nothing in between. The kickoff sweep
+ * looks two weeks ahead, and walking every day of that span would be sixteen
+ * requests where four or five game days need asking about.
+ */
+export function daysAround(kicks) {
+  const days = new Set();
+  for (const k of kicks) {
+    for (const t of [k - DAY, k, k + DAY]) days.add(yyyymmdd(t));
+  }
+  return [...days].sort();
+}
+
+/**
+ * The scoreboard's events for a list of dates, one request per date.
  *
  * DATES RATHER THAN WEEKS. ESPN's week numbering has no week 0 --
  * `week=0&seasontype=2` returns an empty event list, and the 2026 opener in
- * Dublin is a week 0 game -- while a date range finds it. A day of slack on
- * each end covers the difference between the UTC timestamps the slate is
- * stored in and the Eastern dates ESPN files games under: a 01:00 UTC kickoff
- * is the previous evening's game to them.
+ * Dublin is a week 0 game -- while a date finds it. A day of slack on each
+ * side of every kickoff covers the difference between the UTC timestamps the
+ * slate is stored in and the Eastern dates ESPN files games under: a 01:00
+ * UTC kickoff is the previous evening's game to them.
+ *
+ * ONE DATE PER REQUEST, NOT A RANGE. This asked for `dates=A-B` until
+ * 2026-10-14, when ESPN began answering every range with a 400, "Failed to
+ * get events endpoint", while a single date still worked. The noon sweep
+ * logged espn_400 and both the kickoff corrections and the finals backstop
+ * went dark. Per-day costs a few more requests a sweep, from a host with no
+ * key and no quota, and does not depend on a feature ESPN never documented.
+ *
+ * A date that fails is skipped and the rest are still used: one bad day must
+ * not blind the sweep to the others. Only when every date fails does this
+ * throw, with the first failure, so the cron log still says what ESPN said.
  */
-async function scoreboard(from, to, fetchImpl) {
-  const url = `${SCOREBOARD}?dates=${yyyymmdd(from - 86400)}`
-            + `-${yyyymmdd(to + 86400)}&groups=${GROUPS}&limit=400`;
-  const r = await fetchImpl(url, { headers: { Accept: "application/json" } });
-  if (!r.ok) throw new Error(`espn_${r.status}`);
-  return r.json();
+async function scoreboard(days, fetchImpl) {
+  const events = new Map();
+  let firstError = null, answered = 0;
+  for (const d of days) {
+    const url = `${SCOREBOARD}?dates=${d}&groups=${GROUPS}&limit=400`;
+    try {
+      const r = await fetchImpl(url, { headers: { Accept: "application/json" } });
+      if (!r.ok) throw new Error(`espn_${r.status}`);
+      const doc = await r.json();
+      answered++;
+      // A game near midnight Eastern can be listed under two of the dates
+      // asked about. The id is the same either way.
+      for (const e of doc.events || []) events.set(String(e.id), e);
+    } catch (e) {
+      firstError = firstError || e;
+    }
+  }
+  if (!answered && firstError) throw firstError;
+  return { events: [...events.values()] };
 }
 
-export async function fetchEspn(from, to, fetchImpl = fetch) {
-  const doc = await scoreboard(from, to, fetchImpl);
+export async function fetchEspn(from, to, fetchImpl = fetch,
+                                days = spanDays(from, to)) {
+  const doc = await scoreboard(days, fetchImpl);
   const out = {};
   for (const e of doc.events || []) {
     const c = (e.competitions || [])[0];
@@ -112,8 +162,9 @@ export async function fetchEspn(from, to, fetchImpl = fetch) {
  * up delayed still carries the hour it was meant to start, which is the right
  * thing for a lock to key off. Completion is irrelevant here and not read.
  */
-export async function fetchEspnSchedule(from, to, fetchImpl = fetch) {
-  const doc = await scoreboard(from, to, fetchImpl);
+export async function fetchEspnSchedule(from, to, fetchImpl = fetch,
+                                        days = spanDays(from, to)) {
+  const doc = await scoreboard(days, fetchImpl);
   const out = {};
   for (const e of doc.events || []) {
     // timeValid false is ESPN saying the window is not announced yet, and the
@@ -166,7 +217,8 @@ export async function sweepKickoffs(env, season,
 
   const kicks = games.map((g) => g.kickoff_at);
   const sched = await fetchEspnSchedule(Math.min(...kicks), Math.max(...kicks),
-                                        env.ESPN_FETCH || fetch);
+                                        env.ESPN_FETCH || fetch,
+                                        daysAround(kicks));
 
   const moved = [];
   let far = 0;
@@ -239,7 +291,7 @@ export async function sweepEspn(env, season, base, now = Math.floor(Date.now() /
 
   const kicks = pending.map((g) => g.kickoff_at);
   const found = await fetchEspn(Math.min(...kicks), Math.max(...kicks),
-                               env.ESPN_FETCH || fetch);
+                               env.ESPN_FETCH || fetch, daysAround(kicks));
 
   // Slate games only. The scoreboard carries the whole of FBS and none of the
   // rest of it is any of this Worker's business.
