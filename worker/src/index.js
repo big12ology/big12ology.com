@@ -541,21 +541,25 @@ export default {
   async scheduled(event, env, ctx) {
     const season = Number(env.SEASON || new Date().getUTCFullYear());
 
-    // A REAL TICK ARRIVES ON THE MINUTE, and that is how one is told from a
-    // run somebody started by hand. Cloudflare's scheduledTime is the slot
-    // the tick was meant for, 07:30:00.000 exactly. wrangler dev's
-    // /__scheduled sends Date.now(), whatever millisecond it was called in,
-    // and the unit tests send no time at all. Both of those mean "run the
-    // sweep, now": they dispatch nothing and record nothing, because there
-    // is no slot to decide from or to write down.
+    // WHICH SLOT, AND WHETHER THIS IS ONE AT ALL.
     //
-    // The first version of this took any number as a slot. The end-to-end
-    // harness imports its slates through /__scheduled, so at twenty past
-    // midnight on a Wednesday the table said the tick was idle, nothing was
-    // imported, and the run failed on a slate that was never read.
-    const sent = event && typeof event.scheduledTime === "number"
+    // A tick Cloudflare sends names its trigger in event.cron. A run started
+    // by hand does not: the end-to-end harness and the local simulation call
+    // wrangler dev's /__scheduled with no cron, and the unit tests send no
+    // event at all. Those mean "run the sweep, now": they dispatch nothing and
+    // record nothing, because there is no slot to decide from or write down.
+    //
+    // The slot is the ten-minute boundary the tick belongs to, not the time
+    // it carries. scheduledTime is when Cloudflare started it, and the noon
+    // tick of 2026-10-14 started 39 seconds after noon. The first version of
+    // this took that number as the slot; the second insisted it be exactly on
+    // the minute, so that real tick read as a hand-run and recorded nothing.
+    // Every job sits on a ten-minute boundary, so flooring to one is right
+    // for any tick less than ten minutes late.
+    const TEN = 10 * 60 * 1000;
+    const sent = event && event.cron && typeof event.scheduledTime === "number"
       ? event.scheduledTime : null;
-    const slot = sent !== null && sent % 60000 === 0 ? sent : null;
+    const slot = sent === null ? null : Math.floor(sent / TEN) * TEN;
     const jobs = slot === null
       ? { sweep: true, deploy: false, refresh: false, scores: false }
       : jobsAt(slot);

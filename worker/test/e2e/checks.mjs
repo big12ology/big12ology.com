@@ -62,8 +62,12 @@ async function call(method, path, { origin = ORIGIN, cookie = COOKIE, body } = {
   return { status: r.status, json, text };
 }
 
+// No cron on purpose. A run that names no trigger is a hand-run, and the
+// Worker sweeps on it whatever the clock says; one that names a trigger is
+// treated as a real tick and does only what its time slot calls for, which
+// at most hours of the week is nothing (src/index.js, scheduled).
 const cron = () =>
-  fetch(`${WORKER}/__scheduled?cron=30+7-23+*+8-12+3`).then((r) => r.status);
+  fetch(`${WORKER}/__scheduled`).then((r) => r.status);
 
 // The repo-layout path the import reads through RAW_ORIGIN, not the
 // /pools/data/ path the website serves; see pickem-e2e.sh's fixture step.

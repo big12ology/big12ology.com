@@ -360,18 +360,42 @@ test("a tick with a job is written down, and health reads it back",
     assert.equal(typeof after.last_tick_at, "number");
   });
 
+test("a real tick that starts late is decided by the slot it belongs to",
+  async () => {
+    // The noon tick of 2026-10-14 started at 12:00:39 UTC. It is the noon
+    // tick all the same: it sweeps, and it is written down as 12:00.
+    const env = env0();
+    week(env, 6, SAT);
+    const seen = net();
+    const late = Date.parse("2026-10-14T12:00:39.305Z");
+    const realNow = Date.now;
+    Date.now = () => late + 20000;
+    try {
+      await worker.scheduled({ scheduledTime: late, cron: "0 12 * * *" },
+                             env, { waitUntil() {} });
+    } finally {
+      Date.now = realNow;
+    }
+    assert.ok(seen.urls.some((u) => u.includes("pickem-scores.json")),
+      "the late noon tick did not sweep");
+    const row = env.raw.prepare(
+      "SELECT subject, detail FROM audit_log WHERE action = 'cron.tick'").get();
+    assert.ok(row, "the late noon tick was not written down");
+    assert.equal(row.subject, "2026-10-14T12:00:00.000Z");
+    assert.equal(JSON.parse(row.detail).drift_s, 59);
+  });
+
 test("a hand-run from wrangler dev sweeps whatever the clock says",
   async () => {
-    // /__scheduled sends the moment it was called, to the millisecond. Here
-    // that moment is an hour the table calls idle, and a Tuesday tick the
-    // table would dispatch a refresh on: neither may decide anything.
-    for (const at of ["2026-10-14T00:20:55.742Z", "2026-10-13T07:30:00.431Z"]) {
+    // /__scheduled with no cron, at whatever moment it was called. Here that
+    // moment is an hour the table calls idle, and a Tuesday slot the table
+    // would dispatch a refresh on: neither may decide anything.
+    for (const at of ["2026-10-14T00:20:55.742Z", "2026-10-13T07:30:00.000Z"]) {
       const env = env0();
       week(env, 6, SAT);
       const seen = net();
-      await worker.scheduled(
-        { scheduledTime: Date.parse(at), cron: "30 7-23 * 8-12 3" },
-        env, { waitUntil() {} });
+      await worker.scheduled({ scheduledTime: Date.parse(at), cron: "" },
+                             env, { waitUntil() {} });
       assert.ok(seen.urls.some((u) => u.includes("/tiebreaker/pickem/")),
         `a hand-run at ${at} did not import`);
       assert.equal(seen.dispatches.length, 0,

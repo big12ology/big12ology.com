@@ -284,7 +284,8 @@ node worker/test/e2e/seed.mjs "$RUN" | sed 's/^/  /'
 
 # --- import, then assert -------------------------------------------------------
 say "importing the slates through the cron"
-curl -fsS -o /dev/null "http://127.0.0.1:$PORT_API/__scheduled?cron=0+13+*+8-12+3"
+# No cron: a run that names no trigger is a hand-run, which always sweeps.
+curl -fsS -o /dev/null "http://127.0.0.1:$PORT_API/__scheduled"
 
 echo
 E2E_BASE="$BASE" E2E_WORKER="http://127.0.0.1:$PORT_API" \
