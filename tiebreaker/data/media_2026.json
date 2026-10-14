@@ -23,12 +23,12 @@
  ],
  "401856683": [
   {
-   "outlet": "ERADM",
-   "type": "radio"
-  },
-  {
    "outlet": "ABC",
    "type": "tv"
+  },
+  {
+   "outlet": "ERADM",
+   "type": "radio"
   }
  ],
  "401856766": [
@@ -417,11 +417,11 @@
  ],
  "401856825": [
   {
-   "outlet": "Fox",
+   "outlet": "FOX",
    "type": "tv"
   },
   {
-   "outlet": "FOX",
+   "outlet": "Fox",
    "type": "tv"
   }
  ],
