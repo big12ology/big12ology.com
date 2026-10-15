@@ -195,33 +195,17 @@ dataset = "b12_events"
 # still true of the fallback path. It is no longer what decides how fast a
 # board moves, so it no longer has to be kept in step with pages.yml.
 crons = [
-  "30 * * 8-12 1,7",       # hourly Sat + Sun UTC — the score sweep
-  "30 0-8/2 * 8-12 2,6,7", # Mon/Fri/Sat UTC, small hours: Sun/Thu/Fri
-                           # night finals in the US
-  "30 7-23 * 8-12 3",      # Tue UTC — import the week's slate, hourly. The
-                           # publish is one GitHub cron at 07:00 with drift
-                           # once observed at ~75 minutes and, on 2026-09-01,
-                           # at five and a half hours: the publish landed at
-                           # 12:30:20 UTC, twenty seconds after what was then
-                           # the day's last sweep (7-12), and week 1 sat
-                           # published but unimported until the next walk, a
-                           # day away. The window has to outlast GitHub's
-                           # worst day, not its median, so it runs to 23:30
-                           # now. The usual case is unchanged, live by ~08:30
-                           # UTC, inside the 09:00 UTC (5am ET) live-by the
-                           # pages promise; the :30 clears the :00 publish,
-                           # and the extra sweeps import nothing and cost
-                           # nothing.
-  # ALL YEAR, unlike the three above. This one exists for the heartbeat: the
-  # cron pings a dead man's switch when it finishes, and a switch that stops
-  # being pinged every January would page somebody daily for seven months —
-  # so it would get muted, and a muted alarm is not an alarm.
+  # ONE TRIGGER. It delivers a tick every ten minutes, all day and all year,
+  # and src/schedule.js decides from the tick's time what it is for. Most are
+  # for nothing and return at once. The four schedules this replaced are
+  # written out in test/schedule.test.js, which checks that every job they
+  # ran still runs at the same time.
   #
-  # Out of season it costs two fetches: week 0 and week 1 both 404 because
-  # nothing is published, the walk gives up, and there are no locked weeks to
-  # score. It also means a January breakage is found in January rather than
-  # discovered in August.
-  "0 12 * * *",            # daily noon UTC — the heartbeat
+  # No day-of-week field on purpose. Cloudflare numbers the week from
+  # 1 = Sunday, every schedule here was once written the other way, and the
+  # Tuesday import ran on Monday because of it. Days are JavaScript's now,
+  # in code that has tests.
+  "*/10 * * * *",
 ]
 
 [observability]
