@@ -35,7 +35,7 @@
    "home": "West Virginia",
    "margin": -0.46,
    "p_home": 0.486,
-   "spread": -1.4,
+   "spread": -1.5,
    "systems": {
     "Big12ology": 4.22,
     "Elo": -2.81,
@@ -80,7 +80,7 @@
    "home": "Baylor",
    "margin": 5.71,
    "p_home": 0.662,
-   "spread": -6.0,
+   "spread": -5.6,
    "systems": {
     "Big12ology": 8.66,
     "Elo": 3.63,
@@ -95,7 +95,7 @@
    "home": "Colorado",
    "margin": -19.09,
    "p_home": 0.087,
-   "spread": 15.4,
+   "spread": 15.1,
    "systems": {
     "Big12ology": -13.03,
     "Elo": -20.33,
@@ -772,7 +772,7 @@
   }
  },
  "games_complete": 66,
- "generated": "2026-10-15T20:49:45+00:00",
+ "generated": "2026-10-16T03:23:42+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
