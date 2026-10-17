@@ -3702,15 +3702,25 @@ def game_jsonld(g, year, url):
     ev["eventStatus"] = "https://schema.org/EventScheduled"
     ev["eventAttendanceMode"] = \
         "https://schema.org/OfflineEventAttendanceMode"
-    # The conference runs its own games and not the rest of the slate. Notre
-    # Dame at BYU is nobody here's production, so this is not a site-wide
-    # constant however much it would tidy the report.
+    # WHO PUTS THE GAME ON. The conference runs its own games and not the
+    # rest of the slate, so it is never a site-wide constant. Outside the
+    # conference a game is the host school's: Notre Dame at BYU is BYU's home
+    # game, sold, staffed and run by BYU, and Search Console flagged all 45
+    # pages like it for the missing field (2026-10-17).
+    #
+    # A neutral-site game outside the conference is left without one. Those
+    # are put on by a third party, a kickoff classic or a stadium promoter,
+    # and nothing this site fetches says which. Naming the "home" side the
+    # feed happens to list would be inventing a fact to quiet a warning that
+    # is only a suggestion.
     if g.get("conference_game"):
         ev["organizer"] = {
             "@type": "SportsOrganization",
             "name": "Big 12 Conference",
             "url": "https://big12sports.com/",
         }
+    elif not g.get("neutral_site"):
+        ev["organizer"] = {"@type": "SportsTeam", "name": g["home"]}
 
     crumbs = {
         "@context": "https://schema.org",
