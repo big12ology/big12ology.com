@@ -1391,7 +1391,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-10-17T16:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": true,
   "venue": "Milan Puskar Stadium",
   "venue_id": 3842,
@@ -1403,8 +1403,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 45,
+  "away_points": 42
  },
  {
   "id": 401856830,
@@ -1412,7 +1412,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-10-17T16:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": true,
   "venue": "Bill Snyder Family Stadium",
   "venue_id": 3636,
@@ -1424,8 +1424,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 35,
+  "away_points": 24
  },
  {
   "id": 401856828,
