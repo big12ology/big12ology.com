@@ -1433,6 +1433,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Kansas State,2,2026-09-12,Washington State,false,Bill Snyder Family Football Stadium,51759,50000,1.0352,false
 2026,Kansas State,3,2026-09-19,Tulane,false,Bill Snyder Family Football Stadium,51846,50000,1.0369,false
 2026,Kansas State,6,2026-10-10,Houston,true,Bill Snyder Family Football Stadium,51569,50000,1.0314,false
+2026,Kansas State,7,2026-10-17,Kansas,true,Bill Snyder Family Football Stadium,51961,50000,1.0392,false
 2026,Oklahoma State,2,2026-09-12,Oregon,false,Boone Pickens Stadium,51035,52202,0.9776,false
 2026,Oklahoma State,3,2026-09-19,Murray State,false,Boone Pickens Stadium,52168,52202,0.9993,false
 2026,Oklahoma State,6,2026-10-10,UCF,true,Boone Pickens Stadium,52168,52202,0.9993,false
@@ -1453,3 +1454,4 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,West Virginia,2,2026-09-12,UT Martin,false,Milan Puskar Stadium,47049,60000,0.7842,false
 2026,West Virginia,4,2026-09-26,Oklahoma State,true,Milan Puskar Stadium,57756,60000,0.9626,false
 2026,West Virginia,6,2026-10-10,Arizona,true,Milan Puskar Stadium,50121,60000,0.8354,false
+2026,West Virginia,7,2026-10-17,Cincinnati,true,Milan Puskar Stadium,48106,60000,0.8018,false

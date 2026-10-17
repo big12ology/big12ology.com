@@ -1515,7 +1515,9 @@
       "role": "away",
       "venue": "Galaxy Stadium",
       "city": "Lubbock",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 25,
+      "pointsAgainst": 53
     },
     {
       "team": "BYU",
@@ -1549,7 +1551,9 @@
       "role": "away",
       "venue": "Milan Puskar Stadium",
       "city": "Morgantown",
-      "state": "WV"
+      "state": "WV",
+      "pointsFor": 42,
+      "pointsAgainst": 45
     },
     {
       "team": "Colorado",
@@ -1583,7 +1587,9 @@
       "role": "away",
       "venue": "Bill Snyder Family Stadium",
       "city": "Manhattan",
-      "state": "KS"
+      "state": "KS",
+      "pointsFor": 24,
+      "pointsAgainst": 35
     },
     {
       "team": "Kansas State",
@@ -1593,7 +1599,15 @@
       "espnId": 401856830,
       "conferenceGame": true,
       "opponent": "Kansas",
-      "attendance": null
+      "attendance": 51961,
+      "pointsFor": 35,
+      "pointsAgainst": 24,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 50,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Oklahoma State",
@@ -1631,7 +1645,14 @@
       "espnId": 401856828,
       "conferenceGame": true,
       "opponent": "Arizona State",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 53,
+      "pointsAgainst": 25,
+      "weather": {
+        "tempF": 54,
+        "windMph": 1,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",
@@ -1655,7 +1676,15 @@
       "espnId": 401856829,
       "conferenceGame": true,
       "opponent": "Cincinnati",
-      "attendance": null
+      "attendance": 48106,
+      "pointsFor": 45,
+      "pointsAgainst": 42,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 49,
+        "windMph": 12,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",
