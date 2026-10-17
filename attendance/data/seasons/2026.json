@@ -1794,8 +1794,8 @@
     {
       "team": "TCU",
       "week": 8,
-      "date": "2026-10-23",
-      "time": null,
+      "date": "2026-10-24",
+      "time": "11:00",
       "espnId": 401856841,
       "conferenceGame": true,
       "opponent": "West Virginia",
@@ -1838,8 +1838,8 @@
     {
       "team": "West Virginia",
       "week": 8,
-      "date": "2026-10-23",
-      "time": null,
+      "date": "2026-10-24",
+      "time": "11:00",
       "espnId": 401856841,
       "conferenceGame": true,
       "opponent": "TCU",
