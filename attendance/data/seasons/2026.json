@@ -1527,7 +1527,15 @@
       "espnId": 401856809,
       "conferenceGame": false,
       "opponent": "Notre Dame",
-      "attendance": null
+      "attendance": 65179,
+      "pointsFor": 28,
+      "pointsAgainst": 24,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 65,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "Baylor",
@@ -1537,7 +1545,15 @@
       "espnId": 401856832,
       "conferenceGame": true,
       "opponent": "TCU",
-      "attendance": null
+      "attendance": 46634,
+      "pointsFor": 6,
+      "pointsAgainst": 17,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 64,
+        "windMph": 7,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
@@ -1563,7 +1579,14 @@
       "espnId": 401856833,
       "conferenceGame": true,
       "opponent": "Utah",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 24,
+      "pointsAgainst": 27,
+      "weather": {
+        "tempF": 50,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Houston",
@@ -1573,7 +1596,15 @@
       "espnId": 401856831,
       "conferenceGame": true,
       "opponent": "Oklahoma State",
-      "attendance": null
+      "attendance": 42544,
+      "pointsFor": 35,
+      "pointsAgainst": 32,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 69,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
@@ -1621,7 +1652,9 @@
       "role": "away",
       "venue": "TDECU Stadium",
       "city": "Houston",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 32,
+      "pointsAgainst": 35
     },
     {
       "team": "TCU",
@@ -1635,7 +1668,9 @@
       "role": "away",
       "venue": "McLane Stadium",
       "city": "Waco",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 17,
+      "pointsAgainst": 6
     },
     {
       "team": "Texas Tech",
@@ -1645,11 +1680,12 @@
       "espnId": 401856828,
       "conferenceGame": true,
       "opponent": "Arizona State",
-      "attendance": null,
+      "attendance": 60229,
       "pointsFor": 53,
       "pointsAgainst": 25,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 54,
+        "tempF": 55,
         "windMph": 1,
         "precipIn": 0
       }
@@ -1666,7 +1702,9 @@
       "role": "away",
       "venue": "Folsom Field",
       "city": "Boulder",
-      "state": "CO"
+      "state": "CO",
+      "pointsFor": 27,
+      "pointsAgainst": 24
     },
     {
       "team": "West Virginia",

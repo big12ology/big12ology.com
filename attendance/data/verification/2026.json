@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 54,
+    "agree": 58,
     "missing_both": 1
   },
   "games": [
@@ -578,6 +578,50 @@
       "status": "agree"
     },
     {
+      "team": "BYU",
+      "week": 7,
+      "opponent": "Notre Dame",
+      "date": "2026-10-17",
+      "espnId": 401856809,
+      "ours": 65179,
+      "espn": 65179,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Baylor",
+      "week": 7,
+      "opponent": "TCU",
+      "date": "2026-10-17",
+      "espnId": 401856832,
+      "ours": 46634,
+      "espn": 46634,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Colorado",
+      "week": 7,
+      "opponent": "Utah",
+      "date": "2026-10-17",
+      "espnId": 401856833,
+      "ours": null,
+      "espn": null,
+      "source": "CFBD",
+      "status": "missing_both"
+    },
+    {
+      "team": "Houston",
+      "week": 7,
+      "opponent": "Oklahoma State",
+      "date": "2026-10-17",
+      "espnId": 401856831,
+      "ours": 42544,
+      "espn": 42544,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "Kansas State",
       "week": 7,
       "opponent": "Kansas",
@@ -594,10 +638,10 @@
       "opponent": "Arizona State",
       "date": "2026-10-17",
       "espnId": 401856828,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 60229,
+      "espn": 60229,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "West Virginia",

@@ -10,7 +10,7 @@
       "color": "#003da5",
       "logo": "assets/logos/byu.png",
       "multiVenue": false,
-      "games": 3,
+      "games": 4,
       "weeks": [
         {
           "week": 1,
@@ -26,10 +26,15 @@
           "week": 6,
           "attendance": 64632,
           "pct": 1.041225653665845
+        },
+        {
+          "week": 7,
+          "attendance": 65179,
+          "pct": 1.0500378586502987
         }
       ],
-      "total": 193118,
-      "pct": 1.037047777079675
+      "total": 258297,
+      "pct": 1.040295297472331
     },
     {
       "team": "Kansas State",
@@ -112,7 +117,7 @@
       "color": "#cc0000",
       "logo": "assets/logos/ttu.svg",
       "multiVenue": false,
-      "games": 3,
+      "games": 4,
       "weeks": [
         {
           "week": 1,
@@ -128,10 +133,15 @@
           "week": 4,
           "attendance": 59704,
           "pct": 0.9912832688571951
+        },
+        {
+          "week": 7,
+          "attendance": 60229,
+          "pct": 1
         }
       ],
-      "total": 180162,
-      "pct": 0.9970944229523984
+      "total": 240391,
+      "pct": 0.9978208172142987
     },
     {
       "team": "Oklahoma State",
@@ -281,7 +291,7 @@
       "color": "#154734",
       "logo": "assets/logos/bay.svg",
       "multiVenue": false,
-      "games": 3,
+      "games": 4,
       "weeks": [
         {
           "week": 2,
@@ -297,10 +307,15 @@
           "week": 4,
           "attendance": 40015,
           "pct": 0.8864643331856447
+        },
+        {
+          "week": 7,
+          "attendance": 46634,
+          "pct": 1.0330970314576873
         }
       ],
-      "total": 120000,
-      "pct": 0.8861320336730173
+      "total": 166634,
+      "pct": 0.9228732831191847
     },
     {
       "team": "TCU",
@@ -475,7 +490,7 @@
       "color": "#c92a39",
       "logo": "assets/logos/hou.svg",
       "multiVenue": false,
-      "games": 3,
+      "games": 4,
       "weeks": [
         {
           "week": 1,
@@ -491,10 +506,15 @@
           "week": 5,
           "attendance": 25593,
           "pct": 0.639825
+        },
+        {
+          "week": 7,
+          "attendance": 42544,
+          "pct": 1.0636
         }
       ],
-      "total": 83271,
-      "pct": 0.693925
+      "total": 125815,
+      "pct": 0.78634375
     }
   ],
   "weeks": [
@@ -549,10 +569,10 @@
     },
     {
       "week": 7,
-      "games": 2,
-      "attendance": 100067,
-      "capacity": 110000,
-      "pct": 0.9097
+      "games": 6,
+      "attendance": 314653,
+      "capacity": 317442,
+      "pct": 0.9912141430560544
     },
     {
       "week": 8,
@@ -598,9 +618,9 @@
     }
   ],
   "totals": {
-    "games": 54,
-    "attendance": 2517307,
-    "capacity": 2713187,
-    "pct": 0.9278044602159748
+    "games": 58,
+    "attendance": 2731893,
+    "capacity": 2920629,
+    "pct": 0.9353783037831919
   }
 }
