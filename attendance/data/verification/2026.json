@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 52
+    "agree": 59
   },
   "games": [
     {
@@ -573,6 +573,83 @@
       "espnId": 401856823,
       "ours": 50121,
       "espn": 50121,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "BYU",
+      "week": 7,
+      "opponent": "Notre Dame",
+      "date": "2026-10-17",
+      "espnId": 401856809,
+      "ours": 65179,
+      "espn": 65179,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Baylor",
+      "week": 7,
+      "opponent": "TCU",
+      "date": "2026-10-17",
+      "espnId": 401856832,
+      "ours": 46634,
+      "espn": 46634,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Colorado",
+      "week": 7,
+      "opponent": "Utah",
+      "date": "2026-10-17",
+      "espnId": 401856833,
+      "ours": 52489,
+      "espn": 52489,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Houston",
+      "week": 7,
+      "opponent": "Oklahoma State",
+      "date": "2026-10-17",
+      "espnId": 401856831,
+      "ours": 42544,
+      "espn": 42544,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Kansas State",
+      "week": 7,
+      "opponent": "Kansas",
+      "date": "2026-10-17",
+      "espnId": 401856830,
+      "ours": 51961,
+      "espn": 51961,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Texas Tech",
+      "week": 7,
+      "opponent": "Arizona State",
+      "date": "2026-10-17",
+      "espnId": 401856828,
+      "ours": 60229,
+      "espn": 60229,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "West Virginia",
+      "week": 7,
+      "opponent": "Cincinnati",
+      "date": "2026-10-17",
+      "espnId": 401856829,
+      "ours": 48106,
+      "espn": 48106,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }
