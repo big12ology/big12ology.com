@@ -881,39 +881,57 @@ function recDate(e) {
   return `${REC_MON[m - 1]} ${d}, ${y}`;
 }
 
-function recordsWatch(cardEl, seasonsData, teamsData) {
-  const best = new Map();   // team -> {crowd, pct, game}
-  const streaks = new Map(); // team -> current consecutive sellouts
-  const ended = new Map();  // team -> how the last streak died
-  const lastSellout = new Map(); // team -> most recent sellout
-  const years = Object.keys(seasonsData).sort();
-  for (const year of years) {
-    const season = seasonsData[year];
+/** Every home game with a figure and a capacity, in date order, per season. */
+function homeGames(seasonsData, teamsData, each) {
+  for (const year of Object.keys(seasonsData).sort()) {
     const teams = teamsForSeason(teamsData, Number(year));
     const capOf = new Map(teams.map((x) => [x.team, x]));
-    const home = season.games
+    const home = seasonsData[year].games
       .filter((g) => !g.role && g.attendance != null)
       .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
     for (const g of home) {
       const team = capOf.get(g.team);
       const cap = g.capacity ?? team?.capacity;
-      if (!cap) continue;
-      const p = g.attendance / cap;
-      // Several programs changed buildings inside this archive (Baylor,
-      // Houston, Cincinnati, Kansas), so a record means little without the
-      // venue it was set in.
-      const venue = g.venue ?? team?.stadium ?? "";
-      const where = venue ? ` · ${venue}` : "";
-      const b = best.get(g.team) ?? { crowd: 0, pct: 0 };
-      if (g.attendance > b.crowd) {
-        b.crowd = g.attendance;
-        b.crowdGame = `${g.opponent} ${year}${where}`;
-      }
-      if (p > b.pct) {
-        b.pct = p;
-        b.pctGame = `${g.opponent} ${year}${where}`;
-      }
-      best.set(g.team, b);
+      if (cap) each(g, year, team, cap, g.attendance / cap);
+    }
+  }
+}
+
+/**
+ * The high-water marks follow the season filter; the sellout streaks do not.
+ *
+ * A record is a question about a span ("best crowd 2019-2023") and the filter
+ * is how a reader asks it. A streak is a fact about now: how many home games
+ * in a row a team has sold out. Cut at the filter, it restarted at whatever
+ * season the slider began on, so with the filter on 2026 alone Kansas State
+ * read "5+ games, every home game since 2026" when the run is much older.
+ * So the marks read `seasonsData`, the scoped seasons, and the streaks read
+ * `allSeasons`, every season in the archive.
+ */
+function recordsWatch(cardEl, seasonsData, teamsData, allSeasons = seasonsData) {
+  const best = new Map();   // team -> {crowd, pct, game}
+  const streaks = new Map(); // team -> current consecutive sellouts
+  const ended = new Map();  // team -> how the last streak died
+  const lastSellout = new Map(); // team -> most recent sellout
+  const years = Object.keys(seasonsData).sort();
+  homeGames(seasonsData, teamsData, (g, year, team, cap, p) => {
+    // Several programs changed buildings inside this archive (Baylor,
+    // Houston, Cincinnati, Kansas), so a record means little without the
+    // venue it was set in.
+    const venue = g.venue ?? team?.stadium ?? "";
+    const where = venue ? ` · ${venue}` : "";
+    const b = best.get(g.team) ?? { crowd: 0, pct: 0 };
+    if (g.attendance > b.crowd) {
+      b.crowd = g.attendance;
+      b.crowdGame = `${g.opponent} ${year}${where}`;
+    }
+    if (p > b.pct) {
+      b.pct = p;
+      b.pctGame = `${g.opponent} ${year}${where}`;
+    }
+    best.set(g.team, b);
+  });
+  homeGames(allSeasons, teamsData, (g, year, team, cap, p) => {
       const cur = streaks.get(g.team) ?? 0;
       if (p >= 1) {
         streaks.set(g.team, cur + 1);
@@ -925,13 +943,13 @@ function recordsWatch(cardEl, seasonsData, teamsData) {
         }
         streaks.set(g.team, 0);
       }
-    }
-  }
+  });
   // Logos come from the most recent season's team list, which is where the
   // current sixteen and their marks live.
   const logoOf = new Map(teamsForSeason(teamsData, Number(years[years.length - 1]))
     .map((t) => [t.team, t.logo]));
-  const first = years[0];
+  // The streak's own horizon: the first season it could have started in.
+  const first = Object.keys(allSeasons).sort()[0];
   const rows = [...best.entries()]
     .sort((a, b) => b[1].pct - a[1].pct)
     .map(([team, b]) => {
@@ -1500,15 +1518,18 @@ export function renderSeasonCharts(root, teamsData, seasonsData, currentYear) {
 }
 
 
-export function renderAllTimeCharts(root, teamsData, seasonsData, gaps) {
+// `allSeasons` is the whole archive, whatever the era filter has scoped
+// `seasonsData` to. Only the sellout streaks read it; see recordsWatch.
+export function renderAllTimeCharts(root, teamsData, seasonsData, gaps,
+                                    allSeasons = seasonsData) {
   root.textContent = "";
   const years = Object.keys(seasonsData).sort();
   const span = years.length > 1
     ? `${years[0]}–${years[years.length - 1]}` : years[0];
 
   const c1 = card(`Records watch (${span})`,
-    `High-water marks across every tracked season, and active sellout streaks`);
-  recordsWatch(c1, seasonsData, teamsData);
+    `High-water marks for ${span}; sellout streaks count every tracked season`);
+  recordsWatch(c1, seasonsData, teamsData, allSeasons);
 
   const c2 = card(`Kickoff weather vs fill, all seasons (${span})`,
     `Cumulative: every tracked home game ${span}; ringed dots = rain; dashed line = least-squares trend`);

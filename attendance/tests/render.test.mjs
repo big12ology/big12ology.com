@@ -72,3 +72,34 @@ test("kickoff times look venue-local, not UTC", () => {
   }
   assert.ok(checked > 500, `expected a full archive, saw ${checked} games`);
 });
+
+// The records table's streak column reads the whole archive; the marks beside
+// it follow the era filter. Scoped to one season, the streak used to restart
+// at that season, so a run of years read as "5+ games since 2026".
+test("sellout streaks ignore the era filter, records follow it", () => {
+  const html = (scoped, all) => {
+    const root = stubEl();
+    charts.renderAllTimeCharts(root, teams, scoped, [], all);
+    const card = root.children.find((c) => /Records watch/.test(
+      c.children.map((x) => x._t || "").join(" ") + (c._html || "")));
+    const wrap = (card || root.children[0]).children.find(
+      (c) => c.className === "records-table");
+    return wrap.innerHTML;
+  };
+  const one = { [latestPlayed]: seasons[latestPlayed] };
+  const scopedAll = html(one, seasons);
+  const scopedOnly = html(one, one);
+  // With the archive behind it, no streak can claim to start in the one
+  // season on screen unless the archive begins there.
+  const first = Math.min(...idx.seasons);
+  if (first < latestPlayed) {
+    assert.ok(!scopedAll.includes(`every home game since ${latestPlayed}`),
+      "a streak restarted at the filter's first season");
+    assert.ok(scopedOnly.includes(`every home game since ${latestPlayed}`),
+      "the fixture no longer shows the bug this guards against");
+  }
+  // The records themselves are still the scoped season's.
+  assert.ok(scopedAll.includes(` ${latestPlayed} · `));
+  assert.ok(!scopedAll.match(new RegExp(`vs [^<]* ${first} · `)) || first === latestPlayed,
+    "a record from outside the filter leaked into the scoped table");
+});

@@ -620,7 +620,8 @@ async function main() {
 
   function redrawEraCharts() {
     const scoped = inEra();
-    renderAllTimeCharts($("#charts-alltime"), teamsData, scoped, eraGaps());
+    renderAllTimeCharts($("#charts-alltime"), teamsData, scoped, eraGaps(),
+                        seasonsData);
     renderTeamCharts($("#charts-teams"), teamsData, seasonsData,
                      select.value, selectedTeams, scoped, eraGaps());
   }
@@ -650,7 +651,8 @@ async function main() {
   const show = (year) => {
     render(teamsData, seasonsData[year]);
     renderSeasonCharts($("#charts-season"), teamsData, seasonsData, year);
-    renderAllTimeCharts($("#charts-alltime"), teamsData, inEra(), eraGaps());
+    renderAllTimeCharts($("#charts-alltime"), teamsData, inEra(), eraGaps(),
+                        seasonsData);
     document.querySelectorAll(".erabar").forEach(buildEraBar);
     renderChips();
     drawTeamCharts();
