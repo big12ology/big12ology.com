@@ -76,6 +76,35 @@
       "pct": 1.035416
     },
     {
+      "team": "Colorado",
+      "stadium": "Folsom Field",
+      "capacity": 50183,
+      "capacityEstimate": null,
+      "color": "#cfb87c",
+      "logo": "assets/logos/cu.svg",
+      "multiVenue": false,
+      "games": 3,
+      "weeks": [
+        {
+          "week": 2,
+          "attendance": 49363,
+          "pct": 0.9836598051132853
+        },
+        {
+          "week": 5,
+          "attendance": 50106,
+          "pct": 0.9984656158460036
+        },
+        {
+          "week": 7,
+          "attendance": 52489,
+          "pct": 1.045951816352151
+        }
+      ],
+      "total": 151958,
+      "pct": 1.0093590791038134
+    },
+    {
       "team": "Utah",
       "stadium": "Rice-Eccles Stadium",
       "capacity": 51444,
@@ -171,30 +200,6 @@
       ],
       "total": 155371,
       "pct": 0.9921139675363652
-    },
-    {
-      "team": "Colorado",
-      "stadium": "Folsom Field",
-      "capacity": 50183,
-      "capacityEstimate": null,
-      "color": "#cfb87c",
-      "logo": "assets/logos/cu.svg",
-      "multiVenue": false,
-      "games": 2,
-      "weeks": [
-        {
-          "week": 2,
-          "attendance": 49363,
-          "pct": 0.9836598051132853
-        },
-        {
-          "week": 5,
-          "attendance": 50106,
-          "pct": 0.9984656158460036
-        }
-      ],
-      "total": 99469,
-      "pct": 0.9910627104796444
     },
     {
       "team": "Kansas",
@@ -569,10 +574,10 @@
     },
     {
       "week": 7,
-      "games": 6,
-      "attendance": 314653,
-      "capacity": 317442,
-      "pct": 0.9912141430560544
+      "games": 7,
+      "attendance": 367142,
+      "capacity": 367625,
+      "pct": 0.9986861611696701
     },
     {
       "week": 8,
@@ -618,9 +623,9 @@
     }
   ],
   "totals": {
-    "games": 58,
-    "attendance": 2731893,
-    "capacity": 2920629,
-    "pct": 0.9353783037831919
+    "games": 59,
+    "attendance": 2784382,
+    "capacity": 2970812,
+    "pct": 0.9372461131838703
   }
 }

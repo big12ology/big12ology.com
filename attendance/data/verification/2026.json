@@ -1,8 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 58,
-    "missing_both": 1
+    "agree": 59
   },
   "games": [
     {
@@ -605,10 +604,10 @@
       "opponent": "Utah",
       "date": "2026-10-17",
       "espnId": 401856833,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 52489,
+      "espn": 52489,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "Houston",

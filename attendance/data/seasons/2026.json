@@ -1579,12 +1579,13 @@
       "espnId": 401856833,
       "conferenceGame": true,
       "opponent": "Utah",
-      "attendance": null,
+      "attendance": 52489,
       "pointsFor": 24,
       "pointsAgainst": 27,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 50,
-        "windMph": 5,
+        "tempF": 52,
+        "windMph": 7,
         "precipIn": 0
       }
     },

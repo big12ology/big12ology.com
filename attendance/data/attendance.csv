@@ -1421,6 +1421,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Cincinnati,4,2026-09-26,Kansas State,true,Nippert Stadium,37562,38088,0.9862,false
 2026,Colorado,2,2026-09-12,Weber State,false,Folsom Field,49363,50183,0.9837,false
 2026,Colorado,5,2026-10-03,Texas Tech,true,Folsom Field,50106,50183,0.9985,false
+2026,Colorado,7,2026-10-17,Utah,true,Folsom Field,52489,50183,1.0460,false
 2026,Houston,1,2026-09-05,Oregon State,false,TDECU Stadium,28742,40000,0.7186,false
 2026,Houston,2,2026-09-12,Southern,false,TDECU Stadium,28936,40000,0.7234,false
 2026,Houston,5,2026-10-03,UCF,true,TDECU Stadium,25593,40000,0.6398,false
