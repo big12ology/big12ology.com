@@ -30,21 +30,6 @@
    },
    "week": 7
   },
-  "401856832": {
-   "away": "TCU",
-   "home": "Baylor",
-   "margin": 5.71,
-   "p_home": 0.662,
-   "spread": -4.7,
-   "systems": {
-    "Big12ology": 8.66,
-    "Elo": 3.63,
-    "FPI": 6.98,
-    "SP+": 6.0,
-    "SRS": 3.3
-   },
-   "week": 7
-  },
   "401856833": {
    "away": "Utah",
    "home": "Colorado",
@@ -727,12 +712,12 @@
    "week": 13
   }
  },
- "games_complete": 69,
- "generated": "2026-10-17T23:21:47+00:00",
+ "games_complete": 70,
+ "generated": "2026-10-18T02:41:25+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
-  "rating_sigma": 4.498,
+  "rating_sigma": 4.469,
   "systems": {
    "Big12ology": {
     "regressed": null,
@@ -759,67 +744,67 @@
  "season": 2026,
  "teams": {
   "Arizona": {
-   "exp_w": 5.425,
-   "p_ccg": 0.0816
+   "exp_w": 5.431,
+   "p_ccg": 0.0913
   },
   "Arizona State": {
-   "exp_w": 2.99,
-   "p_ccg": 0.0005
+   "exp_w": 3.002,
+   "p_ccg": 0.0007
   },
   "BYU": {
-   "exp_w": 7.12,
-   "p_ccg": 0.4398
+   "exp_w": 7.126,
+   "p_ccg": 0.4555
   },
   "Baylor": {
-   "exp_w": 5.427,
-   "p_ccg": 0.1044
+   "exp_w": 4.775,
+   "p_ccg": 0.0398
   },
   "Cincinnati": {
-   "exp_w": 2.83,
-   "p_ccg": 0.0014
+   "exp_w": 2.821,
+   "p_ccg": 0.0015
   },
   "Colorado": {
-   "exp_w": 1.691,
+   "exp_w": 1.689,
    "p_ccg": 0.0001
   },
   "Houston": {
-   "exp_w": 6.19,
-   "p_ccg": 0.1948
+   "exp_w": 6.191,
+   "p_ccg": 0.1958
   },
   "Iowa State": {
-   "exp_w": 3.532,
-   "p_ccg": 0.0035
-  },
-  "Kansas": {
-   "exp_w": 2.602,
-   "p_ccg": 0.0002
-  },
-  "Kansas State": {
-   "exp_w": 4.202,
+   "exp_w": 3.537,
    "p_ccg": 0.0033
   },
+  "Kansas": {
+   "exp_w": 2.574,
+   "p_ccg": 0.0003
+  },
+  "Kansas State": {
+   "exp_w": 4.193,
+   "p_ccg": 0.004
+  },
   "Oklahoma State": {
-   "exp_w": 5.781,
-   "p_ccg": 0.1148
+   "exp_w": 5.762,
+   "p_ccg": 0.1177
   },
   "TCU": {
-   "exp_w": 3.155,
-   "p_ccg": 0.0042
+   "exp_w": 3.8,
+   "p_ccg": 0.0074
   },
   "Texas Tech": {
-   "exp_w": 7.416,
-   "p_ccg": 0.5348
+   "exp_w": 7.424,
+   "p_ccg": 0.5472
   },
   "UCF": {
-   "exp_w": 4.28,
-   "p_ccg": 0.0063
+   "exp_w": 4.293,
+   "p_ccg": 0.0062
   },
   "Utah": {
-   "exp_w": 7.364,
-   "p_ccg": 0.5101
+   "exp_w": 7.366,
+   "p_ccg": 0.5292
   },
   "West Virginia": {
-   "exp_w": 1.997,
+   "exp_w": 2.015,
    "p_ccg": 0.0
   }
  },
