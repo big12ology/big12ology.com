@@ -84,9 +84,23 @@ def display_week(d: date, season: int) -> int:
     return 1 + (d - week1_tuesday).days // 7
 
 
-def kickoff_local(start: str, tz: ZoneInfo) -> datetime | None:
+# CFBD's placeholder for a kickoff nobody has announced is midnight Eastern
+# on game day: 04:00Z while daylight time lasts, 05:00Z after it ends.
+EASTERN = ZoneInfo("America/New_York")
+
+
+def kickoff_local(start: str, tz: ZoneInfo, tbd: bool = False) -> datetime | None:
     """CFBD reports kickoff in UTC; convert to venue-local time (an evening
-    game otherwise lands on the next calendar day)."""
+    game otherwise lands on the next calendar day).
+
+    NOT FOR A KICKOFF THAT IS STILL A PLACEHOLDER. Midnight Eastern converted
+    to Central or Mountain time is the evening before, so every unannounced
+    game west of the Eastern zone was filed under Friday: on 2026-10-18 that
+    was 66 of the season's 80 TBD games, against a schedule page that had
+    them on Saturday. With `tbd`, the date is read in Eastern, where the
+    placeholder means "this day", and the clock reads midnight. Callers drop
+    the time for a TBD game, so only the date is ever shown.
+    """
     if not start:
         return None
     try:
@@ -95,6 +109,9 @@ def kickoff_local(start: str, tz: ZoneInfo) -> datetime | None:
         return None
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=ZoneInfo("UTC"))
+    if tbd:
+        day = dt.astimezone(EASTERN).date()
+        return datetime(day.year, day.month, day.day, tzinfo=tz)
     return dt.astimezone(tz)
 
 
@@ -497,7 +514,8 @@ def main(year: int) -> None:
         tz = ZoneInfo(venue_info["timezone"]) if venue_info.get("timezone") else timezones.get(
             home if home in teams else away
         )
-        kickoff = kickoff_local(g.get("startDate") or g.get("start_date"), tz)
+        kickoff = kickoff_local(g.get("startDate") or g.get("start_date"), tz,
+                                tbd=bool(g.get("startTimeTBD")))
         week = display_week(kickoff.date(), year) if kickoff else g.get("week")
         # Membership is not enough to infer this: two Big 12 teams meeting out
         # of conference happens most years (Baylor at Utah 2024, Kansas State
