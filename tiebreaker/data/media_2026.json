@@ -23,12 +23,12 @@
  ],
  "401856683": [
   {
-   "outlet": "ABC",
-   "type": "tv"
-  },
-  {
    "outlet": "ERADM",
    "type": "radio"
+  },
+  {
+   "outlet": "ABC",
+   "type": "tv"
   }
  ],
  "401856766": [
@@ -470,6 +470,48 @@
  "401856833": [
   {
    "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856834": [
+  {
+   "outlet": "TNT",
+   "type": "tv"
+  }
+ ],
+ "401856835": [
+  {
+   "outlet": "Fox",
+   "type": "tv"
+  }
+ ],
+ "401856836": [
+  {
+   "outlet": "FS1",
+   "type": "tv"
+  }
+ ],
+ "401856837": [
+  {
+   "outlet": "ESPN",
+   "type": "tv"
+  }
+ ],
+ "401856838": [
+  {
+   "outlet": "ESPN2",
+   "type": "tv"
+  }
+ ],
+ "401856839": [
+  {
+   "outlet": "ESPN2",
+   "type": "tv"
+  }
+ ],
+ "401856840": [
+  {
+   "outlet": "FS1",
    "type": "tv"
   }
  ],
