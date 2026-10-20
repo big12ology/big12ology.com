@@ -35,7 +35,7 @@
    "home": "Oklahoma State",
    "margin": 13.88,
    "p_home": 0.822,
-   "spread": -13.1,
+   "spread": -13.2,
    "systems": {
     "Big12ology": 20.96,
     "Elo": 2.85,
@@ -95,7 +95,7 @@
    "home": "Cincinnati",
    "margin": -11.26,
    "p_home": 0.21,
-   "spread": 10.5,
+   "spread": 10.6,
    "systems": {
     "Big12ology": -4.51,
     "Elo": -13.7,
@@ -110,7 +110,7 @@
    "home": "TCU",
    "margin": 12.4,
    "p_home": 0.82,
-   "spread": -8.6,
+   "spread": -8.5,
    "systems": {
     "Big12ology": 14.68,
     "Elo": 12.67,
@@ -672,7 +672,7 @@
   }
  },
  "games_complete": 73,
- "generated": "2026-10-20T12:40:08+00:00",
+ "generated": "2026-10-20T13:43:44+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
