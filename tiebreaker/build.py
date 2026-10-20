@@ -2076,6 +2076,49 @@ def _empire_rows(frame, blocks):
     return "".join(out)
 
 
+def empire_card(year, games, teams):
+    """The newest weekly card for this season, as a path under
+    /tiebreaker/, or None when empire_cards.py has not drawn it.
+
+    The name is computed the way empire_cards.py names its files, and the
+    file is checked for, so a page never advertises an image that is not
+    there: a deploy that ran the build but not the cards keeps the section's
+    generic preview rather than a 404."""
+    blocks = empire_map(games, set(teams))["blocks"]
+    last = empire_mod.replay(games, set(blocks))[-1]
+    stem = ("empire-start" if last["week"] is None
+            else f"empire-week-{last['week']:02d}")
+    rel = f"cards/{year}/{stem}.png"
+    return rel if os.path.exists(os.path.join(HERE, rel)) else None
+
+
+def empire_share(year, games, teams):
+    """The box under the map that hands out the weekly images. Same shape
+    as the attendance section's: the versioned URL first, because it is the
+    one that still shows this week in November."""
+    card = empire_card(year, games, teams)
+    if not card:
+        return ""
+    url = f"https://big12ology.com/tiebreaker/{card}"
+    week = card.rsplit("/", 1)[1].replace(".png", "")
+    return f"""<div class=card id=empireshare><h2>Share the map</h2>
+  <p class=note>An image of the map, drawn after every week of Big 12 games.
+  Each week keeps its own address, so a post made now still shows this week
+  later in the season.</p>
+  <a href="{url}"><img class=emcard src="{BASE}{card}" alt="The Big 12
+  Empire map, {year}" width=1200 height=630 loading=lazy></a>
+  <dl class=emurls>
+  <dt>This week, permanently</dt><dd><code>{url}</code></dd>
+  <dt>Whatever week is current</dt>
+  <dd><code>https://big12ology.com/tiebreaker/cards/empire.png</code></dd>
+  </dl>
+  <p class=note>Swap <code>.png</code> for <code>.svg</code> on either. Every
+  earlier week is there too: <code>/tiebreaker/cards/{year}/</code> followed
+  by <code>empire-start</code> or <code>empire-week-NN</code>, as in
+  <code>{esc(week)}</code>.</p>
+</div>"""
+
+
 def empire_page(year, games, teams):
     """The Empire: the Big 12 imperialism map, replayed through the season.
 
@@ -2183,6 +2226,7 @@ def empire_page(year, games, teams):
   {log_html}
 </div></div>
 </div>
+{empire_share(year, games, teams)}
 <script id=empire-data type=application/json>{json.dumps(data, separators=(",", ":"))}</script>"""
 
 
@@ -2711,7 +2755,9 @@ SUBPAGE_EXTRA_CSS = inline("subpage.css")
 
 def build_subpage(title, active, body, year, matchcard,
                   canon=None, desc=None, head="", section="tiebreaker",
-                  page="", up="", subnavon=True):
+                  page="", up="", subnavon=True, og=None):
+    """`og` is (url, width, height) for a page with a preview image of its
+    own; every other page shares the section's card."""
     sect_title = SECTIONS[section]["title"]
     head_title = (sect_title if title == sect_title
                   else f"{title} — {sect_title}")
@@ -2730,9 +2776,9 @@ def build_subpage(title, active, body, year, matchcard,
 <meta property=og:title content="{esc(head_title)}">
 <meta property=og:description content="{esc(desc or '')}">
 <meta property=og:url content="{canon}">
-<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
-<meta property=og:image:width content=1200>
-<meta property=og:image:height content=630>
+<meta property=og:image content="{og[0] if og else 'https://big12ology.com/tiebreaker/og.png'}">
+<meta property=og:image:width content={og[1] if og else 1200}>
+<meta property=og:image:height content={og[2] if og else 630}>
 <meta name=twitter:card content=summary_large_image>"""
     return f"""<!doctype html>
 <html lang=en><head><meta charset=utf-8>
@@ -6364,6 +6410,14 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     if sched_outdir:
         os.makedirs(sched_outdir, exist_ok=True)
 
+    # A page with a preview image of its own. The Empire's is the newest
+    # weekly card, by its versioned name: a social site caches a preview by
+    # URL, so an unversioned one would show whatever week it first saw.
+    page_og = {}
+    card = empire_card(year, games, ctx["teams"])
+    if card:
+        page_og["empire.html"] = (f"https://big12ology.com/tiebreaker/{card}",
+                                  1200, 630)
     for fname, title, active, body, desc, head in pages:
         schedule_page = fname in SCHEDULE_PAGES
         if schedule_page and not sched_outdir:
@@ -6398,7 +6452,8 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                 f.write(build_subpage(title, active, body, year,
                                       matchcard_for(fname, year, ctx),
                                       canon=cu, desc=desc,
-                                      head=head, section=sect, page=pg))
+                                      head=head, section=sect, page=pg,
+                                      og=page_og.get(fname)))
         finally:
             if schedule_page:
                 globals()["BASE"] = BASE_was

@@ -77,6 +77,11 @@ PICKEM_EX=(--exclude=.keep-pickem-none)
                                            --exclude=pickem-scores.json)
 rsync -a "${COMMON[@]}" "${PICKEM_EX[@]}" \
       "$ROOT/tiebreaker/site/" "$DIST/tiebreaker/"
+# The Empire's weekly share cards. Kept beside the builder rather than in
+# tiebreaker/site/, because they are an archive the build only adds to: each
+# week's card is committed once and never redrawn (tiebreaker/empire_cards.py).
+mkdir -p "$DIST/tiebreaker/cards"
+rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/cards/" "$DIST/tiebreaker/cards/"
 
 # The schedule section is generated beside the tiebreaker and served as a
 # sibling path; its pages reach back to ../tiebreaker/ for the shared marks

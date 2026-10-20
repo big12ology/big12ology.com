@@ -297,6 +297,16 @@ jobs:
       # still has to be committed is the capture this run made, because the
       # week it belongs to will have kicked off before the next refresh and
       # nothing will ever write it again.
+      # The Empire's weekly share cards: one image per week of the season,
+      # each written once and kept, plus an unversioned copy of the newest.
+      # Before the commit below so a new week's card rides along with it, and
+      # incremental, so an hour with no new result redraws nothing. Never
+      # fatal: a missing card leaves the page on the section's own preview.
+      - name: Draw the Empire's share cards
+        working-directory: tiebreaker
+        continue-on-error: true
+        run: python3 empire_cards.py --png
+
       - name: Keep the week's forecast and slate
         id: keep
         if: github.event_name != 'workflow_dispatch' || inputs.deploy
@@ -345,7 +355,7 @@ jobs:
           # it was made cannot be asked for again at this tier. Uncommitted,
           # every CI run would start from an empty archive and the file
           # would never accumulate at all.
-          for p in tiebreaker/forecasts tiebreaker/pickem \
+          for p in tiebreaker/forecasts tiebreaker/pickem tiebreaker/cards \
                    tiebreaker/data/games_*.json \
                    tiebreaker/data/lines_*.json \
                    tiebreaker/data/odds \
