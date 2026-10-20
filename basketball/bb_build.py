@@ -1506,6 +1506,15 @@ def main():
     d = built[live]
     bb_pickem.publish(live, d["games"], d["lines"])
     bb_pickem.write_scores(live, d["games"])
+    # The bracket challenge, once the regular season is over and the seeds
+    # are fact: bracket_order only reaches for the simulation before
+    # conference play starts, and by then that is long past.
+    conf = [g for g in d["games"] if g["conf"]]
+    if conf and all(g["final"] for g in conf):
+        st = engine.standings(d["games"], d["teams"])
+        order, _ = bracket_order(d, st, None)
+        bb_pickem.write_bracket(live, d["games"], order,
+                                bracket_results(order, d), BRACKET)
     for s in CTX["archive"]:
         built[s] = build_season(s, os.path.join(SITE, str(s)), deep="../")
     write_sitemap(built)

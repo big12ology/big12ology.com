@@ -21,18 +21,22 @@
   // page in the men's or women's basketball pool. The API keeps the three
   // apart (worker/src/league.js), and api() below hands it the league on
   // every pools call, so nothing else in this file has to remember.
+  // The bracket challenge is basketball's alone: on its pages, no league
+  // means the men's.
+  var ON_BRACKET = typeof location !== "undefined" &&
+    /^\/pools\/bracket\//.test(location.pathname || "");
   var LEAGUE = (function () {
     var v = "";
     try { v = new URLSearchParams(location.search).get("league") || ""; }
     catch (e) { v = ""; }
     v = v.toLowerCase();
-    return v === "mbb" || v === "wbb" ? v : "cfb";
+    return v === "mbb" || v === "wbb" ? v : (ON_BRACKET ? "mbb" : "cfb");
   })();
   // Basketball's card locks game by game; set from the slate the API sends.
   var PER_GAME = false;
   var LEAGUE_NAME = {cfb: "Football", mbb: "Men\u2019s Basketball",
                      wbb: "Women\u2019s Basketball"};
-  var POOL_API = /^\/api\/(slate|picks|leaderboard|grid|users\/|survivor|history|consensus|season\/current)/;
+  var POOL_API = /^\/api\/(slate|picks|leaderboard|grid|users\/|survivor|history|consensus|season\/current|bracket)/;
   // Whether anybody is signed in. The slate is readable either way — that is
   // deliberate, the lines are the interesting part — but picking is not, and
   // a radio that fills in and then reports a server error is worse than one
@@ -3997,6 +4001,180 @@
 
   // ------------------------------------------------------------------ boot
 
+  // ------------------------------------------------------------ bracket
+
+  // Which round each of the fifteen games is in, as the publisher's bracket
+  // lists them, and the rounds' names.
+  var BK_ROUND = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4];
+  var BK_ROUNDS = ["First round", "Second round", "Quarterfinals",
+                   "Semifinals", "Final"];
+
+  /** The two teams that can be in game gi, from the seeds and the picks. */
+  function bkSides(b, picks, gi) {
+    return b.games[gi].map(function (x) {
+      if (typeof x === "number") return b.seeds[x - 1];
+      var k = Number(String(x).slice(1));
+      return picks[k] == null ? null : picks[k];
+    });
+  }
+
+  /** Clear every pick that no longer has its team in its game, earliest
+     first, so a change ripples down the bracket and nowhere else. */
+  function bkPrune(b, picks) {
+    for (var gi = 0; gi < b.games.length; gi++) {
+      if (picks[gi] == null) continue;
+      var sd = bkSides(b, picks, gi);
+      if (picks[gi] !== sd[0] && picks[gi] !== sd[1]) picks[gi] = null;
+    }
+    return picks;
+  }
+
+  function initBracket(me) {
+    var grid = $("bkgrid");
+    if (!grid) return;
+    var signedIn = !!me && !me.needs_name;
+    // `mine` is whether `picks` are the player's own; without a bracket of
+    // their own the page draws the tournament itself, from the results.
+    var b = null, picks = [], timer = null, mine = false;
+    show($("bksignedout"), !me);
+    function status(t) { var n = $("bkstatus"); if (n) n.textContent = t || ""; }
+
+    function seedOf(t) { return b.seeds.indexOf(t) + 1; }
+
+    function draw() {
+      grid.textContent = "";
+      var locked = b.locked, res = b.results || {};
+      var cols = BK_ROUNDS.map(function (name) {
+        var c = el("div", "bk-round");
+        c.appendChild(el("h3", null, name));
+        grid.appendChild(c);
+        return c;
+      });
+      b.games.forEach(function (_, gi) {
+        var box = el("div", "bk-game");
+        var sd = bkSides(b, picks, gi);
+        sd.forEach(function (t) {
+          var btn = el("button", "bk-side");
+          btn.type = "button";
+          if (t == null) {
+            btn.textContent = "\u2014";
+            btn.disabled = true;
+          } else {
+            btn.appendChild(el("span", "bk-seed", String(seedOf(t))));
+            btn.appendChild(document.createTextNode(" " + t));
+            var picked = mine && picks[gi] === t;
+            if (picked) btn.className += " on";
+            btn.setAttribute("aria-pressed", picked ? "true" : "false");
+            if (res[gi] != null && picked) {
+              btn.className += res[gi] === t ? " right" : " wrong";
+            } else if (!mine && res[gi] === t) {
+              btn.className += " on";
+            }
+            btn.disabled = locked || !signedIn;
+            btn.addEventListener("click", function () {
+              mine = true;
+              picks[gi] = picks[gi] === t ? null : t;
+              bkPrune(b, picks);
+              draw();
+              queue();
+            });
+          }
+          box.appendChild(btn);
+        });
+        if (res[gi] != null) {
+          box.appendChild(el("div", "bk-won", "Won: " + res[gi]));
+        }
+        cols[BK_ROUND[gi]].appendChild(box);
+      });
+    }
+
+    function queue() {
+      if (timer) clearTimeout(timer);
+      status("Saving\u2026");
+      timer = setTimeout(function () {
+        api("/api/bracket", {method: "PUT", body: {picks: picks}})
+          .then(function (r) {
+            status("Saved \u2014 " + r.picked + " of 15 picked.");
+          })
+          .catch(function (e) {
+            status(e.status === 409 ? "The bracket has locked; nothing more can be saved."
+                                    : explain(e));
+          });
+      }, 600);
+    }
+
+    function board() {
+      var host = $("bkboard");
+      if (!host) return;
+      api("/api/bracket/board").then(function (r) {
+        host.textContent = "";
+        if (!r.locked) {
+          host.appendChild(el("p", "note", r.entrants + (r.entrants === 1
+            ? " bracket is" : " brackets are") + " in. Every bracket is " +
+            "published here at the first tip."));
+          return;
+        }
+        var t = el("table", "pk-board");
+        var hd = el("tr");
+        ["", "Player", "Champion", "Points", "Still possible"].forEach(function (h) {
+          hd.appendChild(el("th", null, h));
+        });
+        var thead = el("thead"); thead.appendChild(hd); t.appendChild(thead);
+        var tb = el("tbody");
+        r.rows.forEach(function (row) {
+          var tr = el("tr");
+          tr.appendChild(el("td", null, String(row.rank)));
+          var nm = el("td"); nm.appendChild(playerName(row)); tr.appendChild(nm);
+          tr.appendChild(el("td", null, row.champion || "\u2014"));
+          tr.appendChild(el("td", null, String(row.score)));
+          tr.appendChild(el("td", "dim", String(row.possible)));
+          tb.appendChild(tr);
+        });
+        t.appendChild(tb);
+        host.appendChild(t);
+      }).catch(function (e) {
+        host.textContent = e.status === 404 ? "" : explain(e);
+      });
+    }
+
+    api("/api/bracket").then(function (r) {
+      b = r;
+      mine = !!(r.entry && r.entry.picks);
+      picks = mine ? r.entry.picks.slice() : r.games.map(function (_, gi) {
+        // No bracket of your own: the tournament as it has been played.
+        return (r.results || {})[gi] != null ? r.results[gi] : null;
+      });
+      var lt = $("bklock");
+      if (lt) {
+        lt.setAttribute("datetime", new Date(r.lock_at * 1000).toISOString());
+        lt.textContent = fmtWhen(r.lock_at * 1000);
+      }
+      var cd = $("bkcd");
+      if (cd) cd.textContent = r.locked ? "locked" : "";
+      if (r.entry && r.locked) {
+        status("Your bracket: " + r.entry.score + " points, " +
+               r.entry.possible + " still possible, of " + r.entry.perfect + ".");
+      } else if (!signedIn && !r.locked) {
+        status("");
+      }
+      draw();
+      board();
+    }).catch(function (e) {
+      if (e.status === 404) {
+        // No bracket yet: say when there will be one, in place of the grid
+        // and the lock line, neither of which has anything to show.
+        grid.textContent = "";
+        grid.className = "";
+        var ll = document.querySelector("#bkcard .pk-lockline");
+        if (ll) ll.style.display = "none";   // its stylesheet display beats [hidden]
+        grid.appendChild(el("p", "note", "The bracket opens once the regular " +
+          "season is over and the conference has its sixteen seeds."));
+        var host = $("bkboard");
+        if (host) host.textContent = "";
+      } else status(explain(e));
+    });
+  }
+
   /* The league on the page: a switch between the three pools, the title
      naming the sport, and every link inside the pools carrying the league so
      moving from the card to the board stays in the same pool. */
@@ -4045,10 +4223,10 @@
     }
     var bar = el("nav", "pk-leagues");
     bar.setAttribute("aria-label", "Pools");
-    ["cfb", "mbb", "wbb"].forEach(function (lg) {
+    (ON_BRACKET ? ["mbb", "wbb"] : ["cfb", "mbb", "wbb"]).forEach(function (lg) {
       var a = el("a", lg === LEAGUE ? "on" : "", LEAGUE_NAME[lg]);
       var u = new URL(location.href);
-      if (lg === "cfb") u.searchParams.delete("league");
+      if (lg === "cfb" || (ON_BRACKET && lg === "mbb")) u.searchParams.delete("league");
       else u.searchParams.set("league", lg);
       a.href = u.pathname + u.search + u.hash;
       if (lg === LEAGUE) a.setAttribute("aria-current", "true");
@@ -4091,6 +4269,7 @@
       initPlayer(me);
       initSurvivorPool();
       initSurvivor(me);
+      initBracket(me);
     });
   });
 
@@ -4118,6 +4297,7 @@
     winLoss: winLoss,
     playerHref: playerHref, playerRun: playerRun, playerWeeks: playerWeeks,
     recordText: recordText, svStandingWord: svStandingWord,
+    bkSides: bkSides, bkPrune: bkPrune,
   };
 
 })();

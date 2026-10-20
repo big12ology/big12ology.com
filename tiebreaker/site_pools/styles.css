@@ -1332,3 +1332,29 @@ thead .pk-gabbr { color: var(--dim); }
 .pk-leagues a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 /* A basketball game under way: shut, while the rest of the card is open. */
 .pk-slate-game.pk-started { opacity: .7; }
+
+/* The bracket challenge: five rounds side by side, scrolling sideways on a
+   phone rather than squeezing a team name onto three lines. */
+.bk-grid { display: grid; grid-template-columns: repeat(5, minmax(150px, 1fr));
+  gap: 12px; overflow-x: auto; padding-bottom: 6px; }
+.bk-round { display: flex; flex-direction: column; gap: 8px;
+  justify-content: space-around; }
+.bk-round h3 { font-size: var(--t-label); text-transform: uppercase;
+  letter-spacing: .04em; color: var(--dim, #666d7b); margin: 0 0 2px; }
+.bk-game { border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+  border-radius: 8px; padding: 4px; display: grid; gap: 3px; }
+.bk-side { font: inherit; font-size: var(--t-meta); text-align: left;
+  display: flex; align-items: center; gap: 6px; padding: 5px 8px;
+  border-radius: 6px; border: 1px solid transparent; background: transparent;
+  color: var(--ink); cursor: pointer; white-space: nowrap; }
+.bk-side:hover:not(:disabled) { border-color: var(--accent); }
+.bk-side:disabled { cursor: default; }
+.bk-side.on { background: color-mix(in srgb, var(--accent) 18%, transparent);
+  font-weight: 600; }
+.bk-side.right { background: color-mix(in srgb, #2e9e5b 22%, transparent); }
+.bk-side.wrong { background: color-mix(in srgb, #c94a3d 20%, transparent);
+  text-decoration: line-through; }
+.bk-side:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+.bk-seed { min-width: 1.4em; text-align: right; color: var(--dim, #666d7b);
+  font-variant-numeric: tabular-nums; font-weight: 400; }
+.bk-won { font-size: var(--t-fine); color: var(--dim, #666d7b); padding: 0 8px 2px; }

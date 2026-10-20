@@ -14,6 +14,7 @@ import { importWeek } from "./slate.js";
 import { fetchScores, scoreAll } from "./scoring.js";
 import { sweepEspn, sweepKickoffs } from "./espn.js";
 import { seasonOf } from "./league.js";
+import { importBracket } from "./bracket.js";
 
 export const HOOPS_LEAGUES = ["mbb", "wbb"];
 
@@ -36,6 +37,17 @@ export async function sweepLeague(env, league, now = Math.floor(Date.now() / 100
     misses = 0;
     imported++;
     if (!r.unchanged) console.log(`import ${league} ${season} w${w}: ${r.games} games`);
+  }
+  // The Kansas City bracket challenge, once the publisher has written it:
+  // the seeds before the tournament, the results as it is played.
+  try {
+    const b = await importBracket(env, league, season);
+    if (b.ok && !b.unchanged) console.log(`bracket ${league}: ${JSON.stringify(b)}`);
+    else if (!b.ok && !/^fetch_404$/.test(b.reason)) {
+      console.log(`bracket ${league}: ${b.reason}`);
+    }
+  } catch (e) {
+    console.log(`bracket ${league}: ${e && (e.message || e)}`);
   }
   if (!imported) return { league, season, imported: 0, changed: 0 };
 

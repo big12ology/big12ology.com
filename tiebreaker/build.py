@@ -103,10 +103,12 @@ SCHEDULE_SITE = os.path.join(HERE, "site_schedule")
 POOLS_SITE = os.path.join(HERE, "site_pools")
 PICKEM_SITE = os.path.join(POOLS_SITE, "pickem")
 SURVIVOR_SITE = os.path.join(POOLS_SITE, "survivor")
+# The Kansas City bracket challenge, basketball's alone (worker/src/bracket.js).
+BRACKET_SITE = os.path.join(POOLS_SITE, "bracket")
 # The sections under /pools/. They share the account chip, and none of them
 # has a year archive — year_href() would emit 2025/ and 2024/ links to
 # directories that do not exist, on every page.
-POOL_SECTIONS = ("pools", "pickem", "survivor")
+POOL_SECTIONS = ("pools", "pickem", "survivor", "bracket")
 
 # Enter the survivor pool by this week to be on its leaderboard. The Worker is
 # the authority — worker/src/scoring.js RANKED_ENTRY_BY enforces it — and this
@@ -761,7 +763,10 @@ SPORT_OF = {"tiebreaker": "football", "schedule": "football",
             "basketball-attendance": "basketball",
             "wbasketball": "wbasketball",
             "wbasketball-schedule": "wbasketball",
-            "wbasketball-attendance": "wbasketball"}
+            "wbasketball-attendance": "wbasketball",
+            # Basketball's game; app.js swaps in the women's chrome when the
+            # page is in the women's league.
+            "bracket": "basketball"}
 
 
 def topbar(section, year, base="", acct=False):
@@ -837,7 +842,8 @@ def section_tabs(section, year):
                   section == f"{key}-attendance"),
                  # The pools pages are shared; the league picks the sport.
                  ("Pools", "/pools/?league=" + ("mbb" if sport == "basketball"
-                                                else "wbb"), False)]
+                                                else "wbb"),
+                  section == "bracket")]
         label = ("Men\u2019s basketball" if sport == "basketball"
                  else "Women\u2019s basketball")
     else:
@@ -1043,6 +1049,13 @@ SECTIONS = {
         "past": ("The {year} conference schedule: every result by week, who "
                  "never met, and what the draw was worth."),
     },
+    "bracket": {
+        "title": "Big 12 Bracket Challenge",
+        "live": ("Pick every game in Kansas City before the first tip. A "
+                 "round is worth 1, 2, 4, 8 and 16 points a game; a perfect "
+                 "bracket is 60."),
+        "past": "The {year} bracket challenge.",
+    },
     "survivor": {
         "title": "Big 12 Survivor",
         "live": ("One team a week, picked to win outright. Never the same "
@@ -1132,13 +1145,20 @@ SURVIVOR_NAV = [("survivor", "./", "The Pick"),
 # but the account page does, because it is the one page a player lands on
 # from the masthead with no way back into either game.
 POOLS_NAV = [("slate", "pickem/", "Pickem"),
-             ("survivor", "survivor/", "Survivor")]
+             ("survivor", "survivor/", "Survivor"),
+             ("bracket", "bracket/", "Bracket")]
+
+# The bracket challenge's two pages, and the way back to the season-long game.
+BRACKET_NAV = [("bracket", "./", "The Bracket"),
+               ("bkrules", "rules.html", "The Rules"),
+               ("~cross", "../pickem/", "Pickem \u2192")]
 
 
 def nav_for(section):
     return {"schedule": SCHEDULE_NAV,
             "pickem": PICKEM_NAV,
             "survivor": SURVIVOR_NAV,
+            "bracket": BRACKET_NAV,
             "pools": POOLS_NAV}.get(section, SUBNAV_LINKS)
 
 
@@ -7680,6 +7700,52 @@ the card above, and the pool stands as
 # leaderboard nobody reads — and because the standings are the thing a person
 # who is NOT playing wants to look at. The picker keeps a short version; this
 # is the full one, with the graveyard.
+BRACKET_BODY = """
+<div class=card id=bkcard>
+  <h2>Your bracket</h2>
+  <p class=pk-lockline>Locks at the first tip in Kansas City &mdash;
+    <time id=bklock datetime=""></time>
+    <span id=bkcd class=pk-cd aria-hidden=true></span></p>
+  <p class=pk-signedout id=bksignedout hidden><a href="/pools/account.html">Sign
+    in</a> to fill in a bracket.</p>
+  <p class=note id=bkstatus role=status aria-live=polite></p>
+  <div id=bkgrid class=bk-grid></div>
+  <p class=note>Pick a winner in each game and the next round fills in from
+  your picks. Change a pick and anything that depended on it clears. Saved as
+  you go, and yours to change until the first tip.</p>
+</div>
+<div class=card id=bkboardcard>
+  <h2>The board</h2>
+  <div id=bkboard><p class=dim>Loading&hellip;</p></div>
+</div>
+"""
+
+BRACKET_RULES = """
+<div class=card>
+  <h2>How the bracket challenge works</h2>
+  <p>Once the regular season is over and the conference has its sixteen
+  seeds, pick a winner in every game of the Big 12 tournament in Kansas City:
+  fifteen games, from the first round to the final. Every pick has to be a
+  team that can actually be in that game, so the bracket fills in from your
+  own earlier picks.</p>
+  <p>Brackets lock at the first tip of the first round. After that nothing
+  can be changed, and every bracket is published on the board.</p>
+  <h3>Scoring</h3>
+  <ul>
+    <li>First round: 1 point a game (four games)</li>
+    <li>Second round: 2 points a game (four games)</li>
+    <li>Quarterfinals: 4 points a game (four games)</li>
+    <li>Semifinals: 8 points a game (two games)</li>
+    <li>Final: 16 points</li>
+  </ul>
+  <p>A perfect bracket is 60. The board also shows what each bracket can
+  still reach: the points of every game not yet played whose picked winner is
+  still alive. Ties share a rank.</p>
+  <p>Men's and women's are separate brackets with separate boards, one
+  account for both.</p>
+</div>
+"""
+
 SURVIVOR_POOL_BODY = """
 <div class=card id=svsumcard hidden>
   <h2>Where it stands</h2>
@@ -8346,6 +8412,25 @@ def build_pickem(year):
         with open(os.path.join(SURVIVOR_SITE, fname), "w") as f:
             f.write(sv)
 
+    # The bracket challenge: same depth and the same head again. Basketball's
+    # alone; the page is told its league by the address.
+    os.makedirs(BRACKET_SITE, exist_ok=True)
+    bkcanon = "https://big12ology.com/pools/bracket/"
+    for fname, active, title, body, url, desc in [
+        ("index.html", "bracket", "The Bracket", BRACKET_BODY, bkcanon,
+         "The Big 12 basketball bracket challenge: pick every game of the "
+         "conference tournament in Kansas City before the first tip."),
+        ("rules.html", "bkrules", "The Rules", BRACKET_RULES,
+         bkcanon + "rules.html",
+         "How the Big 12 bracket challenge works: fifteen games, 1 to 16 "
+         "points a round, locked at the first tip."),
+    ]:
+        bk = build_subpage(title, active, body, year, "", canon=url,
+                           desc=desc, head=head, section="bracket",
+                           page=fname if fname != "index.html" else "bracket")
+        with open(os.path.join(BRACKET_SITE, fname), "w") as f:
+            f.write(bk)
+
     # One account for both games, so it sits above them rather than inside
     # one. Written with the pools' own BASE, being a level shallower.
     BASE = "../season/"
@@ -8501,6 +8586,10 @@ def write_discovery(years):
         f'<changefreq>monthly</changefreq><priority>0.7</priority></url>',
         f'  <url><loc>{pool}survivor/pool.html</loc><lastmod>{today}</lastmod>'
         f'<changefreq>weekly</changefreq><priority>0.6</priority></url>',
+        f'  <url><loc>{pool}bracket/</loc><lastmod>{today}</lastmod>'
+        f'<changefreq>weekly</changefreq><priority>0.6</priority></url>',
+        f'  <url><loc>{pool}bracket/rules.html</loc><lastmod>{today}</lastmod>'
+        f'<changefreq>monthly</changefreq><priority>0.5</priority></url>',
     ]
     os.makedirs(POOLS_SITE, exist_ok=True)
     if PICKEM_ENABLED:

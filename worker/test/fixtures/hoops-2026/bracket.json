@@ -1,0 +1,119 @@
+{
+ "games": [
+  [
+   9,
+   16
+  ],
+  [
+   12,
+   13
+  ],
+  [
+   10,
+   15
+  ],
+  [
+   11,
+   14
+  ],
+  [
+   8,
+   "g0"
+  ],
+  [
+   5,
+   "g1"
+  ],
+  [
+   7,
+   "g2"
+  ],
+  [
+   6,
+   "g3"
+  ],
+  [
+   1,
+   "g4"
+  ],
+  [
+   4,
+   "g5"
+  ],
+  [
+   2,
+   "g6"
+  ],
+  [
+   3,
+   "g7"
+  ],
+  [
+   "g8",
+   "g9"
+  ],
+  [
+   "g10",
+   "g11"
+  ],
+  [
+   "g12",
+   "g13"
+  ]
+ ],
+ "league": "mbb",
+ "lock_at": 1773160200,
+ "points": [
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  2,
+  4,
+  4,
+  4,
+  4,
+  8,
+  8,
+  16
+ ],
+ "results": {
+  "0": "Cincinnati",
+  "1": "Arizona State",
+  "10": "Houston",
+  "11": "Kansas",
+  "12": "Arizona",
+  "13": "Houston",
+  "14": "Arizona",
+  "2": "BYU",
+  "3": "Oklahoma State",
+  "4": "UCF",
+  "5": "Iowa State",
+  "6": "BYU",
+  "7": "TCU",
+  "8": "Arizona",
+  "9": "Iowa State"
+ },
+ "season": 2026,
+ "seeds": [
+  "Arizona",
+  "Houston",
+  "Kansas",
+  "Texas Tech",
+  "Iowa State",
+  "TCU",
+  "West Virginia",
+  "UCF",
+  "Cincinnati",
+  "BYU",
+  "Colorado",
+  "Arizona State",
+  "Baylor",
+  "Oklahoma State",
+  "Kansas State",
+  "Utah"
+ ]
+}

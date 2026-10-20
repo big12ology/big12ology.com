@@ -54,12 +54,23 @@ def main():
         bb_pickem.publish(SEASON, d["games"], lines, now=day, log=lambda *_: None)
         day += datetime.timedelta(days=1)
     bb_pickem.write_scores(SEASON, d["games"])
+    # The Kansas City bracket challenge, as the live build would write it once
+    # the regular season was over: the real seeds and all fifteen results.
+    sys.argv = ["x"]
+    import bb_build
+    import bb_engine
+    st = bb_engine.standings(d["games"], d["teams"])
+    order, _ = bb_build.bracket_order(d, st, None, log=lambda *_: None)
+    bb_pickem.write_bracket(SEASON, d["games"], order,
+                            bb_build.bracket_results(order, d), bb_build.BRACKET,
+                            log=lambda *_: None)
     shutil.move(os.path.join(bb_pickem.OUT, str(SEASON)), OUT)
     shutil.rmtree(bb_pickem.OUT, ignore_errors=True)
     n = sorted(os.listdir(OUT))
     games = sum(len(json.load(open(os.path.join(OUT, f)))["games"])
                 for f in n if f.startswith("week-"))
-    print(f"{len(n) - 1} weeks, {games} games -> {os.path.relpath(OUT, ROOT)}")
+    weeks_n = sum(1 for f in n if f.startswith("week-"))
+    print(f"{weeks_n} weeks, {games} games, a bracket -> {os.path.relpath(OUT, ROOT)}")
 
 
 if __name__ == "__main__":

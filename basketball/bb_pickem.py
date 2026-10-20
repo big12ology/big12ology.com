@@ -29,6 +29,8 @@ What is basketball's:
 
     basketball/pickem/<league>/<season>/week-NN.json   one per week
     basketball/pickem/<league>/<season>/scores.json    every conference final
+    basketball/pickem/<league>/<season>/bracket.json   the Kansas City bracket
+                                                        challenge (write_bracket)
 
 The Worker reads both from the repository (worker/src/hoops.js).
 """
@@ -165,4 +167,62 @@ def write_scores(season, games):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(payload, f, indent=1, sort_keys=True)
+    return True
+
+
+# --- the Kansas City bracket challenge ------------------------------------
+
+# Points per game, in bracket order: the first round's four games 1 each, the
+# second round's 2, the quarterfinals 4, the semifinals 8, the final 16. A
+# perfect bracket is 60, and the champion alone is worth more than the whole
+# first two rounds.
+POINTS = [1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 8, 8, 16]
+
+
+def write_bracket(season, games, order, results, bracket, log=print):
+    """bracket.json: the seeds, the shape, the points, the lock and the
+    results, once the regular season is over and the seeds are fact.
+
+    `order` is the sixteen teams by seed and `results` {game index: winner},
+    both from bb_build (bracket_order, bracket_results), so the challenge is
+    drawn from exactly the bracket the Bracket page shows. The lock is the
+    first Kansas City tip on the schedule; until one is, there is nothing to
+    lock at and nothing is written. Rewritten only on change."""
+    conf = [g for g in games if g.get("conf")]
+    if not conf or not all(g["final"] for g in conf):
+        return False
+    tips = [_ts(g["start"]) for g in games if g.get("tourney") and g.get("start")]
+    tips = [t for t in tips if t]
+    if not tips:
+        return False
+    payload = {
+        "season": season, "league": LEAGUE,
+        "seeds": list(order),
+        "games": [[a, b] for a, b in bracket],
+        "points": POINTS,
+        "lock_at": int(min(tips).timestamp()),
+        "results": {str(k): v for k, v in sorted(results.items())},
+    }
+    path = os.path.join(OUT, str(season), "bracket.json")
+    if os.path.exists(path):
+        try:
+            old = json.load(open(path))
+            # The seeds and the lock are facts once written: a republish may
+            # add results and pull the lock earlier, never anything else.
+            if old.get("seeds") and old["seeds"] != payload["seeds"]:
+                log(f"WARNING: basketball {LEAGUE} {season}: the bracket's "
+                    f"seeds changed after publishing; keeping the published "
+                    f"ones")
+                payload["seeds"] = old["seeds"]
+            if old.get("lock_at"):
+                payload["lock_at"] = min(old["lock_at"], payload["lock_at"])
+            if old == payload:
+                return False
+        except (OSError, ValueError):
+            pass
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        json.dump(payload, f, indent=1, sort_keys=True)
+    log(f"basketball {LEAGUE} {season}: bracket challenge written "
+        f"({len(payload['results'])} of 15 results)")
     return True

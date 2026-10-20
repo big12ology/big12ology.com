@@ -1321,8 +1321,9 @@ export async function resolveIdentity(env, provider, subjectHash,
       // or a basketball-only one, would erase a season the same way.
       const other = await env.DB.prepare(
         `SELECT (SELECT COUNT(*) FROM picks WHERE user_id = ?)
-              + (SELECT COUNT(*) FROM survivor_picks WHERE user_id = ?) AS n`)
-        .bind(found.user_id, found.user_id).first();
+              + (SELECT COUNT(*) FROM survivor_picks WHERE user_id = ?)
+              + (SELECT COUNT(*) FROM bracket_entries WHERE user_id = ?) AS n`)
+        .bind(found.user_id, found.user_id, found.user_id).first();
       if (other && other.n > 0) return { error: "identity_in_use" };
       await env.DB.batch([
         env.DB.prepare(`DELETE FROM identities WHERE user_id = ?`)

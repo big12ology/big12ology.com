@@ -21,6 +21,7 @@ import { fetchScores, scoreAll } from "./scoring.js";
 import { sweepEspn, sweepKickoffs } from "./espn.js";
 import { jobsAt, anyJob, weekNeedsOpening } from "./schedule.js";
 import { HOOPS_LEAGUES, sweepLeague } from "./hoops.js";
+import * as bracket from "./bracket.js";
 
 const { json, fail } = api;
 
@@ -332,6 +333,11 @@ async function handle(req, env, ctx) {
   if (path === "/api/survivor/board" && req.method === "GET") {
     return api.getSurvivorBoard(env, url);
   }
+  // The Kansas City bracket challenge's board: public, and empty of brackets
+  // until the lock.
+  if (path === "/api/bracket/board" && req.method === "GET") {
+    return bracket.getBracketBoard(env, url);
+  }
   // Everybody's picks for one closed week: the plural of the route below,
   // and the only one of the two the site actually links to.
   if (path === "/api/grid" && req.method === "GET") {
@@ -410,6 +416,18 @@ async function handle(req, env, ctx) {
   if (path === "/api/survivor") {
     if (req.method === "GET") {
       return withRefresh(await api.getSurvivor(env, user, url));
+    }
+    return fail("method_not_allowed", 405);
+  }
+  if (path === "/api/bracket") {
+    if (req.method === "GET") {
+      return withRefresh(await bracket.getBracket(env, user, url));
+    }
+    if (req.method === "PUT") {
+      if (!csrfOk(req, env)) return fail("bad_origin", 403);
+      const b = await body(req);
+      if (!b) return fail("bad_json", 400);
+      return withRefresh(await bracket.putBracket(env, user, b, ratelimit.take));
     }
     return fail("method_not_allowed", 405);
   }
