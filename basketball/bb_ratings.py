@@ -32,9 +32,10 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(1, os.path.join(ROOT, "tiebreaker"))
 
 import bb_fetch as fetch                                 # noqa: E402
+import bb_sport as sport                                 # noqa: E402
 import massey                                            # noqa: E402
 
-DATA = os.path.join(HERE, "data")
+DATA = sport.DATA
 CAP = 3000
 FULL_AT = 10          # games a team needs before its own fit stands alone
 CARRY = 0.6           # how much of last season's rating survives the summer
@@ -78,7 +79,11 @@ def window_games(a, b, fresh):
 
 def season_games(season, refresh=False, today=None):
     """All Division I games of `season` so far. With `refresh`, windows that
-    are not over yet are asked for again; finished ones come from disk."""
+    are not over yet are asked for again; finished ones come from disk.
+    The women's come from ESPN's daily Division I scoreboards instead."""
+    if sport.WOMEN:
+        import bb_wseason
+        return bb_wseason.d1_games(season, refresh=refresh, today=today)
     today = today or datetime.date.today()
     out, seen = [], set()
     for a, b in windows(season, through=today):

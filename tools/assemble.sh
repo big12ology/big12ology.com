@@ -97,7 +97,23 @@ rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_schedule/" "$DIST/schedule/"
 # Men's basketball. Only the built pages: the rest of basketball/ is the
 # builder, its data and its tests, and the root copy above leaves the whole
 # directory out so none of that is published.
-rsync -a "${COMMON[@]}" "$ROOT/basketball/site/" "$DIST/basketball/"
+#
+# Neither basketball section's pages are committed (the deploy and CI build
+# them fresh, and each is over 70 MB), so a failed build leaves nothing to
+# ship: the rest of the site still goes out, that section is missing until
+# the next good build, and this says so. basketball/site/ always holds the
+# tracked engine.js and lab.js, so it is judged by its index.html.
+if [ -f "$ROOT/basketball/site/index.html" ]; then
+  rsync -a "${COMMON[@]}" "$ROOT/basketball/site/" "$DIST/basketball/"
+else
+  echo "WARNING: basketball/site/ was not built; /basketball/ not published"
+fi
+# Women's basketball: the same builder's other output (basketball/bb_sport.py).
+if [ -d "$ROOT/basketball/site_women" ]; then
+  rsync -a "${COMMON[@]}" "$ROOT/basketball/site_women/" "$DIST/womens-basketball/"
+else
+  echo "WARNING: basketball/site_women/ is missing; /womens-basketball/ not published"
+fi
 
 # The attendance repo is served as-is by Pages today, README and scripts and
 # all. Copying it wholesale is what makes the output comparable byte for byte
@@ -776,13 +792,25 @@ for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          season/hub.json season/facts.json season/sitemap.xml \
          schedule/index.html schedule/draw.html schedule/rotation.html \
          schedule/sitemap.xml \
-         basketball/index.html basketball/schedule.html basketball/rules.html \
-         basketball/teams.html basketball/sitemap.xml \
          attendance/index.html attendance/site/app.js \
          attendance/data/teams.json attendance/data/seasons/index.json \
          ; do
   [ -e "$DIST/$f" ] || note "$f"
 done
+
+# The basketball sections, checked whenever they were built (see above).
+if [ -f "$ROOT/basketball/site/index.html" ]; then
+  for f in basketball/index.html basketball/schedule.html basketball/rules.html \
+           basketball/teams.html basketball/sitemap.xml; do
+    [ -e "$DIST/$f" ] || note "$f"
+  done
+fi
+if [ -d "$ROOT/basketball/site_women" ]; then
+  for f in womens-basketball/index.html womens-basketball/schedule.html \
+           womens-basketball/lab.html womens-basketball/sitemap.xml; do
+    [ -e "$DIST/$f" ] || note "$f"
+  done
+fi
 
 # The pick'em's own manifest, checked only when it was asked for. Listed
 # unconditionally it would report nine missing files on every ordinary build,

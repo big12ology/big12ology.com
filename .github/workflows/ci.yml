@@ -149,6 +149,9 @@ jobs:
       - name: Build men's basketball
         run: python3 basketball/bb_build.py
 
+      - name: Build women's basketball
+        run: python3 basketball/bb_build.py --women
+
       # BOTH OF THESE READ THE BUILT PAGES, so both belong here and not with
       # the suites above. They sat above the build step for three weeks, where
       # site/ is whatever the last person happened to commit: output this

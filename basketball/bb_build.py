@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Big 12 men's basketball: the /basketball/ section.
+"""Big 12 basketball: the /basketball/ section, and with --women the
+/womens-basketball/ one (bb_sport.py says what differs).
 
     python3 basketball/bb_build.py            # build from what is on disk
     python3 basketball/bb_build.py --fetch    # refresh first, if anything is due
@@ -27,40 +28,44 @@ ROOT = os.path.dirname(HERE)
 # shares a name with them: everything basketball is bb_*.
 sys.path.insert(0, HERE)
 sys.path.insert(1, os.path.join(ROOT, "tiebreaker"))
+# Chosen before anything below is imported: every bb_ module reads it.
+if "--women" in sys.argv:
+    os.environ["B12_BB"] = "women"
 
 import build as tb                                       # noqa: E402
+import bb_sport as sport                                 # noqa: E402
 import bb_engine as engine                               # noqa: E402
 import bb_season as season_mod                           # noqa: E402
 import bb_ratings as ratings_mod                         # noqa: E402
 import empire as empire_mod                              # noqa: E402
 
-SITE = os.path.join(HERE, "site")
-SECTION = "basketball"
+SITE = sport.SITE
+SECTION = sport.SECTION
 # The schedule half of the section: the same directory, but its own tab in
 # the sport bar and its own pills, as football's /schedule/ is to /season/.
-SCHED = "basketball-schedule"
+SCHED = sport.SCHED
 
 # THE SECTION REGISTERS ITSELF with the shared shell, here and only in this
 # process, rather than living in tiebreaker/build.py: the football build
 # never draws a basketball page, and keeping the registration beside the
 # pages it serves keeps the two sections' files apart.
 tb.SECTIONS[SECTION] = {
-    "title": "Big 12 Men’s Basketball",
+    "title": f"Big 12 {sport.LABEL}",
     "live": ("Unofficial fan tool. The official Big 12 tournament seeding and "
              "tiebreaker procedure, applied to every result as it comes in."),
     "past_text": ("The {year} season as it finished, with the official "
                   "seeding procedure applied."),
 }
 tb.SECTIONS[SCHED] = {
-    "title": "Big 12 Men’s Basketball Schedule",
+    "title": f"Big 12 {sport.LABEL} Schedule",
     "live": ("Every conference game with its tip time, TV and line, and who "
              "meets twice in the eighteen-game draw."),
     "past_text": ("The {year} conference schedule: every result, and who "
                   "met twice."),
 }
-ATT = "basketball-attendance"
+ATT = sport.ATT
 tb.SECTIONS[ATT] = {
-    "title": "Big 12 Men\u2019s Basketball Attendance",
+    "title": f"Big 12 {sport.LABEL} Attendance",
     "live": ("Every Big 12 home crowd, against the seats each arena "
              "actually has."),
     "past_text": ("Every Big 12 home crowd in {year}, against the seats each "
@@ -125,7 +130,7 @@ def _tracker_top_bb(year, active, matchcard="", section="tiebreaker", page="",
 
 
 tb.tracker_top = _tracker_top_bb
-URL = "https://big12ology.com/basketball/"
+URL = sport.URL
 
 esc = tb.esc
 
@@ -409,10 +414,10 @@ def schedule_body(d):
 <div class=card><h2>The conference schedule</h2>
   {conf}
   <p class=note>Times are the arena's, with yours beside them when they
-  differ. Lines are the posted spread, favorite named; TV is the national
-  or regional window CollegeBasketballData lists. Lines are the average of
-  every US book the-odds-api.com carries once the books have posted a game,
-  and CollegeBasketballData's before that.</p>
+  differ. Lines are the posted spread, favorite named: the average of
+  every US book the-odds-api.com carries once the books have posted a game{
+  ", and CollegeBasketballData's before that" if not sport.WOMEN else ""}.
+  TV is the national or regional window {sport.SOURCE} lists.</p>
 </div>"""
 
 
@@ -753,7 +758,7 @@ def attendance_body(d):
   conference ones alone. Full is the average crowd against the seats, and a
   sellout is a crowd at or above them, so standing room can take a team past
   100%. Seats are the basketball capacity each school lists, linked to where
-  it says so; CollegeBasketballData, which supplies the crowds, carries no
+  it says so; {sport.SOURCE}, which supplies the crowds, carries no
   capacities.</p>
 </div>
 <div class=card><h2>The biggest crowds</h2>
@@ -842,7 +847,8 @@ def game_body(d, st, sim, model, g):
         win_home = g["hp"] > g["ap"]
         w, l = (home, away) if win_home else (away, home)
         src = (" The score is ESPN's; CollegeBasketballData's record of the "
-               "game follows within a day." if g.get("src") == "espn" else "")
+               "game follows within a day." if g.get("src") == "espn"
+               and not sport.WOMEN else "")
         head += (f"<p class=bbfinal>Final: <b>{esc(w)} {max(g['hp'], g['ap'])}</b>, "
                  f"{esc(l)} {min(g['hp'], g['ap'])}</p>"
                  f"{f'<p class=note>{src.strip()}</p>' if src else ''}")
@@ -1195,6 +1201,20 @@ def tb_season():
 
 # --- the rules --------------------------------------------------------------
 
+SOURCE_NOTE = (
+    "Source: the Big 12's <a href=\"https://big12sports.com/sports/2011/6/22/"
+    "1520897.aspx?path=wbball\">Championship Seeding and Tiebreaker "
+    "Procedures</a> for women's basketball. The page is older than the men's "
+    "(it says it was last updated for 2015-16 and still describes ten "
+    "teams), but its tiebreaker steps are the men's, and run on the 2024-25 "
+    "and 2025-26 results they give every seed the conference used, as the "
+    "check below shows." if sport.WOMEN else
+    "Source: the Big 12's <a href=\"https://big12sports.com/sports/2011/6/22/"
+    "1520896.aspx\">Tournament Seeding and Tiebreaker Procedures</a>, as of "
+    "the 2023-24 season, the most recent version the conference has "
+    "published.")
+
+
 def rules_body(checks):
     rows = "".join(
         f"<tr><td>{esc(c['label'])}</td><td>{c['matched']} of {c['of']}</td>"
@@ -1230,10 +1250,7 @@ def rules_body(checks):
   head-to-head has already split, which counts seed by seed.</p>
   <p>The regular-season title is never tiebroken. Teams level at the top are
   co-champions.</p>
-  <p class=note>Source: the Big 12's
-  <a href="https://big12sports.com/sports/2011/6/22/1520896.aspx">Tournament
-  Seeding and Tiebreaker Procedures</a>, as of the 2023-24 season, the most
-  recent version the conference has published.</p>
+  <p class=note>{SOURCE_NOTE}</p>
 </div>
 <div class=card><h2>Three things the document leaves open</h2>
   <ul class=steps>
@@ -1264,7 +1281,7 @@ def history_checks():
     """This engine on the seasons it can be checked against: the official
     seeds, recorded in data/official_seeds.json with their source, against
     what the engine makes of the same results."""
-    path = os.path.join(HERE, "data", "official_seeds.json")
+    path = os.path.join(sport.DATA, "official_seeds.json")
     if not os.path.exists(path):
         return []
     official = json.load(open(path))
@@ -1348,9 +1365,7 @@ def archive_seasons(live):
     fetched: a finished season cannot change, and these are in the repo."""
     out = []
     for s in range(live - 1, ARCHIVE_FROM - 1, -1):
-        p = season_mod.fetch.raw_path("games", {"conference": season_mod.CONF,
-                                                "season": s})
-        if os.path.exists(p):
+        if season_mod.has_season(s):
             out.append(s)
     return out
 
@@ -1384,7 +1399,7 @@ def build_season(season, out, fetching=False, as_of=None, deep=""):
                                                  "teams.json")))
     write(os.path.join(out, "index.html"), page(
         "The Standings", "standings", lambda: standings_body(d, st), d, "index.html",
-        f"Big 12 men's basketball standings for {yr}, seeded for the "
+        f"Big 12 {sport.NOUN} standings for {yr}, seeded for the "
         f"conference tournament with the Big 12's own tiebreakers."))
     write(os.path.join(out, "race.html"), page(
         "The Race", "race", lambda: race_body(d, st, sim, cert, model, ex), d,
@@ -1410,34 +1425,40 @@ def build_season(season, out, fetching=False, as_of=None, deep=""):
         head=f'<script defer src="{deep}../season/{tb.asset_v("empire.js")}"></script>'))
     write(os.path.join(out, "schedule.html"), page(
         "The Schedule", "schedule", lambda: schedule_body(d), d, "schedule.html",
-        f"Every {yr} Big 12 men's basketball game: tip times, TV and lines.",
+        f"Every {yr} Big 12 {sport.NOUN} game: tip times, TV and lines.",
         section=SCHED))
     write(os.path.join(out, "ratings.html"), page(
         "The Ratings", "ratings", lambda: ratings_body(d, st, model), d,
         "ratings.html",
-        f"Every Division I men's basketball team rated in points for {yr}, "
+        f"Every Division I {sport.NOUN} team rated in points for {yr}, "
         f"the Big 12 first: the numbers this section's odds come from."))
     write(os.path.join(out, "attendance.html"), page(
         "The Crowds", "attendance", lambda: attendance_body(d), d,
         "attendance.html",
-        f"Big 12 men's basketball attendance for {yr}: every arena's average "
+        f"Big 12 {sport.NOUN} attendance for {yr}: every arena's average "
         f"crowd against its real capacity, sellouts and the biggest crowds.",
         section=ATT))
+    # The browser's copies of the engine and the Lab, from the one source
+    # in site/ that both sections share.
     site_dir = os.path.join(HERE, "site")
+    if sport.WOMEN and deep == "":
+        for f in ("engine.js", "lab.js"):
+            os.makedirs(SITE, exist_ok=True)
+            shutil.copy(os.path.join(site_dir, f), os.path.join(SITE, f))
     write(os.path.join(out, "lab.html"), page(
         "The Lab", "lab", lambda: lab_body(d, model), d, "lab.html",
-        f"Pick the rest of the {yr} Big 12 men's basketball season and see "
+        f"Pick the rest of the {yr} Big 12 {sport.NOUN} season and see "
         f"every team's seed, bye and title chances recomputed with the "
         f"conference's own tiebreakers.",
         head=(f'<script defer src="{deep}{tb.asset_v("engine.js", site_dir)}"></script>'
               f'<script defer src="{deep}{tb.asset_v("lab.js", site_dir)}"></script>')))
     write(os.path.join(out, "teams.html"), page(
         "The Teams", "teams", lambda: teams_body(d, st), d, "teams.html",
-        f"The sixteen Big 12 men's basketball teams in {yr}."))
+        f"The sixteen Big 12 {sport.NOUN} teams in {yr}."))
     for t in d["teams"]:
         write(os.path.join(out, "team", tb.team_slug(t)), page(
             t, "teams", lambda t=t: team_body(d, st, t), d, f"team/{tb.team_slug(t)}",
-            f"{t} men's basketball in {yr}: record, Big 12 seed, schedule, "
+            f"{t} {sport.NOUN} in {yr}: record, Big 12 seed, schedule, "
             f"tip times, TV and lines.", up="../"))
     # One page per game a Big 12 team plays. Rebuilt whole each time: a
     # game whose venue or sides change gets a new slug, and the old page
@@ -1457,7 +1478,7 @@ def build_season(season, out, fetching=False, as_of=None, deep=""):
             up="../", section=SCHED))
     write(os.path.join(out, "rules.html"), page(
         "The Rules", "rules", lambda: rules_body(history_checks()), d, "rules.html",
-        "How the Big 12 seeds its men's basketball tournament, step by step, "
+        f"How the Big 12 seeds its {sport.NOUN} tournament, step by step, "
         "and how this site applies it."))
     print(f"built basketball {yr}: {len(d['games'])} games, "
           f"{sum(g['final'] for g in d['games'])} final -> {out}")

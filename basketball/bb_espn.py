@@ -32,10 +32,13 @@ import re
 import subprocess
 import zoneinfo
 
+import bb_sport as sport
+
 HERE = os.path.dirname(os.path.abspath(__file__))
-RAW = os.path.join(HERE, "data", "raw", "espn")
-API = ("https://site.api.espn.com/apis/site/v2/sports/basketball/"
-       "mens-college-basketball/scoreboard")
+RAW = os.path.join(sport.RAW, "espn")
+SITE_API = ("https://site.api.espn.com/apis/site/v2/sports/basketball/"
+            f"{sport.LEAGUE}")
+API = f"{SITE_API}/scoreboard"
 # The Big 12. Its scoreboard includes every game a member plays, the
 # non-conference ones too (checked on 2025-11-20: UCF and Pittsburgh at the
 # Legends Classic, Houston and Rider).
@@ -78,9 +81,50 @@ def day_of(g):
     return _parse(g["start"]).astimezone(ET).strftime("%Y%m%d")
 
 
-def _get(day):
+def trim(body):
+    """An ESPN response cut to what anything here reads, ids included.
+
+    KEPT TRIMMED, NOT WHOLE, which bends the house rule on purpose: the
+    whole response is about 2 MB for a day of Division I games and 300 KB for
+    the Big 12 alone, and a season of either committed daily is hundreds of
+    megabytes of git history for logos, links and leader boards nothing
+    reads. What stays is every field the parsers use plus the ids, so a
+    parser fix is still a re-read and not a re-fetch."""
+    def team(t):
+        return {k: t.get(k) for k in ("id", "location", "shortDisplayName",
+                                      "displayName", "abbreviation")}
+
+    def comp(c):
+        return {
+            "status": {"type": {k: ((c.get("status") or {}).get("type") or {}).get(k)
+                                for k in ("completed", "name", "state")}},
+            "neutralSite": c.get("neutralSite"),
+            "conferenceCompetition": c.get("conferenceCompetition"),
+            "attendance": c.get("attendance"),
+            "type": {"abbreviation": (c.get("type") or {}).get("abbreviation")},
+            "notes": [{"headline": n.get("headline")} for n in c.get("notes") or []],
+            "venue": {"fullName": (c.get("venue") or {}).get("fullName"),
+                      "address": (c.get("venue") or {}).get("address")},
+            "broadcasts": [{"media": {"shortName": ((b.get("media") or {}).get("shortName"))},
+                            "names": b.get("names")}
+                           for b in c.get("broadcasts") or []],
+            "competitors": [{"homeAway": t.get("homeAway"),
+                             "score": (t.get("score") or {}).get("displayValue")
+                             if isinstance(t.get("score"), dict) else t.get("score"),
+                             "winner": t.get("winner"),
+                             "team": team(t.get("team") or {})}
+                            for t in c.get("competitors") or []],
+        }
+    return {"events": [
+        {"id": e.get("id"), "date": e.get("date"), "timeValid": e.get("timeValid"),
+         "seasonType": {"abbreviation": (e.get("seasonType") or {}).get("abbreviation")},
+         "competitions": [comp(c) for c in (e.get("competitions") or [])[:1]]}
+        for e in body.get("events") or []]}
+
+
+def _get(day, group=GROUP):
     """One scoreboard, or None. Never raises."""
-    url = f"{API}?dates={day}&groups={GROUP}&limit=300"
+    url = f"{API}?dates={day}&groups={group}&limit=1000"
     try:
         r = subprocess.run(["curl", "-sS", "-m", "30", "--fail", url],
                            capture_output=True, text=True)
@@ -112,7 +156,7 @@ def refresh(games, now=None, log=print):
             continue
         os.makedirs(RAW, exist_ok=True)
         with open(path(day), "w") as f:
-            json.dump(body, f, separators=(",", ":"))
+            json.dump(trim(body), f, separators=(",", ":"))
         got += 1
     if days:
         log(f"basketball ESPN: {got} of {len(days)} scoreboard(s) read for "

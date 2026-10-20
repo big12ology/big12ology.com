@@ -30,9 +30,10 @@ import os
 import bb_espn as espn
 import bb_fetch as fetch
 import bb_market as market
+import bb_sport as sport
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-DATA = os.path.join(HERE, "data")
+DATA = sport.DATA
 CONF = "Big 12"
 
 DAILY = datetime.timedelta(hours=20)
@@ -261,3 +262,23 @@ def load(season, refresh=False, log=print):
             media[row["gameId"]] = tv or web
     return {"season": season, "teams": teams, "games": have,
             "lines": lines, "media": media}
+
+
+def has_season(season):
+    """Whether a season's games are on disk, to build without asking."""
+    return os.path.exists(fetch.raw_path("games", {"conference": CONF,
+                                                   "season": season}))
+
+
+# The women's section reads ESPN instead (bb_wseason.py); the shape it
+# returns is this module's, so callers never know which they have.
+# Imported at the call, not here: bb_wseason imports this module for its
+# helpers, so importing it at load time is a cycle whichever side starts.
+if sport.WOMEN:
+    def load(season, refresh=False, log=print):          # noqa: F811
+        import bb_wseason
+        return bb_wseason.load(season, refresh=refresh, log=log)
+
+    def has_season(season):                              # noqa: F811
+        import bb_wseason
+        return bb_wseason.has_season(season)

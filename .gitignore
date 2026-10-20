@@ -30,3 +30,11 @@ SCRATCH.md
 
 # Calls made by hand, counted by tools/api-budget.py. A local fact.
 tiebreaker/data/.api-local.log
+
+# The basketball pages, both sections: built fresh by the deploy and CI
+# (basketball/bb_build.py, and --women), never committed. 77 MB each.
+# basketball/site/engine.js and lab.js are source, and stay tracked.
+basketball/site/*
+!basketball/site/engine.js
+!basketball/site/lab.js
+basketball/site_women/

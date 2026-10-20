@@ -1,0 +1,47 @@
+{
+ "_source": "The seeds the Big 12 used for its women's basketball tournament, as listed on each tournament's Wikipedia page (which cites the conference). Recorded so the engine can be checked against them: bb_build.py history_checks and tests/test_women.py.",
+ "seasons": {
+  "2025": {
+   "url": "https://en.wikipedia.org/wiki/2025_Big_12_Conference_women%27s_basketball_tournament",
+   "seeds": [
+    "TCU",
+    "Baylor",
+    "Oklahoma State",
+    "West Virginia",
+    "Kansas State",
+    "Utah",
+    "Iowa State",
+    "Arizona",
+    "Colorado",
+    "Cincinnati",
+    "Kansas",
+    "BYU",
+    "UCF",
+    "Texas Tech",
+    "Arizona State",
+    "Houston"
+   ]
+  },
+  "2026": {
+   "url": "https://en.wikipedia.org/wiki/2026_Big_12_Conference_women%27s_basketball_tournament",
+   "seeds": [
+    "TCU",
+    "West Virginia",
+    "Baylor",
+    "Oklahoma State",
+    "Texas Tech",
+    "Colorado",
+    "Iowa State",
+    "Utah",
+    "BYU",
+    "Arizona State",
+    "Kansas",
+    "Kansas State",
+    "Cincinnati",
+    "UCF",
+    "Arizona",
+    "Houston"
+   ]
+  }
+ }
+}

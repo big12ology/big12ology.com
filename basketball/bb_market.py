@@ -34,15 +34,16 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(1, os.path.join(ROOT, "tiebreaker"))
 
+import bb_sport as sport                                 # noqa: E402
 import market                                            # noqa: E402
 
-SPORT = "basketball_ncaab"
+SPORT = sport.ODDS_SPORT
 SOURCE = market.SOURCE
 REGIONS = "us"
 MARKETS = "spreads,totals"
 MIN_AGE_HOURS = 20
 AHEAD = datetime.timedelta(days=2)
-DATA = os.path.join(HERE, "data")
+DATA = sport.DATA
 ARCHIVE = os.path.join(DATA, "odds")
 
 

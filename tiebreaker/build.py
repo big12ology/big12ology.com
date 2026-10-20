@@ -758,7 +758,10 @@ SPORT_OF = {"tiebreaker": "football", "schedule": "football",
             "attendance": "football", "pools": "football", "pickem": "football",
             "survivor": "football", "basketball": "basketball",
             "basketball-schedule": "basketball",
-            "basketball-attendance": "basketball"}
+            "basketball-attendance": "basketball",
+            "wbasketball": "wbasketball",
+            "wbasketball-schedule": "wbasketball",
+            "wbasketball-attendance": "wbasketball"}
 
 
 def topbar(section, year, base="", acct=False):
@@ -792,6 +795,8 @@ def topbar(section, year, base="", acct=False):
             + a("Football", section_href("tiebreaker", year)
                 if sport == "football" else "/season/", sport == "football")
             + a("Men\u2019s Basketball", "/basketball/", sport == "basketball")
+            + a("Women\u2019s Basketball", "/womens-basketball/",
+                sport == "wbasketball")
             + '<span class=b12-right>'
             + ('<span class=b12-acct hidden></span>' if acct else '')
             + '<span class=b12-theme></span></span>'
@@ -810,13 +815,17 @@ def topbar(section, year, base="", acct=False):
                  ("Attendance", "/attendance/", section == "attendance"),
                  ("Pools", "/pools/", section in POOL_SECTIONS)]
         label = "Football"
-    elif sport == "basketball":
-        items = [("Season", "/basketball/", section == "basketball"),
-                 ("Schedule", "/basketball/schedule.html",
-                  section == "basketball-schedule"),
-                 ("Attendance", "/basketball/attendance.html",
-                  section == "basketball-attendance")]
-        label = "Men\u2019s basketball"
+    elif sport in ("basketball", "wbasketball"):
+        # The two basketball sections are one design at two addresses.
+        root = "/basketball/" if sport == "basketball" else "/womens-basketball/"
+        key = "basketball" if sport == "basketball" else "wbasketball"
+        items = [("Season", root, section == key),
+                 ("Schedule", f"{root}schedule.html",
+                  section == f"{key}-schedule"),
+                 ("Attendance", f"{root}attendance.html",
+                  section == f"{key}-attendance")]
+        label = ("Men\u2019s basketball" if sport == "basketball"
+                 else "Women\u2019s basketball")
     else:
         return row1
     return (row1 + f'<nav class=b12-sportbar aria-label="{label} sections">'
