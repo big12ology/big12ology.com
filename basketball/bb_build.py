@@ -410,7 +410,9 @@ def schedule_body(d):
   {conf}
   <p class=note>Times are the arena's, with yours beside them when they
   differ. Lines are the posted spread, favorite named; TV is the national
-  or regional window CollegeBasketballData lists.</p>
+  or regional window CollegeBasketballData lists. Lines are the average of
+  every US book the-odds-api.com carries once the books have posted a game,
+  and CollegeBasketballData's before that.</p>
 </div>"""
 
 
@@ -853,7 +855,9 @@ def game_body(d, st, sim, model, g):
                 f"favorite, by about {abs(gap):.0f} point{'s' if round(abs(gap)) != 1 else ''}"]
         ln = line_text(g, d["lines"])
         if ln:
-            bits.append(f"the posted line is {ln}")
+            books = len((d["lines"].get(g["id"]) or {}).get("books") or [])
+            bits.append(f"the posted line is {ln}" +
+                        (f", the average of {books} books" if books > 1 else ""))
         head += f"<p>{'; '.join(bits)}.</p>"
     head += "</div>"
 

@@ -10,7 +10,8 @@ pending_results:
              once every 45 minutes, and otherwise once a day, which is what
              catches a new tip time, a postponement or a schedule change
              between games, and replaces ESPN's finals with CBBD's own
-  lines      once a day
+  lines      the-odds-api.com when a game is near (bb_market.py), and
+             CBBD's own once a day underneath it
   broadcasts once a day
 
 A whole season is one call each: /games with conference=Big 12 returns every
@@ -28,6 +29,7 @@ import os
 
 import bb_espn as espn
 import bb_fetch as fetch
+import bb_market as market
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
@@ -206,6 +208,10 @@ def load(season, refresh=False, log=print):
                 f"asked within {DUE_GAP.seconds // 60} minutes; no call made")
         else:
             log(f"basketball {season}: no game due a final, no call made")
+        # The lines that are shown come from the-odds-api (bb_market.py);
+        # CBBD's daily /lines stays as the fallback for games the feed has
+        # not reached yet.
+        market.refresh(season, have or [], log=log)
         for what, endpoint in (("lines", "lines"), ("media", "games/media")):
             if _older_than(season, what, DAILY):
                 try:
@@ -237,6 +243,12 @@ def load(season, refresh=False, log=print):
                                        l.get("provider") or ""))
         if ls:
             lines[row["gameId"]] = ls[0]
+    # The feed's average over every book wins wherever it has a game.
+    for gid, rec in market.load(season).items():
+        try:
+            lines[int(gid)] = rec
+        except ValueError:
+            continue
     media = {}
     for row in kept("games/media"):
         # Television first; a streaming-only game shows its stream.

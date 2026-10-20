@@ -304,6 +304,7 @@ jobs:
         continue-on-error: true
         env:
           CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: |
           python3 basketball/bb_build.py --fetch
           git add basketball/data
