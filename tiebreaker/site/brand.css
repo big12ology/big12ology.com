@@ -284,23 +284,37 @@
 /* The sports are the first row's only links, so they carry its weight. */
 .b12-topbar a:not(.b12-brand) { font-weight: 600; }
 
-/* THE SECOND ROW: inside a sport, that sport's sections (Season, Schedule,
-   and for football Attendance and Pools), with the page pills still below.
-   One shade lighter than the bar above so the two read as one masthead,
-   and the current section underlined in the accent rather than set in a
-   pill, so it does not compete with the page pills under it. */
-.b12-sportbar {
-  display: flex; flex-wrap: wrap; gap: 4px 22px; padding: 0 20px;
-  background: #1d2026; border-top: 1px solid #2a2e36;
-  font:var(--t-meta)/1.4 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+/* A sport's sections (Season, Schedule, Attendance, Pools) are tabs on the
+   bottom edge of that sport's header, the current one underlined in the
+   accent. They used to be a thin dark row under the masthead, styled like
+   chrome, and readers took the big header and its page pills for the whole
+   section and never found Schedule or Attendance. Here they sit with the
+   title they belong to, and the page pills below read as that section's
+   pages (see .subnav). */
+.b12-head.tabbed { padding-bottom: 0; border-bottom: 1px solid rgba(128,128,128,.28); }
+.b12-tabs { max-width: var(--chrome-w); margin: 14px auto 0; display: flex;
+  gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.b12-tabs::-webkit-scrollbar { display: none; }
+.b12-tabs a { font: 700 1.05rem/1 var(--b12-font-display);
+  font-variation-settings: 'wdth' 90; letter-spacing: -.01em;
+  padding: 12px 16px 13px; color: #666d7b; text-decoration: none;
+  border-bottom: 4px solid transparent; white-space: nowrap; }
+.b12-tabs a:first-child { padding-left: 4px; }
+.b12-tabs a:hover { color: #1a1c20; border-bottom-color: rgba(128,128,128,.35); }
+.b12-tabs a.on { color: #1a1c20; border-bottom-color: var(--b12-teal); }
+.b12-tabs a:focus-visible { outline: 2px solid var(--b12-teal); outline-offset: -2px; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .b12-tabs a { color: #9aa0aa; }
+  :root:not([data-theme="light"]) .b12-tabs a:hover,
+  :root:not([data-theme="light"]) .b12-tabs a.on { color: #e8e6e1; }
+  :root:not([data-theme="light"]) .b12-tabs a.on { border-bottom-color: var(--b12-teal-lit); }
 }
-.b12-sportbar a { color: #9aa0aa; text-decoration: none; padding: 8px 0 6px;
-  border-bottom: 2px solid transparent; }
-.b12-sportbar a:hover { color: #fff; }
-.b12-sportbar a.on { color: #fff; border-bottom-color: #3FC7CE; }
-.b12-sportbar a:focus-visible { outline: 2px solid #3FC7CE; outline-offset: 2px; }
-@media (max-width: 700px) {
-  .b12-sportbar { padding: 0 14px; gap: 4px 16px; }
+:root[data-theme="dark"] .b12-tabs a { color: #9aa0aa; }
+:root[data-theme="dark"] .b12-tabs a:hover,
+:root[data-theme="dark"] .b12-tabs a.on { color: #e8e6e1; }
+:root[data-theme="dark"] .b12-tabs a.on { border-bottom-color: var(--b12-teal-lit); }
+@media (max-width: 640px) {
+  .b12-tabs a { padding: 11px 12px 12px; font-size: .98rem; }
 }
 
 /* The masthead did not fit a phone. At 375px the four section links plus the
@@ -462,15 +476,18 @@
 
 /* module tabs / page subnav — one look everywhere */
 .subnav {
-  max-width: var(--chrome-w); margin: 0 auto; padding: 12px 20px 0;
-  display: flex; gap: 8px; flex-wrap: wrap;
+  max-width: var(--chrome-w); margin: 0 auto; padding: 14px 20px 0;
+  display: flex; gap: 2px 4px; flex-wrap: wrap;
 }
+/* The pages of the section the tab above names: quieter than the tabs, so
+   the eye reads sport, then section, then page. No outline until hovered,
+   the current page a light tint rather than a solid fill. */
 .subnav a {
-  font-size: var(--t-row); text-decoration: none; color: #666d7b;
-  border: 1px solid rgba(128,128,128,.35); border-radius: 20px;
-  padding: 4px 13px; background: transparent;
+  font-size: var(--t-meta); text-decoration: none; color: #666d7b;
+  border: 1px solid transparent; border-radius: 20px;
+  padding: 5px 11px; background: transparent;
 }
-.subnav a:hover { color: inherit; border-color: var(--b12-teal); }
+.subnav a:hover { color: inherit; background: rgba(128,128,128,.12); }
 /* The other game, not another tab of this one. Set apart by a dashed edge and
    pushed to the far end of the row, so the eye reads the tabs as a group and
    this as a way out of it — the two pools games each link straight to the
@@ -478,19 +495,18 @@
 .subnav a.cross { margin-left: auto; border-style: dashed;
   color: var(--b12-teal); }
 .subnav a.cross:hover { border-style: solid; }
-.subnav a.on { background: var(--b12-teal); border-color: var(--b12-teal);
-  color: #fff; }
+.subnav a.on { background: color-mix(in srgb, var(--b12-teal) 14%, transparent);
+  color: #1a1c20; font-weight: 600; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .subnav a { color: #9aa0aa; }
-  :root:not([data-theme="light"]) .subnav a:hover { border-color: var(--b12-teal-lit); }
   :root:not([data-theme="light"]) .subnav a.on {
-    background: var(--b12-teal-lit); border-color: var(--b12-teal-lit);
-    color: #06232b; }
+    background: color-mix(in srgb, var(--b12-teal-lit) 22%, transparent);
+    color: #e8e6e1; }
 }
 :root[data-theme="dark"] .subnav a { color: #9aa0aa; }
-:root[data-theme="dark"] .subnav a:hover { border-color: var(--b12-teal-lit); }
-:root[data-theme="dark"] .subnav a.on { background: var(--b12-teal-lit);
-  border-color: var(--b12-teal-lit); color: #06232b; }
+:root[data-theme="dark"] .subnav a.on {
+  background: color-mix(in srgb, var(--b12-teal-lit) 22%, transparent);
+  color: #e8e6e1; }
 
 /* ==== accessibility ====================================================== */
 /* Bypass blocks (WCAG 2.4.1): every page repeats the topbar, the header and

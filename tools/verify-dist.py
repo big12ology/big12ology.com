@@ -205,6 +205,35 @@ def main(dist):
                 continue
             bad.append(f"{here}: rendered {m.group(0)!r} — ...{around.strip()}...")
 
+    # --- every stylesheet's braces balance
+    #
+    # A stray } does not stop a browser reading the file: it closes nothing,
+    # is dropped, and takes the next rule with it. On 2026-10-20 one left over
+    # from an edit swallowed the phone masthead's @media block on every page
+    # while this check still said "CSS parses", because it only ever read the
+    # <style> blocks inside pages. Comments and strings are set aside first,
+    # since a brace in either is text.
+    for css_path in sorted(
+            os.path.join(r, f) for r, _d, fs in os.walk(dist) for f in fs
+            if f.endswith(".css")):
+        src = open(css_path, encoding="utf-8").read()
+        src = re.sub(r"/\*.*?\*/", "", src, flags=re.S)
+        # re.S: a string may run across lines on a trailing backslash,
+        # which attendance's inline SVG does.
+        src = re.sub(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'', '""', src,
+                     flags=re.S)
+        depth, line = 0, 1
+        for ch in src:
+            if ch == "\n":
+                line += 1
+            depth += (ch == "{") - (ch == "}")
+            if depth < 0:
+                break
+        if depth != 0:
+            bad.append(f"{rel(dist, css_path)}: braces do not balance "
+                       f"({'an extra }' if depth < 0 else f'{depth} unclosed {{'}"
+                       f"{f' near line {line}' if depth < 0 else ''})")
+
     # --- every sitemap entry is a file, and vice versa for the sections
     for smap in sorted(
             os.path.join(r, f) for r, _d, fs in os.walk(dist) for f in fs

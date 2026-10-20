@@ -765,15 +765,15 @@ SPORT_OF = {"tiebreaker": "football", "schedule": "football",
 
 
 def topbar(section, year, base="", acct=False):
-    """The masthead, one copy for every page that has one.
-
-    TWO ROWS. The first is the site and its sports, Football and Men's
-    Basketball; the second, inside a sport, is that sport's sections, with
-    the page pills under it as before. It replaced one row of five sections
-    (Tiebreaker, Schedule, Basketball, Attendance, Pools) that mixed a sport
-    in among football's sections and read as if basketball were a football
-    feature. The four hand-written pages (index, privacy, 404, attendance)
-    carry the same markup as literal HTML.
+    """The masthead, one copy for every page that has one: the site and its
+    sports, Football, Men's Basketball and Women's Basketball. A sport's own
+    sections are not here; they are tabs on the bottom edge of that sport's
+    header (section_tabs, drawn by tracker_top), so the order down the page
+    reads sport, then section, then page. They used to be a second dark row
+    up here, styled like chrome, and readers took the big header and its page
+    pills for the whole section and never found Schedule or Attendance. The
+    hand-written pages (index, privacy, 404, attendance) carry the same
+    markup as literal HTML.
 
     `acct` reserves the signed-in chip. It is emitted empty and filled by
     pickem/app.js once /api/me answers; leaving the box in the markup keeps
@@ -784,7 +784,7 @@ def topbar(section, year, base="", acct=False):
     def a(label, href, on):
         return f'<a{" class=on" if on else ""} href="{href}">{label}</a>'
 
-    row1 = (f'<nav class=b12-topbar><a class=b12-brand href="/" '
+    return (f'<nav class=b12-topbar><a class=b12-brand href="/" '
             f'aria-label="Big12ology home"><picture>'
             f'<source srcset="{base}brand/big12ology-compact-dark.svg" '
             f'media="(prefers-color-scheme: dark)">'
@@ -801,6 +801,17 @@ def topbar(section, year, base="", acct=False):
             + ('<span class=b12-acct hidden></span>' if acct else '')
             + '<span class=b12-theme></span></span>'
             '</nav>')
+
+
+def section_tabs(section, year):
+    """A sport's sections, as tabs on the bottom edge of its header: the
+    current one underlined, the page pills under the header being that
+    section's pages. Empty outside a sport (the hub, privacy)."""
+    sport = SPORT_OF.get(section)
+
+    def a(label, href, on):
+        return f'<a{" class=on aria-current=page" if on else ""} href="{href}">{label}</a>'
+
     if sport == "football":
         # Attendance and the pick'em keep no per-year directories (attendance
         # has a season picker on one page, and the pick'em only ever plays
@@ -827,8 +838,8 @@ def topbar(section, year, base="", acct=False):
         label = ("Men\u2019s basketball" if sport == "basketball"
                  else "Women\u2019s basketball")
     else:
-        return row1
-    return (row1 + f'<nav class=b12-sportbar aria-label="{label} sections">'
+        return ""
+    return (f'<nav class=b12-tabs aria-label="{label} sections">'
             + "".join(a(*it) for it in items) + '</nav>')
 
 
@@ -989,13 +1000,15 @@ def tracker_top(year, active, matchcard="", section="tiebreaker", page="",
         for y in [LIVE_YEAR] + ARCHIVE_YEARS)
     blurb = (meta["live"] if year == LIVE_YEAR
              else meta["past"].format(year=year))
-    return f"""<header class=b12-head>
+    tabs = section_tabs(section, year)
+    return f"""<header class="b12-head{' tabbed' if tabs else ''}">
   <div class=hwrap>
     <div>
       <h1>{meta["title"]} <span class=yrpills>{years}</span></h1>
       <p>{blurb}</p>
     </div>
   </div>
+  {tabs}
 </header>
 {subnav(active, section, up) if subnavon else ''}
 <main id=main tabindex="-1">
@@ -4114,6 +4127,16 @@ def build_game_page(g, ctx):
             cells.append((f"O/U {ln['over_under']:g}",
                           f"opened {op:g}"
                           if op not in (None, ln["over_under"]) else "total"))
+        # The implied score: what the spread and the total say each side
+        # scores, the two numbers solved together. The total is their sum and
+        # the spread their difference (home's number, negative when home is
+        # favored), so home is half of total minus spread and away the rest.
+        # Both rounded to a tenth; their sum is the total to within rounding.
+        if spread is not None and ln.get("over_under") is not None:
+            tot = ln["over_under"]
+            cells.append((f"{(tot - spread) / 2:.1f}",
+                          f"{esc(g['home'])} implied score"))
+            cells.append((f"{(tot + spread) / 2:.1f}", esc(g["away"])))
         # A moneyline the book cannot have posted is dropped rather than
         # printed. Coastal Carolina at West Virginia arrived carrying
         # "-100000" for the +19.5 underdog — a price implying it wins 99.9%
