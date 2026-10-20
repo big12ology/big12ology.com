@@ -19,10 +19,16 @@
 // paragraph names, and pages.yml commits it minutes before Pages serves it.
 
 import { ats } from "./ats.js";
+import { DEFAULT } from "./league.js";
 
-/** The committed slate, as raw.githubusercontent.com serves the repo. */
-export function slateUrl(env, season, week) {
+/** The committed slate, as raw.githubusercontent.com serves the repo.
+ * Football's lives beside its builder; basketball's under basketball/pickem/
+ * by league (the pools spec). */
+export function slateUrl(env, season, week, league = DEFAULT) {
   const nn = String(week).padStart(2, "0");
+  if (league !== DEFAULT) {
+    return `${env.RAW_ORIGIN}/basketball/pickem/${league}/${season}/week-${nn}.json`;
+  }
   return `${env.RAW_ORIGIN}/tiebreaker/pickem/${season}/week-${nn}.json`;
 }
 
@@ -50,8 +56,8 @@ async function sha256Hex(text) {
  *
  * Returns what changed, so the cron log says something useful.
  */
-export async function importWeek(env, season, week) {
-  const r = await fetch(slateUrl(env, season, week), {
+export async function importWeek(env, season, week, league = DEFAULT) {
+  const r = await fetch(slateUrl(env, season, week, league), {
     headers: { Accept: "application/json" },
     cf: { cacheTtl: 0 },
   });
@@ -66,8 +72,9 @@ export async function importWeek(env, season, week) {
   }
 
   const existing = await env.DB.prepare(
-    `SELECT source_sha256, lock_at FROM weeks WHERE season = ? AND week = ?`)
-    .bind(season, week).first();
+    `SELECT source_sha256, lock_at FROM weeks
+      WHERE league = ? AND season = ? AND week = ?`)
+    .bind(league, season, week).first();
   if (existing && existing.source_sha256 === hash) {
     return { ok: true, unchanged: true, games: 0 };
   }
@@ -79,15 +86,15 @@ export async function importWeek(env, season, week) {
   // file that somehow pushed the lock later will abort the batch rather than
   // reopen a week that has already started.
   stmts.push(env.DB.prepare(
-    `INSERT INTO weeks (season, week, status, published_at, lock_at,
+    `INSERT INTO weeks (league, season, week, status, published_at, lock_at,
                         game_count, pickable_count, source_sha256)
-     VALUES (?, ?, 'published', ?, ?, ?, ?, ?)
-     ON CONFLICT(season, week) DO UPDATE SET
+     VALUES (?, ?, ?, 'published', ?, ?, ?, ?, ?)
+     ON CONFLICT(league, season, week) DO UPDATE SET
        lock_at        = excluded.lock_at,
        game_count     = excluded.game_count,
        pickable_count = excluded.pickable_count,
        source_sha256  = excluded.source_sha256`)
-    .bind(season, week, now, slate.lock_at ?? null,
+    .bind(league, season, week, now, slate.lock_at ?? null,
           slate.game_count ?? slate.games.length,
           slate.pickable_count ??
             slate.games.filter((g) => g.spread_x2 != null).length,
@@ -95,11 +102,11 @@ export async function importWeek(env, season, week) {
 
   for (const g of slate.games) {
     stmts.push(env.DB.prepare(
-      `INSERT INTO slate_games (season, week, game_id, home, away, kickoff_at,
-                                spread_x2, spread_raw, books, b12, neutral,
-                                frozen_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-       ON CONFLICT(season, week, game_id) DO UPDATE SET
+      `INSERT INTO slate_games (league, season, week, game_id, home, away,
+                                kickoff_at, spread_x2, spread_raw, books, b12,
+                                neutral, frozen_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(league, season, week, game_id) DO UPDATE SET
          -- The COALESCE argument order is the whole behavior here, so:
          --
          --   ours NULL, theirs 5   -> 5, and the trigger stays quiet because
@@ -147,7 +154,7 @@ export async function importWeek(env, season, week) {
          -- publisher carried it reads NULL — "not neutral" — and must be
          -- allowed to learn otherwise.
          neutral    = COALESCE(excluded.neutral, slate_games.neutral)`)
-      .bind(season, week, g.game_id, g.home, g.away, g.kickoff_at,
+      .bind(league, season, week, g.game_id, g.home, g.away, g.kickoff_at,
             g.spread_x2 ?? null, g.spread_raw ?? null, g.books ?? null,
             g.b12 ?? null, g.neutral == null ? null : (g.neutral ? 1 : 0),
             now));
@@ -175,15 +182,17 @@ export function isLocked(week, now = Math.floor(Date.now() / 1000)) {
  * The week a reader should see by default: the earliest published week that
  * has not finished, else the latest there is.
  */
-export async function currentWeek(env, season) {
+export async function currentWeek(env, season, league = DEFAULT) {
   const soon = await env.DB.prepare(
     `SELECT week FROM weeks
-      WHERE season = ? AND (lock_at IS NULL OR lock_at > ?)
-      ORDER BY week LIMIT 1`).bind(season, Math.floor(Date.now() / 1000)).first();
+      WHERE league = ? AND season = ? AND (lock_at IS NULL OR lock_at > ?)
+      ORDER BY week LIMIT 1`)
+    .bind(league, season, Math.floor(Date.now() / 1000)).first();
   if (soon) return soon.week;
   const last = await env.DB.prepare(
-    `SELECT week FROM weeks WHERE season = ? ORDER BY week DESC LIMIT 1`)
-    .bind(season).first();
+    `SELECT week FROM weeks WHERE league = ? AND season = ?
+      ORDER BY week DESC LIMIT 1`)
+    .bind(league, season).first();
   return last ? last.week : null;
 }
 
@@ -196,9 +205,10 @@ export async function currentWeek(env, season) {
  * slate locks at once is that nobody picks on more information than anybody
  * else. Withholding it in the client would not be withholding it.
  */
-export async function readSlate(env, season, week) {
+export async function readSlate(env, season, week, league = DEFAULT) {
   const w = await env.DB.prepare(
-    `SELECT * FROM weeks WHERE season = ? AND week = ?`).bind(season, week).first();
+    `SELECT * FROM weeks WHERE league = ? AND season = ? AND week = ?`)
+    .bind(league, season, week).first();
   if (!w) return null;
 
   const { results: games } = await env.DB.prepare(
@@ -207,9 +217,10 @@ export async function readSlate(env, season, week) {
             r.home_points, r.away_points, r.status AS rstatus, r.ats
        FROM slate_games g
        LEFT JOIN results r
-         ON r.season = g.season AND r.week = g.week AND r.game_id = g.game_id
-      WHERE g.season = ? AND g.week = ?
-      ORDER BY g.kickoff_at, g.game_id`).bind(season, week).all();
+         ON r.league = g.league AND r.season = g.season AND r.week = g.week
+        AND r.game_id = g.game_id
+      WHERE g.league = ? AND g.season = ? AND g.week = ?
+      ORDER BY g.kickoff_at, g.game_id`).bind(league, season, week).all();
 
   const locked = isLocked(w);
   let consensus = {};
@@ -218,8 +229,8 @@ export async function readSlate(env, season, week) {
       `SELECT game_id,
               SUM(side = 'home') AS home,
               SUM(side = 'away') AS away
-         FROM picks WHERE season = ? AND week = ?
-        GROUP BY game_id`).bind(season, week).all();
+         FROM picks WHERE league = ? AND season = ? AND week = ?
+        GROUP BY game_id`).bind(league, season, week).all();
     for (const c of results || []) {
       consensus[c.game_id] = { home: c.home || 0, away: c.away || 0 };
     }

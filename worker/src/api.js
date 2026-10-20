@@ -15,6 +15,7 @@ import { currentWeek, isLocked, readSlate } from "./slate.js";
 import { chalk, history, room } from "./scoring.js";
 import * as handicap from "./handicap.js";
 import { rankedEntryBy } from "./scoring.js";
+import * as L from "./league.js";
 
 export const json = (data, status = 200, headers = {}) =>
   new Response(JSON.stringify(data), {
@@ -42,7 +43,7 @@ function season(env) {
 }
 
 /** A week from the query string, or the current one. */
-async function weekParam(env, url, s) {
+async function weekParam(env, url, s, lg = L.DEFAULT) {
   const raw = url.searchParams.get("week");
   if (raw != null && raw !== "") {
     const n = Number(raw);
@@ -50,7 +51,7 @@ async function weekParam(env, url, s) {
     if (!Number.isInteger(n) || n < 0 || n > 25) return null;
     return n;
   }
-  return currentWeek(env, s);
+  return currentWeek(env, s, lg);
 }
 
 // ------------------------------------------------------------------- me
@@ -194,10 +195,12 @@ export async function deleteMe(env, user) {
 // ---------------------------------------------------------------- slate
 
 export async function getSlate(env, url) {
+  const lg = L.fromUrl(url);
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
-  const week = await weekParam(env, url, s);
+  const week = await weekParam(env, url, s, lg);
   if (week == null) return fail("no_slate", 404);
-  const slate = await readSlate(env, s, week);
+  const slate = await readSlate(env, s, week, lg);
   if (!slate) return fail("no_slate", 404);
   return json(slate);
 }
@@ -206,17 +209,19 @@ export async function getSlate(env, url) {
 
 export async function getPicks(env, user, url) {
   if (!user) return fail("unauthenticated", 401);
+  const lg = L.fromUrl(url);
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
-  const week = await weekParam(env, url, s);
+  const week = await weekParam(env, url, s, lg);
   if (week == null) return fail("no_slate", 404);
 
   const w = await env.DB.prepare(
-    `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
-    .bind(s, week).first();
+    `SELECT lock_at FROM weeks WHERE league = ? AND season = ? AND week = ?`)
+    .bind(lg, s, week).first();
   const { results } = await env.DB.prepare(
     `SELECT game_id, side FROM picks
-      WHERE user_id = ? AND season = ? AND week = ?`)
-    .bind(user.userId, s, week).all();
+      WHERE league = ? AND user_id = ? AND season = ? AND week = ?`)
+    .bind(lg, user.userId, s, week).all();
 
   const picks = {};
   for (const r of results || []) picks[r.game_id] = r.side;
@@ -246,6 +251,8 @@ export async function putPicks(env, user, body) {
     `SELECT display_name FROM users WHERE id = ?`).bind(user.userId).first();
   if (!who || !who.display_name) return fail("no_display_name", 403);
 
+  const lg = L.parse(body.league);
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
   const week = Number(body.week);
   if (!Number.isInteger(week)) return fail("bad_week", 400);
@@ -262,21 +269,22 @@ export async function putPicks(env, user, body) {
   if (!rl.ok) return fail("rate_limited", 429, { retry_after: rl.retryAfter });
 
   const w = await env.DB.prepare(
-    `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
-    .bind(s, week).first();
+    `SELECT lock_at FROM weeks WHERE league = ? AND season = ? AND week = ?`)
+    .bind(lg, s, week).first();
   if (!w) return fail("no_slate", 404);
-  if (isLocked(w)) return lockedNow(env, user, s, week);
+  if (isLocked(w)) return lockedNow(env, user, s, week, lg);
 
   const { results: games } = await env.DB.prepare(
     `SELECT game_id, spread_x2 FROM slate_games
-      WHERE season = ? AND week = ? AND spread_x2 IS NOT NULL`)
-    .bind(s, week).all();
+      WHERE league = ? AND season = ? AND week = ? AND spread_x2 IS NOT NULL`)
+    .bind(lg, s, week).all();
   const line = new Map((games || []).map((g) => [String(g.game_id), g.spread_x2]));
 
   const now = Math.floor(Date.now() / 1000);
   const stmts = [env.DB.prepare(
-    `DELETE FROM picks WHERE user_id = ? AND season = ? AND week = ?`)
-    .bind(user.userId, s, week)];
+    `DELETE FROM picks
+      WHERE league = ? AND user_id = ? AND season = ? AND week = ?`)
+    .bind(lg, user.userId, s, week)];
 
   for (const [gid, side] of Object.entries(picks)) {
     if (side !== "home" && side !== "away") return fail("bad_side", 400);
@@ -284,10 +292,11 @@ export async function putPicks(env, user, body) {
     // whole slate — but it is never stored.
     if (!line.has(gid)) continue;
     stmts.push(env.DB.prepare(
-      `INSERT INTO picks (user_id, season, week, game_id, side, spread_x2,
-                          created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
-      .bind(user.userId, s, week, Number(gid), side, line.get(gid), now, now));
+      `INSERT INTO picks (league, user_id, season, week, game_id, side,
+                          spread_x2, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      .bind(lg, user.userId, s, week, Number(gid), side, line.get(gid), now,
+            now));
   }
 
   try {
@@ -297,7 +306,7 @@ export async function putPicks(env, user, body) {
     // The triggers speak in these words. Mapping them back to 409 rather than
     // letting them surface as a 500 is what makes the client's "the week
     // locked while you were picking" path work.
-    if (/week_locked/.test(msg)) return lockedNow(env, user, s, week);
+    if (/week_locked/.test(msg)) return lockedNow(env, user, s, week, lg);
     if (/unpickable_or_stale_line/.test(msg)) return fail("stale_line", 409);
     throw e;
   }
@@ -308,11 +317,11 @@ export async function putPicks(env, user, body) {
  * The 409 the client is written to handle: it repaints every radio from
  * `picks` here, because its own optimistic state is now a lie.
  */
-async function lockedNow(env, user, s, week) {
+async function lockedNow(env, user, s, week, lg = L.DEFAULT) {
   const { results } = await env.DB.prepare(
     `SELECT game_id, side FROM picks
-      WHERE user_id = ? AND season = ? AND week = ?`)
-    .bind(user.userId, s, week).all();
+      WHERE league = ? AND user_id = ? AND season = ? AND week = ?`)
+    .bind(lg, user.userId, s, week).all();
   const picks = {};
   for (const r of results || []) picks[r.game_id] = r.side;
   return fail("locked", 409, { picks });
@@ -330,18 +339,20 @@ async function lockedNow(env, user, s, week) {
  */
 export async function getSurvivor(env, user, url) {
   if (!user) return fail("unauthenticated", 401);
+  const lg = L.fromUrl(url);
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
-  const week = await weekParam(env, url, s);
+  const week = await weekParam(env, url, s, lg);
   if (week == null) return fail("no_slate", 404);
 
   const w = await env.DB.prepare(
-    `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
-    .bind(s, week).first();
+    `SELECT lock_at FROM weeks WHERE league = ? AND season = ? AND week = ?`)
+    .bind(lg, s, week).first();
 
   const pick = await env.DB.prepare(
     `SELECT game_id, team FROM survivor_picks
-      WHERE user_id = ? AND season = ? AND week = ?`)
-    .bind(user.userId, s, week).first();
+      WHERE league = ? AND user_id = ? AND season = ? AND week = ?`)
+    .bind(lg, user.userId, s, week).first();
 
   // Every pick of the season with its outcome, the ungraded ones NULL. This
   // is what disables spent teams on the picker, so it must come from the
@@ -351,24 +362,25 @@ export async function getSurvivor(env, user, url) {
     `SELECT p.week, p.game_id, p.team, s.outcome
        FROM survivor_picks p
        LEFT JOIN survivor_scores s
-         ON s.user_id = p.user_id AND s.season = p.season AND s.week = p.week
-      WHERE p.user_id = ? AND p.season = ?
-      ORDER BY p.week`).bind(user.userId, s).all();
+         ON s.league = p.league AND s.user_id = p.user_id
+        AND s.season = p.season AND s.week = p.week
+      WHERE p.league = ? AND p.user_id = ? AND p.season = ?
+      ORDER BY p.week`).bind(lg, user.userId, s).all();
 
   const standing = await env.DB.prepare(
     `SELECT wins, alive, entered_week, out_week, out_reason, rank
-       FROM survivor_board WHERE season = ? AND user_id = ?`)
-    .bind(s, user.userId).first();
+       FROM survivor_board WHERE league = ? AND season = ? AND user_id = ?`)
+    .bind(lg, s, user.userId).first();
 
   // The chalk a late joiner starts without, and whether joining is still a
   // game at all. Live like `used`, and for the same reason: it decides what
   // the picker grays out, so it cannot come from a materialised row.
-  const roster = await handicap.rosterFor(env, s, user.userId, week);
+  const roster = await handicap.rosterFor(env, s, user.userId, week, lg);
 
   // Whether this week is a contest at all — the same answer for everybody, and
   // the client needs it to explain an empty picker rather than render one that
   // refuses. See MIN_SURVIVOR_TEAMS.
-  const choices = await handicap.pickableCount(env, s, week);
+  const choices = await handicap.pickableCount(env, s, week, lg);
 
   return json({
     season: s, week,
@@ -376,7 +388,7 @@ export async function getSurvivor(env, user, url) {
     // kickoff and shuts the pick'em; survivor stays open game by game until
     // the last one starts, so reporting the card's deadline here would grey
     // out games a player can still legally pick.
-    locked: await survivorWeekClosed(env, s, week),
+    locked: await survivorWeekClosed(env, s, week, lg),
     lock_at: w ? w.lock_at : null,
     pickable_teams: choices,
     no_contest: choices < handicap.MIN_SURVIVOR_TEAMS,
@@ -411,6 +423,8 @@ export async function putSurvivorPick(env, user, body) {
     `SELECT display_name FROM users WHERE id = ?`).bind(user.userId).first();
   if (!who || !who.display_name) return fail("no_display_name", 403);
 
+  const lg = L.parse(body.league);
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
   const week = Number(body.week);
   if (!Number.isInteger(week)) return fail("bad_week", 400);
@@ -422,16 +436,16 @@ export async function putSurvivorPick(env, user, body) {
   if (!rl.ok) return fail("rate_limited", 429, { retry_after: rl.retryAfter });
 
   const w = await env.DB.prepare(
-    `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
-    .bind(s, week).first();
+    `SELECT lock_at FROM weeks WHERE league = ? AND season = ? AND week = ?`)
+    .bind(lg, s, week).first();
   if (!w) return fail("no_slate", 404);
   // NOT isLocked(w). That is the pick'em's deadline — the first kickoff of the
   // week — and survivor no longer shares it: a game that has not started is
   // still pickable however long ago the week's opener kicked. What closes the
   // week here is its LAST kickoff, and past that there is nothing left to
   // choose between.
-  if (await survivorWeekClosed(env, s, week)) {
-    return survivorLockedNow(env, user, s, week);
+  if (await survivorWeekClosed(env, s, week, lg)) {
+    return survivorLockedNow(env, user, s, week, lg);
   }
 
   // A week with one legal team is not a survivor week, and taking a pick on it
@@ -444,7 +458,7 @@ export async function putSurvivorPick(env, user, body) {
   // MIN(week) over a player's own picks and the scoring walk only visits weeks
   // at or after it, so a week nobody can pick in is a week nobody is judged
   // on — no miss, no elimination, no special case in the recompute.
-  const choices = await handicap.pickableCount(env, s, week);
+  const choices = await handicap.pickableCount(env, s, week, lg);
   if (choices < handicap.MIN_SURVIVOR_TEAMS) {
     return fail("no_contest", 409,
                 { pickable_teams: choices,
@@ -453,7 +467,8 @@ export async function putSurvivorPick(env, user, body) {
 
   const standing = await env.DB.prepare(
     `SELECT alive, out_week, out_reason FROM survivor_board
-      WHERE season = ? AND user_id = ?`).bind(s, user.userId).first();
+      WHERE league = ? AND season = ? AND user_id = ?`)
+    .bind(lg, s, user.userId).first();
   if (standing && !standing.alive) {
     return fail("eliminated", 409,
                 { out_week: standing.out_week, out_reason: standing.out_reason });
@@ -465,12 +480,12 @@ export async function putSurvivorPick(env, user, body) {
     try {
       await env.DB.prepare(
         `DELETE FROM survivor_picks
-          WHERE user_id = ? AND season = ? AND week = ?`)
-        .bind(user.userId, s, week).run();
+          WHERE league = ? AND user_id = ? AND season = ? AND week = ?`)
+        .bind(lg, user.userId, s, week).run();
     } catch (e) {
       const m = String(e.message || e);
       if (/game_started|week_locked/.test(m)) {
-        return survivorLockedNow(env, user, s, week);
+        return survivorLockedNow(env, user, s, week, lg);
       }
       throw e;
     }
@@ -486,8 +501,8 @@ export async function putSurvivorPick(env, user, body) {
   // belongs to this week rather than to some other slate.
   const g = await env.DB.prepare(
     `SELECT home, away, spread_x2, b12, kickoff_at FROM slate_games
-      WHERE season = ? AND week = ? AND game_id = ?`)
-    .bind(s, week, gameId).first();
+      WHERE league = ? AND season = ? AND week = ? AND game_id = ?`)
+    .bind(lg, s, week, gameId).first();
   if (!g) return fail("no_such_game", 400);
   // NO LINE REQUIRED HERE, unlike the pick'em above. A survivor pick is a team
   // to win outright, so the number is not part of it; the rules page has said
@@ -511,7 +526,7 @@ export async function putSurvivorPick(env, user, body) {
   // the whole prior slate rather than on the row being written, and because
   // the refusal has to name the teams — "you joined at week six, so the chalk
   // of weeks one to five is already spent" is the entire point of it.
-  const roster = await handicap.rosterFor(env, s, user.userId, week);
+  const roster = await handicap.rosterFor(env, s, user.userId, week, lg);
   if (roster.joining && roster.closed) {
     return fail("join_closed", 409,
                 { usable: roster.usable, min_usable: handicap.MIN_USABLE });
@@ -526,20 +541,20 @@ export async function putSurvivorPick(env, user, body) {
   try {
     await env.DB.prepare(
       `INSERT INTO survivor_picks
-         (user_id, season, week, game_id, team, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?)
-       ON CONFLICT(user_id, season, week) DO UPDATE SET
+         (league, user_id, season, week, game_id, team, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(league, user_id, season, week) DO UPDATE SET
          game_id = excluded.game_id,
          team = excluded.team,
          updated_at = excluded.updated_at`)
-      .bind(user.userId, s, week, gameId, team, now, now).run();
+      .bind(lg, user.userId, s, week, gameId, team, now, now).run();
   } catch (e) {
     const msg = String(e.message || e);
     // 0010 renamed these from week_locked to game_started. Both are matched:
     // the string is what a database emits, not what this code chose, and a
     // deploy that lands before its migration would otherwise 500.
     if (/game_started/.test(msg)) return fail("game_started", 409, { game_id: gameId });
-    if (/week_locked/.test(msg)) return survivorLockedNow(env, user, s, week);
+    if (/week_locked/.test(msg)) return survivorLockedNow(env, user, s, week, lg);
     if (/survivor_team_reused/.test(msg)) return fail("team_used", 409);
     if (/survivor_not_in_game/.test(msg)) return fail("not_in_game", 400);
     throw e;
@@ -548,11 +563,11 @@ export async function putSurvivorPick(env, user, body) {
 }
 
 /** The survivor 409: what the database recorded at the lock, for repainting. */
-async function survivorLockedNow(env, user, s, week) {
+async function survivorLockedNow(env, user, s, week, lg = L.DEFAULT) {
   const pick = await env.DB.prepare(
     `SELECT game_id, team FROM survivor_picks
-      WHERE user_id = ? AND season = ? AND week = ?`)
-    .bind(user.userId, s, week).first();
+      WHERE league = ? AND user_id = ? AND season = ? AND week = ?`)
+    .bind(lg, user.userId, s, week).first();
   return fail("locked", 409, { pick: pick || null });
 }
 
@@ -564,11 +579,11 @@ async function survivorLockedNow(env, user, s, week) {
  * than per week. isLocked() answers a different question: whether the FIRST
  * game has started, which is when the pick'em card closes.
  */
-async function survivorWeekClosed(env, season_, week) {
+async function survivorWeekClosed(env, season_, week, lg = L.DEFAULT) {
   const row = await env.DB.prepare(
     `SELECT MAX(kickoff_at) AS last FROM slate_games
-      WHERE season = ? AND week = ?`)
-    .bind(season_, week).first();
+      WHERE league = ? AND season = ? AND week = ?`)
+    .bind(lg, season_, week).first();
   return !!(row && row.last != null &&
             row.last <= Math.floor(Date.now() / 1000));
 }
@@ -588,29 +603,32 @@ async function survivorWeekClosed(env, season_, week) {
  * would hand them the one thing worth knowing — which teams are already spent
  * — while they could still act on it.
  */
-export async function getSurvivorBoard(env) {
+export async function getSurvivorBoard(env, url = null) {
+  const lg = url ? L.fromUrl(url) : L.DEFAULT;
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
-  const week = await currentWeek(env, s);
+  const week = await currentWeek(env, s, lg);
 
   const { results } = await env.DB.prepare(
     `SELECT b.rank, b.ranked, b.user_id, u.display_name, u.team,
             b.wins, b.alive, b.entered_week, b.out_week, b.out_reason
        FROM survivor_board b JOIN users u ON u.id = b.user_id
-      WHERE b.season = ? AND u.status = 'active'
+      WHERE b.league = ? AND b.season = ? AND u.status = 'active'
       ORDER BY b.ranked DESC, b.rank, u.display_name LIMIT 500`)
-    .bind(s).all();
+    .bind(lg, s).all();
 
   const rows = results || [];
   let picks = new Map();
   if (week != null) {
-    if (await survivorWeekClosed(env, s, week)) {
+    if (await survivorWeekClosed(env, s, week, lg)) {
       const { results: wk } = await env.DB.prepare(
         `SELECT p.user_id, p.team, s2.outcome
            FROM survivor_picks p
            LEFT JOIN survivor_scores s2
-             ON s2.user_id = p.user_id AND s2.season = p.season
-            AND s2.week = p.week
-          WHERE p.season = ? AND p.week = ?`).bind(s, week).all();
+             ON s2.league = p.league AND s2.user_id = p.user_id
+            AND s2.season = p.season AND s2.week = p.week
+          WHERE p.league = ? AND p.season = ? AND p.week = ?`)
+        .bind(lg, s, week).all();
       picks = new Map((wk || []).map((r) => [r.user_id, r]));
     }
   }
@@ -621,9 +639,11 @@ export async function getSurvivorBoard(env) {
   const { results: outs } = await env.DB.prepare(
     `SELECT p.user_id, p.team, p.week
        FROM survivor_picks p
-       JOIN survivor_board b ON b.season = p.season AND b.user_id = p.user_id
-      WHERE p.season = ? AND b.alive = 0 AND b.out_week = p.week
-        AND b.out_reason = 'loss'`).bind(s).all();
+       JOIN survivor_board b ON b.league = p.league AND b.season = p.season
+                            AND b.user_id = p.user_id
+      WHERE p.league = ? AND p.season = ? AND b.alive = 0
+        AND b.out_week = p.week AND b.out_reason = 'loss'`)
+    .bind(lg, s).all();
   const outTeam = new Map((outs || []).map((r) => [r.user_id, r.team]));
 
   const tally = new Map();
@@ -650,14 +670,15 @@ export async function getSurvivorBoard(env) {
   const { results: history } = await env.DB.prepare(
     `WITH closed AS (
        SELECT w.week FROM weeks w
-        WHERE w.season = ?
+        WHERE w.league = ? AND w.season = ?
           AND (SELECT MAX(g.kickoff_at) FROM slate_games g
-                WHERE g.season = w.season AND g.week = w.week) <= ?)
+                WHERE g.league = w.league AND g.season = w.season
+                  AND g.week = w.week) <= ?)
      SELECT p.user_id, p.week, p.team
        FROM survivor_picks p JOIN closed c ON c.week = p.week
-      WHERE p.season = ?
+      WHERE p.league = ? AND p.season = ?
       ORDER BY p.user_id, p.week`)
-    .bind(s, Math.floor(Date.now() / 1000), s).all();
+    .bind(lg, s, Math.floor(Date.now() / 1000), lg, s).all();
   const used = new Map();
   for (const h of history || []) {
     if (!used.has(h.user_id)) used.set(h.user_id, []);
@@ -691,14 +712,17 @@ export async function getSurvivorBoard(env) {
 // ---------------------------------------------------------- leaderboard
 
 export async function getBoard(env, url) {
+  const lg = L.fromUrl(url);
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
   const raw = url.searchParams.get("week");
   const week = raw ? Number(raw) : null;
   if (raw && !Number.isInteger(week)) return fail("bad_week", 400);
 
   const table = week == null ? "leaderboard_season" : "leaderboard_week";
-  const where = week == null ? `season = ?` : `season = ? AND week = ?`;
-  const bind = week == null ? [s] : [s, week];
+  const where = week == null ? `b.league = ? AND b.season = ?`
+                             : `b.league = ? AND b.season = ? AND b.week = ?`;
+  const bind = week == null ? [lg, s] : [lg, s, week];
 
   const { results } = await env.DB.prepare(
     `SELECT b.rank, b.user_id, u.display_name, u.team,
@@ -714,9 +738,9 @@ export async function getBoard(env, url) {
   // client reading `week` there has nothing to enumerate.
   const wk = await env.DB.prepare(
     `SELECT GROUP_CONCAT(week) AS list FROM
-       (SELECT DISTINCT week FROM leaderboard_week WHERE season = ?
-         ORDER BY week)`)
-    .bind(s).first();
+       (SELECT DISTINCT week FROM leaderboard_week
+         WHERE league = ? AND season = ? ORDER BY week)`)
+    .bind(lg, s).first();
 
   return json({
     // The weeks that HAVE a board, rather than a count of them. A count only
@@ -725,8 +749,8 @@ export async function getBoard(env, url) {
     season: s, week,
     weeks: wk && wk.list ? wk.list.split(",").map(Number) : [],
     computed_at: Math.floor(Date.now() / 1000),
-    chalk: await chalk(env, s, week),
-    room: await room(env, s, week),
+    chalk: await chalk(env, s, week, lg),
+    room: await room(env, s, week, lg),
     rows: results || [],
   }, 200, {
     // The one cacheable endpoint on the API: identical for every reader, and
@@ -746,6 +770,8 @@ export async function getBoard(env, url) {
  * something. The SQL filters on the week's lock, not on the caller.
  */
 export async function getConsensus(env, url) {
+  const lg = L.fromUrl(url);
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
   const ids = (url.searchParams.get("games") || "")
     .split(",").map((x) => Number(x.trim()))
@@ -759,10 +785,12 @@ export async function getConsensus(env, url) {
             SUM(p.side = 'home') AS home,
             SUM(p.side = 'away') AS away
        FROM picks p
-       JOIN weeks w ON w.season = p.season AND w.week = p.week
-      WHERE p.season = ? AND w.lock_at IS NOT NULL AND w.lock_at <= ?
+       JOIN weeks w ON w.league = p.league AND w.season = p.season
+                   AND w.week = p.week
+      WHERE p.league = ? AND p.season = ?
+        AND w.lock_at IS NOT NULL AND w.lock_at <= ?
         AND p.game_id IN (${holes})
-      GROUP BY p.game_id`).bind(s, now, ...ids).all();
+      GROUP BY p.game_id`).bind(lg, s, now, ...ids).all();
 
   const games = {};
   for (const r of results || []) {
@@ -776,14 +804,16 @@ export async function getConsensus(env, url) {
 // ------------------------------------------------------------ public odds
 
 export async function getUserPicks(env, url, userId) {
+  const lg = L.fromUrl(url);
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
   const raw = url.searchParams.get("week");
-  const week = raw ? Number(raw) : await currentWeek(env, s);
+  const week = raw ? Number(raw) : await currentWeek(env, s, lg);
   if (!Number.isInteger(week)) return fail("bad_week", 400);
 
   const w = await env.DB.prepare(
-    `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
-    .bind(s, week).first();
+    `SELECT lock_at FROM weeks WHERE league = ? AND season = ? AND week = ?`)
+    .bind(lg, s, week).first();
   // Before the lock, one player's card is exactly the information the lock
   // exists to withhold.
   if (!isLocked(w)) return fail("not_yet_public", 403);
@@ -795,10 +825,11 @@ export async function getUserPicks(env, url, userId) {
   const { results } = await env.DB.prepare(
     `SELECT p.game_id, p.side, p.spread_x2, s.outcome
        FROM picks p
-       LEFT JOIN pick_scores s ON s.user_id = p.user_id AND s.season = p.season
-                              AND s.week = p.week AND s.game_id = p.game_id
-      WHERE p.user_id = ? AND p.season = ? AND p.week = ?`)
-    .bind(userId, s, week).all();
+       LEFT JOIN pick_scores s ON s.league = p.league AND s.user_id = p.user_id
+                              AND s.season = p.season AND s.week = p.week
+                              AND s.game_id = p.game_id
+      WHERE p.league = ? AND p.user_id = ? AND p.season = ? AND p.week = ?`)
+    .bind(lg, userId, s, week).all();
 
   return json({ user_id: userId, display_name: u.display_name,
                 season: s, week, picks: results || [] });
@@ -838,6 +869,8 @@ export async function getUserPicks(env, url, userId) {
  * first on a week that has locked but not yet been scored.
  */
 export async function getGrid(env, url) {
+  const lg = L.fromUrl(url);
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
   const now = Math.floor(Date.now() / 1000);
 
@@ -848,8 +881,8 @@ export async function getGrid(env, url) {
   // readable here the moment it locks, hours before anything is graded.
   const { results: shut } = await env.DB.prepare(
     `SELECT week FROM weeks
-      WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
-      ORDER BY week`).bind(s, now).all();
+      WHERE league = ? AND season = ? AND lock_at IS NOT NULL AND lock_at <= ?
+      ORDER BY week`).bind(lg, s, now).all();
   const weeks = (shut || []).map((r) => r.week);
 
   const raw = url.searchParams.get("week");
@@ -862,8 +895,8 @@ export async function getGrid(env, url) {
   if (week == null) return fail("not_yet_public", 403, { weeks });
 
   const w = await env.DB.prepare(
-    `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
-    .bind(s, week).first();
+    `SELECT lock_at FROM weeks WHERE league = ? AND season = ? AND week = ?`)
+    .bind(lg, s, week).first();
   if (!w) return fail("no_slate", 404);
   if (!isLocked(w)) return fail("not_yet_public", 403, { weeks });
 
@@ -877,14 +910,15 @@ export async function getGrid(env, url) {
             b.rank, b.w, b.l, b.p, b.pct
        FROM users u
        LEFT JOIN leaderboard_week b
-         ON b.user_id = u.id AND b.season = ? AND b.week = ?
+         ON b.league = ? AND b.user_id = u.id AND b.season = ? AND b.week = ?
       WHERE u.status = 'active'
         AND EXISTS (SELECT 1 FROM picks p
-                     WHERE p.user_id = u.id AND p.season = ? AND p.week = ?)
+                     WHERE p.league = ? AND p.user_id = u.id
+                       AND p.season = ? AND p.week = ?)
       -- Unscored weeks sort last as a block rather than interleaving with
       -- the ranked ones, which is what ordering on b.rank alone does to NULLs.
       ORDER BY b.rank IS NULL, b.rank, u.display_name
-      LIMIT 500`).bind(s, week, s, week).all();
+      LIMIT 500`).bind(lg, s, week, lg, s, week).all();
 
   const by = new Map();
   for (const p of players || []) {
@@ -899,8 +933,8 @@ export async function getGrid(env, url) {
   const { results: picks } = await env.DB.prepare(
     `SELECT p.user_id, p.game_id, p.side
        FROM picks p JOIN users u ON u.id = p.user_id
-      WHERE p.season = ? AND p.week = ? AND u.status = 'active'`)
-    .bind(s, week).all();
+      WHERE p.league = ? AND p.season = ? AND p.week = ? AND u.status = 'active'`)
+    .bind(lg, s, week).all();
   for (const r of picks || []) {
     const p = by.get(r.user_id);
     if (p) p.picks[r.game_id] = r.side;
@@ -947,6 +981,8 @@ export async function getGrid(env, url) {
  * The Card, which is theirs. That is what lets this be cached at the edge.
  */
 export async function getUser(env, url, userId) {
+  const lg = L.fromUrl(url);
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
   const now = Math.floor(Date.now() / 1000);
 
@@ -958,13 +994,14 @@ export async function getUser(env, url, userId) {
   // The pick'em's weeks: locked, so the card is finished being played.
   const { results: shut } = await env.DB.prepare(
     `SELECT week FROM weeks
-      WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
-      ORDER BY week`).bind(s, now).all();
+      WHERE league = ? AND season = ? AND lock_at IS NOT NULL AND lock_at <= ?
+      ORDER BY week`).bind(lg, s, now).all();
   const weeks = (shut || []).map((r) => r.week);
 
   const season_ = await env.DB.prepare(
     `SELECT w, l, p, v, pct, rank, weeks_played FROM leaderboard_season
-      WHERE season = ? AND user_id = ?`).bind(s, userId).first();
+      WHERE league = ? AND season = ? AND user_id = ?`)
+    .bind(lg, s, userId).first();
 
   // Every pick they have made in a week that has locked, with the grade beside
   // it. pick_scores rather than a re-derivation: this endpoint has no slate in
@@ -974,18 +1011,21 @@ export async function getUser(env, url, userId) {
   const { results: picks } = weeks.length ? await env.DB.prepare(
     `SELECT p.week, p.game_id, p.side, p.spread_x2, sc.outcome
        FROM picks p
-       JOIN weeks w ON w.season = p.season AND w.week = p.week
+       JOIN weeks w ON w.league = p.league AND w.season = p.season
+                   AND w.week = p.week
        LEFT JOIN pick_scores sc
-         ON sc.user_id = p.user_id AND sc.season = p.season
-        AND sc.week = p.week AND sc.game_id = p.game_id
-      WHERE p.user_id = ? AND p.season = ?
+         ON sc.league = p.league AND sc.user_id = p.user_id
+        AND sc.season = p.season AND sc.week = p.week
+        AND sc.game_id = p.game_id
+      WHERE p.league = ? AND p.user_id = ? AND p.season = ?
         AND w.lock_at IS NOT NULL AND w.lock_at <= ?
-      ORDER BY p.week, p.game_id`).bind(userId, s, now).all() : { results: [] };
+      ORDER BY p.week, p.game_id`).bind(lg, userId, s, now).all()
+    : { results: [] };
 
   const { results: wkrec } = await env.DB.prepare(
     `SELECT week, w, l, p, pct, rank FROM leaderboard_week
-      WHERE season = ? AND user_id = ? ORDER BY week`)
-    .bind(s, userId).all();
+      WHERE league = ? AND season = ? AND user_id = ? ORDER BY week`)
+    .bind(lg, s, userId).all();
   const rec = new Map((wkrec || []).map((r) => [r.week, r]));
 
   const byWeek = new Map();
@@ -1016,8 +1056,8 @@ export async function getUser(env, url, userId) {
 
   const sv = await env.DB.prepare(
     `SELECT wins, alive, entered_week, out_week, out_reason, rank
-       FROM survivor_board WHERE season = ? AND user_id = ?`)
-    .bind(s, userId).first();
+       FROM survivor_board WHERE league = ? AND season = ? AND user_id = ?`)
+    .bind(lg, s, userId).first();
 
   // CLOSED weeks, by the last kickoff. Not the `weeks` list above: that one is
   // the pick'em's, and it turns true at the FIRST kickoff of a week whose
@@ -1025,16 +1065,18 @@ export async function getUser(env, url, userId) {
   const { results: run } = await env.DB.prepare(
     `WITH closed AS (
        SELECT w.week FROM weeks w
-        WHERE w.season = ?
+        WHERE w.league = ? AND w.season = ?
           AND (SELECT MAX(g.kickoff_at) FROM slate_games g
-                WHERE g.season = w.season AND g.week = w.week) <= ?)
+                WHERE g.league = w.league AND g.season = w.season
+                  AND g.week = w.week) <= ?)
      SELECT p.week, p.team, sc.outcome
        FROM survivor_picks p
        JOIN closed c ON c.week = p.week
        LEFT JOIN survivor_scores sc
-         ON sc.user_id = p.user_id AND sc.season = p.season AND sc.week = p.week
-      WHERE p.user_id = ? AND p.season = ?
-      ORDER BY p.week`).bind(s, now, userId, s).all();
+         ON sc.league = p.league AND sc.user_id = p.user_id
+        AND sc.season = p.season AND sc.week = p.week
+      WHERE p.league = ? AND p.user_id = ? AND p.season = ?
+      ORDER BY p.week`).bind(lg, s, now, lg, userId, s).all();
 
   return json({
     user_id: u.id,
@@ -1076,9 +1118,11 @@ export async function getUser(env, url, userId) {
  * the moment a week is scored, and there is no reason to make somebody sign
  * in to see how the season has gone.
  */
-export async function getHistory(env, user) {
+export async function getHistory(env, user, url = null) {
+  const lg = url ? L.fromUrl(url) : L.DEFAULT;
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
-  const h = await history(env, s);
+  const h = await history(env, s, lg);
   if (!h) return json({ season: s, weeks: [], field: [], you: null,
                         leader: null, room: [] });
   const line = h._line;
@@ -1086,9 +1130,11 @@ export async function getHistory(env, user) {
   return json({ ...h, you: user ? line(user.userId) : null });
 }
 
-export async function getSeasonCurrent(env) {
+export async function getSeasonCurrent(env, url = null) {
+  const lg = url ? L.fromUrl(url) : L.DEFAULT;
+  if (!lg) return fail("bad_league", 400);
   const s = season(env);
-  return json({ season: s, week: await currentWeek(env, s) });
+  return json({ season: s, week: await currentWeek(env, s, lg) });
 }
 
 /** Enough to tell a deploy from an outage, and nothing a probe can mine. */
@@ -1120,14 +1166,20 @@ export async function getHealth(env) {
     const now = Math.floor(Date.now() / 1000);
     stats = await env.DB.prepare(
       `SELECT
-         (SELECT COUNT(*) FROM weeks WHERE season = ?) AS weeks,
+         -- Football's, by name: these say whether the football grading
+         -- loop is alive, and a basketball week must not stand in for it.
          (SELECT COUNT(*) FROM weeks
-           WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
+           WHERE league = 'cfb' AND season = ?) AS weeks,
+         (SELECT COUNT(*) FROM weeks
+           WHERE league = 'cfb' AND season = ?
+             AND lock_at IS NOT NULL AND lock_at <= ?
              AND scored_at IS NULL) AS unscored,
          (SELECT MIN(lock_at) FROM weeks
-           WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
+           WHERE league = 'cfb' AND season = ?
+             AND lock_at IS NOT NULL AND lock_at <= ?
              AND scored_at IS NULL) AS oldest,
-         (SELECT MAX(scored_at) FROM weeks WHERE season = ?) AS last_scored,
+         (SELECT MAX(scored_at) FROM weeks
+           WHERE league = 'cfb' AND season = ?) AS last_scored,
          (SELECT COUNT(*) FROM users WHERE status = 'active') AS players,
          -- Signed up, whether or not a week has been scored yet. 'active' is
          -- earned by completing a scored week, so through launch week the
@@ -1140,11 +1192,11 @@ export async function getHealth(env) {
          -- users so a banned account's picks do not inflate a public number.
          (SELECT COUNT(DISTINCT p.user_id) FROM picks p
            JOIN users u ON u.id = p.user_id
-           WHERE p.season = ?
+           WHERE p.league = 'cfb' AND p.season = ?
              AND u.status IN ('provisional','active')) AS pickem_players,
          (SELECT COUNT(DISTINCT p.user_id) FROM survivor_picks p
            JOIN users u ON u.id = p.user_id
-           WHERE p.season = ?
+           WHERE p.league = 'cfb' AND p.season = ?
              AND u.status IN ('provisional','active')) AS survivor_players`)
       .bind(s, s, now, s, now, s, s, s).first();
     db = "ok";
@@ -1216,9 +1268,10 @@ export async function resolveIdentity(env, provider, subjectHash,
 
   if (linkTo) {
     if (found && found.user_id !== linkTo) {
-      // "Has played" means either game. Deleting the found account cascades
-      // its survivor picks exactly as it would its card, so absorbing a
-      // survivor-only account would erase a season the same way.
+      // "Has played" means either game, in any league: no league filter on
+      // purpose. Deleting the found account cascades its survivor picks
+      // exactly as it would its card, so absorbing a survivor-only account,
+      // or a basketball-only one, would erase a season the same way.
       const other = await env.DB.prepare(
         `SELECT (SELECT COUNT(*) FROM picks WHERE user_id = ?)
               + (SELECT COUNT(*) FROM survivor_picks WHERE user_id = ?) AS n`)

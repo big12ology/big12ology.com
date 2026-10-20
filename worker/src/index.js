@@ -315,11 +315,11 @@ async function handle(req, env, ctx) {
   }
 
   if (path === "/api/health") return api.getHealth(env);
-  if (path === "/api/season/current") return api.getSeasonCurrent(env);
+  if (path === "/api/season/current") return api.getSeasonCurrent(env, url);
   if (path === "/api/history" && req.method === "GET") {
     // Reads a session when there is one — the "you" line — but never needs
     // one, so it sits with the public routes and resolves the user itself.
-    return api.getHistory(env, await session.read(env, rawSession));
+    return api.getHistory(env, await session.read(env, rawSession), url);
   }
   if (path === "/api/slate" && req.method === "GET") return api.getSlate(env, url);
   if (path === "/api/leaderboard" && req.method === "GET") {
@@ -329,7 +329,7 @@ async function handle(req, env, ctx) {
     return api.getConsensus(env, url);
   }
   if (path === "/api/survivor/board" && req.method === "GET") {
-    return api.getSurvivorBoard(env);
+    return api.getSurvivorBoard(env, url);
   }
   // Everybody's picks for one closed week: the plural of the route below,
   // and the only one of the two the site actually links to.

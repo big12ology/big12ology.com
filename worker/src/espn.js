@@ -28,6 +28,8 @@
  * overlaid on every grading pass until CFBD carries them itself.
  */
 
+import { DEFAULT } from "./league.js";
+
 const SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/football"
                  + "/college-football/scoreboard";
 
@@ -56,8 +58,9 @@ const RESCHEDULE = 36 * 3600;
 // single call into a request for half a season.
 const HORIZON = 14 * 86400;
 
-export function espnKey(season) {
-  return `espn:${season}`;
+/** Where a league's kept finals live in KV. Football keeps the key it had. */
+export function espnKey(season, league = DEFAULT) {
+  return league === DEFAULT ? `espn:${season}` : `espn:${league}:${season}`;
 }
 
 function yyyymmdd(ts) {
@@ -208,11 +211,12 @@ export async function fetchEspnSchedule(from, to, fetchImpl = fetch,
  * later would reopen picking on a game being played.
  */
 export async function sweepKickoffs(env, season,
-                                    now = Math.floor(Date.now() / 1000)) {
+                                    now = Math.floor(Date.now() / 1000),
+                                    league = DEFAULT) {
   const { results: games } = await env.DB.prepare(
     `SELECT game_id, week, kickoff_at FROM slate_games
-      WHERE season = ? AND kickoff_at > ? AND kickoff_at < ?`)
-    .bind(season, now, now + HORIZON).all();
+      WHERE league = ? AND season = ? AND kickoff_at > ? AND kickoff_at < ?`)
+    .bind(league, season, now, now + HORIZON).all();
   if (!games || !games.length) return { skipped: "nothing_upcoming" };
 
   const kicks = games.map((g) => g.kickoff_at);
@@ -240,9 +244,9 @@ export async function sweepKickoffs(env, season,
     // falls out of the window has to become a no-op here: as a bare UPDATE it
     // would trip slate_games_frozen and take the whole batch with it.
     `UPDATE slate_games SET kickoff_at = ?
-      WHERE season = ? AND game_id = ?
+      WHERE league = ? AND season = ? AND game_id = ?
         AND kickoff_at > unixepoch() AND ? > unixepoch()`)
-    .bind(m.to, season, m.game_id, m.to));
+    .bind(m.to, league, season, m.game_id, m.to));
 
   // lock_at is the first kickoff of a playable game, so correcting one can
   // move it, and a stale lock_at is what /api answers `locked` from. Earlier
@@ -252,13 +256,13 @@ export async function sweepKickoffs(env, season,
   for (const week of new Set(moved.map((m) => m.week))) {
     stmts.push(env.DB.prepare(
       `UPDATE weeks SET lock_at = (SELECT MIN(kickoff_at) FROM slate_games
-                                    WHERE season = ? AND week = ?
+                                    WHERE league = ? AND season = ? AND week = ?
                                       AND spread_x2 IS NOT NULL)
-        WHERE season = ? AND week = ?
+        WHERE league = ? AND season = ? AND week = ?
           AND lock_at > (SELECT MIN(kickoff_at) FROM slate_games
-                          WHERE season = ? AND week = ?
+                          WHERE league = ? AND season = ? AND week = ?
                             AND spread_x2 IS NOT NULL)`)
-      .bind(season, week, season, week, season, week));
+      .bind(league, season, week, league, season, week, league, season, week));
   }
 
   await env.DB.batch(stmts);
@@ -269,14 +273,17 @@ export async function sweepKickoffs(env, season,
  * Ask ESPN about slate games the published file has not graded, and keep what
  * comes back. Returns a small report; the cron logs it.
  */
-export async function sweepEspn(env, season, base, now = Math.floor(Date.now() / 1000)) {
+export async function sweepEspn(env, season, base,
+                                now = Math.floor(Date.now() / 1000),
+                                league = DEFAULT) {
   // Same guard withEspn carries. Without the binding there is nowhere to keep
   // a final, and a fetch whose answer cannot be kept is just a slower way of
   // grading nothing.
   if (!env.SCORES) return { skipped: "no_kv" };
   const { results: games } = await env.DB.prepare(
-    `SELECT game_id, kickoff_at FROM slate_games WHERE season = ?`)
-    .bind(season).all();
+    `SELECT game_id, kickoff_at FROM slate_games
+      WHERE league = ? AND season = ?`)
+    .bind(league, season).all();
 
   const published = (base && base.games) || {};
   const pending = (games || []).filter((g) => {
@@ -296,7 +303,8 @@ export async function sweepEspn(env, season, base, now = Math.floor(Date.now() /
   // Slate games only. The scoreboard carries the whole of FBS and none of the
   // rest of it is any of this Worker's business.
   const wanted = new Set(pending.map((g) => String(g.game_id)));
-  const held = (await env.SCORES.get(espnKey(season), "json")) || { games: {} };
+  const held = (await env.SCORES.get(espnKey(season, league), "json")) ||
+    { games: {} };
   let added = 0;
   for (const [id, triple] of Object.entries(found)) {
     if (!wanted.has(id)) continue;
@@ -307,7 +315,7 @@ export async function sweepEspn(env, season, base, now = Math.floor(Date.now() /
   }
   // KV writes are capped at a thousand a day on this plan and the sweep runs
   // hourly all season, so a quiet pass must not write. Only a new final does.
-  if (added) await env.SCORES.put(espnKey(season), JSON.stringify(held));
+  if (added) await env.SCORES.put(espnKey(season, league), JSON.stringify(held));
   return { pending: pending.length, found: Object.keys(found).length, added };
 }
 
@@ -318,9 +326,9 @@ export async function sweepEspn(env, season, base, now = Math.floor(Date.now() /
  * scores reach the grader: the ingest endpoint handing over a fresh file, and
  * the cron reading the last one out of KV.
  */
-export async function withEspn(env, season, base) {
+export async function withEspn(env, season, base, league = DEFAULT) {
   if (!env.SCORES) return base;
-  const held = await env.SCORES.get(espnKey(season), "json");
+  const held = await env.SCORES.get(espnKey(season, league), "json");
   if (!held || !held.games) return base;
   const games = { ...(base.games || {}) };
   let filled = 0;

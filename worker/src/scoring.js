@@ -26,6 +26,7 @@ import { ats } from "./ats.js";
 import { withEspn } from "./espn.js";
 import { strandedWeeks } from "./handicap.js";
 import { scoresUrl } from "./slate.js";
+import { DEFAULT } from "./league.js";
 
 const VOID_AFTER = 36 * 3600;
 
@@ -106,10 +107,10 @@ export async function fetchScores(env, season) {
  */
 export async function scoreWeek(env, season, week, scores,
                                 now = Math.floor(Date.now() / 1000),
-                                { force = false } = {}) {
+                                { force = false, league = DEFAULT } = {}) {
   const w = await env.DB.prepare(
-    `SELECT lock_at FROM weeks WHERE season = ? AND week = ?`)
-    .bind(season, week).first();
+    `SELECT lock_at FROM weeks WHERE league = ? AND season = ? AND week = ?`)
+    .bind(league, season, week).first();
   if (!w) return { skipped: "no_such_week" };
   // The guard. Never scores an open week, whatever the caller thinks.
   if (w.lock_at == null || w.lock_at > now) return { skipped: "not_locked" };
@@ -120,11 +121,12 @@ export async function scoreWeek(env, season, week, scores,
   // which only holds if the fill is applied where the grading happens rather
   // than at one of the ways in. Costs one KV read per locked week per sweep,
   // against an allowance of a hundred thousand a day.
-  scores = await withEspn(env, season, scores);
+  scores = await withEspn(env, season, scores, league);
 
   const { results: games } = await env.DB.prepare(
     `SELECT game_id, kickoff_at, spread_x2 FROM slate_games
-      WHERE season = ? AND week = ?`).bind(season, week).all();
+      WHERE league = ? AND season = ? AND week = ?`)
+    .bind(league, season, week).all();
 
   const stmts = [];
   const touched = [];          // the games whose result actually moved
@@ -183,8 +185,8 @@ export async function scoreWeek(env, season, week, scores,
     const src = await hashOf([status, home, away, atsValue, g.spread_x2]);
     const prev = await env.DB.prepare(
       `SELECT source_hash, revision FROM results
-        WHERE season = ? AND week = ? AND game_id = ?`)
-      .bind(season, week, g.game_id).first();
+        WHERE league = ? AND season = ? AND week = ? AND game_id = ?`)
+      .bind(league, season, week, g.game_id).first();
     if (prev && prev.source_hash === src) continue;   // genuinely unchanged
     changed++;
     touched.push(g.game_id);
@@ -194,10 +196,11 @@ export async function scoreWeek(env, season, week, scores,
     const rev = (prev ? prev.revision : 0) + 1;
 
     stmts.push(env.DB.prepare(
-      `INSERT INTO results (season, week, game_id, home_points, away_points,
-                            status, ats, source_hash, revision, scored_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
-       ON CONFLICT(season, week, game_id) DO UPDATE SET
+      `INSERT INTO results (league, season, week, game_id, home_points,
+                            away_points, status, ats, source_hash, revision,
+                            scored_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
+       ON CONFLICT(league, season, week, game_id) DO UPDATE SET
          home_points = excluded.home_points,
          away_points = excluded.away_points,
          status      = excluded.status,
@@ -208,16 +211,19 @@ export async function scoreWeek(env, season, week, scores,
          -- than merely mysterious.
          revision    = results.revision + 1,
          scored_at   = excluded.scored_at`)
-      .bind(season, week, g.game_id, home, away, status, atsValue, src, now));
+      .bind(league, season, week, g.game_id, home, away, status, atsValue, src,
+            now));
 
     // And the same fact, kept rather than overwritten. revision counts the
     // corrections; this is what each of them said. See 0011 for why a count
     // on its own could prove a week had regressed and not say how.
     stmts.push(env.DB.prepare(
-      `INSERT INTO results_history (season, week, game_id, revision, status,
-                                    ats, home_points, away_points, scored_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-      .bind(season, week, g.game_id, rev, status, atsValue, home, away, now));
+      `INSERT INTO results_history (league, season, week, game_id, revision,
+                                    status, ats, home_points, away_points,
+                                    scored_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      .bind(league, season, week, g.game_id, rev, status, atsValue, home, away,
+            now));
   }
 
   if (stmts.length) await env.DB.batch(stmts);
@@ -248,31 +254,35 @@ export async function scoreWeek(env, season, week, scores,
   // itself instead.
   const state = await env.DB.prepare(
     `SELECT
-       (SELECT scored_at FROM weeks WHERE season = ? AND week = ?) AS scored_at,
+       (SELECT scored_at FROM weeks
+         WHERE league = ? AND season = ? AND week = ?) AS scored_at,
        (SELECT COUNT(DISTINCT s.user_id) FROM pick_scores s
           JOIN users u ON u.id = s.user_id
-         WHERE s.season = ? AND s.week = ? AND u.status = 'active') AS want,
+         WHERE s.league = ? AND s.season = ? AND s.week = ?
+           AND u.status = 'active') AS want,
        (SELECT COUNT(*) FROM leaderboard_week
-         WHERE season = ? AND week = ?) AS have`)
-    .bind(season, week, season, week, season, week).first();
+         WHERE league = ? AND season = ? AND week = ?) AS have`)
+    .bind(league, season, week, league, season, week, league, season, week)
+    .first();
   if (!force && changed === 0 && state && state.scored_at != null
       && state.want === state.have) {
     return { finals, voids, changed: 0, skipped: "unchanged" };
   }
 
-  await rebuildPickScores(env, season, week, touched);
-  await rebuildWeekBoard(env, season, week, now);
-  await rebuildSeasonBoard(env, season, now);
-  await rebuildSurvivorScores(env, season, week);
+  await rebuildPickScores(env, season, week, touched, league);
+  await rebuildWeekBoard(env, season, week, now, league);
+  await rebuildSeasonBoard(env, season, now, league);
+  await rebuildSurvivorScores(env, season, week, league);
   // Before the board, and after the scores: a week scored void hands its team
   // back, which changes what a player was holding, which is what decides
   // whether a later empty week was a choice or a dead end.
-  await rebuildSurvivorStranded(env, season, now);
-  await rebuildSurvivorBoard(env, season, now);
+  await rebuildSurvivorStranded(env, season, now, league);
+  await rebuildSurvivorBoard(env, season, now, league);
 
   await env.DB.prepare(
     `UPDATE weeks SET scored_at = ?, scored_rev = scored_rev + 1
-      WHERE season = ? AND week = ?`).bind(now, season, week).run();
+      WHERE league = ? AND season = ? AND week = ?`)
+    .bind(now, league, season, week).run();
 
   return { finals, voids, changed };
 }
@@ -293,27 +303,28 @@ export async function scoreWeek(env, season, week, scores,
  * re-scored has the same pick, the same line and the same result, so its
  * outcome cannot have changed.
  */
-async function rebuildPickScores(env, season, week, games = null) {
+async function rebuildPickScores(env, season, week, games = null,
+                                 league = DEFAULT) {
   const some = Array.isArray(games) && games.length;
   const holes = some ? games.map(() => "?").join(",") : "";
   await env.DB.batch([
     env.DB.prepare(
-      `DELETE FROM pick_scores WHERE season = ? AND week = ?` +
+      `DELETE FROM pick_scores WHERE league = ? AND season = ? AND week = ?` +
       (some ? ` AND game_id IN (${holes})` : ""))
-      .bind(season, week, ...(some ? games : [])),
+      .bind(league, season, week, ...(some ? games : [])),
     env.DB.prepare(
-      `INSERT INTO pick_scores (user_id, season, week, game_id, outcome)
-       SELECT p.user_id, p.season, p.week, p.game_id,
+      `INSERT INTO pick_scores (league, user_id, season, week, game_id, outcome)
+       SELECT p.league, p.user_id, p.season, p.week, p.game_id,
               CASE WHEN r.ats = 'void' THEN 'void'
                    WHEN r.ats = 'push' THEN 'push'
                    WHEN r.ats = p.side THEN 'win'
                    ELSE 'loss' END
          FROM picks p
-         JOIN results r ON r.season = p.season AND r.week = p.week
-                       AND r.game_id = p.game_id
-        WHERE p.season = ? AND p.week = ?` +
+         JOIN results r ON r.league = p.league AND r.season = p.season
+                       AND r.week = p.week AND r.game_id = p.game_id
+        WHERE p.league = ? AND p.season = ? AND p.week = ?` +
        (some ? ` AND p.game_id IN (${holes})` : ""))
-      .bind(season, week, ...(some ? games : [])),
+      .bind(league, season, week, ...(some ? games : [])),
   ]);
 }
 
@@ -328,13 +339,15 @@ async function rebuildPickScores(env, season, week, games = null) {
  * rules should make impossible but which must not default to somebody's
  * elimination if it ever happens.
  */
-async function rebuildSurvivorScores(env, season, week) {
+async function rebuildSurvivorScores(env, season, week, league = DEFAULT) {
   await env.DB.batch([
-    env.DB.prepare(`DELETE FROM survivor_scores WHERE season = ? AND week = ?`)
-      .bind(season, week),
+    env.DB.prepare(`DELETE FROM survivor_scores
+                     WHERE league = ? AND season = ? AND week = ?`)
+      .bind(league, season, week),
     env.DB.prepare(
-      `INSERT INTO survivor_scores (user_id, season, week, game_id, outcome)
-       SELECT p.user_id, p.season, p.week, p.game_id,
+      `INSERT INTO survivor_scores (league, user_id, season, week, game_id,
+                                   outcome)
+       SELECT p.league, p.user_id, p.season, p.week, p.game_id,
               CASE WHEN r.status = 'void' THEN 'void'
                    WHEN r.home_points = r.away_points THEN 'void'
                    WHEN (p.team = g.home AND r.home_points > r.away_points)
@@ -342,11 +355,12 @@ async function rebuildSurvivorScores(env, season, week) {
                      THEN 'win'
                    ELSE 'loss' END
          FROM survivor_picks p
-         JOIN slate_games g ON g.season = p.season AND g.week = p.week
-                           AND g.game_id = p.game_id
-         JOIN results r ON r.season = p.season AND r.week = p.week
-                       AND r.game_id = p.game_id
-        WHERE p.season = ? AND p.week = ?`).bind(season, week),
+         JOIN slate_games g ON g.league = p.league AND g.season = p.season
+                           AND g.week = p.week AND g.game_id = p.game_id
+         JOIN results r ON r.league = p.league AND r.season = p.season
+                       AND r.week = p.week AND r.game_id = p.game_id
+        WHERE p.league = ? AND p.season = ? AND p.week = ?`)
+      .bind(league, season, week),
   ]);
 }
 
@@ -355,15 +369,15 @@ async function rebuildSurvivorScores(env, season, week) {
  * here. Almost always empty, and cheap when it is: the driving query only
  * returns weeks somebody actually skipped.
  */
-async function rebuildSurvivorStranded(env, season, now) {
-  const rows = await strandedWeeks(env, season);
+async function rebuildSurvivorStranded(env, season, now, league = DEFAULT) {
+  const rows = await strandedWeeks(env, season, league);
   await env.DB.batch([
-    env.DB.prepare(`DELETE FROM survivor_stranded WHERE season = ?`)
-      .bind(season),
+    env.DB.prepare(`DELETE FROM survivor_stranded WHERE league = ? AND season = ?`)
+      .bind(league, season),
     ...rows.map((r) => env.DB.prepare(
-      `INSERT INTO survivor_stranded (season, user_id, week, usable,
+      `INSERT INTO survivor_stranded (league, season, user_id, week, usable,
                                       computed_at)
-       VALUES (?, ?, ?, 0, ?)`).bind(season, r.user_id, r.week, now)),
+       VALUES (?, ?, ?, ?, 0, ?)`).bind(league, season, r.user_id, r.week, now)),
   ]);
 }
 
@@ -386,15 +400,16 @@ async function rebuildSurvivorStranded(env, season, now) {
  * banned player's own standing — and the pick handler's "you are out" —
  * still has to come from somewhere.
  */
-async function rebuildSurvivorBoard(env, season, now) {
+async function rebuildSurvivorBoard(env, season, now, league = DEFAULT) {
   const cutoff = rankedEntryBy(env);
   await env.DB.batch([
-    env.DB.prepare(`DELETE FROM survivor_board WHERE season = ?`).bind(season),
+    env.DB.prepare(`DELETE FROM survivor_board WHERE league = ? AND season = ?`)
+      .bind(league, season),
     env.DB.prepare(
       `INSERT INTO survivor_board
-         (season, user_id, wins, alive, entered_week, out_week, out_reason,
-          ranked, rank, computed_at)
-       SELECT ?, user_id, wins,
+         (league, season, user_id, wins, alive, entered_week, out_week,
+          out_reason, ranked, rank, computed_at)
+       SELECT ?, ?, user_id, wins,
               CASE WHEN out_week IS NULL THEN 1 ELSE 0 END,
               entered_week, out_week, out_reason,
               -- Eligibility is about WHEN you entered, not how long you
@@ -448,13 +463,15 @@ async function rebuildSurvivorBoard(env, season, now) {
            -- had not started.
            WITH locked AS (
              SELECT w.week FROM weeks w
-              WHERE w.season = ?
+              WHERE w.league = ? AND w.season = ?
                 AND w.lock_at IS NOT NULL AND w.lock_at <= ?
                 AND (SELECT MAX(g.kickoff_at) FROM slate_games g
-                      WHERE g.season = w.season AND g.week = w.week) <= ?),
+                      WHERE g.league = w.league AND g.season = w.season
+                        AND g.week = w.week) <= ?),
            entrants AS (
              SELECT user_id, MIN(week) AS entered_week
-               FROM survivor_picks WHERE season = ? GROUP BY user_id),
+               FROM survivor_picks WHERE league = ? AND season = ?
+              GROUP BY user_id),
            walk AS (
              SELECT e.user_id, e.entered_week, l.week,
                     -- No pick is a miss unless there was nothing to pick.
@@ -470,11 +487,13 @@ async function rebuildSurvivorBoard(env, season, now) {
                FROM entrants e
                JOIN locked l ON l.week >= e.entered_week
                LEFT JOIN survivor_picks p
-                 ON p.user_id = e.user_id AND p.season = ? AND p.week = l.week
+                 ON p.league = ? AND p.user_id = e.user_id AND p.season = ?
+                AND p.week = l.week
                LEFT JOIN survivor_scores s
-                 ON s.user_id = e.user_id AND s.season = ? AND s.week = l.week
+                 ON s.league = ? AND s.user_id = e.user_id AND s.season = ?
+                AND s.week = l.week
                LEFT JOIN survivor_stranded st
-                 ON st.user_id = e.user_id AND st.season = ?
+                 ON st.league = ? AND st.user_id = e.user_id AND st.season = ?
                 AND st.week = l.week)
            SELECT e.user_id, e.entered_week,
                   (SELECT MIN(w.week) FROM walk w
@@ -504,9 +523,11 @@ async function rebuildSurvivorBoard(env, season, now) {
       // `now` appears twice inside locked since 0010 — once for the week's own
       // deadline and once for its last kickoff. Positional binding means a
       // missing one silently shifts every parameter after it, so the count
-      // here and the ? count in the query have to be read together.
-      .bind(season, cutoff, cutoff, now,
-            season, now, now, season, season, season, season),
+      // here and the ? count in the query have to be read together. Since
+      // 0014 every season in the walk is preceded by its league.
+      .bind(league, season, cutoff, cutoff, now,
+            league, season, now, now, league, season,
+            league, season, league, season, league, season),
   ]);
 }
 
@@ -514,14 +535,15 @@ async function rebuildSurvivorBoard(env, season, now) {
 // counted toward becoming active — they are simply not published yet.
 const PUBLISHABLE = `u.status = 'active'`;
 
-async function rebuildWeekBoard(env, season, week, now) {
+async function rebuildWeekBoard(env, season, week, now, league = DEFAULT) {
   await env.DB.batch([
-    env.DB.prepare(`DELETE FROM leaderboard_week WHERE season = ? AND week = ?`)
-      .bind(season, week),
+    env.DB.prepare(`DELETE FROM leaderboard_week
+                     WHERE league = ? AND season = ? AND week = ?`)
+      .bind(league, season, week),
     env.DB.prepare(
       `INSERT INTO leaderboard_week
-         (season, week, user_id, w, l, p, v, pct, rank, computed_at)
-       SELECT season, week, user_id, w, l, p, v, pct,
+         (league, season, week, user_id, w, l, p, v, pct, rank, computed_at)
+       SELECT league, season, week, user_id, w, l, p, v, pct,
               -- No user_id in the ordering. It is a unique column, so
               -- including it makes every row a distinct rank and two
               -- identical records come back 2nd and 3rd. Presentation order
@@ -529,7 +551,7 @@ async function rebuildWeekBoard(env, season, week, now) {
               RANK() OVER (ORDER BY w DESC, pct DESC NULLS LAST),
               ?
          FROM (
-           SELECT s.season, s.week, s.user_id,
+           SELECT s.league, s.season, s.week, s.user_id,
                   SUM(s.outcome = 'win')  AS w,
                   SUM(s.outcome = 'loss') AS l,
                   SUM(s.outcome = 'push') AS p,
@@ -539,22 +561,24 @@ async function rebuildWeekBoard(env, season, week, now) {
                             / SUM(s.outcome IN ('win','loss')) END AS pct
              FROM pick_scores s
              JOIN users u ON u.id = s.user_id
-            WHERE s.season = ? AND s.week = ? AND ${PUBLISHABLE}
-            GROUP BY s.user_id)`).bind(now, season, week),
+            WHERE s.league = ? AND s.season = ? AND s.week = ? AND ${PUBLISHABLE}
+            GROUP BY s.user_id)`).bind(now, league, season, week),
   ]);
 }
 
-async function rebuildSeasonBoard(env, season, now) {
+async function rebuildSeasonBoard(env, season, now, league = DEFAULT) {
   await env.DB.batch([
-    env.DB.prepare(`DELETE FROM leaderboard_season WHERE season = ?`).bind(season),
+    env.DB.prepare(`DELETE FROM leaderboard_season WHERE league = ? AND season = ?`)
+      .bind(league, season),
     env.DB.prepare(
       `INSERT INTO leaderboard_season
-         (season, user_id, w, l, p, v, pct, weeks_played, rank, computed_at)
-       SELECT season, user_id, w, l, p, v, pct, weeks_played,
+         (league, season, user_id, w, l, p, v, pct, weeks_played, rank,
+          computed_at)
+       SELECT league, season, user_id, w, l, p, v, pct, weeks_played,
               RANK() OVER (ORDER BY w DESC, pct DESC NULLS LAST),
               ?
          FROM (
-           SELECT s.season, s.user_id,
+           SELECT s.league, s.season, s.user_id,
                   SUM(s.outcome = 'win')  AS w,
                   SUM(s.outcome = 'loss') AS l,
                   SUM(s.outcome = 'push') AS p,
@@ -565,8 +589,8 @@ async function rebuildSeasonBoard(env, season, now) {
                             / SUM(s.outcome IN ('win','loss')) END AS pct
              FROM pick_scores s
              JOIN users u ON u.id = s.user_id
-            WHERE s.season = ? AND ${PUBLISHABLE}
-            GROUP BY s.user_id)`).bind(now, season),
+            WHERE s.league = ? AND s.season = ? AND ${PUBLISHABLE}
+            GROUP BY s.user_id)`).bind(now, league, season),
   ]);
 }
 
@@ -579,7 +603,7 @@ async function rebuildSeasonBoard(env, season, now) {
  * appears at all. Anonymous OAuth cannot do better than this and pretending
  * otherwise would be the mistake.
  */
-export async function promoteProvisional(env, season, week) {
+export async function promoteProvisional(env, season, week, league = DEFAULT) {
   // Either game counts. A survivor-only player has completed a scored week
   // in exactly the sense the gate cares about — they played a week that has
   // since been graded — and holding them provisional forever because they
@@ -588,10 +612,10 @@ export async function promoteProvisional(env, season, week) {
     `UPDATE users SET status = 'active'
       WHERE status = 'provisional'
         AND (id IN (SELECT DISTINCT user_id FROM pick_scores
-                     WHERE season = ? AND week = ?)
+                     WHERE league = ? AND season = ? AND week = ?)
           OR id IN (SELECT DISTINCT user_id FROM survivor_scores
-                     WHERE season = ? AND week = ?))`)
-    .bind(season, week, season, week).run();
+                     WHERE league = ? AND season = ? AND week = ?))`)
+    .bind(league, season, week, league, season, week).run();
   // How many were published, so the caller knows whether the boards it is
   // about to skip rebuilding have changed membership underneath it.
   return (r && (r.meta ? r.meta.changes : r.changes)) || 0;
@@ -605,7 +629,7 @@ export async function promoteProvisional(env, season, week) {
  * this is the same idea for the players. A pick'em board with no baseline
  * flatters everyone above .500 and tells you nothing.
  */
-export async function chalk(env, season, week = null) {
+export async function chalk(env, season, week = null, league = DEFAULT) {
   const sql = `
     SELECT SUM(CASE WHEN r.ats = 'push' THEN 0
                     WHEN r.ats = 'void' THEN 0
@@ -619,11 +643,12 @@ export async function chalk(env, season, week = null) {
            SUM(r.ats = 'push') AS p,
            SUM(r.ats = 'void') AS v
       FROM results r
-      JOIN slate_games g ON g.season = r.season AND g.week = r.week
-                        AND g.game_id = r.game_id
-     WHERE r.season = ? AND g.spread_x2 IS NOT NULL AND g.spread_x2 <> 0
+      JOIN slate_games g ON g.league = r.league AND g.season = r.season
+                        AND g.week = r.week AND g.game_id = r.game_id
+     WHERE r.league = ? AND r.season = ?
+       AND g.spread_x2 IS NOT NULL AND g.spread_x2 <> 0
        ${week == null ? "" : "AND r.week = ?"}`;
-  const bind = week == null ? [season] : [season, week];
+  const bind = week == null ? [league, season] : [league, season, week];
   const row = await env.DB.prepare(sql).bind(...bind).first();
   if (!row || (row.w == null && row.l == null)) return null;
   const w = row.w || 0, l = row.l || 0;
@@ -658,15 +683,15 @@ export async function chalk(env, season, week = null) {
  *   actually played, and a threshold would make the row appear and disappear
  *   early in a season in a way that needs more explaining than it is worth.
  */
-export async function room(env, season, week = null) {
+export async function room(env, season, week = null, league = DEFAULT) {
   const sql = `
     WITH majority AS (
-      SELECT p.season, p.week, p.game_id,
+      SELECT p.league, p.season, p.week, p.game_id,
              SUM(p.side = 'home') AS h,
              SUM(p.side = 'away') AS a
         FROM picks p
-       WHERE p.season = ? ${week == null ? "" : "AND p.week = ?"}
-       GROUP BY p.season, p.week, p.game_id)
+       WHERE p.league = ? AND p.season = ? ${week == null ? "" : "AND p.week = ?"}
+       GROUP BY p.league, p.season, p.week, p.game_id)
     SELECT
       SUM(CASE WHEN r.ats IN ('push','void') OR m.h = m.a THEN 0
                WHEN (m.h > m.a AND r.ats = 'home')
@@ -679,9 +704,9 @@ export async function room(env, season, week = null) {
       SUM(CASE WHEN r.ats = 'push' AND m.h <> m.a THEN 1 ELSE 0 END) AS p,
       SUM(CASE WHEN m.h = m.a THEN 1 ELSE 0 END) AS split
       FROM majority m
-      JOIN results r ON r.season = m.season AND r.week = m.week
-                    AND r.game_id = m.game_id`;
-  const bind = week == null ? [season] : [season, week];
+      JOIN results r ON r.league = m.league AND r.season = m.season
+                    AND r.week = m.week AND r.game_id = m.game_id`;
+  const bind = week == null ? [league, season] : [league, season, week];
   const row = await env.DB.prepare(sql).bind(...bind).first();
   if (!row || (row.w == null && row.l == null)) return null;
   const w = row.w || 0, l = row.l || 0;
@@ -703,7 +728,7 @@ export async function room(env, season, week = null) {
  * per cut. The row count is players × weeks — a few thousand at the size this
  * will ever be — so the arithmetic is free and the query stays legible.
  */
-export async function history(env, season) {
+export async function history(env, season, league = DEFAULT) {
   const { results: rows } = await env.DB.prepare(
     `WITH per AS (
        SELECT s.user_id, s.week,
@@ -711,13 +736,13 @@ export async function history(env, season) {
               SUM(s.outcome = 'loss') AS l
          FROM pick_scores s
          JOIN users u ON u.id = s.user_id
-        WHERE s.season = ? AND u.status = 'active'
+        WHERE s.league = ? AND s.season = ? AND u.status = 'active'
         GROUP BY s.user_id, s.week)
      SELECT user_id, week,
             SUM(w) OVER (PARTITION BY user_id ORDER BY week) AS cw,
             SUM(l) OVER (PARTITION BY user_id ORDER BY week) AS cl
        FROM per
-      ORDER BY week, user_id`).bind(season).all();
+      ORDER BY week, user_id`).bind(league, season).all();
   if (!rows || !rows.length) return null;
 
   const weeks = [...new Set(rows.map((r) => r.week))].sort((a, b) => a - b);
@@ -753,19 +778,19 @@ export async function history(env, season) {
   const top = await env.DB.prepare(
     `SELECT b.user_id, u.display_name, u.team FROM leaderboard_season b
        JOIN users u ON u.id = b.user_id
-      WHERE b.season = ? ORDER BY b.rank, u.display_name LIMIT 1`)
-    .bind(season).first();
+      WHERE b.league = ? AND b.season = ? ORDER BY b.rank, u.display_name LIMIT 1`)
+    .bind(league, season).first();
 
   return { season, weeks, field,
            leader: top ? { user_id: top.user_id, display_name: top.display_name,
                            team: top.team, rows: line(top.user_id) } : null,
-           room: await roomHistory(env, season, weeks),
-           chalk: await chalkHistory(env, season, weeks),
+           room: await roomHistory(env, season, weeks, league),
+           chalk: await chalkHistory(env, season, weeks, league),
            _line: line };
 }
 
 /** The chalk's cumulative record after each week, to match the room's. */
-async function chalkHistory(env, season, weeks) {
+async function chalkHistory(env, season, weeks, league = DEFAULT) {
   const { results } = await env.DB.prepare(
     `SELECT r.week,
             SUM(CASE WHEN r.ats IN ('push','void') THEN 0
@@ -777,10 +802,11 @@ async function chalkHistory(env, season, weeks) {
                        OR (g.spread_x2 > 0 AND r.ats = 'away') THEN 0
                      ELSE 1 END) AS l
        FROM results r
-       JOIN slate_games g ON g.season = r.season AND g.week = r.week
-                         AND g.game_id = r.game_id
-      WHERE r.season = ? AND g.spread_x2 IS NOT NULL AND g.spread_x2 <> 0
-      GROUP BY r.week ORDER BY r.week`).bind(season).all();
+       JOIN slate_games g ON g.league = r.league AND g.season = r.season
+                         AND g.week = r.week AND g.game_id = r.game_id
+      WHERE r.league = ? AND r.season = ?
+        AND g.spread_x2 IS NOT NULL AND g.spread_x2 <> 0
+      GROUP BY r.week ORDER BY r.week`).bind(league, season).all();
   let cw = 0, cl = 0;
   const by = new Map((results || []).map((r) => [r.week, r]));
   return weeks.map((week) => {
@@ -791,13 +817,13 @@ async function chalkHistory(env, season, weeks) {
 }
 
 /** The room's cumulative record after each week. */
-async function roomHistory(env, season, weeks) {
+async function roomHistory(env, season, weeks, league = DEFAULT) {
   const { results } = await env.DB.prepare(
     `WITH majority AS (
-       SELECT p.season, p.week, p.game_id,
+       SELECT p.league, p.season, p.week, p.game_id,
               SUM(p.side = 'home') AS h, SUM(p.side = 'away') AS a
-         FROM picks p WHERE p.season = ?
-        GROUP BY p.season, p.week, p.game_id)
+         FROM picks p WHERE p.league = ? AND p.season = ?
+        GROUP BY p.league, p.season, p.week, p.game_id)
      SELECT m.week,
             SUM(CASE WHEN r.ats IN ('push','void') OR m.h = m.a THEN 0
                      WHEN (m.h > m.a AND r.ats = 'home')
@@ -808,9 +834,9 @@ async function roomHistory(env, season, weeks) {
                        OR (m.a > m.h AND r.ats = 'away') THEN 0
                      ELSE 1 END) AS l
        FROM majority m
-       JOIN results r ON r.season = m.season AND r.week = m.week
-                     AND r.game_id = m.game_id
-      GROUP BY m.week ORDER BY m.week`).bind(season).all();
+       JOIN results r ON r.league = m.league AND r.season = m.season
+                     AND r.week = m.week AND r.game_id = m.game_id
+      GROUP BY m.week ORDER BY m.week`).bind(league, season).all();
   let cw = 0, cl = 0;
   const by = new Map((results || []).map((r) => [r.week, r]));
   return weeks.map((week) => {
@@ -832,24 +858,24 @@ async function roomHistory(env, season, weeks) {
  * it, because by then the write has had a whole cron interval to propagate.
  */
 export async function scoreAll(env, season, now = Math.floor(Date.now() / 1000),
-                               { scores: given = null } = {}) {
+                               { scores: given = null, league = DEFAULT } = {}) {
   const scores = given || await fetchScores(env, season);
   const { results } = await env.DB.prepare(
     `SELECT week FROM weeks
-      WHERE season = ? AND lock_at IS NOT NULL AND lock_at <= ?
-      ORDER BY week`).bind(season, now).all();
+      WHERE league = ? AND season = ? AND lock_at IS NOT NULL AND lock_at <= ?
+      ORDER BY week`).bind(league, season, now).all();
   // Promotions first, and all of them, before anything is scored. A newly
   // published account changes who belongs on the boards, and the boards are
   // now only rebuilt when something moved — so this has to be known before
   // that decision rather than after it.
   let promoted = 0;
   for (const { week } of results || []) {
-    promoted += await promoteProvisional(env, season, week);
+    promoted += await promoteProvisional(env, season, week, league);
   }
   const report = [];
   for (const { week } of results || []) {
     report.push({ week, ...(await scoreWeek(env, season, week, scores, now,
-                                            { force: promoted > 0 })) });
+                                            { force: promoted > 0, league })) });
   }
   return report;
 }

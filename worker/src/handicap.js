@@ -11,6 +11,8 @@
 // (publish a rating and every argument about the handicap becomes an argument
 // about the rating) — the chalk, which is the same benchmark the pick'em
 // already scores itself against.
+
+import { DEFAULT } from "./league.js";
 //
 // Three properties make this the version that works:
 //
@@ -54,14 +56,14 @@ export const MIN_USABLE = 4;
  * quietly shrank because two weeks shared a favorite would be a discount
  * for joining after a bye.
  */
-export async function chalkRoster(env, season, entryWeek) {
+export async function chalkRoster(env, season, entryWeek, league = DEFAULT) {
   if (!(entryWeek > 1)) return [];
 
   const { results } = await env.DB.prepare(
     `SELECT week, game_id, home, away, spread_x2, b12
        FROM slate_games
-      WHERE season = ? AND week < ? AND spread_x2 IS NOT NULL
-      ORDER BY week, game_id`).bind(season, entryWeek).all();
+      WHERE league = ? AND season = ? AND week < ? AND spread_x2 IS NOT NULL
+      ORDER BY week, game_id`).bind(league, season, entryWeek).all();
 
   const byWeek = new Map();
   for (const g of results || []) {
@@ -101,10 +103,11 @@ export async function chalkRoster(env, season, entryWeek) {
  * Before that first pick there is nothing to derive from, so the week being
  * picked now is the entry week — which is what makes joining cost something.
  */
-export async function entryWeek(env, season, userId, thisWeek) {
+export async function entryWeek(env, season, userId, thisWeek, league = DEFAULT) {
   const row = await env.DB.prepare(
     `SELECT MIN(week) AS w FROM survivor_picks
-      WHERE user_id = ? AND season = ?`).bind(userId, season).first();
+      WHERE league = ? AND user_id = ? AND season = ?`)
+    .bind(league, userId, season).first();
   return row && row.w != null ? row.w : thisWeek;
 }
 
@@ -133,11 +136,11 @@ export const MIN_SURVIVOR_TEAMS = 2;
  * is a contest at all, which is the same answer for everybody. A player who
  * has personally run out is the `stranded` case and is handled by scoring.
  */
-export async function pickableCount(env, season, week) {
+export async function pickableCount(env, season, week, league = DEFAULT) {
   const { results } = await env.DB.prepare(
     `SELECT home, away, b12 FROM slate_games
-      WHERE season = ? AND week = ? AND spread_x2 IS NOT NULL`)
-    .bind(season, week).all();
+      WHERE league = ? AND season = ? AND week = ? AND spread_x2 IS NOT NULL`)
+    .bind(league, season, week).all();
   const teams = new Set();
   for (const g of results || []) {
     for (const t of [g.home, g.away]) if (isPickable(g, t)) teams.add(t);
@@ -146,11 +149,12 @@ export async function pickableCount(env, season, week) {
 }
 
 /** Teams still available to someone entering now: never chalk, never spent. */
-export async function usableFrom(env, season, week, burnedTeams) {
+export async function usableFrom(env, season, week, burnedTeams,
+                                 league = DEFAULT) {
   const { results } = await env.DB.prepare(
     `SELECT DISTINCT home, away, b12 FROM slate_games
-      WHERE season = ? AND week >= ? AND spread_x2 IS NOT NULL`)
-    .bind(season, week).all();
+      WHERE league = ? AND season = ? AND week >= ? AND spread_x2 IS NOT NULL`)
+    .bind(league, season, week).all();
   const out = new Set();
   for (const g of results || []) {
     for (const t of [g.home, g.away]) {
@@ -168,11 +172,11 @@ export async function usableFrom(env, season, week, burnedTeams) {
  * handicap would leave too little to pick from — a consequence somebody can
  * see coming rather than a rule imposed on them.
  */
-export async function rosterFor(env, season, userId, thisWeek) {
-  const entered = await entryWeek(env, season, userId, thisWeek);
-  const burned = await chalkRoster(env, season, entered);
+export async function rosterFor(env, season, userId, thisWeek, league = DEFAULT) {
+  const entered = await entryWeek(env, season, userId, thisWeek, league);
+  const burned = await chalkRoster(env, season, entered, league);
   const teams = new Set(burned.map((b) => b.team));
-  const usable = await usableFrom(env, season, thisWeek, teams);
+  const usable = await usableFrom(env, season, thisWeek, teams, league);
   return {
     entered_week: entered,
     joining: entered === thisWeek,
@@ -201,19 +205,21 @@ export async function rosterFor(env, season, userId, thisWeek) {
  * Returns one row per stranded (user, week). The common answer is none, and
  * the query stops early when nobody is missing a locked week at all.
  */
-export async function strandedWeeks(env, season) {
+export async function strandedWeeks(env, season, league = DEFAULT) {
   const { results: gaps } = await env.DB.prepare(
     `WITH entrants AS (
        SELECT user_id, MIN(week) AS entered
-         FROM survivor_picks WHERE season = ? GROUP BY user_id)
+         FROM survivor_picks WHERE league = ? AND season = ? GROUP BY user_id)
      SELECT e.user_id, e.entered, w.week
        FROM entrants e
-       JOIN weeks w ON w.season = ? AND w.lock_at IS NOT NULL
+       JOIN weeks w ON w.league = ? AND w.season = ? AND w.lock_at IS NOT NULL
                    AND w.lock_at <= unixepoch() AND w.week >= e.entered
        LEFT JOIN survivor_picks p
-         ON p.user_id = e.user_id AND p.season = ? AND p.week = w.week
+         ON p.league = ? AND p.user_id = e.user_id AND p.season = ?
+        AND p.week = w.week
       WHERE p.user_id IS NULL
-      ORDER BY e.user_id, w.week`).bind(season, season, season).all();
+      ORDER BY e.user_id, w.week`)
+    .bind(league, season, league, season, league, season).all();
   if (!gaps || !gaps.length) return [];
 
   // Only the weeks somebody actually skipped need a board, and a season has
@@ -223,8 +229,8 @@ export async function strandedWeeks(env, season) {
     if (!slates.has(week)) {
       const { results } = await env.DB.prepare(
         `SELECT home, away, b12 FROM slate_games
-          WHERE season = ? AND week = ? AND spread_x2 IS NOT NULL`)
-        .bind(season, week).all();
+          WHERE league = ? AND season = ? AND week = ? AND spread_x2 IS NOT NULL`)
+        .bind(league, season, week).all();
       const teams = new Set();
       for (const g of results || []) {
         for (const t of [g.home, g.away]) if (isPickable(g, t)) teams.add(t);
@@ -240,18 +246,19 @@ export async function strandedWeeks(env, season) {
   const out = [];
   for (const gap of gaps) {
     if (!burnedFor.has(gap.user_id)) {
-      const chalk = await chalkRoster(env, season, gap.entered);
+      const chalk = await chalkRoster(env, season, gap.entered, league);
       burnedFor.set(gap.user_id, new Set(chalk.map((b) => b.team)));
     }
     const spent = new Set(burnedFor.get(gap.user_id));
     const { results: prior } = await env.DB.prepare(
       `SELECT p.team FROM survivor_picks p
-        WHERE p.user_id = ? AND p.season = ? AND p.week < ?
+        WHERE p.league = ? AND p.user_id = ? AND p.season = ? AND p.week < ?
           AND NOT EXISTS (
             SELECT 1 FROM survivor_scores s
-             WHERE s.user_id = p.user_id AND s.season = p.season
-               AND s.week = p.week AND s.outcome = 'void')`)
-      .bind(gap.user_id, season, gap.week).all();
+             WHERE s.league = p.league AND s.user_id = p.user_id
+               AND s.season = p.season AND s.week = p.week
+               AND s.outcome = 'void')`)
+      .bind(league, gap.user_id, season, gap.week).all();
     for (const r of prior || []) spent.add(r.team);
 
     const playing = await slateFor(gap.week);

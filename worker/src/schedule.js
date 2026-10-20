@@ -25,6 +25,8 @@
 // of Monday, Friday and Saturday catch the Sunday, Thursday and Friday night
 // games.
 
+import { DEFAULT } from "./league.js";
+
 const SUN = 0, MON = 1, TUE = 2, FRI = 5, SAT = 6;
 
 /** August to December. Out of it, only the daily heartbeat runs. */
@@ -157,10 +159,10 @@ const OPEN_WITHIN_S = 8 * 24 * 3600;
  * quota on a slate the publisher is not ready to write. The first week of a
  * season is opened by pages.yml's own Tuesday cron, as it always has been.
  */
-export async function weekNeedsOpening(env, season, nowS) {
+export async function weekNeedsOpening(env, season, nowS, league = DEFAULT) {
   const newest = await env.DB.prepare(
-    `SELECT week, lock_at FROM weeks WHERE season = ?
-      ORDER BY week DESC LIMIT 1`).bind(season).first();
+    `SELECT week, lock_at FROM weeks WHERE league = ? AND season = ?
+      ORDER BY week DESC LIMIT 1`).bind(league, season).first();
   if (!newest || newest.lock_at == null) return false;
   return newest.lock_at <= nowS && nowS - newest.lock_at <= OPEN_WITHIN_S;
 }
