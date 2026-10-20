@@ -307,7 +307,7 @@ jobs:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: |
           python3 basketball/bb_build.py --fetch
-          git add basketball/data
+          git add basketball/data basketball/pickem
 
       # WOMEN'S BASKETBALL, /womens-basketball/: the same builder with
       # --women, on ESPN's keyless data (CBBD has no women's), so it spends
@@ -319,7 +319,7 @@ jobs:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: |
           python3 basketball/bb_build.py --women --fetch
-          git add basketball/data
+          git add basketball/data basketball/pickem
 
       # The build writes tiebreaker/forecasts/<season>/week-NN.json. Odds are
       # recomputed and discarded every run, so a week that is not committed

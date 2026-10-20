@@ -1,0 +1,282 @@
+{
+ "game_count": 15,
+ "games": [
+  {
+   "away": "UCF",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": -16.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401827634,
+   "home": "Iowa State",
+   "kickoff": "2026-01-21T00:00:00.000Z",
+   "kickoff_at": 1768953600,
+   "neutral": false,
+   "spread_raw": -16.5,
+   "spread_x2": -33
+  },
+  {
+   "away": "Oklahoma State",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": -8.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827636,
+   "home": "TCU",
+   "kickoff": "2026-01-21T01:00:00.000Z",
+   "kickoff_at": 1768957200,
+   "neutral": false,
+   "spread_raw": -8.0,
+   "spread_x2": -16
+  },
+  {
+   "away": "Texas Tech",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": 2.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401827632,
+   "home": "Baylor",
+   "kickoff": "2026-01-21T02:00:00.000Z",
+   "kickoff_at": 1768960800,
+   "neutral": false,
+   "spread_raw": 2.5,
+   "spread_x2": 5
+  },
+  {
+   "away": "Utah",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": -5.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401827635,
+   "home": "Kansas State",
+   "kickoff": "2026-01-21T02:00:00.000Z",
+   "kickoff_at": 1768960800,
+   "neutral": false,
+   "spread_raw": -5.5,
+   "spread_x2": -11
+  },
+  {
+   "away": "Kansas",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": 7.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827633,
+   "home": "Colorado",
+   "kickoff": "2026-01-21T04:10:00.000Z",
+   "kickoff_at": 1768968600,
+   "neutral": false,
+   "spread_raw": 7.0,
+   "spread_x2": 14
+  },
+  {
+   "away": "Cincinnati",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": -17.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827637,
+   "home": "Arizona",
+   "kickoff": "2026-01-22T02:00:00.000Z",
+   "kickoff_at": 1769047200,
+   "neutral": false,
+   "spread_raw": -17.0,
+   "spread_x2": -34
+  },
+  {
+   "away": "West Virginia",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": 0.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827638,
+   "home": "Arizona State",
+   "kickoff": "2026-01-22T02:00:00.000Z",
+   "kickoff_at": 1769047200,
+   "neutral": false,
+   "spread_raw": 0.0,
+   "spread_x2": 0
+  },
+  {
+   "away": "West Virginia",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": -19.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827639,
+   "home": "Arizona",
+   "kickoff": "2026-01-24T19:00:00.000Z",
+   "kickoff_at": 1769281200,
+   "neutral": false,
+   "spread_raw": -19.0,
+   "spread_x2": -38
+  },
+  {
+   "away": "Houston",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": 2.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827646,
+   "home": "Texas Tech",
+   "kickoff": "2026-01-24T19:00:00.000Z",
+   "kickoff_at": 1769281200,
+   "neutral": false,
+   "spread_raw": 2.0,
+   "spread_x2": 4
+  },
+  {
+   "away": "UCF",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": 0.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827643,
+   "home": "Colorado",
+   "kickoff": "2026-01-24T20:00:00.000Z",
+   "kickoff_at": 1769284800,
+   "neutral": false,
+   "spread_raw": 0.0,
+   "spread_x2": 0
+  },
+  {
+   "away": "Iowa State",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": 13.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827645,
+   "home": "Oklahoma State",
+   "kickoff": "2026-01-24T20:00:00.000Z",
+   "kickoff_at": 1769284800,
+   "neutral": false,
+   "spread_raw": 13.0,
+   "spread_x2": 26
+  },
+  {
+   "away": "Utah",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": -17.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827642,
+   "home": "BYU",
+   "kickoff": "2026-01-24T22:30:00.000Z",
+   "kickoff_at": 1769293800,
+   "neutral": false,
+   "spread_raw": -17.0,
+   "spread_x2": -34
+  },
+  {
+   "away": "TCU",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": -3.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827641,
+   "home": "Baylor",
+   "kickoff": "2026-01-24T23:00:00.000Z",
+   "kickoff_at": 1769295600,
+   "neutral": false,
+   "spread_raw": -3.0,
+   "spread_x2": -6
+  },
+  {
+   "away": "Kansas",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": 8.5
+    }
+   ],
+   "books": 1,
+   "game_id": 401827644,
+   "home": "Kansas State",
+   "kickoff": "2026-01-25T01:00:00.000Z",
+   "kickoff_at": 1769302800,
+   "neutral": false,
+   "spread_raw": 8.5,
+   "spread_x2": 17
+  },
+  {
+   "away": "Cincinnati",
+   "b12": "both",
+   "book_lines": [
+    {
+     "provider": "model",
+     "spread": 2.0
+    }
+   ],
+   "books": 1,
+   "game_id": 401827640,
+   "home": "Arizona State",
+   "kickoff": "2026-01-25T03:00:00.000Z",
+   "kickoff_at": 1769310000,
+   "neutral": false,
+   "spread_raw": 2.0,
+   "spread_x2": 4
+  }
+ ],
+ "league": "mbb",
+ "lock_at": 1768953600,
+ "pickable_count": 15,
+ "published": "2026-01-13T02:00:00+00:00",
+ "season": 2026,
+ "status": "published",
+ "week": 4
+}

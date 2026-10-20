@@ -31,3 +31,20 @@ export function parse(raw) {
 export function fromUrl(url) {
   return parse(url.searchParams.get("league"));
 }
+
+/** Whether a league's pick'em locks game by game (basketball, migration
+ * 0015) rather than all at once at the week's first kickoff (football). */
+export function perGame(league) {
+  return league !== DEFAULT;
+}
+
+/** The season a league is playing at `ms`. Football names a season by the
+ * year it starts and is configured (env.SEASON); basketball names it by the
+ * year it ends, as CBBD and ESPN do, so from August the coming one is live. */
+export function seasonOf(env, league, ms = Date.now()) {
+  if (league === DEFAULT) {
+    return Number(env.SEASON || new Date(ms).getUTCFullYear());
+  }
+  const d = new Date(ms);
+  return d.getUTCMonth() >= 7 ? d.getUTCFullYear() + 1 : d.getUTCFullYear();
+}

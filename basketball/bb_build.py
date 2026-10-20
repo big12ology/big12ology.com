@@ -1500,6 +1500,12 @@ def main():
     CTX.update(live=live, archive=archive_seasons(live))
     tb.LIVE_YEAR = live
     built = {live: build_season(live, SITE, fetching="--fetch" in args)}
+    # The pick'em: this season's slates and the finals they are graded on,
+    # committed by the deploy for the Worker to import (bb_pickem.py).
+    import bb_pickem
+    d = built[live]
+    bb_pickem.publish(live, d["games"], d["lines"])
+    bb_pickem.write_scores(live, d["games"])
     for s in CTX["archive"]:
         built[s] = build_season(s, os.path.join(SITE, str(s)), deep="../")
     write_sitemap(built)

@@ -20,6 +20,7 @@ import { importWeek } from "./slate.js";
 import { fetchScores, scoreAll } from "./scoring.js";
 import { sweepEspn, sweepKickoffs } from "./espn.js";
 import { jobsAt, anyJob, weekNeedsOpening } from "./schedule.js";
+import { HOOPS_LEAGUES, sweepLeague } from "./hoops.js";
 
 const { json, fail } = api;
 
@@ -603,6 +604,21 @@ export default {
       const r = await dispatch(env, "scores.yml");
       console.log(`scores trigger: ${r}`);
       did.push(`scores:${r}`);
+    }
+
+    // Basketball's pools, on basketball's ticks and the noon heartbeat: import,
+    // finals, grading, league by league. Each is its own try, so one league's
+    // trouble never stops the other or the football sweep below.
+    if (jobs.hoops || (jobs.sweep && slot !== null
+                       && new Date(slot).getUTCHours() === 12)) {
+      for (const lg of HOOPS_LEAGUES) {
+        try {
+          const r = await sweepLeague(env, lg);
+          if (r.imported) did.push(`${lg}:${r.imported}/${r.changed}`);
+        } catch (e) {
+          console.log(`hoops ${lg}: ${e && (e.message || e)}`);
+        }
+      }
     }
 
     if (!jobs.sweep) {

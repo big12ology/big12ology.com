@@ -834,7 +834,10 @@ def section_tabs(section, year):
                  ("Schedule", f"{root}schedule.html",
                   section == f"{key}-schedule"),
                  ("Attendance", f"{root}attendance.html",
-                  section == f"{key}-attendance")]
+                  section == f"{key}-attendance"),
+                 # The pools pages are shared; the league picks the sport.
+                 ("Pools", "/pools/?league=" + ("mbb" if sport == "basketball"
+                                                else "wbb"), False)]
         label = ("Men\u2019s basketball" if sport == "basketball"
                  else "Women\u2019s basketball")
     else:

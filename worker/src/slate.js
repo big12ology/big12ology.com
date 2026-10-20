@@ -19,7 +19,7 @@
 // paragraph names, and pages.yml commits it minutes before Pages serves it.
 
 import { ats } from "./ats.js";
-import { DEFAULT } from "./league.js";
+import { DEFAULT, perGame } from "./league.js";
 
 /** The committed slate, as raw.githubusercontent.com serves the repo.
  * Football's lives beside its builder; basketball's under basketball/pickem/
@@ -32,7 +32,10 @@ export function slateUrl(env, season, week, league = DEFAULT) {
   return `${env.RAW_ORIGIN}/tiebreaker/pickem/${season}/week-${nn}.json`;
 }
 
-export function scoresUrl(env, season) {
+export function scoresUrl(env, season, league = DEFAULT) {
+  if (league !== DEFAULT) {
+    return `${env.RAW_ORIGIN}/basketball/pickem/${league}/${season}/scores.json`;
+  }
   return `${env.RAW_ORIGIN}/tiebreaker/site/pickem-scores.json`;
 }
 
@@ -183,6 +186,25 @@ export function isLocked(week, now = Math.floor(Date.now() / 1000)) {
  * has not finished, else the latest there is.
  */
 export async function currentWeek(env, season, league = DEFAULT) {
+  // Basketball locks game by game, so a week is current until its LAST tip:
+  // judged by its first, the week would be "over" on Tuesday night with
+  // Saturday's games still to pick.
+  if (perGame(league)) {
+    const open = await env.DB.prepare(
+      `SELECT w.week FROM weeks w
+        WHERE w.league = ? AND w.season = ?
+          AND (SELECT MAX(g.kickoff_at) FROM slate_games g
+                WHERE g.league = w.league AND g.season = w.season
+                  AND g.week = w.week) > ?
+        ORDER BY w.week LIMIT 1`)
+      .bind(league, season, Math.floor(Date.now() / 1000)).first();
+    if (open) return open.week;
+    const last = await env.DB.prepare(
+      `SELECT week FROM weeks WHERE league = ? AND season = ?
+        ORDER BY week DESC LIMIT 1`)
+      .bind(league, season).first();
+    return last ? last.week : null;
+  }
   const soon = await env.DB.prepare(
     `SELECT week FROM weeks
       WHERE league = ? AND season = ? AND (lock_at IS NULL OR lock_at > ?)
@@ -222,9 +244,16 @@ export async function readSlate(env, season, week, league = DEFAULT) {
       WHERE g.league = ? AND g.season = ? AND g.week = ?
       ORDER BY g.kickoff_at, g.game_id`).bind(league, season, week).all();
 
-  const locked = isLocked(w);
+  // Football: the whole card at its first kickoff. Basketball: each game at
+  // its own tip, so a game's room is revealed when IT starts, and the week
+  // counts as locked only once every game has.
+  const now = Math.floor(Date.now() / 1000);
+  const each = perGame(league);
+  const started = (g) => g.kickoff_at != null && g.kickoff_at <= now;
+  const locked = each ? (games || []).length > 0 && (games || []).every(started)
+                      : isLocked(w);
   let consensus = {};
-  if (locked) {
+  if (locked || (each && (games || []).some(started))) {
     const { results } = await env.DB.prepare(
       `SELECT game_id,
               SUM(side = 'home') AS home,
@@ -262,7 +291,10 @@ export async function readSlate(env, season, week, league = DEFAULT) {
         out.result = { home_points: g.home_points, away_points: g.away_points,
                        ats: g.ats };
       }
-      if (locked && consensus[g.game_id]) out.consensus = consensus[g.game_id];
+      if (each) out.started = started(g);
+      if ((each ? started(g) : locked) && consensus[g.game_id]) {
+        out.consensus = consensus[g.game_id];
+      }
       return out;
     }),
   };

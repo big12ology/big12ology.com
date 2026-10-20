@@ -197,7 +197,7 @@ export async function deleteMe(env, user) {
 export async function getSlate(env, url) {
   const lg = L.fromUrl(url);
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const week = await weekParam(env, url, s, lg);
   if (week == null) return fail("no_slate", 404);
   const slate = await readSlate(env, s, week, lg);
@@ -211,7 +211,7 @@ export async function getPicks(env, user, url) {
   if (!user) return fail("unauthenticated", 401);
   const lg = L.fromUrl(url);
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const week = await weekParam(env, url, s, lg);
   if (week == null) return fail("no_slate", 404);
 
@@ -225,8 +225,21 @@ export async function getPicks(env, user, url) {
 
   const picks = {};
   for (const r of results || []) picks[r.game_id] = r.side;
-  return json({ season: s, week, locked: isLocked(w),
-                lock_at: w ? w.lock_at : null, picks });
+  if (!L.perGame(lg)) {
+    return json({ season: s, week, locked: isLocked(w),
+                  lock_at: w ? w.lock_at : null, picks });
+  }
+  // Basketball: each game locks at its own tip, so the card says which have.
+  const ko = await env.DB.prepare(
+    `SELECT game_id, kickoff_at FROM slate_games
+      WHERE league = ? AND season = ? AND week = ?`)
+    .bind(lg, s, week).all();
+  const now = Math.floor(Date.now() / 1000);
+  const all = ko.results || [];
+  const started = all.filter((g) => g.kickoff_at <= now).map((g) => g.game_id);
+  return json({ season: s, week, lock_at: w ? w.lock_at : null, picks,
+                locked: all.length > 0 && started.length === all.length,
+                per_game: true, started });
 }
 
 /**
@@ -253,7 +266,7 @@ export async function putPicks(env, user, body) {
 
   const lg = L.parse(body.league);
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const week = Number(body.week);
   if (!Number.isInteger(week)) return fail("bad_week", 400);
   if (body.season != null && Number(body.season) !== s) {
@@ -272,19 +285,28 @@ export async function putPicks(env, user, body) {
     `SELECT lock_at FROM weeks WHERE league = ? AND season = ? AND week = ?`)
     .bind(lg, s, week).first();
   if (!w) return fail("no_slate", 404);
-  if (isLocked(w)) return lockedNow(env, user, s, week, lg);
-
-  const { results: games } = await env.DB.prepare(
-    `SELECT game_id, spread_x2 FROM slate_games
-      WHERE league = ? AND season = ? AND week = ? AND spread_x2 IS NOT NULL`)
-    .bind(lg, s, week).all();
-  const line = new Map((games || []).map((g) => [String(g.game_id), g.spread_x2]));
+  const each = L.perGame(lg);
+  if (!each && isLocked(w)) return lockedNow(env, user, s, week, lg);
 
   const now = Math.floor(Date.now() / 1000);
+  const { results: games } = await env.DB.prepare(
+    `SELECT game_id, spread_x2, kickoff_at FROM slate_games
+      WHERE league = ? AND season = ? AND week = ? AND spread_x2 IS NOT NULL`)
+    .bind(lg, s, week).all();
+  // Basketball replaces only the games still to tip: a pick on a game under
+  // way is a finished fact, kept as it was whatever this card says about it.
+  // Football's whole card locks at once, so for it every game is open here.
+  const open = (games || []).filter((g) => !each || g.kickoff_at > now);
+  if (each && !open.length) return lockedNow(env, user, s, week, lg);
+  const line = new Map(open.map((g) => [String(g.game_id), g.spread_x2]));
+
+  const holes = open.map(() => "?").join(",");
   const stmts = [env.DB.prepare(
     `DELETE FROM picks
-      WHERE league = ? AND user_id = ? AND season = ? AND week = ?`)
-    .bind(lg, user.userId, s, week)];
+      WHERE league = ? AND user_id = ? AND season = ? AND week = ?` +
+    (each ? ` AND game_id IN (${holes})` : ""))
+    .bind(lg, user.userId, s, week,
+          ...(each ? open.map((g) => g.game_id) : []))];
 
   for (const [gid, side] of Object.entries(picks)) {
     if (side !== "home" && side !== "away") return fail("bad_side", 400);
@@ -306,7 +328,9 @@ export async function putPicks(env, user, body) {
     // The triggers speak in these words. Mapping them back to 409 rather than
     // letting them surface as a 500 is what makes the client's "the week
     // locked while you were picking" path work.
-    if (/week_locked/.test(msg)) return lockedNow(env, user, s, week, lg);
+    if (/week_locked|game_started/.test(msg)) {
+      return lockedNow(env, user, s, week, lg);
+    }
     if (/unpickable_or_stale_line/.test(msg)) return fail("stale_line", 409);
     throw e;
   }
@@ -341,7 +365,7 @@ export async function getSurvivor(env, user, url) {
   if (!user) return fail("unauthenticated", 401);
   const lg = L.fromUrl(url);
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const week = await weekParam(env, url, s, lg);
   if (week == null) return fail("no_slate", 404);
 
@@ -425,7 +449,7 @@ export async function putSurvivorPick(env, user, body) {
 
   const lg = L.parse(body.league);
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const week = Number(body.week);
   if (!Number.isInteger(week)) return fail("bad_week", 400);
   if (body.season != null && Number(body.season) !== s) {
@@ -606,7 +630,7 @@ async function survivorWeekClosed(env, season_, week, lg = L.DEFAULT) {
 export async function getSurvivorBoard(env, url = null) {
   const lg = url ? L.fromUrl(url) : L.DEFAULT;
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const week = await currentWeek(env, s, lg);
 
   const { results } = await env.DB.prepare(
@@ -714,7 +738,7 @@ export async function getSurvivorBoard(env, url = null) {
 export async function getBoard(env, url) {
   const lg = L.fromUrl(url);
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const raw = url.searchParams.get("week");
   const week = raw ? Number(raw) : null;
   if (raw && !Number.isInteger(week)) return fail("bad_week", 400);
@@ -772,7 +796,7 @@ export async function getBoard(env, url) {
 export async function getConsensus(env, url) {
   const lg = L.fromUrl(url);
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const ids = (url.searchParams.get("games") || "")
     .split(",").map((x) => Number(x.trim()))
     .filter((n) => Number.isInteger(n) && n > 0).slice(0, 40);
@@ -787,8 +811,12 @@ export async function getConsensus(env, url) {
        FROM picks p
        JOIN weeks w ON w.league = p.league AND w.season = p.season
                    AND w.week = p.week
+       JOIN slate_games g ON g.league = p.league AND g.season = p.season
+                         AND g.week = p.week AND g.game_id = p.game_id
       WHERE p.league = ? AND p.season = ?
-        AND w.lock_at IS NOT NULL AND w.lock_at <= ?
+        -- Football's room opens at the week's lock, basketball's game by game.
+        AND ${L.perGame(lg) ? "g.kickoff_at <= ?"
+                            : "w.lock_at IS NOT NULL AND w.lock_at <= ?"}
         AND p.game_id IN (${holes})
       GROUP BY p.game_id`).bind(lg, s, now, ...ids).all();
 
@@ -806,7 +834,7 @@ export async function getConsensus(env, url) {
 export async function getUserPicks(env, url, userId) {
   const lg = L.fromUrl(url);
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const raw = url.searchParams.get("week");
   const week = raw ? Number(raw) : await currentWeek(env, s, lg);
   if (!Number.isInteger(week)) return fail("bad_week", 400);
@@ -815,8 +843,15 @@ export async function getUserPicks(env, url, userId) {
     `SELECT lock_at FROM weeks WHERE league = ? AND season = ? AND week = ?`)
     .bind(lg, s, week).first();
   // Before the lock, one player's card is exactly the information the lock
-  // exists to withhold.
+  // exists to withhold. Basketball's first tip is the week's lock_at, so the
+  // same test opens the card there, and the query below then shows only the
+  // games that have tipped.
   if (!isLocked(w)) return fail("not_yet_public", 403);
+  const tipped = L.perGame(lg)
+    ? ` AND p.game_id IN (SELECT game_id FROM slate_games
+                           WHERE league = p.league AND season = p.season
+                             AND week = p.week AND kickoff_at <= unixepoch())`
+    : "";
 
   const u = await env.DB.prepare(
     `SELECT display_name, status FROM users WHERE id = ?`).bind(userId).first();
@@ -828,8 +863,8 @@ export async function getUserPicks(env, url, userId) {
        LEFT JOIN pick_scores s ON s.league = p.league AND s.user_id = p.user_id
                               AND s.season = p.season AND s.week = p.week
                               AND s.game_id = p.game_id
-      WHERE p.league = ? AND p.user_id = ? AND p.season = ? AND p.week = ?`)
-    .bind(lg, userId, s, week).all();
+      WHERE p.league = ? AND p.user_id = ? AND p.season = ? AND p.week = ?` +
+    tipped).bind(lg, userId, s, week).all();
 
   return json({ user_id: userId, display_name: u.display_name,
                 season: s, week, picks: results || [] });
@@ -871,7 +906,7 @@ export async function getUserPicks(env, url, userId) {
 export async function getGrid(env, url) {
   const lg = L.fromUrl(url);
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const now = Math.floor(Date.now() / 1000);
 
   // The weeks that have closed, which is both the answer to "which week is
@@ -900,6 +935,13 @@ export async function getGrid(env, url) {
   if (!w) return fail("no_slate", 404);
   if (!isLocked(w)) return fail("not_yet_public", 403, { weeks });
 
+  // Basketball reveals game by game: only picks on games that have tipped.
+  const tipped = L.perGame(lg)
+    ? ` AND p.game_id IN (SELECT game_id FROM slate_games
+                           WHERE league = p.league AND season = p.season
+                             AND week = p.week AND kickoff_at <= unixepoch())`
+    : "";
+
   // Everyone with at least one pick in the week, ranked if the week has been
   // scored and alphabetical until it has. A player who sat the week out is
   // left off rather than drawn as a row of dashes: a card nobody filled in is
@@ -914,7 +956,7 @@ export async function getGrid(env, url) {
       WHERE u.status = 'active'
         AND EXISTS (SELECT 1 FROM picks p
                      WHERE p.league = ? AND p.user_id = u.id
-                       AND p.season = ? AND p.week = ?)
+                       AND p.season = ? AND p.week = ?${tipped})
       -- Unscored weeks sort last as a block rather than interleaving with
       -- the ranked ones, which is what ordering on b.rank alone does to NULLs.
       ORDER BY b.rank IS NULL, b.rank, u.display_name
@@ -933,8 +975,8 @@ export async function getGrid(env, url) {
   const { results: picks } = await env.DB.prepare(
     `SELECT p.user_id, p.game_id, p.side
        FROM picks p JOIN users u ON u.id = p.user_id
-      WHERE p.league = ? AND p.season = ? AND p.week = ? AND u.status = 'active'`)
-    .bind(lg, s, week).all();
+      WHERE p.league = ? AND p.season = ? AND p.week = ? AND u.status = 'active'` +
+    tipped).bind(lg, s, week).all();
   for (const r of picks || []) {
     const p = by.get(r.user_id);
     if (p) p.picks[r.game_id] = r.side;
@@ -983,7 +1025,7 @@ export async function getGrid(env, url) {
 export async function getUser(env, url, userId) {
   const lg = L.fromUrl(url);
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const now = Math.floor(Date.now() / 1000);
 
   const u = await env.DB.prepare(
@@ -1018,7 +1060,12 @@ export async function getUser(env, url, userId) {
         AND sc.season = p.season AND sc.week = p.week
         AND sc.game_id = p.game_id
       WHERE p.league = ? AND p.user_id = ? AND p.season = ?
-        AND w.lock_at IS NOT NULL AND w.lock_at <= ?
+        AND w.lock_at IS NOT NULL AND w.lock_at <= ?` +
+    (L.perGame(lg)
+      ? ` AND p.game_id IN (SELECT game_id FROM slate_games
+                             WHERE league = p.league AND season = p.season
+                               AND week = p.week AND kickoff_at <= unixepoch())`
+      : "") + `
       ORDER BY p.week, p.game_id`).bind(lg, userId, s, now).all()
     : { results: [] };
 
@@ -1121,7 +1168,7 @@ export async function getUser(env, url, userId) {
 export async function getHistory(env, user, url = null) {
   const lg = url ? L.fromUrl(url) : L.DEFAULT;
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   const h = await history(env, s, lg);
   if (!h) return json({ season: s, weeks: [], field: [], you: null,
                         leader: null, room: [] });
@@ -1133,7 +1180,7 @@ export async function getHistory(env, user, url = null) {
 export async function getSeasonCurrent(env, url = null) {
   const lg = url ? L.fromUrl(url) : L.DEFAULT;
   if (!lg) return fail("bad_league", 400);
-  const s = season(env);
+  const s = L.seasonOf(env, lg);
   return json({ season: s, week: await currentWeek(env, s, lg) });
 }
 

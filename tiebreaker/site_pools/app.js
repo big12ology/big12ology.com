@@ -16,6 +16,23 @@
   // ---------------------------------------------------------------- fetch
 
   var LOCKED = false;      // set once the server says so; never unset
+
+  // WHICH POOL. Football's by default; ?league=mbb or ?league=wbb puts every
+  // page in the men's or women's basketball pool. The API keeps the three
+  // apart (worker/src/league.js), and api() below hands it the league on
+  // every pools call, so nothing else in this file has to remember.
+  var LEAGUE = (function () {
+    var v = "";
+    try { v = new URLSearchParams(location.search).get("league") || ""; }
+    catch (e) { v = ""; }
+    v = v.toLowerCase();
+    return v === "mbb" || v === "wbb" ? v : "cfb";
+  })();
+  // Basketball's card locks game by game; set from the slate the API sends.
+  var PER_GAME = false;
+  var LEAGUE_NAME = {cfb: "Football", mbb: "Men\u2019s Basketball",
+                     wbb: "Women\u2019s Basketball"};
+  var POOL_API = /^\/api\/(slate|picks|leaderboard|grid|users\/|survivor|history|consensus|season\/current)/;
   // Whether anybody is signed in. The slate is readable either way — that is
   // deliberate, the lines are the interesting part — but picking is not, and
   // a radio that fills in and then reports a server error is worse than one
@@ -74,6 +91,13 @@
 
   function api(path, opts) {
     opts = opts || {};
+    if (LEAGUE !== "cfb" && POOL_API.test(path)) {
+      if (opts.body !== undefined && opts.body !== null &&
+          typeof opts.body === "object") {
+        opts.body.league = LEAGUE;
+      }
+      path += (path.indexOf("?") < 0 ? "?" : "&") + "league=" + LEAGUE;
+    }
     var init = {
       method: opts.method || "GET",
       credentials: "same-origin",
@@ -267,6 +291,8 @@
      fallback, and it already works. */
   var PVX = null;
   function previewIndex() {
+    // The look-ahead is football's alone; basketball has none to show.
+    if (LEAGUE !== "cfb") return Promise.resolve(null);
     if (!PVX) {
       PVX = fetch("/pools/preview.json")
         .then(function (r) { return r.ok ? r.json() : null; })
@@ -558,6 +584,12 @@
         // save bounced, and what the reader sees has to match what the
         // server will do. Guarded on the form: the survivor page runs this
         // countdown too, and its rows close per game, not per week.
+        // Basketball's card closes game by game, and the server marks each
+        // one; the clock reaching a tip shuts that game, not the card.
+        if (PER_GAME) {
+          cd.textContent = "under way";
+          return;
+        }
         if (!LOCKED && $("slateform")) lockDown();
         return;
       }
@@ -627,6 +659,12 @@
     // would be.
     if (pv) why = null;
     if (why) fs.disabled = true;
+    // Basketball locks each game at its own tip: a game under way is shut
+    // while the rest of the card stays open.
+    if (g.started) {
+      fs.disabled = true;
+      fs.classList.add("pk-started");
+    }
 
     // The legend is the group's accessible name and carries the whole story:
     // matchup, kickoff, the line, and why the game is closed if it is. It is
@@ -830,6 +868,33 @@
     form.className = "pk-locked pk-readonly";
   }
 
+  /* Basketball's lock line: no week-wide deadline, only the next game's tip,
+     each game shutting as it starts while the rest of the card stays open. */
+  function perGameLock(slate) {
+    var line = document.querySelector(".pk-lockline");
+    var open = slate.games.filter(function (g) { return !g.started; });
+    var next = open.reduce(function (m, g) {
+      return m == null || g.kickoff_at < m ? g.kickoff_at : m;
+    }, null);
+    if (line && line.firstChild && line.firstChild.nodeType === 3) {
+      line.firstChild.textContent = next
+        ? "Each game locks at its own tip. Next tip \u2014 "
+        : "Every game this week has tipped.";
+    }
+    var lt = $("lockat");
+    if (lt) {
+      if (next) {
+        lt.setAttribute("datetime", new Date(next * 1000).toISOString());
+        lt.textContent = fmtWhen(next * 1000);
+        startCountdown(next);
+      } else {
+        lt.textContent = "";
+        var cd = $("cd");
+        if (cd) cd.textContent = "";
+      }
+    }
+  }
+
   function lockDown() {
     LOCKED = true;
     var form = $("slateform");
@@ -910,8 +975,11 @@
       slate = r[0];
       picks = (r[1] && r[1].picks) || {};
       LOCKED = !!slate.locked;
+      PER_GAME = slate.games.some(function (g) { return g.started !== undefined; });
       show($("lockcard"), true);
-      if (slate.lock_at) {
+      if (PER_GAME) {
+        perGameLock(slate);
+      } else if (slate.lock_at) {
         var lt = $("lockat");
         lt.setAttribute("datetime", new Date(slate.lock_at * 1000).toISOString());
         lt.textContent = fmtWhen(slate.lock_at * 1000);
@@ -922,7 +990,13 @@
       // when: the freeze happened at publish, so the number beside a team
       // has been the number since this moment and will not move.
       var lf = $("linefroze");
-      if (lf) {
+      if (lf && PER_GAME) {
+        // Basketball's books post a game a day or two out, so each line is
+        // frozen when it first appears rather than at publish.
+        lf.textContent = "Each line is frozen the first time the books post " +
+          "it; after that it does not move.";
+        show(lf, true);
+      } else if (lf) {
         if (slate.published_at) {
           lf.textContent = "Lines frozen since " +
             fmtWhen(slate.published_at * 1000) + "; they do not move.";
@@ -1254,7 +1328,7 @@
       out.addEventListener("submit", function (e) {
         e.preventDefault();
         api("/api/auth/logout", {method: "POST"}).then(function () {
-          location.href = "/pools/pickem/";
+          location.href = inLeague("/pools/pickem/");
         }).catch(function (err) {
           // A refusal with no message is a dead button; that is how this
           // call's real failure hid for a week.
@@ -2629,7 +2703,14 @@
    */
 
   function playerHref(userId) {
-    return "/pools/player.html?u=" + encodeURIComponent(userId);
+    return "/pools/player.html?u=" + encodeURIComponent(userId) +
+      (LEAGUE === "cfb" ? "" : "&league=" + LEAGUE);
+  }
+
+  /** A pools link that stays in this page's league. */
+  function inLeague(path) {
+    return LEAGUE === "cfb" ? path
+      : path + (path.indexOf("?") < 0 ? "?" : "&") + "league=" + LEAGUE;
   }
 
   /* A name that goes somewhere. Every board on the site prints a column of
@@ -2773,7 +2854,7 @@
       head.appendChild(el("h2", null, "No player"));
       note.textContent = said + " ";
       var back = el("a", null, "The Board");
-      back.href = "/pools/pickem/board.html";
+      back.href = inLeague("/pools/pickem/board.html");
       note.appendChild(back);
       note.appendChild(document.createTextNode(" lists everybody playing."));
     }
@@ -3916,7 +3997,78 @@
 
   // ------------------------------------------------------------------ boot
 
+  /* The league on the page: a switch between the three pools, the title
+     naming the sport, and every link inside the pools carrying the league so
+     moving from the card to the board stays in the same pool. */
+  function leagueChrome() {
+    // Every browser this site supports has URL; a sandbox without one (the
+    // render tests) simply gets no switch, rather than no page.
+    if (typeof URL !== "function") return;
+    var main = document.querySelector("main") || document.body;
+    var head = document.querySelector(".b12-head h1");
+    if (head && LEAGUE !== "cfb") {
+      var first = head.firstChild;
+      if (first && first.nodeType === 3) {
+        first.textContent = first.textContent.replace(
+          /^Big 12 /, "Big 12 " + LEAGUE_NAME[LEAGUE] + " ");
+      }
+    }
+    if (LEAGUE !== "cfb") {
+      // The pools pages are built under Football; in a basketball pool the
+      // masthead and the section tabs belong to that sport instead.
+      var root = LEAGUE === "mbb" ? "/basketball/" : "/womens-basketball/";
+      [].forEach.call(document.querySelectorAll(".b12-topbar a"), function (a) {
+        var on = a.getAttribute("href") === root;
+        a.classList.toggle("on", on);
+      });
+      var tabs = document.querySelector(".b12-tabs");
+      if (tabs) {
+        tabs.setAttribute("aria-label", LEAGUE_NAME[LEAGUE] + " sections");
+        tabs.textContent = "";
+        [["Season", root], ["Schedule", root + "schedule.html"],
+         ["Attendance", root + "attendance.html"],
+         ["Pools", "/pools/?league=" + LEAGUE]].forEach(function (t) {
+          var a = el("a", t[0] === "Pools" ? "on" : "", t[0]);
+          a.href = t[1];
+          if (t[0] === "Pools") a.setAttribute("aria-current", "page");
+          tabs.appendChild(a);
+        });
+      }
+      var blurb = document.querySelector(".b12-head p");
+      if (blurb) {
+        blurb.textContent = blurb.textContent
+          .replace("the whole slate locks at the first kickoff",
+                   "each game locks at its own tip")
+          .replace("frozen when the week is published",
+                   "frozen when the books first post it");
+      }
+    }
+    var bar = el("nav", "pk-leagues");
+    bar.setAttribute("aria-label", "Pools");
+    ["cfb", "mbb", "wbb"].forEach(function (lg) {
+      var a = el("a", lg === LEAGUE ? "on" : "", LEAGUE_NAME[lg]);
+      var u = new URL(location.href);
+      if (lg === "cfb") u.searchParams.delete("league");
+      else u.searchParams.set("league", lg);
+      a.href = u.pathname + u.search + u.hash;
+      if (lg === LEAGUE) a.setAttribute("aria-current", "true");
+      bar.appendChild(a);
+    });
+    main.insertBefore(bar, main.firstChild);
+    if (LEAGUE === "cfb") return;
+    [].forEach.call(document.querySelectorAll("a[href]"), function (a) {
+      if (a.closest(".pk-leagues")) return;
+      var u;
+      try { u = new URL(a.getAttribute("href"), location.href); }
+      catch (e) { return; }
+      if (u.origin !== location.origin || u.pathname.indexOf("/pools/") !== 0) return;
+      u.searchParams.set("league", LEAGUE);
+      a.setAttribute("href", u.pathname + u.search + u.hash);
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    leagueChrome();
     // One /api/me for the whole page: the chip needs it, and every section
     // below branches on it.
     api("/api/me").catch(function () { return null; }).then(function (me) {

@@ -39,6 +39,17 @@ const SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/football"
 // resolved in the week 1 check.
 const GROUPS = 80;
 
+// Basketball's, men's and women's: the Big 12's own scoreboard (group 8),
+// which carries every game a member plays, non-conference ones too. Checked
+// for both on the 2026 tournament's quarterfinal and semifinal days.
+const BOARDS = {
+  cfb: [SCOREBOARD, GROUPS],
+  mbb: ["https://site.api.espn.com/apis/site/v2/sports/basketball"
+        + "/mens-college-basketball/scoreboard", 8],
+  wbb: ["https://site.api.espn.com/apis/site/v2/sports/basketball"
+        + "/womens-college-basketball/scoreboard", 8],
+};
+
 // Long enough that a game asked about is almost certainly over, short enough
 // to beat the publisher. Nothing breaks if it is asked early; an unfinished
 // game simply is not completed yet and nothing is written.
@@ -113,11 +124,12 @@ export function daysAround(kicks) {
  * not blind the sweep to the others. Only when every date fails does this
  * throw, with the first failure, so the cron log still says what ESPN said.
  */
-async function scoreboard(days, fetchImpl) {
+async function scoreboard(days, fetchImpl, league = DEFAULT) {
+  const [base, group] = BOARDS[league] || BOARDS[DEFAULT];
   const events = new Map();
   let firstError = null, answered = 0;
   for (const d of days) {
-    const url = `${SCOREBOARD}?dates=${d}&groups=${GROUPS}&limit=400`;
+    const url = `${base}?dates=${d}&groups=${group}&limit=400`;
     try {
       const r = await fetchImpl(url, { headers: { Accept: "application/json" } });
       if (!r.ok) throw new Error(`espn_${r.status}`);
@@ -135,8 +147,8 @@ async function scoreboard(days, fetchImpl) {
 }
 
 export async function fetchEspn(from, to, fetchImpl = fetch,
-                                days = spanDays(from, to)) {
-  const doc = await scoreboard(days, fetchImpl);
+                                days = spanDays(from, to), league = DEFAULT) {
+  const doc = await scoreboard(days, fetchImpl, league);
   const out = {};
   for (const e of doc.events || []) {
     const c = (e.competitions || [])[0];
@@ -166,8 +178,9 @@ export async function fetchEspn(from, to, fetchImpl = fetch,
  * thing for a lock to key off. Completion is irrelevant here and not read.
  */
 export async function fetchEspnSchedule(from, to, fetchImpl = fetch,
-                                        days = spanDays(from, to)) {
-  const doc = await scoreboard(days, fetchImpl);
+                                        days = spanDays(from, to),
+                                        league = DEFAULT) {
+  const doc = await scoreboard(days, fetchImpl, league);
   const out = {};
   for (const e of doc.events || []) {
     // timeValid false is ESPN saying the window is not announced yet, and the
@@ -222,7 +235,7 @@ export async function sweepKickoffs(env, season,
   const kicks = games.map((g) => g.kickoff_at);
   const sched = await fetchEspnSchedule(Math.min(...kicks), Math.max(...kicks),
                                         env.ESPN_FETCH || fetch,
-                                        daysAround(kicks));
+                                        daysAround(kicks), league);
 
   const moved = [];
   let far = 0;
@@ -298,7 +311,8 @@ export async function sweepEspn(env, season, base,
 
   const kicks = pending.map((g) => g.kickoff_at);
   const found = await fetchEspn(Math.min(...kicks), Math.max(...kicks),
-                               env.ESPN_FETCH || fetch, daysAround(kicks));
+                               env.ESPN_FETCH || fetch, daysAround(kicks),
+                               league);
 
   // Slate games only. The scoreboard carries the whole of FBS and none of the
   // rest of it is any of this Worker's business.

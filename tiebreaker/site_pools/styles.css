@@ -1318,3 +1318,17 @@ thead .pk-gabbr { color: var(--dim); }
   text-decoration-color: currentColor; }
 .pk-plink:focus-visible { outline: 3px solid var(--accent);
   outline-offset: 2px; border-radius: 3px; }
+
+/* Which pool: football, men's or women's basketball. A quiet segmented
+   switch at the top of every pools page; the API keeps the three apart and
+   the page's links carry the choice. */
+.pk-leagues { display: flex; flex-wrap: wrap; gap: 4px; margin: 14px 0 4px; }
+.pk-leagues a { font-size: var(--t-meta); text-decoration: none;
+  color: var(--dim, #666d7b); padding: 5px 12px; border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+.pk-leagues a:hover { border-color: var(--accent); color: var(--ink); }
+.pk-leagues a.on { background: var(--accent); border-color: var(--accent);
+  color: #fff; font-weight: 600; }
+.pk-leagues a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+/* A basketball game under way: shut, while the rest of the card is open. */
+.pk-slate-game.pk-started { opacity: .7; }

@@ -58,9 +58,10 @@ async function hashOf(obj) {
     .map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-/** Where a season's scores live in KV. The publisher and the reader agree here. */
-export function scoresKey(season) {
-  return `scores:${season}`;
+/** Where a season's scores live in KV. The publisher and the reader agree
+ * here. Football keeps the key it had; basketball's carry their league. */
+export function scoresKey(season, league = DEFAULT) {
+  return league === DEFAULT ? `scores:${season}` : `scores:${league}:${season}`;
 }
 
 /**
@@ -85,16 +86,16 @@ export function scoresKey(season) {
  * channels have been live for a season and the logs show no fallback, this
  * half can go, and RAW_ORIGIN with it if the slate import no longer wants it.
  */
-export async function fetchScores(env, season) {
+export async function fetchScores(env, season, league = DEFAULT) {
   if (env.SCORES && season != null) {
     // "json" rather than parsing here: the runtime does it, and a value that
     // somehow is not JSON comes back null instead of throwing, which lands on
     // the fallback below rather than failing the whole sweep.
-    const cached = await env.SCORES.get(scoresKey(season), "json");
+    const cached = await env.SCORES.get(scoresKey(season, league), "json");
     if (cached && cached.games) return cached;
-    console.log(`scores: KV miss for ${scoresKey(season)}, asking the repo`);
+    console.log(`scores: KV miss for ${scoresKey(season, league)}, asking the repo`);
   }
-  const r = await fetch(scoresUrl(env), {
+  const r = await fetch(scoresUrl(env, season, league), {
     headers: { Accept: "application/json" }, cf: { cacheTtl: 0 },
   });
   if (!r.ok) throw new Error(`scores_${r.status}`);
@@ -859,7 +860,7 @@ async function roomHistory(env, season, weeks, league = DEFAULT) {
  */
 export async function scoreAll(env, season, now = Math.floor(Date.now() / 1000),
                                { scores: given = null, league = DEFAULT } = {}) {
-  const scores = given || await fetchScores(env, season);
+  const scores = given || await fetchScores(env, season, league);
   const { results } = await env.DB.prepare(
     `SELECT week FROM weeks
       WHERE league = ? AND season = ? AND lock_at IS NOT NULL AND lock_at <= ?
