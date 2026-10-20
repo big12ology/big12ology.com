@@ -85,15 +85,9 @@ mkdir -p "$DIST/season/cards"
 rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/cards/" "$DIST/season/cards/"
 
 # The football section was published at /tiebreaker/ until 2026-10-20 and is
-# /season/ now. A Cloudflare redirect rule sends /tiebreaker/* to /season/*
-# with a 301; until that rule is live, the old path is a second copy so that
-# nothing linked, bookmarked or cached at the edge breaks in between. Every
-# page in it already names /season/ as canonical. Drop this once the rule is
-# answering (curl -sI https://big12ology.com/tiebreaker/ shows a 301).
-B12_OLD_TIEBREAKER="${B12_OLD_TIEBREAKER:-1}"
-if [ "$B12_OLD_TIEBREAKER" = "1" ]; then
-  rsync -a "$DIST/season/" "$DIST/tiebreaker/"
-fi
+# /season/ now. Nothing is published at the old path: a Cloudflare redirect
+# rule (dashboard, Rules > Redirect Rules) sends /tiebreaker/* to /season/*
+# with a 301 and the query string kept.
 
 # The schedule section is generated beside the tiebreaker and served as a
 # sibling path; its pages reach back to ../season/ for the shared marks
