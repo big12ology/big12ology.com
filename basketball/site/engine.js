@@ -333,7 +333,14 @@
     });
     var top = gs[0] || [];
     var played = top.length && (rec[top[0]].w + rec[top[0]].l) > 0;
-    return { rows: rows, champions: played ? top.slice() : [] };
+    // Each draw as the run of seeds its teams hold between them, so a caller
+    // can let any of them land in any of those places.
+    var draws = ctx.unresolved.map(function (u) {
+      var at = u.map(function (t) { return order.indexOf(t); });
+      return { teams: u.slice(), from: Math.min.apply(null, at),
+        to: Math.max.apply(null, at) };
+    });
+    return { rows: rows, champions: played ? top.slice() : [], draws: draws };
   }
 
   // ---- probabilities ----------------------------------------------------------
@@ -391,8 +398,13 @@
 
   /* Each team's chance of reaching each round, given the seeds:
    * {team: [play first round or later, second, quarters, semis, final, win]}.
-   * Exact, by carrying a distribution over who fills each slot. */
-  function bracketOdds(order, model) {
+   * Exact, by carrying a distribution over who fills each slot.
+   *
+   * `results`, during the tournament, is {game index: winner} for the games
+   * already played. A played game is no longer a chance: its winner fills
+   * the slot outright and the loser goes no further. */
+  function bracketOdds(order, model, results) {
+    results = results || {};
     var slot = {};
     function dist(x) {
       if (typeof x === "number") {
@@ -411,6 +423,12 @@
     });
     BRACKET.forEach(function (game, gi) {
       var a = dist(game[0]), b = dist(game[1]), out = {};
+      if (results[gi]) {
+        out[results[gi]] = 1;
+        slot["g" + gi] = out;
+        reach[results[gi]][ROUND_OF[gi]] += 1;
+        return;
+      }
       Object.keys(a).forEach(function (x) {
         Object.keys(b).forEach(function (y) {
           var pa = a[x] * b[y];
@@ -442,7 +460,13 @@
    * with the full procedure, then play the bracket from those seeds.
    *
    *   {n, teams: {team: {seed: [16 counts], top1, top4, top8, share,
-   *                       title, expW}}}
+   *                       title, expW}},
+   *    games: {id: {homeWins, home: [[16] if home wins, [16] if away wins],
+   *                           away: [same]}}}
+   *
+   * `games` is what each unplayed game is worth to the two teams in it: their
+   * seed chances in the runs the home side won and in the runs it lost. Free,
+   * because every run already decides every game; it only has to be counted.
    *
    * A draw in a simulated season is settled by the generator, the way the
    * conference would settle it with slips of paper. */
@@ -458,22 +482,46 @@
       out[t] = { seed: teams.map(function () { return 0; }), top1: 0, top4: 0,
         top8: 0, share: 0, title: 0, expW: 0 };
     });
+    function zeros() { return teams.map(function () { return 0; }); }
+    var each = left.map(function () {
+      return { homeWins: 0, home: [zeros(), zeros()], away: [zeros(), zeros()] };
+    });
+    var won = [];
     for (var i = 0; i < n; i++) {
       var played = done.slice();
       left.forEach(function (g, j) {
         var homeWins = rand() < probs[j];
+        won[j] = homeWins;
         played.push({ home: g.home, away: g.away, neutral: g.neutral,
           final: true, hp: homeWins ? 1 : 0, ap: homeWins ? 0 : 1 });
       });
       var st = standings(played, teams);
       var order = st.rows.map(function (r) { return r.team; });
-      // A draw is a coin the conference flips; shuffle the stuck teams.
-      st.rows.forEach(function (r, k) {
-        out[r.team].seed[k]++;
-        if (k === 0) out[r.team].top1++;
-        if (k < 4) out[r.team].top4++;
-        if (k < 8) out[r.team].top8++;
-        out[r.team].expW += r.w;
+      // A draw is slips of paper the conference pulls from a hat: shuffle the
+      // stuck teams among the seeds they hold, or the alphabet would win
+      // every simulated draw.
+      st.draws.forEach(function (d) {
+        for (var a = d.to; a > d.from; a--) {
+          var b = d.from + Math.floor(rand() * (a - d.from + 1));
+          var x = order[a]; order[a] = order[b]; order[b] = x;
+        }
+      });
+      var wins = {};
+      st.rows.forEach(function (r) { wins[r.team] = r.w; });
+      var at = {};
+      order.forEach(function (t, k) {
+        at[t] = k;
+        out[t].seed[k]++;
+        if (k === 0) out[t].top1++;
+        if (k < 4) out[t].top4++;
+        if (k < 8) out[t].top8++;
+        out[t].expW += wins[t];
+      });
+      left.forEach(function (g, j) {
+        var e = each[j], side = won[j] ? 0 : 1;
+        if (won[j]) e.homeWins++;
+        e.home[side][at[g.home]]++;
+        e.away[side][at[g.away]]++;
       });
       st.champions.forEach(function (t) { out[t].share++; });
       out[playBracket(order, model, rand)].title++;
@@ -485,7 +533,17 @@
       });
       o.seed = o.seed.map(function (c) { return c / n; });
     });
-    return { n: n, teams: out };
+    var games = {};
+    left.forEach(function (g, j) {
+      var e = each[j], hw = e.homeWins, aw = n - hw;
+      function share(row, of) {
+        return row.map(function (c) { return of ? c / of : 0; });
+      }
+      games[g.id] = { homeWins: hw / n,
+        home: [share(e.home[0], hw), share(e.home[1], aw)],
+        away: [share(e.away[0], hw), share(e.away[1], aw)] };
+    });
+    return { n: n, teams: out, games: games };
   }
 
   // ---- what is already certain ------------------------------------------------------
@@ -528,9 +586,84 @@
     return out;
   }
 
+  // ---- what is still possible, exactly ------------------------------------------
+
+  /* Every way the rest of the season can go, when few enough games are left
+   * to try them all: 2^n seasons for n games, each seeded with the full
+   * procedure. A draw lets each of its teams land anywhere in the seeds the
+   * draw covers, because nobody can promise how the slips come out.
+   *
+   *   null when more than `limit` games are left, otherwise
+   *   {left, seasons, teams: {team: {seeds: [possible seeds],
+   *     share: "yes" | "no" | "maybe", winOut: [seeds], loseOut: [seeds],
+   *     games: n}}}
+   *
+   * winOut and loseOut are the seeds still possible if the team wins, or
+   * loses, every game it has left, whatever the others do: the two sentences
+   * a fan actually asks for in the last week. */
+  function exact(games, teams, limit) {
+    var done = games.filter(function (g) { return g.final; });
+    var left = games.filter(function (g) {
+      return !g.final && teams.indexOf(g.home) >= 0 && teams.indexOf(g.away) >= 0;
+    });
+    if (left.length > (limit == null ? 16 : limit)) return null;
+    var mine = {};
+    teams.forEach(function (t) { mine[t] = []; });
+    var sim = left.map(function (g, j) {
+      mine[g.home].push(j); mine[g.away].push(j);
+      return { home: g.home, away: g.away, neutral: g.neutral, final: true,
+        hp: 0, ap: 0 };
+    });
+    var all = done.concat(sim);
+    var seeds = {}, winOut = {}, loseOut = {}, share = {}, noShare = {};
+    teams.forEach(function (t) {
+      seeds[t] = 0; winOut[t] = 0; loseOut[t] = 0;
+      share[t] = true; noShare[t] = true;
+    });
+    var total = Math.pow(2, left.length);
+    for (var m = 0; m < total; m++) {
+      sim.forEach(function (g, j) {
+        var home = (m >> j) & 1;
+        g.hp = home; g.ap = 1 - home;
+      });
+      var st = standings(all, teams);
+      var span = {};
+      st.rows.forEach(function (r, k) { span[r.team] = [k, k]; });
+      st.draws.forEach(function (d) {
+        d.teams.forEach(function (t) { span[t] = [d.from, d.to]; });
+      });
+      var champ = {};
+      st.champions.forEach(function (t) { champ[t] = true; });
+      teams.forEach(function (t) {
+        var bits = 0;
+        for (var k = span[t][0]; k <= span[t][1]; k++) bits |= 1 << k;
+        seeds[t] |= bits;
+        var won = 0;
+        mine[t].forEach(function (j) {
+          if ((sim[j].home === t) === (sim[j].hp === 1)) won++;
+        });
+        if (won === mine[t].length) winOut[t] |= bits;
+        if (won === 0) loseOut[t] |= bits;
+        if (champ[t]) noShare[t] = false; else share[t] = false;
+      });
+    }
+    function list(bits) {
+      var out = [];
+      for (var k = 0; k < teams.length; k++) if (bits & (1 << k)) out.push(k + 1);
+      return out;
+    }
+    var out = {};
+    teams.forEach(function (t) {
+      out[t] = { seeds: list(seeds[t]), winOut: list(winOut[t]),
+        loseOut: list(loseOut[t]), games: mine[t].length,
+        share: share[t] ? "yes" : noShare[t] ? "no" : "maybe" };
+    });
+    return { left: left.length, seasons: total, teams: out };
+  }
+
   var api = { standings: standings, records: records, pct: pct,
     winProb: winProb, bracketOdds: bracketOdds, simulate: simulate,
-    certain: certain, ROUNDS: ROUNDS };
+    certain: certain, exact: exact, ROUNDS: ROUNDS };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.B12BB = api;
 })(this);

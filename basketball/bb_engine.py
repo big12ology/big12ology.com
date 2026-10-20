@@ -59,10 +59,22 @@ def certain(games, teams):
     return call("certain", engine_games(games), sorted(teams))
 
 
-def bracket_odds(order, model):
+# Games left at or below which the build enumerates every remaining season.
+# 2^18 seasons is about nine seconds of Node; 2^16, the last two rounds, two.
+EXACT_LIMIT = 18
+
+
+def exact(games, teams, limit=EXACT_LIMIT):
+    """Every seed still possible, from every way the rest can go, or None
+    while more than `limit` games are left. See engine.js's exact()."""
+    return call("exact", engine_games(games), sorted(teams), limit)
+
+
+def bracket_odds(order, model, results=None):
     return call("bracketOdds", order,
                 {"ratings": model.get("ratings", {}), "hfa": model.get("hfa", 0),
-                 "sigma": model.get("sigma", 11)})
+                 "sigma": model.get("sigma", 11)},
+                {str(k): v for k, v in (results or {}).items()})
 
 
 def win_prob(model, home, away, neutral):

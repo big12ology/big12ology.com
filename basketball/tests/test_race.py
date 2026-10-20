@@ -53,6 +53,23 @@ check(abs(sum(T[t]["top4"] for t in teams) - 4) < 1e-9
       "four double byes and eight byes a season")
 check(sum(T[t]["share"] for t in teams) >= 1,
       "at least one team shares the title every season")
+G = sim["games"]
+left_ids = [g["id"] for g in mid if g["conf"] and not g["final"]]
+check(sorted(G) == sorted(str(i) for i in left_ids) or
+      sorted(map(str, G)) == sorted(map(str, left_ids)),
+      "every unplayed game has its own what-it-means")
+worst = 0
+for g in mid:
+    if not (g["conf"] and not g["final"]):
+        continue
+    e = G[str(g["id"])]
+    for side, t in (("home", g["home"]), ("away", g["away"])):
+        for k in range(16):
+            mix = (e["homeWins"] * e[side][0][k]
+                   + (1 - e["homeWins"]) * e[side][1][k])
+            worst = max(worst, abs(mix - T[t]["seed"][k]))
+check(worst < 1e-9, "a game's two outcomes average back to the team's own "
+                    "seed chances")
 again = engine.simulate(mid, teams, model, n=3000, seed=11)
 check(again == sim, "the same results and ratings give byte-identical odds")
 
@@ -74,6 +91,38 @@ check(done[champ]["in1"] and done[champ]["shareIn"],
       f"a finished season: {champ} has clinched the top seed and the title")
 check(all(done[t]["out1"] for t in teams if t != champ),
       "and everyone else is out of the top seed")
+
+# --- the exact proofs ------------------------------------------------------------
+print("the exact proofs, with twelve games left:")
+cut12 = len(conf) - 12
+late = [dict(g, final=False, hp=None, ap=None) if i >= cut12 else g
+        for i, g in enumerate(conf)]
+ex = engine.exact(late, teams)
+check(ex is not None and ex["left"] == 12 and ex["seasons"] == 4096,
+      "twelve games left is 4,096 seasons, all of them tried")
+E = ex["teams"]
+late_sim = engine.simulate(late, teams, model, n=4000, seed=5)["teams"]
+for t in teams:
+    for k, p in enumerate(late_sim[t]["seed"]):
+        if p > 0 and k + 1 not in E[t]["seeds"]:
+            check(False, f"{t} took seed {k + 1} in a simulation the proof "
+                         f"says is impossible")
+check(True, "every simulated seed is one the proof allows")
+check(all(set(E[t]["winOut"]) <= set(E[t]["seeds"])
+          and set(E[t]["loseOut"]) <= set(E[t]["seeds"]) for t in teams),
+      "winning out and losing out are inside what is possible at all")
+check(all(E[t]["winOut"] and E[t]["loseOut"] for t in teams),
+      "every team can win out and can lose out")
+for k in range(16):
+    if not any(k + 1 in E[t]["seeds"] for t in teams):
+        check(False, f"no team can finish at seed {k + 1}")
+check(True, "every seed is somebody's")
+final_ex = engine.exact(d["games"], teams)
+check(all(final_ex["teams"][t]["seeds"] == [official["seasons"]["2026"]["seeds"]
+                                            .index(t) + 1] for t in teams),
+      "a finished season has one possible seed per team, the official one")
+check(engine.exact(mid, teams) is None,
+      "forty games left is too many to try, and says so")
 
 # --- the bracket ---------------------------------------------------------------
 print("the bracket:")

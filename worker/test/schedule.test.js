@@ -155,14 +155,74 @@ test("and an idle tick is still most of them", () => {
   assert.ok(idle > all / 2, `${idle} of ${all} ticks in a week are idle`);
 });
 
-test("out of season the only job is the noon sweep", () => {
-  for (const t of ticks("2027-02-07T00:00:00Z", 7)) {
+test("out of both seasons the only job is the noon sweep", () => {
+  for (const t of ticks("2027-06-07T00:00:00Z", 7)) {
     const d = new Date(t), jobs = jobsAt(t);
     const noon = d.getUTCHours() === 12 && d.getUTCMinutes() === 0;
     assert.deepEqual(jobs, { sweep: noon, deploy: false, refresh: false,
-                             scores: false }, `${d.toISOString()}`);
+                             scores: false, hoops: false }, `${d.toISOString()}`);
   }
 });
+
+// MEN'S BASKETBALL: its own deploys, November to the Kansas City tournament.
+
+test("in February football is idle and basketball rebuilds on game nights",
+  () => {
+    const at = [];
+    for (const t of ticks("2027-02-07T00:00:00Z", 7)) {
+      const d = new Date(t), j = jobsAt(t);
+      const noon = d.getUTCHours() === 12 && d.getUTCMinutes() === 0;
+      assert.equal(j.sweep, noon);
+      assert.ok(!j.deploy && !j.refresh && !j.scores, d.toISOString());
+      if (j.hoops) at.push(d.toISOString().slice(5, 16));
+    }
+    // 2027-02-07 is a Sunday: six night hours every day, and the six
+    // afternoon hours on the Sunday and the Saturday.
+    assert.equal(at.length, 7 * 6 + 2 * 6, at.join(" "));
+    assert.ok(at.every((s) => s.endsWith(":40")));
+    assert.ok(at.includes("02-07T01:40") && at.includes("02-07T18:40")
+              && !at.includes("02-08T18:40"), at.join(" "));
+  });
+
+test("basketball never deploys in an hour football already has", () => {
+  for (const [start, days] of SPANS) {
+    for (const t of ticks(start, days)) {
+      if (!jobsAt(t).hoops) continue;
+      const hour = t - 10 * MIN;      // :30 of the same hour
+      assert.ok(!jobsAt(hour).deploy,
+        `${new Date(t).toISOString()}: both sports deploy this hour`);
+    }
+  }
+  // A Tuesday in December: no football deploy, so basketball has the night.
+  assert.ok(jobsAt(Date.parse("2026-12-08T03:40:00Z")).hoops);
+  // A Saturday in November: football deploys every hour, basketball stands aside.
+  assert.ok(!jobsAt(Date.parse("2026-11-07T03:40:00Z")).hoops);
+});
+
+test("tournament week rebuilds every afternoon, and the season ends after it",
+  () => {
+    // Thursday 2027-03-11, the quarterfinals: an afternoon tick.
+    assert.ok(jobsAt(Date.parse("2027-03-11T19:40:00Z")).hoops);
+    // A Thursday in February has no afternoon games worth a rebuild.
+    assert.ok(!jobsAt(Date.parse("2027-02-11T19:40:00Z")).hoops);
+    // After the final, nothing.
+    assert.ok(!jobsAt(Date.parse("2027-03-17T02:40:00Z")).hoops);
+    // And nothing before November.
+    assert.ok(!jobsAt(Date.parse("2026-10-21T02:40:00Z")).hoops);
+    assert.ok(jobsAt(Date.parse("2026-11-04T02:40:00Z")).hoops);
+  });
+
+test("a basketball tick dispatches a plain deploy and writes it down",
+  async () => {
+    const env = env0();
+    const seen = net();
+    await tick(env, Date.parse("2027-02-10T02:40:00Z"));
+    assert.deepEqual(seen.dispatches.map((d) => d.body.inputs),
+                     [{ deploy: "true" }]);
+    const row = env.raw.prepare(
+      "SELECT detail FROM audit_log WHERE action = 'cron.tick'").get();
+    assert.deepEqual(JSON.parse(row.detail).did, ["hoops:dispatched"]);
+  });
 
 test("the refresh is asked for on three Tuesday ticks and no others", () => {
   const asked = [];
@@ -335,7 +395,7 @@ test("an idle tick costs nothing: no fetch, no read, no write", async () => {
   env.DB.prepare = (sql) => { touched++; return real(sql); };
   await tick(env, Date.parse("2026-10-14T03:10:00Z"));
   assert.deepEqual(jobsAt(Date.parse("2026-10-14T03:10:00Z")),
-    { sweep: false, deploy: false, refresh: false, scores: false });
+    { sweep: false, deploy: false, refresh: false, scores: false, hoops: false });
   assert.equal(seen.urls.length, 0, `an idle tick fetched ${seen.urls}`);
   assert.equal(touched, 0, "an idle tick touched the database");
 });

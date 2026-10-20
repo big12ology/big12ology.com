@@ -1,0 +1,144 @@
+{
+ "events": [
+  {
+   "id": "401851299",
+   "date": "2026-03-12T19:00Z",
+   "competitions": [
+    {
+     "status": {
+      "type": {
+       "completed": true
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "score": "81",
+       "team": {
+        "location": "Arizona",
+        "shortDisplayName": "Arizona",
+        "displayName": "Arizona Wildcats",
+        "abbreviation": "ARIZ"
+       }
+      },
+      {
+       "homeAway": "away",
+       "score": "59",
+       "team": {
+        "location": "UCF",
+        "shortDisplayName": "UCF",
+        "displayName": "UCF Knights",
+        "abbreviation": "UCF"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401851300",
+   "date": "2026-03-12T23:00Z",
+   "competitions": [
+    {
+     "status": {
+      "type": {
+       "completed": true
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "score": "73",
+       "team": {
+        "location": "Houston",
+        "shortDisplayName": "Houston",
+        "displayName": "Houston Cougars",
+        "abbreviation": "HOU"
+       }
+      },
+      {
+       "homeAway": "away",
+       "score": "66",
+       "team": {
+        "location": "BYU",
+        "shortDisplayName": "BYU",
+        "displayName": "BYU Cougars",
+        "abbreviation": "BYU"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401851296",
+   "date": "2026-03-12T16:30Z",
+   "competitions": [
+    {
+     "status": {
+      "type": {
+       "completed": true
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "score": "53",
+       "team": {
+        "location": "Texas Tech",
+        "shortDisplayName": "Texas Tech",
+        "displayName": "Texas Tech Red Raiders",
+        "abbreviation": "TTU"
+       }
+      },
+      {
+       "homeAway": "away",
+       "score": "75",
+       "team": {
+        "location": "Iowa State",
+        "shortDisplayName": "Iowa State",
+        "displayName": "Iowa State Cyclones",
+        "abbreviation": "ISU"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401851302",
+   "date": "2026-03-13T01:49Z",
+   "competitions": [
+    {
+     "status": {
+      "type": {
+       "completed": true
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "score": "78",
+       "team": {
+        "location": "Kansas",
+        "shortDisplayName": "Kansas",
+        "displayName": "Kansas Jayhawks",
+        "abbreviation": "KU"
+       }
+      },
+      {
+       "homeAway": "away",
+       "score": "73",
+       "team": {
+        "location": "TCU",
+        "shortDisplayName": "TCU",
+        "displayName": "TCU Horned Frogs",
+        "abbreviation": "TCU"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

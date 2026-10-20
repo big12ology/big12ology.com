@@ -5,9 +5,11 @@ CBBD shares a monthly quota with the football section, so a call has to be
 worth something. The rules are football's, from tiebreaker/build.py's
 pending_results:
 
-  games      when a game should have finished and has no final on file, and
-             otherwise once a day, which is what catches a new tip time, a
-             postponement or a schedule change between games
+  games      when a game should have finished and has no final on file,
+             from CBBD or from ESPN's scoreboard (bb_espn.py), no more than
+             once every 45 minutes, and otherwise once a day, which is what
+             catches a new tip time, a postponement or a schedule change
+             between games, and replaces ESPN's finals with CBBD's own
   lines      once a day
   broadcasts once a day
 
@@ -24,6 +26,7 @@ import datetime
 import json
 import os
 
+import bb_espn as espn
 import bb_fetch as fetch
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -35,6 +38,9 @@ DAILY = datetime.timedelta(hours=20)
 # and a game with no final four days on is a cancellation, not a late score.
 SETTLES_AFTER = datetime.timedelta(hours=3)
 GIVE_UP_AFTER = datetime.timedelta(days=4)
+# The shortest gap between two fetches for a late final. A night of hourly
+# builds is one call an hour at most, however many builds arrive.
+DUE_GAP = datetime.timedelta(minutes=45)
 
 
 def now_utc():
@@ -95,6 +101,11 @@ def normalize(raw, teams):
             "venue": g.get("venue"), "venue_id": g.get("venueId"),
             "city": g.get("city"), "state": g.get("state"),
             "attendance": g.get("attendance") or None,
+            # ESPN's own event id, which is how its scoreboard joins
+            # (bb_espn.py), and the tournament seeds CBBD carries on
+            # Kansas City games, which outrank anything computed here.
+            "espn": g.get("sourceId"),
+            "hseed": g.get("homeSeed"), "aseed": g.get("awaySeed"),
         })
     out.sort(key=lambda g: (g["start"] or "", g["id"]))
     return out
@@ -158,24 +169,41 @@ def load(season, refresh=False, log=print):
     teams = teams_for(season)
     params = {"conference": CONF, "season": season}
     path = _games_path(season)
-    have = json.load(open(path)) if os.path.exists(path) else None
 
+    def from_raw():
+        """The season as the site reads it, rebuilt from the kept CBBD
+        response every time, so a field added to normalize() never waits
+        on a fetch, then filled from any ESPN finals on disk."""
+        rp = fetch.raw_path("games", params)
+        if not os.path.exists(rp):
+            return None
+        out = normalize(json.load(open(rp)), teams)
+        espn.overlay(out, log=log)
+        return out
+
+    have = from_raw()
     if refresh:
+        if have is not None:
+            espn.refresh(have, log=log)
+            have = from_raw()
         due = pending(have) if have is not None else []
-        if have is None or due or _older_than(season, "games", DAILY):
-            why = (f"{len(due)} game(s) due a final" if due else
-                   "first fetch" if have is None else "daily schedule check")
+        if (have is None or _older_than(season, "games", DAILY)
+                or (due and _older_than(season, "games", DUE_GAP))):
+            why = ("first fetch" if have is None else
+                   f"{len(due)} game(s) due a final" if due else
+                   "daily schedule check")
             try:
-                raw = fetch.get("games", params, fresh=True)
-                have = normalize(raw, teams)
-                with open(path, "w") as f:
-                    json.dump(have, f, indent=1)
+                fetch.get("games", params, fresh=True)
                 _stamp(season, "games")
+                have = from_raw()
                 log(f"basketball {season}: games fetched ({why}), "
                     f"{sum(g['final'] for g in have)} of {len(have)} final")
             except Exception as e:
                 log(f"WARNING: basketball {season} games fetch failed ({e}); "
                     f"using what is on disk")
+        elif due:
+            log(f"basketball {season}: {len(due)} game(s) due a final, "
+                f"asked within {DUE_GAP.seconds // 60} minutes; no call made")
         else:
             log(f"basketball {season}: no game due a final, no call made")
         for what, endpoint in (("lines", "lines"), ("media", "games/media")):
@@ -189,10 +217,10 @@ def load(season, refresh=False, log=print):
                         f"({e}); using what is on disk")
 
     if have is None:
-        raw = fetch.get("games", params)
-        have = normalize(raw, teams)
-        with open(path, "w") as f:
-            json.dump(have, f, indent=1)
+        fetch.get("games", params)
+        have = from_raw()
+    with open(path, "w") as f:
+        json.dump(have, f, indent=1)
 
     def kept(endpoint):
         p = fetch.raw_path(endpoint, params)

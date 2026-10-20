@@ -561,7 +561,7 @@ export default {
       ? event.scheduledTime : null;
     const slot = sent === null ? null : Math.floor(sent / TEN) * TEN;
     const jobs = slot === null
-      ? { sweep: true, deploy: false, refresh: false, scores: false }
+      ? { sweep: true, deploy: false, refresh: false, scores: false, hoops: false }
       : jobsAt(slot);
     // Most ticks, once one trigger delivers all of them. Nothing is read,
     // written or logged: an idle tick has to cost nothing.
@@ -586,6 +586,14 @@ export default {
       const r = await triggerDeploy(env);
       console.log(`deploy trigger: ${r}`);
       did.push(`deploy:${r}`);
+    }
+
+    // Men's basketball's rebuild: the same dispatch, never in the same tick
+    // as football's (schedule.js keeps them in different hours).
+    if (jobs.hoops) {
+      const r = await triggerDeploy(env);
+      console.log(`hoops deploy trigger: ${r}`);
+      did.push(`hoops:${r}`);
     }
 
     // The score channel, on the same terms: asked for and not waited on.

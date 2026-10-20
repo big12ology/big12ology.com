@@ -33,6 +33,39 @@ function inSeason(d) {
   return m >= 8 && m <= 12;
 }
 
+// MEN'S BASKETBALL keeps a different calendar: November to the Big 12
+// tournament in Kansas City, which ends by mid-March. Its pages are static
+// like football's and go stale the same way, but nothing else on this clock
+// knew January existed, so from New Year to the tournament the section would
+// not have rebuilt at all.
+function hoopsSeason(d) {
+  const m = d.getUTCMonth() + 1, day = d.getUTCDate();
+  return m >= 11 || m <= 2 || (m === 3 && day <= 16);
+}
+
+// The tournament's week, when games run from late morning Central into the
+// night every day rather than only in the evening.
+function hoopsTournament(d) {
+  return d.getUTCMonth() === 2 && d.getUTCDate() >= 8;
+}
+
+/**
+ * Whether a basketball night wants a rebuild at this hour. Weeknight games
+ * tip 23:00 to 03:00 UTC and finish two hours later, so the hours 01 to 06
+ * catch them; weekend and tournament afternoons add 18 to 23. On :40, ten
+ * minutes clear of football's :30, and only in an hour football has not
+ * already deployed: pages.yml cancels a run in progress when the next
+ * arrives, so two dispatches an hour would mostly cancel each other.
+ */
+function hoops(d, footballDeploy) {
+  if (!hoopsSeason(d) || d.getUTCMinutes() !== 40) return false;
+  const h = d.getUTCHours(), dow = d.getUTCDay();
+  const night = h >= 1 && h <= 6;
+  const day = h >= 18 && h <= 23
+    && (dow === SAT || dow === SUN || hoopsTournament(d));
+  return (night || day) && !footballDeploy(h);
+}
+
 // When, on a Tuesday, the Worker may ask for the week to be opened. Three
 // chances and no more, two hours or more apart: each dispatch is a refresh,
 // which spends CFBD calls, and a retry exists for a refresh that failed, not
@@ -51,6 +84,10 @@ export const REFRESH_HOURS = [7, 9, 12];
  *            sweep has imported whatever is there
  *   scores   dispatch scores.yml, which asks CFBD what finished and posts
  *            it back here to be graded
+ *   hoops    dispatch pages.yml for the men's basketball pages, on the
+ *            nights games finish; the same deploy as `deploy`, on its own
+ *            calendar, so the football tests can keep proving `deploy`
+ *            against the triggers it replaced
  */
 export function jobsAt(ms) {
   const d = new Date(ms);
@@ -81,16 +118,23 @@ export function jobsAt(ms) {
     || (third && (dow === MON || dow === FRI || dow === SAT) && h <= 8)
     || (season && h === 17 && m === 30);
 
+  // Football's deploy for any hour of this day, so basketball can stand
+  // aside from it: the same two rules as `weekend` and `smallHours` above.
+  const footballDeploy = (hour) => season
+    && ((dow === SAT || dow === SUN)
+      || ((dow === MON || dow === FRI || dow === SAT) && hour <= 8 && hour % 2 === 0));
+
   return {
     sweep: weekend || smallHours || tuesday || noon,
     deploy: weekend || smallHours,
     refresh: tuesday && REFRESH_HOURS.includes(h),
     scores,
+    hoops: hoops(d, footballDeploy),
   };
 }
 
 export function anyJob(jobs) {
-  return jobs.sweep || jobs.deploy || jobs.refresh || jobs.scores;
+  return jobs.sweep || jobs.deploy || jobs.refresh || jobs.scores || jobs.hoops;
 }
 
 // How long after a week locks the Worker will still ask for the next one. A

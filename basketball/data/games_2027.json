@@ -18,7 +18,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401912207",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372645,
@@ -39,7 +42,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909784",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372647,
@@ -60,7 +66,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909759",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374517,
@@ -81,7 +90,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921766",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374518,
@@ -102,7 +114,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921753",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374519,
@@ -123,7 +138,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921731",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374541,
@@ -144,7 +162,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919047",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374542,
@@ -165,7 +186,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919039",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372646,
@@ -186,7 +210,10 @@
   "venue_id": 22,
   "city": "Sioux Falls",
   "state": "SD",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909771",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374524,
@@ -207,7 +234,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921036",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372615,
@@ -228,7 +258,10 @@
   "venue_id": 427,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401916313",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374504,
@@ -249,7 +282,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401925811",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374592,
@@ -270,7 +306,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921697",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372668,
@@ -291,7 +330,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909750",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372670,
@@ -312,7 +354,10 @@
   "venue_id": 13,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909738",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372671,
@@ -333,7 +378,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909796",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374641,
@@ -354,7 +402,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921747",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374642,
@@ -375,7 +426,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921698",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374646,
@@ -396,7 +450,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921133",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372682,
@@ -417,7 +474,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909739",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374681,
@@ -438,7 +498,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921767",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374683,
@@ -459,7 +522,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921739",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374684,
@@ -480,7 +546,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921732",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374701,
@@ -501,7 +570,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919048",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374702,
@@ -522,7 +594,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919040",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372712,
@@ -543,7 +618,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909751",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374682,
@@ -564,7 +642,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921754",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372702,
@@ -585,7 +666,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909797",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372704,
@@ -606,7 +690,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909772",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372703,
@@ -627,7 +714,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909785",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372718,
@@ -648,7 +738,10 @@
   "venue_id": 820,
   "city": "San Diego",
   "state": "CA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909760",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374769,
@@ -669,7 +762,10 @@
   "venue_id": 1737,
   "city": "Stateline",
   "state": "NV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401918053",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372730,
@@ -690,7 +786,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401916305",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372751,
@@ -711,7 +810,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909773",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372752,
@@ -732,7 +834,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909761",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372754,
@@ -753,7 +858,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909740",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374827,
@@ -774,7 +882,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921740",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374828,
@@ -795,7 +906,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921733",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374829,
@@ -816,7 +930,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921699",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374842,
@@ -837,7 +954,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401917979",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372753,
@@ -858,7 +978,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909752",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374826,
@@ -879,7 +1002,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921755",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372742,
@@ -900,7 +1026,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401913527",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372761,
@@ -921,7 +1050,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909492",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372750,
@@ -942,7 +1074,10 @@
   "venue_id": 449,
   "city": "Chicago",
   "state": "IL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909786",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374862,
@@ -963,7 +1098,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401925702",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374905,
@@ -984,7 +1122,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921768",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374906,
@@ -1005,7 +1146,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921741",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374908,
@@ -1026,7 +1170,10 @@
   "venue_id": 262,
   "city": "College Station",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919041",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374938,
@@ -1047,7 +1194,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921026",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374945,
@@ -1068,7 +1218,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919049",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374947,
@@ -1089,7 +1242,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401917980",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372786,
@@ -1110,7 +1266,10 @@
   "venue_id": 209,
   "city": "Auburn",
   "state": "AL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909741",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372805,
@@ -1131,7 +1290,10 @@
   "venue_id": 76,
   "city": "Dayton",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401911188",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374967,
@@ -1152,7 +1314,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921760",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 374976,
@@ -1173,7 +1338,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919847",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372809,
@@ -1194,7 +1362,10 @@
   "venue_id": 82,
   "city": "Providence",
   "state": "RI",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909534",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372817,
@@ -1215,7 +1386,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909774",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372821,
@@ -1236,7 +1410,10 @@
   "venue_id": 465,
   "city": "San Antonio",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401906866",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372828,
@@ -1257,7 +1434,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909798",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375039,
@@ -1278,7 +1458,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401917917",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375056,
@@ -1299,7 +1482,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921756",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375062,
@@ -1320,7 +1506,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920720",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375075,
@@ -1341,7 +1530,10 @@
   "venue_id": 457,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920511",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372836,
@@ -1362,7 +1554,10 @@
   "venue_id": 457,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909787",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375087,
@@ -1383,7 +1578,10 @@
   "venue_id": 457,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920512",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372854,
@@ -1404,7 +1602,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909762",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375096,
@@ -1425,7 +1626,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921742",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375097,
@@ -1446,7 +1650,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921734",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375099,
@@ -1467,7 +1674,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921134",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375104,
@@ -1488,7 +1698,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920751",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372861,
@@ -1509,7 +1722,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909753",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372855,
@@ -1530,7 +1746,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909742",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375132,
@@ -1551,7 +1770,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919050",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372875,
@@ -1572,7 +1794,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909799",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375152,
@@ -1593,7 +1818,10 @@
   "venue_id": 119,
   "city": "Nashville",
   "state": "TN",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921757",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375164,
@@ -1614,7 +1842,10 @@
   "venue_id": 275,
   "city": "Charleston",
   "state": "SC",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921418",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375169,
@@ -1635,7 +1866,10 @@
   "venue_id": 275,
   "city": "Charleston",
   "state": "SC",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921419",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375220,
@@ -1656,7 +1890,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921748",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375231,
@@ -1677,7 +1914,10 @@
   "venue_id": 275,
   "city": "Charleston",
   "state": "SC",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920381",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375237,
@@ -1698,7 +1938,10 @@
   "venue_id": 275,
   "city": "Charleston",
   "state": "SC",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921420",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372909,
@@ -1719,7 +1962,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909788",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375258,
@@ -1740,7 +1986,10 @@
   "venue_id": 397,
   "city": "Maui",
   "state": "HI",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921708",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372912,
@@ -1761,7 +2010,10 @@
   "venue_id": 397,
   "city": "Maui",
   "state": "HI",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909743",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372925,
@@ -1782,7 +2034,10 @@
   "venue_id": 13,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401915941",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372927,
@@ -1803,7 +2058,10 @@
   "venue_id": 457,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909775",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372930,
@@ -1824,7 +2082,10 @@
   "venue_id": 457,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401915942",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372933,
@@ -1845,7 +2106,10 @@
   "venue_id": 13,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401906762",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372935,
@@ -1866,7 +2130,10 @@
   "venue_id": 403,
   "city": "Palm Springs",
   "state": "CA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909763",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372938,
@@ -1887,7 +2154,10 @@
   "venue_id": 321,
   "city": "St. Louis",
   "state": "MO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401911254",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375330,
@@ -1908,7 +2178,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919042",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372936,
@@ -1929,7 +2202,10 @@
   "venue_id": 13,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909800",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375340,
@@ -1950,7 +2226,10 @@
   "venue_id": 403,
   "city": "Palm Springs",
   "state": "CA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921669",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 378126,
@@ -1971,7 +2250,10 @@
   "venue_id": 456,
   "city": "Kissimmee",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401929281",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377906,
@@ -1992,7 +2274,10 @@
   "venue_id": 456,
   "city": "Kissimmee",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401929282",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375354,
@@ -2013,7 +2298,10 @@
   "venue_id": 403,
   "city": "Palm Springs",
   "state": "CA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921674",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377907,
@@ -2034,7 +2322,10 @@
   "venue_id": 456,
   "city": "Kissimmee",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401929283",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372957,
@@ -2055,7 +2346,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909789",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372952,
@@ -2076,7 +2370,10 @@
   "venue_id": 428,
   "city": "Charlotte",
   "state": "NC",
-  "attendance": null
+  "attendance": null,
+  "espn": "401912711",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 378131,
@@ -2097,7 +2394,10 @@
   "venue_id": 456,
   "city": "Kissimmee",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401929284",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375360,
@@ -2118,7 +2418,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401925703",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375445,
@@ -2139,7 +2442,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922232",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375454,
@@ -2160,7 +2466,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919043",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375471,
@@ -2181,7 +2490,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921735",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372984,
@@ -2202,7 +2514,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909790",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372985,
@@ -2223,7 +2538,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909764",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 372986,
@@ -2244,7 +2562,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909744",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375485,
@@ -2265,7 +2586,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401925689",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375492,
@@ -2286,7 +2610,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920880",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375495,
@@ -2307,7 +2634,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919830",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373002,
@@ -2328,7 +2658,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401911401",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375522,
@@ -2349,7 +2682,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921749",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375540,
@@ -2370,7 +2706,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401917921",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375537,
@@ -2391,7 +2730,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401918058",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373029,
@@ -2412,7 +2754,10 @@
   "venue_id": 107,
   "city": "Newark",
   "state": "NJ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909801",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373056,
@@ -2433,7 +2778,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909754",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373057,
@@ -2454,7 +2802,10 @@
   "venue_id": 371,
   "city": "New York",
   "state": "NY",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909745",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373066,
@@ -2475,7 +2826,10 @@
   "venue_id": 461,
   "city": "Tulsa",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401906809",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375627,
@@ -2496,7 +2850,10 @@
   "venue_id": 225,
   "city": "South Bend",
   "state": "IN",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919051",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375634,
@@ -2517,7 +2874,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401917558",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375619,
@@ -2538,7 +2898,10 @@
   "venue_id": 427,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920738",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375620,
@@ -2559,7 +2922,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920384",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375593,
@@ -2580,7 +2946,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401925704",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373061,
@@ -2601,7 +2970,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909547",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373074,
@@ -2622,7 +2994,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909777",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373055,
@@ -2643,7 +3018,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909765",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373070,
@@ -2664,7 +3042,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401912217",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373073,
@@ -2685,7 +3066,10 @@
   "venue_id": 394,
   "city": "Kansas City",
   "state": "MO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909791",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373086,
@@ -2706,7 +3090,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909802",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375718,
@@ -2727,7 +3114,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921135",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375727,
@@ -2748,7 +3138,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919052",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373093,
@@ -2769,7 +3162,10 @@
   "venue_id": 371,
   "city": "New York",
   "state": "NY",
-  "attendance": null
+  "attendance": null,
+  "espn": "401906764",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375715,
@@ -2790,7 +3186,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921736",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373103,
@@ -2811,7 +3210,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909755",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375749,
@@ -2832,7 +3234,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920346",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373104,
@@ -2853,7 +3258,10 @@
   "venue_id": 482,
   "city": "Pittsburgh",
   "state": "PA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909712",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375744,
@@ -2874,7 +3282,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921743",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373112,
@@ -2895,7 +3306,10 @@
   "venue_id": 144,
   "city": "Iowa City",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909778",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373115,
@@ -2916,7 +3330,10 @@
   "venue_id": 394,
   "city": "Kansas City",
   "state": "MO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909803",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373131,
@@ -2937,7 +3354,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909766",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373120,
@@ -2958,7 +3378,10 @@
   "venue_id": 212,
   "city": "Bloomington",
   "state": "IN",
-  "attendance": null
+  "attendance": null,
+  "espn": "401916293",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373132,
@@ -2979,7 +3402,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909746",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373141,
@@ -3000,7 +3426,10 @@
   "venue_id": 419,
   "city": "Oklahoma City",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401906811",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375830,
@@ -3021,7 +3450,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401918079",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375849,
@@ -3042,7 +3474,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920162",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373130,
@@ -3063,7 +3498,10 @@
   "venue_id": 208,
   "city": "Storrs",
   "state": "CT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909792",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375876,
@@ -3084,7 +3522,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401917972",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375869,
@@ -3105,7 +3546,10 @@
   "venue_id": 416,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921136",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375865,
@@ -3126,7 +3570,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921769",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375866,
@@ -3147,7 +3594,10 @@
   "venue_id": 291,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921705",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373146,
@@ -3168,7 +3618,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909779",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375890,
@@ -3189,7 +3642,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921750",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375891,
@@ -3210,7 +3666,10 @@
   "venue_id": 180,
   "city": "Corvallis",
   "state": "OR",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921737",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373154,
@@ -3231,7 +3690,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909767",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375904,
@@ -3252,7 +3714,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921744",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375907,
@@ -3273,7 +3738,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921137",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375933,
@@ -3294,7 +3762,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921770",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375934,
@@ -3315,7 +3786,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921758",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375943,
@@ -3336,7 +3810,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919044",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 375945,
@@ -3357,7 +3834,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401917576",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373191,
@@ -3378,7 +3858,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909804",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373192,
@@ -3399,7 +3882,10 @@
   "venue_id": 394,
   "city": "Kansas City",
   "state": "MO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909780",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376003,
@@ -3420,7 +3906,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921761",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376015,
@@ -3441,7 +3930,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920407",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376022,
@@ -3462,7 +3954,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919053",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376027,
@@ -3483,7 +3978,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401918081",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373220,
@@ -3504,7 +4002,10 @@
   "venue_id": 371,
   "city": "New York",
   "state": "NY",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909793",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373217,
@@ -3525,7 +4026,10 @@
   "venue_id": 57,
   "city": "Greensboro",
   "state": "NC",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909735",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373214,
@@ -3546,7 +4050,10 @@
   "venue_id": 418,
   "city": "Indianapolis",
   "state": "IN",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909768",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373216,
@@ -3567,7 +4074,10 @@
   "venue_id": 357,
   "city": "Phoenix",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909747",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373215,
@@ -3588,7 +4098,10 @@
   "venue_id": 207,
   "city": "Seattle",
   "state": "WA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909756",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376046,
@@ -3609,7 +4122,10 @@
   "venue_id": 403,
   "city": "Palm Springs",
   "state": "CA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921677",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376058,
@@ -3630,7 +4146,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401917582",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373229,
@@ -3651,7 +4170,10 @@
   "venue_id": 15,
   "city": "Jacksonville",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909703",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376056,
@@ -3672,7 +4194,10 @@
   "venue_id": 461,
   "city": "Tulsa",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919045",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373236,
@@ -3693,7 +4218,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909805",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373237,
@@ -3714,7 +4242,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909781",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373238,
@@ -3735,7 +4266,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909757",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373241,
@@ -3756,7 +4290,10 @@
   "venue_id": 371,
   "city": "New York",
   "state": "NY",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909692",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376082,
@@ -3777,7 +4314,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921771",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373239,
@@ -3798,7 +4338,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909748",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376124,
@@ -3819,7 +4362,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921762",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376125,
@@ -3840,7 +4386,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921759",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376126,
@@ -3861,7 +4410,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921751",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376127,
@@ -3882,7 +4434,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921745",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376142,
@@ -3903,7 +4458,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919054",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373261,
@@ -3924,7 +4482,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909794",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373262,
@@ -3945,7 +4506,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909769",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376165,
@@ -3966,7 +4530,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921738",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376179,
@@ -3987,7 +4554,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921138",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373278,
@@ -4008,7 +4578,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909749",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373277,
@@ -4029,7 +4602,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909806",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373293,
@@ -4050,7 +4626,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909770",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373294,
@@ -4071,7 +4650,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909758",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376195,
@@ -4092,7 +4674,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401925102",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376207,
@@ -4113,7 +4698,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921752",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376211,
@@ -4134,7 +4722,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920958",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376220,
@@ -4155,7 +4746,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919055",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376221,
@@ -4176,7 +4770,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401919046",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373291,
@@ -4197,7 +4794,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909795",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373292,
@@ -4218,7 +4818,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401909782",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 373286,
@@ -4239,7 +4842,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401911344",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376305,
@@ -4260,7 +4866,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922775",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376306,
@@ -4281,7 +4890,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922774",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376308,
@@ -4302,7 +4914,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922772",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376304,
@@ -4323,7 +4938,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922776",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376307,
@@ -4344,7 +4962,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922773",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376309,
@@ -4365,7 +4986,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922771",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376311,
@@ -4386,7 +5010,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922769",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376310,
@@ -4407,7 +5034,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922770",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376410,
@@ -4428,7 +5058,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922780",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376413,
@@ -4449,7 +5082,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922777",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376412,
@@ -4470,7 +5106,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922778",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376411,
@@ -4491,7 +5130,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922779",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376443,
@@ -4512,7 +5154,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922781",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376442,
@@ -4533,7 +5178,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922782",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376441,
@@ -4554,7 +5202,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922783",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376440,
@@ -4575,7 +5226,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922784",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376501,
@@ -4596,7 +5250,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922791",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376505,
@@ -4617,7 +5274,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922787",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376506,
@@ -4638,7 +5298,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922786",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376507,
@@ -4659,7 +5322,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922785",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376504,
@@ -4680,7 +5346,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922788",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376502,
@@ -4701,7 +5370,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922790",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376503,
@@ -4722,7 +5394,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922789",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376559,
@@ -4743,7 +5418,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922792",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376588,
@@ -4764,7 +5442,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922797",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376589,
@@ -4785,7 +5466,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922796",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376590,
@@ -4806,7 +5490,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922795",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376592,
@@ -4827,7 +5514,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922793",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376591,
@@ -4848,7 +5538,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922794",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376621,
@@ -4869,7 +5562,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922798",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376619,
@@ -4890,7 +5586,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922800",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376620,
@@ -4911,7 +5610,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922799",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376672,
@@ -4932,7 +5634,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922803",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376669,
@@ -4953,7 +5658,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922806",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376673,
@@ -4974,7 +5682,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922802",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376674,
@@ -4995,7 +5706,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922801",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376668,
@@ -5016,7 +5730,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922807",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376670,
@@ -5037,7 +5754,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922805",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376671,
@@ -5058,7 +5778,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922804",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376667,
@@ -5079,7 +5802,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922808",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376773,
@@ -5100,7 +5826,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922810",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376770,
@@ -5121,7 +5850,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922813",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376771,
@@ -5142,7 +5874,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922812",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376772,
@@ -5163,7 +5898,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922811",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376774,
@@ -5184,7 +5922,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922809",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376794,
@@ -5205,7 +5946,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922815",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376795,
@@ -5226,7 +5970,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922814",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376832,
@@ -5247,7 +5994,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922816",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376847,
@@ -5268,7 +6018,10 @@
   "venue_id": null,
   "city": null,
   "state": null,
-  "attendance": null
+  "attendance": null,
+  "espn": "401924645",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376851,
@@ -5289,7 +6042,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922820",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376853,
@@ -5310,7 +6066,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922818",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376854,
@@ -5331,7 +6090,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922817",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376849,
@@ -5352,7 +6114,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922822",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376852,
@@ -5373,7 +6138,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922819",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376850,
@@ -5394,7 +6162,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922821",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376940,
@@ -5415,7 +6186,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922823",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376963,
@@ -5436,7 +6210,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922825",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376962,
@@ -5457,7 +6234,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922826",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376964,
@@ -5478,7 +6258,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922824",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 376961,
@@ -5499,7 +6282,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922827",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377030,
@@ -5520,7 +6306,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922697",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377028,
@@ -5541,7 +6330,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922699",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377032,
@@ -5562,7 +6354,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922695",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377031,
@@ -5583,7 +6378,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922696",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377029,
@@ -5604,7 +6402,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922698",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377034,
@@ -5625,7 +6426,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922693",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377035,
@@ -5646,7 +6450,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922692",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377033,
@@ -5667,7 +6474,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922694",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377114,
@@ -5688,7 +6498,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920523",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377119,
@@ -5709,7 +6522,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922700",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377118,
@@ -5730,7 +6546,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922701",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377116,
@@ -5751,7 +6570,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922703",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377117,
@@ -5772,7 +6594,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922702",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377136,
@@ -5793,7 +6618,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922705",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377137,
@@ -5814,7 +6642,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922704",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377195,
@@ -5835,7 +6666,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922710",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377196,
@@ -5856,7 +6690,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922709",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377193,
@@ -5877,7 +6714,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922712",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377194,
@@ -5898,7 +6738,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922711",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377197,
@@ -5919,7 +6762,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922708",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377198,
@@ -5940,7 +6786,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922707",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377192,
@@ -5961,7 +6810,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922713",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377199,
@@ -5982,7 +6834,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922706",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377282,
@@ -6003,7 +6858,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920524",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377284,
@@ -6024,7 +6882,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922715",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377285,
@@ -6045,7 +6906,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922714",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377306,
@@ -6066,7 +6930,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922718",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377308,
@@ -6087,7 +6954,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922716",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377307,
@@ -6108,7 +6978,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922717",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377371,
@@ -6129,7 +7002,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922721",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377372,
@@ -6150,7 +7026,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922720",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377370,
@@ -6171,7 +7050,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922722",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377369,
@@ -6192,7 +7074,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922723",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377367,
@@ -6213,7 +7098,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922725",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377366,
@@ -6234,7 +7122,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922726",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377373,
@@ -6255,7 +7146,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922719",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377368,
@@ -6276,7 +7170,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922724",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377462,
@@ -6297,7 +7194,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920525",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377464,
@@ -6318,7 +7218,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922731",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377466,
@@ -6339,7 +7242,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922729",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377465,
@@ -6360,7 +7266,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922730",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377467,
@@ -6381,7 +7290,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922728",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377468,
@@ -6402,7 +7314,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922727",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377484,
@@ -6423,7 +7338,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922733",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377485,
@@ -6444,7 +7362,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922732",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377526,
@@ -6465,7 +7386,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922734",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377543,
@@ -6486,7 +7410,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922740",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377544,
@@ -6507,7 +7434,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922739",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377547,
@@ -6528,7 +7458,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922736",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377548,
@@ -6549,7 +7482,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922735",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377545,
@@ -6570,7 +7506,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922738",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377546,
@@ -6591,7 +7530,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922737",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377597,
@@ -6612,7 +7554,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922854",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377628,
@@ -6633,7 +7578,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920526",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377632,
@@ -6654,7 +7602,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922741",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377631,
@@ -6675,7 +7626,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922742",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377653,
@@ -6696,7 +7650,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922745",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377651,
@@ -6717,7 +7674,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922747",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377652,
@@ -6738,7 +7698,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922746",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377655,
@@ -6759,7 +7722,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922743",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377654,
@@ -6780,7 +7746,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922744",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377723,
@@ -6801,7 +7770,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922752",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377727,
@@ -6822,7 +7794,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922748",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377720,
@@ -6843,7 +7818,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922855",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377724,
@@ -6864,7 +7842,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922751",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377722,
@@ -6885,7 +7866,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922753",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377725,
@@ -6906,7 +7890,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922750",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377726,
@@ -6927,7 +7914,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922749",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377721,
@@ -6948,7 +7938,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922754",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377808,
@@ -6969,7 +7962,10 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401920527",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377815,
@@ -6990,7 +7986,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922756",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377814,
@@ -7011,7 +8010,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922757",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377816,
@@ -7032,7 +8034,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922755",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377813,
@@ -7053,7 +8058,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922758",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377830,
@@ -7074,7 +8082,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922760",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377829,
@@ -7095,7 +8106,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922761",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377831,
@@ -7116,7 +8130,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922759",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377859,
@@ -7137,7 +8154,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401921746",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377863,
@@ -7158,7 +8178,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922767",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377865,
@@ -7179,7 +8202,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922765",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377868,
@@ -7200,7 +8226,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922762",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377864,
@@ -7221,7 +8250,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922766",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377862,
@@ -7242,7 +8274,10 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922768",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377866,
@@ -7263,7 +8298,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922764",
+  "hseed": null,
+  "aseed": null
  },
  {
   "id": 377867,
@@ -7284,6 +8322,9 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null
+  "attendance": null,
+  "espn": "401922763",
+  "hseed": null,
+  "aseed": null
  }
 ]

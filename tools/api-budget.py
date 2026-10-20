@@ -76,7 +76,9 @@ RATINGS_HOUR = 7                   # UTC, Monday: build.RATINGS_HOUR
 # MEN'S BASKETBALL spends from the same quota (CBBD: "API use shares a
 # football/basketball quota"). basketball/bb_season.py asks for the season's
 # games, lines and broadcasts at most once a day each, plus the games again
-# on a night a final is due, so the fixed part is three calls a day from the
+# on a night a final is due (no more than every 45 minutes, and not at all
+# for a game ESPN's free scoreboard has already finished), so the fixed part
+# is three calls a day from the
 # section's first build through the end of the season (Big 12 teams play
 # into April). Game nights are not modelled: like scores.yml they cost 0 or 1
 # a run depending on whether a game is mid-settle.
@@ -88,6 +90,15 @@ def basketball_day(day):
     """Whether `day` is inside a basketball season the section builds."""
     return (day.isoformat() >= BASKETBALL_FROM
             and (day.month >= 10 or day.month <= 4))
+
+def football_scheduled(r):
+    """A scheduled pages.yml run of football's, the only kind that refreshes
+    lines or refits ratings. pages.yml's January-to-March crons are the
+    basketball section's belt and never pass --refresh-lines, so a run in
+    those months spends nothing of football's however it was scheduled."""
+    return (r.get("event") == "schedule"
+            and int(r["createdAt"][5:7]) >= 8)
+
 
 # What pages.yml names a run that was dispatched with one of its spending
 # inputs set (its run-name), by a person or by the Worker. Inputs are not in the run history,
@@ -217,7 +228,7 @@ def main(month=None):
     # scheduled run at all. That survives an arbitrary delay, and it errs high
     # if GitHub drops a schedule entirely — which is the right direction.
     tue = {r["createdAt"][:10] for r in pages
-           if r.get("event") == "schedule"
+           if football_scheduled(r)
            and datetime.date.fromisoformat(r["createdAt"][:10]).weekday() == 1}
     refreshes = sorted(tue)
     refresh_calls = sum(refresh_extra(datetime.date.fromisoformat(d))
@@ -236,7 +247,7 @@ def main(month=None):
     # from the other side: it has no title, and its week is counted.
     refit_weeks = set()
     for r in pages:
-        if r.get("event") != "schedule":
+        if not football_scheduled(r):
             continue
         t = datetime.datetime.fromisoformat(
             r["createdAt"].replace("Z", "+00:00"))
