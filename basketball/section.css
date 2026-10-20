@@ -28,3 +28,26 @@
 .bbw { color:hsl(140 60% var(--pctl)) }
 .bbl { color:hsl(6 70% var(--pctl)) }
 details > summary { padding:8px 0 }
+.bbsure { font-weight:700; color:hsl(140 60% var(--pctl)) }
+.bbodds td, .bbgrid td { text-align:center; font-variant-numeric:tabular-nums }
+.bbgrid td.bbcell { font-size:var(--t-fine); min-width:26px; padding:4px 2px }
+.bbgrid th { text-align:center; font-size:var(--t-fine) }
+.bbbracket { display:grid; grid-template-columns:repeat(5, minmax(150px, 1fr));
+  gap:12px; overflow-x:auto; align-items:stretch }
+.bbround { display:flex; flex-direction:column; gap:8px }
+.bbcol { display:flex; flex-direction:column; justify-content:space-around;
+  gap:10px; flex:1 }
+.bbround h3 { font-size:var(--t-label); color:var(--dim); margin:0;
+  text-transform:uppercase; letter-spacing:.04em }
+.bbmatchup { border:1px solid var(--line); border-radius:8px; padding:4px 6px;
+  font-size:var(--t-meta) }
+.bbslot { display:flex; align-items:center; gap:6px; padding:2px 0;
+  color:var(--dim); white-space:nowrap }
+.bbslot.bbwin { color:var(--ink); font-weight:600 }
+.bbseed { min-width:16px; text-align:right; font-variant-numeric:tabular-nums;
+  color:var(--dim); font-weight:400 }
+.bbprob { font-size:var(--t-fine); color:var(--dim); text-align:right }
+.bbmatrix th, .bbmatrix td.bbm { text-align:center; padding:4px 3px;
+  font-size:var(--t-fine); min-width:28px }
+.bbmatrix td.bbtwice { background:color-mix(in srgb, var(--accent) 12%, transparent) }
+.bbmatrix td.bbself { background:var(--line) }

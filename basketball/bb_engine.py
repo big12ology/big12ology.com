@@ -47,3 +47,28 @@ def engine_games(games):
 
 def standings(games, teams):
     return call("standings", engine_games(games), sorted(teams))
+
+
+def simulate(games, teams, model, n=10000, seed=20262027):
+    return call("simulate", engine_games(games), sorted(teams),
+                {"ratings": model.get("ratings", {}), "hfa": model.get("hfa", 0),
+                 "sigma": model.get("sigma", 11)}, n, seed)
+
+
+def certain(games, teams):
+    return call("certain", engine_games(games), sorted(teams))
+
+
+def bracket_odds(order, model):
+    return call("bracketOdds", order,
+                {"ratings": model.get("ratings", {}), "hfa": model.get("hfa", 0),
+                 "sigma": model.get("sigma", 11)})
+
+
+def win_prob(model, home, away, neutral):
+    """The same arithmetic as engine.js's winProb, for the few places the
+    build needs one number and a Node call would be silly."""
+    import math
+    r = model.get("ratings", {})
+    gap = r.get(home, 0) - r.get(away, 0) + (0 if neutral else model.get("hfa", 0))
+    return 0.5 * (1 + math.erf(gap / (model.get("sigma", 11) * math.sqrt(2))))

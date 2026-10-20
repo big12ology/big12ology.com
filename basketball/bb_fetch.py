@@ -97,6 +97,14 @@ def get(path, params=None, fresh=False):
         raise RuntimeError(f"CBBD refused {path}: "
                            f"{data.get('message') or data.get('error')}")
     os.makedirs(RAW, exist_ok=True)
+    # Compact, one game to a line: a season of Division I games is about
+    # 6,000 rows, and indented it was three times the size for nothing a
+    # reader needs. One row per line still diffs cleanly.
     with open(p, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=1, sort_keys=True)
+        if isinstance(data, list):
+            f.write("[\n" + ",\n".join(
+                json.dumps(row, sort_keys=True, separators=(",", ":"))
+                for row in data) + "\n]\n")
+        else:
+            json.dump(data, f, sort_keys=True, separators=(",", ":"))
     return data

@@ -336,7 +336,201 @@
     return { rows: rows, champions: played ? top.slice() : [] };
   }
 
-  var api = { standings: standings, records: records, pct: pct };
+  // ---- probabilities ----------------------------------------------------------
+
+  // The standard normal CDF (Abramowitz and Stegun 7.1.26), which is all a
+  // margin model needs to turn a rating gap into a chance of winning.
+  function phi(x) {
+    var t = 1 / (1 + 0.3275911 * Math.abs(x) / Math.SQRT2);
+    var y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t
+      - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x / 2);
+    return x >= 0 ? (1 + y) / 2 : (1 - y) / 2;
+  }
+
+  /* The chance `home` beats `away`: ratings in points, home court added
+   * unless the floor is neutral, the spread of a margin around its
+   * prediction as sigma. */
+  function winProb(model, home, away, neutral) {
+    var r = model.ratings || {};
+    var gap = (r[home] || 0) - (r[away] || 0) + (neutral ? 0 : (model.hfa || 0));
+    return phi(gap / (model.sigma || 11));
+  }
+
+  // A seeded generator, so the same results and ratings always give the same
+  // odds: the build has to be byte-for-byte repeatable.
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // ---- the tournament -----------------------------------------------------------
+
+  /* The Kansas City bracket by seed, as the 2026 tournament ran it: four
+   * first-round games among 9-16, the winners meeting 5-8, those winners
+   * meeting 1-4, then the semifinals and the final. Each slot is a seed, or
+   * the winner of an earlier game. */
+  var BRACKET = [
+    // first round
+    [9, 16], [12, 13], [10, 15], [11, 14],
+    // second round: 8, 5, 7, 6 against the first-round winners
+    [8, "g0"], [5, "g1"], [7, "g2"], [6, "g3"],
+    // quarterfinals
+    [1, "g4"], [4, "g5"], [2, "g6"], [3, "g7"],
+    // semifinals, final
+    ["g8", "g9"], ["g10", "g11"], ["g12", "g13"],
+  ];
+  var ROUND_OF = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5];
+  var ROUNDS = ["first round", "second round", "quarterfinals", "semifinals",
+    "final", "champion"];
+
+  /* Each team's chance of reaching each round, given the seeds:
+   * {team: [play first round or later, second, quarters, semis, final, win]}.
+   * Exact, by carrying a distribution over who fills each slot. */
+  function bracketOdds(order, model) {
+    var slot = {};
+    function dist(x) {
+      if (typeof x === "number") {
+        var d = {}; d[order[x - 1]] = 1; return d;
+      }
+      return slot[x];
+    }
+    var reach = {};
+    order.forEach(function (t, i) {
+      var seed = i + 1;
+      // Where a team enters: 9-16 the first round, 5-8 the second, 1-4 the
+      // quarterfinals. Reaching a round it skips is certain.
+      var start = seed <= 4 ? 2 : seed <= 8 ? 1 : 0;
+      reach[t] = [0, 0, 0, 0, 0, 0];
+      for (var k = 0; k <= start; k++) reach[t][k] = 1;
+    });
+    BRACKET.forEach(function (game, gi) {
+      var a = dist(game[0]), b = dist(game[1]), out = {};
+      Object.keys(a).forEach(function (x) {
+        Object.keys(b).forEach(function (y) {
+          var pa = a[x] * b[y];
+          var p = winProb(model, x, y, true);
+          out[x] = (out[x] || 0) + pa * p;
+          out[y] = (out[y] || 0) + pa * (1 - p);
+        });
+      });
+      slot["g" + gi] = out;
+      var next = ROUND_OF[gi];
+      Object.keys(out).forEach(function (t) { reach[t][next] += out[t]; });
+    });
+    return reach;
+  }
+
+  function playBracket(order, model, rand) {
+    var slot = {};
+    function who(x) { return typeof x === "number" ? order[x - 1] : slot[x]; }
+    BRACKET.forEach(function (game, gi) {
+      var a = who(game[0]), b = who(game[1]);
+      slot["g" + gi] = rand() < winProb(model, a, b, true) ? a : b;
+    });
+    return slot.g14;
+  }
+
+  // ---- the season, simulated -------------------------------------------------------
+
+  /* Play the rest of the conference season `n` times and seed each result
+   * with the full procedure, then play the bracket from those seeds.
+   *
+   *   {n, teams: {team: {seed: [16 counts], top1, top4, top8, share,
+   *                       title, expW}}}
+   *
+   * A draw in a simulated season is settled by the generator, the way the
+   * conference would settle it with slips of paper. */
+  function simulate(games, teams, model, n, seed) {
+    var rand = rng(seed || 20262027);
+    var done = games.filter(function (g) { return g.final; });
+    var left = games.filter(function (g) { return !g.final; });
+    var probs = left.map(function (g) {
+      return winProb(model, g.home, g.away, g.neutral);
+    });
+    var out = {};
+    teams.forEach(function (t) {
+      out[t] = { seed: teams.map(function () { return 0; }), top1: 0, top4: 0,
+        top8: 0, share: 0, title: 0, expW: 0 };
+    });
+    for (var i = 0; i < n; i++) {
+      var played = done.slice();
+      left.forEach(function (g, j) {
+        var homeWins = rand() < probs[j];
+        played.push({ home: g.home, away: g.away, neutral: g.neutral,
+          final: true, hp: homeWins ? 1 : 0, ap: homeWins ? 0 : 1 });
+      });
+      var st = standings(played, teams);
+      var order = st.rows.map(function (r) { return r.team; });
+      // A draw is a coin the conference flips; shuffle the stuck teams.
+      st.rows.forEach(function (r, k) {
+        out[r.team].seed[k]++;
+        if (k === 0) out[r.team].top1++;
+        if (k < 4) out[r.team].top4++;
+        if (k < 8) out[r.team].top8++;
+        out[r.team].expW += r.w;
+      });
+      st.champions.forEach(function (t) { out[t].share++; });
+      out[playBracket(order, model, rand)].title++;
+    }
+    Object.keys(out).forEach(function (t) {
+      var o = out[t];
+      ["top1", "top4", "top8", "share", "title", "expW"].forEach(function (k) {
+        o[k] = o[k] / n;
+      });
+      o.seed = o.seed.map(function (c) { return c / n; });
+    });
+    return { n: n, teams: out };
+  }
+
+  // ---- what is already certain ------------------------------------------------------
+
+  /* Clinched and eliminated, for a share of the title and for the top 1, 4
+   * and 8 seeds: only what holds however every remaining game and every tie
+   * goes. A team is safe in the top k if fewer than k others could even
+   * reach its present win total; it is out of the top k if k others already
+   * have more wins than it can reach. Sound, and deliberately so: a tie a
+   * team might win counts against it here. */
+  function certain(games, teams) {
+    var rec = records(games, teams);
+    var left = {};
+    teams.forEach(function (t) { left[t] = 0; });
+    games.forEach(function (g) {
+      if (!g.final && g.home in left && g.away in left) {
+        left[g.home]++; left[g.away]++;
+      }
+    });
+    var out = {};
+    teams.forEach(function (t) {
+      var lo = rec[t].w, hi = rec[t].w + left[t];
+      var threats = teams.filter(function (o) {
+        return o !== t && rec[o].w + left[o] >= lo;
+      }).length;
+      var ahead = teams.filter(function (o) {
+        return o !== t && rec[o].w > hi;
+      }).length;
+      var r = { minW: lo, maxW: hi, left: left[t] };
+      [1, 4, 8].forEach(function (k) {
+        r["in" + k] = threats < k;
+        r["out" + k] = ahead >= k;
+      });
+      r.shareIn = teams.every(function (o) {
+        return o === t || rec[o].w + left[o] <= lo;
+      });
+      r.shareOut = teams.some(function (o) { return o !== t && rec[o].w > hi; });
+      out[t] = r;
+    });
+    return out;
+  }
+
+  var api = { standings: standings, records: records, pct: pct,
+    winProb: winProb, bracketOdds: bracketOdds, simulate: simulate,
+    certain: certain, ROUNDS: ROUNDS };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.B12BB = api;
 })(this);
