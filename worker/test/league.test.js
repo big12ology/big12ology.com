@@ -6,9 +6,9 @@
 // And a basketball row must be invisible to every football read and untouched
 // by every football write, which is what lets the pools share the schema.
 //
-// Week numbers differ between the leagues here because 0014 is the additive
-// step: the old (season, week) keys still hold until the follow-up migration
-// rebuilds them, so two leagues cannot yet share a week number.
+// Since 0015 league is part of every key, so two leagues can share a season
+// and a week number; most of these use different weeks anyway, so that a
+// leak shows up as a wrong week rather than a coincidentally right one.
 
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -41,21 +41,33 @@ function req(path, { method = "GET", cookie, body } = {}) {
 }
 const call = (env, ...a) => worker.fetch(req(...a), env, {});
 
-/** A men's basketball week, written the way the import writes one. */
-function seedHoopsWeek(env, { week = 9, lockAt = NOW() + 48 * HOUR } = {}) {
+/** A men's basketball week, written the way the import writes one. Game 901
+ * tips at `lockAt` (the week's first tip), 902 a day later unless told. */
+function seedHoopsWeek(env, { week = 9, lockAt = NOW() + 48 * HOUR,
+                              second = null } = {}) {
   const now = NOW();
   env.raw.prepare(
     `INSERT INTO weeks (league, season, week, published_at, lock_at,
                         game_count, pickable_count)
      VALUES ('mbb', ?, ?, ?, ?, 2, 2)`).run(SEASON, week, now - HOUR, lockAt);
-  for (const [id, home, away, x2] of [[901, "Kansas", "Kansas State", -15],
-                                     [902, "Houston", "Arizona", 4]]) {
+  for (const [id, home, away, x2, at] of [
+    [901, "Kansas", "Kansas State", -15, lockAt],
+    [902, "Houston", "Arizona", 4, second ?? lockAt + 24 * HOUR]]) {
     env.raw.prepare(
       `INSERT INTO slate_games (league, season, week, game_id, home, away,
                                 kickoff_at, spread_x2, b12, frozen_at)
        VALUES ('mbb', ?, ?, ?, ?, ?, ?, ?, 'both', ?)`)
-      .run(SEASON, week, id, home, away, lockAt, x2, now - HOUR);
+      .run(SEASON, week, id, home, away, at, x2, now - HOUR);
   }
+}
+
+function rawPick(env, league, week, gameId, x2) {
+  const now = NOW();
+  env.raw.prepare(
+    `INSERT INTO picks (league, user_id, season, week, game_id, side,
+                        spread_x2, created_at, updated_at)
+     VALUES (?, 'u1', ?, ?, ?, 'home', ?, ?, ?)`)
+    .run(league, SEASON, week, gameId, x2, now, now);
 }
 
 test("the league names are the three pools, football by default", () => {
@@ -179,3 +191,33 @@ test("grading a basketball week builds basketball boards, and only those",
     const cfb = await (await call(env, "/api/leaderboard")).json();
     assert.equal(cfb.rows.length, 0);
   });
+
+test("football and basketball can share a season and a week number", () => {
+  const env = makeEnv();
+  seedWeek(env, { season: SEASON, week: 3 });
+  seedHoopsWeek(env, { week: 3 });
+  const n = env.raw.prepare(
+    `SELECT league, COUNT(*) AS n FROM weeks WHERE season = ? AND week = 3
+      GROUP BY league ORDER BY league`).all(SEASON);
+  assert.deepEqual(n.map((r) => [r.league, r.n]), [["cfb", 1], ["mbb", 1]]);
+});
+
+test("a basketball pick locks at its own game's tip, not the week's", () => {
+  const env = makeEnv();
+  seedUser(env, "u1", { name: "Pat" });
+  // The week's first game tipped an hour ago; the second is tomorrow.
+  seedHoopsWeek(env, { week: 9, lockAt: NOW() - HOUR, second: NOW() + 24 * HOUR });
+  assert.throws(() => rawPick(env, "mbb", 9, 901, -15), /game_started/);
+  rawPick(env, "mbb", 9, 902, 4);
+  assert.equal(env.raw.prepare(
+    `SELECT COUNT(*) AS n FROM picks WHERE league = 'mbb'`).get().n, 1);
+});
+
+test("football keeps its week lock", () => {
+  const env = makeEnv();
+  seedUser(env, "u1", { name: "Pat" });
+  seedWeek(env, { season: SEASON, week: 3, lockAt: NOW() - HOUR,
+                  games: [{ game_id: 401, home: "Iowa State", away: "Kansas",
+                            spread_x2: -13, kickoff_at: NOW() + 24 * HOUR }] });
+  assert.throws(() => rawPick(env, "cfb", 3, 401, -13), /week_locked/);
+});
