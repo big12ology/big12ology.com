@@ -436,6 +436,38 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .teamcell.st-in { font-weight:700 }
 .teamcell.st-top { font-style:italic }
 
+/* ---- the empire ----
+   The imperialism map. The territories are team colors, so every line
+   between them is the panel color, which reads as a gap in either theme. */
+.emwrap { margin:8px 0 4px }
+.emmap { display:block; width:100%; height:auto }
+.emblock { stroke:var(--panel); stroke-width:1.1; stroke-linejoin:round;
+  transition:fill .35s }
+.emblock.emnew { stroke:var(--ink); stroke-width:2 }
+.emstates { fill:none; stroke:#000; stroke-opacity:.18; stroke-width:.5;
+  pointer-events:none }
+.emhome { fill:#fff; stroke:#000; stroke-width:.8; pointer-events:none }
+.embadge { fill:#fff; stroke:#000; stroke-opacity:.35; stroke-width:.8;
+  pointer-events:none }
+#em-marks image { pointer-events:none }
+.emlabel { margin:6px 0 0; font-size:var(--t-label); color:var(--dim) }
+#empirebar .rpline { display:flex; align-items:center; gap:10px;
+  flex-wrap:wrap }
+#empirebar input[type=range] { flex:1 1 200px; min-width:140px;
+  accent-color:var(--accent) }
+#empirecard.scrubbed { border-color:var(--accent) }
+.emshare { white-space:nowrap; font-variant-numeric:tabular-nums }
+.embar { display:inline-block; width:64px; height:6px; margin-right:8px;
+  border-radius:3px; background:var(--line); overflow:hidden;
+  vertical-align:1px }
+.embar i { display:block; height:100%; background:var(--accent) }
+.emlands { font-size:var(--t-meta); color:var(--dim) }
+.stbl tr.emout td { opacity:.6 }
+.emlog { margin:0; padding-left:0; list-style:none; display:grid; gap:10px }
+.emlog ul { margin:4px 0 0; padding-left:18px; display:grid; gap:4px;
+  font-size:var(--t-meta) }
+@media (prefers-reduced-motion:reduce) { .emblock { transition:none } }
+
 /* ---- why a tied team sits where it does ----
    The chip under a team on the fully-broken board, and the panel it opens.
    The chip always sits under the name: in a half-width card the two do

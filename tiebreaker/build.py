@@ -39,6 +39,7 @@ PICKEM_ENABLED = os.environ.get("B12_PICKEM") == "1"
 import scorecard as scorecard_mod
 import weather as weather_mod
 import rotation as rotation_mod
+import empire as empire_mod
 import swap as swap_mod
 import engine
 import rules_lite as rules
@@ -1012,6 +1013,7 @@ SUBNAV_LINKS = [("brief", "./", "The Brief"),
                 ("ladder", "ladder.html", "The Ladder"),
                 ("how", "how.html", "The Rules"),
                 ("model", "model.html", "The Model"),
+                ("empire", "empire.html", "The Empire"),
                 ("history", "history.html", "The Archive")]
 
 SCHEDULE_NAV = [("schedule", "./", "The Schedule"),
@@ -2036,6 +2038,152 @@ def status_class(state, pos):
     if state == "clinched":
         return " st-in st-top" if pos == "1" else " st-in"
     return ""
+
+
+_EMPIRE_MAP = {}
+
+
+def empire_map(games, teams):
+    """The sixteen starting territories, computed once a build per set of
+    home stadiums. Every season this site builds has the same sixteen and,
+    so far, the same buildings, so this is one computation, not three."""
+    venues = json.load(open(os.path.join(HERE, "data", "venues.json")))
+    stadiums = empire_mod.home_stadiums(games, teams, venues)
+    key = tuple(sorted(stadiums.items()))
+    if key not in _EMPIRE_MAP:
+        _EMPIRE_MAP[key] = empire_mod.territories(stadiums)
+    return _EMPIRE_MAP[key]
+
+
+def _empire_rows(frame, blocks):
+    """The holdings table for one frame, as HTML rows. site/empire.js draws
+    the same rows for every other week; the two have to agree."""
+    out = []
+    for i, r in enumerate(empire_mod.standings(frame, blocks), 1):
+        held = r["blocks"]
+        share = f"{r['area'] * 100:.1f}%"
+        if not held:
+            lands, cls = "<span class=dim>none, out until it wins</span>", " class=emout"
+        else:
+            lands = ", ".join(esc(b) for b in held)
+            cls = ""
+        out.append(
+            f"<tr{cls}><td class=posc>{i if held else ''}</td>"
+            f"<td class=teamcell>{team_name(r['team'], 20)}</td>"
+            f"<td class=emshare><span class=embar><i style='width:"
+            f"{r['area'] * 100:.1f}%'></i></span>{share}</td>"
+            f"<td class=emlands>{lands}</td></tr>")
+    return "".join(out)
+
+
+def empire_page(year, games, teams):
+    """The Empire: the Big 12 imperialism map, replayed through the season.
+
+    The rules and the geometry are empire.py's. This draws the map as it
+    stands after the last week played, the holdings under it and every
+    change of hands, and hands site/empire.js the earlier weeks so the
+    scrubber can redraw them. Without the script the page is the current
+    map and the full record, which is all of it that matters."""
+    terr = empire_map(games, set(teams))
+    blocks = terr["blocks"]
+    # The schools on the map are the ones with a stadium to claim from. That
+    # is all sixteen in every season built so far; one without would be left
+    # off and its games would move nothing, rather than take the page down.
+    teams_ = set(blocks)
+    frames = empire_mod.replay(games, teams_)
+    last = frames[-1]
+    color = {t: team_color(teams, t) for t in teams_}
+    logo = {t: f"{BASE}logos/{TEAM_KEY[t]}."
+               f"{'png' if TEAM_KEY[t] == 'byu' else 'svg'}" for t in teams_}
+
+    def label(f):
+        if f["week"] is None:
+            return "Before the first conference game"
+        when = max((g.get("start") or "" for g in games
+                    if g["week"] == f["week"] and g.get("completed")
+                    and g["home"] in teams_ and g["away"] in teams_),
+                   default="")
+        return (f"Through Week {f['week']}"
+                + (f" · {pretty_date(when, 'short')}" if when else ""))
+
+    taken = {b for m in last["moves"] for b in m["took"]}
+    paths = "".join(
+        f"<path data-b=\"{esc(b)}\" class='emblock{' emnew' if b in taken else ''}'"
+        f" fill='{color[last['owner'][b]]}' d='{blk['d']}'>"
+        f"<title>{esc(b)}'s home territory, held by "
+        f"{esc(last['owner'][b])}</title></path>"
+        for b, blk in sorted(blocks.items()))
+    # Each logo on a white badge: a mark drawn straight onto territory of its
+    # own color (Utah on red, TCU on purple) all but disappears.
+    S = 20
+    marks = "".join(
+        f"<circle class=emhome cx='{blk['home'][0]}' cy='{blk['home'][1]}' r='2.6'/>"
+        f"<circle class=embadge cx='{blk['label'][0]}' cy='{blk['label'][1]}' "
+        f"r='{S / 2 + 3}'/>"
+        f"<image data-b=\"{esc(b)}\" href='{logo[last['owner'][b]]}' "
+        f"x='{blk['label'][0] - S / 2}' y='{blk['label'][1] - S / 2}' "
+        f"width='{S}' height='{S}'/>"
+        for b, blk in sorted(blocks.items()))
+    svg = (f"<svg class=emmap viewBox='{terr['viewBox']}' role=img "
+           f"aria-label='Map of the lower 48 states split into sixteen Big 12 "
+           f"territories, colored by the school that holds each'>"
+           f"<g id=em-blocks>{paths}</g>"
+           f"<path class=emstates d='{terr['states']}'/>"
+           f"<g id=em-marks>{marks}</g></svg>")
+
+    log = []
+    for f in reversed(frames[1:]):
+        items = "".join(
+            f"<li>{team_name(m['winner'], 16)} beat "
+            f"{team_name(m['loser'], 16)}"
+            + (f" in the championship game" if m.get("ccg") else "")
+            + (f" and took {', '.join(esc(b) for b in m['took'])} "
+               f"<span class=dim>({sum(blocks[b]['area'] for b in m['took']) * 100:.1f}%"
+               f" of the map)</span>" if m["took"] else
+               " <span class=dim>(it held nothing to take)</span>")
+            + "</li>"
+            for m in f["moves"])
+        log.append(f"<li><b>Week {f['week']}</b><ul>{items}</ul></li>")
+    log_html = ("<ol class=emlog>" + "".join(log) + "</ol>") if log else (
+        "<p class=dim>No Big 12 team has played another yet, so every school "
+        "still holds the land it started with.</p>")
+
+    data = {
+        "frames": [{"label": label(f), "owner": f["owner"],
+                    "took": sorted({b for m in f["moves"] for b in m["took"]})}
+                   for f in frames],
+        "blocks": {b: {"area": blk["area"]} for b, blk in blocks.items()},
+        "teams": {t: {"color": color[t], "logo": logo[t],
+                      "page": team_href(t)} for t in sorted(teams_)},
+    }
+    out_of_it = sum(1 for r in empire_mod.standings(last, blocks) if not r["blocks"])
+    return f"""<div class=card id=empirecard><h2>The Big 12 empire</h2>
+  <div id=empirebar></div>
+  <p class=emlabel id=em-label>{esc(label(last))}</p>
+  <figure class=emwrap>{svg}</figure>
+  <p class=note>Every county in the lower 48 started the season with its
+  nearest Big 12 school, measured to the home stadium; the dot in each
+  territory is that stadium. When two Big 12 teams play, the winner takes
+  everything the loser holds at that moment, not only the loser's own land.
+  A team that has lost it all is out until it beats whoever holds some, and
+  only games between two Big 12 teams count, because nobody else holds land
+  to win. Outlined territories changed hands in the week shown.
+  {f"{out_of_it} of the sixteen hold nothing right now." if out_of_it else ""}</p>
+</div>
+<div class="duo even">
+<div class=stack><div class=card><h2>Who holds what</h2>
+  <div class=tablewrap><table class=stbl><thead><tr><th></th><th>Team</th>
+  <th>Share of the map</th><th>Territories held</th></tr></thead>
+  <tbody id=em-rows>{_empire_rows(last, blocks)}</tbody></table></div>
+  <p class=note>Share is land area, from an equal-area projection, so a
+  county in the Mountain West counts for what it covers. Each territory is
+  named for the school it started with.</p>
+</div></div>
+<div class=stack><div class=card><h2>How it moved</h2>
+  {log_html}
+</div></div>
+</div>
+<script id=empire-data type=application/json>{json.dumps(data, separators=(",", ":"))}</script>"""
 
 
 def standings_page(games, overrides, display_rows, teams):
@@ -6135,6 +6283,12 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          f'<script defer src="{base}{asset_v("pct.js")}"></script>'
          f'<script defer src="{base}{asset_v("why.js")}"></script>'
          f'<script defer src="{base}{asset_v("replay.js")}"></script>'),
+        ("empire.html", "The Empire", "empire",
+         empire_page(year, games, ctx["teams"]),
+         f"The {yr} Big 12 imperialism map: every county in the lower 48 "
+         "starts with its nearest Big 12 school, and every conference win "
+         "takes everything the loser holds. Replayed week by week.",
+         f'<script defer src="{base}{asset_v("empire.js")}"></script>'),
         ("schedule.html", "The Schedule", "schedule",
          build_schedule_page(games, ctx),
          f"This week's Big 12 games in {yr}: kickoff times, where they are "
@@ -8133,7 +8287,7 @@ def write_discovery(years):
     site = "https://big12ology.com/tiebreaker/"
     sched = "https://big12ology.com/schedule/"
     subs = ["", "lab.html", "race.html", "standings.html", "model.html",
-            "teams.html"]
+            "teams.html", "empire.html"]
     # One per team per season. Built for every season, so listed for every
     # season; a finished year's page is its record, not its odds.
     subs += [f"team/{team_slug(t)}" for t in sorted(load_teams())]
