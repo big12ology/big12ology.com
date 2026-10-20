@@ -81,8 +81,10 @@ def inline(name):
     # ends in blank lines still round-trips byte for byte.
     return text[:-1] if text.endswith("\n") else text
 
-# The schedule section is a sibling of /tiebreaker/ on the
-# domain, so its pages reach shared assets through ../tiebreaker/.
+# The schedule section is a sibling of /season/ (this directory's pages,
+# published there since 2026-10-20; /tiebreaker/ redirects to it at
+# Cloudflare) on the domain, so its pages reach shared assets through
+# ../season/.
 SCHEDULE_SITE = os.path.join(HERE, "site_schedule")
 # The pools — two season-long games under one roof at /pools/, generated here
 # like the schedule. It is the one section whose body is not in the file: the
@@ -96,7 +98,7 @@ SCHEDULE_SITE = os.path.join(HERE, "site_schedule")
 #   /pools/survivor/       one team a week, no repeats
 #   /pools/account.html    ONE account for both, so it sits at the top
 #
-# Pages one level down reach shared assets through ../../tiebreaker/, which is
+# Pages one level down reach shared assets through ../../season/, which is
 # what POOLS_UP is for.
 POOLS_SITE = os.path.join(HERE, "site_pools")
 PICKEM_SITE = os.path.join(POOLS_SITE, "pickem")
@@ -553,7 +555,7 @@ def asset_v(name, root=None):
 
     `root` is for assets that do not live in site/. The pick'em keeps its own
     app.js and styles.css in site_pickem/ while still reaching back to
-    ../tiebreaker/ for the shared ones, so the two cannot be resolved against
+    ../season/ for the shared ones, so the two cannot be resolved against
     the same directory."""
     p = os.path.join(root or SITE, name)
     try:
@@ -698,7 +700,7 @@ def footer(asof=""):
             'ESPN</a> · procedure per the '
             f'<a href="{POLICY_URL}">official Big 12 tiebreaker policy</a> · '
             'marks via Wikimedia Commons '
-            '(<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · '
+            '(<a href="/season/logos/SOURCES.json">SOURCES.json</a>) · '
             # In a span of its own so assemble.sh's one-footer check can set
             # it aside: this clause is the one thing a page may add, and
             # everything around it still has to match every other page.
@@ -719,13 +721,20 @@ def year_href(y, page, year):
     season directory, so this can name `page` unconditionally.
 
     Deliberately not BASE. BASE is the *asset* base, and under /schedule/ it
-    points back at ../tiebreaker/ for the shared stylesheet and marks — the
+    points back at ../season/ for the shared stylesheet and marks — the
     year pills inherited it and threw you into the tracker's Brief. What is
     wanted is the season base: the live season sits at the section root,
     archived ones one directory below it.
     """
     up = "" if year == LIVE_YEAR else "../"
     return f"{up}{page}" if y == LIVE_YEAR else f"{up}{y}/{page}"
+
+
+# Where each section is published. The football tracker's pages are written
+# to tiebreaker/site/ and served at /season/ since 2026-10-20, when "Season"
+# replaced "Tiebreaker" in the masthead; a Cloudflare redirect rule sends
+# /tiebreaker/* to /season/*, so old links still land.
+SECTION_PATH = {"tiebreaker": "season"}
 
 
 def section_href(section, year):
@@ -739,45 +748,75 @@ def section_href(section, year):
     Root-relative, like the rest of the masthead, so a local preview stays
     local.
     """
-    return f"/{section}/" if year == LIVE_YEAR else f"/{section}/{year}/"
+    path = SECTION_PATH.get(section, section)
+    return f"/{path}/" if year == LIVE_YEAR else f"/{path}/{year}/"
+
+
+# Which sport a section belongs to, for the masthead's two rows. Attendance
+# and the pools are football's: neither covers another sport yet.
+SPORT_OF = {"tiebreaker": "football", "schedule": "football",
+            "attendance": "football", "pools": "football", "pickem": "football",
+            "survivor": "football", "basketball": "basketball",
+            "basketball-schedule": "basketball"}
 
 
 def topbar(section, year, base="", acct=False):
     """The masthead, one copy for every page that has one.
 
+    TWO ROWS. The first is the site and its sports, Football and Men's
+    Basketball; the second, inside a sport, is that sport's sections, with
+    the page pills under it as before. It replaced one row of five sections
+    (Tiebreaker, Schedule, Basketball, Attendance, Pools) that mixed a sport
+    in among football's sections and read as if basketball were a football
+    feature. The four hand-written pages (index, privacy, 404, attendance)
+    carry the same markup as literal HTML.
+
     `acct` reserves the signed-in chip. It is emitted empty and filled by
     pickem/app.js once /api/me answers; leaving the box in the markup keeps
     the row from reflowing when it does, and stops a signed-in reader seeing
     "Sign in" for the length of a request."""
-    def link(sect, label):
-        on = " class=on" if sect == section else ""
-        return f'<a{on} href="{section_href(sect, year)}">{label}</a>'
+    sport = SPORT_OF.get(section)
 
-    # Attendance and the pick'em keep no per-year directories — attendance has
-    # a season picker on one page, and the pick'em only ever plays the current
-    # week — so neither takes a year across, and both are linked flat rather
-    # than through section_href, which would invent /pickem/2024/.
-    return (f'<nav class=b12-topbar><a class=b12-brand href="/" '
+    def a(label, href, on):
+        return f'<a{" class=on" if on else ""} href="{href}">{label}</a>'
+
+    row1 = (f'<nav class=b12-topbar><a class=b12-brand href="/" '
             f'aria-label="Big12ology home"><picture>'
             f'<source srcset="{base}brand/big12ology-compact-dark.svg" '
             f'media="(prefers-color-scheme: dark)">'
             f'<img src="{base}brand/big12ology-compact-dark.svg" '
             f'alt="Big12ology"></picture></a>'
-            + link("tiebreaker", "Tiebreaker") + link("schedule", "Schedule")
-            # Flat, like attendance: basketball keeps its own seasons, so the
-            # football year a page is in means nothing there.
-            + f'<a{" class=on" if section == "basketball" else ""} '
-              f'href="/basketball/">Basketball</a>'
-            + '<a href="/attendance/">Attendance</a>'
-            # Always. /pickem/ is a real page either way: the section when
-            # it is on, the Coming Soon page when it is not. It was only
-            # gated because the link used to point at a 404.
-            + f'<a{" class=on" if section in ("pickem", "pools") else ""} '
-              f'href="/pools/">Pools</a>'
+            + a("Football", section_href("tiebreaker", year), sport == "football")
+            # Flat: basketball keeps its own seasons, so the football year a
+            # page is in means nothing there.
+            + a("Men\u2019s Basketball", "/basketball/", sport == "basketball")
             + '<span class=b12-right>'
             + ('<span class=b12-acct hidden></span>' if acct else '')
             + '<span class=b12-theme></span></span>'
             '</nav>')
+    if sport == "football":
+        # Attendance and the pick'em keep no per-year directories (attendance
+        # has a season picker on one page, and the pick'em only ever plays
+        # the current week), so both are linked flat rather than through
+        # section_href, which would invent /pools/2024/. The pools link is
+        # always there: /pools/ is a real page whether the section is on or
+        # showing its Coming Soon page.
+        items = [("Season", section_href("tiebreaker", year),
+                  section == "tiebreaker"),
+                 ("Schedule", section_href("schedule", year),
+                  section == "schedule"),
+                 ("Attendance", "/attendance/", section == "attendance"),
+                 ("Pools", "/pools/", section in POOL_SECTIONS)]
+        label = "Football"
+    elif sport == "basketball":
+        items = [("Season", "/basketball/", section == "basketball"),
+                 ("Schedule", "/basketball/schedule.html",
+                  section == "basketball-schedule")]
+        label = "Men\u2019s basketball"
+    else:
+        return row1
+    return (row1 + f'<nav class=b12-sportbar aria-label="{label} sections">'
+            + "".join(a(*it) for it in items) + '</nav>')
 
 
 def load_marks():
@@ -961,14 +1000,14 @@ def tracker_top(year, active, matchcard="", section="tiebreaker", page="",
 # second copy of them.
 SECTIONS = {
     "tiebreaker": {
-        "title": "Big 12 Tiebreaker Tracker",
+        "title": "Big 12 Football",
         "live": ("Unofficial fan tool. Applies the official Big 12 "
                  "tiebreaking procedures to live results after every game."),
         "past": ("The {year} season as it finished, with the official "
                  "tiebreaking procedures applied to the final results."),
     },
     "schedule": {
-        "title": "Big 12 Schedule",
+        "title": "Big 12 Football Schedule",
         "live": ("Who plays whom, who misses whom, and what the unbalanced "
                  "draw is worth. Nine conference games out of a possible "
                  "fifteen."),
@@ -2082,7 +2121,7 @@ def _empire_rows(frame, blocks):
 
 def empire_card(year, games, teams):
     """The newest weekly card for this season, as a path under
-    /tiebreaker/, or None when empire_cards.py has not drawn it.
+    /season/, or None when empire_cards.py has not drawn it.
 
     The name is computed the way empire_cards.py names its files, and the
     file is checked for, so a page never advertises an image that is not
@@ -2103,7 +2142,7 @@ def empire_share(year, games, teams):
     card = empire_card(year, games, teams)
     if not card:
         return ""
-    url = f"https://big12ology.com/tiebreaker/{card}"
+    url = f"https://big12ology.com/season/{card}"
     week = card.rsplit("/", 1)[1].replace(".png", "")
     return f"""<div class=card id=empireshare><h2>Share the map</h2>
   <p class=note>An image of the map, drawn after every week of Big 12 games.
@@ -2114,10 +2153,10 @@ def empire_share(year, games, teams):
   <dl class=emurls>
   <dt>This week, permanently</dt><dd><code>{url}</code></dd>
   <dt>Whatever week is current</dt>
-  <dd><code>https://big12ology.com/tiebreaker/cards/empire.png</code></dd>
+  <dd><code>https://big12ology.com/season/cards/empire.png</code></dd>
   </dl>
   <p class=note>Swap <code>.png</code> for <code>.svg</code> on either. Every
-  earlier week is there too: <code>/tiebreaker/cards/{year}/</code> followed
+  earlier week is there too: <code>/season/cards/{year}/</code> followed
   by <code>empire-start</code> or <code>empire-week-NN</code>, as in
   <code>{esc(week)}</code>.</p>
 </div>"""
@@ -2780,7 +2819,7 @@ def build_subpage(title, active, body, year, matchcard,
 <meta property=og:title content="{esc(head_title)}">
 <meta property=og:description content="{esc(desc or '')}">
 <meta property=og:url content="{canon}">
-<meta property=og:image content="{og[0] if og else 'https://big12ology.com/tiebreaker/og.png'}">
+<meta property=og:image content="{og[0] if og else 'https://big12ology.com/season/og.png'}">
 <meta property=og:image:width content={og[1] if og else 1200}>
 <meta property=og:image:height content={og[2] if og else 630}>
 <meta name=twitter:card content=summary_large_image>"""
@@ -3823,7 +3862,7 @@ def jsonld(obj):
 # The og:image is inlined in five page templates already. This is the sixth
 # place that needs it, and the only one that is not an HTML template, so it
 # gets the name rather than a sixth copy of the literal.
-OG_IMAGE = "https://big12ology.com/tiebreaker/og.png"
+OG_IMAGE = "https://big12ology.com/season/og.png"
 
 
 def game_desc(g, year):
@@ -4216,7 +4255,7 @@ def game_row(g, pages=False):
     anchors is not HTML. `pages` is the same gate as slate_card's Preview,
     passed by each caller because game pages exist for the live season only
     and this row also renders on archived briefs and schedules.
-    Root-relative, like section_href: the rows appear under /tiebreaker/
+    Root-relative, like section_href: the rows appear under /season/
     and /schedule/ both, and the pages live at /schedule/game/ regardless
     of who is asking."""
     hn, an = team_name(g["home"]), team_name(g["away"])
@@ -4620,7 +4659,7 @@ def render(year, games):
     standcard = STAND_CARD.format(
         played=len(reg_played), total=len(reg), table=table, stories=stories)
 
-    site_url = "https://big12ology.com/tiebreaker/"
+    site_url = "https://big12ology.com/season/"
     page = TEMPLATE.format(
         year=year,
         base=BASE,
@@ -5185,8 +5224,8 @@ def write_team_pages(year, games, ctx, rows, clinch, outdir, base, canon):
     BASE_was, globals()["BASE"] = BASE, "../" + base
     try:
         head = TEAM_CSS + LOCAL_TIME_JS + (
-            f'<script defer src="/tiebreaker/{asset_v("gauge.js")}"></script>'
-            f'<script defer src="/tiebreaker/{asset_v("pickcon.js")}"></script>'
+            f'<script defer src="/season/{asset_v("gauge.js")}"></script>'
+            f'<script defer src="/season/{asset_v("pickcon.js")}"></script>'
             if PICKEM_ENABLED and year == LIVE_YEAR else "")
         n = 0
         for team in names:
@@ -5274,7 +5313,7 @@ TEMPLATE = """<!doctype html>
 <meta property=og:title content="The Lab · Big 12 what-if simulator — {year}">
 <meta property=og:description content="The official Big 12 tiebreaking procedures applied to live results after every game — plus a what-if simulator you can run on this season or replay against a finished one.">
 <meta property=og:url content="{canon}">
-<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta property=og:image content="https://big12ology.com/season/og.png">
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
@@ -5342,7 +5381,7 @@ EXPLAINER = """<!doctype html>
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>How the Big 12 tiebreakers work — Big12ology</title>
 <meta name=description content="A plain-English walkthrough of the official Big 12 football tiebreaking procedures, with the 2024 four-way tie worked step by step.">
-<link rel=canonical href="https://big12ology.com/tiebreaker/how.html">
+<link rel=canonical href="https://big12ology.com/season/how.html">
 <link rel=icon type=image/svg+xml href="{base}favicon.svg">
 <link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
 <link rel=apple-touch-icon href="{base}favicon-180.png">
@@ -5357,8 +5396,8 @@ EXPLAINER = """<!doctype html>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="How the Big 12 tiebreakers actually work">
 <meta property=og:description content="The official procedure in plain English, plus the 2024 four-way tie worked step by step by the tracker's rules engine.">
-<meta property=og:url content="https://big12ology.com/tiebreaker/how.html">
-<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta property=og:url content="https://big12ology.com/season/how.html">
+<meta property=og:image content="https://big12ology.com/season/og.png">
 <meta name=twitter:card content=summary_large_image>
 <style>
 {how_css}
@@ -5567,7 +5606,7 @@ RATINGS_PAGE = """<!doctype html>
 <meta property=og:title content="Big12ology ratings">
 <meta property=og:description content="This site's own team ratings, in points of margin, for every FBS team.">
 <meta property=og:url content="{canon}">
-<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta property=og:image content="https://big12ology.com/season/og.png">
 <meta name=twitter:card content=summary_large_image>
 <style>
 {how_css}
@@ -5689,7 +5728,7 @@ MODEL_PAGE = """<!doctype html>
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>How our rating is calculated \u2014 Big12ology</title>
 <meta name=description content="The one rating on this site we compute ourselves: least squares over every result, home field measured rather than assumed, and the out-of-sample numbers that justify it.">
-<link rel=canonical href="https://big12ology.com/tiebreaker/model-how.html">
+<link rel=canonical href="https://big12ology.com/season/model-how.html">
 <link rel=icon type=image/svg+xml href="{base}favicon.svg">
 <link rel=icon type=image/png sizes=32x32 href="{base}favicon-32.png">
 <link rel=apple-touch-icon href="{base}favicon-180.png">
@@ -5704,8 +5743,8 @@ MODEL_PAGE = """<!doctype html>
 <meta property=og:site_name content=Big12ology>
 <meta property=og:title content="How our rating is calculated">
 <meta property=og:description content="Least squares over every result, home field measured rather than assumed, and the out-of-sample numbers that justify it.">
-<meta property=og:url content="https://big12ology.com/tiebreaker/model-how.html">
-<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta property=og:url content="https://big12ology.com/season/model-how.html">
+<meta property=og:image content="https://big12ology.com/season/og.png">
 <meta name=twitter:card content=summary_large_image>
 <style>
 {how_css}
@@ -5900,9 +5939,9 @@ def build_model_ratings(year, matchcard, outdir=None):
             # tell a crawler two of them are duplicates of a page they do not
             # match. The explainer is genuinely the same every year and keeps
             # a single canonical, which is what the evergreen list is for.
-            canon=("https://big12ology.com/tiebreaker/model.html"
+            canon=("https://big12ology.com/season/model.html"
                    if year == LIVE_YEAR else
-                   f"https://big12ology.com/tiebreaker/{year}/model.html"),
+                   f"https://big12ology.com/season/{year}/model.html"),
             # No filter and no table furniture with nothing to filter: an
             # empty table prints its headers and a rule under them, which
             # reads as a table that failed to load rather than a season
@@ -6301,7 +6340,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     BASE = base
     SEASON = year
     os.makedirs(outdir, exist_ok=True)
-    site_url = "https://big12ology.com/tiebreaker/"
+    site_url = "https://big12ology.com/season/"
     canon = site_url if year == LIVE_YEAR else f"{site_url}{year}/"
     base = BASE
 
@@ -6347,9 +6386,9 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
          # cards have a split worth showing. Everything else on this page is
          # static, and stays static if it never answers.
          LOCAL_TIME_JS + (
-             f'<script defer src="/tiebreaker/{asset_v("gauge.js")}">'
+             f'<script defer src="/season/{asset_v("gauge.js")}">'
              f'</script>'
-             f'<script defer src="/tiebreaker/{asset_v("pickcon.js")}">'
+             f'<script defer src="/season/{asset_v("pickcon.js")}">'
              f'</script>' if PICKEM_ENABLED else "")),
         ("matrix.html", "The Matrix", "matrix",
          build_matrix_page(ctx),
@@ -6420,7 +6459,7 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     page_og = {}
     card = empire_card(year, games, ctx["teams"])
     if card:
-        page_og["empire.html"] = (f"https://big12ology.com/tiebreaker/{card}",
+        page_og["empire.html"] = (f"https://big12ology.com/season/{card}",
                                   1200, 630)
     for fname, title, active, body, desc, head in pages:
         schedule_page = fname in SCHEDULE_PAGES
@@ -6502,10 +6541,10 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
                               # gauge.js first: pickcon.js calls it, and defer
                               # runs them in document order.
                               + (f'<script defer '
-                                 f'src="/tiebreaker/{asset_v("gauge.js")}">'
+                                 f'src="/season/{asset_v("gauge.js")}">'
                                  f'</script>'
                                  f'<script defer '
-                                 f'src="/tiebreaker/{asset_v("pickcon.js")}">'
+                                 f'src="/season/{asset_v("pickcon.js")}">'
                                  f'</script>' if PICKEM_ENABLED else "")
                               + game_jsonld(g, year,
                                             f"{sched_canon}game/{slug}")),
@@ -7838,7 +7877,7 @@ def write_hub(year, games, lines, sims_race, lev_top=None):
         lev = {"pair": {t: tuple(v) for t, v in lev_top["pair"].items()}}
         sims = {t: {"p_ccg": (v or {}).get("p_ccg")}
                 for t, v in (sims_race or {}).items()}
-        was, globals()["BASE"] = BASE, "/tiebreaker/"
+        was, globals()["BASE"] = BASE, "/season/"
         try:
             fork = fork_block(g, lev, sims, load_teams())
         finally:
@@ -7946,7 +7985,7 @@ def build_pools_home(year):
     say for itself — that they share an account.
     """
     global BASE
-    prev, BASE = BASE, "../tiebreaker/"
+    prev, BASE = BASE, "../season/"
     os.makedirs(POOLS_SITE, exist_ok=True)
     head = (f'<link rel=stylesheet href="{asset_v("styles.css", POOLS_SITE)}">'
             f'<style>{POOLS_HOME_CSS}</style>'
@@ -8034,7 +8073,7 @@ def build_pools_soon(year, games):
     are how a coming-soon page stops being believed.
     """
     global BASE
-    prev, BASE = BASE, "../tiebreaker/"
+    prev, BASE = BASE, "../season/"
     os.makedirs(POOLS_SITE, exist_ok=True)
 
     # Two dates, and they are not the same one. The doors open two weeks
@@ -8158,7 +8197,7 @@ def build_pickem(year):
     global BASE
     # Two levels down now (/pools/pickem/x.html), so the shared assets are two
     # levels up. This is the whole cost of nesting the games under one roof.
-    prev, BASE = BASE, "../../tiebreaker/"
+    prev, BASE = BASE, "../../season/"
     os.makedirs(PICKEM_SITE, exist_ok=True)
     os.makedirs(POOLS_SITE, exist_ok=True)
 
@@ -8270,7 +8309,7 @@ def build_pickem(year):
 
     # One account for both games, so it sits above them rather than inside
     # one. Written with the pools' own BASE, being a level shallower.
-    BASE = "../tiebreaker/"
+    BASE = "../season/"
     acct_head = (f'<link rel=stylesheet '
                  f'href="{asset_v("styles.css", POOLS_SITE)}">'
                  f'<script defer src="{BASE}{asset_v("pct.js")}"></script>'
@@ -8343,7 +8382,7 @@ def write_discovery(years):
     """A sitemap. Without one a crawler has to guess that
     the archived seasons exist at all — nothing links to 2024 except the
     year pills, and the pages carry no dated signal of their own."""
-    site = "https://big12ology.com/tiebreaker/"
+    site = "https://big12ology.com/season/"
     sched = "https://big12ology.com/schedule/"
     subs = ["", "lab.html", "race.html", "standings.html", "model.html",
             "teams.html", "empire.html"]
@@ -8449,7 +8488,7 @@ def main():
                        refresh_lines="--refresh-lines" in sys.argv,
                        refresh_ratings="--refresh-ratings" in sys.argv)
     build_season(year, games, SITE, "", sched_outdir=SCHEDULE_SITE,
-                 sched_base="../tiebreaker/")
+                 sched_base="../season/")
 
     # The hub's numbers, read back out of the season that was just written
     # rather than recomputed here — the simulator is the expensive part of
@@ -8552,7 +8591,7 @@ def main():
             build_season(y, load_games(y), os.path.join(SITE, str(y)), "../",
                          feed=False,
                          sched_outdir=os.path.join(SCHEDULE_SITE, str(y)),
-                         sched_base="../../tiebreaker/")
+                         sched_base="../../season/")
             with open(stamp, "w", encoding="utf-8") as f:
                 f.write(want + "\n")
     write_discovery([year] + [y for y in ARCHIVE_YEARS if y != year])

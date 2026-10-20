@@ -50,7 +50,7 @@ jobs:
         run: |
           set -e
           fail=0
-          for p in / /tiebreaker/ /schedule/ /attendance/ /pools/; do
+          for p in / /season/ /schedule/ /basketball/ /attendance/ /pools/; do
             c=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
                   "https://big12ology.com$p" || echo 000)
             echo "  $p -> $c"

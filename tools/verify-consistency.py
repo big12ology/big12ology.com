@@ -94,9 +94,9 @@ def standings_rows(html, teams):
 
 
 def check_season(dist, year, bad):
-    base = os.path.join(dist, "tiebreaker", year) if year else \
-        os.path.join(dist, "tiebreaker")
-    where = f"tiebreaker/{year}" if year else "tiebreaker"
+    base = os.path.join(dist, "season", year) if year else \
+        os.path.join(dist, "season")
+    where = f"season/{year}" if year else "season"
 
     dj = os.path.join(base, "data.json")
     if not os.path.exists(dj):
@@ -173,7 +173,7 @@ def check_season(dist, year, bad):
 def main(dist):
     bad = []
     years = [""]
-    tb = os.path.join(dist, "tiebreaker")
+    tb = os.path.join(dist, "season")
     if os.path.isdir(tb):
         years += sorted(d for d in os.listdir(tb)
                         if re.fullmatch(r"\d{4}", d)

@@ -166,7 +166,7 @@ def main(dist):
         # --- the canonical lands somewhere real
         #
         # NOT "the canonical equals this file's own path". Pointing elsewhere
-        # is the whole purpose: brief.html canonicalises to /tiebreaker/, the
+        # is the whole purpose: brief.html canonicalises to /season/, the
         # schedule pages that moved sections point at /schedule/, and the
         # /pickem/ redirect stub points at the page it redirects to. What
         # would actually be broken is a canonical naming a page nobody built.

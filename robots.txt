@@ -7,7 +7,7 @@ Allow: /
 Disallow: /api/
 
 Sitemap: https://big12ology.com/sitemap.xml
-Sitemap: https://big12ology.com/tiebreaker/sitemap.xml
+Sitemap: https://big12ology.com/season/sitemap.xml
 Sitemap: https://big12ology.com/schedule/sitemap.xml
 Sitemap: https://big12ology.com/basketball/sitemap.xml
 # PICKEM-ONLY

@@ -17,7 +17,7 @@ from xml.sax.saxutils import escape
 import engine
 import rules_lite as rules
 
-SITE_URL = "https://big12ology.com/tiebreaker/"
+SITE_URL = "https://big12ology.com/season/"
 FEED_URL = SITE_URL + "feed.xml"
 MAX_ITEMS = 60
 WRAP_SIMS = 3000

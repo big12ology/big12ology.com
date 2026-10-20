@@ -1,5 +1,5 @@
 /* Big12ology shared chrome — served at big12ology.com/brand.css
- * Used by the hub, /tiebreaker/, and /attendance/. Topbar, header, pill nav
+ * Used by the hub, /season/, and /attendance/. Topbar, header, pill nav
  * and footer; each project keeps its own body styles.
  *
  * Theme: an explicit choice in the toggle beats the OS preference, so every
@@ -280,6 +280,28 @@
 .b12-topbar a:hover, .b12-topbar a.on { color: #fff; }
 .b12-topbar .b12-right { margin-left: auto; display: flex; align-items: center;
   gap: 10px; }
+
+/* The sports are the first row's only links, so they carry its weight. */
+.b12-topbar a:not(.b12-brand) { font-weight: 600; }
+
+/* THE SECOND ROW: inside a sport, that sport's sections (Season, Schedule,
+   and for football Attendance and Pools), with the page pills still below.
+   One shade lighter than the bar above so the two read as one masthead,
+   and the current section underlined in the accent rather than set in a
+   pill, so it does not compete with the page pills under it. */
+.b12-sportbar {
+  display: flex; flex-wrap: wrap; gap: 4px 22px; padding: 0 20px;
+  background: #1d2026; border-top: 1px solid #2a2e36;
+  font:var(--t-meta)/1.4 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.b12-sportbar a { color: #9aa0aa; text-decoration: none; padding: 8px 0 6px;
+  border-bottom: 2px solid transparent; }
+.b12-sportbar a:hover { color: #fff; }
+.b12-sportbar a.on { color: #fff; border-bottom-color: #3FC7CE; }
+.b12-sportbar a:focus-visible { outline: 2px solid #3FC7CE; outline-offset: 2px; }
+@media (max-width: 700px) {
+  .b12-sportbar { padding: 0 14px; gap: 4px 16px; }
+}
 
 /* The masthead did not fit a phone. At 375px the four section links plus the
    theme toggle measured 473px against a 375px viewport, so the toggle sat off

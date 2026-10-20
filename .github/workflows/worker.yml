@@ -215,8 +215,12 @@ jobs:
           echo "health: $code $(cat /tmp/h)"
           [ "$code" = "200" ] || { echo "health did not answer"; exit 1; }
           grep -q '"ok":true' /tmp/h || { echo "health says not ok"; exit 1; }
-          for p in / /tiebreaker/ /schedule/ /attendance/; do
-            c=$(curl -s -o /dev/null -w '%{http_code}' "https://big12ology.com$p")
+          # /tiebreaker/ with -L rather than /season/: a push that touches this
+          # file deploys the Worker minutes before Pages has published a new
+          # path, and the old one answers either way (a copy until the
+          # Cloudflare rule is live, a 301 to /season/ after it).
+          for p in / /tiebreaker/ /schedule/ /basketball/ /attendance/; do
+            c=$(curl -sL -o /dev/null -w '%{http_code}' "https://big12ology.com$p")
             echo "  $p -> $c"
             [ "$c" = "200" ] || { echo "THE STATIC SITE IS DOWN at $p"; exit 1; }
           done
@@ -246,8 +250,8 @@ jobs:
           sleep 5
           code=$(curl -s -o /tmp/h2 -w '%{http_code}' https://big12ology.com/api/health)
           echo "after rollback: $code $(cat /tmp/h2 || true)"
-          for p in / /tiebreaker/ /schedule/ /attendance/; do
-            c=$(curl -s -o /dev/null -w '%{http_code}' "https://big12ology.com$p")
+          for p in / /tiebreaker/ /schedule/ /basketball/ /attendance/; do
+            c=$(curl -sL -o /dev/null -w '%{http_code}' "https://big12ology.com$p")
             echo "  $p -> $c"
           done
 

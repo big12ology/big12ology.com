@@ -45,7 +45,7 @@ import empire                                            # noqa: E402
 
 CARDS = os.path.join(HERE, "cards")
 LOGOS = os.path.join(HERE, "site", "logos")
-PAGE_URL = "big12ology.com/tiebreaker/empire.html"
+PAGE_URL = "big12ology.com/season/empire.html"
 
 W, H = 1200, 630
 INK, DIM, LINE, BG = "#16181A", "#5b6169", "#e2ddd3", "#f6f4ef"

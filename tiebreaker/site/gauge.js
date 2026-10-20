@@ -10,7 +10,7 @@
  * copies before this, in two sections that cannot import from each other, and
  * they had already drifted into saying different things about the same number.
  *
- * Shared the way pct.js is shared: a classic script under /tiebreaker/ that
+ * Shared the way pct.js is shared: a classic script under /season/ that
  * the pools pages reach back for, so there is one file and one hash rather
  * than a copy per section.
  *

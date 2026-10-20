@@ -339,10 +339,10 @@
     a.href = "/schedule/";
     p.appendChild(a);
     p.appendChild(document.createTextNode(", and the "));
-    var b = el("a", null, "Tiebreaker");
-    b.href = "/tiebreaker/";
+    var b = el("a", null, "Season");
+    b.href = "/season/";
     p.appendChild(b);
-    p.appendChild(document.createTextNode(" has the season forecast those " +
+    p.appendChild(document.createTextNode(" page has the forecast those " +
       "pages draw from."));
     return p;
   }

@@ -209,7 +209,7 @@ jobs:
           # because /pools/ is a real destination either way: the section when
           # the flag is on and the teaser when it is off. So it is asserted in
           # both shapes below rather than treated as a lit-only tell.
-          grep -q 'href="/pools/">Pools<' dist/tiebreaker/index.html
+          grep -q 'href="/pools/">Pools<' dist/season/index.html
 
       # Back to the shipping shape, so nothing downstream sees the dark
       # section's output.
@@ -242,7 +242,7 @@ jobs:
           ! grep -q 'url=/pools/pickem/' dist/pickem/index.html
           # The teaser still has to be reachable from every generated page,
           # or the Coming Soon page is one nobody can find.
-          grep -q 'href="/pools/">Pools<' dist/tiebreaker/index.html
+          grep -q 'href="/pools/">Pools<' dist/season/index.html
           ! grep -rq 'pickcon' dist
           # And the disclosure still matches what is actually running.
           grep -q 'no accounts, no cookies' dist/privacy.html

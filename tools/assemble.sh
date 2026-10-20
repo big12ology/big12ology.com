@@ -9,7 +9,7 @@
 # `cd tiebreaker && python3 build.py --fetch` first, or use the workflow.
 #
 #     /                 the hub          (repo root, minus repo furniture)
-#     /tiebreaker/      tiebreaker/site/ (generated)
+#     /season/          tiebreaker/site/ (generated)
 #     /attendance/      attendance/      (served as-is, data included)
 #
 set -euo pipefail
@@ -77,15 +77,26 @@ PICKEM_EX=(--exclude=.keep-pickem-none)
                                            --exclude=gauge.js
                                            --exclude=pickem-scores.json)
 rsync -a "${COMMON[@]}" "${PICKEM_EX[@]}" \
-      "$ROOT/tiebreaker/site/" "$DIST/tiebreaker/"
+      "$ROOT/tiebreaker/site/" "$DIST/season/"
 # The Empire's weekly share cards. Kept beside the builder rather than in
 # tiebreaker/site/, because they are an archive the build only adds to: each
 # week's card is committed once and never redrawn (tiebreaker/empire_cards.py).
-mkdir -p "$DIST/tiebreaker/cards"
-rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/cards/" "$DIST/tiebreaker/cards/"
+mkdir -p "$DIST/season/cards"
+rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/cards/" "$DIST/season/cards/"
+
+# The football section was published at /tiebreaker/ until 2026-10-20 and is
+# /season/ now. A Cloudflare redirect rule sends /tiebreaker/* to /season/*
+# with a 301; until that rule is live, the old path is a second copy so that
+# nothing linked, bookmarked or cached at the edge breaks in between. Every
+# page in it already names /season/ as canonical. Drop this once the rule is
+# answering (curl -sI https://big12ology.com/tiebreaker/ shows a 301).
+B12_OLD_TIEBREAKER="${B12_OLD_TIEBREAKER:-1}"
+if [ "$B12_OLD_TIEBREAKER" = "1" ]; then
+  rsync -a "$DIST/season/" "$DIST/tiebreaker/"
+fi
 
 # The schedule section is generated beside the tiebreaker and served as a
-# sibling path; its pages reach back to ../tiebreaker/ for the shared marks
+# sibling path; its pages reach back to ../season/ for the shared marks
 # and stylesheet rather than carrying a second copy of them.
 rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_schedule/" "$DIST/schedule/"
 
@@ -111,7 +122,7 @@ rsync -a "${COMMON[@]}" "$ROOT/attendance/" "$DIST/attendance/"
 # not two, and /pickem/data/ is two while /pickem/ holds no pages yet.
 
 # The pick'em section itself, generated beside the tiebreaker like the
-# schedule and reaching back to ../tiebreaker/ for brand.css, theme.js and
+# schedule and reaching back to ../season/ for brand.css, theme.js and
 # pct.js rather than carrying a second copy of them. Its pages are shells:
 # everything a reader sees arrives from /api/* at runtime.
 #
@@ -173,13 +184,13 @@ moved_stub() {
     > "$DIST$from"
 }
 
-moved_stub /standings.html /tiebreaker/standings.html "The Standings"
-moved_stub /race.html      /tiebreaker/race.html      "The Race"
-moved_stub /ladder.html    /tiebreaker/ladder.html    "The Ladder"
-moved_stub /history.html   /tiebreaker/history.html   "The Archive"
-moved_stub /how.html       /tiebreaker/how.html       "How the tiebreakers work"
-moved_stub /lab.html       /tiebreaker/lab.html       "The Lab"
-moved_stub /cutline.html   /tiebreaker/cutline.html   "The Cut Line"
+moved_stub /standings.html /season/standings.html "The Standings"
+moved_stub /race.html      /season/race.html      "The Race"
+moved_stub /ladder.html    /season/ladder.html    "The Ladder"
+moved_stub /history.html   /season/history.html   "The Archive"
+moved_stub /how.html       /season/how.html       "How the tiebreakers work"
+moved_stub /lab.html       /season/lab.html       "The Lab"
+moved_stub /cutline.html   /season/cutline.html   "The Cut Line"
 moved_stub /draw.html      /schedule/draw.html        "The Draw"
 moved_stub /matrix.html    /schedule/matrix.html      "The Matrix"
 moved_stub /rotation.html  /schedule/rotation.html    "The Rotation"
@@ -281,7 +292,7 @@ done < <(find "$DIST" -name '*.html')
 # None of it depends on the clock: "the next game" means the first one with no
 # result. Two assembles a minute apart produce identical bytes, which
 # tools/verify-deterministic.sh checks and pages.yml relies on.
-HUB_JSON="$DIST/tiebreaker/hub.json"
+HUB_JSON="$DIST/season/hub.json"
 if [ -f "$HUB_JSON" ] && grep -q '{{HUB_' "$DIST/index.html" 2>/dev/null; then
   python3 - "$DIST/index.html" "$HUB_JSON" <<'PY'
 import datetime
@@ -356,7 +367,7 @@ tok = {
     # measured from and whose opinion they are. All of that is right, and all
     # of it is about 200px of card: on a phone it is the entire bottom row of
     # a front page whose one job is to show all four sections at once. The
-    # fork is on /tiebreaker/ where it has the room. This is the sentence that
+    # fork is on /season/ where it has the room. This is the sentence that
     # makes somebody go there.
     #
     # Nothing at all, rather than a heading over a blank: before the season
@@ -370,7 +381,7 @@ tok = {
     # "Biggest swing this week" over a September 12 kickoff while the season
     # had not started. It stays wrong into the season, too, because the
     # opening weeks are non-conference and the first conference game is week
-    # 2. Naming the week is what /tiebreaker/'s own card does ("Games that
+    # 2. Naming the week is what /season/'s own card does ("Games that
     # matter · week 2"), and the two now agree.
     "HUB_SPOTLIGHT": (
         f"<p class=live-line>Biggest swing{spot_week}: "
@@ -765,10 +776,10 @@ fi
 
 for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          brand.css tokens.css theme.js cards.js state.js metrics.js \
-         tiebreaker/index.html tiebreaker/how.html tiebreaker/history.html \
-         tiebreaker/draw.html tiebreaker/rotation.html tiebreaker/cutline.html tiebreaker/ladder.html \
-         tiebreaker/app.js tiebreaker/engine.js tiebreaker/feed.xml \
-         tiebreaker/hub.json tiebreaker/facts.json \
+         season/index.html season/how.html season/history.html \
+         season/draw.html season/rotation.html season/cutline.html season/ladder.html \
+         season/app.js season/engine.js season/feed.xml \
+         season/hub.json season/facts.json season/sitemap.xml \
          schedule/index.html schedule/draw.html schedule/rotation.html \
          schedule/sitemap.xml \
          basketball/index.html basketball/schedule.html basketball/rules.html \
@@ -841,7 +852,7 @@ done
 # and the symptom is a section that looks subtly wrong on one path only.
 #
 # Found the hard way: a masthead fix landed in the root copy and changed
-# nothing on /tiebreaker/, because that page reads its own.
+# nothing on /tiebreaker/ (now /season/), because that page reads its own.
 for shared in brand.css tokens.css theme.js cards.js state.js metrics.js; do
   a="$ROOT/$shared"
   for b in "$ROOT/attendance/$shared" "$ROOT/tiebreaker/site/$shared"; do

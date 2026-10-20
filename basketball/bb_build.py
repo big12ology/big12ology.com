@@ -10,7 +10,7 @@ tiebreaker/build.py so the site still reads as one thing, and keeps its own
 data, rules and pages. The rules are site/engine.js; the data is season.py.
 
 Pages land in basketball/site/ and tools/assemble.sh serves them at
-/basketball/. Shared assets are reached at ../tiebreaker/, the way the
+/basketball/. Shared assets are reached at ../season/, the way the
 /schedule/ section reaches them.
 """
 import datetime
@@ -35,28 +35,39 @@ import empire as empire_mod                              # noqa: E402
 
 SITE = os.path.join(HERE, "site")
 SECTION = "basketball"
+# The schedule half of the section: the same directory, but its own tab in
+# the sport bar and its own pills, as football's /schedule/ is to /season/.
+SCHED = "basketball-schedule"
 
 # THE SECTION REGISTERS ITSELF with the shared shell, here and only in this
 # process, rather than living in tiebreaker/build.py: the football build
 # never draws a basketball page, and keeping the registration beside the
 # pages it serves keeps the two sections' files apart.
 tb.SECTIONS[SECTION] = {
-    "title": "Big 12 Basketball",
+    "title": "Big 12 Men’s Basketball",
     "live": ("Unofficial fan tool. The official Big 12 tournament seeding and "
              "tiebreaker procedure, applied to every result as it comes in."),
     "past": ("The {year} season as it finished, with the official seeding "
              "procedure applied."),
 }
+tb.SECTIONS[SCHED] = {
+    "title": "Big 12 Men’s Basketball Schedule",
+    "live": ("Every conference game with its tip time, TV and line, and who "
+             "meets twice in the eighteen-game draw."),
+    "past": ("The {year} conference schedule: every result, and who met "
+             "twice."),
+}
 NAV = [("standings", "./", "The Standings"),
        ("race", "race.html", "The Race"),
        ("bracket", "bracket.html", "The Bracket"),
-       ("schedule", "schedule.html", "The Schedule"),
-       ("matrix", "matrix.html", "The Matrix"),
        ("teams", "teams.html", "The Teams"),
        ("empire", "empire.html", "The Empire"),
        ("rules", "rules.html", "The Rules")]
+SCHED_NAV = [("schedule", "schedule.html", "The Schedule"),
+             ("matrix", "matrix.html", "The Matrix")]
 _nav_for = tb.nav_for
-tb.nav_for = lambda section: NAV if section == SECTION else _nav_for(section)
+tb.nav_for = lambda section: {SECTION: NAV, SCHED: SCHED_NAV}.get(
+    section) or _nav_for(section)
 # No year pills yet: they link to football seasons' directories, and the
 # basketball archive keeps its own (Phase 4).
 _tracker_top = tb.tracker_top
@@ -65,7 +76,7 @@ _tracker_top = tb.tracker_top
 def _tracker_top_bb(year, active, matchcard="", section="tiebreaker", page="",
                     up="", yearpills=True, subnavon=True):
     return _tracker_top(year, active, matchcard, section, page, up,
-                        yearpills=yearpills and section != SECTION,
+                        yearpills=yearpills and section not in (SECTION, SCHED),
                         subnavon=subnavon)
 
 
@@ -797,18 +808,19 @@ CSS = open(os.path.join(HERE, "section.css")).read() if os.path.exists(
     os.path.join(HERE, "section.css")) else ""
 
 
-def page(title, active, body, d, fname, desc, up="", head=""):
+def page(title, active, body, d, fname, desc, up="", head="",
+         section=SECTION):
     """One page. `body` is a function, called once the asset base is set:
     the marks and links inside it are written relative to where the page
     sits, and a body built before that points at /basketball/logos/."""
     base_was = tb.BASE
-    tb.BASE = up + "../tiebreaker/"
+    tb.BASE = up + "../season/"
     try:
         html = tb.build_subpage(
             title, active, body(),
             d["season"], "", canon=URL + fname.replace("index.html", ""),
             desc=desc, head=tb.LOCAL_TIME_JS + f"<style>{CSS}</style>" + head,
-            section=SECTION,
+            section=section,
             page=fname, up=up)
     finally:
         tb.BASE = base_was
@@ -874,17 +886,18 @@ def main():
         "The Matrix", "matrix", lambda: matrix_body(d, model), d,
         "matrix.html",
         f"Who plays whom in the {yr} Big 12, who meets twice, and which "
-        f"eighteen-game draw is hardest."))
+        f"eighteen-game draw is hardest.", section=SCHED))
     write(os.path.join(out, "empire.html"), page(
         "The Empire", "empire", lambda: empire_body(d, football_teams), d,
         "empire.html",
         f"The {yr} Big 12 basketball imperialism map: every county starts "
         f"with its nearest Big 12 school, and every conference win takes "
         f"everything the loser holds.",
-        head=f'<script defer src="../tiebreaker/{tb.asset_v("empire.js")}"></script>'))
+        head=f'<script defer src="../season/{tb.asset_v("empire.js")}"></script>'))
     write(os.path.join(out, "schedule.html"), page(
         "The Schedule", "schedule", lambda: schedule_body(d), d, "schedule.html",
-        f"Every {yr} Big 12 men's basketball game: tip times, TV and lines."))
+        f"Every {yr} Big 12 men's basketball game: tip times, TV and lines.",
+        section=SCHED))
     write(os.path.join(out, "teams.html"), page(
         "The Teams", "teams", lambda: teams_body(d, st), d, "teams.html",
         f"The sixteen Big 12 men's basketball teams in {yr}."))

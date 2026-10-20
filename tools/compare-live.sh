@@ -139,7 +139,7 @@ while IFS=$'\t' read -r code rel; do
     # */sitemap.xml catches the schedule section's own generated sitemap, whose
     # <lastmod> moves with every build. The root sitemap.xml is hand-maintained,
     # has no slash, and so stays byte-exact on purpose.
-    *.html|*/sitemap.xml|tiebreaker/*.json|tiebreaker/*.xml|tiebreaker/*.csv)
+    *.html|*/sitemap.xml|season/*.json|season/*.xml|season/*.csv)
       if diff -q <(norm "$file") <(norm "$TMP/live/$rel") >/dev/null; then
         stamped=$((stamped + 1)); stamped_list+=("$rel")
         continue
@@ -212,7 +212,7 @@ edge_canary() {
   # Mutable, frequently rebuilt, and carrying no ?v= — the files most likely to
   # go stale behind a CDN.
   local p
-  for p in attendance/data/attendance.csv tiebreaker/standings.csv brand.css theme.js; do
+  for p in attendance/data/attendance.csv season/standings.csv brand.css theme.js; do
     diff -q <(curl -sS --max-time 30 "$BASE/$p") \
             <(curl -sS --max-time 30 --connect-to "${HOST}:443:${ORIGIN_HOST}:443" \
                    "$BASE/$p") >/dev/null ||

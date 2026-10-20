@@ -269,11 +269,8 @@ a.card:hover { border-color: var(--accent); }
 <a class=skip-link href="#main">Skip to content</a>
 <nav class=b12-topbar>
   <a class=b12-brand href="/" aria-label="Big12ology home"><img src="brand/big12ology-compact-dark.svg" alt="Big12ology"></a>
-  <a href="/tiebreaker/">Tiebreaker</a>
-  <a href="/schedule/">Schedule</a>
-  <a href="/basketball/">Basketball</a>
-  <a href="/attendance/">Attendance</a>
-  <a href="/pools/">Pools</a>
+  <a href="/season/">Football</a>
+  <a href="/basketball/">Men’s Basketball</a>
   <span class=b12-right><span class=b12-theme></span></span>
 </nav>
 <header>
@@ -307,7 +304,7 @@ a.card:hover { border-color: var(--accent); }
         <time id=nk datetime="{{HUB_NEXT_ISO}}">{{HUB_NEXT_WHEN}}</time><span
           id=nkin class=rocd aria-hidden=true></span></span>
     </a>
-    <a class=readout href="/tiebreaker/">
+    <a class=readout href="/season/">
       <span class=rolabel>Projected title game</span>
       <span class=romain>{{HUB_CCG_A}} <i>vs</i> {{HUB_CCG_B}}</span>
       <span class=rosub>{{HUB_CCG_A_PCT}} and {{HUB_CCG_B_PCT}} to get
@@ -316,8 +313,8 @@ a.card:hover { border-color: var(--accent); }
   </div>
 </header>
 <main id=main tabindex="-1">
-  <a class=card href="/tiebreaker/">
-    <h2>Tiebreaker Tracker <span class="tag live">live</span></h2>
+  <a class=card href="/season/">
+    <h2>Season <span class="tag live">live</span></h2>
     <p class=figs>
       <span><b>{{HUB_TEAMS}}</b>teams</span>
       <span><b>7</b>steps</span>
@@ -330,7 +327,7 @@ a.card:hover { border-color: var(--accent); }
          The fork this used to carry — both branches, four percentages, the
          arrows and the note explaining where they are measured from — is
          200px of card, which is the whole bottom row of this page on a phone.
-         It is on /tiebreaker/ where it has the room, and this is the sentence
+         It is on /season/ where it has the room, and this is the sentence
          that makes somebody go there. -->
     {{HUB_SPOTLIGHT}}
   </a>
@@ -399,8 +396,8 @@ a.card:hover { border-color: var(--accent); }
   <p class=fact hidden data-facts="*"></p>
   <p class=deeper>
     <span>Straight to it:</span>
-    <a href="/tiebreaker/how.html">Big 12 tiebreaker rules</a>
-    <a href="/tiebreaker/history.html">every tie since 2011, broken step by step</a>
+    <a href="/season/how.html">Big 12 tiebreaker rules</a>
+    <a href="/season/history.html">every tie since 2011, broken step by step</a>
     <a href="/attendance/">Big 12 attendance records</a>
     <a href="/schedule/rotation.html">who plays whom, and who they miss</a>
     <a href="/attendance/data/attendance.csv">attendance data (CSV)</a>
@@ -411,7 +408,7 @@ a.card:hover { border-color: var(--accent); }
   and <a href="https://www.espn.com/college-football/scoreboard">ESPN</a> ·
   procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official
   Big 12 tiebreaker policy</a> · marks via Wikimedia Commons
-  (<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) ·
+  (<a href="/season/logos/SOURCES.json">SOURCES.json</a>) ·
   updated {{BUILD_STAMP}}.<br>
   Not affiliated with the Big 12 Conference; marks belong to their
   owners, shown for identification only. ·
@@ -501,7 +498,7 @@ a.card:hover { border-color: var(--accent); }
   // facts from that visit. Corrections to a fact would land on the site and
   // never reach them. The file changes on every deploy; it has to be asked
   // about.
-  fetch("/tiebreaker/facts.json", { cache: "no-cache" })
+  fetch("/season/facts.json", { cache: "no-cache" })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (d) {
       if (!d || !d.sections) return;

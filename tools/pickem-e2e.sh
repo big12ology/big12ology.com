@@ -137,11 +137,11 @@ say "assembling the lit site"
 B12_PICKEM=1 tools/assemble.sh "$SITE" >/dev/null
 
 # The scores fallback fetches the committed file at its repo path,
-# /tiebreaker/site/pickem-scores.json, which the assembled site flattens to
-# /tiebreaker/. Lay the repo-layout copy down too, since the proxy is playing
+# /tiebreaker/site/pickem-scores.json, which the assembled site publishes at
+# /season/. Lay the repo-layout copy down too, since the proxy is playing
 # raw.githubusercontent.com as well as the website.
 mkdir -p "$SITE/tiebreaker/site"
-cp "$SITE/tiebreaker/pickem-scores.json" "$SITE/tiebreaker/site/"
+cp "$SITE/season/pickem-scores.json" "$SITE/tiebreaker/site/"
 
 # --- the published weeks ------------------------------------------------------
 #
