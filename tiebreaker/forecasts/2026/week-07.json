@@ -20,7 +20,7 @@
    "home": "UCF",
    "margin": -7.27,
    "p_home": 0.309,
-   "spread": 6.6,
+   "spread": 6.5,
    "systems": {
     "Big12ology": 2.81,
     "Elo": -8.89,
@@ -672,7 +672,7 @@
   }
  },
  "games_complete": 73,
- "generated": "2026-10-19T21:55:56+00:00",
+ "generated": "2026-10-20T07:32:29+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
