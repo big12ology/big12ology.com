@@ -141,6 +141,14 @@ jobs:
         working-directory: tiebreaker
         run: python3 build.py
 
+      # Men's basketball too, from what is on disk (no --fetch, no calls).
+      # Its pages carry the shared footer, and assembled from whatever was
+      # last committed they drifted from the freshly built football ones the
+      # day a footer link moved: the footer check failed 077fc6f on pages
+      # nobody had touched.
+      - name: Build men's basketball
+        run: python3 basketball/bb_build.py
+
       # BOTH OF THESE READ THE BUILT PAGES, so both belong here and not with
       # the suites above. They sat above the build step for three weeks, where
       # site/ is whatever the last person happened to commit: output this

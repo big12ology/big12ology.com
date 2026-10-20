@@ -332,7 +332,10 @@ def replay(games, teams):
     a final score. Games are applied in kickoff order inside a week, which
     matters: a team can win land on Thursday and lose all of it on Saturday.
     """
-    owner = {t: t for t in teams}
+    # Sorted: callers pass a set, and a set of strings iterates in a
+    # different order in every process (hash randomization), which made the
+    # embedded map data differ between two builds of the same input.
+    owner = {t: t for t in sorted(teams)}
     frames = [{"week": None, "owner": dict(owner), "moves": []}]
     played = sorted(
         (g for g in games
