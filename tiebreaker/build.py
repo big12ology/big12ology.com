@@ -764,6 +764,10 @@ def topbar(section, year, base="", acct=False):
             f'<img src="{base}brand/big12ology-compact-dark.svg" '
             f'alt="Big12ology"></picture></a>'
             + link("tiebreaker", "Tiebreaker") + link("schedule", "Schedule")
+            # Flat, like attendance: basketball keeps its own seasons, so the
+            # football year a page is in means nothing there.
+            + f'<a{" class=on" if section == "basketball" else ""} '
+              f'href="/basketball/">Basketball</a>'
             + '<a href="/attendance/">Attendance</a>'
             # Always. /pickem/ is a real page either way: the section when
             # it is on, the Coming Soon page when it is not. It was only

@@ -266,7 +266,8 @@ jobs:
         # passes --refresh instead and does the same work with the lines and
         # media forced, and opens the pools week. Either one refits the
         # ratings when the week has turned over (build.ratings_due);
-        # --refresh-ratings is the manual input, which refits regardless. It used to name the two daily crons explicitly; naming the
+        # --refresh-ratings is the manual input, which refits regardless.
+        # It used to name the two daily crons explicitly; naming the
         # one exception is shorter, and it means a cron added later picks up
         # the market without anybody remembering to come back here.
         #
@@ -281,6 +282,24 @@ jobs:
             ${{ (github.event.schedule == '0 7 * 8-12 2' || inputs.refresh) && '--refresh' || '' }} \
             ${{ (github.event_name == 'schedule' && github.event.schedule != '0 7 * 8-12 2') && '--refresh-lines' || '' }} \
             ${{ inputs.ratings && '--refresh-ratings' || '' }}
+
+      # MEN'S BASKETBALL, /basketball/ (basketball/bb_build.py). Its own
+      # step so a failure there can never cost the football deploy, and
+      # after the tiebreaker so the shared marks and stylesheet are current.
+      # --fetch is gated inside: CBBD is asked for games only when one is due
+      # a final or the copy is a day old, and for lines and broadcasts once a
+      # day, so most runs spend nothing. It shares CFBD's key and quota.
+      #
+      # The data is staged here rather than added to the commit step's list:
+      # that step commits whatever is staged, so the basketball files ride
+      # along in the same commit without the two steps sharing a line.
+      - name: Build men's basketball
+        continue-on-error: true
+        env:
+          CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+        run: |
+          python3 basketball/bb_build.py --fetch
+          git add basketball/data
 
       # The build writes tiebreaker/forecasts/<season>/week-NN.json. Odds are
       # recomputed and discarded every run, so a week that is not committed

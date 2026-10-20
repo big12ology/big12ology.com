@@ -50,6 +50,21 @@ jobs:
       # them, reports "NO TESTS RAN", and exits 0 — it imports each module,
       # which runs the checks and prints, so it looks convincingly like a pass
       # while asserting nothing. Run them the way they are written.
+      - name: Men's basketball
+        working-directory: basketball
+        run: |
+          fail=0
+          for t in tests/test_*.py; do
+            if out=$(python3 "$t" 2>&1); then
+              printf '  PASS  %-24s %s\n' "$(basename "$t")" "$(echo "$out" | tail -1)"
+            else
+              printf '  FAIL  %-24s\n' "$(basename "$t")"
+              echo "$out" | sed 's/^/        /'
+              fail=1
+            fi
+          done
+          exit $fail
+
       - name: Tiebreaker
         working-directory: tiebreaker
         run: |

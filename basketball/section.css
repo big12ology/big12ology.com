@@ -1,0 +1,30 @@
+/* The basketball section's own pieces. Everything else is the site's:
+   brand.css and subpage.css, inlined by the shared page shell. */
+.bblead { margin:0 0 10px; color:var(--dim) }
+.bbnote { font-size:var(--t-fine); color:var(--dim); white-space:normal;
+  margin-top:2px }
+.stbl tr.bb-doublebye td:first-child { box-shadow:inset 3px 0 0 var(--accent) }
+.stbl tr.bb-bye td:first-child { box-shadow:inset 3px 0 0
+  color-mix(in srgb, var(--accent) 45%, transparent) }
+.bbtag { font-size:var(--t-micro); border-radius:20px; padding:1px 7px;
+  margin-left:6px; background:color-mix(in srgb, var(--accent) 14%, transparent);
+  color:var(--ink); font-weight:600; vertical-align:1px; white-space:nowrap }
+.bbday { font-size:var(--t-label); margin:14px 0 4px; color:var(--dim);
+  text-transform:uppercase; letter-spacing:.04em }
+.bbgames { list-style:none; margin:0; padding:0; display:grid; gap:2px }
+.bbgames li { display:flex; flex-wrap:wrap; justify-content:space-between;
+  gap:2px 12px; padding:6px 0; border-bottom:1px solid var(--line) }
+.bbgames li.bbconf .bbmatch { font-weight:600 }
+.bbmeta { color:var(--dim); font-size:var(--t-meta);
+  font-variant-numeric:tabular-nums }
+.bbteams { display:grid; gap:8px;
+  grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)) }
+.bbteam { display:flex; align-items:center; gap:10px; padding:10px;
+  border:1px solid var(--line); border-radius:10px; color:var(--ink);
+  text-decoration:none }
+.bbteam:hover { border-color:var(--accent) }
+.bbteam span { display:grid }
+.stbl tr.bbconf td { background:color-mix(in srgb, var(--accent) 6%, transparent) }
+.bbw { color:hsl(140 60% var(--pctl)) }
+.bbl { color:hsl(6 70% var(--pctl)) }
+details > summary { padding:8px 0 }

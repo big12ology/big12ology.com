@@ -73,6 +73,22 @@ RATINGS_MOVED = "2026-10-12"
 RATINGS_CALLS = 5                  # SP+, FPI, Elo, SRS, and /games for our fit
 RATINGS_HOUR = 7                   # UTC, Monday: build.RATINGS_HOUR
 
+# MEN'S BASKETBALL spends from the same quota (CBBD: "API use shares a
+# football/basketball quota"). basketball/bb_season.py asks for the season's
+# games, lines and broadcasts at most once a day each, plus the games again
+# on a night a final is due, so the fixed part is three calls a day from the
+# section's first build through the end of the season (Big 12 teams play
+# into April). Game nights are not modelled: like scores.yml they cost 0 or 1
+# a run depending on whether a game is mid-settle.
+BASKETBALL_FROM = "2026-10-20"     # the section's first build
+BASKETBALL_DAILY = 3
+
+
+def basketball_day(day):
+    """Whether `day` is inside a basketball season the section builds."""
+    return (day.isoformat() >= BASKETBALL_FROM
+            and (day.month >= 10 or day.month <= 4))
+
 # What pages.yml names a run that was dispatched with one of its spending
 # inputs set (its run-name), by a person or by the Worker. Inputs are not in the run history,
 # so the title is the only way a manual refit can be told from a manual
@@ -178,6 +194,8 @@ def expected(y, m, through=None):
             per_run = 2 if datetime.date(y, m, d) <= datetime.date.fromisoformat(
                 VENUES_CACHED[:10]) else 1
             n += {4: 1, 5: 2, 6: 3, 0: 2}.get(w, 0) * per_run
+        if basketball_day(datetime.date(y, m, d)):
+            n += BASKETBALL_DAILY
     return n
 
 
@@ -249,7 +267,18 @@ def main(month=None):
     # Runs from before the venues cache each spent a second call on /venues.
     att_pre = sum(1 for r in att if r.get("createdAt", "") < VENUES_CACHED)
     att_calls = n_att + att_pre
-    used = n_pages + refresh_calls + refit_calls + att_calls + len(manual)
+    # Basketball's daily calls happen inside deploy runs, where the run
+    # history cannot see them, so they are priced from the calendar: three
+    # for each basketball day of the month so far. Calls made by hand are in
+    # the local log and counted under "by hand".
+    today_ = datetime.date.today()
+    last = (today_ if month == today_.strftime("%Y-%m")
+            else datetime.date(int(month[:4]), int(month[5:7]), 28))
+    bb_days = sum(1 for d in range(1, last.day + 1)
+                  if basketball_day(last.replace(day=d)))
+    bb_calls = bb_days * BASKETBALL_DAILY
+    used = (n_pages + refresh_calls + refit_calls + att_calls + len(manual)
+            + bb_calls)
 
     print(f"CFBD budget — {month}\n")
     print(f"  {'deploy runs (1 call each)':<34} {n_pages:>5}")
@@ -264,6 +293,9 @@ def main(month=None):
               f"   ({att_pre} x2 pre venues cache, {n_att - att_pre} x1)")
     else:
         print(f"  {'attendance runs (1 call each)':<34} {att_calls:>5}")
+    if bb_calls:
+        print(f"  {'basketball, daily (3 a day)':<34} {bb_calls:>5}"
+              f"   ({bb_days} day{'s' if bb_days != 1 else ''})")
     if manual:
         by = collections.Counter(manual)
         print(f"  {'by hand':<34} {len(manual):>5}"

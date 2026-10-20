@@ -1,0 +1,13 @@
+{
+ "_source": "The seeds the Big 12 used for its men's basketball tournament, as listed on each tournament's Wikipedia page (which cites the conference). Recorded so the site's engine can be checked against them: basketball/build.py history_checks and tests/test_engine.py.",
+ "seasons": {
+  "2025": {
+   "url": "https://en.wikipedia.org/wiki/2025_Big_12_men%27s_basketball_tournament",
+   "seeds": ["Houston", "Texas Tech", "Arizona", "BYU", "Iowa State", "Kansas", "Baylor", "West Virginia", "TCU", "Kansas State", "Utah", "Oklahoma State", "Cincinnati", "UCF", "Arizona State", "Colorado"]
+  },
+  "2026": {
+   "url": "https://en.wikipedia.org/wiki/2026_Big_12_men%27s_basketball_tournament",
+   "seeds": ["Arizona", "Houston", "Kansas", "Texas Tech", "Iowa State", "TCU", "West Virginia", "UCF", "Cincinnati", "BYU", "Colorado", "Arizona State", "Baylor", "Oklahoma State", "Kansas State", "Utah"]
+  }
+ }
+}

@@ -58,6 +58,7 @@ echo "assembling into $DIST"
 # nothing below would have noticed it arriving.
 rsync -a "${COMMON[@]}" \
       --exclude=/tiebreaker --exclude=/attendance --exclude=/tools \
+      --exclude=/basketball \
       --exclude=/dist --exclude=/HANDOFF.md --exclude=/worker \
       "$ROOT/" "$DIST/"
 
@@ -87,6 +88,11 @@ rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/cards/" "$DIST/tiebreaker/cards/"
 # sibling path; its pages reach back to ../tiebreaker/ for the shared marks
 # and stylesheet rather than carrying a second copy of them.
 rsync -a "${COMMON[@]}" "$ROOT/tiebreaker/site_schedule/" "$DIST/schedule/"
+
+# Men's basketball. Only the built pages: the rest of basketball/ is the
+# builder, its data and its tests, and the root copy above leaves the whole
+# directory out so none of that is published.
+rsync -a "${COMMON[@]}" "$ROOT/basketball/site/" "$DIST/basketball/"
 
 # The attendance repo is served as-is by Pages today, README and scripts and
 # all. Copying it wholesale is what makes the output comparable byte for byte
@@ -765,6 +771,8 @@ for f in index.html privacy.html 404.html CNAME robots.txt sitemap.xml \
          tiebreaker/hub.json tiebreaker/facts.json \
          schedule/index.html schedule/draw.html schedule/rotation.html \
          schedule/sitemap.xml \
+         basketball/index.html basketball/schedule.html basketball/rules.html \
+         basketball/teams.html basketball/sitemap.xml \
          attendance/index.html attendance/site/app.js \
          attendance/data/teams.json attendance/data/seasons/index.json \
          ; do
