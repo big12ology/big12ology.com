@@ -1,0 +1,117 @@
+{
+ "_about": "Basketball seating capacity of each Big 12 home arena, as each figure's source states it, checked 2026-10-20. Hand-kept: CBBD carries no capacities. One figure per arena, used for every season shown.",
+ "arenas": {
+  "Arizona": {
+   "arena": "McKale Center",
+   "capacity": 14688,
+   "source": "https://en.wikipedia.org/wiki/McKale_Center",
+   "source_kind": "wikipedia",
+   "note": "The official facility page says 14,655, an undated figure from the 2014-15 renovation; Wikipedia's 14,688 is the later one."
+  },
+  "Arizona State": {
+   "arena": "Desert Financial Arena",
+   "capacity": 14198,
+   "source": "https://news.asu.edu/20251017-sun-devil-community-100m-renovation-energize-fan-experience-desert-financial-arena",
+   "source_kind": "official",
+   "note": "A renovation from May 2026 will lower it; no new figure yet."
+  },
+  "Baylor": {
+   "arena": "Foster Pavilion",
+   "capacity": 7000,
+   "source": "https://baylorbears.com/facilities/foster-pavilion/1358",
+   "source_kind": "official",
+   "note": "7,000+ including about 500 standing room; often cited as 7,500."
+  },
+  "BYU": {
+   "arena": "Marriott Center",
+   "capacity": 17978,
+   "source": "https://byucougars.com/basketball-facilities",
+   "source_kind": "official",
+   "note": "Since the 2022 renovation; 18,987 before."
+  },
+  "Cincinnati": {
+   "arena": "Fifth Third Arena",
+   "capacity": 12012,
+   "source": "https://gobearcats.com/facilities/fifth-third-arena",
+   "source_kind": "official",
+   "note": "Since the 2018 renovation."
+  },
+  "Colorado": {
+   "arena": "CU Events Center",
+   "capacity": 11064,
+   "source": "https://cubuffs.com/facilities/?id=2",
+   "source_kind": "official",
+   "note": ""
+  },
+  "Houston": {
+   "arena": "Fertitta Center",
+   "capacity": 7100,
+   "source": "https://uhcougars.com/news/2018/10/9/mens-basketball-hofheinz-to-fertitta-construction-of-hofheinz-pavilion",
+   "source_kind": "official",
+   "note": "Wikipedia gives 7,035."
+  },
+  "Iowa State": {
+   "arena": "Hilton Coliseum",
+   "capacity": 14267,
+   "source": "https://www.center.iastate.edu/hilton-coliseum/",
+   "source_kind": "official",
+   "note": "Since 2021."
+  },
+  "Kansas": {
+   "arena": "Allen Fieldhouse",
+   "capacity": 15300,
+   "source": "https://kuathletics.com/news/2024/7/11/mens-basketball-season-tickets-celebrating-the-70th-season-of-allen-fieldhouse-now-on-sale",
+   "source_kind": "official",
+   "note": "Since the 2024 renovation; 16,300 before."
+  },
+  "Kansas State": {
+   "arena": "Bramlage Coliseum",
+   "capacity": 11010,
+   "source": "https://www.kstatesports.com/sports/2015/6/19/_131476205118409978",
+   "source_kind": "official",
+   "note": "The same page's quick facts still say 11,654; its text gives the adjusted 11,010."
+  },
+  "Oklahoma State": {
+   "arena": "Gallagher-Iba Arena",
+   "capacity": 13611,
+   "source": "https://okstate.com/sports/2015/3/17/GEN_2014010157",
+   "source_kind": "official",
+   "note": ""
+  },
+  "TCU": {
+   "arena": "Schollmaier Arena",
+   "capacity": 6800,
+   "source": "https://gofrogs.com/sports/2018/7/13/facilities-tcu-facilities-basketball-html",
+   "source_kind": "official",
+   "note": "Its record crowd, 8,412, is above the listed capacity."
+  },
+  "Texas Tech": {
+   "arena": "United Supermarkets Arena",
+   "capacity": 15098,
+   "source": "https://texastech.com/facilities/united-supermarkets-arena/2",
+   "source_kind": "official",
+   "note": ""
+  },
+  "UCF": {
+   "arena": "Addition Financial Arena",
+   "capacity": 9400,
+   "source": "https://ucfknights.com/facilities/addition-financial-arena",
+   "source_kind": "official",
+   "note": "A courtside club took about 600 seats out of a roughly 10,000-seat bowl."
+  },
+  "Utah": {
+   "arena": "Huntsman Center",
+   "capacity": 15000,
+   "source": "https://www.deseret.com/sports/2026/02/10/utah-utes-renovating-huntsman-center-mark-harlan",
+   "source_kind": "press",
+   "note": "Utah's own page (Pac-12 era) also says 15,000."
+  },
+  "West Virginia": {
+   "arena": "Hope Coliseum",
+   "capacity": 14000,
+   "source": "https://wvusports.com/facilities/hope-coliseum/584",
+   "source_kind": "official",
+   "note": "Renamed from WVU Coliseum in September 2025."
+  }
+ }
+}

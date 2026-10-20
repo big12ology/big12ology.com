@@ -30,8 +30,10 @@
 details > summary { padding:8px 0 }
 .bbsure { font-weight:700; color:hsl(140 60% var(--pctl)) }
 .bbodds td, .bbgrid td { text-align:center; font-variant-numeric:tabular-nums }
+.bbodds td:first-child, .bbodds td.teamcell { text-align:left }
 .bbgrid td.bbcell { font-size:var(--t-fine); min-width:26px; padding:4px 2px }
 .bbgrid th { text-align:center; font-size:var(--t-fine) }
+.bbgrid td.bbnope { color:var(--dim); opacity:.5 }
 .bbbracket { display:grid; grid-template-columns:repeat(5, minmax(150px, 1fr));
   gap:12px; overflow-x:auto; align-items:stretch }
 .bbround { display:flex; flex-direction:column; gap:8px }
@@ -44,6 +46,7 @@ details > summary { padding:8px 0 }
 .bbslot { display:flex; align-items:center; gap:6px; padding:2px 0;
   color:var(--dim); white-space:nowrap }
 .bbslot.bbwin { color:var(--ink); font-weight:600 }
+.bbmatchup.bbmaybe { border-style:dashed; opacity:.75 }
 .bbseed { min-width:16px; text-align:right; font-variant-numeric:tabular-nums;
   color:var(--dim); font-weight:400 }
 .bbprob { font-size:var(--t-fine); color:var(--dim); text-align:right }
@@ -51,3 +54,26 @@ details > summary { padding:8px 0 }
   font-size:var(--t-fine); min-width:28px }
 .bbmatrix td.bbtwice { background:color-mix(in srgb, var(--accent) 12%, transparent) }
 .bbmatrix td.bbself { background:var(--line) }
+a.bbmeta { text-decoration:none }
+a.bbmeta:hover { color:var(--ink); text-decoration:underline }
+.bbfinal { font-size:var(--t-h3, 1.15rem); margin:6px 0 }
+.labgames { list-style:none; margin:0; padding:0; display:grid; gap:4px }
+.labgames li { display:flex; flex-wrap:wrap; align-items:center; gap:6px;
+  padding:4px 0; border-bottom:1px solid var(--line) }
+.labpick { font:inherit; font-size:var(--t-meta); display:inline-flex;
+  align-items:center; gap:4px; padding:4px 10px; border-radius:20px;
+  border:1px solid var(--line); background:transparent; color:var(--ink);
+  cursor:pointer }
+.labpick:hover { border-color:var(--accent) }
+.labpick.on { background:var(--accent); border-color:var(--accent);
+  color:#fff; font-weight:600 }
+.labpick:focus-visible, .labact:focus-visible { outline:2px solid var(--accent);
+  outline-offset:2px }
+.labat { color:var(--dim); font-size:var(--t-fine) }
+.labfav { margin-left:auto; color:var(--dim); font-size:var(--t-fine);
+  font-variant-numeric:tabular-nums }
+.labbar { display:flex; gap:8px; flex-wrap:wrap }
+.labact { font:inherit; font-size:var(--t-meta); padding:5px 12px;
+  border-radius:8px; border:1px solid var(--line); background:var(--card, transparent);
+  color:var(--ink); cursor:pointer }
+.labact:hover { border-color:var(--accent) }

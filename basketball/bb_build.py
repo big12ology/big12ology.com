@@ -16,6 +16,7 @@ Pages land in basketball/site/ and tools/assemble.sh serves them at
 import datetime
 import json
 import os
+import shutil
 import sys
 import zoneinfo
 
@@ -47,37 +48,80 @@ tb.SECTIONS[SECTION] = {
     "title": "Big 12 Men’s Basketball",
     "live": ("Unofficial fan tool. The official Big 12 tournament seeding and "
              "tiebreaker procedure, applied to every result as it comes in."),
-    "past": ("The {year} season as it finished, with the official seeding "
-             "procedure applied."),
+    "past_text": ("The {year} season as it finished, with the official "
+                  "seeding procedure applied."),
 }
 tb.SECTIONS[SCHED] = {
     "title": "Big 12 Men’s Basketball Schedule",
     "live": ("Every conference game with its tip time, TV and line, and who "
              "meets twice in the eighteen-game draw."),
-    "past": ("The {year} conference schedule: every result, and who met "
-             "twice."),
+    "past_text": ("The {year} conference schedule: every result, and who "
+                  "met twice."),
 }
+ATT = "basketball-attendance"
+tb.SECTIONS[ATT] = {
+    "title": "Big 12 Men\u2019s Basketball Attendance",
+    "live": ("Every Big 12 home crowd, against the seats each arena "
+             "actually has."),
+    "past_text": ("Every Big 12 home crowd in {year}, against the seats each "
+                  "arena has."),
+}
+ATT_NAV = [("attendance", "attendance.html", "The Crowds")]
+for _k in (SECTION, SCHED, ATT):
+    tb.SECTIONS[_k]["past"] = tb.SECTIONS[_k]["past_text"]
 NAV = [("standings", "./", "The Standings"),
        ("race", "race.html", "The Race"),
        ("bracket", "bracket.html", "The Bracket"),
        ("teams", "teams.html", "The Teams"),
+       ("ratings", "ratings.html", "The Ratings"),
+       ("lab", "lab.html", "The Lab"),
        ("empire", "empire.html", "The Empire"),
        ("rules", "rules.html", "The Rules")]
 SCHED_NAV = [("schedule", "schedule.html", "The Schedule"),
              ("matrix", "matrix.html", "The Matrix")]
 _nav_for = tb.nav_for
-tb.nav_for = lambda section: {SECTION: NAV, SCHED: SCHED_NAV}.get(
-    section) or _nav_for(section)
+tb.nav_for = lambda section: {SECTION: NAV, SCHED: SCHED_NAV,
+                               ATT: ATT_NAV}.get(section) or _nav_for(section)
 # No year pills yet: they link to football seasons' directories, and the
 # basketball archive keeps its own (Phase 4).
 _tracker_top = tb.tracker_top
 
 
+# What is being built, for the pieces of the shared shell that need to know:
+# the live season, the archived ones beside it, and how far below the section
+# root this season's pages sit ("" for the live season, "../" for one in
+# its own directory).
+CTX = {"live": None, "archive": [], "season": None, "deep": ""}
+
+
+def season_pills(page, up):
+    """The season pills, written here rather than by the shared shell: its
+    pills are football's years and football's directories. A season keeps
+    the page you are on, except a game page, which no other season has, so
+    those land on that season's schedule."""
+    if not CTX["archive"]:
+        return ""
+    target = "schedule.html" if page.startswith("game/") else page
+    out = []
+    for s in [CTX["live"]] + CTX["archive"]:
+        lab = season_mod.label(s)
+        if s == CTX["season"]:
+            out.append(f"<span class=yron>{lab}</span>")
+            continue
+        rel = target if s == CTX["live"] else f"{s}/{target}"
+        out.append(f"<a href='{up}{CTX['deep']}{rel}'>{lab}</a>")
+    return "".join(out)
+
+
 def _tracker_top_bb(year, active, matchcard="", section="tiebreaker", page="",
                     up="", yearpills=True, subnavon=True):
-    return _tracker_top(year, active, matchcard, section, page, up,
-                        yearpills=yearpills and section not in (SECTION, SCHED),
-                        subnavon=subnavon)
+    mine = section in (SECTION, SCHED, ATT)
+    html = _tracker_top(year, active, matchcard, section, page, up,
+                        yearpills=yearpills and not mine, subnavon=subnavon)
+    if mine:
+        html = html.replace("<span class=yrpills></span>",
+                            f"<span class=yrpills>{season_pills(page, up)}</span>", 1)
+    return html
 
 
 tb.tracker_top = _tracker_top_bb
@@ -188,6 +232,17 @@ def score_text(g):
     return f"<b>{esc(w)}</b> {hi}–{lo}"
 
 
+def game_slug(g):
+    """<CBBD id>-<away>-at-<home>.html, "vs" on a neutral floor: the id
+    keeps it unique and stable, the names make it readable."""
+    return (f"{g['id']}-{tb.slug_part(g['away'])}-{joiner(g)}-"
+            f"{tb.slug_part(g['home'])}.html")
+
+
+def game_href(g, up=""):
+    return f"{up}game/{game_slug(g)}"
+
+
 def overall(games, team):
     w = l = 0
     for g in games:
@@ -267,10 +322,15 @@ def standings_body(d, st):
 
 # --- the schedule -----------------------------------------------------------
 
-def game_row(g, d, up=""):
+def game_row(g, d, up="", dated=False):
+    """One game as a list row. `dated` adds the day, for a list that is not
+    already grouped under one."""
     teams = d["teams"]
     tv = d["media"].get(g["id"]) or []
     bits = []
+    day = game_day(g)
+    if dated and day:
+        bits.append(f"{DOW[day.weekday()][:3]} {MON[day.month - 1][:3]} {day.day}")
     if g["final"]:
         bits.append(score_text(g))
     else:
@@ -288,7 +348,8 @@ def game_row(g, d, up=""):
     return (f"<li class='{'bbconf' if g['conf'] or g['tourney'] else ''}'>"
             f"<span class=bbmatch>{name(g['away'], teams, 16, up)} {joiner(g)} "
             f"{name(g['home'], teams, 16, up)}{tag}</span>"
-            f"<span class=bbmeta>{' · '.join(b for b in bits if b)}</span></li>")
+            f"<a class=bbmeta href='{game_href(g, up)}'>"
+            f"{' · '.join(b for b in bits if b)}</a></li>")
 
 
 def by_day(games):
@@ -404,7 +465,8 @@ def team_body(d, st, team):
             f"<tr class='{'bbconf' if g['conf'] or g['tourney'] else ''}'>"
             f"<td class=dim>{day.strftime('%b')} {day.day}</td>"
             f"<td class=teamcell>{where_ + ' ' if where_ else ''}"
-            f"{name(opp, teams, 18, '../')}</td><td>{res}</td></tr>")
+            f"{name(opp, teams, 18, '../')}</td>"
+            f"<td><a class=bbmeta href='{game_href(g, '../')}'>{res}</a></td></tr>")
     return head + (f"<div class=card><h2>Schedule</h2><div class=tablewrap>"
                    f"<table class=stbl><tbody>{''.join(rows)}</tbody></table>"
                    f"</div><p class=note>Big 12 games are shaded. Times are the "
@@ -448,9 +510,72 @@ def model_note(model, sim):
             f"toward average, until a team has played about ten games.")
 
 
-def race_body(d, st, sim, cert, model):
+def seed_runs(seeds):
+    """[1, 2, 3, 5] as "1–3, 5"."""
+    out, run = [], []
+    for k in seeds:
+        if run and k == run[-1] + 1:
+            run.append(k)
+            continue
+        if run:
+            out.append(run)
+        run = [k]
+    if run:
+        out.append(run)
+    return ", ".join(f"{r[0]}–{r[-1]}" if len(r) > 1 else str(r[0])
+                     for r in out) or "—"
+
+
+def proven(cert, ex):
+    """The clinched and out flags, from the exact proof when there is one:
+    it is tight where the bounds are only safe."""
+    if not ex:
+        return cert
+    out = {}
+    for t, c in cert.items():
+        e = ex["teams"][t]
+        r = dict(c)
+        for k in (1, 4, 8):
+            r[f"in{k}"] = max(e["seeds"]) <= k
+            r[f"out{k}"] = min(e["seeds"]) > k
+        r["shareIn"] = e["share"] == "yes"
+        r["shareOut"] = e["share"] == "no"
+        out[t] = r
+    return out
+
+
+def exact_card(d, st, ex):
+    teams = d["teams"]
+    E = ex["teams"]
+    rows = []
+    for r in st["rows"]:
+        t, e = r["team"], E[r["team"]]
+        rows.append(
+            f"<tr><td class=posc>{r['seed']}</td>"
+            f"<td class=teamcell>{name(t, teams, 18)}</td>"
+            f"<td>{r['w']}–{r['l']}</td><td class=dim>{e['games']}</td>"
+            f"<td><b>{seed_runs(e['seeds'])}</b></td>"
+            f"<td>{seed_runs(e['winOut']) if e['games'] else '—'}</td>"
+            f"<td>{seed_runs(e['loseOut']) if e['games'] else '—'}</td></tr>")
+    n = ex["left"]
+    return f"""<div class=card><h2>Every seed still possible</h2>
+  <div class=tablewrap><table class="stbl bbodds"><thead><tr><th>Now</th>
+  <th>Team</th><th>Big 12</th><th>Left</th><th>Possible seeds</th>
+  <th>If it wins out</th><th>If it loses out</th></tr></thead>
+  <tbody>{''.join(rows)}</tbody></table></div>
+  <p class=note>Proved, not simulated. With {n} conference game{'s' if n != 1 else ''}
+  left there are {ex['seasons']:,} ways the rest of the season can go, and
+  every one of them was played out and seeded with the full procedure. Where
+  nothing separates two teams the conference holds a draw, so a team caught
+  in one is counted at every seed the draw could give it. "If it wins out"
+  is whatever everyone else does.</p>
+</div>"""
+
+
+def race_body(d, st, sim, cert, model, ex=None):
     teams = d["teams"]
     T = sim["teams"]
+    cert = proven(cert, ex)
     order = sorted(teams, key=lambda t: (-T[t]["top1"], -T[t]["top4"],
                                          -T[t]["expW"], t))
     rec = {r["team"]: r for r in st["rows"]}
@@ -467,11 +592,20 @@ def race_body(d, st, sim, cert, model):
             f"<td style='{heat(o['top8'])}'>{odds(o['top8'], c['in8'], c['out8'])}</td>"
             f"<td style='{heat(o['title'])}'>{odds(o['title'])}</td></tr>")
     grid_rows = []
+
+    def cell(t, k, p):
+        # With a proof in hand, an impossible seed is marked as one, and a
+        # possible seed the simulations happened not to reach is not blank.
+        if ex and k + 1 not in ex["teams"][t]["seeds"]:
+            return (f"<td class='bbcell bbnope' title='{esc(t)}: seed {k + 1} "
+                    f"is no longer possible'>·</td>")
+        txt = '' if p < 0.005 else f'{p * 100:.0f}'
+        if ex and not txt:
+            txt = "&lt;1"
+        return (f"<td class=bbcell style='{heat(p)}' title='{esc(t)}: seed "
+                f"{k + 1}, {p * 100:.1f}%'>{txt}</td>")
     for t in sorted(teams, key=lambda t: sum((k + 1) * p for k, p in enumerate(T[t]["seed"]))):
-        cells = "".join(
-            f"<td class=bbcell style='{heat(p)}' title='{esc(t)}: seed {k + 1}, "
-            f"{p * 100:.1f}%'>{'' if p < 0.005 else f'{p * 100:.0f}'}</td>"
-            for k, p in enumerate(T[t]["seed"]))
+        cells = "".join(cell(t, k, p) for k, p in enumerate(T[t]["seed"]))
         grid_rows.append(f"<tr><td class=teamcell>{name(t, teams, 18)}</td>{cells}</tr>")
     head = "".join(f"<th>{k}</th>" for k in range(1, 17))
     return f"""<div class=card><h2>The race to Kansas City</h2>
@@ -484,12 +618,290 @@ def race_body(d, st, sim, cert, model):
   them, however every tie would break; everything else is a chance.
   {model_note(model, sim)}</p>
 </div>
+{exact_card(d, st, ex) if ex and ex["left"] else ""}
 <div class=card><h2>Every seed, every team</h2>
   <div class=tablewrap><table class="stbl bbgrid"><thead><tr><th>Team</th>{head}</tr></thead>
   <tbody>{''.join(grid_rows)}</tbody></table></div>
   <p class=note>The chance, in percent, of each team finishing at each seed,
-  ordered by the average seed. A blank cell is under half a percent.</p>
+  ordered by the average seed. {"A dot is a seed the proof above rules out." if ex else "A blank cell is under half a percent."}</p>
 </div>"""
+
+
+# --- the ratings ---------------------------------------------------------------
+
+def ratings_body(d, st, model):
+    """Every Division I team on one scale, the Big 12 first: the numbers
+    every chance on this section is drawn from, shown rather than implied."""
+    teams = d["teams"]
+    r = model.get("ratings", {})
+    ranked = sorted(r, key=lambda t: (-r[t], t))
+    rank = {t: i + 1 for i, t in enumerate(ranked)}
+    rec = {x["team"]: x for x in st["rows"]}
+    b12 = [t for t in ranked if t in teams]
+    rows = []
+    for t in b12:
+        ow, ol = overall(d["games"], t)
+        x = rec.get(t)
+        rows.append(
+            f"<tr><td class=posc>{rank[t]}</td>"
+            f"<td class=teamcell>{name(t, teams, 18)}</td>"
+            f"<td><b>{r[t]:+.1f}</b></td><td>{ow}–{ol}</td>"
+            f"<td>{x['w']}–{x['l']}</td></tr>")
+    nat = []
+    for t in ranked:
+        cls = " class=bbconf" if t in teams else ""
+        nat.append(f"<tr{cls}><td class=posc>{rank[t]}</td>"
+                   f"<td class=teamcell>{name(t, teams, 16)}</td>"
+                   f"<td>{r[t]:+.1f}</td></tr>")
+    fitted = (model.get("fitted") or "")[:10]
+    if not r:
+        return ("<div class=card><h2>The ratings</h2><p class=dim>No rating "
+                "has been fitted for this season yet.</p></div>")
+    a, b = b12[0], b12[-1]
+    gap = r[a] - r[b]
+    return f"""<div class=card><h2>The Big 12, rated</h2>
+  <div class=tablewrap><table class="stbl bbodds"><thead><tr><th>Nation</th>
+  <th>Team</th><th>Rating</th><th>Overall</th><th>Big 12</th></tr></thead>
+  <tbody>{''.join(rows)}</tbody></table></div>
+  <p class=note>A rating is points per game against an average Division I
+  team on a neutral floor. Two ratings subtract: on a neutral floor {esc(a)}
+  would be about a {gap:.0f}-point favorite over {esc(b)}, and the home side
+  gets {model.get('hfa', 0):.1f} more. Results land around that prediction
+  with a spread of {model.get('sigma', 11):.1f} points, which is what turns a
+  gap into a chance.</p>
+</div>
+<div class=card><h2>All {len(ranked)} teams</h2>
+  <details><summary>Show the national table <span class=dim>· Big 12 shaded</span></summary>
+  <div class=tablewrap><table class="stbl bbodds"><thead><tr><th>Rank</th>
+  <th>Team</th><th>Rating</th></tr></thead><tbody>{''.join(nat)}</tbody></table></div>
+  </details>
+  <p class=note>Fitted to {model.get('games', 0):,} games
+  {f'as of {fitted}' if fitted else ''}, refitted every Monday morning. The
+  method is the football section's: the ratings, and one home-court number,
+  that best explain every margin played, by least squares. Teams with only a
+  handful of Division I games are rated together as one, so a single result
+  cannot carry a team. Until a team has played about ten games its rating is
+  blended with last season's, pulled most of the way back to average.</p>
+</div>"""
+
+
+# --- the crowds ----------------------------------------------------------------
+
+ARENAS = json.load(open(os.path.join(HERE, "data", "arenas.json")))["arenas"]
+
+
+def home_floor(games, team):
+    """The venue a team plays most of its true home games in. A home game
+    somewhere else (a holiday game in a pro arena, a floor being renovated)
+    is a home game, but not a crowd in the arena the capacity belongs to."""
+    seen = {}
+    for g in games:
+        if g["home"] == team and not g["neutral"] and g.get("venue"):
+            seen[g["venue"]] = seen.get(g["venue"], 0) + 1
+    return max(seen, key=lambda v: (seen[v], v)) if seen else None
+
+
+def attendance_body(d):
+    teams, games = d["teams"], d["games"]
+    rows, crowds = [], []
+    for t in sorted(teams):
+        a = ARENAS.get(t)
+        floor = home_floor(games, t)
+        mine = [g for g in games if g["home"] == t and not g["neutral"]
+                and g["final"] and g.get("attendance") and g.get("venue") == floor]
+        cap = a["capacity"] if a else None
+        n = len(mine)
+        tot = sum(g["attendance"] for g in mine)
+        avg = tot / n if n else 0
+        conf = [g["attendance"] for g in mine if g["conf"]]
+        full = sum(1 for g in mine if cap and g["attendance"] >= cap)
+        best = max(mine, key=lambda g: g["attendance"]) if mine else None
+        biggest = f"{best['attendance']:,}" if best else "—"
+        for g in mine:
+            crowds.append((g["attendance"], g, cap))
+        pct = avg / cap if cap and n else 0
+        src = (f"<a href='{esc(a['source'])}' rel=noopener title='"
+               f"{esc(a.get('note') or 'source')}'>{cap:,}</a>") if a else "—"
+        rows.append((pct, f"<tr><td class=teamcell>{name(t, teams, 18)}</td>"
+                    f"<td>{esc(a['arena'] if a else floor or '')}</td><td>{src}</td>"
+                    f"<td class=dim>{n}</td>"
+                    f"<td>{f'{avg:,.0f}' if n else '—'}</td>"
+                    f"<td style='{heat(min(pct, 1))}'>{f'{pct * 100:.0f}%' if n else '—'}</td>"
+                    f"<td>{f'{sum(conf) / len(conf):,.0f}' if conf else '—'}</td>"
+                    f"<td>{full}</td>"
+                    f"<td>{biggest}</td></tr>"))
+    rows.sort(key=lambda r: -r[0])
+    crowds.sort(key=lambda c: (-c[0], c[1]["start"] or ""))
+    top = "".join(
+        f"<tr><td class=dim>{long_date(game_day(g))}</td>"
+        f"<td class=teamcell>{name(g['away'], teams, 16)} at "
+        f"{name(g['home'], teams, 16)}</td><td><b>{n_:,}</b></td>"
+        f"<td>{f'{n_ / cap * 100:.0f}%' if cap else '—'}</td></tr>"
+        for n_, g, cap in crowds[:15])
+    if not crowds:
+        return ("<div class=card><h2>The crowds</h2><p class=dim>No home game "
+                "this season has a crowd on record yet.</p></div>")
+    return f"""<div class=card><h2>How full each arena is</h2>
+  <div class=tablewrap><table class="stbl bbodds"><thead><tr><th>Team</th>
+  <th>Arena</th><th>Seats</th><th>Games</th><th>Average crowd</th>
+  <th>Full</th><th>Big 12 games</th><th>Sellouts</th><th>Biggest</th>
+  </tr></thead><tbody>{''.join(r for _, r in rows)}</tbody></table></div>
+  <p class=note>Every home game in the team's own arena with a crowd on
+  record, non-conference games included; "Big 12 games" is the average of the
+  conference ones alone. Full is the average crowd against the seats, and a
+  sellout is a crowd at or above them, so standing room can take a team past
+  100%. Seats are the basketball capacity each school lists, linked to where
+  it says so; CollegeBasketballData, which supplies the crowds, carries no
+  capacities.</p>
+</div>
+<div class=card><h2>The biggest crowds</h2>
+  <div class=tablewrap><table class="stbl bbodds"><tbody>{top}</tbody></table></div>
+</div>"""
+
+
+# --- the lab -------------------------------------------------------------------
+
+def lab_body(d, model):
+    """The what-if: the page is a shell, site/lab.js does the work with
+    site/engine.js, and the season rides along as JSON in the page itself."""
+    teams = d["teams"]
+    conf = [g for g in d["games"] if g["conf"]]
+    logos = {}
+    for t in teams:
+        e = tb.MARKS.get(t)
+        if e and e.get("usable") is not False:
+            logos[t] = f"{tb.BASE}logos/{e['key']}.{(e.get('ext') or '.svg').lstrip('.')}"
+    r = model.get("ratings", {})
+    data = {
+        "teams": sorted(teams),
+        "games": [{"id": g["id"], "home": g["home"], "away": g["away"],
+                   "neutral": g["neutral"], "final": g["final"],
+                   "hp": g["hp"], "ap": g["ap"],
+                   "day": long_date(game_day(g)) if game_day(g) else ""}
+                  for g in conf],
+        "model": {"ratings": {t: r[t] for t in teams if t in r},
+                  "hfa": model.get("hfa", 0), "sigma": model.get("sigma", 11)},
+        "logos": logos,
+    }
+    blob = json.dumps(data, separators=(",", ":")).replace("</", "<\\/")
+    n_left = sum(not g["final"] for g in conf)
+    return f"""<div id=lab>
+<div class=card><h2>Pick the rest of the season</h2>
+  <p class=bblead>Click a team to give it the win; click it again to leave
+  the game to chance. Every game you leave alone is played out by this site's
+  ratings, and the table below re-seeds the conference with the full Big 12
+  procedure each time. {n_left} conference game{'s' if n_left != 1 else ''} left.</p>
+  <p class=labbar><button type=button class=labact data-act=favorites>Pick every favorite</button>
+  <button type=button class=labact data-act=reset>Clear my picks</button></p>
+  <div id=lab-games></div>
+</div>
+<div class=card><h2>Where that leaves everyone</h2>
+  <div id=lab-out aria-live=polite><p class=dim>Working it out…</p></div>
+  <p class=note>Your picks are kept in the address bar, so copying the link
+  shares the whole scenario. Nothing is stored anywhere.</p>
+</div>
+<script type=application/json id=lab-data>{blob}</script>
+<noscript><p class=dim>The Lab runs in your browser and needs JavaScript.</p></noscript>
+</div>"""
+
+
+# --- one game ------------------------------------------------------------------
+
+def big12_record(st, team):
+    r = next((x for x in st["rows"] if x["team"] == team), None)
+    return r
+
+
+def odds_row(label, dist):
+    """Average seed, No. 1, double bye and bye from a seed distribution."""
+    avg = sum((k + 1) * p for k, p in enumerate(dist))
+    top = lambda k: sum(dist[:k])
+    return (f"<tr><td>{label}</td><td>{avg:.1f}</td>"
+            f"<td style='{heat(top(1))}'>{odds(top(1))}</td>"
+            f"<td style='{heat(top(4))}'>{odds(top(4))}</td>"
+            f"<td style='{heat(top(8))}'>{odds(top(8))}</td></tr>")
+
+
+def game_body(d, st, sim, model, g):
+    teams, up = d["teams"], "../"
+    home, away = g["home"], g["away"]
+    day = game_day(g)
+    tv = d["media"].get(g["id"]) or []
+    where_ = ", ".join(x for x in (g.get("venue"), g.get("city"), g.get("state")) if x)
+    kind = ("Big 12 tournament" + (f": {esc(g['notes'])}" if g.get("notes") else "")
+            if g["tourney"] else "Big 12" if g["conf"] else "Non-conference")
+    facts = [f"{long_date(day)}" if day else "", tip(g, teams) if not g["final"] else "",
+             esc(where_), esc(" / ".join(tv)), kind]
+    head = (f"<div class=card><h2>{name(away, teams, 28, up)} {joiner(g)} "
+            f"{name(home, teams, 28, up)}</h2>"
+            f"<p class=bblead>{' · '.join(f for f in facts if f)}</p>")
+
+    if g["final"]:
+        win_home = g["hp"] > g["ap"]
+        w, l = (home, away) if win_home else (away, home)
+        src = (" The score is ESPN's; CollegeBasketballData's record of the "
+               "game follows within a day." if g.get("src") == "espn" else "")
+        head += (f"<p class=bbfinal>Final: <b>{esc(w)} {max(g['hp'], g['ap'])}</b>, "
+                 f"{esc(l)} {min(g['hp'], g['ap'])}</p>"
+                 f"{f'<p class=note>{src.strip()}</p>' if src else ''}")
+    else:
+        r = model.get("ratings", {})
+        gap = r.get(home, 0) - r.get(away, 0) + (0 if g["neutral"] else model.get("hfa", 0))
+        p = engine.win_prob(model, home, away, g["neutral"])
+        fav, pf = (home, p) if p >= 0.5 else (away, 1 - p)
+        bits = [f"This site's rating makes <b>{esc(fav)}</b> a {pf * 100:.0f}% "
+                f"favorite, by about {abs(gap):.0f} point{'s' if round(abs(gap)) != 1 else ''}"]
+        ln = line_text(g, d["lines"])
+        if ln:
+            bits.append(f"the posted line is {ln}")
+        head += f"<p>{'; '.join(bits)}.</p>"
+    head += "</div>"
+
+    # The two teams as they stand.
+    rows = []
+    for t in (away, home):
+        ow, ol = overall(d["games"], t)
+        r = big12_record(st, t)
+        b12 = f"{r['w']}–{r['l']}, seeded {r['seed']} today" if r else "—"
+        rows.append(f"<tr><td class=teamcell>{name(t, teams, 18, up)}</td>"
+                    f"<td>{ow}–{ol}</td><td>{b12}</td></tr>")
+    teams_card = (f"<div class=card><h2>The two teams</h2><div class=tablewrap>"
+                  f"<table class=stbl><thead><tr><th>Team</th><th>Overall</th>"
+                  f"<th>Big 12</th></tr></thead><tbody>{''.join(rows)}</tbody>"
+                  f"</table></div></div>")
+
+    # What it is worth, for a conference game still to be played.
+    worth = ""
+    e = sim.get("games", {}).get(str(g["id"]))
+    if e:
+        T = sim["teams"]
+        blocks = []
+        for side, t in (("away", away), ("home", home)):
+            blocks.append(
+                f"<h3 class=bbday>{tb.logo_img(t, 18)} {esc(t)}</h3>"
+                f"<div class=tablewrap><table class='stbl bbodds'><thead><tr>"
+                f"<th></th><th>Avg. seed</th><th>No. 1 seed</th>"
+                f"<th>Double bye</th><th>Bye</th></tr></thead><tbody>"
+                f"{odds_row('Today', T[t]['seed'])}"
+                f"{odds_row(f'If {esc(home)} wins', e[side][0])}"
+                f"{odds_row(f'If {esc(away)} wins', e[side][1])}"
+                f"</tbody></table></div>")
+        worth = (f"<div class=card><h2>What it is worth</h2>{''.join(blocks)}"
+                 f"<p class=note>From the same {sim['n']:,} simulations as The "
+                 f"Race, split by who won this game in each: the two teams' "
+                 f"chances, seeded with the full Big 12 procedure, either "
+                 f"way it goes. A double bye is a top-four seed, a bye a "
+                 f"top-eight seed.</p></div>")
+
+    # The rest of the season between the two.
+    others = [x for x in d["games"] if x is not g and x["id"] != g["id"]
+              and {x["home"], x["away"]} == {home, away}]
+    meet = ""
+    if others:
+        meet = (f"<div class=card><h2>The other meeting{'s' if len(others) > 1 else ''}</h2>"
+                f"<ul class=bbgames>{''.join(game_row(x, d, up, dated=True) for x in others)}</ul></div>")
+    return head + f"<div class=\"duo even\"><div class=stack>{teams_card}</div>" \
+        f"<div class=stack>{meet}</div></div>" + worth
 
 
 # --- the bracket ---------------------------------------------------------------
@@ -504,74 +916,139 @@ BRACKET = [(9, 16), (12, 13), (10, 15), (11, 14),
 ROUND_OF = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4]
 
 
-def bracket_order(d, st, sim):
-    """The seeds the bracket is drawn from: today's standings once
-    conference play has started, and before that the order the simulations
-    expect, since a table of sixteen 0-0 teams seeds nothing."""
+def official_seeds(d):
+    """The seeds the conference announced, as CBBD carries them on the
+    Kansas City games: {team: seed}, empty until the bracket is out."""
+    out = {}
+    for g in d["games"]:
+        if g["tourney"]:
+            for t, k in ((g["home"], g.get("hseed")), (g["away"], g.get("aseed"))):
+                if isinstance(k, int) and 1 <= k <= 16:
+                    out[t] = k
+    return out
+
+
+def bracket_order(d, st, sim, log=print):
+    """The seeds the bracket is drawn from: the conference's own once it has
+    announced them, today's standings once conference play has started, and
+    before that the order the simulations expect, since a table of sixteen
+    0-0 teams seeds nothing.
+
+    The announced seeds outrank the procedure here, because they are what
+    Kansas City plays. They should agree; when they do not, the log says so,
+    since that is either a draw or a reading of the rules to look at."""
     started = any(g["conf"] and g["final"] for g in d["games"])
     if started:
-        return [r["team"] for r in st["rows"]], False
+        order = [r["team"] for r in st["rows"]]
+        named = official_seeds(d)
+        if named:
+            for t, k in named.items():
+                if order.index(t) + 1 != k:
+                    log(f"WARNING: basketball seeds: the conference has {t} at "
+                        f"{k}, the procedure at {order.index(t) + 1}")
+            rest = [t for t in order if t not in named]
+            by_seed = {k: t for t, k in named.items()}
+            order = [by_seed[k] if k in by_seed else rest.pop(0)
+                     for k in range(1, len(order) + 1)]
+        return order, False
     T = sim["teams"]
     return sorted(d["teams"], key=lambda t: (sum((k + 1) * p for k, p in
                                                  enumerate(T[t]["seed"])), t)), True
 
 
+def tournament_games(d):
+    """The Kansas City games on file, by the pair of teams in them."""
+    return {frozenset((g["home"], g["away"])): g
+            for g in d["games"] if g["tourney"]}
+
+
+def bracket_results(order, d):
+    """{game index: winner} for the bracket games already played, walking
+    the bracket so a later round is matched only once its teams are known."""
+    games = tournament_games(d)
+    slot, out = {}, {}
+    for gi, (a, b) in enumerate(BRACKET):
+        ta = order[a - 1] if isinstance(a, int) else slot.get(a)
+        tb_ = order[b - 1] if isinstance(b, int) else slot.get(b)
+        g = games.get(frozenset((ta, tb_))) if ta and tb_ else None
+        if g and g["final"]:
+            out[gi] = slot[f"g{gi}"] = g["home"] if g["hp"] > g["ap"] else g["away"]
+    return out
+
+
 def bracket_body(d, st, sim, model):
     teams = d["teams"]
     order, projected = bracket_order(d, st, sim)
-    reach = engine.bracket_odds(order, model)
+    results = {} if projected else bracket_results(order, d)
+    reach = engine.bracket_odds(order, model, results)
     seed_of = {t: i + 1 for i, t in enumerate(order)}
-    played = {}
-    for g in d["games"]:
-        if g["tourney"] and g["final"]:
-            played[frozenset((g["home"], g["away"]))] = g
+    games = tournament_games(d)
 
     # The favorite in each slot, carried forward, to draw the likeliest path.
+    # A game already played carries its winner instead, and one on the
+    # schedule says when it tips.
     fav = {}
     cols = [[] for _ in ROUND_NAMES]
     for gi, (a, b) in enumerate(BRACKET):
         ta = order[a - 1] if isinstance(a, int) else fav[a]
         tb_ = order[b - 1] if isinstance(b, int) else fav[b]
-        real = played.get(frozenset((ta, tb_)))
+        g = games.get(frozenset((ta, tb_)))
+        real = g if g and g["final"] and gi in results else None
         if real:
-            w = real["home"] if real["hp"] > real["ap"] else real["away"]
-            line = f"{max(real['hp'], real['ap'])}–{min(real['hp'], real['ap'])}"
+            w = results[gi]
+            line = f"final {max(real['hp'], real['ap'])}–{min(real['hp'], real['ap'])}"
         else:
             p = engine.win_prob(model, ta, tb_, True)
             w = ta if p >= 0.5 else tb_
-            line = f"{max(p, 1 - p) * 100:.0f}%"
+            line = f"favorite {max(p, 1 - p) * 100:.0f}%"
+            if g:
+                when = local_dt(g, teams)
+                line += f" · {when.strftime('%a') + ' ' if when else ''}{tip(g, teams)}"
         fav[f"g{gi}"] = w
+        # Only the slots both of whose teams are settled are certain; the
+        # rest of the path is the favorites', and is drawn lighter.
+        sure = all(not isinstance(x, str) or int(x[1:]) in results for x in (a, b))
 
         def side(t):
             mark = " bbwin" if t == w else ""
             return (f"<div class='bbslot{mark}'><span class=bbseed>{seed_of[t]}</span>"
                     f"{name(t, teams, 16)}</div>")
         cols[ROUND_OF[gi]].append(
-            f"<div class=bbmatchup>{side(ta)}{side(tb_)}"
-            f"<div class=bbprob>{'final ' if real else 'favorite '}{line}</div></div>")
+            f"<div class='bbmatchup{'' if sure or projected else ' bbmaybe'}'>"
+            f"{side(ta)}{side(tb_)}"
+            f"<div class=bbprob>{line}</div></div>")
     grid = "".join(
         f"<div class=bbround><h3>{n}</h3><div class=bbcol>{''.join(c)}</div></div>"
         for n, c in zip(ROUND_NAMES, cols))
 
     rows = []
     for t in sorted(order, key=lambda t: -reach[t][5]):
-        cells = "".join(f"<td style='{heat(p)}'>{odds(p)}</td>"
+        # A round a team is already in (a bye, or a game won) is a fact,
+        # not a chance, and reads as one.
+        cells = "".join(f"<td style='{heat(p)}'>"
+                        f"{'<span class=bbsure>✓</span>' if p >= 1 - 1e-9 else odds(p)}</td>"
                         for p in reach[t][1:])
         rows.append(f"<tr><td class=posc>{seed_of[t]}</td>"
                     f"<td class=teamcell>{name(t, teams, 18)}</td>{cells}</tr>")
-    over = len(played) == len(BRACKET)
+    over = len(results) == len(BRACKET)
+    live = bool(results) and not over
     title = ("The bracket as the simulations expect it" if projected else
              "How the tournament went" if over else
+             "The tournament so far" if live else
              "If the season ended today")
     lead = ("Conference play has not started, so these are the seeds the "
             "simulations expect, not anyone's position."
             if projected else
-            "The seeds the procedure gave, and every result in Kansas City."
+            "The seeds Kansas City played, and every result there."
             if over else
+            "The seeds Kansas City is playing, every result so far, and the "
+            "favorite in each game still to come. A pairing drawn lighter "
+            "waits on a game not yet played."
+            if live else
             "Today's standings, seeded with the Big 12's procedure, played "
             "through the bracket.")
     return f"""<div class=card><h2>{title}</h2>
-  <p class=bblead>{lead}{"" if over else " Each pairing shows the favorite and its chance; the likelier winner moves on."}</p>
+  <p class=bblead>{lead}{"" if over or live else " Each pairing shows the favorite and its chance; the likelier winner moves on."}</p>
   <div class=bbbracket>{grid}</div>
 </div>
 <div class=card><h2>How far each team gets</h2>
@@ -579,9 +1056,9 @@ def bracket_body(d, st, sim, model):
   <th>Second round</th><th>Quarters</th><th>Semis</th><th>Final</th>
   <th>Champion</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
   <p class=note>Exact, not simulated: from these seeds, the chance of
-  reaching each round, every game on a neutral floor in Kansas City. The
-  tournament odds on The Race also carry the uncertainty of the seeds
-  themselves, so the two differ until the season is done.</p>
+  reaching each round, every game on a neutral floor in Kansas City.{
+  " Games already played count as settled: a team that has won is through, and one that has lost goes no further." if live else
+  " The tournament odds on The Race also carry the uncertainty of the seeds themselves, so the two differ until the season is done." if not over else ""}</p>
 </div>"""
 
 
@@ -814,11 +1291,12 @@ def page(title, active, body, d, fname, desc, up="", head="",
     the marks and links inside it are written relative to where the page
     sits, and a body built before that points at /basketball/logos/."""
     base_was = tb.BASE
-    tb.BASE = up + "../season/"
+    tb.BASE = up + CTX["deep"] + "../season/"
+    here = URL if not CTX["deep"] else f"{URL}{d['season']}/"
     try:
         html = tb.build_subpage(
             title, active, body(),
-            d["season"], "", canon=URL + fname.replace("index.html", ""),
+            d["season"], "", canon=here + fname.replace("index.html", ""),
             desc=desc, head=tb.LOCAL_TIME_JS + f"<style>{CSS}</style>" + head,
             section=section,
             page=fname, up=up)
@@ -833,13 +1311,20 @@ def write(path, html):
         f.write(html)
 
 
-def write_sitemap(d):
-    """The section's pages for crawlers, listed in robots.txt beside the
-    others. lastmod is the build's date, as the football sitemaps have it."""
+def write_sitemap(built):
+    """The section's pages for crawlers, every season's, listed in
+    robots.txt beside the others. lastmod is the build's date, as the
+    football sitemaps have it."""
     today = datetime.date.today().isoformat()
-    pages = ["", "race.html", "bracket.html", "schedule.html", "matrix.html",
-             "teams.html", "empire.html", "rules.html"] + [
-        f"team/{tb.team_slug(t)}" for t in sorted(d["teams"])]
+    pages = []
+    for s, d in built.items():
+        root = "" if s == CTX["live"] else f"{s}/"
+        pages += [root + p for p in
+                  ["", "race.html", "bracket.html", "schedule.html",
+                   "matrix.html", "teams.html", "ratings.html", "lab.html",
+                   "empire.html", "rules.html", "attendance.html"]]
+        pages += [f"{root}team/{tb.team_slug(t)}" for t in sorted(d["teams"])]
+        pages += [f"{root}game/{game_slug(g)}" for g in d["games"]]
     urls = "".join(f"  <url><loc>{URL}{p}</loc><lastmod>{today}</lastmod>"
                    f"</url>\n" for p in pages)
     write(os.path.join(SITE, "sitemap.xml"),
@@ -848,24 +1333,49 @@ def write_sitemap(d):
           f"{urls}</urlset>\n")
 
 
-def main():
-    fetching = "--fetch" in sys.argv
-    # --season N builds a finished season into --out, for previews and, in
-    # time, the archive. It never fetches.
-    season = season_mod.current_season()
-    out = SITE
-    for i, a in enumerate(sys.argv):
-        if a == "--season":
-            season, fetching = int(sys.argv[i + 1]), False
-        if a == "--out":
-            out = sys.argv[i + 1]
+# The 16-team Big 12 began in 2024-25. Earlier seasons were played under
+# other memberships and, before 2023-24, other seeding procedures than
+# site/engine.js implements, so the archive starts here.
+ARCHIVE_FROM = 2025
+
+
+def archive_seasons(live):
+    """Finished seasons from ARCHIVE_FROM on whose games are on disk. Never
+    fetched: a finished season cannot change, and these are in the repo."""
+    out = []
+    for s in range(live - 1, ARCHIVE_FROM - 1, -1):
+        p = season_mod.fetch.raw_path("games", {"conference": season_mod.CONF,
+                                                "season": s})
+        if os.path.exists(p):
+            out.append(s)
+    return out
+
+
+def build_season(season, out, fetching=False, as_of=None, deep=""):
+    """Every page of one season into `out`. `deep` is "../" for an archived
+    season in its own directory under the section."""
     d = season_mod.load(season, refresh=fetching)
-    tb.LIVE_YEAR = season
-    st = engine.standings(d["games"], d["teams"])
+    # as_of builds a past season as it stood that morning (UTC): every game
+    # from then on is unplayed. For previews of the late-season pages out of
+    # season; never used by the deploy.
+    if as_of:
+        d["games"] = [dict(g, final=False, hp=None, ap=None, status="scheduled")
+                      if (g["start"] or "") >= as_of else g for g in d["games"]]
+    CTX["season"], CTX["deep"] = season, deep
     yr = season_mod.label(season)
-    model = ratings_mod.ratings(season, refresh=fetching)
+    for k in (SECTION, SCHED, ATT):
+        # The shell formats {year} into this; the season's label is wanted,
+        # not CBBD's number for it.
+        tb.SECTIONS[k]["past"] = tb.SECTIONS[k]["past_text"].replace("{year}", yr)
+    st = engine.standings(d["games"], d["teams"])
+    # A finished season's fit is read, never made: refitting one would cost
+    # five calls to learn what cannot have changed.
+    model = (ratings_mod.ratings(season, refresh=fetching) if not deep else
+             ratings_mod.load(season) or {"ratings": {}, "hfa": 3.0, "sigma": 11.0})
     sim = engine.simulate(d["games"], d["teams"], model)
     cert = engine.certain(d["games"], d["teams"])
+    # The last stretch, proved: None until few enough games are left.
+    ex = engine.exact(d["games"], d["teams"])
     football_teams = json.load(open(os.path.join(ROOT, "tiebreaker", "data",
                                                  "teams.json")))
     write(os.path.join(out, "index.html"), page(
@@ -873,7 +1383,7 @@ def main():
         f"Big 12 men's basketball standings for {yr}, seeded for the "
         f"conference tournament with the Big 12's own tiebreakers."))
     write(os.path.join(out, "race.html"), page(
-        "The Race", "race", lambda: race_body(d, st, sim, cert, model), d,
+        "The Race", "race", lambda: race_body(d, st, sim, cert, model, ex), d,
         "race.html",
         f"Every Big 12 team's chances in {yr}: a share of the title, the top "
         f"seed, a double bye, a bye and the tournament, simulated."))
@@ -893,11 +1403,30 @@ def main():
         f"The {yr} Big 12 basketball imperialism map: every county starts "
         f"with its nearest Big 12 school, and every conference win takes "
         f"everything the loser holds.",
-        head=f'<script defer src="../season/{tb.asset_v("empire.js")}"></script>'))
+        head=f'<script defer src="{deep}../season/{tb.asset_v("empire.js")}"></script>'))
     write(os.path.join(out, "schedule.html"), page(
         "The Schedule", "schedule", lambda: schedule_body(d), d, "schedule.html",
         f"Every {yr} Big 12 men's basketball game: tip times, TV and lines.",
         section=SCHED))
+    write(os.path.join(out, "ratings.html"), page(
+        "The Ratings", "ratings", lambda: ratings_body(d, st, model), d,
+        "ratings.html",
+        f"Every Division I men's basketball team rated in points for {yr}, "
+        f"the Big 12 first: the numbers this section's odds come from."))
+    write(os.path.join(out, "attendance.html"), page(
+        "The Crowds", "attendance", lambda: attendance_body(d), d,
+        "attendance.html",
+        f"Big 12 men's basketball attendance for {yr}: every arena's average "
+        f"crowd against its real capacity, sellouts and the biggest crowds.",
+        section=ATT))
+    site_dir = os.path.join(HERE, "site")
+    write(os.path.join(out, "lab.html"), page(
+        "The Lab", "lab", lambda: lab_body(d, model), d, "lab.html",
+        f"Pick the rest of the {yr} Big 12 men's basketball season and see "
+        f"every team's seed, bye and title chances recomputed with the "
+        f"conference's own tiebreakers.",
+        head=(f'<script defer src="{deep}{tb.asset_v("engine.js", site_dir)}"></script>'
+              f'<script defer src="{deep}{tb.asset_v("lab.js", site_dir)}"></script>')))
     write(os.path.join(out, "teams.html"), page(
         "The Teams", "teams", lambda: teams_body(d, st), d, "teams.html",
         f"The sixteen Big 12 men's basketball teams in {yr}."))
@@ -906,14 +1435,49 @@ def main():
             t, "teams", lambda t=t: team_body(d, st, t), d, f"team/{tb.team_slug(t)}",
             f"{t} men's basketball in {yr}: record, Big 12 seed, schedule, "
             f"tip times, TV and lines.", up="../"))
+    # One page per game a Big 12 team plays. Rebuilt whole each time: a
+    # game whose venue or sides change gets a new slug, and the old page
+    # must not linger.
+    shutil.rmtree(os.path.join(out, "game"), ignore_errors=True)
+    for g in d["games"]:
+        title = f"{g['away']} {joiner(g)} {g['home']}"
+        day = game_day(g)
+        when = f" on {long_date(day)}" if day else ""
+        write(os.path.join(out, "game", game_slug(g)), page(
+            title, "schedule", lambda g=g: game_body(d, st, sim, model, g), d,
+            f"game/{game_slug(g)}",
+            (f"{title}{when}: " + ("the final score and both teams' records."
+                                   if g["final"] else
+                                   "tip time, TV, the line, and what the result "
+                                   "is worth to each team's Big 12 seed.")),
+            up="../", section=SCHED))
     write(os.path.join(out, "rules.html"), page(
         "The Rules", "rules", lambda: rules_body(history_checks()), d, "rules.html",
         "How the Big 12 seeds its men's basketball tournament, step by step, "
         "and how this site applies it."))
-    if out == SITE:
-        write_sitemap(d)
     print(f"built basketball {yr}: {len(d['games'])} games, "
           f"{sum(g['final'] for g in d['games'])} final -> {out}")
+    return d
+
+
+def main():
+    """The live season at the section root and every archived season in its
+    own directory beside it, or with --season N --out DIR (and --as-of
+    DATE) one season on its own, for previews. Only the live season fetches."""
+    args = sys.argv
+    opt = lambda k: args[args.index(k) + 1] if k in args else None
+    live = season_mod.current_season()
+    if opt("--season"):
+        CTX.update(live=int(opt("--season")), archive=[])
+        tb.LIVE_YEAR = CTX["live"]
+        build_season(CTX["live"], opt("--out") or SITE, as_of=opt("--as-of"))
+        return
+    CTX.update(live=live, archive=archive_seasons(live))
+    tb.LIVE_YEAR = live
+    built = {live: build_season(live, SITE, fetching="--fetch" in args)}
+    for s in CTX["archive"]:
+        built[s] = build_season(s, os.path.join(SITE, str(s)), deep="../")
+    write_sitemap(built)
 
 
 if __name__ == "__main__":

@@ -757,7 +757,8 @@ def section_href(section, year):
 SPORT_OF = {"tiebreaker": "football", "schedule": "football",
             "attendance": "football", "pools": "football", "pickem": "football",
             "survivor": "football", "basketball": "basketball",
-            "basketball-schedule": "basketball"}
+            "basketball-schedule": "basketball",
+            "basketball-attendance": "basketball"}
 
 
 def topbar(section, year, base="", acct=False):
@@ -786,9 +787,10 @@ def topbar(section, year, base="", acct=False):
             f'media="(prefers-color-scheme: dark)">'
             f'<img src="{base}brand/big12ology-compact-dark.svg" '
             f'alt="Big12ology"></picture></a>'
-            + a("Football", section_href("tiebreaker", year), sport == "football")
-            # Flat: basketball keeps its own seasons, so the football year a
-            # page is in means nothing there.
+            # Each sport keeps its own seasons, so a year only carries across
+            # within one: from a basketball page, Football is the live season.
+            + a("Football", section_href("tiebreaker", year)
+                if sport == "football" else "/season/", sport == "football")
             + a("Men\u2019s Basketball", "/basketball/", sport == "basketball")
             + '<span class=b12-right>'
             + ('<span class=b12-acct hidden></span>' if acct else '')
@@ -811,7 +813,9 @@ def topbar(section, year, base="", acct=False):
     elif sport == "basketball":
         items = [("Season", "/basketball/", section == "basketball"),
                  ("Schedule", "/basketball/schedule.html",
-                  section == "basketball-schedule")]
+                  section == "basketball-schedule"),
+                 ("Attendance", "/basketball/attendance.html",
+                  section == "basketball-attendance")]
         label = "Men\u2019s basketball"
     else:
         return row1
