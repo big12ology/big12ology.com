@@ -521,10 +521,38 @@
    "type": "tv"
   }
  ],
+ "401856843": [
+  {
+   "outlet": "Fox",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
  "401856844": [
   {
    "outlet": "ESPN",
    "type": "tv"
+  }
+ ],
+ "401856845": [
+  {
+   "outlet": "FS1",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
+ "401856846": [
+  {
+   "outlet": "TNT",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
+ "401856847": [
+  {
+   "outlet": "FS1",
+   "type": "tv",
+   "via": "espn.com"
   }
  ],
  "401856855": [
