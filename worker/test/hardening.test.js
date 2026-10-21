@@ -10,7 +10,8 @@ import worker from "../src/index.js";
 import * as session from "../src/session.js";
 import { SESSION_COOKIE, parseCookies } from "../src/cookies.js";
 import { hmac } from "../src/crypto.js";
-import { makeEnv, seedUser } from "./helpers/env.js";
+import * as ratelimit from "../src/ratelimit.js";
+import { makeEnv, seedUser, NOW } from "./helpers/env.js";
 
 const ORIGIN = "https://big12ology.com";
 
@@ -273,4 +274,108 @@ test("skipping a no-contest week costs nothing: entry is the first pick", async 
   const row = env.raw.prepare(
     `SELECT MIN(week) w FROM survivor_picks WHERE user_id = 'U1'`).get();
   assert.equal(row.w, 1, "week 0 leaked into this player's entry week");
+});
+
+// ------------------------------------------- a sign-out spends no KV write
+
+/** Count every call the handlers make against the session cache. */
+function countKV(env) {
+  const counts = { get: 0, put: 0, delete: 0 };
+  for (const m of Object.keys(counts)) {
+    const real = env.SESSIONS[m].bind(env.SESSIONS);
+    env.SESSIONS[m] = (...a) => { counts[m]++; return real(...a); };
+  }
+  return counts;
+}
+
+test("a logout with a cookie nobody issued touches KV not at all", async () => {
+  // The route needs only two headers any client can set, and it used to
+  // answer an unrecognised cookie by deleting its cache key regardless. A
+  // delete is a write whether or not the key exists, KV allows a thousand a
+  // day, and minting a session needs one: a thousand of these and nobody
+  // could sign in until the quota reset.
+  const env = makeEnv();
+  const kv = countKV(env);
+  const cookie = `${SESSION_COOKIE}=${encodeURIComponent("nobody-minted-this")}`;
+  for (let i = 0; i < 50; i++) {
+    const r = await call(env, "/api/auth/logout", { method: "POST", cookie, body: {} });
+    assert.equal(r.status, 204);
+    assert.match(r.headers.get("Set-Cookie"), /Max-Age=0/,
+      "the stale cookie must still be cleared");
+  }
+  const bare = await call(env, "/api/auth/logout", { method: "POST", body: {} });
+  assert.equal(bare.status, 204);
+  assert.deepEqual(kv, { get: 0, put: 0, delete: 0 },
+    "a junk cookie reached the session cache");
+  assert.equal(env.raw.prepare(`SELECT COUNT(*) AS n FROM rate_limits`).get().n, 0,
+    "a junk cookie left a rate_limits row behind");
+});
+
+test("a dead cookie replayed buys one cache delete, not one per request", async () => {
+  // The case the old delete-regardless existed for: revoked at another edge,
+  // this edge's cache copy still answering. Clearing it once is right.
+  // Clearing it on every replay is the same quota burn with one extra step,
+  // because the attacker's own revoked cookie is a cookie D1 knows.
+  const env = makeEnv();
+  seedUser(env, "u1", { name: "Player" });
+  const s = await session.create(env, "u1");
+  const cookie = `${SESSION_COOKIE}=${encodeURIComponent(s.raw)}`;
+  await env.DB.prepare(`UPDATE sessions SET revoked_at = ? WHERE sid_hash = ?`)
+    .bind(NOW(), s.hash).run();
+  assert.ok(await session.read(env, s.raw), "the cache copy should still answer");
+
+  const kv = countKV(env);
+  assert.equal((await call(env, "/api/auth/logout",
+                           { method: "POST", cookie, body: {} })).status, 204);
+  assert.equal(kv.delete, 1, "the stale cache entry should be cleared once");
+  assert.equal(await session.read(env, s.raw), null, "the cache entry outlived the sign-out");
+
+  for (let i = 0; i < 50; i++) {
+    assert.equal((await call(env, "/api/auth/logout",
+                             { method: "POST", cookie, body: {} })).status, 204);
+  }
+  assert.equal(kv.delete, 1, "a replayed dead cookie kept deleting");
+  assert.equal(kv.put, 0);
+});
+
+test("a live session still signs out of both stores", async () => {
+  const env = makeEnv();
+  seedUser(env, "u1", { name: "Player" });
+  const s = await session.create(env, "u1");
+  const cookie = `${SESSION_COOKIE}=${encodeURIComponent(s.raw)}`;
+  assert.equal(await session.signOut(env, s.raw), "revoked");
+  assert.equal(await session.read(env, s.raw), null);
+  assert.ok(env.raw.prepare(`SELECT revoked_at FROM sessions WHERE sid_hash = ?`)
+    .get(s.hash).revoked_at, "D1 was not told");
+  assert.equal((await call(env, "/api/me", { cookie })).status, 401);
+});
+
+// ------------------------------------------- a body that is JSON but not an object
+
+test("a PATCH whose JSON is not an object is a 400, not a 500", async () => {
+  const env = makeEnv();
+  seedUser(env, "u1", { name: "Player" });
+  const cookie = await signedIn(env, "u1");
+  for (const b of ["a string", 7, [1, 2], true]) {
+    const r = await call(env, "/api/me", { method: "PATCH", cookie, body: b });
+    assert.equal(r.status, 400, `body ${JSON.stringify(b)} gave ${r.status}`);
+    assert.equal((await r.json()).error, "bad_json");
+  }
+});
+
+// ------------------------------------------- rate_limits rows do not live forever
+
+test("rate_limits rows outlive their window only until the prune", async () => {
+  const env = makeEnv();
+  const now = NOW();
+  await ratelimit.take(env, "login", "1.2.3.4", now - 3 * 86400);
+  await ratelimit.take(env, "signup", "1.2.3.4", now - 86400 - 10);
+  await ratelimit.take(env, "login", "5.6.7.8", now);
+  await ratelimit.take(env, "signup", "5.6.7.8", now);
+  assert.equal(await ratelimit.prune(env, now), 2);
+  const left = env.raw.prepare(`SELECT bucket FROM rate_limits ORDER BY bucket`)
+    .all().map((r) => r.bucket);
+  assert.deepEqual(left, ["login:5.6.7.8", "signup:5.6.7.8"],
+    "a row still inside the longest window was pruned");
+  assert.equal(await ratelimit.prune(env, now), 0, "a second prune found something");
 });

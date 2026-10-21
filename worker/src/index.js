@@ -235,15 +235,22 @@ async function handle(req, env, ctx) {
 
   if (path === "/api/auth/logout" && req.method === "POST") {
     if (!csrfOk(req, env)) return fail("bad_origin", 403);
-    // Strict: a sign-out must not be satisfied by a KV entry that a previous
-    // revocation has not finished propagating away from.
-    const user = await session.read(env, rawSession, { strict: true });
-    if (user) await session.revoke(env, user.hash);
-    // And drop the cache entry for the token presented even when the strict
-    // read found nothing. Signing out twice inside the propagation window
-    // used to be a no-op that left this edge's copy behind, so the second
-    // press of the button reported success and changed nothing here.
-    else if (rawSession) await session.forget(env, rawSession);
+    // Everything the cookie can cause lives in session.signOut, and in this
+    // order on purpose: D1 decides whether the token is real, and a token D1
+    // has never seen touches KV not at all. The old shape here deleted the
+    // cache key for any cookie the strict read missed, which let anyone with
+    // two headers and a junk cookie spend the KV write quota that sign-ins
+    // need. See the comment on signOut for the arithmetic.
+    //
+    // No D1 rate-limit bucket, unlike login. A sign-out with a junk cookie
+    // now costs one indexed D1 read; ratelimit.take costs one D1 write, so a
+    // bucket here would turn a read into a write for every attempt and make
+    // the flood more expensive to us, not less. The WAF rule on /api/* is the
+    // flood control, same as everywhere else on this Worker.
+    //
+    // The cookie is cleared whatever happened, so a browser holding a stale
+    // one is cleaned up by the press that found nothing to revoke.
+    await session.signOut(env, rawSession);
     return new Response(null,
       { status: 204, headers: { "Set-Cookie": clear(SESSION_COOKIE) } });
   }
@@ -738,6 +745,14 @@ export default {
         if (r.changed) console.log(`score w${r.week}: ${JSON.stringify(r)}`);
       }
       const moved = report.filter((r) => r.changed).length;
+      // Housekeeping, after the grading it must never get in the way of:
+      // rate_limits rows outlive their windows and nothing else removes them.
+      try {
+        const gone = await ratelimit.prune(env);
+        if (gone) did.push(`pruned:${gone}`);
+      } catch (e) {
+        console.log(`prune: ${e && (e.message || e)}`);
+      }
       await heartbeat(env, `${imported} weeks, ${moved} changed`);
       did.push(`scored:${moved}`);
       await recordTick(env, slot, drift, did);

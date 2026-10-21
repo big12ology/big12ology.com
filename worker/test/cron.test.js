@@ -24,6 +24,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import worker from "../src/index.js";
+import * as ratelimit from "../src/ratelimit.js";
 import { makeEnv, seedWeek, NOW, HOUR } from "./helpers/env.js";
 
 const SEASON = 2026;
@@ -475,6 +476,19 @@ test("a quiet hour writes nothing at all", async () => {
   await run(env);
   assert.equal(written, 0,
     `an unchanged cron run wrote ${written} rows; it must write none`);
+});
+
+test("the sweep prunes rate_limits rows no window still counts", async () => {
+  // Every address that ever tried to sign in left a row, and until this
+  // nothing removed it. A row still inside its window is somebody's count
+  // and stays.
+  const env = env0();
+  serve(publisher(season(6)));
+  await ratelimit.take(env, "login", "1.2.3.4", NOW() - 3 * 86400);
+  await ratelimit.take(env, "login", "5.6.7.8", NOW());
+  await run(env);
+  const left = rows(env, `SELECT bucket FROM rate_limits`).map((r) => r.bucket);
+  assert.deepEqual(left, ["login:5.6.7.8"]);
 });
 
 test("a result that moves rebuilds its own game, not the whole week",

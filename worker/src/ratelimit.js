@@ -63,3 +63,28 @@ export async function take(env, kind, key, now = Math.floor(Date.now() / 1000)) 
     ? { ok: true, remaining: limit.max - count }
     : { ok: false, remaining: 0, retryAfter: start + limit.window - now };
 }
+
+/** The longest window any bucket uses. A row older than this is dead whatever its kind. */
+const LONGEST = Math.max(...Object.values(LIMITS).map((l) => l.window));
+
+/**
+ * Drop the rows no window can still be counting. Returns how many went.
+ *
+ * ON CONFLICT above recycles a row when its key comes back, and a key that
+ * never comes back was never recycled: every address that tried to sign in
+ * once left a row for good, and "signup:" and "login:" are keyed by address.
+ * The table's only reader looks a bucket up by primary key, so the rows cost
+ * storage rather than time, but storage on the free tier is also a number.
+ *
+ * Run from the cron sweep. The DELETE matches nothing on a quiet tick and so
+ * writes nothing, which the quiet-hour invariant in cron.test.js requires.
+ * The window length is not stored on the row, so this uses the longest one:
+ * a login row is kept for a day instead of an hour, and that is fine.
+ */
+export async function prune(env, now = Math.floor(Date.now() / 1000)) {
+  const r = await env.DB.prepare(
+    `DELETE FROM rate_limits WHERE window_start < ?`)
+    .bind(now - LONGEST).run();
+  // D1 reports the count under meta; the test shim reports it flat.
+  return (r && r.meta && r.meta.changes) || (r && r.changes) || 0;
+}

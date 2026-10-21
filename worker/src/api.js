@@ -79,6 +79,12 @@ export async function getMe(env, user) {
 
 export async function patchMe(env, user, body) {
   if (!user) return fail("unauthenticated", 401);
+  // index.js refuses a body that failed to parse; this refuses one that
+  // parsed to something other than an object. `"team" in "a string"` throws,
+  // and that TypeError was a 500 for a request that was simply malformed.
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return fail("bad_json", 400);
+  }
 
   // Team is a display preference, not an identity: no cooldown, no history,
   // no uniqueness. It only tints your own rows.

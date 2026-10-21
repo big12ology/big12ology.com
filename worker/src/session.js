@@ -147,20 +147,53 @@ export async function revoke(env, hash) {
   await env.SESSIONS.delete(kvKey(hash));
 }
 
-/** Sign out everywhere. Used by account deletion and by unlinking. */
 /**
- * Drop this edge's cached copy of a token, without touching D1.
+ * End the session a cookie names, if it names one. Returns what it did:
+ * "revoked", "forgotten" or "nothing".
  *
- * For the sign-out that finds nothing to revoke because another edge already
- * did: the row is already marked, but this node's cache entry would otherwise
- * sit there until its TTL, answering reads for a session the person has
- * plainly finished with.
+ * Strict by construction: the row in D1 decides, never the cache, so a
+ * sign-out cannot be satisfied by a KV entry that an earlier revocation has
+ * not finished propagating away from.
+ *
+ * THE ORDER OF THE CHECKS IS THE POINT. The cookie is the only input, and
+ * anybody can send one. Logout used to answer a cookie the strict read did
+ * not recognise by deleting its cache key anyway, so that a second press of
+ * the button inside the propagation window would clear this edge's copy. A
+ * delete is a KV write whether or not the key exists, KV is on the
+ * thousand-writes-a-day tier, and create() needs a write to mint a session:
+ * about a thousand POSTs with a made-up cookie and nobody could sign in
+ * until the quota reset, each attempt leaving a D1 row behind it.
+ *
+ * So: D1 first. A hash with no row never had a cache entry, because create()
+ * and extend() write the row before the key, and it costs one indexed read
+ * to find that out. A row that is live is revoked. A row that is already dead
+ * is the propagation-window case, and even then the cache copy is removed
+ * only if this edge still holds one, so a dead cookie replayed a thousand
+ * times buys a thousand reads and one delete.
  */
-export async function forget(env, raw) {
-  if (!raw) return;
-  await env.SESSIONS.delete(kvKey(await sha256(raw)));
+export async function signOut(env, raw) {
+  if (!raw) return "nothing";
+  const h = await sha256(raw);
+  const row = await env.DB.prepare(
+    `SELECT expires_at, revoked_at FROM sessions WHERE sid_hash = ?`)
+    .bind(h).first();
+  if (!row) return "nothing";
+
+  const now = Math.floor(Date.now() / 1000);
+  if (!row.revoked_at && row.expires_at > now) {
+    await revoke(env, h);
+    return "revoked";
+  }
+
+  // Revoked at another edge, or expired: the row is already marked, but this
+  // node's cache entry would otherwise sit there until its TTL, answering
+  // reads for a session the person has plainly finished with.
+  if ((await env.SESSIONS.get(kvKey(h))) == null) return "nothing";
+  await env.SESSIONS.delete(kvKey(h));
+  return "forgotten";
 }
 
+/** Sign out everywhere. Used by account deletion and by unlinking. */
 export async function revokeAll(env, userId) {
   const { results } = await env.DB.prepare(
     `SELECT sid_hash FROM sessions
