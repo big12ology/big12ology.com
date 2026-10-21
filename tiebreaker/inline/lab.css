@@ -385,11 +385,19 @@ main > *, .duo > *, .cols > * { min-width: 0; }
 /* A phone, which is a different layout rather than a smaller one. */
 @media (max-width:640px) {
   .clmain { grid-template-columns:22px 1fr auto; row-gap:3px }
-  .clbar, .clpct { display:none }
+  /* The bar goes; the percentage stays, at the end of the team's line. It is
+     the number the list exists to show, and a phone row without it was a
+     name and a record. */
+  .clbar { display:none }
+  .clpct { grid-area:1/3 }
   /* The record's own line, under the team. Auto-placed it wrapped onto the
      next row into column 1 — a 22px track cut for a logo — and rendered one
      word per line, 250px of it, on every row of the table. */
-  .clrec { grid-column:2/-1 }
+  .clrec { grid-row:2; grid-column:2/-1 }
+  /* Chips under the record, now that the percentage holds the third column
+     they used to drift into. */
+  .cltags { grid-row:3; grid-column:2/-1 }
+  .cltags:empty { display:none }
 }
 /* Anything wider than a phone, in a card too narrow for six columns. Only
    the chips move, and only down: the bar, the percentage and the record keep

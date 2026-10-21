@@ -205,7 +205,9 @@ jobs:
           # The hand-written files switch too, via PICKEM-ONLY/PICKEM-OFF.
           grep -q '/pools/' dist/index.html
           grep -q '__Host-b12s' dist/privacy.html
-          grep -q 'pools' dist/sitemap.xml
+          # The section's own sitemap lists it, and robots.txt points there
+          # (a PICKEM-ONLY line); the root sitemap no longer carries /pools/.
+          grep -q 'pools/sitemap.xml' dist/robots.txt
           ! grep -q 'no accounts, no cookies' dist/privacy.html
           test ! -e dist/pools/soon.html
           test ! -e dist/pools/_moved
