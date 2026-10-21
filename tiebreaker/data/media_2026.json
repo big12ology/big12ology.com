@@ -417,11 +417,11 @@
  ],
  "401856825": [
   {
-   "outlet": "FOX",
+   "outlet": "Fox",
    "type": "tv"
   },
   {
-   "outlet": "Fox",
+   "outlet": "FOX",
    "type": "tv"
   }
  ],
@@ -524,8 +524,7 @@
  "401856843": [
   {
    "outlet": "Fox",
-   "type": "tv",
-   "via": "espn.com"
+   "type": "tv"
   }
  ],
  "401856844": [
@@ -537,22 +536,19 @@
  "401856845": [
   {
    "outlet": "FS1",
-   "type": "tv",
-   "via": "espn.com"
+   "type": "tv"
   }
  ],
  "401856846": [
   {
    "outlet": "TNT",
-   "type": "tv",
-   "via": "espn.com"
+   "type": "tv"
   }
  ],
  "401856847": [
   {
    "outlet": "FS1",
-   "type": "tv",
-   "via": "espn.com"
+   "type": "tv"
   }
  ],
  "401856855": [
@@ -581,11 +577,11 @@
  ],
  "401856880": [
   {
-   "outlet": "Fox",
+   "outlet": "FOX",
    "type": "tv"
   },
   {
-   "outlet": "FOX",
+   "outlet": "Fox",
    "type": "tv"
   }
  ],
