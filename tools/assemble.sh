@@ -292,6 +292,17 @@ with open(p, "w", encoding="utf-8") as f:
 PY
 done < <(find "$DIST" -name '*.html')
 
+# --- the root sitemap's dates ----------------------------------------------
+# The hub's own pages and the attendance data change with every deploy, so
+# their <lastmod> is the deploy's date, filled here as {{BUILD_STAMP}} is
+# above. It used to be typed by hand and sat at August while the pages moved
+# on. The sections' sitemaps are written by their builders with the build
+# date already; this is only the hand-written one at the root.
+TODAY="${B12_SITEMAP_DATE:-$(date -u '+%Y-%m-%d')}"
+if [ -f "$DIST/sitemap.xml" ]; then
+  python3 -c 'import sys; p, t = sys.argv[1], sys.argv[2]; s = open(p).read(); open(p, "w").write(s.replace("{{TODAY}}", t))' "$DIST/sitemap.xml" "$TODAY"
+fi
+
 # --- the hub's numbers ----------------------------------------------------
 # index.html is hand-written and is the only page on the domain that is. It
 # now shows the next kickoff and the projected title game, which are facts
