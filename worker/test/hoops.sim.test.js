@@ -1,4 +1,5 @@
-// A men's basketball pick'em season, publisher to leaderboard.
+// A men's basketball pools season, publisher to leaderboards: the pick'em and
+// the survivor pool.
 //
 // The slates are the real 2025-26 conference season as basketball/bb_pickem.py
 // publishes it (tools/make-hoops-fixture.py writes them, lines from this
@@ -67,7 +68,7 @@ function cover(hp, ap, x2) {
   return v > 0 ? "home" : v < 0 ? "away" : "push";
 }
 
-test("a basketball pick'em season, imported, picked, graded and ranked",
+test("a basketball pools season, imported, picked, graded and ranked",
   async () => {
     const env = makeEnv();
     const season = L.seasonOf(env, "mbb");
@@ -124,6 +125,47 @@ test("a basketball pick'em season, imported, picked, graded and ranked",
         }
       }
 
+      // The survivor pool, through the API, in the same weeks: one team a
+      // week to win a named game, never the same team twice, and now and
+      // then a week skipped, which is a miss and the end of a run. Picks are
+      // all made before any game, as a player could; a pick after a run has
+      // ended is simply never reached by the walk.
+      // Four of the six take the biggest favorite they have not spent, as a
+      // careful player does, so runs last; two pick at random, so they end.
+      const svPicks = new Map();          // `${user}|${week}` -> {game, team}
+      for (const [pi, p] of players.entries()) {
+        const careful = pi < 4;
+        const used = new Set();
+        for (const w of weeks) {
+          if (rand() < 0.08) continue;                       // a missed week
+          const options = [];
+          for (const g of w.games) {
+            for (const t of [g.home, g.away]) {
+              if (used.has(t)) continue;
+              // The spread is home's, doubled: negative is home favored.
+              const edge = g.spread_x2 == null ? 0
+                : (t === g.home ? -g.spread_x2 : g.spread_x2);
+              options.push([g, t, edge]);
+            }
+          }
+          if (!options.length) continue;
+          options.sort((a, b) => b[2] - a[2]);
+          const [g, t] = careful ? options[0]
+                                 : options[Math.floor(rand() * options.length)];
+          const r = await worker.fetch(new Request(`${ORIGIN}/api/survivor/pick`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", Origin: ORIGIN,
+                       Cookie: cookies[p] },
+            body: JSON.stringify({ league: "mbb", week: w.week,
+                                   game_id: g.game_id, team: t }),
+          }), env, {});
+          assert.equal(r.status, 200, await r.clone().text());
+          used.add(t);
+          svPicks.set(`${p}|${w.week}`, { game: g.game_id, team: t,
+                                          home: g.home });
+        }
+      }
+
       // Each week passes and is graded, in order.
       for (const w of weeks) {
         forceLock(env, season, w.week, NOW() - 2 * DAY);
@@ -156,10 +198,55 @@ test("a basketball pick'em season, imported, picked, graded and ranked",
                          `${row.user_id}'s record`);
       }
       assert.deepEqual(board.weeks, weeks.map((w) => w.week));
+      // The survivor walk, independently: from the first week a player
+      // picked, every week is a win, or a loss or a missed week, which ends
+      // the run; wins count only before the end.
+      const sv = await (await worker.fetch(new Request(
+        `${ORIGIN}/api/survivor/board?league=mbb`), env, {})).json();
+      const svRows = new Map(sv.rows.map((r) => [r.user_id, r]));
+      let eliminated = 0, alive = 0, missed = 0, lost = 0, longest = 0;
+      for (const p of players) {
+        const mine = weeks.filter((w) => svPicks.has(`${p}|${w.week}`));
+        if (!mine.length) {
+          assert.equal(svRows.has(p), false, `${p} never entered`);
+          continue;
+        }
+        const entered = mine[0].week;
+        let wins = 0, outWeek = null, outReason = null;
+        for (const w of weeks) {
+          if (w.week < entered) continue;
+          const pk = svPicks.get(`${p}|${w.week}`);
+          if (!pk) { outWeek = w.week; outReason = "missed"; break; }
+          const [hp, ap] = scores.games[String(pk.game)];
+          const homeWon = hp > ap;
+          if ((pk.team === pk.home) === homeWon) wins++;
+          else { outWeek = w.week; outReason = "loss"; break; }
+        }
+        const row = svRows.get(p);
+        assert.ok(row, `${p} is on the survivor board`);
+        assert.deepEqual(
+          [row.entered_week, row.wins, row.alive, row.out_week, row.out_reason],
+          [entered, wins, outWeek == null ? 1 : 0, outWeek, outReason],
+          `${p}'s survivor run`);
+        if (outWeek == null) alive++; else eliminated++;
+        if (outReason === "missed") missed++;
+        if (outReason === "loss") lost++;
+        longest = Math.max(longest, wins);
+      }
+      assert.equal(sv.alive, alive);
+      // The season has to have exercised the walk, or agreeing proves little:
+      // runs of several weeks, ended both ways.
+      assert.ok(longest >= 3, `the longest run was ${longest} wins`);
+      assert.ok(lost > 0, "nobody lost a pick");
+      assert.ok(missed > 0, "nobody missed a week");
+
       // And football's board never heard of any of it.
       const cfb = await (await worker.fetch(new Request(
         `${ORIGIN}/api/leaderboard`), env, {})).json();
       assert.equal(cfb.rows.length, 0);
+      const cfbSv = await (await worker.fetch(new Request(
+        `${ORIGIN}/api/survivor/board`), env, {})).json();
+      assert.equal(cfbSv.rows.length, 0);
     } finally {
       globalThis.fetch = real;
     }
