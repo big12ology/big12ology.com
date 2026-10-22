@@ -5,7 +5,7 @@
    "home": "Kansas",
    "margin": -1.98,
    "p_home": 0.443,
-   "spread": 2.8,
+   "spread": 2.7,
    "systems": {
     "Big12ology": 1.37,
     "Elo": 1.26,
@@ -65,7 +65,7 @@
    "home": "Arizona",
    "margin": 9.77,
    "p_home": 0.756,
-   "spread": -10.1,
+   "spread": -10.2,
    "systems": {
     "Big12ology": 9.9,
     "Elo": 4.85,
@@ -80,7 +80,7 @@
    "home": "Arizona State",
    "margin": -5.73,
    "p_home": 0.336,
-   "spread": 3.4,
+   "spread": 2.5,
    "systems": {
     "Big12ology": -4.29,
     "Elo": -5.44,
@@ -110,7 +110,7 @@
    "home": "TCU",
    "margin": 12.4,
    "p_home": 0.82,
-   "spread": -9.6,
+   "spread": -9.7,
    "systems": {
     "Big12ology": 14.68,
     "Elo": 12.67,
@@ -125,6 +125,7 @@
    "home": "Texas Tech",
    "margin": 9.0,
    "p_home": 0.746,
+   "spread": -7.5,
    "systems": {
     "Big12ology": 9.4,
     "Elo": 8.41,
@@ -139,6 +140,7 @@
    "home": "BYU",
    "margin": 20.02,
    "p_home": 0.923,
+   "spread": -17.5,
    "systems": {
     "Big12ology": 20.74,
     "Elo": 13.33,
@@ -209,6 +211,7 @@
    "home": "Cincinnati",
    "margin": -11.88,
    "p_home": 0.197,
+   "spread": 9.5,
    "systems": {
     "Big12ology": -5.53,
     "Elo": -14.07,
@@ -672,7 +675,7 @@
   }
  },
  "games_complete": 73,
- "generated": "2026-10-21T21:07:13+00:00",
+ "generated": "2026-10-22T13:58:34+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
