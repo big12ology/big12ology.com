@@ -178,8 +178,16 @@ def pct(w, l):
 # clinch.analyze's shape, so callers do not learn which language answered.
 # The budget default lives in engine/build-only.js; passing None takes it.
 
-def clinch_analyze(games, overrides=None, budget=None):
-    return _call("clinchAnalyze", games, overrides or {}, budget)
+def clinch_analyze(games, overrides=None, budget=None, probs=None):
+    """`probs` (win_probs' {id: p_home}) switches on the witness search: each
+    alive team gets its fewest-upsets path under "witness", and a team the
+    search proves has no path is "eliminated" by method "search"."""
+    return _call("clinchAnalyze", games, overrides or {}, budget, probs)
+
+
+def witness(games, team, overrides=None, probs=None, budget=None):
+    """The fewest-upsets path for one team, or {found: False, complete}."""
+    return _call("witness", games, team, overrides or {}, probs or {}, budget)
 
 
 def clinch_bounds(games):

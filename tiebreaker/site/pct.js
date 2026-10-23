@@ -129,9 +129,12 @@
      to make a decimal defensible here and would cost 661ms a pick instead of
      166ms. The cheaper honesty is to print what 2,000 seasons actually
      knows, which is the whole number. */
+  // Never "0%". A zero here is zero of 2,000 simulated seasons, and the
+  // board lists a team proven out under "Eliminated" without a number at
+  // all, so a printed zero could only ever stand beside "alive". Mirrors
+  // fmt_prob in build.py, which prints the zero only on a proof.
   function prob(p) {
     if (p >= 0.9995) return "100%";
-    if (p <= 0) return "0%";
     // Rounds to nothing but is not nothing, and the reverse: a race that is
     // not quite settled must not read as though it were.
     if (p < 0.005) return "<1%";

@@ -947,11 +947,29 @@ def winpct_color(p):
     return f"hsl({round(h)} {round(s)}% var(--pctl))"
 
 
-def fmt_prob(p):
+def whole_pct(p):
+    """A whole-number percent that never prints as nothing. The fork cells
+    and the upset tags round to the digit, and a team at three in ten
+    thousand is "<1%", not "0%": the zero is reserved for a proof, and
+    these cells carry none. See fmt_prob."""
+    if p < 0.005:
+        return "&lt;1%"
+    if 0.995 < p < 1:
+        return "&gt;99%"
+    return f"{p * 100:.0f}%"
+
+
+def fmt_prob(p, out=False):
+    """`out` is the proof, not the number. Zero of 40,000 simulated seasons
+    is a sample that found no path, and a strict-arithmetic "alive" beside a
+    printed 0% is the site contradicting itself (Colorado and West Virginia,
+    2026-10-23). The floor says what the sample can say: under the digit
+    shown. Only an eliminated team, proven out, prints the zero, and the
+    callers that can know that pass it."""
+    if out:
+        return "0%"
     if p >= 0.9995:
         return "100%"
-    if p <= 0 :
-        return "0%"
     if p < 0.001:
         return "&lt;0.1%"
     # One decimal, always. The trailing zero was being stripped, so a column
@@ -1278,7 +1296,7 @@ def fork_block(g, lev, sims, teams, compact=False):
                      f"{n if n else ''}</span>")
         return (f"<div class=forkcell><span class=forkteam>"
                 f"{team_name(t)}</span>"
-                f"<b class=forkp>{p * 100:.0f}%</b>{delta}</div>")
+                f"<b class=forkp>{whole_pct(p)}</b>{delta}</div>")
 
     cols = []
     for side in playing:
@@ -1339,7 +1357,7 @@ def teach_block(g, lev, cond, teams):
             cells.append(
                 f"<div class=forkcell><span class=forkteam>"
                 f"{team_name(t)}</span>"
-                f"<b class=forkp>{p * 100:.0f}%</b>"
+                f"<b class=forkp>{whole_pct(p)}</b>"
                 f"<span class='forkd {way}'>{sign}{n if n else ''}</span>"
                 f"</div>")
         cols.append(
@@ -2450,7 +2468,11 @@ def clinch_card(games, overrides, systems, stand_rows, sims,
     """The Championship race card: proof-grade clinch/elimination statuses,
     Monte Carlo odds, and the Chaos Index. Computed at build time from real
     results only — what-if picks in the browser don't touch it."""
-    res = engine.clinch_analyze(games, overrides)
+    # With the search on: a board that lists a team under "Eliminated"
+    # because no completion of the schedule gets it in, weeks before the
+    # bounds test could say so.
+    res = engine.clinch_analyze(
+        games, overrides, probs=engine.win_probs(games, systems) if systems else None)
     teams = res["teams"]
     n_sims = sims.get("_n", 0)
 
@@ -2542,6 +2564,14 @@ def clinch_card(games, overrides, systems, stand_rows, sims,
             f"{res['n_outcomes']:,} remaining outcomes with the full "
             f"official tiebreaker procedure; scenario lines are for the "
             f"upcoming week's games.")
+    elif res.get("search"):
+        notes.append(
+            "Clinch statuses are proven by strict win-count arithmetic. "
+            "Eliminations are proven by a search over every remaining "
+            "schedule for a path into the top two under the full "
+            "tiebreaker: a team listed as eliminated has none. Each "
+            "team's page shows its cheapest path. Exhaustive scenario "
+            "math unlocks when the remaining schedule becomes enumerable.")
     else:
         notes.append(
             "Clinch/elimination statuses are proven by strict win-count "
@@ -2773,6 +2803,12 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
         up = [m for m in moves if m[0] > NOISE][:5]
         down = [m for m in moves if m[0] < -NOISE][-5:][::-1]
 
+        def was_out(t):
+            return prev["clinch"].get(t, {}).get("status") == "eliminated"
+
+        def now_out(t):
+            return cl["teams"].get(t, {}).get("status") == "eliminated"
+
         def movement_rows(items):
             out = []
             for d, t, was, now in items:
@@ -2786,7 +2822,8 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
                     f"{team_name(t, logo=False)}</b>"
                     f"<span class=movepts style='color:{col}'>"
                     f"{'+' if d > 0 else ''}{d * 100:.0f} pts</span>"
-                    f"<span class=dim>{fmt_prob(was)} &rarr; {fmt_prob(now)}"
+                    f"<span class=dim>{fmt_prob(was, out=was_out(t))} &rarr; "
+                    f"{fmt_prob(now, out=now_out(t))}"
                     f" to reach the title game</span>"
                     f"</div></div>")
             return "".join(out)
@@ -4832,8 +4869,16 @@ def ordinal(n):
     return f"{n}{suffix}"
 
 
-def odds_pct(p):
-    """One decimal under ten percent, none above: "7.5%" and "53%"."""
+def odds_pct(p, out=False):
+    """One decimal under ten percent, none above: "7.5%" and "53%".
+
+    Never "0.0%" for a team still alive: that digit is the simulation's
+    sample size, not the team's chances. See fmt_prob for the rule; this is
+    the same floor at the team pages' resolution."""
+    if out:
+        return "0%"
+    if p < 0.0005:
+        return "&lt;0.1%"
     return f"{p * 100:.1f}%" if p < 0.095 else f"{p * 100:.0f}%"
 
 
@@ -4965,8 +5010,16 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
         hist = forecast_history(year, team)
         status = {"alive": "Alive", "clinched": "Clinched",
                   "eliminated": "Eliminated"}.get(state.get("status"), "Alive")
+        wit = state.get("witness") or {}
+        # The sub-label is the headline of the card below it, so it is the
+        # link to it: a path when there is one, the proof when there is not.
+        has_path = bool(wit.get("found")) or (
+            state.get("status") == "eliminated" and bool(state.get("r")))
         under = ("clinched a berth" if state.get("status") == "clinched"
                  else "out of the race" if state.get("status") == "eliminated"
+                 else "needs no upsets" if wit.get("found") and not wit["upsets"]
+                 else f"needs {wit['upsets']} upset{'s' if wit['upsets'] != 1 else ''}"
+                 if wit.get("found")
                  else "controls its own fate" if state.get("destiny")
                  else "needs help")
         spark = ""
@@ -4974,12 +5027,15 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
             spark = (f"<div class=teamstat>{sparkline([h[1] for h in hist], color)}"
                      f"<span>odds by week · "
                      f"{' → '.join(odds_pct(h[1]) for h in hist)}</span></div>")
+        out = state.get("status") == "eliminated"
         stats = (f"<div class=teamstats>"
-                 f"<div class=teamstat><b>{odds_pct(race['p_ccg'])}</b>"
+                 f"<div class=teamstat><b>{'Out' if out else odds_pct(race['p_ccg'])}</b>"
                  f"<span>title game</span></div>"
                  f"<div class=teamstat><b>{race['exp_w']:.1f}</b>"
                  f"<span>expected conf. wins</span></div>"
-                 f"<div class=teamstat><b>{status}</b><span>{under}</span></div>"
+                 f"<div class=teamstat><b>{status}</b><span>"
+                 f"{f'<a href=#path>{under}</a>' if has_path else under}"
+                 f"</span></div>"
                  f"{spark}</div>")
         n = sims.get("_n") or engine.constants()["N_SIMS"]
         note = (f"<p class=note>Title-game odds from {n:,} season simulations "
@@ -5228,7 +5284,77 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
                     f"conference are not listed.</p></div>")
 
     side = "".join(c for c in (nerds, drawcard, gatecard, histcard) if c)
-    return head + sched + nxt + (f"<div class=teamgrid>{side}</div>" if side else "")
+    # --- what it would take -------------------------------------------------
+    # The witness: one completion of the remaining conference schedule that
+    # puts the team in the top two, with the fewest results against the
+    # model's favorite. It answers the question the status cell cannot:
+    # "Alive" at 0-3 is a win-count technicality, "needs 9 upsets" is what
+    # it would take. Its own games first; everyone else's are listed only
+    # where the favorite has to lose, since a game not listed goes to the
+    # favorite.
+    path = ""
+    if race and live:
+        wit = state.get("witness") or {}
+        byid = {g["id"]: g for g in games}
+        if wit.get("found"):
+            own = [x for x in wit["results"] if x["own"]]
+            oth = [x for x in wit["results"] if not x["own"] and x["upset"]]
+            own_up = sum(1 for x in own if x["upset"])
+            k = wit["upsets"]
+            w, l = wit["record"]
+
+            def prow(x):
+                g = byid.get(x["id"]) or {"home": x["home"], "away": x["away"],
+                                          "completed": False}
+                tag = (f"<span class=dim>upset · {whole_pct(x['p'])}</span>"
+                       if x["upset"] else "")
+                return (f"<tr><td>Wk {x['week']}</td>"
+                        f"<td class=teamcell>{matchup(g, 16)}</td>"
+                        f"<td>{team_name(x['winner'])}</td><td>{tag}</td></tr>")
+
+            if k == 0:
+                lead = (f"The favorites' results alone put {esc(team)} in the "
+                        f"top two. {esc(ab)} finishes {w}-{l}.")
+            else:
+                lead = (f"The fewest results against the model's favorite that "
+                        f"put {esc(team)} in the top two: <b>{k} upset"
+                        f"{'s' if k != 1 else ''}</b>"
+                        + ("" if not own_up
+                           else f", {esc(ab)}'s own" if k == 1
+                           else f", all {esc(ab)}'s own" if own_up == k
+                           else f", {own_up} of them {esc(ab)}'s own")
+                        + f". {esc(ab)} finishes {w}-{l}"
+                        + ("" if wit.get("sure") else
+                           ", and the cut comes down to a tiebreaker step the "
+                           "procedure cannot settle")
+                        + ".")
+            own_t = (f"<h3>{esc(ab)}'s games</h3><table><thead><tr><th></th>"
+                     f"<th>Game</th><th>needs</th><th></th></tr></thead><tbody>"
+                     f"{''.join(prow(x) for x in own)}</tbody></table>"
+                     if own else "")
+            oth_t = (f"<h3>Everyone else's</h3><table><thead><tr><th></th>"
+                     f"<th>Game</th><th>needs</th><th></th></tr></thead><tbody>"
+                     f"{''.join(prow(x) for x in oth)}</tbody></table>"
+                     if oth else "")
+            path = (f"<div class=card id=path><h2>What it would take</h2>"
+                    f"<p>{lead}</p>{own_t}{oth_t}"
+                    f"<p class=note>One path of many: a search over every "
+                    f"completion of the {wit['remaining']} remaining conference "
+                    f"games, under the full tiebreaker procedure, for the fewest "
+                    f"results against the blend's favorite and, among those, the "
+                    f"likeliest. Upsets are against the model's favorite, not the "
+                    f"betting line, and a coin flip counts as one either way. "
+                    f"Every game not listed goes to the favorite.</p></div>")
+        elif state.get("status") == "eliminated" and state.get("r"):
+            path = (f"<div class=card id=path><h2>What it would take</h2>"
+                    f"<p>Nothing does. No completion of the {state['r']} "
+                    f"conference games {esc(ab)} has left"
+                    + (" puts it in the top two under the tiebreaker procedure."
+                       if state.get("method") == "search" else
+                       " can get it past the teams already above its ceiling.")
+                    + "</p></div>")
+    return (head + sched + path + nxt
+            + (f"<div class=teamgrid>{side}</div>" if side else ""))
 
 
 def teams_index_body(year, rows, sims, clinch):
@@ -5240,7 +5366,7 @@ def teams_index_body(year, rows, sims, clinch):
         s = sims.get(t) or {}
         st = (clinch.get(t) or {}).get("status", "")
         word = {"clinched": "Clinched", "eliminated": "Eliminated"}.get(st, "")
-        odds = (f"<td class=num>{odds_pct(s['p_ccg'])}</td>"
+        odds = (f"<td class=num>{'—' if st == 'eliminated' else odds_pct(s['p_ccg'])}</td>"
                 f"<td class=num>{s['exp_w']:.1f}</td><td>{word}</td>"
                 if live_cols and s else
                 ("<td class=num>—</td><td class=num>—</td><td></td>" if live_cols else ""))
@@ -6501,7 +6627,9 @@ def build_season(year, games, outdir, base, feed=True, sched_outdir=None,
     # The PADDED board, so a team that has not played a conference game yet
     # still has a page in September; engine.standings alone has six rows
     # in week 3.
-    clinch = engine.clinch_analyze(games, overrides)["teams"]
+    clinch = engine.clinch_analyze(
+        games, overrides,
+        probs=engine.win_probs(games, systems) if systems else None)["teams"]
     pages.append(("teams.html", "The Teams", "teams",
                   teams_index_body(year, display_rows, sims, clinch),
                   f"Every Big 12 team in {yr}, one page each: record, "

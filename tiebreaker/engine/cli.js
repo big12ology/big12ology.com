@@ -40,11 +40,13 @@ const engine = require(path.join(__dirname, "..", "site", "engine.js"));
 const build = require(path.join(__dirname, "build-only.js"));
 
 const OPS = {
-  clinchAnalyze: (games, overrides, budget) =>
-    build.analyze(games, overrides || {}, budget),
+  clinchAnalyze: (games, overrides, budget, probs) =>
+    build.analyze(games, overrides || {}, budget, probs),
   clinchBounds: (games) => build.bounds(games),
   clinchExact: (games, overrides, budget) =>
     build.exact(games, overrides || {}, budget),
+  witness: (games, team, overrides, probs, budget) =>
+    build.witness(games, team, overrides || {}, probs || {}, budget),
   confTeams: (games) => build.confTeams(games),
   remainingConf: (games) => build.remainingConf(games),
   tangleComponent: (rows, statuses, n) => build.tangleComponent(rows, statuses, n),

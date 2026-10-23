@@ -173,6 +173,174 @@ function scenarioTexts(team, weekGames, combos, maxTerms) {
     cond.map(([i, v]) => phrase(i, v)).join(" + "));
 }
 
+/* ------------------------------------------------------------- witness
+ *
+ * The fewest-upsets path: for one team, a completion of the remaining
+ * conference schedule that puts it in the top two under the full tiebreaker,
+ * using the fewest results against the model's favorite, and among those the
+ * likeliest.
+ *
+ * WHY A SEARCH AND NOT A COUNT. With 47 conference games left there are 2^47
+ * completions and exact() will not engage until about eighteen remain, so
+ * from October to mid-November the published status is the bounds test
+ * alone: a team is "alive" until two others have already passed its ceiling.
+ * Kansas at 0-3 with six to play is alive on that test, and alive on the
+ * simulation at zero of 40,000. Neither says what the reader asks, which is
+ * what it would take. One witness answers that, and finding one witness is
+ * a search with a sharp prune rather than an enumeration.
+ *
+ * THE PRUNE. At any partial completion, a team X that is favored in enough
+ * of its unfixed games to finish above T's ceiling must lose at least that
+ * many of them, and each upset lowers exactly one favorite by one. So the
+ * sum of those excesses, less the largest (one team may finish above T), is
+ * a lower bound on the upsets still needed. Searching the upset count by
+ * iterative deepening, the first depth with a witness is the minimum, and
+ * the ordering (T's own games first, then games between the teams with the
+ * most to lose) is what makes the bound bite early.
+ *
+ * WHAT COMES BACK. {upsets, sure, prob, results, complete} on a witness;
+ * {found: false, complete} on none. `complete` is the claim: true means the
+ * search ran to the end, so a missing witness is a PROOF of elimination, as
+ * strict as the bounds test and stricter in practice. False means the node
+ * budget ran out first and the caller keeps whatever it already said. `sure`
+ * is whether the cut is settled by the procedure or bottoms out in a step
+ * nobody can evaluate (a maybe in cutMembership's terms), the same reading
+ * exact()'s ever_in gives.
+ *
+ * `probs` is winProbs' {id: p_home}; a game it does not cover is a coin
+ * flip, and a coin flip is an upset whichever way it goes.
+ */
+const WITNESS_BUDGET = 1 << 17;
+const WITNESS_MAX_UPSETS = 40;
+
+function witness(games, team, overrides, probs, budget, maxUpsets) {
+  budget = budget || WITNESS_BUDGET;
+  maxUpsets = maxUpsets || WITNESS_MAX_UPSETS;
+  probs = probs || {};
+  const teams = R.confTeams(games);
+  if (teams.indexOf(team) < 0) return null;
+  const ncf = R.unplayedNonconf(games);
+  const base = games.map((g) => Object.assign({}, g));
+  const rec = E.confRecords(games);
+  const w = {}, r = {}, favLeft = {};
+  teams.forEach((t) => {
+    w[t] = rec[t] ? rec[t][0] : 0; r[t] = 0; favLeft[t] = 0;
+  });
+  const meta = base
+    .filter((g) => g.conference_game && !g.ccg && !g.completed)
+    .map((g) => {
+      const ph = probs[g.id] === undefined ? 0.5 : probs[g.id];
+      const homeFav = ph >= 0.5;
+      const pFav = Math.min(1 - 1e-9, Math.max(1e-9, homeFav ? ph : 1 - ph));
+      return { g, fav: homeFav ? g.home : g.away,
+               dog: homeFav ? g.away : g.home, pFav };
+    });
+  meta.forEach((m) => {
+    r[m.g.home] += 1; r[m.g.away] += 1; favLeft[m.fav] += 1;
+  });
+  const chalk = {};
+  teams.forEach((t) => { chalk[t] = w[t] + favLeft[t]; });
+  const own = (m) => m.g.home === team || m.g.away === team;
+  meta.sort((a, b) => {
+    const ao = own(a), bo = own(b);
+    if (ao !== bo) return ao ? -1 : 1;
+    if (!ao) {
+      const ar = Math.max(chalk[a.g.home], chalk[a.g.away]);
+      const br = Math.max(chalk[b.g.home], chalk[b.g.away]);
+      if (ar !== br) return br - ar;
+    }
+    if (a.g.week !== b.g.week) return a.g.week - b.g.week;
+    return String(a.g.id) < String(b.g.id) ? -1 : 1;
+  });
+
+  const n = meta.length;
+  const logFav = meta.map((m) => Math.log(m.pFav));
+  const logDog = meta.map((m) => Math.log(1 - m.pFav));
+  const sufFav = new Array(n + 1).fill(0);
+  for (let i = n - 1; i >= 0; i--) sufFav[i] = sufFav[i + 1] + logFav[i];
+  const choice = new Array(n).fill(false);
+
+  function lowerBound() {
+    const maxT = w[team] + r[team];
+    let sum = 0, mx = 0;
+    for (const x of teams) {
+      if (x === team) continue;
+      const ex = w[x] + favLeft[x] - maxT;
+      if (ex > 0) { sum += ex; if (ex > mx) mx = ex; }
+    }
+    return sum - mx;
+  }
+
+  function apply(i, upset) {
+    const m = meta[i], g = m.g;
+    const winner = upset ? m.dog : m.fav;
+    w[winner] += 1; r[g.home] -= 1; r[g.away] -= 1; favLeft[m.fav] -= 1;
+    g.completed = true;
+    // The same 28-17 exact() writes: a score the ladder reads as a result
+    // and nothing else.
+    if (winner === g.home) { g.home_points = 28; g.away_points = 17; }
+    else { g.home_points = 17; g.away_points = 28; }
+    choice[i] = upset;
+  }
+
+  function undo(i, upset) {
+    const m = meta[i], g = m.g;
+    const winner = upset ? m.dog : m.fav;
+    w[winner] -= 1; r[g.home] += 1; r[g.away] += 1; favLeft[m.fav] += 1;
+    g.completed = false; g.home_points = null; g.away_points = null;
+  }
+
+  let nodes = 0, k = 0, best = null, bestLogp = -Infinity, truncated = false;
+
+  function dfs(i, upsets, logp) {
+    if (truncated) return;
+    if (nodes >= budget) { truncated = true; return; }
+    nodes += 1;
+    if (upsets + lowerBound() > k) return;
+    if (logp + sufFav[i] <= bestLogp) return;
+    if (i === n) {
+      const cm = R.cutMembership(base, overrides || {}, ncf);
+      const sure = !!cm.sure[team];
+      if (!sure && !cm.maybe[team]) return;
+      // A settled cut beats an unsettled one at the same depth, whatever
+      // the odds of either: "and wins the tiebreak" is a path, "and it
+      // comes down to a step nobody can evaluate" is half of one. The
+      // probability prune only switches on behind a settled best, since a
+      // likelier maybe must not block the sure path that beats it.
+      if (!best || (sure && !best.sure) || (sure === best.sure && logp > best.logp)) {
+        best = { choice: choice.slice(), sure, upsets, logp };
+        bestLogp = sure ? logp : -Infinity;
+      }
+      return;
+    }
+    apply(i, false); dfs(i + 1, upsets, logp + logFav[i]); undo(i, false);
+    if (upsets < k) {
+      apply(i, true); dfs(i + 1, upsets + 1, logp + logDog[i]); undo(i, true);
+    }
+  }
+
+  for (k = 0; k <= maxUpsets && !best && !truncated; k++) dfs(0, 0, 0);
+
+  if (!best) {
+    return { team, found: false, complete: !truncated, nodes,
+             remaining: n };
+  }
+  const results = meta.map((m, i) => ({
+    id: m.g.id, week: m.g.week, home: m.g.home, away: m.g.away,
+    winner: best.choice[i] ? m.dog : m.fav,
+    upset: best.choice[i], p: best.choice[i] ? 1 - m.pFav : m.pFav,
+    own: own(m),
+  }));
+  const finalW = w[team] + results.filter((x) => x.winner === team).length;
+  const finalL = (rec[team] ? rec[team][1] : 0) +
+    results.filter((x) => x.own && x.winner !== team).length;
+  return {
+    team, found: true, complete: true, upsets: best.upsets, sure: best.sure,
+    prob: Math.exp(best.logp), results, record: [finalW, finalL],
+    nodes, remaining: n,
+  };
+}
+
 /* Bounds and enumeration, merged — the published statuses.
  *
  * Bounds hold all season and are strict; enumeration is exact but only
@@ -180,9 +348,15 @@ function scenarioTexts(team, weekGames, combos, maxTerms) {
  * so: a bound that claims a clinch the enumeration does not confirm is a bug
  * in one of them, and finding out at build time beats publishing it.
  */
-function analyze(games, overrides, budget) {
+function analyze(games, overrides, budget, probs) {
   const b = R.bounds(games);
   const ex = exact(games, overrides, budget);
+  // The search runs when a caller hands over win probabilities: the two
+  // published calls, the race board and the team pages. The per-week frames
+  // and the Brief's previous-week replay do not, and their statuses stay the
+  // cheap ones, so a team the search proves out does not read as "news"
+  // every Monday against a replay that never looked.
+  const search = probs !== undefined && probs !== null;
   const out = {};
   for (const t of Object.keys(b).sort()) {
     const info = { w: b[t].w, r: b[t].r, destiny: b[t].destiny, scenarios: [] };
@@ -203,10 +377,22 @@ function analyze(games, overrides, budget) {
     } else if (b[t].clinched) { info.status = "clinched"; info.method = "bounds"; }
     else if (b[t].eliminated) { info.status = "eliminated"; info.method = "bounds"; }
     else { info.status = "alive"; info.method = "bounds"; }
+    if (search && info.status === "alive") {
+      const wit = witness(games, t, overrides, probs);
+      if (wit && wit.found) {
+        info.witness = wit;
+      } else if (wit && wit.complete) {
+        // Exhaustive and empty: a proof, and the enumeration must agree
+        // with it wherever the enumeration ran at all.
+        if (ex) throw new Error("exact/search elim mismatch: " + t);
+        info.status = "eliminated"; info.method = "search";
+      }
+    }
     out[t] = info;
   }
   return {
     mode: ex ? "exact" : "bounds",
+    search,
     teams: out,
     week: ex ? ex.week : null,
     n_outcomes: ex ? ex.n_outcomes : null,
@@ -598,11 +784,11 @@ function causalLeverage(games, systems, overrides, gids, opts) {
 }
 
 module.exports = {
-  exact, scenarioTexts, analyze, chaosIndex,
+  exact, scenarioTexts, analyze, chaosIndex, witness,
   bounds: R.bounds, confTeams: R.confTeams, cutMembership: R.cutMembership,
   remainingConf: R.remainingConf, tangleComponent: R.tangleComponent,
   regressStale, ensembleMargin, teamStrength, hfaPoints, winProbs,
   simulate, leverage, forceResult, causalLeverage,
   ratingSigma: R.ratingSigma, pFromMargin: R.pFromMargin,
-  EXACT_BUDGET, N_SIMS, SEED, MARGIN_SIGMA: R.MARGIN_SIGMA,
+  EXACT_BUDGET, WITNESS_BUDGET, N_SIMS, SEED, MARGIN_SIGMA: R.MARGIN_SIGMA,
 };
