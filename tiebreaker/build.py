@@ -4155,11 +4155,16 @@ def build_game_page(g, ctx):
         # the spread their difference (home's number, negative when home is
         # favored), so home is half of total minus spread and away the rest.
         # Both rounded to a tenth; their sum is the total to within rounding.
+        # One row read like a final, the two teams at its ends, rather than
+        # two loose figures: it is one prediction, and split across the
+        # columns it looked like two unrelated numbers.
         if spread is not None and ln.get("over_under") is not None:
             tot = ln["over_under"]
-            cells.append((f"{(tot - spread) / 2:.1f}",
-                          f"{esc(g['home'])} implied score"))
-            cells.append((f"{(tot + spread) / 2:.1f}", esc(g["away"])))
+            cells.append((f"<span class=mkteam>{esc(g['home'])}</span> "
+                          f"{(tot - spread) / 2:.1f} &ndash; "
+                          f"{(tot + spread) / 2:.1f} "
+                          f"<span class=mkteam>{esc(g['away'])}</span>",
+                          "implied score", "mkwide"))
         # A moneyline the book cannot have posted is dropped rather than
         # printed. Coastal Carolina at West Virginia arrived carrying
         # "-100000" for the +19.5 underdog — a price implying it wins 99.9%
@@ -4197,8 +4202,9 @@ def build_game_page(g, ctx):
                   else ml_ok(price, fav))
             if ok:
                 cells.append((f"{price:+g}", label))
-        grid = "".join(f"<div><div class=mkval>{v}</div>"
-                       f"<div class=dim>{k}</div></div>" for v, k in cells)
+        grid = "".join(f"<div{' class=' + c[0] if c else ''}>"
+                       f"<div class=mkval>{v}</div>"
+                       f"<div class=dim>{k}</div></div>" for v, k, *c in cells)
         src = book_src(ln)
         mk = (f"<div class=card><h2>The market</h2>"
               f"<div class='mkgrid mkpair'>{grid}</div>"

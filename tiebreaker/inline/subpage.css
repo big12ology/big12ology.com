@@ -296,6 +296,11 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
 .mkpair { --mkmin:230px;
   grid-template-columns:repeat(auto-fit,minmax(max(var(--mkmin),45%),1fr)) }
 .mkval { font-size:var(--t-lead); font-weight:600 }
+/* A figure that is one reading of both teams, the implied score, takes the
+   whole row whatever the column count, with the names at body weight so the
+   two numbers are what the eye lands on. */
+.mkwide { grid-column:1/-1 }
+.mkteam { font-weight:400 }
 .mkgrid .dim { font-size:var(--t-meta) }
 /* The books behind the average, shut by default. The averages above are the
    answer; this is the working, and it only earns room when asked for. */
