@@ -1559,7 +1559,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-10-24T16:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": true,
   "venue": "Amon G. Carter Stadium",
   "venue_id": 3616,
@@ -1571,8 +1571,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 20,
+  "away_points": 24
  },
  {
   "id": 401856834,
