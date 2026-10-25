@@ -1904,12 +1904,12 @@
       "attendance": 52168,
       "pointsFor": 57,
       "pointsAgainst": 24,
-      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
         "tempF": 74,
         "windMph": 8,
         "precipIn": 0
-      }
+      },
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)"
     },
     {
       "team": "TCU",
@@ -1976,7 +1976,7 @@
       "pointsAgainst": 13,
       "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 46,
+        "tempF": 47,
         "windMph": 2,
         "precipIn": 0
       }

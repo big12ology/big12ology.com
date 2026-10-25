@@ -1,7 +1,8 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 67
+    "agree": 66,
+    "manual": 1
   },
   "games": [
     {
@@ -704,9 +705,9 @@
       "date": "2026-10-24",
       "espnId": 401856836,
       "ours": 52168,
-      "espn": 52168,
+      "espn": null,
       "source": "ESPN gamepackage (not yet in CFBD)",
-      "status": "agree"
+      "status": "manual"
     },
     {
       "team": "TCU",
