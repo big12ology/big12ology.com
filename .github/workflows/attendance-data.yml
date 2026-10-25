@@ -140,7 +140,14 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "Attendance update: $(date -u +%Y-%m-%d)"
-            git push
+            # Scores and Forecast runs also push to main every few minutes
+            # on a Saturday, so a four-minute job here can lose the race.
+            # Same retry as scores.yml and pages.yml: the bots never touch
+            # the same files, so the rebase is always clean.
+            git push || {
+              git pull --rebase --autostash origin "${{ github.ref_name }}"
+              git push
+            }
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
