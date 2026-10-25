@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 59
+    "agree": 67
   },
   "games": [
     {
@@ -650,6 +650,94 @@
       "espnId": 401856829,
       "ours": 48106,
       "espn": 48106,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Arizona",
+      "week": 8,
+      "opponent": "Iowa State",
+      "date": "2026-10-24",
+      "espnId": 401856838,
+      "ours": 45477,
+      "espn": 45477,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Arizona State",
+      "week": 8,
+      "opponent": "Kansas State",
+      "date": "2026-10-24",
+      "espnId": 401856839,
+      "ours": 46388,
+      "espn": 46388,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Cincinnati",
+      "week": 8,
+      "opponent": "Texas Tech",
+      "date": "2026-10-24",
+      "espnId": 401856840,
+      "ours": 38088,
+      "espn": 38088,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Kansas",
+      "week": 8,
+      "opponent": "Baylor",
+      "date": "2026-10-24",
+      "espnId": 401856834,
+      "ours": 32000,
+      "espn": 32000,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Oklahoma State",
+      "week": 8,
+      "opponent": "Colorado",
+      "date": "2026-10-24",
+      "espnId": 401856836,
+      "ours": 52168,
+      "espn": 52168,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "TCU",
+      "week": 8,
+      "opponent": "West Virginia",
+      "date": "2026-10-24",
+      "espnId": 401856841,
+      "ours": 36216,
+      "espn": 36216,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "UCF",
+      "week": 8,
+      "opponent": "BYU",
+      "date": "2026-10-24",
+      "espnId": 401856835,
+      "ours": 45112,
+      "espn": 45112,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Utah",
+      "week": 8,
+      "opponent": "Houston",
+      "date": "2026-10-24",
+      "espnId": 401856837,
+      "ours": 51864,
+      "espn": 51864,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }
