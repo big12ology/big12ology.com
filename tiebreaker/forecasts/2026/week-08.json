@@ -20,7 +20,7 @@
    "home": "Texas Tech",
    "margin": 9.0,
    "p_home": 0.746,
-   "spread": -7.0,
+   "spread": -7.5,
    "systems": {
     "Big12ology": 9.4,
     "Elo": 8.41,
@@ -50,6 +50,7 @@
    "home": "UCF",
    "margin": -0.04,
    "p_home": 0.497,
+   "spread": -2.0,
    "systems": {
     "Big12ology": 8.03,
     "Elo": -4.26,
@@ -570,7 +571,7 @@
   }
  },
  "games_complete": 80,
- "generated": "2026-10-25T03:16:38+00:00",
+ "generated": "2026-10-25T04:12:56+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,

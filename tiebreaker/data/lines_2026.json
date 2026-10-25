@@ -4705,31 +4705,48 @@
   "spread_open_src": "collegefootballdata.com"
  },
  "401856842": {
-  "spread": -7.0,
-  "over_under": 54.0,
-  "home_ml": -255,
-  "away_ml": 206,
+  "spread": -7.5,
+  "over_under": 53.5,
+  "home_ml": -265,
+  "away_ml": 215,
   "books": [
    {
     "provider": "DraftKings",
     "spread": -7.5,
-    "over_under": 54.5,
+    "over_under": 53.5,
     "home_ml": -265,
     "away_ml": 215
-   },
-   {
-    "provider": "FanDuel",
-    "spread": -6.5,
-    "over_under": 53.5,
-    "home_ml": -245,
-    "away_ml": 198
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-10-24T12:48:09+00:00",
+  "as_of": "2026-10-25T04:12:29+00:00",
   "spread_open": -7.5,
   "over_under_open": 52.5,
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com"
+ },
+ "401856844": {
+  "spread": -2.0,
+  "over_under": 49.0,
+  "home_ml": -131,
+  "away_ml": 110,
+  "books": [
+   {
+    "provider": "FanDuel",
+    "spread": -2.5,
+    "over_under": 48.5,
+    "home_ml": -132,
+    "away_ml": 110
+   },
+   {
+    "provider": "DraftKings",
+    "spread": -1.5,
+    "over_under": 49.5,
+    "home_ml": -130,
+    "away_ml": 110
+   }
+  ],
+  "source": "the-odds-api.com",
+  "as_of": "2026-10-25T04:12:29+00:00"
  }
 }
