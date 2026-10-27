@@ -5,7 +5,7 @@
    "home": "Texas Tech",
    "margin": 4.46,
    "p_home": 0.627,
-   "spread": -3.1,
+   "spread": -3.4,
    "systems": {
     "Big12ology": 4.84,
     "Elo": 2.56,
@@ -20,7 +20,7 @@
    "home": "BYU",
    "margin": 18.07,
    "p_home": 0.9,
-   "spread": -16.3,
+   "spread": -16.4,
    "systems": {
     "Big12ology": 18.19,
     "Elo": 10.81,
@@ -80,7 +80,7 @@
    "home": "Iowa State",
    "margin": -5.4,
    "p_home": 0.351,
-   "spread": 8.8,
+   "spread": 8.9,
    "systems": {
     "Big12ology": -6.73,
     "Elo": 5.3,
@@ -559,7 +559,7 @@
   }
  },
  "games_complete": 81,
- "generated": "2026-10-26T21:17:06+00:00",
+ "generated": "2026-10-27T07:33:30+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,

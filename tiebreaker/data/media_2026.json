@@ -563,6 +563,13 @@
    "type": "tv"
   }
  ],
+ "401856852": [
+  {
+   "outlet": "ESPN2",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
  "401856855": [
   {
    "outlet": "ESPN",
@@ -589,11 +596,11 @@
  ],
  "401856880": [
   {
-   "outlet": "FOX",
+   "outlet": "Fox",
    "type": "tv"
   },
   {
-   "outlet": "Fox",
+   "outlet": "FOX",
    "type": "tv"
   }
  ],
