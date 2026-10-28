@@ -35,7 +35,7 @@
    "home": "UCF",
    "margin": 1.85,
    "p_home": 0.551,
-   "spread": -1.1,
+   "spread": -1.6,
    "systems": {
     "Big12ology": 8.19,
     "Elo": -3.04,
@@ -50,7 +50,7 @@
    "home": "TCU",
    "margin": 6.94,
    "p_home": 0.693,
-   "spread": -5.8,
+   "spread": -5.9,
    "systems": {
     "Big12ology": 8.38,
     "Elo": 2.26,
@@ -65,7 +65,7 @@
    "home": "Colorado",
    "margin": -7.28,
    "p_home": 0.299,
-   "spread": 1.0,
+   "spread": 1.2,
    "systems": {
     "Big12ology": -5.57,
     "Elo": -10.41,
@@ -559,7 +559,7 @@
   }
  },
  "games_complete": 81,
- "generated": "2026-10-28T00:56:07+00:00",
+ "generated": "2026-10-28T15:17:04+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
