@@ -721,8 +721,8 @@
  },
  {
   "id": 372718,
-  "start": "2026-11-07T05:00:00.000Z",
-  "tbd": true,
+  "start": "2026-11-07T20:30:00.000Z",
+  "tbd": false,
   "home": "San Diego State",
   "away": "Colorado",
   "hp": null,
