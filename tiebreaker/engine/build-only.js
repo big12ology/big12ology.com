@@ -210,7 +210,13 @@ function scenarioTexts(team, weekGames, combos, maxTerms) {
  * `probs` is winProbs' {id: p_home}; a game it does not cover is a coin
  * flip, and a coin flip is an upset whichever way it goes.
  */
-const WITNESS_BUDGET = 1 << 17;
+// 4M nodes, measured and not guessed. On 2026-10-27, with 39 conference
+// games left, Colorado at 0-4 needed 275,949 nodes to find its path and
+// Kansas State 119,515: both over the 2^17 the budget started at, so both
+// pages fell back to "needs help" and said nothing. The worst of the
+// sixteen at this cap runs 0.4s; a team that exhausts it takes about five
+// seconds and keeps the status it had, which is the right failure.
+const WITNESS_BUDGET = 1 << 22;
 const WITNESS_MAX_UPSETS = 40;
 
 function witness(games, team, overrides, probs, budget, maxUpsets) {
