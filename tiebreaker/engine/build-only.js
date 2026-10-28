@@ -296,7 +296,9 @@ function witness(games, team, overrides, probs, budget, maxUpsets) {
     g.completed = false; g.home_points = null; g.away_points = null;
   }
 
-  let nodes = 0, k = 0, best = null, bestLogp = -Infinity, truncated = false;
+  let nodes = 0, k = 0, bestLogp = -Infinity, truncated = false;
+  /** @type {null | {choice: boolean[], sure: boolean, upsets: number, logp: number}} */
+  let best = null;
 
   function dfs(i, upsets, logp) {
     if (truncated) return;
