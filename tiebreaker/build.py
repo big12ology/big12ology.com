@@ -5631,7 +5631,8 @@ top and start over (dropping to the two-team rules once only two remain).</p>
   <li><b>The standings walk.</b> Compare records against the best-placed team
   everyone played, then the next, on down the standings. Tied placement groups
   count as one collective opponent — you're compared against the group, not
-  its members individually.</li>
+  its members individually — and only the members every tied team played are
+  in it. A group nobody shares is walked past, not counted.</li>
   <li><b>Strength of schedule.</b> Combined conference record of each team's
   nine conference opponents. The tiebreaker equivalent of "who had the harder
   road."</li>
@@ -5739,6 +5740,15 @@ questions the text doesn't. In the interest of showing our work:</p>
   the tie." We read the tied teams themselves out of that set, because games
   among them are precisely what step (a) already weighed; counting them twice
   would let step (a) decide step (b).</li>
+  <li><b>Which members of a tied group count.</b> Step (c) scores a tied
+  placement group "as a group," and we read "common opponent" there the way
+  step (b) defines it: a member counts only if every tied team played it. The
+  other reading, any game against any member, seeds 2024's BYU over Iowa
+  State on a 1-0 against a 1-1 that includes a Texas Tech game BYU never
+  played; the conference's own Week 14 scenario table says that step was
+  indecisive and sent the seed to strength of schedule. Replayed against all
+  twelve outcomes the conference published that week, this reading matches
+  every one and the other misses two.</li>
   <li><b>A standings group that separates without crowning anyone.</b> Step
   (c) says to compare against the next highest placed common opponent
   "proceeding through the standings." When a placement group splits the tied

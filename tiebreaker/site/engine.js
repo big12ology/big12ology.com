@@ -244,15 +244,22 @@
     var tiedSet = toSet(tied);
     for (var gi = 0; gi < groups.length; gi++) {
       var grpSet = {};
-      groups[gi].forEach(function (t) { if (!tiedSet[t]) grpSet[t] = true; });
+      groups[gi].forEach(function (t) {
+        if (tiedSet[t]) return;
+        // A member of the group counts only if every tied team played it:
+        // "common opponent" keeps its step-(b) meaning inside a tied group.
+        // The collective clause changes how the group is scored, as one
+        // opponent, not who qualifies as one. Verified against the twelve
+        // outcomes the conference published for 2024 week 14: this reading
+        // matches all twelve, the any-member reading missed two (it seeded
+        // BYU over Iowa State on a 1-0 to 1-1 that counted a Texas Tech game
+        // BYU never played).
+        var common = tied.every(function (x) { return opponents(x, games)[t]; });
+        if (common) grpSet[t] = true;
+      });
       if (Object.keys(grpSet).length === 0) continue;
       var recs = {};
-      var missing = false;
-      tied.forEach(function (t) {
-        recs[t] = recordVs(t, grpSet, games);
-        if (recs[t][0] + recs[t][1] === 0) missing = true;
-      });
-      if (missing) continue;
+      tied.forEach(function (t) { recs[t] = recordVs(t, grpSet, games); });
       var vals = {};
       tied.forEach(function (t) { vals[t] = pct(recs[t][0], recs[t][1]); });
       var distinct = {};

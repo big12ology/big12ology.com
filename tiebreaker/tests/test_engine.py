@@ -131,6 +131,113 @@ supersede(("chaos", "2024-11-24", "components", "tangle"), 0.5625, 0.5,
 supersede(("chaos", "2024-11-24", "components", "breadth"), 0.5, 6 / 14,
           "eight alive of sixteen, not nine, downstream of TCU")
 
+# STEP (c) READS "COMMON" THE WAY STEP (b) DOES. The oracle scored a tied
+# placement group through every member any tied team had played, so BYU's
+# 1-0 against the 2024 6-3 group beat Iowa State's 1-1, a line that counted
+# Iowa State's loss to Texas Tech, a team BYU never met. The conference's own
+# Week 14 scenario table (twelve published outcomes, 2024-11-24) says that
+# step was indecisive there and the seed went to strength of schedule: a
+# group counts only through members every tied team played, scored as one
+# opponent. That reading reproduces all twelve outcomes; the oracle's missed
+# two. The ordering of every season is unchanged; what moves is the narrative
+# log under the cut, the this-week scenario prose that is written from it,
+# and the two standings digests that hash those logs.
+
+supersede(("rules", "2024", "standings"), 'd88f8e164034e9d0', 'c284f5713040e523',
+          "step (c) counts a tied group only through members every tied team played: the narrative logs below the cut moved")
+
+supersede(("rules", "2025", "standings"), 'e7699d0d75b3bbfe', 'dd384a8f562965f4',
+          "step (c) counts a tied group only through members every tied team played: the narrative logs below the cut moved")
+
+_BT24_LOG_WAS = ['(a) Not all tied teams played each other and no team defeated all others '
+ '— proceed to next step.',
+ '(b) vs common opponents (Kansas, Kansas State, UCF, Utah): Arizona State '
+ '1.000, BYU 0.750, Colorado 0.500, Iowa State 0.750 — Arizona State '
+ 'seeded.',
+ 'Restarting procedure for remaining tied teams: BYU, Colorado, Iowa '
+ 'State.',
+ '(a) Not all tied teams played each other and no team defeated all others '
+ '— proceed to next step.',
+ '(b) vs common opponents (Baylor, Kansas, Kansas State, UCF, Utah): BYU '
+ '0.800, Colorado 0.600, Iowa State 0.800 — still tied.',
+ '(c) vs [Baylor/TCU/Texas Tech]: BYU 1-0, Colorado 2-0, Iowa State 1-1 — '
+ 'separates some but no single leader; continuing down the standings.',
+ '(c) vs [Kansas State/West Virginia]: BYU 1-0, Colorado 0-1, Iowa State '
+ '2-0 — separates some but no single leader; continuing down the '
+ 'standings.',
+ '(c) Walked full standings without a single leader — proceed.',
+ "(d) Opponents' combined conference record: BYU 31-50 (0.383), Colorado "
+ '30-51 (0.370), Iowa State 36-45 (0.444) — Iowa State seeded.',
+ 'Restarting procedure for remaining tied teams: BYU, Colorado.',
+ '(a) Head-to-head: BYU and Colorado did not play.',
+ '(b) vs common opponents (Arizona, Baylor, Kansas, Kansas State, Oklahoma '
+ 'State, UCF, Utah): BYU 0.857, Colorado 0.714 — BYU seeded.']
+_BT24_LOG_NOW = ['(a) Not all tied teams played each other and no team defeated all others '
+ '— proceed to next step.',
+ '(b) vs common opponents (Kansas, Kansas State, UCF, Utah): Arizona State '
+ '1.000, BYU 0.750, Colorado 0.500, Iowa State 0.750 — Arizona State '
+ 'seeded.',
+ 'Restarting procedure for remaining tied teams: BYU, Colorado, Iowa '
+ 'State.',
+ '(a) Not all tied teams played each other and no team defeated all others '
+ '— proceed to next step.',
+ '(b) vs common opponents (Baylor, Kansas, Kansas State, UCF, Utah): BYU '
+ '0.800, Colorado 0.600, Iowa State 0.800 — still tied.',
+ '(c) vs [Kansas State]: BYU 1-0, Colorado 0-1, Iowa State 1-0 — separates '
+ 'some but no single leader; continuing down the standings.',
+ '(c) Walked full standings without a single leader — proceed.',
+ "(d) Opponents' combined conference record: BYU 31-50 (0.383), Colorado "
+ '30-51 (0.370), Iowa State 36-45 (0.444) — Iowa State seeded.',
+ 'Restarting procedure for remaining tied teams: BYU, Colorado.',
+ '(a) Head-to-head: BYU and Colorado did not play.',
+ '(b) vs common opponents (Arizona, Baylor, Kansas, Kansas State, Oklahoma '
+ 'State, UCF, Utah): BYU 0.857, Colorado 0.714 — BYU seeded.']
+supersede(("rules", "break_tie_2024", "log"), _BT24_LOG_WAS, _BT24_LOG_NOW,
+          "step (c) counts a tied group only through members every tied team played")
+
+supersede(("clinch", "2024-11-18", "teams", "BYU", "scenarios"),
+          ['a BYU win + Utah over Iowa State'],
+          ['a BYU win + Kansas over Colorado',
+ 'a BYU win + Utah over Iowa State'],
+          "step (c) counts a tied group only through members every tied team played")
+
+supersede(("clinch", "2024-11-18", "teams", "Colorado", "scenarios"),
+          ['BYU over Arizona State + a Colorado win + Utah over Iowa State'],
+          ['BYU over Arizona State + a Colorado win + Utah over Iowa State',
+ 'BYU over Arizona State + a Colorado win + Kansas State over '
+ 'Cincinnati'],
+          "step (c) counts a tied group only through members every tied team played")
+
+supersede(("clinch", "2024-11-24", "teams", "BYU", "scenarios"),
+          ['West Virginia over Texas Tech + a BYU win',
+ 'Kansas State over Iowa State + a BYU win'],
+          ['Arizona over Arizona State + a BYU win',
+ 'Kansas State over Iowa State + a BYU win'],
+          "step (c) counts a tied group only through members every tied team played")
+
+supersede(("clinch", "2024-11-24", "teams", "Colorado", "scenarios"),
+          ['a Colorado win + Texas Tech over West Virginia + Arizona over '
+ 'Arizona State',
+ 'a Colorado win + Texas Tech over West Virginia + Houston over BYU',
+ 'a Colorado win + Arizona over Arizona State + Kansas State over '
+ 'Iowa State',
+ 'a Colorado win + Arizona over Arizona State + Houston over BYU',
+ 'a Colorado win + Kansas State over Iowa State + Houston over BYU'],
+          ['a Colorado win + Texas Tech over West Virginia + Houston over BYU',
+ 'a Colorado win + Arizona over Arizona State + Kansas State over '
+ 'Iowa State',
+ 'a Colorado win + Arizona over Arizona State + Houston over BYU',
+ 'a Colorado win + Kansas State over Iowa State + Houston over BYU'],
+          "step (c) counts a tied group only through members every tied team played")
+
+supersede(("clinch", "2024-11-24", "teams", "Iowa State", "scenarios"),
+          ['Arizona over Arizona State + an Iowa State win'],
+          ['Oklahoma State over Colorado + an Iowa State win',
+ 'West Virginia over Texas Tech + an Iowa State win',
+ 'Arizona over Arizona State + an Iowa State win',
+ 'an Iowa State win + BYU over Houston'],
+          "step (c) counts a tied group only through members every tied team played")
+
 
 def normalize(o):
     """Numbers as numbers, not as Python's spelling of them.
