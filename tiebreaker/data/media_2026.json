@@ -397,16 +397,16 @@
  ],
  "401856823": [
   {
-   "outlet": "TNT",
-   "type": "tv"
-  },
-  {
    "outlet": "truTV",
    "type": "tv"
   },
   {
    "outlet": "HBO Max",
    "type": "web"
+  },
+  {
+   "outlet": "TNT",
+   "type": "tv"
   }
  ],
  "401856824": [
@@ -554,6 +554,10 @@
  "401856847": [
   {
    "outlet": "FS1",
+   "type": "tv"
+  },
+  {
+   "outlet": "Fox",
    "type": "tv"
   }
  ],

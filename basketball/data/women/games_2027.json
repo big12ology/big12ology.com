@@ -452,7 +452,9 @@
   "espn": "401918940",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401907164,
@@ -699,7 +701,7 @@
  },
  {
   "id": 401907047,
-  "start": "2026-11-06T23:00:00.000Z",
+  "start": "2026-11-06T22:00:00.000Z",
   "tbd": false,
   "home": "Oklahoma State",
   "away": "Morgan State",
@@ -720,7 +722,9 @@
   "espn": "401907047",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401918932,
@@ -994,7 +998,7 @@
  },
  {
   "id": 401907048,
-  "start": "2026-11-09T17:00:00.000Z",
+  "start": "2026-11-09T16:00:00.000Z",
   "tbd": false,
   "home": "Oklahoma State",
   "away": "Northwestern State",
@@ -1015,7 +1019,9 @@
   "espn": "401907048",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401919057,
@@ -1067,7 +1073,9 @@
   "espn": "401918941",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401918583,
@@ -1361,7 +1369,7 @@
   "hseed": null,
   "aseed": null,
   "tv": [
-   "ESPN+"
+   "ESPNU"
   ]
  },
  {
@@ -1520,7 +1528,9 @@
   "espn": "401919058",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401918942,
@@ -1545,7 +1555,9 @@
   "espn": "401918942",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401918933,
@@ -1820,7 +1832,9 @@
   "espn": "401918943",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401916083,
@@ -2098,6 +2112,33 @@
   "tv": []
  },
  {
+  "id": 401907051,
+  "start": "2026-11-18T23:30:00.000Z",
+  "tbd": false,
+  "home": "Oklahoma State",
+  "away": "St. John's",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": false,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Gallagher-Iba Arena",
+  "venue_id": null,
+  "city": "Stillwater",
+  "state": "OK",
+  "attendance": null,
+  "espn": "401907051",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN+"
+  ]
+ },
+ {
   "id": 401917931,
   "start": "2026-11-19T00:00:00.000Z",
   "tbd": false,
@@ -2123,31 +2164,6 @@
   "tv": [
    "ESPN+"
   ]
- },
- {
-  "id": 401907051,
-  "start": "2026-11-19T00:30:00.000Z",
-  "tbd": false,
-  "home": "Oklahoma State",
-  "away": "St. John's",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": false,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Gallagher-Iba Arena",
-  "venue_id": null,
-  "city": "Stillwater",
-  "state": "OK",
-  "attendance": null,
-  "espn": "401907051",
-  "hseed": null,
-  "aseed": null,
-  "tv": []
  },
  {
   "id": 401918003,
@@ -2306,7 +2322,7 @@
  },
  {
   "id": 401907052,
-  "start": "2026-11-21T00:30:00.000Z",
+  "start": "2026-11-20T23:30:00.000Z",
   "tbd": false,
   "home": "Oklahoma State",
   "away": "Little Rock",
@@ -2327,7 +2343,9 @@
   "espn": "401907052",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401916085,
