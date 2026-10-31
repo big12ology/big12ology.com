@@ -2047,7 +2047,9 @@
       "role": "away",
       "venue": "FBC Mortgage Stadium",
       "city": "Orlando",
-      "state": "FL"
+      "state": "FL",
+      "pointsFor": 41,
+      "pointsAgainst": 9
     },
     {
       "team": "Cincinnati",
@@ -2149,7 +2151,15 @@
       "espnId": 401856844,
       "conferenceGame": true,
       "opponent": "Baylor",
-      "attendance": null
+      "attendance": 45906,
+      "pointsFor": 9,
+      "pointsAgainst": 41,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 77,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",

@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 67
+    "agree": 68
   },
   "games": [
     {
@@ -738,6 +738,17 @@
       "espnId": 401856837,
       "ours": 51864,
       "espn": 51864,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "UCF",
+      "week": 9,
+      "opponent": "Baylor",
+      "date": "2026-10-30",
+      "espnId": 401856844,
+      "ours": 45906,
+      "espn": 45906,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

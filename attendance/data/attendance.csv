@@ -1458,6 +1458,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,UCF,3,2026-09-19,Georgia State,false,Acrisure Bounce House,44620,44206,1.0094,false
 2026,UCF,4,2026-09-26,TCU,true,Acrisure Bounce House,43212,44206,0.9775,false
 2026,UCF,8,2026-10-24,BYU,true,Acrisure Bounce House,45112,44206,1.0205,false
+2026,UCF,9,2026-10-30,Baylor,true,Acrisure Bounce House,45906,44206,1.0385,false
 2026,Utah,1,2026-09-03,Idaho,false,Rice-Eccles Stadium,51444,51444,1.0000,false
 2026,Utah,2,2026-09-12,Arkansas,false,Rice-Eccles Stadium,51532,51444,1.0017,false
 2026,Utah,3,2026-09-19,Utah State,false,Rice-Eccles Stadium,51455,51444,1.0002,false
