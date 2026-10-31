@@ -640,6 +640,14 @@
    "tempF": 77.8,
    "windMph": 9.5
   },
+  "401856846": {
+   "precipChance": 0.3,
+   "precipIn": 0.0,
+   "precipType": "rain",
+   "snowIn": 0.0,
+   "tempF": 57.1,
+   "windMph": 3.2
+  },
   "401856881": {
    "precipChance": 0,
    "precipIn": 0.0,
