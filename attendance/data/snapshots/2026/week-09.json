@@ -10,7 +10,7 @@
       "color": "#003da5",
       "logo": "assets/logos/byu.png",
       "multiVenue": false,
-      "games": 4,
+      "games": 5,
       "weeks": [
         {
           "week": 1,
@@ -31,10 +31,15 @@
           "week": 7,
           "attendance": 65179,
           "pct": 1.0500378586502987
+        },
+        {
+          "week": 9,
+          "attendance": 63332,
+          "pct": 1.020282570521805
         }
       ],
-      "total": 258297,
-      "pct": 1.040295297472331
+      "total": 321629,
+      "pct": 1.0362927520822258
     },
     {
       "team": "Kansas State",
@@ -74,35 +79,6 @@
       ],
       "total": 258854,
       "pct": 1.035416
-    },
-    {
-      "team": "Colorado",
-      "stadium": "Folsom Field",
-      "capacity": 50183,
-      "capacityEstimate": null,
-      "color": "#cfb87c",
-      "logo": "assets/logos/cu.svg",
-      "multiVenue": false,
-      "games": 3,
-      "weeks": [
-        {
-          "week": 2,
-          "attendance": 49363,
-          "pct": 0.9836598051132853
-        },
-        {
-          "week": 5,
-          "attendance": 50106,
-          "pct": 0.9984656158460036
-        },
-        {
-          "week": 7,
-          "attendance": 52489,
-          "pct": 1.045951816352151
-        }
-      ],
-      "total": 151958,
-      "pct": 1.0093590791038134
     },
     {
       "team": "UCF",
@@ -190,7 +166,7 @@
       "color": "#cc0000",
       "logo": "assets/logos/ttu.svg",
       "multiVenue": false,
-      "games": 4,
+      "games": 5,
       "weeks": [
         {
           "week": 1,
@@ -211,10 +187,15 @@
           "week": 7,
           "attendance": 60229,
           "pct": 1
+        },
+        {
+          "week": 9,
+          "attendance": 59131,
+          "pct": 0.9817695794384765
         }
       ],
-      "total": 240391,
-      "pct": 0.9978208172142987
+      "total": 299522,
+      "pct": 0.9946105696591343
     },
     {
       "team": "Oklahoma State",
@@ -283,6 +264,40 @@
       ],
       "total": 126904,
       "pct": 0.9914375
+    },
+    {
+      "team": "Colorado",
+      "stadium": "Folsom Field",
+      "capacity": 50183,
+      "capacityEstimate": null,
+      "color": "#cfb87c",
+      "logo": "assets/logos/cu.svg",
+      "multiVenue": false,
+      "games": 4,
+      "weeks": [
+        {
+          "week": 2,
+          "attendance": 49363,
+          "pct": 0.9836598051132853
+        },
+        {
+          "week": 5,
+          "attendance": 50106,
+          "pct": 0.9984656158460036
+        },
+        {
+          "week": 7,
+          "attendance": 52489,
+          "pct": 1.045951816352151
+        },
+        {
+          "week": 9,
+          "attendance": 46325,
+          "pct": 0.9231213757647012
+        }
+      ],
+      "total": 198283,
+      "pct": 0.9877996532690353
     },
     {
       "team": "Arizona State",
@@ -360,7 +375,7 @@
       "color": "#e00122",
       "logo": "assets/logos/cin.svg",
       "multiVenue": false,
-      "games": 5,
+      "games": 6,
       "weeks": [
         {
           "week": 1,
@@ -386,44 +401,15 @@
           "week": 8,
           "attendance": 38088,
           "pct": 1
+        },
+        {
+          "week": 9,
+          "attendance": 36487,
+          "pct": 0.957965763495064
         }
       ],
-      "total": 166762,
-      "pct": 0.8756668767065743
-    },
-    {
-      "team": "TCU",
-      "stadium": "Amon G. Carter Stadium",
-      "capacity": 46000,
-      "capacityEstimate": null,
-      "color": "#4d1979",
-      "logo": "assets/logos/tcu.svg",
-      "multiVenue": false,
-      "games": 4,
-      "weeks": [
-        {
-          "week": 2,
-          "attendance": 37600,
-          "pct": 0.8173913043478261
-        },
-        {
-          "week": 3,
-          "attendance": 46139,
-          "pct": 1.0030217391304348
-        },
-        {
-          "week": 5,
-          "attendance": 38327,
-          "pct": 0.833195652173913
-        },
-        {
-          "week": 8,
-          "attendance": 36216,
-          "pct": 0.7873043478260869
-        }
-      ],
-      "total": 158282,
-      "pct": 0.8602282608695652
+      "total": 203249,
+      "pct": 0.8893833578379892
     },
     {
       "team": "West Virginia",
@@ -533,6 +519,45 @@
       "pct": 0.835822732464259
     },
     {
+      "team": "TCU",
+      "stadium": "Amon G. Carter Stadium",
+      "capacity": 46000,
+      "capacityEstimate": null,
+      "color": "#4d1979",
+      "logo": "assets/logos/tcu.svg",
+      "multiVenue": false,
+      "games": 5,
+      "weeks": [
+        {
+          "week": 2,
+          "attendance": 37600,
+          "pct": 0.8173913043478261
+        },
+        {
+          "week": 3,
+          "attendance": 46139,
+          "pct": 1.0030217391304348
+        },
+        {
+          "week": 5,
+          "attendance": 38327,
+          "pct": 0.833195652173913
+        },
+        {
+          "week": 8,
+          "attendance": 36216,
+          "pct": 0.7873043478260869
+        },
+        {
+          "week": 9,
+          "attendance": 32549,
+          "pct": 0.7075869565217391
+        }
+      ],
+      "total": 190831,
+      "pct": 0.8297
+    },
+    {
       "team": "Houston",
       "stadium": "TDECU Stadium",
       "capacity": 40000,
@@ -633,10 +658,10 @@
     },
     {
       "week": 9,
-      "games": 1,
-      "attendance": 45906,
-      "capacity": 44206,
-      "pct": 1.0384563181468578
+      "games": 6,
+      "attendance": 283730,
+      "capacity": 300779,
+      "pct": 0.9433171863727189
     },
     {
       "week": 10,
@@ -668,9 +693,9 @@
     }
   ],
   "totals": {
-    "games": 68,
-    "attendance": 3177601,
-    "capacity": 3383339,
-    "pct": 0.9391908407641091
+    "games": 73,
+    "attendance": 3415425,
+    "capacity": 3639912,
+    "pct": 0.9383262562391618
   }
 }
