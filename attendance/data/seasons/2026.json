@@ -2107,7 +2107,15 @@
       "espnId": 401856847,
       "conferenceGame": true,
       "opponent": "Oklahoma State",
-      "attendance": null
+      "attendance": 50295,
+      "pointsFor": 51,
+      "pointsAgainst": 49,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 60,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas",
@@ -2153,7 +2161,9 @@
       "role": "away",
       "venue": "Jack Trice Stadium",
       "city": "Ames",
-      "state": "IA"
+      "state": "IA",
+      "pointsFor": 49,
+      "pointsAgainst": 51
     },
     {
       "team": "TCU",

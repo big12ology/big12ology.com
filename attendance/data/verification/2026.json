@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 73
+    "agree": 74
   },
   "games": [
     {
@@ -771,6 +771,17 @@
       "espnId": 401856846,
       "ours": 46325,
       "espn": 46325,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Iowa State",
+      "week": 9,
+      "opponent": "Oklahoma State",
+      "date": "2026-10-31",
+      "espnId": 401856847,
+      "ours": 50295,
+      "espn": 50295,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     },

@@ -458,7 +458,7 @@
       "color": "#822433",
       "logo": "assets/logos/isu.svg",
       "multiVenue": false,
-      "games": 4,
+      "games": 5,
       "weeks": [
         {
           "week": 1,
@@ -479,10 +479,15 @@
           "week": 5,
           "attendance": 52724,
           "pct": 0.8573008130081301
+        },
+        {
+          "week": 9,
+          "attendance": 50295,
+          "pct": 0.8178048780487804
         }
       ],
-      "total": 207071,
-      "pct": 0.8417520325203252
+      "total": 257366,
+      "pct": 0.8369626016260162
     },
     {
       "team": "Arizona",
@@ -658,10 +663,10 @@
     },
     {
       "week": 9,
-      "games": 6,
-      "attendance": 283730,
-      "capacity": 300779,
-      "pct": 0.9433171863727189
+      "games": 7,
+      "attendance": 334025,
+      "capacity": 362279,
+      "pct": 0.9220103842618534
     },
     {
       "week": 10,
@@ -693,9 +698,9 @@
     }
   ],
   "totals": {
-    "games": 73,
-    "attendance": 3415425,
-    "capacity": 3639912,
-    "pct": 0.9383262562391618
+    "games": 74,
+    "attendance": 3465720,
+    "capacity": 3701412,
+    "pct": 0.9363237596895455
   }
 }
