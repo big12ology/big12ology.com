@@ -10,7 +10,9 @@ import assert from "node:assert/strict";
 import {
   makeEnv, seedWeek, seedUser, seedPick, forceLock, NOW, HOUR,
 } from "./helpers/env.js";
-import { chalk, promoteProvisional, room, scoreWeek } from "../src/scoring.js";
+import {
+  chalk, promoteProvisional, room, scoreAll, scoreWeek,
+} from "../src/scoring.js";
 
 // Iowa State -6.5 over Kansas (spread_x2 -13); Baylor +3.5 (spread_x2 7).
 const SCORES = { games: { "401": [31, 21, true], "402": [17, 24, true] } };
@@ -274,12 +276,49 @@ test("provisional accounts are scored but not published", async () => {
     "SELECT COUNT(*) c FROM leaderboard_season WHERE user_id = 'new'").get().c, 0);
 
   // One completed week is the whole cost of admission.
-  await promoteProvisional(env, 2026, 3);
+  await promoteProvisional(env, 2026);
   assert.equal(env.raw.prepare(
     "SELECT status FROM users WHERE id = 'new'").get().status, "active");
   await scoreWeek(env, 2026, 3, SCORES);
   assert.equal(env.raw.prepare(
     "SELECT COUNT(*) c FROM leaderboard_season WHERE user_id = 'new'").get().c, 1);
+});
+
+// The publisher grades on every run, nearly always to learn nothing, so a
+// quiet pass is the hot path of the whole Worker. D1 bills it by rows read and
+// returns errors past five million a day. Migration 0015 put league first in
+// every primary key, after which SQLite preferred those keys over the week
+// indexes and read every football row once per locked week: nothing failed,
+// nothing looked wrong, and one pass cost 29,734 rows on a simulated season.
+// node:sqlite does not count rows read, so this asks the planner instead.
+test("a quiet grading pass never walks a whole league's rows", async () => {
+  const { env } = open();
+  seedUser(env, "u1", { name: "Someone" });
+  seedUser(env, "new", { name: "Newcomer", status: "provisional" });
+  seedPick(env, "u1", 2026, 3, 401, "home", -13);
+  lock(env);
+  await scoreAll(env, 2026, undefined, { scores: SCORES });
+
+  const seen = new Set();
+  const spied = {
+    ...env,
+    DB: {
+      prepare(sql) { seen.add(sql); return env.DB.prepare(sql); },
+      batch: (stmts) => env.DB.batch(stmts),
+    },
+  };
+  const report = await scoreAll(spied, 2026, undefined, { scores: SCORES });
+  assert.equal(report[0].skipped, "unchanged", "this pass was meant to be quiet");
+  assert.ok(seen.size > 0);
+
+  for (const sql of seen) {
+    const plan = env.raw.prepare(`EXPLAIN QUERY PLAN ${sql}`).all()
+      .map((r) => r.detail);
+    for (const step of plan) {
+      assert.doesNotMatch(step, /sqlite_autoindex_\w+ \(league=\?\)/,
+        `reads every row of a league:\n${step}\nin:\n${sql}`);
+    }
+  }
 });
 
 test("ranking is by wins then percentage, and ties share a rank", async () => {

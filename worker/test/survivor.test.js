@@ -369,7 +369,7 @@ test("a survivor-only week promotes a provisional account", async () => {
   forceLock(env, 2026, 3);
   await scoreWeek(env, 2026, 3, { games: { "401": [24, 21, true] } });
   const { promoteProvisional } = await import("../src/scoring.js");
-  await promoteProvisional(env, 2026, 3);
+  await promoteProvisional(env, 2026);
   assert.equal(env.raw.prepare(
     `SELECT status FROM users WHERE id = 'new'`).get().status, "active");
 });

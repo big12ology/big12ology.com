@@ -253,11 +253,16 @@ export async function scoreWeek(env, season, week, scores,
   // directly from several places. Comparing who SHOULD be on this week's
   // board against who is costs two counted reads and makes the skip prove
   // itself instead.
+  //
+  // INDEXED BY because the planner will not choose it unprompted. The primary
+  // key leads with league and covers this query, so without stats SQLite takes
+  // it, seeks on league alone, and reads every football row to count one week.
   const state = await env.DB.prepare(
     `SELECT
        (SELECT scored_at FROM weeks
          WHERE league = ? AND season = ? AND week = ?) AS scored_at,
        (SELECT COUNT(DISTINCT s.user_id) FROM pick_scores s
+          INDEXED BY pick_scores_week
           JOIN users u ON u.id = s.user_id
          WHERE s.league = ? AND s.season = ? AND s.week = ?
            AND u.status = 'active') AS want,
@@ -603,8 +608,14 @@ async function rebuildSeasonBoard(env, season, now, league = DEFAULT) {
  * twenty times. A real new player waits one week; a board-spammer never
  * appears at all. Anonymous OAuth cannot do better than this and pretending
  * otherwise would be the mistake.
+ *
+ * THE WHOLE SEASON AT ONCE, not a week at a time. Score rows only exist for
+ * weeks that have locked and been graded, so any row at all is a completed
+ * week. Asked per user against the primary key, this reads the users table and
+ * one or two rows per provisional account, where asking per week read every
+ * football score once for each locked week, on every publish.
  */
-export async function promoteProvisional(env, season, week, league = DEFAULT) {
+export async function promoteProvisional(env, season, league = DEFAULT) {
   // Either game counts. A survivor-only player has completed a scored week
   // in exactly the sense the gate cares about — they played a week that has
   // since been graded — and holding them provisional forever because they
@@ -612,11 +623,11 @@ export async function promoteProvisional(env, season, week, league = DEFAULT) {
   const r = await env.DB.prepare(
     `UPDATE users SET status = 'active'
       WHERE status = 'provisional'
-        AND (id IN (SELECT DISTINCT user_id FROM pick_scores
-                     WHERE league = ? AND season = ? AND week = ?)
-          OR id IN (SELECT DISTINCT user_id FROM survivor_scores
-                     WHERE league = ? AND season = ? AND week = ?))`)
-    .bind(league, season, week, league, season, week).run();
+        AND (EXISTS (SELECT 1 FROM pick_scores
+                      WHERE league = ? AND user_id = users.id AND season = ?)
+          OR EXISTS (SELECT 1 FROM survivor_scores
+                      WHERE league = ? AND user_id = users.id AND season = ?))`)
+    .bind(league, season, league, season).run();
   // How many were published, so the caller knows whether the boards it is
   // about to skip rebuilding have changed membership underneath it.
   return (r && (r.meta ? r.meta.changes : r.changes)) || 0;
@@ -869,10 +880,7 @@ export async function scoreAll(env, season, now = Math.floor(Date.now() / 1000),
   // published account changes who belongs on the boards, and the boards are
   // now only rebuilt when something moved — so this has to be known before
   // that decision rather than after it.
-  let promoted = 0;
-  for (const { week } of results || []) {
-    promoted += await promoteProvisional(env, season, week, league);
-  }
+  const promoted = await promoteProvisional(env, season, league);
   const report = [];
   for (const { week } of results || []) {
     report.push({ week, ...(await scoreWeek(env, season, week, scores, now,

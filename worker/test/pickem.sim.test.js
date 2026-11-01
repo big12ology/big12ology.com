@@ -442,7 +442,7 @@ async function runOne(seed) {
       WHERE s.season = ? AND u.status = 'provisional'`).all(SEASON);
   if (wasProvisional.length) {
     cover.promoted += wasProvisional.length;
-    for (const w of locked) await promoteProvisional(env, SEASON, w);
+    await promoteProvisional(env, SEASON);
     for (const u of wasProvisional) {
       const now = env.raw.prepare(`SELECT status FROM users WHERE id = ?`)
         .get(u.user_id);
