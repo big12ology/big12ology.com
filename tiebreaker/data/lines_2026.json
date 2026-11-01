@@ -2013,35 +2013,21 @@
   "spread_open_src": "collegefootballdata.com"
  },
  "401856849": {
-  "spread": -2.8,
-  "over_under": 47.8,
-  "home_ml": -145,
-  "away_ml": 120,
+  "spread": -4.5,
+  "over_under": 48.5,
+  "home_ml": -175,
+  "away_ml": 145,
   "books": [
    {
     "provider": "DraftKings",
-    "spread": -3.0,
+    "spread": -4.5,
     "over_under": 48.5,
-    "home_ml": -142,
-    "away_ml": 120
-   },
-   {
-    "provider": "FanDuel",
-    "spread": -2.5,
-    "over_under": 47.5,
-    "home_ml": -142,
-    "away_ml": 120
-   },
-   {
-    "provider": "BetRivers",
-    "spread": -3.0,
-    "over_under": 47.5,
-    "home_ml": -150,
-    "away_ml": 120
+    "home_ml": -175,
+    "away_ml": 145
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-10-31T10:44:27+00:00",
+  "as_of": "2026-11-01T00:52:36+00:00",
   "spread_open": -3.0,
   "over_under_open": 51.5,
   "spread_open_books": 1,
