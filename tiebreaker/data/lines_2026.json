@@ -290,7 +290,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-11-01T14:53:18+00:00"
+  "as_of": "2026-11-02T13:08:52+00:00"
  },
  "401856812": {
   "spread": 5.4,
@@ -1150,7 +1150,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-11-01T14:53:18+00:00"
+  "as_of": "2026-11-02T13:08:52+00:00"
  },
  "401856683": {
   "spread": -15.0,
@@ -1895,7 +1895,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 1,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-11-01T14:53:18+00:00"
+  "as_of": "2026-11-02T13:08:52+00:00"
  },
  "401856767": {
   "spread": -43.5,
@@ -2013,42 +2013,42 @@
   "spread_open_src": "collegefootballdata.com"
  },
  "401856849": {
-  "spread": -5.6,
-  "over_under": 47.5,
-  "home_ml": -221,
-  "away_ml": 180,
+  "spread": -5.4,
+  "over_under": 47.4,
+  "home_ml": -211,
+  "away_ml": 174,
   "books": [
    {
     "provider": "DraftKings",
     "spread": -5.5,
     "over_under": 47.5,
-    "home_ml": -218,
-    "away_ml": 180
+    "home_ml": -205,
+    "away_ml": 170
    },
    {
     "provider": "FanDuel",
     "spread": -5.5,
     "over_under": 47.5,
-    "home_ml": -215,
-    "away_ml": 180
+    "home_ml": -220,
+    "away_ml": 184
    },
    {
     "provider": "BetRivers",
-    "spread": -6.0,
-    "over_under": 47.5,
-    "home_ml": -240,
-    "away_ml": 185
+    "spread": -5.5,
+    "over_under": 47.0,
+    "home_ml": -220,
+    "away_ml": 170
    },
    {
     "provider": "BetMGM",
     "spread": -5.5,
     "over_under": 47.5,
-    "home_ml": -220,
-    "away_ml": 180
+    "home_ml": -210,
+    "away_ml": 175
    },
    {
     "provider": "BetOnline.ag",
-    "spread": -6.0,
+    "spread": -5.5,
     "over_under": 47.5
    },
    {
@@ -2058,22 +2058,22 @@
    },
    {
     "provider": "BetUS",
-    "spread": -6.0,
+    "spread": -5.5,
     "over_under": 47.5
    },
    {
     "provider": "Bovada",
-    "spread": -5.5,
+    "spread": -5.0,
     "over_under": 47.5,
-    "home_ml": -210,
-    "away_ml": 175
+    "home_ml": -200,
+    "away_ml": 170
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-11-02T04:41:29+00:00",
-  "spread_open": -3.0,
-  "over_under_open": 51.5,
-  "spread_open_books": 1,
+  "as_of": "2026-11-02T13:08:54+00:00",
+  "spread_open": -4.0,
+  "over_under_open": 49.5,
+  "spread_open_books": 2,
   "spread_open_src": "collegefootballdata.com"
  },
  "401856788": {
@@ -5237,9 +5237,9 @@
  },
  "401856855": {
   "spread": -9.2,
-  "over_under": 43.6,
-  "home_ml": -348,
-  "away_ml": 275,
+  "over_under": 43.3,
+  "home_ml": -358,
+  "away_ml": 280,
   "books": [
    {
     "provider": "DraftKings",
@@ -5259,20 +5259,20 @@
     "provider": "BetRivers",
     "spread": -8.5,
     "over_under": 43.5,
-    "home_ml": -315,
-    "away_ml": 245
+    "home_ml": -360,
+    "away_ml": 265
    },
    {
     "provider": "BetOnline.ag",
     "spread": -9.0,
-    "over_under": 43.5,
+    "over_under": 43.0,
     "home_ml": -355,
     "away_ml": 285
    },
    {
     "provider": "LowVig.ag",
     "spread": -9.0,
-    "over_under": 43.5,
+    "over_under": 43.0,
     "home_ml": -355,
     "away_ml": 285
    },
@@ -5285,15 +5285,15 @@
    },
    {
     "provider": "MyBookie.ag",
-    "spread": -9.0,
-    "over_under": 44.0,
-    "home_ml": -360,
-    "away_ml": 275
+    "spread": -9.5,
+    "over_under": 43.5,
+    "home_ml": -410,
+    "away_ml": 300
    },
    {
     "provider": "BetUS",
     "spread": -9.5,
-    "over_under": 43.5,
+    "over_under": 43.0,
     "home_ml": -355,
     "away_ml": 285
    },
@@ -5306,24 +5306,24 @@
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-11-02T04:41:29+00:00",
+  "as_of": "2026-11-02T13:08:54+00:00",
   "spread_open": -9.5,
-  "over_under_open": 44.5,
-  "spread_open_books": 1,
+  "over_under_open": 44.0,
+  "spread_open_books": 2,
   "spread_open_src": "collegefootballdata.com"
  },
  "401856853": {
-  "spread": -9.3,
+  "spread": -9.1,
   "over_under": 50.8,
-  "home_ml": -364,
-  "away_ml": 284,
+  "home_ml": -354,
+  "away_ml": 277,
   "books": [
    {
     "provider": "FanDuel",
     "spread": -8.5,
     "over_under": 50.5,
-    "home_ml": -330,
-    "away_ml": 265
+    "home_ml": -335,
+    "away_ml": 270
    },
    {
     "provider": "BetRivers",
@@ -5336,8 +5336,8 @@
     "provider": "DraftKings",
     "spread": -9.5,
     "over_under": 50.5,
-    "home_ml": -375,
-    "away_ml": 295
+    "home_ml": -355,
+    "away_ml": 280
    },
    {
     "provider": "LowVig.ag",
@@ -5354,11 +5354,11 @@
     "spread": -9.5,
     "over_under": 50.5,
     "home_ml": -350,
-    "away_ml": 280
+    "away_ml": 275
    },
    {
     "provider": "MyBookie.ag",
-    "spread": -10.0,
+    "spread": -9.5,
     "over_under": 50.5
    },
    {
@@ -5368,27 +5368,31 @@
    },
    {
     "provider": "Bovada",
-    "spread": -9.5,
-    "over_under": 50.5,
-    "home_ml": -390,
-    "away_ml": 300
+    "spread": -8.0,
+    "over_under": 50.0,
+    "home_ml": -355,
+    "away_ml": 280
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-11-02T04:41:29+00:00"
+  "as_of": "2026-11-02T13:08:54+00:00",
+  "spread_open": -9.5,
+  "over_under_open": 50.2,
+  "spread_open_books": 2,
+  "spread_open_src": "collegefootballdata.com"
  },
  "401856851": {
   "spread": -10.7,
   "over_under": 62.2,
-  "home_ml": -452,
-  "away_ml": 340,
+  "home_ml": -448,
+  "away_ml": 338,
   "books": [
    {
     "provider": "FanDuel",
     "spread": -10.5,
     "over_under": 61.5,
-    "home_ml": -430,
-    "away_ml": 330
+    "home_ml": -410,
+    "away_ml": 320
    },
    {
     "provider": "LowVig.ag",
@@ -5440,20 +5444,24 @@
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-11-02T04:41:29+00:00"
+  "as_of": "2026-11-02T13:08:54+00:00",
+  "spread_open": -10.8,
+  "over_under_open": 62.0,
+  "spread_open_books": 2,
+  "spread_open_src": "collegefootballdata.com"
  },
  "401856850": {
   "spread": -2.9,
-  "over_under": 48.2,
-  "home_ml": -153,
-  "away_ml": 127,
+  "over_under": 48.4,
+  "home_ml": -151,
+  "away_ml": 126,
   "books": [
    {
     "provider": "FanDuel",
     "spread": -2.5,
     "over_under": 47.5,
-    "home_ml": -150,
-    "away_ml": 125
+    "home_ml": -142,
+    "away_ml": 120
    },
    {
     "provider": "DraftKings",
@@ -5465,12 +5473,12 @@
    {
     "provider": "LowVig.ag",
     "spread": -3.0,
-    "over_under": 48.5
+    "over_under": 49.0
    },
    {
     "provider": "BetOnline.ag",
     "spread": -3.0,
-    "over_under": 48.5
+    "over_under": 49.0
    },
    {
     "provider": "BetRivers",
@@ -5494,7 +5502,7 @@
    {
     "provider": "BetUS",
     "spread": -3.0,
-    "over_under": 48.5
+    "over_under": 49.0
    },
    {
     "provider": "Bovada",
@@ -5505,19 +5513,23 @@
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-11-02T04:41:29+00:00"
+  "as_of": "2026-11-02T13:08:54+00:00",
+  "spread_open": -2.8,
+  "over_under_open": 48.5,
+  "spread_open_books": 2,
+  "spread_open_src": "collegefootballdata.com"
  },
  "401856854": {
-  "spread": 3.5,
+  "spread": 3.6,
   "over_under": 62.2,
   "home_ml": 148,
-  "away_ml": -178,
+  "away_ml": -179,
   "books": [
    {
     "provider": "FanDuel",
-    "spread": 3.5,
+    "spread": 4.5,
     "over_under": 61.5,
-    "home_ml": 150,
+    "home_ml": 152,
     "away_ml": -182
    },
    {
@@ -5565,24 +5577,28 @@
     "provider": "Bovada",
     "spread": 3.5,
     "over_under": 62.0,
-    "home_ml": 148,
-    "away_ml": -173
+    "home_ml": 150,
+    "away_ml": -175
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-11-02T04:41:29+00:00"
+  "as_of": "2026-11-02T13:08:54+00:00",
+  "spread_open": 5.0,
+  "over_under_open": 61.2,
+  "spread_open_books": 2,
+  "spread_open_src": "collegefootballdata.com"
  },
  "401856856": {
   "spread": -17.1,
   "over_under": 63.8,
-  "home_ml": -862,
+  "home_ml": -866,
   "away_ml": 584,
   "books": [
    {
     "provider": "FanDuel",
     "spread": -17.5,
     "over_under": 64.5,
-    "home_ml": -800,
+    "home_ml": -820,
     "away_ml": 570
    },
    {
@@ -5611,7 +5627,7 @@
    },
    {
     "provider": "BetMGM",
-    "spread": -17.0,
+    "spread": -16.5,
     "over_under": 63.5,
     "home_ml": -800,
     "away_ml": 600
@@ -5635,7 +5651,11 @@
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-11-02T04:41:29+00:00"
+  "as_of": "2026-11-02T13:08:54+00:00",
+  "spread_open": -17.2,
+  "over_under_open": 63.2,
+  "spread_open_books": 2,
+  "spread_open_src": "collegefootballdata.com"
  },
  "401856852": {
   "spread": -3.4,
@@ -5648,7 +5668,7 @@
     "spread": -3.5,
     "over_under": 48.5,
     "home_ml": -188,
-    "away_ml": 158
+    "away_ml": 155
    },
    {
     "provider": "DraftKings",
@@ -5700,6 +5720,10 @@
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-11-02T04:41:29+00:00"
+  "as_of": "2026-11-02T13:08:54+00:00",
+  "spread_open": -4.0,
+  "over_under_open": 49.2,
+  "spread_open_books": 2,
+  "spread_open_src": "collegefootballdata.com"
  }
 }
