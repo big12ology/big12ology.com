@@ -5,10 +5,10 @@
   "tbd": false,
   "home": "Houston",
   "away": "Hampton",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 73,
+  "ap": 65,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -24,7 +24,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401913054,
@@ -32,10 +33,10 @@
   "tbd": false,
   "home": "Arizona",
   "away": "Stanford",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 84,
+  "ap": 69,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -51,7 +52,8 @@
   "aseed": null,
   "tv": [
    "CBSSN"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401907046,
