@@ -87,10 +87,10 @@
   "tbd": false,
   "home": "Arizona State",
   "away": "Jackson State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 84,
+  "ap": 41,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -106,7 +106,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401918462,
@@ -114,10 +115,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Fairleigh Dickinson",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 87,
+  "ap": 66,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -133,7 +134,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401906979,
@@ -141,10 +143,10 @@
   "tbd": false,
   "home": "Kansas State",
   "away": "Wichita State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 61,
+  "ap": 41,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -160,7 +162,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401917926,
@@ -168,10 +171,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "Grambling",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 90,
+  "ap": 61,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -187,7 +190,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401919056,

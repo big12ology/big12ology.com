@@ -173,10 +173,10 @@
   "tbd": false,
   "home": "BYU",
   "away": "Ohio State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 94,
+  "ap": 83,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -189,7 +189,8 @@
   "attendance": null,
   "espn": "401916313",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372647,
@@ -197,10 +198,10 @@
   "tbd": false,
   "home": "Colorado",
   "away": "Abilene Christian",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 94,
+  "ap": 59,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -213,7 +214,8 @@
   "attendance": null,
   "espn": "401909759",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374504,
@@ -221,10 +223,10 @@
   "tbd": false,
   "home": "Houston",
   "away": "La Salle",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 94,
+  "ap": 55,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -237,7 +239,8 @@
   "attendance": null,
   "espn": "401925811",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374542,
@@ -245,10 +248,10 @@
   "tbd": false,
   "home": "Oklahoma State",
   "away": "Incarnate Word",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 91,
+  "ap": 60,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -261,7 +264,8 @@
   "attendance": null,
   "espn": "401919039",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374592,
@@ -269,10 +273,10 @@
   "tbd": false,
   "home": "Utah",
   "away": "Long Beach State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 66,
+  "ap": 63,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -285,7 +289,8 @@
   "attendance": null,
   "espn": "401921697",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372668,
