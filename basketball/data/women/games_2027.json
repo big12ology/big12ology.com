@@ -18,23 +18,22 @@
   "venue_id": null,
   "city": "Houston",
   "state": "TX",
-  "attendance": null,
+  "attendance": 809,
   "espn": "401923478",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401913054,
   "start": "2026-11-02T18:30:00.000Z",
   "tbd": false,
-  "home": "Arizona",
-  "away": "Stanford",
-  "hp": 84,
-  "ap": 69,
+  "home": "Stanford",
+  "away": "Arizona",
+  "hp": 69,
+  "ap": 84,
   "final": true,
   "status": "final",
   "neutral": true,
@@ -52,8 +51,7 @@
   "aseed": null,
   "tv": [
    "CBSSN"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401907046,
@@ -78,7 +76,9 @@
   "espn": "401907046",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401916080,
@@ -2718,7 +2718,7 @@
   "neutral": true,
   "conf": false,
   "tourney": false,
-  "notes": "Lone Star Series",
+  "notes": "Hoops with Heart",
   "season_type": "regular",
   "venue": "Dickies Arena",
   "venue_id": null,
@@ -4230,7 +4230,7 @@
   "neutral": true,
   "conf": false,
   "tourney": false,
-  "notes": "Lone Star Series",
+  "notes": "Hoops with Heart",
   "season_type": "regular",
   "venue": "Dickies Arena",
   "venue_id": null,
