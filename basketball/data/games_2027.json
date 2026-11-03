@@ -298,10 +298,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Northwestern State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 87,
+  "ap": 65,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -314,7 +314,8 @@
   "attendance": null,
   "espn": "401909750",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372670,
@@ -322,10 +323,10 @@
   "tbd": false,
   "home": "Arizona",
   "away": "UCLA",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 75,
+  "ap": 84,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -338,7 +339,8 @@
   "attendance": null,
   "espn": "401909738",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374519,
@@ -346,10 +348,10 @@
   "tbd": false,
   "home": "Arizona State",
   "away": "East Tennessee State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 75,
+  "ap": 65,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -362,7 +364,8 @@
   "attendance": null,
   "espn": "401921731",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372671,
