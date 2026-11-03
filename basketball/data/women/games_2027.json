@@ -78,8 +78,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916080,
@@ -100,14 +99,13 @@
   "venue_id": null,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 2015,
   "espn": "401916080",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918462,
@@ -128,14 +126,13 @@
   "venue_id": null,
   "city": "Waco",
   "state": "TX",
-  "attendance": null,
+  "attendance": 2843,
   "espn": "401918462",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906979,
@@ -156,14 +153,13 @@
   "venue_id": null,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null,
+  "attendance": 2872,
   "espn": "401906979",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917926,
@@ -184,14 +180,13 @@
   "venue_id": null,
   "city": "Ames",
   "state": "IA",
-  "attendance": null,
+  "attendance": 8802,
   "espn": "401917926",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401919056,
@@ -1350,7 +1345,9 @@
   "espn": "401923475",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "YouTube"
+  ]
  },
  {
   "id": 401907049,
@@ -1510,7 +1507,9 @@
   "espn": "401907166",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "CBSSN"
+  ]
  },
  {
   "id": 401919058,
@@ -1589,7 +1588,9 @@
   "espn": "401918933",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "YouTube"
+  ]
  },
  {
   "id": 401923481,
@@ -1639,7 +1640,9 @@
   "espn": "401906983",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "B1G+"
+  ]
  },
  {
   "id": 401923476,
@@ -1718,7 +1721,9 @@
   "espn": "401906965",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "B1G+"
+  ]
  },
  {
   "id": 401907050,
@@ -1743,7 +1748,9 @@
   "espn": "401907050",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "CBSSN"
+  ]
  },
  {
   "id": 401916187,
@@ -1768,7 +1775,9 @@
   "espn": "401916187",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "MEAC Network"
+  ]
  },
  {
   "id": 401917942,

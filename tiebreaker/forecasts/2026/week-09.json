@@ -5,7 +5,7 @@
    "home": "Utah",
    "margin": 7.86,
    "p_home": 0.717,
-   "spread": -5.2,
+   "spread": -5.1,
    "systems": {
     "Big12ology": 9.72,
     "Elo": 9.96,
@@ -80,7 +80,7 @@
    "home": "Kansas State",
    "margin": -1.4,
    "p_home": 0.46,
-   "spread": 4.8,
+   "spread": 4.7,
    "systems": {
     "Big12ology": -1.58,
     "Elo": 6.89,
@@ -461,7 +461,7 @@
   }
  },
  "games_complete": 88,
- "generated": "2026-11-03T14:58:48+00:00",
+ "generated": "2026-11-03T22:10:29+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
