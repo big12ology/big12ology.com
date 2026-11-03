@@ -21,8 +21,7 @@
   "attendance": null,
   "espn": "401912207",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372646,
@@ -46,8 +45,7 @@
   "attendance": null,
   "espn": "401909771",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374517,
@@ -71,8 +69,7 @@
   "attendance": null,
   "espn": "401921766",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374518,
@@ -96,8 +93,7 @@
   "attendance": null,
   "espn": "401921753",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374524,
@@ -121,8 +117,7 @@
   "attendance": null,
   "espn": "401921036",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372645,
@@ -130,10 +125,10 @@
   "tbd": false,
   "home": "Kansas",
   "away": "Fordham",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 95,
+  "ap": 65,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -154,10 +149,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "Lindenwood",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 98,
+  "ap": 59,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -181,7 +176,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -205,7 +200,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -229,7 +224,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -253,7 +248,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -277,7 +272,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -301,7 +296,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -325,7 +320,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -349,7 +344,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": false,
   "conf": false,
   "tourney": false,
