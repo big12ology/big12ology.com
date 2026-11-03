@@ -59,10 +59,10 @@
   "tbd": false,
   "home": "Oklahoma State",
   "away": "Southern",
-  "hp": 81,
-  "ap": 39,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -78,8 +78,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916080,

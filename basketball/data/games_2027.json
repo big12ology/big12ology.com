@@ -5,10 +5,10 @@
   "tbd": false,
   "home": "Cincinnati",
   "away": "American University",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 79,
+  "ap": 53,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -21,7 +21,8 @@
   "attendance": null,
   "espn": "401912207",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372646,
@@ -29,10 +30,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "Memphis",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 76,
+  "ap": 80,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -45,7 +46,8 @@
   "attendance": null,
   "espn": "401909771",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374517,
@@ -53,10 +55,10 @@
   "tbd": false,
   "home": "West Virginia",
   "away": "Niagara",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 91,
+  "ap": 46,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -69,7 +71,8 @@
   "attendance": null,
   "espn": "401921766",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374518,
@@ -77,10 +80,10 @@
   "tbd": false,
   "home": "UCF",
   "away": "Florida Gulf Coast",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 96,
+  "ap": 95,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -93,7 +96,8 @@
   "attendance": null,
   "espn": "401921753",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374524,
@@ -101,10 +105,10 @@
   "tbd": false,
   "home": "Texas Tech",
   "away": "Jackson State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 76,
+  "ap": 42,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -117,7 +121,8 @@
   "attendance": null,
   "espn": "401921036",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372645,
