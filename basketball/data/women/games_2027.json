@@ -306,10 +306,10 @@
   "tbd": false,
   "home": "Utah",
   "away": "Eastern Washington",
-  "hp": 76,
-  "ap": 67,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -325,8 +325,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916149,
