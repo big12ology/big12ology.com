@@ -417,11 +417,11 @@
  ],
  "401856825": [
   {
-   "outlet": "Fox",
+   "outlet": "FOX",
    "type": "tv"
   },
   {
-   "outlet": "FOX",
+   "outlet": "Fox",
    "type": "tv"
   }
  ],
@@ -588,6 +588,12 @@
  "401856852": [
   {
    "outlet": "ESPN2",
+   "type": "tv"
+  }
+ ],
+ "401856853": [
+  {
+   "outlet": "FS1",
    "type": "tv"
   }
  ],
