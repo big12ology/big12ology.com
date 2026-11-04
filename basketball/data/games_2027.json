@@ -365,10 +365,10 @@
   "tbd": false,
   "home": "Kansas State",
   "away": "South Dakota State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 66,
+  "ap": 68,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -381,7 +381,8 @@
   "attendance": null,
   "espn": "401909796",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374641,
