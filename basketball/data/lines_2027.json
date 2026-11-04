@@ -228,6 +228,34 @@
   "source": "the-odds-api.com",
   "spread": -5.0
  },
+ "372682": {
+  "as_of": "2026-11-04T22:18:28+00:00",
+  "books": [
+   {
+    "over_under": 172.0,
+    "provider": "BetOnline.ag",
+    "spread": -32.5
+   },
+   {
+    "over_under": 172.0,
+    "provider": "LowVig.ag",
+    "spread": -32.5
+   },
+   {
+    "over_under": 170.5,
+    "provider": "FanDuel",
+    "spread": -30.5
+   },
+   {
+    "over_under": 171.5,
+    "provider": "DraftKings",
+    "spread": -31.5
+   }
+  ],
+  "over_under": 171.5,
+  "source": "the-odds-api.com",
+  "spread": -31.8
+ },
  "374504": {
   "as_of": "2026-11-02T18:38:05+00:00",
   "books": [
@@ -414,5 +442,61 @@
   "over_under": 155.0,
   "source": "the-odds-api.com",
   "spread": -29.7
+ },
+ "374641": {
+  "as_of": "2026-11-04T22:18:28+00:00",
+  "books": [
+   {
+    "over_under": 151.0,
+    "provider": "BetOnline.ag",
+    "spread": -24.5
+   },
+   {
+    "over_under": 151.0,
+    "provider": "LowVig.ag",
+    "spread": -24.5
+   },
+   {
+    "over_under": 150.5,
+    "provider": "FanDuel",
+    "spread": -23.5
+   },
+   {
+    "over_under": 151.5,
+    "provider": "DraftKings",
+    "spread": -24.5
+   }
+  ],
+  "over_under": 151.0,
+  "source": "the-odds-api.com",
+  "spread": -24.2
+ },
+ "374642": {
+  "as_of": "2026-11-04T22:18:28+00:00",
+  "books": [
+   {
+    "over_under": 140.5,
+    "provider": "BetOnline.ag",
+    "spread": -10.5
+   },
+   {
+    "over_under": 140.5,
+    "provider": "LowVig.ag",
+    "spread": -10.5
+   },
+   {
+    "over_under": 141.5,
+    "provider": "FanDuel",
+    "spread": -10.5
+   },
+   {
+    "over_under": 141.5,
+    "provider": "DraftKings",
+    "spread": -10.5
+   }
+  ],
+  "over_under": 141.0,
+  "source": "the-odds-api.com",
+  "spread": -10.5
  }
 }

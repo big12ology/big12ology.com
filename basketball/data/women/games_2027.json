@@ -207,14 +207,13 @@
   "venue_id": null,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 912,
   "espn": "401919056",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401907163,
@@ -235,14 +234,13 @@
   "venue_id": null,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null,
+  "attendance": 3419,
   "espn": "401907163",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906962,
@@ -263,14 +261,13 @@
   "venue_id": null,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null,
+  "attendance": 2769,
   "espn": "401906962",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917938,
@@ -291,14 +288,13 @@
   "venue_id": null,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null,
+  "attendance": 2403,
   "espn": "401917938",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918931,
@@ -319,14 +315,13 @@
   "venue_id": null,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null,
+  "attendance": 1754,
   "espn": "401918931",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916149,
@@ -347,14 +342,13 @@
   "venue_id": null,
   "city": "Provo",
   "state": "UT",
-  "attendance": null,
+  "attendance": 2168,
   "espn": "401916149",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916184,

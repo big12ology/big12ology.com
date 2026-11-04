@@ -378,11 +378,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null,
+  "attendance": 7047,
   "espn": "401909796",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374641,
