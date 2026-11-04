@@ -18,7 +18,7 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null,
+  "attendance": 9420,
   "espn": "401912207",
   "hseed": null,
   "aseed": null
@@ -42,7 +42,7 @@
   "venue_id": 22,
   "city": "Sioux Falls",
   "state": "SD",
-  "attendance": null,
+  "attendance": 3458,
   "espn": "401909771",
   "hseed": null,
   "aseed": null
@@ -66,7 +66,7 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null,
+  "attendance": 9024,
   "espn": "401921766",
   "hseed": null,
   "aseed": null
@@ -90,7 +90,7 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 5054,
   "espn": "401921753",
   "hseed": null,
   "aseed": null
@@ -114,7 +114,7 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null,
+  "attendance": 13087,
   "espn": "401921036",
   "hseed": null,
   "aseed": null
@@ -138,7 +138,7 @@
   "venue_id": 1,
   "city": "Lawrence",
   "state": "KS",
-  "attendance": null,
+  "attendance": 15300,
   "espn": "401909784",
   "hseed": null,
   "aseed": null
@@ -162,7 +162,7 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null,
+  "attendance": 4647,
   "espn": "401919047",
   "hseed": null,
   "aseed": null
@@ -186,11 +186,10 @@
   "venue_id": 427,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null,
+  "attendance": 10422,
   "espn": "401916313",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372647,
@@ -211,11 +210,10 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null,
+  "attendance": 4420,
   "espn": "401909759",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374504,
@@ -236,11 +234,10 @@
   "venue_id": 3,
   "city": "Houston",
   "state": "TX",
-  "attendance": null,
+  "attendance": 7035,
   "espn": "401925811",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374542,
@@ -261,11 +258,10 @@
   "venue_id": 175,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null,
+  "attendance": 4576,
   "espn": "401919039",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374592,
@@ -286,11 +282,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null,
+  "attendance": 6312,
   "espn": "401921697",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372668,
@@ -311,11 +306,10 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null,
+  "attendance": 5022,
   "espn": "401909750",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372670,
@@ -336,11 +330,10 @@
   "venue_id": 13,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null,
+  "attendance": 10777,
   "espn": "401909738",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374519,
@@ -361,11 +354,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 5353,
   "espn": "401921731",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372671,
@@ -376,7 +368,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": false,
   "conf": false,
   "tourney": false,
