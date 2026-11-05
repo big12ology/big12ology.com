@@ -369,14 +369,13 @@
   "venue_id": null,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null,
+  "attendance": 1326,
   "espn": "401916184",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401923473,
@@ -397,14 +396,13 @@
   "venue_id": null,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null,
+  "attendance": 1809,
   "espn": "401923473",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906891,
