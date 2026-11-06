@@ -402,11 +402,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null,
+  "attendance": 9003,
   "espn": "401921747",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374642,
@@ -427,11 +426,10 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null,
+  "attendance": 6516,
   "espn": "401921698",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374646,
@@ -452,11 +450,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null,
+  "attendance": 12548,
   "espn": "401921133",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372682,
@@ -477,11 +474,10 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 13989,
   "espn": "401909739",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372712,
@@ -1277,7 +1273,7 @@
  },
  {
   "id": 374976,
-  "start": "2026-11-14T19:00:00.000Z",
+  "start": "2026-11-14T18:00:00.000Z",
   "tbd": false,
   "home": "Texas Tech",
   "away": "Stonehill",
