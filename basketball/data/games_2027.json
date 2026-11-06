@@ -414,10 +414,10 @@
   "tbd": false,
   "home": "Utah",
   "away": "Towson",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 67,
+  "ap": 57,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -430,7 +430,8 @@
   "attendance": null,
   "espn": "401921698",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374646,
@@ -438,10 +439,10 @@
   "tbd": false,
   "home": "Texas Tech",
   "away": "Bethune-Cookman",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 76,
+  "ap": 58,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -454,7 +455,8 @@
   "attendance": null,
   "espn": "401921133",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372682,

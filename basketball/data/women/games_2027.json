@@ -466,10 +466,10 @@
   "tbd": false,
   "home": "West Virginia",
   "away": "George Washington",
-  "hp": 78,
-  "ap": 66,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -485,8 +485,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906980,
@@ -494,10 +493,10 @@
   "tbd": false,
   "home": "Kansas State",
   "away": "Southern Indiana",
-  "hp": 61,
-  "ap": 47,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -513,8 +512,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917927,
@@ -522,10 +520,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "Nicholls",
-  "hp": 68,
-  "ap": 44,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -541,8 +539,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917939,
@@ -550,10 +547,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "Le Moyne",
-  "hp": 96,
-  "ap": 41,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -569,8 +566,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918463,
@@ -578,10 +574,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Central Arkansas",
-  "hp": 72,
-  "ap": 44,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -597,8 +593,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401923479,
