@@ -389,10 +389,10 @@
   "tbd": false,
   "home": "Cincinnati",
   "away": "Green Bay",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 81,
+  "ap": 64,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -405,7 +405,8 @@
   "attendance": null,
   "espn": "401921747",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374642,
