@@ -466,10 +466,10 @@
   "tbd": false,
   "home": "West Virginia",
   "away": "George Washington",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 78,
+  "ap": 66,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -485,7 +485,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401906980,
@@ -493,10 +494,10 @@
   "tbd": false,
   "home": "Kansas State",
   "away": "Southern Indiana",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 61,
+  "ap": 47,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -512,7 +513,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401917927,
@@ -520,10 +522,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "Nicholls",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 68,
+  "ap": 44,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -539,7 +541,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401917939,
@@ -547,10 +550,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "Le Moyne",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 96,
+  "ap": 41,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -566,7 +569,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401918463,
@@ -574,10 +578,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Central Arkansas",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 72,
+  "ap": 44,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -593,7 +597,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401923479,
@@ -601,10 +606,10 @@
   "tbd": false,
   "home": "Houston",
   "away": "Sam Houston",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 78,
+  "ap": 50,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -620,7 +625,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401916081,
@@ -628,10 +634,10 @@
   "tbd": false,
   "home": "Arizona State",
   "away": "Northern Arizona",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 79,
+  "ap": 52,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -647,7 +653,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401916150,

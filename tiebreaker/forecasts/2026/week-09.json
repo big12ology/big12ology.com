@@ -35,7 +35,7 @@
    "home": "Houston",
    "margin": 11.76,
    "p_home": 0.798,
-   "spread": -10.5,
+   "spread": -10.6,
    "systems": {
     "Big12ology": 17.91,
     "Elo": 5.96,
@@ -80,7 +80,7 @@
    "home": "Kansas State",
    "margin": -1.4,
    "p_home": 0.46,
-   "spread": 6.3,
+   "spread": 6.4,
    "systems": {
     "Big12ology": -1.58,
     "Elo": 6.89,
@@ -95,7 +95,7 @@
    "home": "Arizona",
    "margin": 9.08,
    "p_home": 0.749,
-   "spread": -7.5,
+   "spread": -7.3,
    "systems": {
     "Big12ology": 8.4,
     "Elo": 9.15,
@@ -110,7 +110,7 @@
    "home": "Texas Tech",
    "margin": 16.93,
    "p_home": 0.889,
-   "spread": -17.2,
+   "spread": -17.1,
    "systems": {
     "Big12ology": 13.29,
     "Elo": 19.37,
@@ -463,7 +463,7 @@
   }
  },
  "games_complete": 88,
- "generated": "2026-11-05T23:08:31+00:00",
+ "generated": "2026-11-06T05:24:34+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
