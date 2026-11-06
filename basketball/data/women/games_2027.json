@@ -578,10 +578,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Central Arkansas",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 72,
+  "ap": 44,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -597,7 +597,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401923479,
