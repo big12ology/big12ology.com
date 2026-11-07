@@ -564,7 +564,25 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
+    # Pages sometimes wedges a deployment: the status reads syncing_files for
+    # the full ten-minute timeout, where a good deploy finishes in about
+    # fifteen seconds. Three runs hit it between 2026-11-07 02:30 and 22:30 UTC
+    # with Pages reporting operational, and re-running the same deployment
+    # stalled again while the next fresh one went through. So the first
+    # attempt is allowed to fail, and a second, brand-new deployment of the
+    # same artifact follows only when it did. The action cancels its own
+    # deployment on timeout, so the retry never races the first one. A job
+    # that recovers stays green but warns, so the rate stays visible.
     steps:
       - id: deployment
+        uses: actions/deploy-pages@v5
+        continue-on-error: true
+
+      - name: Note the stuck first attempt
+        if: steps.deployment.outcome == 'failure'
+        run: echo "::warning::the first Pages deployment failed (most likely stuck syncing); retrying with a fresh deployment"
+
+      - id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v5
