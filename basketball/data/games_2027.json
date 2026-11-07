@@ -560,10 +560,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "Southern Miss",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 83,
+  "ap": 57,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -576,7 +576,8 @@
   "attendance": null,
   "espn": "401909772",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374701,
@@ -584,10 +585,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "Southern",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 106,
+  "ap": 54,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -600,7 +601,8 @@
   "attendance": null,
   "espn": "401919048",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372702,
