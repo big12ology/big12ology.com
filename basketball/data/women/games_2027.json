@@ -726,8 +726,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918932,
@@ -748,14 +747,13 @@
   "venue_id": null,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null,
+  "attendance": 1728,
   "espn": "401918932",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916185,
@@ -1002,7 +1000,7 @@
  },
  {
   "id": 401907048,
-  "start": "2026-11-09T16:00:00.000Z",
+  "start": "2026-11-09T17:00:00.000Z",
   "tbd": false,
   "home": "Oklahoma State",
   "away": "Northwestern State",
@@ -2160,33 +2158,6 @@
   ]
  },
  {
-  "id": 401907051,
-  "start": "2026-11-18T23:30:00.000Z",
-  "tbd": false,
-  "home": "Oklahoma State",
-  "away": "St. John's",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": false,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Gallagher-Iba Arena",
-  "venue_id": null,
-  "city": "Stillwater",
-  "state": "OK",
-  "attendance": null,
-  "espn": "401907051",
-  "hseed": null,
-  "aseed": null,
-  "tv": [
-   "ESPN+"
-  ]
- },
- {
   "id": 401917931,
   "start": "2026-11-19T00:00:00.000Z",
   "tbd": false,
@@ -2207,6 +2178,33 @@
   "state": "IA",
   "attendance": null,
   "espn": "401917931",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN+"
+  ]
+ },
+ {
+  "id": 401907051,
+  "start": "2026-11-19T00:30:00.000Z",
+  "tbd": false,
+  "home": "Oklahoma State",
+  "away": "St. John's",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": false,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Gallagher-Iba Arena",
+  "venue_id": null,
+  "city": "Stillwater",
+  "state": "OK",
+  "attendance": null,
+  "espn": "401907051",
   "hseed": null,
   "aseed": null,
   "tv": [
@@ -2376,7 +2374,7 @@
  },
  {
   "id": 401907052,
-  "start": "2026-11-20T23:30:00.000Z",
+  "start": "2026-11-21T00:30:00.000Z",
   "tbd": false,
   "home": "Oklahoma State",
   "away": "Little Rock",
@@ -2613,7 +2611,9 @@
   "espn": "401916189",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "CW"
+  ]
  },
  {
   "id": 401913867,
