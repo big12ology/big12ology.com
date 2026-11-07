@@ -5,7 +5,7 @@
    "home": "Utah",
    "margin": 7.86,
    "p_home": 0.717,
-   "spread": -4.4,
+   "spread": -4.5,
    "systems": {
     "Big12ology": 9.72,
     "Elo": 9.96,
@@ -35,7 +35,7 @@
    "home": "Houston",
    "margin": 11.76,
    "p_home": 0.798,
-   "spread": -10.5,
+   "spread": -10.6,
    "systems": {
     "Big12ology": 17.91,
     "Elo": 5.96,
@@ -50,7 +50,7 @@
    "home": "Arizona State",
    "margin": 7.62,
    "p_home": 0.711,
-   "spread": -3.1,
+   "spread": -3.2,
    "systems": {
     "Big12ology": 10.17,
     "Elo": 9.56,
@@ -448,7 +448,7 @@
   }
  },
  "games_complete": 89,
- "generated": "2026-11-07T07:22:16+00:00",
+ "generated": "2026-11-07T11:33:26+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
