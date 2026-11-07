@@ -2243,7 +2243,15 @@
       "espnId": 401856855,
       "conferenceGame": true,
       "opponent": "TCU",
-      "attendance": null
+      "attendance": 40501,
+      "pointsFor": 29,
+      "pointsAgainst": 28,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 63,
+        "windMph": 4,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona State",
@@ -2377,7 +2385,9 @@
       "role": "away",
       "venue": "Arizona Stadium",
       "city": "Tucson",
-      "state": "AZ"
+      "state": "AZ",
+      "pointsFor": 28,
+      "pointsAgainst": 29
     },
     {
       "team": "Texas Tech",

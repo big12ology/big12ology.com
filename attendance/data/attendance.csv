@@ -1405,6 +1405,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Arizona,3,2026-09-19,Northern Illinois,false,Casino Del Sol Stadium,40413,50782,0.7958,false
 2026,Arizona,5,2026-10-03,Cincinnati,true,Casino Del Sol Stadium,43760,50782,0.8617,false
 2026,Arizona,8,2026-10-24,Iowa State,true,Casino Del Sol Stadium,45477,50782,0.8955,false
+2026,Arizona,10,2026-11-06,TCU,true,Casino Del Sol Stadium,40501,50782,0.7975,false
 2026,Arizona State,1,2026-09-05,Morgan State,false,Mountain America Stadium,54004,53599,1.0076,false
 2026,Arizona State,5,2026-10-03,Baylor,true,Mountain America Stadium,54063,53599,1.0087,false
 2026,Arizona State,6,2026-10-10,Hawai'i,false,Mountain America Stadium,47931,53599,0.8943,false

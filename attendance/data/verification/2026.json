@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 74
+    "agree": 75
   },
   "games": [
     {
@@ -815,6 +815,17 @@
       "espnId": 401856844,
       "ours": 45906,
       "espn": 45906,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Arizona",
+      "week": 10,
+      "opponent": "TCU",
+      "date": "2026-11-06",
+      "espnId": 401856855,
+      "ours": 40501,
+      "espn": 40501,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }
