@@ -510,10 +510,10 @@
   "tbd": false,
   "home": "West Virginia",
   "away": "Stetson",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 91,
+  "ap": 53,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -526,7 +526,8 @@
   "attendance": null,
   "espn": "401921767",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374682,
@@ -534,10 +535,10 @@
   "tbd": false,
   "home": "UCF",
   "away": "Yale",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 87,
+  "ap": 75,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -550,7 +551,8 @@
   "attendance": null,
   "espn": "401921754",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372704,
