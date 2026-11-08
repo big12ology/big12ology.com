@@ -898,10 +898,10 @@
   "tbd": false,
   "home": "Arizona",
   "away": "Iona",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 74,
+  "ap": 61,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -917,7 +917,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401917928,
@@ -925,10 +926,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "Eastern Illinois",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 77,
+  "ap": 61,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -944,7 +945,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401917940,
@@ -952,10 +954,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "Tarleton State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 89,
+  "ap": 42,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -971,7 +973,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401918464,
@@ -979,10 +982,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Texas A&M-Corpus Christi",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 112,
+  "ap": 40,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -998,7 +1001,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401907048,
