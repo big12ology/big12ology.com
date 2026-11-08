@@ -522,7 +522,7 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null,
+  "attendance": 9081,
   "espn": "401921767",
   "hseed": null,
   "aseed": null
@@ -546,7 +546,7 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 5563,
   "espn": "401921754",
   "hseed": null,
   "aseed": null
@@ -570,7 +570,7 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null,
+  "attendance": 13930,
   "espn": "401909772",
   "hseed": null,
   "aseed": null
@@ -618,7 +618,7 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null,
+  "attendance": 7012,
   "espn": "401909797",
   "hseed": null,
   "aseed": null
@@ -666,7 +666,7 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null,
+  "attendance": 16190,
   "espn": "401921739",
   "hseed": null,
   "aseed": null
@@ -690,7 +690,7 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 5295,
   "espn": "401921732",
   "hseed": null,
   "aseed": null
@@ -741,8 +741,7 @@
   "attendance": null,
   "espn": "401909760",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374769,
