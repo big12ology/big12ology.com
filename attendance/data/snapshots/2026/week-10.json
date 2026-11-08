@@ -3,6 +3,50 @@
   "throughWeek": 10,
   "rows": [
     {
+      "team": "Kansas State",
+      "stadium": "Bill Snyder Family Football Stadium",
+      "capacity": 50000,
+      "capacityEstimate": null,
+      "color": "#3c0969",
+      "logo": "assets/logos/ksu.svg",
+      "multiVenue": false,
+      "games": 6,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 51719,
+          "pct": 1.03438
+        },
+        {
+          "week": 2,
+          "attendance": 51759,
+          "pct": 1.03518
+        },
+        {
+          "week": 3,
+          "attendance": 51846,
+          "pct": 1.03692
+        },
+        {
+          "week": 6,
+          "attendance": 51569,
+          "pct": 1.03138
+        },
+        {
+          "week": 7,
+          "attendance": 51961,
+          "pct": 1.03922
+        },
+        {
+          "week": 10,
+          "attendance": 52134,
+          "pct": 1.04268
+        }
+      ],
+      "total": 310988,
+      "pct": 1.0366266666666666
+    },
+    {
       "team": "BYU",
       "stadium": "LaVell Edwards Stadium",
       "capacity": 62073,
@@ -42,43 +86,48 @@
       "pct": 1.0362927520822258
     },
     {
-      "team": "Kansas State",
-      "stadium": "Bill Snyder Family Football Stadium",
-      "capacity": 50000,
+      "team": "Utah",
+      "stadium": "Rice-Eccles Stadium",
+      "capacity": 51444,
       "capacityEstimate": null,
-      "color": "#3c0969",
-      "logo": "assets/logos/ksu.svg",
+      "color": "#ea002a",
+      "logo": "assets/logos/utah.svg",
       "multiVenue": false,
-      "games": 5,
+      "games": 6,
       "weeks": [
         {
           "week": 1,
-          "attendance": 51719,
-          "pct": 1.03438
+          "attendance": 51444,
+          "pct": 1
         },
         {
           "week": 2,
-          "attendance": 51759,
-          "pct": 1.03518
+          "attendance": 51532,
+          "pct": 1.0017105979317316
         },
         {
           "week": 3,
-          "attendance": 51846,
-          "pct": 1.03692
+          "attendance": 51455,
+          "pct": 1.0002138247414665
         },
         {
           "week": 6,
-          "attendance": 51569,
-          "pct": 1.03138
+          "attendance": 51467,
+          "pct": 1.0004470880957934
         },
         {
-          "week": 7,
-          "attendance": 51961,
-          "pct": 1.03922
+          "week": 8,
+          "attendance": 51864,
+          "pct": 1.0081642174014462
+        },
+        {
+          "week": 10,
+          "attendance": 52901,
+          "pct": 1.028322058937874
         }
       ],
-      "total": 258854,
-      "pct": 1.035416
+      "total": 310663,
+      "pct": 1.0064762978513853
     },
     {
       "team": "UCF",
@@ -118,45 +167,6 @@
       ],
       "total": 221977,
       "pct": 1.0042844862688323
-    },
-    {
-      "team": "Utah",
-      "stadium": "Rice-Eccles Stadium",
-      "capacity": 51444,
-      "capacityEstimate": null,
-      "color": "#ea002a",
-      "logo": "assets/logos/utah.svg",
-      "multiVenue": false,
-      "games": 5,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 51444,
-          "pct": 1
-        },
-        {
-          "week": 2,
-          "attendance": 51532,
-          "pct": 1.0017105979317316
-        },
-        {
-          "week": 3,
-          "attendance": 51455,
-          "pct": 1.0002138247414665
-        },
-        {
-          "week": 6,
-          "attendance": 51467,
-          "pct": 1.0004470880957934
-        },
-        {
-          "week": 8,
-          "attendance": 51864,
-          "pct": 1.0081642174014462
-        }
-      ],
-      "total": 257762,
-      "pct": 1.0021071456340875
     },
     {
       "team": "Texas Tech",
@@ -341,7 +351,7 @@
       "color": "#154734",
       "logo": "assets/logos/bay.svg",
       "multiVenue": false,
-      "games": 4,
+      "games": 5,
       "weeks": [
         {
           "week": 2,
@@ -362,10 +372,15 @@
           "week": 7,
           "attendance": 46634,
           "pct": 1.0330970314576873
+        },
+        {
+          "week": 10,
+          "attendance": 39229,
+          "pct": 0.8690518387239698
         }
       ],
-      "total": 166634,
-      "pct": 0.9228732831191847
+      "total": 205863,
+      "pct": 0.9121089942401418
     },
     {
       "team": "Cincinnati",
@@ -575,7 +590,7 @@
       "color": "#c92a39",
       "logo": "assets/logos/hou.svg",
       "multiVenue": false,
-      "games": 4,
+      "games": 5,
       "weeks": [
         {
           "week": 1,
@@ -596,10 +611,15 @@
           "week": 7,
           "attendance": 42544,
           "pct": 1.0636
+        },
+        {
+          "week": 10,
+          "attendance": 32372,
+          "pct": 0.8093
         }
       ],
-      "total": 125815,
-      "pct": 0.78634375
+      "total": 158187,
+      "pct": 0.790935
     }
   ],
   "weeks": [
@@ -675,10 +695,10 @@
     },
     {
       "week": 10,
-      "games": 1,
-      "attendance": 40501,
-      "capacity": 50782,
-      "pct": 0.7975463746996967
+      "games": 5,
+      "attendance": 217137,
+      "capacity": 237366,
+      "pct": 0.914777179545512
     },
     {
       "week": 11,
@@ -703,9 +723,9 @@
     }
   ],
   "totals": {
-    "games": 75,
-    "attendance": 3506221,
-    "capacity": 3752194,
-    "pct": 0.9344455537213694
+    "games": 79,
+    "attendance": 3682857,
+    "capacity": 3938778,
+    "pct": 0.9350252794140721
   }
 }

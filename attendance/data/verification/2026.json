@@ -1,7 +1,8 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 75
+    "agree": 79,
+    "missing_both": 1
   },
   "games": [
     {
@@ -826,6 +827,61 @@
       "espnId": 401856855,
       "ours": 40501,
       "espn": 40501,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Baylor",
+      "week": 10,
+      "opponent": "Iowa State",
+      "date": "2026-11-07",
+      "espnId": 401856853,
+      "ours": 39229,
+      "espn": 39229,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Houston",
+      "week": 10,
+      "opponent": "Cincinnati",
+      "date": "2026-11-07",
+      "espnId": 401856851,
+      "ours": 32372,
+      "espn": 32372,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Kansas",
+      "week": 10,
+      "opponent": "UCF",
+      "date": "2026-11-07",
+      "espnId": 401856850,
+      "ours": null,
+      "espn": null,
+      "source": "CFBD",
+      "status": "missing_both"
+    },
+    {
+      "team": "Kansas State",
+      "week": 10,
+      "opponent": "Oklahoma State",
+      "date": "2026-11-07",
+      "espnId": 401856854,
+      "ours": 52134,
+      "espn": 52134,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Utah",
+      "week": 10,
+      "opponent": "BYU",
+      "date": "2026-11-07",
+      "espnId": 401856849,
+      "ours": 52901,
+      "espn": 52901,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

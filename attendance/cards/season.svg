@@ -3,30 +3,30 @@
 <rect x="12" y="12" width="876" height="702" rx="14" fill="#ffffff" stroke="#e2ddd3"/>
 <text x="32" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#16181A">Big 12 attendance, 2026 season to date</text>
 <text x="32" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#5b6169">Through week 10, sorted by percent of capacity</text>
-<rect x="32" y="114" width="5" height="14" rx="2" fill="#003da5"/>
-<text x="46" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">BYU</text>
+<rect x="32" y="114" width="5" height="14" rx="2" fill="#3c0969"/>
+<text x="46" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Kansas State</text>
 <rect x="210" y="112" width="526" height="18" rx="4" fill="#f6f4ef"/>
 <rect x="210" y="112" width="526" height="18" rx="4" fill="#1f8a4c"/>
-<text x="748" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">103.6%</text>
-<text x="868" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">321,629 5g</text>
-<rect x="32" y="148" width="5" height="14" rx="2" fill="#3c0969"/>
-<text x="46" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Kansas State</text>
+<text x="748" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">103.7%</text>
+<text x="868" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">310,988 6g</text>
+<rect x="32" y="148" width="5" height="14" rx="2" fill="#003da5"/>
+<text x="46" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">BYU</text>
 <rect x="210" y="146" width="526" height="18" rx="4" fill="#f6f4ef"/>
 <rect x="210" y="146" width="526" height="18" rx="4" fill="#1f8a4c"/>
-<text x="748" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">103.5%</text>
-<text x="868" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">258,854 5g</text>
-<rect x="32" y="182" width="5" height="14" rx="2" fill="#ba9b37"/>
-<text x="46" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">UCF</text>
+<text x="748" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">103.6%</text>
+<text x="868" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">321,629 5g</text>
+<rect x="32" y="182" width="5" height="14" rx="2" fill="#ea002a"/>
+<text x="46" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Utah</text>
 <rect x="210" y="180" width="526" height="18" rx="4" fill="#f6f4ef"/>
-<rect x="210" y="180" width="510" height="18" rx="4" fill="#1f8a4c"/>
-<text x="748" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">100.4%</text>
-<text x="868" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">221,977 5g</text>
-<rect x="32" y="216" width="5" height="14" rx="2" fill="#ea002a"/>
-<text x="46" y="228" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Utah</text>
+<rect x="210" y="180" width="511" height="18" rx="4" fill="#1f8a4c"/>
+<text x="748" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">100.6%</text>
+<text x="868" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">310,663 6g</text>
+<rect x="32" y="216" width="5" height="14" rx="2" fill="#ba9b37"/>
+<text x="46" y="228" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">UCF</text>
 <rect x="210" y="214" width="526" height="18" rx="4" fill="#f6f4ef"/>
-<rect x="210" y="214" width="509" height="18" rx="4" fill="#1f8a4c"/>
-<text x="748" y="228" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">100.2%</text>
-<text x="868" y="228" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">257,762 5g</text>
+<rect x="210" y="214" width="510" height="18" rx="4" fill="#1f8a4c"/>
+<text x="748" y="228" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">100.4%</text>
+<text x="868" y="228" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">221,977 5g</text>
 <rect x="32" y="250" width="5" height="14" rx="2" fill="#cc0000"/>
 <text x="46" y="262" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Texas Tech</text>
 <rect x="210" y="248" width="526" height="18" rx="4" fill="#f6f4ef"/>
@@ -60,9 +60,9 @@
 <rect x="32" y="420" width="5" height="14" rx="2" fill="#154734"/>
 <text x="46" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Baylor</text>
 <rect x="210" y="418" width="526" height="18" rx="4" fill="#f6f4ef"/>
-<rect x="210" y="418" width="468" height="18" rx="4" fill="#4a9a3f"/>
-<text x="748" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">92.3%</text>
-<text x="868" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">166,634 4g</text>
+<rect x="210" y="418" width="463" height="18" rx="4" fill="#4a9a3f"/>
+<text x="748" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">91.2%</text>
+<text x="868" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">205,863 5g</text>
 <rect x="32" y="454" width="5" height="14" rx="2" fill="#e00122"/>
 <text x="46" y="466" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Cincinnati</text>
 <rect x="210" y="452" width="526" height="18" rx="4" fill="#f6f4ef"/>
@@ -96,9 +96,9 @@
 <rect x="32" y="624" width="5" height="14" rx="2" fill="#c92a39"/>
 <text x="46" y="636" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#16181A">Houston</text>
 <rect x="210" y="622" width="526" height="18" rx="4" fill="#f6f4ef"/>
-<rect x="210" y="622" width="399" height="18" rx="4" fill="#9a9a2f"/>
-<text x="748" y="636" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">78.6%</text>
-<text x="868" y="636" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">125,815 4g</text>
-<text x="32" y="698" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169">3,506,221 across 75 games, 93.4% full</text>
+<rect x="210" y="622" width="401" height="18" rx="4" fill="#9a9a2f"/>
+<text x="748" y="636" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181A">79.1%</text>
+<text x="868" y="636" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169" text-anchor="end">158,187 5g</text>
+<text x="32" y="698" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#5b6169">3,682,857 across 79 games, 93.5% full</text>
 <text x="868" y="698" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" fill="#0B6E77" text-anchor="end" font-weight="600">big12ology.com/attendance</text>
 </svg>
