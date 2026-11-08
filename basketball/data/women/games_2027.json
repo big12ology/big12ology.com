@@ -870,10 +870,10 @@
   "tbd": false,
   "home": "Georgia Tech",
   "away": "West Virginia",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 63,
+  "ap": 81,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -889,7 +889,8 @@
   "aseed": null,
   "tv": [
    "ACCNX"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401913055,
