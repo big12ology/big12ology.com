@@ -789,10 +789,10 @@
   "tbd": false,
   "home": "Colorado",
   "away": "Fresno State",
-  "hp": 73,
-  "ap": 56,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -808,8 +808,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916151,
@@ -817,10 +816,10 @@
   "tbd": false,
   "home": "BYU",
   "away": "Montana",
-  "hp": 97,
-  "ap": 53,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -836,8 +835,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906981,

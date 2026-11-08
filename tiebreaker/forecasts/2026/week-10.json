@@ -20,7 +20,7 @@
    "home": "Texas Tech",
    "margin": 16.93,
    "p_home": 0.889,
-   "spread": -16.2,
+   "spread": -16.3,
    "systems": {
     "Big12ology": 13.29,
     "Elo": 19.37,
@@ -373,7 +373,7 @@
   }
  },
  "games_complete": 94,
- "generated": "2026-11-08T00:42:19+00:00",
+ "generated": "2026-11-08T01:23:52+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,

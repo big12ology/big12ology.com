@@ -5625,77 +5625,77 @@
   "spread_open_src": "collegefootballdata.com"
  },
  "401856856": {
-  "spread": -16.2,
-  "over_under": 66.2,
-  "home_ml": -728,
-  "away_ml": 511,
+  "spread": -16.3,
+  "over_under": 67.1,
+  "home_ml": -740,
+  "away_ml": 518,
   "books": [
    {
     "provider": "FanDuel",
     "spread": -16.5,
-    "over_under": 65.5,
-    "home_ml": -750,
+    "over_under": 66.5,
+    "home_ml": -720,
     "away_ml": 530
    },
    {
     "provider": "BetOnline.ag",
     "spread": -16.0,
-    "over_under": 66.0,
+    "over_under": 67.0,
     "home_ml": -700,
     "away_ml": 505
    },
    {
     "provider": "LowVig.ag",
     "spread": -16.0,
-    "over_under": 66.0,
+    "over_under": 67.0,
     "home_ml": -700,
     "away_ml": 505
    },
    {
     "provider": "BetRivers",
-    "spread": -16.0,
-    "over_under": 65.5,
+    "spread": -16.5,
+    "over_under": 66.5,
     "home_ml": -835,
     "away_ml": 525
    },
    {
     "provider": "DraftKings",
     "spread": -16.5,
-    "over_under": 66.5,
+    "over_under": 67.5,
     "home_ml": -750,
     "away_ml": 525
    },
    {
     "provider": "BetMGM",
-    "spread": -16.0,
-    "over_under": 66.5,
+    "spread": -16.5,
+    "over_under": 67.5,
     "home_ml": -700,
     "away_ml": 525
    },
    {
     "provider": "MyBookie.ag",
     "spread": -16.0,
-    "over_under": 66.5,
-    "home_ml": -721,
-    "away_ml": 488
+    "over_under": 67.0,
+    "home_ml": -784,
+    "away_ml": 520
    },
    {
     "provider": "BetUS",
     "spread": -16.0,
-    "over_under": 66.5,
-    "home_ml": -700,
-    "away_ml": 500
+    "over_under": 67.5,
+    "home_ml": -750,
+    "away_ml": 530
    },
    {
     "provider": "Bovada",
     "spread": -16.5,
-    "over_under": 66.5,
-    "home_ml": -700,
+    "over_under": 67.0,
+    "home_ml": -725,
     "away_ml": 500
    }
   ],
   "source": "the-odds-api.com",
-  "as_of": "2026-11-07T17:58:39+00:00",
+  "as_of": "2026-11-08T01:13:43+00:00",
   "spread_open": -17.2,
   "over_under_open": 63.2,
   "spread_open_books": 2,
