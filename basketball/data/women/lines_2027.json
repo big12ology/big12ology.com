@@ -12,6 +12,19 @@
   "source": "the-odds-api.com",
   "spread": -13.5
  },
+ "401907165": {
+  "as_of": "2026-11-08T14:34:33+00:00",
+  "books": [
+   {
+    "over_under": 137.5,
+    "provider": "BetMGM",
+    "spread": 7.5
+   }
+  ],
+  "over_under": 137.5,
+  "source": "the-odds-api.com",
+  "spread": 7.5
+ },
  "401917938": {
   "as_of": "2026-11-03T14:59:30+00:00",
   "books": [

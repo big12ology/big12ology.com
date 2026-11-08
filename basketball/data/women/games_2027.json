@@ -774,14 +774,13 @@
   "venue_id": null,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null,
+  "attendance": 1278,
   "espn": "401916185",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401923474,
@@ -802,14 +801,13 @@
   "venue_id": null,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null,
+  "attendance": 1974,
   "espn": "401923474",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916151,
@@ -830,14 +828,13 @@
   "venue_id": null,
   "city": "Provo",
   "state": "UT",
-  "attendance": null,
+  "attendance": 1852,
   "espn": "401916151",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906981,
