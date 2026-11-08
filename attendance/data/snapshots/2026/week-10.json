@@ -176,7 +176,7 @@
       "color": "#cc0000",
       "logo": "assets/logos/ttu.svg",
       "multiVenue": false,
-      "games": 5,
+      "games": 6,
       "weeks": [
         {
           "week": 1,
@@ -202,10 +202,15 @@
           "week": 9,
           "attendance": 59131,
           "pct": 0.9817695794384765
+        },
+        {
+          "week": 10,
+          "attendance": 60229,
+          "pct": 1
         }
       ],
-      "total": 299522,
-      "pct": 0.9946105696591343
+      "total": 359751,
+      "pct": 0.9955088080492785
     },
     {
       "team": "Oklahoma State",
@@ -242,40 +247,6 @@
       "pct": 0.9939226466418911
     },
     {
-      "team": "Kansas",
-      "stadium": "David Booth Kansas Memorial Stadium",
-      "capacity": 32000,
-      "capacityEstimate": null,
-      "color": "#0051ba",
-      "logo": "assets/logos/ku.svg",
-      "multiVenue": false,
-      "games": 4,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 30904,
-          "pct": 0.96575
-        },
-        {
-          "week": 2,
-          "attendance": 32000,
-          "pct": 1
-        },
-        {
-          "week": 5,
-          "attendance": 32000,
-          "pct": 1
-        },
-        {
-          "week": 8,
-          "attendance": 32000,
-          "pct": 1
-        }
-      ],
-      "total": 126904,
-      "pct": 0.9914375
-    },
-    {
       "team": "Colorado",
       "stadium": "Folsom Field",
       "capacity": 50183,
@@ -310,6 +281,45 @@
       "pct": 0.9877996532690353
     },
     {
+      "team": "Kansas",
+      "stadium": "David Booth Kansas Memorial Stadium",
+      "capacity": 32000,
+      "capacityEstimate": null,
+      "color": "#0051ba",
+      "logo": "assets/logos/ku.svg",
+      "multiVenue": false,
+      "games": 5,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 30904,
+          "pct": 0.96575
+        },
+        {
+          "week": 2,
+          "attendance": 32000,
+          "pct": 1
+        },
+        {
+          "week": 5,
+          "attendance": 32000,
+          "pct": 1
+        },
+        {
+          "week": 8,
+          "attendance": 32000,
+          "pct": 1
+        },
+        {
+          "week": 10,
+          "attendance": 31008,
+          "pct": 0.969
+        }
+      ],
+      "total": 157912,
+      "pct": 0.98695
+    },
+    {
       "team": "Arizona State",
       "stadium": "Mountain America Stadium",
       "capacity": 53599,
@@ -317,7 +327,7 @@
       "color": "#8e0c3a",
       "logo": "assets/logos/asu.svg",
       "multiVenue": false,
-      "games": 4,
+      "games": 5,
       "weeks": [
         {
           "week": 1,
@@ -338,10 +348,15 @@
           "week": 8,
           "attendance": 46388,
           "pct": 0.8654639079087296
+        },
+        {
+          "week": 10,
+          "attendance": 54166,
+          "pct": 1.0105785555700666
         }
       ],
-      "total": 202386,
-      "pct": 0.9439821638463404
+      "total": 256552,
+      "pct": 0.9573014421910857
     },
     {
       "team": "Baylor",
@@ -695,10 +710,10 @@
     },
     {
       "week": 10,
-      "games": 5,
-      "attendance": 217137,
-      "capacity": 237366,
-      "pct": 0.914777179545512
+      "games": 8,
+      "attendance": 362540,
+      "capacity": 383194,
+      "pct": 0.9461004086702819
     },
     {
       "week": 11,
@@ -723,9 +738,9 @@
     }
   ],
   "totals": {
-    "games": 79,
-    "attendance": 3682857,
-    "capacity": 3938778,
-    "pct": 0.9350252794140721
+    "games": 82,
+    "attendance": 3828260,
+    "capacity": 4084606,
+    "pct": 0.9372409480865473
   }
 }

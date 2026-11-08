@@ -1,8 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 79,
-    "missing_both": 1
+    "agree": 82
   },
   "games": [
     {
@@ -831,6 +830,17 @@
       "status": "agree"
     },
     {
+      "team": "Arizona State",
+      "week": 10,
+      "opponent": "Colorado",
+      "date": "2026-11-07",
+      "espnId": 401856852,
+      "ours": 54166,
+      "espn": 54166,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "Baylor",
       "week": 10,
       "opponent": "Iowa State",
@@ -858,10 +868,10 @@
       "opponent": "UCF",
       "date": "2026-11-07",
       "espnId": 401856850,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 31008,
+      "espn": 31008,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "Kansas State",
@@ -871,6 +881,17 @@
       "espnId": 401856854,
       "ours": 52134,
       "espn": 52134,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Texas Tech",
+      "week": 10,
+      "opponent": "West Virginia",
+      "date": "2026-11-07",
+      "espnId": 401856856,
+      "ours": 60229,
+      "espn": 60229,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     },

@@ -2261,7 +2261,15 @@
       "espnId": 401856852,
       "conferenceGame": true,
       "opponent": "Colorado",
-      "attendance": null
+      "attendance": 54166,
+      "pointsFor": 20,
+      "pointsAgainst": 10,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 75,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
@@ -2325,7 +2333,9 @@
       "role": "away",
       "venue": "Mountain America Stadium",
       "city": "Tempe",
-      "state": "AZ"
+      "state": "AZ",
+      "pointsFor": 10,
+      "pointsAgainst": 20
     },
     {
       "team": "Houston",
@@ -2340,8 +2350,8 @@
       "pointsAgainst": 24,
       "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 80,
-        "windMph": 6,
+        "tempF": 81,
+        "windMph": 5,
         "precipIn": 0
       }
     },
@@ -2369,12 +2379,13 @@
       "espnId": 401856850,
       "conferenceGame": true,
       "opponent": "UCF",
-      "attendance": null,
+      "attendance": 31008,
       "pointsFor": 32,
       "pointsAgainst": 33,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 53,
-        "windMph": 6,
+        "tempF": 54,
+        "windMph": 5,
         "precipIn": 0
       }
     },
@@ -2391,7 +2402,7 @@
       "pointsAgainst": 66,
       "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
-        "tempF": 51,
+        "tempF": 53,
         "windMph": 6,
         "precipIn": 0
       }
@@ -2436,7 +2447,15 @@
       "espnId": 401856856,
       "conferenceGame": true,
       "opponent": "West Virginia",
-      "attendance": null
+      "attendance": 60229,
+      "pointsFor": 53,
+      "pointsAgainst": 48,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 50,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
@@ -2484,7 +2503,9 @@
       "role": "away",
       "venue": "Galaxy Stadium",
       "city": "Lubbock",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 48,
+      "pointsAgainst": 53
     },
     {
       "team": "Arizona",
