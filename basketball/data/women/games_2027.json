@@ -1004,10 +1004,10 @@
   "tbd": false,
   "home": "Oklahoma State",
   "away": "Northwestern State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 94,
+  "ap": 56,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1023,7 +1023,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401919057,

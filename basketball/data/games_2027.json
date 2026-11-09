@@ -762,11 +762,10 @@
   "venue_id": 1737,
   "city": "Stateline",
   "state": "NV",
-  "attendance": null,
+  "attendance": 2496,
   "espn": "401918053",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372730,
