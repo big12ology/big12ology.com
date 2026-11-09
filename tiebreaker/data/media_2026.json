@@ -619,10 +619,59 @@
    "type": "tv"
   }
  ],
+ "401856857": [
+  {
+   "outlet": "ESPN2",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
+ "401856858": [
+  {
+   "outlet": "Fox",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
+ "401856859": [
+  {
+   "outlet": "TNT",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
  "401856860": [
   {
    "outlet": "ESPN",
    "type": "tv"
+  }
+ ],
+ "401856861": [
+  {
+   "outlet": "ESPNU",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
+ "401856862": [
+  {
+   "outlet": "ESPNU",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
+ "401856863": [
+  {
+   "outlet": "ESPN",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
+ "401856864": [
+  {
+   "outlet": "Fox",
+   "type": "tv",
+   "via": "espn.com"
   }
  ],
  "401856869": [
