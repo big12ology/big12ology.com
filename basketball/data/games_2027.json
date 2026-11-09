@@ -749,10 +749,10 @@
   "tbd": false,
   "home": "California",
   "away": "Houston",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 68,
+  "ap": 86,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -765,7 +765,8 @@
   "attendance": null,
   "espn": "401918053",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372730,
