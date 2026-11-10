@@ -1060,10 +1060,10 @@
   "tbd": false,
   "home": "Texas Tech",
   "away": "Lamar",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 78,
+  "ap": 28,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1079,7 +1079,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401918583,
