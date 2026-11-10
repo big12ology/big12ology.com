@@ -1017,14 +1017,13 @@
   "venue_id": null,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null,
+  "attendance": 3976,
   "espn": "401907048",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401919057,
@@ -1045,14 +1044,13 @@
   "venue_id": null,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 722,
   "espn": "401919057",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918941,
@@ -1073,14 +1071,13 @@
   "venue_id": null,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null,
+  "attendance": 3638,
   "espn": "401918941",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918583,
@@ -1101,14 +1098,13 @@
   "venue_id": null,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null,
+  "attendance": 1467,
   "espn": "401918583",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906982,
@@ -1328,7 +1324,7 @@
  },
  {
   "id": 401923475,
-  "start": "2026-11-12T01:00:00.000Z",
+  "start": "2026-11-12T03:00:00.000Z",
   "tbd": false,
   "home": "San Diego State",
   "away": "Colorado",
@@ -1676,33 +1672,6 @@
   ]
  },
  {
-  "id": 401916153,
-  "start": "2026-11-14T21:00:00.000Z",
-  "tbd": false,
-  "home": "BYU",
-  "away": "New Mexico",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": false,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Marriott Center",
-  "venue_id": null,
-  "city": "Provo",
-  "state": "UT",
-  "attendance": null,
-  "espn": "401916153",
-  "hseed": null,
-  "aseed": null,
-  "tv": [
-   "ESPN+"
-  ]
- },
- {
   "id": 401906965,
   "start": "2026-11-14T21:30:00.000Z",
   "tbd": false,
@@ -1727,6 +1696,33 @@
   "aseed": null,
   "tv": [
    "B1G+"
+  ]
+ },
+ {
+  "id": 401916153,
+  "start": "2026-11-15T02:00:00.000Z",
+  "tbd": false,
+  "home": "BYU",
+  "away": "New Mexico",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": false,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Marriott Center",
+  "venue_id": null,
+  "city": "Provo",
+  "state": "UT",
+  "attendance": null,
+  "espn": "401916153",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN+"
   ]
  },
  {

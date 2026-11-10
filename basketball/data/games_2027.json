@@ -786,11 +786,10 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null,
+  "attendance": 10419,
   "espn": "401916305",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374826,
