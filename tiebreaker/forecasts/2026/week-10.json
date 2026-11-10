@@ -35,7 +35,7 @@
    "home": "Iowa State",
    "margin": 1.54,
    "p_home": 0.545,
-   "spread": -3.0,
+   "spread": -2.9,
    "systems": {
     "Big12ology": 4.51,
     "Elo": 3.33,
@@ -50,7 +50,7 @@
    "home": "Colorado",
    "margin": -14.11,
    "p_home": 0.151,
-   "spread": 10.4,
+   "spread": 9.7,
    "systems": {
     "Big12ology": -13.91,
     "Elo": -10.96,
@@ -348,7 +348,7 @@
   }
  },
  "games_complete": 96,
- "generated": "2026-11-10T15:31:49+00:00",
+ "generated": "2026-11-10T22:02:15+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,

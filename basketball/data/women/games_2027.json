@@ -1112,10 +1112,10 @@
   "tbd": false,
   "home": "Kansas State",
   "away": "Montana",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 67,
+  "ap": 62,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1131,7 +1131,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401915666,
