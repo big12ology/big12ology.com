@@ -822,10 +822,10 @@
   "tbd": false,
   "home": "Texas Tech",
   "away": "Illinois",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 84,
+  "ap": 78,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -838,7 +838,8 @@
   "attendance": null,
   "espn": "401913527",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372751,
@@ -846,10 +847,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "Southern",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 84,
+  "ap": 47,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -862,7 +863,8 @@
   "attendance": null,
   "espn": "401909773",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372753,
@@ -870,10 +872,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Yale",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 90,
+  "ap": 61,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -886,7 +888,8 @@
   "attendance": null,
   "espn": "401909752",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372752,
@@ -894,10 +897,10 @@
   "tbd": false,
   "home": "Colorado",
   "away": "San Diego",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 83,
+  "ap": 75,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -910,7 +913,8 @@
   "attendance": null,
   "espn": "401909761",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372754,
@@ -918,10 +922,10 @@
   "tbd": false,
   "home": "Arizona",
   "away": "Northern Arizona",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 90,
+  "ap": 59,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -934,7 +938,8 @@
   "attendance": null,
   "espn": "401909740",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372761,
@@ -942,10 +947,10 @@
   "tbd": false,
   "home": "Kansas State",
   "away": "Creighton",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 89,
+  "ap": 82,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -958,7 +963,8 @@
   "attendance": null,
   "espn": "401909492",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374827,
@@ -966,10 +972,10 @@
   "tbd": false,
   "home": "BYU",
   "away": "Queens University",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 98,
+  "ap": 82,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -982,7 +988,8 @@
   "attendance": null,
   "espn": "401921740",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374828,
@@ -990,10 +997,10 @@
   "tbd": false,
   "home": "Arizona State",
   "away": "Hofstra",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 85,
+  "ap": 63,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1006,7 +1013,8 @@
   "attendance": null,
   "espn": "401921733",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374829,
@@ -1014,10 +1022,10 @@
   "tbd": false,
   "home": "Utah",
   "away": "Weber State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 85,
+  "ap": 64,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1030,7 +1038,8 @@
   "attendance": null,
   "espn": "401921699",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374842,

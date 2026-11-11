@@ -1196,10 +1196,10 @@
   "tbd": false,
   "home": "Houston",
   "away": "Stephen F. Austin",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 89,
+  "ap": 59,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1215,7 +1215,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401916082,
@@ -1223,10 +1224,10 @@
   "tbd": false,
   "home": "UNLV",
   "away": "Arizona State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 58,
+  "ap": 65,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1242,7 +1243,8 @@
   "aseed": null,
   "tv": [
    "MW+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401916152,
