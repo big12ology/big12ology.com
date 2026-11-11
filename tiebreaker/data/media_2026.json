@@ -670,8 +670,7 @@
  "401856867": [
   {
    "outlet": "ESPN+",
-   "type": "web",
-   "via": "espn.com"
+   "type": "web"
   }
  ],
  "401856869": [
@@ -683,8 +682,7 @@
  "401856870": [
   {
    "outlet": "ESPN",
-   "type": "tv",
-   "via": "espn.com"
+   "type": "tv"
   }
  ],
  "401856879": [

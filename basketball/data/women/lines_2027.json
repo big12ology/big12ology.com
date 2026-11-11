@@ -25,6 +25,24 @@
   "source": "the-odds-api.com",
   "spread": 7.5
  },
+ "401916152": {
+  "as_of": "2026-11-11T16:26:37+00:00",
+  "books": [
+   {
+    "over_under": 129.5,
+    "provider": "BetRivers",
+    "spread": -39.5
+   },
+   {
+    "over_under": 129.5,
+    "provider": "DraftKings",
+    "spread": -39.5
+   }
+  ],
+  "over_under": 129.5,
+  "source": "the-odds-api.com",
+  "spread": -39.5
+ },
  "401917938": {
   "as_of": "2026-11-03T14:59:30+00:00",
   "books": [
