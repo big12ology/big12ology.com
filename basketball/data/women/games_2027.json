@@ -1168,10 +1168,10 @@
   "tbd": false,
   "home": "Kansas",
   "away": "Oral Roberts",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 99,
+  "ap": 51,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1187,7 +1187,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401923480,

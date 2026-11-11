@@ -797,10 +797,10 @@
   "tbd": false,
   "home": "UCF",
   "away": "South Alabama",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 76,
+  "ap": 69,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -813,7 +813,8 @@
   "attendance": null,
   "espn": "401921755",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372742,
