@@ -1224,10 +1224,10 @@
   "tbd": false,
   "home": "UNLV",
   "away": "Arizona State",
-  "hp": 58,
-  "ap": 65,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1243,8 +1243,7 @@
   "aseed": null,
   "tv": [
    "MW+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916152,

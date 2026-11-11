@@ -813,8 +813,7 @@
   "attendance": null,
   "espn": "401921755",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372742,
@@ -838,8 +837,7 @@
   "attendance": null,
   "espn": "401913527",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372751,
@@ -863,8 +861,7 @@
   "attendance": null,
   "espn": "401909773",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372753,
@@ -888,8 +885,7 @@
   "attendance": null,
   "espn": "401909752",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372752,
@@ -913,8 +909,7 @@
   "attendance": null,
   "espn": "401909761",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372754,
@@ -938,8 +933,7 @@
   "attendance": null,
   "espn": "401909740",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372761,
@@ -963,8 +957,7 @@
   "attendance": null,
   "espn": "401909492",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374827,
@@ -988,8 +981,7 @@
   "attendance": null,
   "espn": "401921740",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374828,
@@ -1010,11 +1002,10 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 5048,
   "espn": "401921733",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374829,
@@ -1038,8 +1029,7 @@
   "attendance": null,
   "espn": "401921699",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374842,
@@ -1047,10 +1037,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "UL Monroe",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 100,
+  "ap": 92,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1067,14 +1057,14 @@
  },
  {
   "id": 372750,
-  "start": "2026-11-11T02:30:00.000Z",
+  "start": "2026-11-11T02:58:00.000Z",
   "tbd": false,
   "home": "Kansas",
   "away": "Kentucky",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 89,
+  "ap": 69,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
