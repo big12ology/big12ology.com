@@ -5,7 +5,7 @@
    "home": "UCF",
    "margin": 5.09,
    "p_home": 0.641,
-   "spread": -3.3,
+   "spread": -3.4,
    "systems": {
     "Big12ology": 10.89,
     "Elo": -0.26,
@@ -20,7 +20,7 @@
    "home": "BYU",
    "margin": 4.59,
    "p_home": 0.632,
-   "spread": -7.4,
+   "spread": -7.5,
    "systems": {
     "Big12ology": 4.08,
     "Elo": 2.37,
@@ -35,7 +35,7 @@
    "home": "Iowa State",
    "margin": 1.54,
    "p_home": 0.545,
-   "spread": -2.9,
+   "spread": -3.0,
    "systems": {
     "Big12ology": 4.51,
     "Elo": 3.33,
@@ -348,7 +348,7 @@
   }
  },
  "games_complete": 96,
- "generated": "2026-11-11T16:25:47+00:00",
+ "generated": "2026-11-11T23:13:35+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
