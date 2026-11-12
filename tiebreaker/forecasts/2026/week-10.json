@@ -5,7 +5,7 @@
    "home": "UCF",
    "margin": 5.09,
    "p_home": 0.641,
-   "spread": -3.4,
+   "spread": -3.1,
    "systems": {
     "Big12ology": 10.89,
     "Elo": -0.26,
@@ -50,7 +50,7 @@
    "home": "Colorado",
    "margin": -14.11,
    "p_home": 0.151,
-   "spread": 9.6,
+   "spread": 9.3,
    "systems": {
     "Big12ology": -13.91,
     "Elo": -10.96,
@@ -80,7 +80,7 @@
    "home": "TCU",
    "margin": 8.51,
    "p_home": 0.734,
-   "spread": -10.2,
+   "spread": -10.5,
    "systems": {
     "Big12ology": 10.57,
     "Elo": 7.63,
@@ -110,7 +110,7 @@
    "home": "Arizona",
    "margin": -3.39,
    "p_home": 0.401,
-   "spread": 2.6,
+   "spread": 2.5,
    "systems": {
     "Big12ology": -1.72,
     "Elo": -2.52,
@@ -209,6 +209,7 @@
    "home": "Baylor",
    "margin": 0.47,
    "p_home": 0.512,
+   "spread": 1.5,
    "systems": {
     "Big12ology": 6.94,
     "Elo": -2.67,
@@ -223,6 +224,7 @@
    "home": "TCU",
    "margin": -8.71,
    "p_home": 0.263,
+   "spread": 5.5,
    "systems": {
     "Big12ology": -3.66,
     "Elo": -9.26,
@@ -348,7 +350,7 @@
   }
  },
  "games_complete": 96,
- "generated": "2026-11-11T23:13:35+00:00",
+ "generated": "2026-11-12T16:57:26+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,

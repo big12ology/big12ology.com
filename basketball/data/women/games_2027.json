@@ -1260,14 +1260,13 @@
   "venue_id": null,
   "city": "Provo",
   "state": "UT",
-  "attendance": null,
+  "attendance": 5970,
   "espn": "401916152",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916186,
@@ -1288,14 +1287,13 @@
   "venue_id": null,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null,
+  "attendance": 1333,
   "espn": "401916186",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918530,
@@ -1316,14 +1314,13 @@
   "venue_id": null,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 813,
   "espn": "401918530",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401923475,
@@ -1344,14 +1341,13 @@
   "venue_id": null,
   "city": "San Diego",
   "state": "CA",
-  "attendance": null,
+  "attendance": 2427,
   "espn": "401923475",
   "hseed": null,
   "aseed": null,
   "tv": [
    "YouTube"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401907049,
