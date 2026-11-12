@@ -1331,10 +1331,10 @@
   "tbd": false,
   "home": "San Diego State",
   "away": "Colorado",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 55,
+  "ap": 64,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1350,7 +1350,8 @@
   "aseed": null,
   "tv": [
    "YouTube"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401907049,
