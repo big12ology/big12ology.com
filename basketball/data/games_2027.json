@@ -1085,10 +1085,10 @@
   "tbd": false,
   "home": "Houston",
   "away": "Jacksonville State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 92,
+  "ap": 46,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1101,7 +1101,8 @@
   "attendance": null,
   "espn": "401925702",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374905,
