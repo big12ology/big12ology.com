@@ -810,7 +810,7 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 5108,
   "espn": "401921755",
   "hseed": null,
   "aseed": null
@@ -834,7 +834,7 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null,
+  "attendance": 15098,
   "espn": "401913527",
   "hseed": null,
   "aseed": null
@@ -858,7 +858,7 @@
   "venue_id": 4,
   "city": "Ames",
   "state": "IA",
-  "attendance": null,
+  "attendance": 13503,
   "espn": "401909773",
   "hseed": null,
   "aseed": null
@@ -882,7 +882,7 @@
   "venue_id": 332,
   "city": "Waco",
   "state": "TX",
-  "attendance": null,
+  "attendance": 5334,
   "espn": "401909752",
   "hseed": null,
   "aseed": null
@@ -906,7 +906,7 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null,
+  "attendance": 4324,
   "espn": "401909761",
   "hseed": null,
   "aseed": null
@@ -930,7 +930,7 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 14041,
   "espn": "401909740",
   "hseed": null,
   "aseed": null
@@ -954,7 +954,7 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null,
+  "attendance": 6820,
   "espn": "401909492",
   "hseed": null,
   "aseed": null
@@ -978,7 +978,7 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null,
+  "attendance": 16963,
   "espn": "401921740",
   "hseed": null,
   "aseed": null
@@ -1026,7 +1026,7 @@
   "venue_id": 173,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null,
+  "attendance": 5742,
   "espn": "401921699",
   "hseed": null,
   "aseed": null
@@ -1050,7 +1050,7 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null,
+  "attendance": 4521,
   "espn": "401917979",
   "hseed": null,
   "aseed": null
@@ -1074,7 +1074,7 @@
   "venue_id": 449,
   "city": "Chicago",
   "state": "IL",
-  "attendance": null,
+  "attendance": 18891,
   "espn": "401909786",
   "hseed": null,
   "aseed": null
@@ -1088,7 +1088,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": false,
   "conf": false,
   "tourney": false,

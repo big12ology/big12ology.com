@@ -1275,10 +1275,10 @@
   "tbd": false,
   "home": "Cincinnati",
   "away": "Saint Joseph's",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 56,
+  "ap": 67,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1294,7 +1294,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401918530,
@@ -1302,10 +1303,10 @@
   "tbd": false,
   "home": "UCF",
   "away": "Austin Peay",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 64,
+  "ap": 59,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1321,7 +1322,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401923475,
