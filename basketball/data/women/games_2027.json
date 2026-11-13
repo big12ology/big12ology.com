@@ -1467,10 +1467,10 @@
   "tbd": false,
   "home": "UCLA",
   "away": "Arizona",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 76,
+  "ap": 44,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1486,7 +1486,8 @@
   "aseed": null,
   "tv": [
    "BTN"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401907166,
