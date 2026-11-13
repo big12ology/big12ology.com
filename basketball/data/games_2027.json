@@ -1134,10 +1134,10 @@
   "tbd": false,
   "home": "Texas A&M",
   "away": "Oklahoma State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 88,
+  "ap": 69,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1150,7 +1150,8 @@
   "attendance": null,
   "espn": "401919041",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374906,
@@ -1158,10 +1159,10 @@
   "tbd": false,
   "home": "BYU",
   "away": "Montana State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 86,
+  "ap": 71,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1174,7 +1175,8 @@
   "attendance": null,
   "espn": "401921741",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374938,
