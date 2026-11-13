@@ -1122,11 +1122,10 @@
   "venue_id": 87,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null,
+  "attendance": 8680,
   "espn": "401921768",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374908,
@@ -1147,11 +1146,10 @@
   "venue_id": 262,
   "city": "College Station",
   "state": "TX",
-  "attendance": null,
+  "attendance": 8606,
   "espn": "401919041",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374906,
@@ -1172,11 +1170,10 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null,
+  "attendance": 17561,
   "espn": "401921741",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374938,
