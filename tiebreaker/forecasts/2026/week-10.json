@@ -5,7 +5,7 @@
    "home": "UCF",
    "margin": 5.09,
    "p_home": 0.641,
-   "spread": -3.1,
+   "spread": -2.9,
    "systems": {
     "Big12ology": 10.89,
     "Elo": -0.26,
@@ -50,7 +50,7 @@
    "home": "Colorado",
    "margin": -14.11,
    "p_home": 0.151,
-   "spread": 9.1,
+   "spread": 7.6,
    "systems": {
     "Big12ology": -13.91,
     "Elo": -10.96,
@@ -65,7 +65,7 @@
    "home": "West Virginia",
    "margin": 0.63,
    "p_home": 0.519,
-   "spread": -2.9,
+   "spread": -2.7,
    "systems": {
     "Big12ology": 2.96,
     "Elo": -5.26,
@@ -80,7 +80,7 @@
    "home": "TCU",
    "margin": 8.51,
    "p_home": 0.734,
-   "spread": -10.4,
+   "spread": -12.0,
    "systems": {
     "Big12ology": 10.57,
     "Elo": 7.63,
@@ -350,7 +350,7 @@
   }
  },
  "games_complete": 96,
- "generated": "2026-11-13T14:01:04+00:00",
+ "generated": "2026-11-13T22:17:57+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
