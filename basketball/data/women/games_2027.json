@@ -1368,14 +1368,13 @@
   "venue_id": null,
   "city": "Tulsa",
   "state": "OK",
-  "attendance": null,
+  "attendance": 2101,
   "espn": "401907049",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPNU"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917929,
@@ -1396,14 +1395,13 @@
   "venue_id": null,
   "city": "Ames",
   "state": "IA",
-  "attendance": null,
+  "attendance": 8786,
   "espn": "401917929",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917941,
@@ -1424,14 +1422,13 @@
   "venue_id": null,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null,
+  "attendance": 2202,
   "espn": "401917941",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918465,
@@ -1452,14 +1449,13 @@
   "venue_id": null,
   "city": "Waco",
   "state": "TX",
-  "attendance": null,
+  "attendance": 2638,
   "espn": "401918465",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401913056,
@@ -1480,14 +1476,13 @@
   "venue_id": null,
   "city": "Los Angeles",
   "state": "CA",
-  "attendance": null,
+  "attendance": 2578,
   "espn": "401913056",
   "hseed": null,
   "aseed": null,
   "tv": [
    "BTN"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401907166,

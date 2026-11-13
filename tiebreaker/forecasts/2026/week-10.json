@@ -50,7 +50,7 @@
    "home": "Colorado",
    "margin": -14.11,
    "p_home": 0.151,
-   "spread": 9.4,
+   "spread": 9.1,
    "systems": {
     "Big12ology": -13.91,
     "Elo": -10.96,
@@ -350,7 +350,7 @@
   }
  },
  "games_complete": 96,
- "generated": "2026-11-13T05:22:06+00:00",
+ "generated": "2026-11-13T14:01:04+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
