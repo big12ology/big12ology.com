@@ -1383,10 +1383,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "Howard",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 77,
+  "ap": 55,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1402,7 +1402,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401917941,
@@ -1410,10 +1411,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "SE Louisiana",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 106,
+  "ap": 47,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1429,7 +1430,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401918465,
