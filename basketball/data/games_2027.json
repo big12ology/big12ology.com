@@ -1181,10 +1181,10 @@
   "tbd": false,
   "home": "UCF",
   "away": "Georgia Southern",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 84,
+  "ap": 70,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1197,7 +1197,8 @@
   "attendance": null,
   "espn": "401921026",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374945,
@@ -1205,10 +1206,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "Milwaukee",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 76,
+  "ap": 64,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1221,7 +1222,8 @@
   "attendance": null,
   "espn": "401919049",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372786,
