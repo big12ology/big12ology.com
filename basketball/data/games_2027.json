@@ -1277,10 +1277,10 @@
   "tbd": false,
   "home": "Texas Tech",
   "away": "Stonehill",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 88,
+  "ap": 37,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1293,7 +1293,8 @@
   "attendance": null,
   "espn": "401919847",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372809,
