@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 82
+    "agree": 83
   },
   "games": [
     {
@@ -903,6 +903,17 @@
       "espnId": 401856849,
       "ours": 52901,
       "espn": 52901,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Colorado",
+      "week": 11,
+      "opponent": "Houston",
+      "date": "2026-11-13",
+      "espnId": 401856860,
+      "ours": 47495,
+      "espn": 47495,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

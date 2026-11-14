@@ -1431,6 +1431,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Colorado,5,2026-10-03,Texas Tech,true,Folsom Field,50106,50183,0.9985,false
 2026,Colorado,7,2026-10-17,Utah,true,Folsom Field,52489,50183,1.0460,false
 2026,Colorado,9,2026-10-31,Kansas State,true,Folsom Field,46325,50183,0.9231,false
+2026,Colorado,11,2026-11-13,Houston,true,Folsom Field,47495,50183,0.9464,false
 2026,Houston,1,2026-09-05,Oregon State,false,TDECU Stadium,28742,40000,0.7186,false
 2026,Houston,2,2026-09-12,Southern,false,TDECU Stadium,28936,40000,0.7234,false
 2026,Houston,5,2026-10-03,UCF,true,TDECU Stadium,25593,40000,0.6398,false
