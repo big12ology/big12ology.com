@@ -5298,16 +5298,33 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
         byid = {g["id"]: g for g in games}
         if wit.get("found"):
             own = [x for x in wit["results"] if x["own"]]
-            oth = [x for x in wit["results"] if not x["own"] and x["upset"]]
             own_up = sum(1 for x in own if x["upset"])
             k = wit["upsets"]
             w, l = wit["record"]
+            # Everyone else's: every upset, and every loss by a team that
+            # finishes level with or above this one. Upsets alone hid the
+            # results the path stands on: a contender that has to lose as
+            # the model's underdog (Texas Tech at 44% and 49%, holding
+            # Arizona State's path together in November 2026) went to "the
+            # favorite" and so was never listed, and the reader saw no way
+            # for it to reach the cut.
+            fin = {r["team"]: r["conf_w"] for r in rows}
+            for x in wit["results"]:
+                fin[x["winner"]] = fin.get(x["winner"], 0) + 1
+            oth = sorted(
+                (x for x in wit["results"] if not x["own"] and (
+                    x["upset"] or fin.get(
+                        x["away"] if x["winner"] == x["home"] else x["home"],
+                        0) >= w)),
+                key=lambda x: (x["week"], str(x["id"])))
 
             def prow(x):
                 g = byid.get(x["id"]) or {"home": x["home"], "away": x["away"],
                                           "completed": False}
                 tag = (f"<span class=dim>upset · {whole_pct(x['p'])}</span>"
-                       if x["upset"] else "")
+                       if x["upset"] else
+                       f"<span class=dim>favored · {whole_pct(x['p'])}</span>"
+                       if not x["own"] else "")
                 return (f"<tr><td>Wk {x['week']}</td>"
                         f"<td class=teamcell>{matchup(g, 16)}</td>"
                         f"<td>{team_name(x['winner'])}</td><td>{tag}</td></tr>")
@@ -5343,8 +5360,11 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
                     f"games, under the full tiebreaker procedure, for the fewest "
                     f"results against the blend's favorite and, among those, the "
                     f"likeliest. Upsets are against the model's favorite, not the "
-                    f"betting line, and a coin flip counts as one either way. "
-                    f"Every game not listed goes to the favorite.</p></div>")
+                    f"betting line, and a game the model has no number for "
+                    f"counts as one either way. Other teams' games are listed "
+                    f"where the favorite loses or where a team finishing "
+                    f"level with or above {esc(ab)} loses; every game not "
+                    f"listed goes to the favorite.</p></div>")
         elif state.get("status") == "eliminated" and state.get("r"):
             path = (f"<div class=card id=path><h2>What it would take</h2>"
                     f"<p>Nothing does. No completion of the {state['r']} "
