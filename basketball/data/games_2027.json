@@ -1194,11 +1194,10 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 5532,
   "espn": "401921026",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374945,
@@ -1219,11 +1218,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null,
+  "attendance": 4765,
   "espn": "401919049",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372786,
@@ -1244,11 +1242,10 @@
   "venue_id": 209,
   "city": "Auburn",
   "state": "AL",
-  "attendance": null,
+  "attendance": 9121,
   "espn": "401909741",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374947,
@@ -1269,15 +1266,14 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 5351,
   "espn": "401917980",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374976,
-  "start": "2026-11-14T18:00:00.000Z",
+  "start": "2026-11-14T19:00:00.000Z",
   "tbd": false,
   "home": "Texas Tech",
   "away": "Stonehill",
@@ -1320,30 +1316,6 @@
   "state": "RI",
   "attendance": null,
   "espn": "401909534",
-  "hseed": null,
-  "aseed": null
- },
- {
-  "id": 374967,
-  "start": "2026-11-15T00:00:00.000Z",
-  "tbd": false,
-  "home": "Utah",
-  "away": "Washington",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": false,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Jon M. Huntsman Center",
-  "venue_id": 173,
-  "city": "Salt Lake City",
-  "state": "UT",
-  "attendance": null,
-  "espn": "401921760",
   "hseed": null,
   "aseed": null
  },
@@ -1392,6 +1364,30 @@
   "state": "IA",
   "attendance": null,
   "espn": "401909774",
+  "hseed": null,
+  "aseed": null
+ },
+ {
+  "id": 374967,
+  "start": "2026-11-15T19:00:00.000Z",
+  "tbd": false,
+  "home": "Utah",
+  "away": "Washington",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": false,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Jon M. Huntsman Center",
+  "venue_id": 173,
+  "city": "Salt Lake City",
+  "state": "UT",
+  "attendance": null,
+  "espn": "401921760",
   "hseed": null,
   "aseed": null
  },
