@@ -5302,18 +5302,22 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
             k = wit["upsets"]
             w, l = wit["record"]
             # Everyone else's: every upset, and every loss by a team that
-            # finishes level with or above this one. Upsets alone hid the
-            # results the path stands on: a contender that has to lose as
-            # the model's underdog (Texas Tech at 44% and 49%, holding
-            # Arizona State's path together in November 2026) went to "the
-            # favorite" and so was never listed, and the reader saw no way
-            # for it to reach the cut.
-            fin = {r["team"]: r["conf_w"] for r in rows}
+            # could still have reached this one's final win total. Upsets
+            # alone hid the results the path stands on: a contender that has
+            # to lose as the model's underdog (Texas Tech at 44% and 49%,
+            # holding Arizona State's path together in November 2026) went
+            # to "the favorite" and so was never listed, and the reader saw
+            # no way for it to reach the cut. Finishing level is not the
+            # test either: on Arizona's 7-2 path the same two Tech losses
+            # leave Tech at 6-3, below, and a 5-1 team the reader can see
+            # passing Arizona still needs its losses shown.
+            ceil = {r["team"]: r["conf_w"] for r in rows}
             for x in wit["results"]:
-                fin[x["winner"]] = fin.get(x["winner"], 0) + 1
+                for side in (x["home"], x["away"]):
+                    ceil[side] = ceil.get(side, 0) + 1
             oth = sorted(
                 (x for x in wit["results"] if not x["own"] and (
-                    x["upset"] or fin.get(
+                    x["upset"] or ceil.get(
                         x["away"] if x["winner"] == x["home"] else x["home"],
                         0) >= w)),
                 key=lambda x: (x["week"], str(x["id"])))
@@ -5362,8 +5366,8 @@ def team_page_body(team, year, games, ctx, rows, clinch, extras):
                     f"likeliest. Upsets are against the model's favorite, not the "
                     f"betting line, and a game the model has no number for "
                     f"counts as one either way. Other teams' games are listed "
-                    f"where the favorite loses or where a team finishing "
-                    f"level with or above {esc(ab)} loses; every game not "
+                    f"where the favorite loses or where a team that could "
+                    f"still reach {w} wins loses; every game not "
                     f"listed goes to the favorite.</p></div>")
         elif state.get("status") == "eliminated" and state.get("r"):
             path = (f"<div class=card id=path><h2>What it would take</h2>"
