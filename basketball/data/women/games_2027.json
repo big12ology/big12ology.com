@@ -1574,10 +1574,10 @@
   "tbd": false,
   "home": "Boise State",
   "away": "Utah",
-  "hp": 47,
-  "ap": 78,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1593,8 +1593,7 @@
   "aseed": null,
   "tv": [
    "YouTube"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401923481,
