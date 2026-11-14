@@ -1,4 +1,17 @@
 {
+ "401906965": {
+  "as_of": "2026-11-14T13:04:11+00:00",
+  "books": [
+   {
+    "over_under": 136.5,
+    "provider": "DraftKings",
+    "spread": 5.5
+   }
+  ],
+  "over_under": 136.5,
+  "source": "the-odds-api.com",
+  "spread": 5.5
+ },
  "401907163": {
   "as_of": "2026-11-03T14:59:30+00:00",
   "books": [
