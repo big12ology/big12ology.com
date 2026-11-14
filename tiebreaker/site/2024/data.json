@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-12T04:09:11+00:00",
+ "generated": "2026-09-15T21:39:51+00:00",
  "season": 2024,
  "standings": [
   {
@@ -264,6 +264,8 @@
  "championship": {
   "seed1": "Arizona State",
   "seed2": "Iowa State",
+  "pending": null,
+  "reason": null,
   "note": null,
   "resolved": true
  },

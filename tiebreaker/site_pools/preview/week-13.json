@@ -4,14 +4,26 @@
   {
    "away": "TCU",
    "b12": "both",
+   "book_lines": [
+    {
+     "away_ml": 625,
+     "home_ml": -950,
+     "over_under": 55.5,
+     "over_under_open": 55.5,
+     "provider": "DraftKings",
+     "spread": -16.5,
+     "spread_open": -16.5
+    }
+   ],
+   "books": 1,
    "game_id": 401856879,
    "home": "Texas Tech",
    "kickoff": "2026-11-27T01:00:00.000Z",
    "kickoff_at": 1795741200,
    "neutral": false,
    "preview": "/schedule/game/401856879-tcu-at-texas-tech.html",
-   "spread_x2": null,
-   "unpickable": "no_line"
+   "spread_raw": -16.5,
+   "spread_x2": -33
   },
   {
    "away": "West Virginia",
@@ -98,10 +110,10 @@
    "unpickable": "kickoff_tbd"
   }
  ],
- "lock_at": null,
- "pickable_count": 0,
+ "lock_at": 1795741200,
+ "pickable_count": 1,
  "preview": true,
  "season": 2026,
- "status": "no_contest",
+ "status": "published",
  "week": 13
 }

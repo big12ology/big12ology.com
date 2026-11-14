@@ -1,29 +1,29 @@
 <!doctype html>
 <html lang=en><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
-<title>Arizona at Kansas State — Big 12 Schedule</title>
+<title>Arizona at Kansas State — Big 12 Football Schedule</title>
 <link rel=canonical href="https://big12ology.com/schedule/game/401856865-arizona-at-kansas-state.html">
 <meta name=description content="Arizona at Kansas State, week 12 of the 2026 Big 12 season: kickoff, venue, broadcast, the line, and what four rating models make of it.">
 <meta property=og:type content=website>
 <meta property=og:site_name content=Big12ology>
-<meta property=og:title content="Arizona at Kansas State — Big 12 Schedule">
+<meta property=og:title content="Arizona at Kansas State — Big 12 Football Schedule">
 <meta property=og:description content="Arizona at Kansas State, week 12 of the 2026 Big 12 season: kickoff, venue, broadcast, the line, and what four rating models make of it.">
 <meta property=og:url content="https://big12ology.com/schedule/game/401856865-arizona-at-kansas-state.html">
-<meta property=og:image content="https://big12ology.com/tiebreaker/og.png">
+<meta property=og:image content="https://big12ology.com/season/og.png">
 <meta property=og:image:width content=1200>
 <meta property=og:image:height content=630>
 <meta name=twitter:card content=summary_large_image>
-<link rel=icon type=image/svg+xml href="../../tiebreaker/favicon.svg">
-<link rel=icon type=image/png sizes=32x32 href="../../tiebreaker/favicon-32.png">
-<link rel=apple-touch-icon href="../../tiebreaker/favicon-180.png">
+<link rel=icon type=image/svg+xml href="../../season/favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="../../season/favicon-32.png">
+<link rel=apple-touch-icon href="../../season/favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
 <script>(function(){try{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){return /^[A-Za-z][\w-]*$/.test(k)}).map(function(k){return"#"+k+">*:not(h2):not(h3){display:none}#"+k+"{padding-bottom:8px}"}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}catch(e){}})();</script>
-<link rel=stylesheet href="../../tiebreaker/brand.css?v=2915cd26">
-<script defer src="../../tiebreaker/theme.js?v=ab3fca05"></script>
-<script src="../../tiebreaker/state.js?v=f7c7de71"></script>
-<script src="../../tiebreaker/metrics.js?v=8a5fb0cb"></script>
-<script defer src="../../tiebreaker/cards.js?v=c5a69787"></script>
-<link rel=alternate type=application/rss+xml href=../../tiebreaker/feed.xml>
+<link rel=stylesheet href="../../season/brand.css?v=98c30a0a">
+<script defer src="../../season/theme.js?v=ab3fca05"></script>
+<script src="../../season/state.js?v=f7c7de71"></script>
+<script src="../../season/metrics.js?v=8a5fb0cb"></script>
+<script defer src="../../season/cards.js?v=c5a69787"></script>
+<link rel=alternate type=application/rss+xml href=../../season/feed.xml>
 <style>
 .matchup { display:flex; align-items:center; gap:18px; margin:10px 0 4px;
   flex-wrap:wrap }
@@ -32,6 +32,19 @@
   padding:6px 10px 10px 2px }
 .tname { letter-spacing:-.01em }
 .vs { color:var(--dim); font-weight:400; font-size:var(--t-subhead); padding:0 6px }
+/* A SEAT THE PROCEDURE HAS NOT FILLED. The matchup card can now say it does
+   not know the second participant, which it has to be able to draw: for most
+   of September the leader is real and the field behind it has not played a
+   conference game. Same geometry as a named side, so nothing on the card
+   moves when the seed resolves, and dashed rather than empty so the slot
+   reads as open instead of broken. */
+.side.tbd { color:var(--dim); border-bottom-style:dashed;
+  border-bottom-color:var(--dim) }
+.side.tbd .tbdmark { display:inline-flex; align-items:center;
+  justify-content:center; width:56px; height:56px; margin-right:6px;
+  border:2px dashed var(--dim); border-radius:6px;
+  font-size:var(--t-subhead); font-weight:700; color:var(--dim) }
+.side.tbd .seed { background:var(--dim) }
 .seed { display:inline-block; background:var(--accent); color:#fff;
   border-radius:6px; font-size:var(--t-label); width:22px; height:22px;
   line-height:22px; text-align:center; vertical-align:3px; margin-right:4px }
@@ -96,6 +109,13 @@ main { max-width:var(--chrome-w); margin:0 auto; padding:20px;
 .movepts { text-align:right; font-variant-numeric:tabular-nums }
 @media (max-width:640px) {
   .movemain { grid-template-columns:22px 1fr auto; row-gap:2px }
+  /* The same bug .clrec was fixed for below, in the row above it, missed
+     because the two are siblings that look alike rather than one rule. Four
+     children, three tracks: the note auto-placed onto the next row into
+     column 1, a 22px track cut for a logo, and rendered "27.5% -> 33.1% to
+     reach the title game" one word per line, 186px tall on a 23px line. Four
+     movers turned a card into most of a phone screen. */
+  .movemain .dim { grid-column:2/-1 }
 }
 .levmain { display:grid; align-items:center; gap:0 10px;
   grid-template-columns:minmax(0,1fr) auto 112px 34px }
@@ -177,8 +197,13 @@ ul.games li { padding:5px 0; border-bottom:1px solid var(--line);
 /* The whole row is the link to the game's page. Ink, not accent: a list
    where every word is link-colored says nothing; the hover underline says
    it for the row under the pointer. */
-ul.games li a.gamelink { color:inherit; text-decoration:none; display:block }
-ul.games li a.gamelink:hover { text-decoration:underline }
+/* The Preview link at the end of a game row. Small and dim: the names
+   beside it are links too, and the row is read before it is clicked. */
+ul.games li a.gamelink { color:var(--dim); text-decoration:none;
+  margin-left:8px; font-size:var(--t-meta); white-space:nowrap;
+  display:inline-flex; align-items:center; gap:4px; vertical-align:baseline }
+ul.games li a.gamelink .gi { width:13px; height:13px }
+ul.games li a.gamelink:hover { text-decoration:underline; color:var(--accent) }
 /* One non-conference marker for the whole site. It was a pill in the Lab's
    own stylesheet and bare parenthetical text everywhere else, so the same
    fact about the same game looked like two different things depending on
@@ -291,18 +316,51 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
   border-radius:10px; padding:11px 13px; min-width:0;
   break-inside:avoid; margin-bottom:10px }
 .slateteams { font-size:var(--t-copy); margin-bottom:8px }
+/* A team's name is a link to its page wherever it is printed (team_name in
+   build.py, and the two scripts that draw standings). It reads as a name,
+   not a link, until pointed at: the tables are dense enough that sixteen
+   underlined cells would be the loudest thing on the page. */
+.teamlink { color:inherit; text-decoration:none }
+.teamlink:hover, .teamlink:focus-visible { text-decoration:underline }
 .slatemeta { font-size:var(--t-meta); color:var(--dim); display:grid; gap:4px }
   /* Two columns of facts once the card is wide enough for them. Five
      single-line facts stacked made a tall card that was mostly one short
      phrase per row, and the week is sixteen of these. Below 520px the card is
      already narrow enough that a second column would only truncate. */
   @media (min-width:520px) {
-    .slatemeta { grid-template-columns:1fr 1fr; gap:4px 14px }
-    /* The kickoff spans. It carries two clocks — the venue's and the
-       reader's — and is the longest line on the card by some way; halved it
-       lost the zone off the end, which is the part that makes it a time
-       rather than a number. The other four facts pair up beneath it. */
-    .slatemeta > .slatewhen { grid-column:1 / -1 }
+    /* NAMED CELLS, NOT AUTO-FLOW, because three of the five facts can be
+       absent. where(), broadcast() and weather_line() each return "" when
+       they have nothing to say, and an auto-flowed grid closes the gap by
+       pulling every later fact forward: Colorado at Northwestern has no
+       announced broadcast, so its weather slid up into the TV slot and its
+       line dropped to a row of its own. Down a week of sixteen cards that
+       means the same fact sits in a different place on each one, and the
+       column you are scanning is not a column.
+
+       A fact with nothing to say now leaves its own cell empty and moves
+       nothing. The kickoff still spans: it carries two clocks, the venue's
+       and the reader's, and halved it lost the zone off the end, which is
+       the part that makes it a time rather than a number. */
+    .slatemeta { grid-template-columns:1fr 1fr; gap:4px 14px;
+      grid-template-areas:"when when" "where tv" "wx line" }
+    .slatemeta > .slatewhen  { grid-area:when }
+    .slatemeta > .slatewhere { grid-area:where }
+    .slatemeta > .slatetv    { grid-area:tv }
+    .slatemeta > .slatewx    { grid-area:wx }
+    /* Scoped to the grid: pickem_line() draws a .slateline of its own as a
+       sibling of .slatemeta, and it is not a cell in here. */
+    .slatemeta > .slateline  { grid-area:line }
+    /* The team pages' extra row (slate_card's `extra`): the model's line
+       beside the result. Auto-placed under the named rows and spanning
+       both columns, so a card without one is laid out exactly as before. */
+    .slatemeta > .slatemodel { grid-column:1 / -1 }
+    /* The game page's head carries two of the five facts, kickoff and TV,
+       and spans the full page. The slate's grid put the TV in its right-hand
+       cell, halfway across a 1900px card with nothing to its left, so it
+       read as floating rather than as a second column. One column here: the
+       channel sits under the kickoff it belongs to. */
+    #gamehead .slatemeta { grid-template-columns:1fr;
+      grid-template-areas:"when" "tv" }
   }
 .slatemeta > div { display:flex; align-items:center; gap:7px;
   min-width:0; white-space:nowrap }
@@ -423,22 +481,85 @@ h3.dayhead:first-of-type { margin-top:4px; padding-top:0; border-top:0 }
 #venuecard .mkgrid .dim { display:flex; align-items:center; gap:0 }
 /* The market is four figures, and figures want columns rather than a
    paragraph: the number first, what it is underneath. */
-/* 150, not 120: at 120 a favourite with a long name broke across two lines
-   ("West Virginia" / "-19.5"), which reads as two figures rather than one. */
-.mkgrid { display:grid; gap:12px;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+/* THE FLOOR, named once so a card can raise it for its own contents. A track
+   narrower than this breaks a value across two lines, which reads as two
+   figures rather than one. 150 is the venue card's: its figures are "68F",
+   "12 mph", "27%", and a wider floor only costs it a column. */
+.mkgrid { display:grid; gap:12px; --mkmin:150px;
+  grid-template-columns:repeat(auto-fit,minmax(var(--mkmin),1fr));
   font-variant-numeric:tabular-nums }
+/* The market card is two pairs rather than four loose figures: what the line
+   is, then what it costs to take it. Left to auto-fit it wrapped 3 + 1, which
+   reads as a card that ran out of room, with a lone moneyline stranded under
+   three siblings. Two columns puts both prices on their own row, each under
+   the number it prices.
+     max(--mkmin,45%) is what caps it at two. Three tracks would need 135% of
+   the card, so they can never fit; on a narrow card the percentage falls below
+   the floor and the floor takes over, dropping the card to one column rather
+   than breaking a favorite's name across two lines.
+     230, not the 150 above, and measured rather than guessed: at 20/600 the
+   favorites run "Kansas State -7" 149, "Texas Tech -43.7" 158, "Arizona State
+   -5.9" 168, "West Virginia -19.5" 178, "Coastal Carolina -3" 182, "Oklahoma
+   State -10.5" 203, "Bethune-Cookman -44.5" 229. At 150 a 322px card took two
+   tracks of 155 and broke "Arizona State" off its number. 230 clears the whole
+   list, the long non-conference names included, so no favorite this site can
+   print gets split from its number.
+     What it costs is the second column below a 472px grid (two tracks plus the
+   gap), so a phone and a narrow window get one figure per row where they used
+   to get two. Paid deliberately: a stacked card is still four figures read in
+   order, and a broken name is a number that looks like two.
+     Raised here rather than on .mkgrid on purpose: the venue card's "12 mph"
+   never needed the room, and a floor this wide would leave it one figure per
+   row at any width short of a desktop. */
+.mkpair { --mkmin:230px;
+  grid-template-columns:repeat(auto-fit,minmax(max(var(--mkmin),45%),1fr)) }
 .mkval { font-size:var(--t-lead); font-weight:600 }
+/* A figure that is one reading of both teams, the implied score, takes the
+   whole row whatever the column count, with the names at body weight so the
+   two numbers are what the eye lands on. */
+.mkwide { grid-column:1/-1 }
+.mkteam { font-weight:400 }
 .mkgrid .dim { font-size:var(--t-meta) }
+/* The books behind the average, shut by default. The averages above are the
+   answer; this is the working, and it only earns room when asked for. */
+.bookbox { margin-top:14px; border-top:1px solid var(--line); padding-top:10px }
+.bookbox > summary { cursor:pointer; list-style:none; display:flex;
+  align-items:center; justify-content:space-between; gap:8px;
+  font-size:var(--t-meta); color:var(--dim) }
+/* Both spellings: WebKit still wants the pseudo-element, everyone else takes
+   list-style. Left in, the native triangle sits beside our own chevron. */
+.bookbox > summary::-webkit-details-marker { display:none }
+.bookchev { color:var(--dim); transition:transform .15s ease }
+.bookbox[open] .bookchev { transform:rotate(180deg) }
+/* The wrapper scrolls, not the table: four columns of numbers plus a book
+   name does not fit a phone, and a card that scrolls the PAGE sideways is
+   worse than a table that scrolls itself. On the table directly this would
+   need display:block, which throws away the column alignment that is the
+   only reason to use a table here. */
+.booktabwrap { overflow-x:auto; margin-top:10px }
+.booktab { width:100%; border-collapse:collapse;
+  font-size:var(--t-meta); font-variant-numeric:tabular-nums }
+.booktab th, .booktab td { padding:4px 8px 4px 0; text-align:right;
+  white-space:nowrap }
+.booktab th:first-child, .booktab td:first-child { text-align:left;
+  padding-right:14px }
+.booktab thead th { color:var(--dim); font-weight:500;
+  border-bottom:1px solid var(--line) }
 /* Model against market: the same bar the race card uses, so a reader who
    knows one knows the other. */
-/* 58px, not 44. The label track was cut to fit SP+, FPI, ELO and SRS, and
-   then the market row arrived with a six-letter word in it: "MARKET" is wider
-   than the column, so it ran straight into the team name and printed
-   "MARKETTCU". Fixed rather than max-content, because each row is its own
-   grid — a track that sizes to its own content stops the bars lining up down
-   the card, which is the only reason this is a grid at all. */
-.mline { display:grid; grid-template-columns:58px minmax(0,1fr);
+/* 86px, and this is the second time the track has been outgrown. It was cut
+   to 44 to fit SP+, FPI, ELO and SRS; the market row arrived with a
+   six-letter word and printed "MARKETTCU", so it went to 58; then this
+   site's own rating arrived with ten letters and ellipsised to "BIG12...".
+   Measured rather than guessed: the labels need 21, 25, 26, 27, 53 and 82
+   pixels, so 86 clears the longest with a little air.
+
+   Fixed rather than max-content, because each row is its own grid — a track
+   that sizes to its own content stops the bars lining up down the card,
+   which is the only reason this is a grid at all. Anything longer than
+   "Big12ology" will ellipsise, which is the right failure: a name nobody
+   can read beats bars that do not line up. */
+.mline { display:grid; grid-template-columns:86px minmax(0,1fr);
   align-items:center; gap:10px; margin:6px 0; font-size:var(--t-row) }
 .msys { color:var(--dim); font-size:var(--t-meta); text-transform:uppercase;
   letter-spacing:.04em; overflow:hidden; text-overflow:ellipsis }
@@ -538,6 +659,102 @@ tr.moved.down td { animation:flashdown 900ms ease-out }
 .teamcell.st-in { font-weight:700 }
 .teamcell.st-top { font-style:italic }
 
+/* ---- the empire ----
+   The imperialism map. The territories are team colors, so every line
+   between them is the panel color, which reads as a gap in either theme. */
+.emwrap { margin:8px 0 4px }
+.emmap { display:block; width:100%; height:auto }
+.emblock { stroke:var(--panel); stroke-width:1.1; stroke-linejoin:round;
+  transition:fill .35s }
+.emblock.emnew { stroke:var(--ink); stroke-width:2 }
+.emstates { fill:none; stroke:#000; stroke-opacity:.18; stroke-width:.5;
+  pointer-events:none }
+.emhome { fill:#fff; stroke:#000; stroke-width:.8; pointer-events:none }
+.embadge { fill:#fff; stroke:#000; stroke-opacity:.35; stroke-width:.8;
+  pointer-events:none }
+#em-marks image { pointer-events:none }
+.emlabel { margin:6px 0 0; font-size:var(--t-label); color:var(--dim) }
+#empirebar .rpline { display:flex; align-items:center; gap:10px;
+  flex-wrap:wrap }
+#empirebar input[type=range] { flex:1 1 200px; min-width:140px;
+  accent-color:var(--accent) }
+#empirecard.scrubbed { border-color:var(--accent) }
+.emshare { white-space:nowrap; font-variant-numeric:tabular-nums }
+.embar { display:inline-block; width:64px; height:6px; margin-right:8px;
+  border-radius:3px; background:var(--line); overflow:hidden;
+  vertical-align:1px }
+.embar i { display:block; height:100%; background:var(--accent) }
+.emlands { font-size:var(--t-meta); color:var(--dim) }
+.stbl tr.emout td { opacity:.6 }
+.emlog { margin:0; padding-left:0; list-style:none; display:grid; gap:10px }
+.emlog ul { margin:4px 0 0; padding-left:18px; display:grid; gap:4px;
+  font-size:var(--t-meta) }
+@media (prefers-reduced-motion:reduce) { .emblock { transition:none } }
+.emcard { display:block; width:100%; height:auto; margin:8px 0;
+  border:1px solid var(--line); border-radius:8px }
+.emurls { margin:8px 0 0; display:grid; gap:2px }
+.emurls dt { font-size:var(--t-meta); color:var(--dim); margin-top:6px }
+.emurls dd { margin:0; overflow-wrap:anywhere }
+
+/* ---- why a tied team sits where it does ----
+   The chip under a team on the fully-broken board, and the panel it opens.
+   The chip always sits under the name: in a half-width card the two do
+   not fit on a line, and a row that wrapped only for the long names would
+   leave the board with two row heights. inline-flex and not flex, because
+   an eliminated team's name is struck through and a block inside the cell
+   inherits the line through it; an inline box does not. */
+.tbwrap { container-type:inline-size }
+.tbwrap .teamcell { white-space:normal }
+.tbwrap .teamlink, .tbwrap .mv { white-space:nowrap }
+.tbchip { display:inline-flex; align-items:center; gap:5px;
+  margin:3px 0 3px 26px; padding:1px 7px 1px 2px; font:inherit;
+  font-size:var(--t-fine); font-style:normal; font-weight:400;
+  color:var(--dim); background:none; cursor:pointer;
+  border:1px solid var(--line); border-radius:20px; white-space:nowrap;
+  font-variant-numeric:tabular-nums }
+.tbchip b { min-width:17px; padding:0 4px; border-radius:20px;
+  text-align:center; background:var(--line); color:var(--ink);
+  font-weight:700; box-sizing:border-box }
+.tbchev { fill:none; stroke:currentColor; stroke-width:2.5;
+  stroke-linecap:round; stroke-linejoin:round; transition:transform .15s }
+.tbchip:hover, .tbchip[aria-expanded=true] { border-color:var(--accent);
+  color:var(--ink) }
+.tbchip:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.tbchip[aria-expanded=true] b { background:var(--accent);
+  color:var(--panel) }
+.tbchip[aria-expanded=true] .tbchev { transform:rotate(180deg) }
+.stbl tr.tbopen td { border-bottom-color:transparent }
+.stbl tr.tbrow td { height:auto; padding:0 0 12px; text-align:left }
+/* Pinned to the visible width of the card, not to the table's: on a phone
+   the table is wider than its card and scrolls sideways, and a panel laid
+   out to the table ran off the right edge with it. */
+.tbbox { position:sticky; left:44px; box-sizing:border-box;
+  width:min(34rem, calc(100cqi - 48px)); padding:2px 0 2px 12px;
+  border-left:3px solid var(--accent); font-size:var(--t-meta);
+  white-space:normal }
+.tbbox p { margin:0 0 8px; color:var(--dim) }
+.tbsteps { list-style:none; margin:0; padding:0; display:grid; gap:6px;
+  color:var(--dim) }
+.tbsteps li { display:grid; grid-template-columns:20px minmax(0,1fr);
+  gap:8px; align-items:start }
+.tbsteps li > b { width:20px; height:20px; line-height:20px;
+  border-radius:50%; text-align:center; font-size:var(--t-fine);
+  background:var(--line); color:var(--dim) }
+.tbsteps li.won { color:var(--ink) }
+.tbsteps li.won > b { background:var(--accent); color:var(--panel) }
+.tbcmp { display:grid; gap:3px; margin-top:6px; color:var(--dim) }
+.tbline { display:grid; gap:6px; align-items:center;
+  grid-template-columns:minmax(70px,128px) 30px minmax(24px,1fr) 42px }
+.tbnum { text-align:right; font-variant-numeric:tabular-nums }
+.tbbar { height:6px; border-radius:3px; background:var(--line);
+  overflow:hidden }
+.tbbar i { display:block; height:100%; background:var(--dim); opacity:.55 }
+.tbline.win { color:var(--ink); font-weight:700 }
+.tbline.win .tbbar i { background:var(--accent); opacity:1 }
+.tbline.me > span:first-child { text-decoration:underline;
+  text-decoration-color:var(--accent); text-underline-offset:3px }
+@media (prefers-reduced-motion:reduce) { .tbchev { transition:none } }
+
 /* the replay's own controls, same chrome as the Lab's — one rule, two pages,
    so a control never looks like two different kinds of thing on a site where
    the reader crosses between them in a click. Denser than it was and pressable
@@ -592,7 +809,7 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
 .bumpwrap .bteam:hover { opacity:1 }
 .bumpwrap .bteam:hover polyline { stroke-width:3.6 }
 </style>
-<script defer src="../../tiebreaker/scrollcue.js?v=57795f5d"></script><script>
+<script defer src="../../season/scrollcue.js?v=57795f5d"></script><script>
 (function () {
   // The server writes the kickoff in the venue's own zone, because that is
   // how schools publish it and how a reader checks this page against
@@ -630,23 +847,24 @@ button.wbtn:active { transform:translateY(1px); box-shadow:none }
     localize();
   }
 })();
-</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","awayTeam":{"@type":"SportsTeam","name":"Arizona"},"competitor":[{"@type":"SportsTeam","name":"Arizona"},{"@type":"SportsTeam","name":"Kansas State"}],"eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","homeTeam":{"@type":"SportsTeam","name":"Kansas State"},"location":{"@type":"Place","name":"Bill Snyder Family Stadium"},"name":"Arizona at Kansas State","sport":"American Football","startDate":"2026-11-21","url":"https://big12ology.com/schedule/game/401856865-arizona-at-kansas-state.html"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://big12ology.com/","name":"Big12ology","position":1},{"@type":"ListItem","item":"https://big12ology.com/schedule/","name":"2026 schedule","position":2},{"@type":"ListItem","name":"Arizona at Kansas State","position":3}]}</script></head><body>
+</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","awayTeam":{"@type":"SportsTeam","name":"Arizona"},"competitor":[{"@type":"SportsTeam","name":"Arizona"},{"@type":"SportsTeam","name":"Kansas State"}],"description":"Arizona at Kansas State, week 12 of the 2026 Big 12 season: kickoff, venue, broadcast, the line, and what four rating models make of it.","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","homeTeam":{"@type":"SportsTeam","name":"Kansas State"},"image":"https://big12ology.com/season/og.png","location":{"@type":"Place","address":{"@type":"PostalAddress","addressCountry":"US","addressLocality":"Manhattan","addressRegion":"KS"},"name":"Bill Snyder Family Stadium"},"name":"Arizona at Kansas State","organizer":{"@type":"SportsOrganization","name":"Big 12 Conference","url":"https://big12sports.com/"},"sport":"American Football","startDate":"2026-11-21","url":"https://big12ology.com/schedule/game/401856865-arizona-at-kansas-state.html"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://big12ology.com/","name":"Big12ology","position":1},{"@type":"ListItem","item":"https://big12ology.com/schedule/","name":"2026 schedule","position":2},{"@type":"ListItem","name":"Arizona at Kansas State","position":3}]}</script></head><body>
 <a class=skip-link href="#main">Skip to content</a>
-<nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../../tiebreaker/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../tiebreaker/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a href="/tiebreaker/">Tiebreaker</a><a class=on href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a href="/pools/">Pools</a><span class=b12-right><span class=b12-theme></span></span></nav>
-<header class=b12-head>
+<nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="../../season/brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="../../season/brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a class=on href="/season/">Football</a><a href="/basketball/">Men’s Basketball</a><a href="/womens-basketball/">Women’s Basketball</a><span class=b12-right><span class=b12-theme></span></span></nav>
+<header class="b12-head tabbed">
   <div class=hwrap>
     <div>
-      <h1>Big 12 Schedule <span class=yrpills><span class=yron>2026</span><a href='../2025/'>2025</a><a href='../2024/'>2024</a></span></h1>
+      <h1>Big 12 Football Schedule <span class=yrpills><span class=yron>2026</span><a href='../2025/'>2025</a><a href='../2024/'>2024</a></span></h1>
       <p>Who plays whom, who misses whom, and what the unbalanced draw is worth. Nine conference games out of a possible fifteen.</p>
     </div>
   </div>
+  <nav class=b12-tabs aria-label="Football sections"><a href="/season/">Season</a><a class=on aria-current=page href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a href="/pools/">Pools</a></nav>
 </header>
 <nav class=subnav><a href=.././ class=on>The Schedule</a><a href=../matrix.html class=off>The Matrix</a><a href=../draw.html class=off>The Draw</a><a href=../rotation.html class=off>The Rotation</a></nav>
 <main id=main tabindex="-1">
-<svg class=sprite width=0 height=0 aria-hidden=true style='position:absolute'><symbol id='i-clock' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/></symbol><symbol id='i-pin' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/><path d='M17.657 16.657 13.414 20.9a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z'/></symbol><symbol id='i-tv' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='7' width='18' height='13' rx='2'/><path d='M16 3l-4 4l-4 -4'/></symbol><symbol id='i-roof' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 21h18'/><path d='M4 21v-10a8 8 0 0 1 16 0v10'/><path d='M9 21v-9a3 3 0 0 1 6 0v9'/></symbol><symbol id='i-temp' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5'/><path d='M10 9h4'/></symbol><symbol id='i-sun' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='4'/><path d='M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7'/></symbol><symbol id='i-wind' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24'/><path d='M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24'/><path d='M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24'/></symbol><symbol id='i-rain' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M11 20v1m4 -3v1m-8 -1v1'/></symbol><symbol id='i-history' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 8v4l3 3'/><path d='M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5'/></symbol><symbol id='i-chart' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 20h18'/><rect x='5' y='12' width='4' height='8'/><rect x='10' y='8' width='4' height='12'/><rect x='15' y='4' width='4' height='16'/></symbol><symbol id='i-note' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='4' width='16' height='16' rx='2'/><path d='M9 8h6M9 12h6M9 16h3'/></symbol><symbol id='i-out' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 6H6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6'/><path d='M11 13l9 -9'/><path d='M15 4h5v5'/></symbol><symbol id='i-star' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1.002l3.086 -6.253l3.086 6.253l6.9 1.002l-5 4.867l1.179 6.873z'/></symbol><symbol id='i-spark' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z'/><path d='M16 6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z'/><path d='M9 18a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z'/></symbol><symbol id='i-chevdown' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 7l5 5l5 -5'/><path d='M7 13l5 5l5 -5'/></symbol><symbol id='i-chevup' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 11l5 -5l5 5'/><path d='M7 17l5 -5l5 5'/></symbol><symbol id='i-filter' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z'/></symbol><symbol id='i-filteroff' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M8 4h12v2.172a2 2 0 0 1 -.586 1.414l-3.914 3.914m-.5 3.5v4l-6 2v-8.5l-4.489 -4.923a2 2 0 0 1 -.511 -1.34v-2.237'/><path d='M3 3l18 18'/></symbol><symbol id='i-share' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M8.7 10.7l6.6 -3.4'/><path d='M8.7 13.3l6.6 3.4'/></symbol><symbol id='i-check' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12l5 5l10 -10'/></symbol><symbol id='i-eraser' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3'/><path d='M18 13.3l-6.3 -6.3'/></symbol></svg>
+<svg class=sprite width=0 height=0 aria-hidden=true style='position:absolute'><symbol id='i-clock' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/></symbol><symbol id='i-pin' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/><path d='M17.657 16.657 13.414 20.9a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z'/></symbol><symbol id='i-tv' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='7' width='18' height='13' rx='2'/><path d='M16 3l-4 4l-4 -4'/></symbol><symbol id='i-roof' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 21h18'/><path d='M4 21v-10a8 8 0 0 1 16 0v10'/><path d='M9 21v-9a3 3 0 0 1 6 0v9'/></symbol><symbol id='i-temp' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5'/><path d='M10 9h4'/></symbol><symbol id='i-sun' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='4'/><path d='M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7'/></symbol><symbol id='i-wind' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24'/><path d='M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24'/><path d='M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24'/></symbol><symbol id='i-rain' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M11 20v1m4 -3v1m-8 -1v1'/></symbol><symbol id='i-snow' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M11 15v.01m0 3v.01m0 3v.01m4 -4v.01m0 3v.01m-8 -4v.01m0 3v.01'/></symbol><symbol id='i-storm' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M13 14l-2 4l3 0l-2 4'/></symbol><symbol id='i-history' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 8v4l3 3'/><path d='M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5'/></symbol><symbol id='i-chart' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 20h18'/><rect x='5' y='12' width='4' height='8'/><rect x='10' y='8' width='4' height='12'/><rect x='15' y='4' width='4' height='16'/></symbol><symbol id='i-note' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='4' width='16' height='16' rx='2'/><path d='M9 8h6M9 12h6M9 16h3'/></symbol><symbol id='i-out' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 6H6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6'/><path d='M11 13l9 -9'/><path d='M15 4h5v5'/></symbol><symbol id='i-star' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1.002l3.086 -6.253l3.086 6.253l6.9 1.002l-5 4.867l1.179 6.873z'/></symbol><symbol id='i-spark' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z'/><path d='M16 6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z'/><path d='M9 18a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z'/></symbol><symbol id='i-chev' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6l6 -6'/></symbol><symbol id='i-chevdown' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 7l5 5l5 -5'/><path d='M7 13l5 5l5 -5'/></symbol><symbol id='i-chevup' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 11l5 -5l5 5'/><path d='M7 17l5 -5l5 5'/></symbol><symbol id='i-filter' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z'/></symbol><symbol id='i-filteroff' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M8 4h12v2.172a2 2 0 0 1 -.586 1.414l-3.914 3.914m-.5 3.5v4l-6 2v-8.5l-4.489 -4.923a2 2 0 0 1 -.511 -1.34v-2.237'/><path d='M3 3l18 18'/></symbol><symbol id='i-share' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M8.7 10.7l6.6 -3.4'/><path d='M8.7 13.3l6.6 3.4'/></symbol><symbol id='i-check' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12l5 5l10 -10'/></symbol><symbol id='i-eraser' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3'/><path d='M18 13.3l-6.3 -6.3'/></symbol></svg>
 
-<div class=gameback><a href='../'>&#8592; Week 12</a></div><div class=card id=gamehead><div class=gamematch><img class=mark src='../../tiebreaker/logos/ariz.svg' alt='' width=22 height=22 loading=lazy>Arizona <span class=dim>at</span> <img class=mark src='../../tiebreaker/logos/ksu.svg' alt='' width=22 height=22 loading=lazy>Kansas State</div><div class=slatemeta><div class=slatewhen><svg class='gi' aria-hidden=true><use href='#i-clock'/></svg><span class=dim>Sat, Nov 21 · time TBD</span></div></div></div><div class=card id=venuecard><h2>The venue</h2><div class=venname><svg class='gi vengi' aria-hidden=true><use href='#i-pin'/></svg>Bill Snyder Family Stadium <span class=vencity>Manhattan, KS</span></div><div class=mkgrid><div><div class=mkval>43&deg;F</div><div class=dim><svg class='gi vengi' aria-hidden=true><use href='#i-temp'/></svg>average temperature</div></div><div><div class=mkval>9 mph</div><div class=dim><svg class='gi vengi' aria-hidden=true><use href='#i-wind'/></svg>average wind</div></div><div><div class=mkval>29%</div><div class=dim><svg class='gi vengi' aria-hidden=true><use href='#i-rain'/></svg>of days see rain</div></div></div><p class=note>Ten seasons at this venue for this two-week window &mdash; a fact about the place, not a forecast for the day.</p></div><div class=card id=modelcard><h2>What the models make it</h2><div class=mline><span class=msys>SP+<i>2026</i></span><div class='mrow '><span class=mname>Kansas State</span><span class=mbar><i style='width:100%'></i></span><b class=mval>2.2</b></div></div><div class=mline><span class=msys>FPI<i>2026</i></span><div class='mrow '><span class=mname>Kansas State</span><span class=mbar><i style='width:18%'></i></span><b class=mval>0.4</b></div></div><div class=mline><span class=msys>Elo<i>2025</i></span><div class='mrow '><span class=mname>Kansas State</span><span class=mbar><i style='width:77%'></i></span><b class=mval>1.7</b></div></div><div class=mline><span class=msys>SRS<i>2025</i></span><div class='mrow '><span class=mname>Arizona</span><span class=mbar><i style='width:36%'></i></span><b class=mval>0.8</b></div></div><p class=note>Predicted margin in points, each system carrying its own home-field bump. The year under a name is the season those ratings come from. The market row is the spread as it stands, via collegefootballdata.com. Where that is last season, the rating is regressed toward the mean for how wrong a rating can be about a team this early.</p></div><div class=card id=seriescard><h2>The series</h2><p>Kansas State and Arizona have never met as conference opponents.</p><p class=note>If these two finish level in the standings, step (a) of the tiebreaker is head-to-head &mdash; which is this game. It is the first thing that separates them, before any of the six steps below it are read.</p></div><div class=card id=elsewhere><h2>Elsewhere</h2><div class=slatelinks><a class='slatelink dim' target=_blank rel=noopener href='https://www.espn.com/college-football/game/_/gameId/401856865'><svg class='gi' aria-hidden=true><use href='#i-out'/></svg>ESPN</a></div></div>
+<div class=gameback><a href='../'>&#8592; Week 12</a></div><div class=card id=gamehead><div class=gamematch><img class=mark src='../../season/logos/ariz.svg' alt='' width=22 height=22 loading=lazy><a class=teamlink href='../../season/team/arizona.html'>Arizona</a> <span class=dim>at</span> <img class=mark src='../../season/logos/ksu.svg' alt='' width=22 height=22 loading=lazy><a class=teamlink href='../../season/team/kansas-state.html'>Kansas State</a></div><div class=slatemeta><div class=slatewhen><svg class='gi' aria-hidden=true><use href='#i-clock'/></svg><span class=dim>Sat, Nov 21 · time TBD</span></div></div></div><div class=card id=venuecard><h2>The venue</h2><div class=venname><svg class='gi vengi' aria-hidden=true><use href='#i-pin'/></svg>Bill Snyder Family Stadium <span class=vencity>Manhattan, KS</span></div><div class=mkgrid><div><div class=mkval>62&deg;F</div><div class=dim><svg class='gi vengi' aria-hidden=true><use href='#i-temp'/></svg>at kickoff</div></div><div><div class=mkval><span class=wxwarn>21 mph</span></div><div class=dim><svg class='gi vengi' aria-hidden=true><use href='#i-wind'/></svg>wind</div></div><div><div class=mkval>49%</div><div class=dim><svg class='gi vengi' aria-hidden=true><use href='#i-rain'/></svg>chance of rain</div></div></div><p class=note>Forecast for the hour of kickoff, via Open-Meteo.</p></div><div class=card id=modelcard><h2>What the models make it</h2><div class=mline><span class=msys>SP+<i>2026</i></span><div class='mrow '><span class=mname>Arizona</span><span class=mbar><i style='width:82%'></i></span><b class=mval>8.4</b></div></div><div class=mline><span class=msys>FPI<i>2026</i></span><div class='mrow '><span class=mname>Arizona</span><span class=mbar><i style='width:84%'></i></span><b class=mval>8.7</b></div></div><div class=mline><span class=msys>Elo<i>2026</i></span><div class='mrow '><span class=mname>Arizona</span><span class=mbar><i style='width:100%'></i></span><b class=mval>10.3</b></div></div><div class=mline><span class=msys>SRS<i>2026</i></span><div class='mrow '><span class=mname>Arizona</span><span class=mbar><i style='width:99%'></i></span><b class=mval>10.2</b></div></div><div class=mline><span class=msys>Big12ology<i>2026</i></span><div class='mrow '><span class=mname>Arizona</span><span class=mbar><i style='width:38%'></i></span><b class=mval>3.9</b></div></div><p class=note>Predicted margin in points, each system carrying its own home-field bump. The year under a name is the season those ratings come from. The market row is the spread as it stands, via collegefootballdata.com.</p></div><div class=card id=seriescard><h2>The series</h2><p>Kansas State and Arizona have never met as conference opponents.</p><p class=note>If these two finish level in the standings, step (a) of the tiebreaker is head-to-head &mdash; which is this game. It is the first thing that separates them, before any of the six steps below it are read.</p></div><div class=card id=elsewhere><h2>Elsewhere</h2><div class=slatelinks><a class='slatelink dim' target=_blank rel=noopener href='https://www.espn.com/college-football/game/_/gameId/401856865'><svg class='gi' aria-hidden=true><use href='#i-out'/></svg>ESPN</a></div></div>
 </main>
-<footer class=b12-footer>Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> · procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (<a href="/tiebreaker/logos/SOURCES.json">SOURCES.json</a>) · updated {{BUILD_STAMP}}.<br>Not affiliated with the Big 12 Conference; marks belong to their owners, shown for identification only. · <a href="/privacy">Privacy</a> · <a href="mailto:dept@big12ology.com">dept@big12ology.com</a></footer>
+<footer class=b12-footer>Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> and <a href="https://www.espn.com/college-football/scoreboard">ESPN</a> · procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (<a href="/season/logos/SOURCES.json">SOURCES.json</a>) · updated {{BUILD_STAMP}}.<br>Not affiliated with the Big 12 Conference; marks belong to their owners, shown for identification only. · <a href="/privacy">Privacy</a> · <a href="mailto:dept@big12ology.com">dept@big12ology.com</a></footer>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "355e765d921e4b36ad2bf78d509eae6c"}'></script>
 </body></html>

@@ -1,239 +1,239 @@
 {
  "Abilene Christian": {
-  "logo": "../../tiebreaker/logos/abilenechris.svg"
+  "logo": "../../season/logos/abilenechris.svg"
  },
  "Arizona": {
   "abbr": "ARIZ",
   "b12": true,
   "color": "#0c234b",
-  "logo": "../../tiebreaker/logos/ariz.svg"
+  "logo": "../../season/logos/ariz.svg"
  },
  "Arizona State": {
   "abbr": "ASU",
   "b12": true,
   "color": "#8e0c3a",
-  "logo": "../../tiebreaker/logos/asu.svg"
+  "logo": "../../season/logos/asu.svg"
  },
  "Arkansas": {
-  "logo": "../../tiebreaker/logos/arkansas.png"
+  "logo": "../../season/logos/arkansas.png"
  },
  "Arkansas State": {
-  "logo": "../../tiebreaker/logos/arkansasstat.svg"
+  "logo": "../../season/logos/arkansasstat.svg"
  },
  "Auburn": {
-  "logo": "../../tiebreaker/logos/auburn.svg"
+  "logo": "../../season/logos/auburn.svg"
  },
  "BYU": {
   "abbr": "BYU",
   "b12": true,
   "color": "#003da5",
-  "logo": "../../tiebreaker/logos/byu.png"
+  "logo": "../../season/logos/byu.png"
  },
  "Baylor": {
   "abbr": "BAY",
   "b12": true,
   "color": "#154734",
-  "logo": "../../tiebreaker/logos/bay.svg"
+  "logo": "../../season/logos/bay.svg"
  },
  "Bethune-Cookman": {
-  "logo": "../../tiebreaker/logos/bethunecookm.svg"
+  "logo": "../../season/logos/bethunecookm.svg"
  },
  "Boston College": {
-  "logo": "../../tiebreaker/logos/bostoncolleg.svg"
+  "logo": "../../season/logos/bostoncolleg.svg"
  },
  "Bowling Green": {
-  "logo": "../../tiebreaker/logos/bowlinggreen.png"
+  "logo": "../../season/logos/bowlinggreen.png"
  },
  "Cincinnati": {
   "abbr": "CIN",
   "b12": true,
   "color": "#e00122",
-  "logo": "../../tiebreaker/logos/cin.svg"
+  "logo": "../../season/logos/cin.svg"
  },
  "Coastal Carolina": {
-  "logo": "../../tiebreaker/logos/coastalcarol.svg"
+  "logo": "../../season/logos/coastalcarol.svg"
  },
  "Colorado": {
   "abbr": "COLO",
   "b12": true,
   "color": "#cfb87c",
-  "logo": "../../tiebreaker/logos/cu.svg"
+  "logo": "../../season/logos/cu.svg"
  },
  "Colorado State": {
-  "logo": "../../tiebreaker/logos/coloradostat.svg"
+  "logo": "../../season/logos/coloradostat.svg"
  },
  "Georgia State": {
-  "logo": "../../tiebreaker/logos/georgiastate.svg"
+  "logo": "../../season/logos/georgiastate.svg"
  },
  "Georgia Tech": {
-  "logo": "../../tiebreaker/logos/georgiatech.png"
+  "logo": "../../season/logos/georgiatech.png"
  },
  "Grambling": {
-  "logo": "../../tiebreaker/logos/grambling.svg"
+  "logo": "../../season/logos/grambling.svg"
  },
  "Hawai'i": {
-  "logo": "../../tiebreaker/logos/hawaii.svg"
+  "logo": "../../season/logos/hawaii.svg"
  },
  "Houston": {
   "abbr": "HOU",
   "b12": true,
   "color": "#c92a39",
-  "logo": "../../tiebreaker/logos/hou.svg"
+  "logo": "../../season/logos/hou.svg"
  },
  "Idaho": {
-  "logo": "../../tiebreaker/logos/idaho.svg"
+  "logo": "../../season/logos/idaho.svg"
  },
  "Iowa": {
-  "logo": "../../tiebreaker/logos/iowa.svg"
+  "logo": "../../season/logos/iowa.svg"
  },
  "Iowa State": {
   "abbr": "ISU",
   "b12": true,
   "color": "#822433",
-  "logo": "../../tiebreaker/logos/isu.svg"
+  "logo": "../../season/logos/isu.svg"
  },
  "Kansas": {
   "abbr": "KU",
   "b12": true,
   "color": "#0051ba",
-  "logo": "../../tiebreaker/logos/ku.svg"
+  "logo": "../../season/logos/ku.svg"
  },
  "Kansas State": {
   "abbr": "KSU",
   "b12": true,
   "color": "#3c0969",
-  "logo": "../../tiebreaker/logos/ksu.svg"
+  "logo": "../../season/logos/ksu.svg"
  },
  "Long Island University": {
-  "logo": "../../tiebreaker/logos/longislandun.svg"
+  "logo": "../../season/logos/longislandun.svg"
  },
  "Louisiana Tech": {
-  "logo": "../../tiebreaker/logos/louisianatec.svg"
+  "logo": "../../season/logos/louisianatec.svg"
  },
  "Miami (OH)": {
-  "logo": "../../tiebreaker/logos/miamioh.svg"
+  "logo": "../../season/logos/miamioh.svg"
  },
  "Middle Tennessee": {
-  "logo": "../../tiebreaker/logos/middletennes.svg"
+  "logo": "../../season/logos/middletennes.svg"
  },
  "Missouri": {
-  "logo": "../../tiebreaker/logos/missouri.svg"
+  "logo": "../../season/logos/missouri.svg"
  },
  "Morgan State": {
-  "logo": "../../tiebreaker/logos/morganstate.png"
+  "logo": "../../season/logos/morganstate.png"
  },
  "Murray State": {
-  "logo": "../../tiebreaker/logos/murraystate.svg"
+  "logo": "../../season/logos/murraystate.svg"
  },
  "Nicholls": {
-  "logo": "../../tiebreaker/logos/nicholls.svg"
+  "logo": "../../season/logos/nicholls.svg"
  },
  "North Carolina": {
-  "logo": "../../tiebreaker/logos/northcarolin.svg"
+  "logo": "../../season/logos/northcarolin.svg"
  },
  "Northern Arizona": {
-  "logo": "../../tiebreaker/logos/northernariz.svg"
+  "logo": "../../season/logos/northernariz.svg"
  },
  "Northern Illinois": {
-  "logo": "../../tiebreaker/logos/northernilli.svg"
+  "logo": "../../season/logos/northernilli.svg"
  },
  "Northwestern": {
-  "logo": "../../tiebreaker/logos/northwestern.svg"
+  "logo": "../../season/logos/northwestern.svg"
  },
  "Notre Dame": {
-  "logo": "../../tiebreaker/logos/notredame.svg"
+  "logo": "../../season/logos/notredame.svg"
  },
  "Oklahoma": {
-  "logo": "../../tiebreaker/logos/oklahoma.svg"
+  "logo": "../../season/logos/oklahoma.svg"
  },
  "Oklahoma State": {
   "abbr": "OKST",
   "b12": true,
   "color": "#ff7300",
-  "logo": "../../tiebreaker/logos/okst.svg"
+  "logo": "../../season/logos/okst.svg"
  },
  "Oregon": {
-  "logo": "../../tiebreaker/logos/oregon.svg"
+  "logo": "../../season/logos/oregon.svg"
  },
  "Oregon State": {
-  "logo": "../../tiebreaker/logos/oregonstate.png"
+  "logo": "../../season/logos/oregonstate.png"
  },
  "Pittsburgh": {
-  "logo": "../../tiebreaker/logos/pittsburgh.svg"
+  "logo": "../../season/logos/pittsburgh.svg"
  },
  "Prairie View A&M": {
-  "logo": "../../tiebreaker/logos/prairieviewa.png"
+  "logo": "../../season/logos/prairieviewa.png"
  },
  "Sam Houston": {
-  "logo": "../../tiebreaker/logos/samhouston.png"
+  "logo": "../../season/logos/samhouston.png"
  },
  "Southeast Missouri State": {
-  "logo": "../../tiebreaker/logos/southeastmis.svg"
+  "logo": "../../season/logos/southeastmis.svg"
  },
  "Southern": {
-  "logo": "../../tiebreaker/logos/southern.png"
+  "logo": "../../season/logos/southern.png"
  },
  "TCU": {
   "abbr": "TCU",
   "b12": true,
   "color": "#4d1979",
-  "logo": "../../tiebreaker/logos/tcu.svg"
+  "logo": "../../season/logos/tcu.svg"
  },
  "Texas": {
-  "logo": "../../tiebreaker/logos/texas.svg"
+  "logo": "../../season/logos/texas.svg"
  },
  "Texas A&M": {
-  "logo": "../../tiebreaker/logos/texasam.svg"
+  "logo": "../../season/logos/texasam.svg"
  },
  "Texas Tech": {
   "abbr": "TTU",
   "b12": true,
   "color": "#cc0000",
-  "logo": "../../tiebreaker/logos/ttu.svg"
+  "logo": "../../season/logos/ttu.svg"
  },
  "Tulane": {
-  "logo": "../../tiebreaker/logos/tulane.svg"
+  "logo": "../../season/logos/tulane.svg"
  },
  "Tulsa": {
-  "logo": "../../tiebreaker/logos/tulsa.svg"
+  "logo": "../../season/logos/tulsa.svg"
  },
  "UCF": {
   "abbr": "UCF",
   "b12": true,
   "color": "#ba9b37",
-  "logo": "../../tiebreaker/logos/ucf.svg"
+  "logo": "../../season/logos/ucf.svg"
  },
  "UT Martin": {
-  "logo": "../../tiebreaker/logos/utmartin.png"
+  "logo": "../../season/logos/utmartin.png"
  },
  "Utah": {
   "abbr": "UTAH",
   "b12": true,
   "color": "#ea002a",
-  "logo": "../../tiebreaker/logos/utah.svg"
+  "logo": "../../season/logos/utah.svg"
  },
  "Utah State": {
-  "logo": "../../tiebreaker/logos/utahstate.svg"
+  "logo": "../../season/logos/utahstate.svg"
  },
  "Utah Tech": {
-  "logo": "../../tiebreaker/logos/utahtech.svg"
+  "logo": "../../season/logos/utahtech.svg"
  },
  "Virginia": {
-  "logo": "../../tiebreaker/logos/virginia.svg"
+  "logo": "../../season/logos/virginia.svg"
  },
  "Washington State": {
-  "logo": "../../tiebreaker/logos/washingtonst.svg"
+  "logo": "../../season/logos/washingtonst.svg"
  },
  "Weber State": {
-  "logo": "../../tiebreaker/logos/weberstate.svg"
+  "logo": "../../season/logos/weberstate.svg"
  },
  "West Virginia": {
   "abbr": "WVU",
   "b12": true,
   "color": "#002855",
-  "logo": "../../tiebreaker/logos/wvu.svg"
+  "logo": "../../season/logos/wvu.svg"
  },
  "Western Carolina": {
-  "logo": "../../tiebreaker/logos/westerncarol.png"
+  "logo": "../../season/logos/westerncarol.png"
  }
 }

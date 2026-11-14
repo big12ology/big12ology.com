@@ -1,47 +1,47 @@
 {
  "attendance": {
-  "fans": 62688999,
+  "fans": 66517259,
   "first": 2012,
-  "games": 1377,
-  "seasons": 14
+  "games": 1459,
+  "seasons": 15
  },
  "ccg": [
   {
-   "p": 0.5661,
-   "team": "Texas Tech"
+   "p": 0.9230333928571434,
+   "team": "Utah"
   },
   {
-   "p": 0.26625,
-   "team": "BYU"
+   "p": 0.38899880952381316,
+   "team": "Texas Tech"
   }
  ],
  "counts": {
   "games": 120,
-  "scheduled": 53,
+  "scheduled": 109,
   "teams": 16
  },
  "next": {
-  "away": "North Carolina",
-  "home": "TCU",
-  "kickoff": "2026-08-29T16:00:00.000Z",
-  "neutral": true,
-  "spread": -8.0
+  "away": "Cincinnati",
+  "home": "Iowa State",
+  "kickoff": "2026-11-14T17:00:00.000Z",
+  "neutral": false,
+  "spread": -3.0
  },
  "season": 2026,
  "spotlight": {
-  "away": "Arizona",
-  "home": "BYU",
-  "html": "<div class='forkgrid'><div class=forkcol style='--fc:#003da5'><div class=forkhead>If BYU wins</div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</span><b class=forkp>32%</b><span class='forkd up'>&#9650;5</span></div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona</span><b class=forkp>7%</b><span class='forkd down'>&#9660;6</span></div></div><div class=forkcol style='--fc:#0c234b'><div class=forkhead>If Arizona wins</div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/byu.png' alt='' width=16 height=16 loading=lazy>BYU</span><b class=forkp>13%</b><span class='forkd down'>&#9660;13</span></div><div class=forkcell><span class=forkteam><img class=mark src='/tiebreaker/logos/ariz.svg' alt='' width=16 height=16 loading=lazy>Arizona</span><b class=forkp>20%</b><span class='forkd up'>&#9650;7</span></div></div></div>",
+  "away": "Texas Tech",
+  "home": "Oklahoma State",
+  "html": "<div class='forkgrid'><div class=forkcol style='--fc:#ff7300'><div class=forkhead>If Oklahoma State wins</div><div class=forkcell><span class=forkteam><img class=mark src='/season/logos/okst.svg' alt='' width=16 height=16 loading=lazy><a class=teamlink href='/season/team/oklahoma-state.html'>Oklahoma State</a></span><b class=forkp>36%</b><span class='forkd up'>&#9650;15</span></div><div class=forkcell><span class=forkteam><img class=mark src='/season/logos/ttu.svg' alt='' width=16 height=16 loading=lazy><a class=teamlink href='/season/team/texas-tech.html'>Texas Tech</a></span><b class=forkp>18%</b><span class='forkd down'>&#9660;21</span></div></div><div class=forkcol style='--fc:#cc0000'><div class=forkhead>If Texas Tech wins</div><div class=forkcell><span class=forkteam><img class=mark src='/season/logos/okst.svg' alt='' width=16 height=16 loading=lazy><a class=teamlink href='/season/team/oklahoma-state.html'>Oklahoma State</a></span><b class=forkp>&lt;1%</b><span class='forkd down'>&#9660;21</span></div><div class=forkcell><span class=forkteam><img class=mark src='/season/logos/ttu.svg' alt='' width=16 height=16 loading=lazy><a class=teamlink href='/season/team/texas-tech.html'>Texas Tech</a></span><b class=forkp>66%</b><span class='forkd up'>&#9650;27</span></div></div></div>",
   "models": {
-   "stale": 2,
-   "total": 4
+   "stale": 0,
+   "total": 5
   },
   "now": {
-   "Arizona": 0.1295,
-   "BYU": 0.2662
+   "Oklahoma State": 0.2123,
+   "Texas Tech": 0.389
   },
-  "total": 19,
-  "week": 2,
-  "when": "Sat, Sep 12"
+  "total": 48,
+  "week": 11,
+  "when": "Sun, Nov 15"
  }
 }

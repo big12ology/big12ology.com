@@ -4,77 +4,77 @@
   "attendance": [
    {
     "s": "Arizona State",
-    "t": "Arizona State has averaged 51,619 a home game since 2012, over 87 games.",
+    "t": "Arizona State has averaged 51,603 a home game since 2012, over 92 games.",
     "w": [
      "Arizona State"
     ]
    },
    {
     "s": "Arizona State",
-    "t": "Arizona State has filled its stadium 19 times in 87 home games since 2012 \u2014 22%, the fifth-lowest in the league, against a league average of 30%.",
+    "t": "Arizona State has filled its stadium 22 times in 92 home games since 2012 \u2014 24%, against a league average of 30%.",
     "w": [
      "Arizona State"
     ]
    },
    {
     "s": "Arizona",
-    "t": "Arizona has averaged 45,396 a home game since 2012, over 86 games.",
+    "t": "Arizona has averaged 45,212 a home game since 2012, over 91 games.",
     "w": [
      "Arizona"
     ]
    },
    {
     "s": "Arizona",
-    "t": "Arizona has filled its stadium 7 times in 86 home games since 2012 \u2014 8%, the lowest in the league, against a league average of 30%.",
+    "t": "Arizona has filled its stadium 7 times in 91 home games since 2012 \u2014 8%, the lowest in the league, against a league average of 30%.",
     "w": [
      "Arizona"
     ]
    },
    {
     "s": "BYU",
-    "t": "BYU has averaged 59,569 a home game since 2012, over 76 games \u2014 the best in the league.",
+    "t": "BYU has averaged 59,862 a home game since 2012, over 81 games \u2014 the best in the league.",
     "w": [
      "BYU"
     ]
    },
    {
     "s": "BYU",
-    "t": "BYU has filled its stadium 22 times in 76 home games since 2012 \u2014 29%, against a league average of 30%.",
+    "t": "BYU has filled its stadium 27 times in 81 home games since 2012 \u2014 33%, the fifth-best in the league, against a league average of 30%.",
     "w": [
      "BYU"
     ]
    },
    {
     "s": "Baylor",
-    "t": "Baylor has filled its stadium 33 times in 81 home games since 2012 \u2014 41%, the second-best in the league, against a league average of 30%.",
+    "t": "Baylor has filled its stadium 34 times in 86 home games since 2012 \u2014 40%, the second-best in the league, against a league average of 30%.",
     "w": [
      "Baylor"
     ]
    },
    {
     "s": "Cincinnati",
-    "t": "Cincinnati has filled its stadium 19 times in 83 home games since 2012 \u2014 23%, against a league average of 30%.",
+    "t": "Cincinnati has filled its stadium 20 times in 89 home games since 2012 \u2014 22%, the fifth-lowest in the league, against a league average of 30%.",
     "w": [
      "Cincinnati"
     ]
    },
    {
     "s": "Colorado",
-    "t": "Colorado has filled its stadium 21 times in 79 home games since 2012 \u2014 27%, against a league average of 30%.",
+    "t": "Colorado has filled its stadium 22 times in 83 home games since 2012 \u2014 27%, against a league average of 30%.",
     "w": [
      "Colorado"
     ]
    },
    {
     "s": "Houston",
-    "t": "Houston has averaged 29,953 a home game since 2012, over 81 games \u2014 the lowest in the league.",
+    "t": "Houston has averaged 30,051 a home game since 2012, over 86 games \u2014 the lowest in the league.",
     "w": [
      "Houston"
     ]
    },
    {
     "s": "Houston",
-    "t": "Houston has filled its stadium 8 times in 81 home games since 2012 \u2014 10%, the second-lowest in the league, against a league average of 30%.",
+    "t": "Houston has filled its stadium 9 times in 86 home games since 2012 \u2014 10%, the second-lowest in the league, against a league average of 30%.",
     "w": [
      "Houston"
     ]
@@ -187,99 +187,107 @@
     ]
    },
    {
+    "s": "BYU",
+    "t": "In 2026 the league averaged 46,686 a home game. The biggest single crowd was 65,179, BYU against Notre Dame on October 17.",
+    "w": [
+     "BYU",
+     "Notre Dame"
+    ]
+   },
+   {
     "s": "Iowa State",
-    "t": "Iowa State has filled its stadium 29 times in 84 home games since 2012 \u2014 35%, the fourth-best in the league, against a league average of 30%.",
+    "t": "Iowa State has filled its stadium 29 times in 89 home games since 2012 \u2014 33%, against a league average of 30%.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "Kansas State",
-    "t": "Kansas State has averaged 51,066 a home game since 2012, over 89 games.",
+    "t": "Kansas State has averaged 51,115 a home game since 2012, over 95 games.",
     "w": [
      "Kansas State"
     ]
    },
    {
     "s": "Kansas",
-    "t": "Kansas has filled its stadium 13 times in 83 home games since 2012 \u2014 16%, the third-lowest in the league, against a league average of 30%.",
+    "t": "Kansas has filled its stadium 16 times in 88 home games since 2012 \u2014 18%, the third-lowest in the league, against a league average of 30%.",
     "w": [
      "Kansas"
     ]
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State has averaged 54,176 a home game since 2012, over 86 games \u2014 the fifth-best in the league.",
+    "t": "Oklahoma State has averaged 54,074 a home game since 2012, over 90 games \u2014 the fifth-best in the league.",
     "w": [
      "Oklahoma State"
     ]
    },
    {
     "s": "Oklahoma State",
-    "t": "Oklahoma State has filled its stadium 21 times in 86 home games since 2012 \u2014 24%, against a league average of 30%.",
+    "t": "Oklahoma State has filled its stadium 21 times in 90 home games since 2012 \u2014 23%, against a league average of 30%.",
     "w": [
      "Oklahoma State"
     ]
    },
    {
     "s": "TCU",
-    "t": "TCU has filled its stadium 32 times in 82 home games since 2012 \u2014 39%, the third-best in the league, against a league average of 30%.",
+    "t": "TCU has filled its stadium 33 times in 87 home games since 2012 \u2014 38%, the third-best in the league, against a league average of 30%.",
     "w": [
      "TCU"
     ]
    },
    {
     "s": "Texas Tech",
-    "t": "Texas Tech has filled its stadium 27 times in 80 home games since 2012 \u2014 34%, the fifth-best in the league, against a league average of 30%.",
+    "t": "Texas Tech has filled its stadium 31 times in 86 home games since 2012 \u2014 36%, the fourth-best in the league, against a league average of 30%.",
     "w": [
      "Texas Tech"
     ]
    },
    {
     "s": "Cincinnati",
-    "t": "The Bearcats have averaged 34,053 a home game since 2012, over 83 games \u2014 the third-lowest in the league.",
+    "t": "The Bearcats have averaged 34,041 a home game since 2012, over 89 games \u2014 the third-lowest in the league.",
     "w": [
      "Cincinnati"
     ]
    },
    {
     "s": "Baylor",
-    "t": "The Bears have averaged 43,926 a home game since 2012, over 81 games \u2014 the fifth-lowest in the league.",
+    "t": "The Bears have averaged 43,766 a home game since 2012, over 86 games \u2014 the fifth-lowest in the league.",
     "w": [
      "Baylor"
     ]
    },
    {
     "s": "Colorado",
-    "t": "The Buffaloes have averaged 45,870 a home game since 2012, over 79 games.",
+    "t": "The Buffaloes have averaged 46,048 a home game since 2012, over 83 games.",
     "w": [
      "Colorado"
     ]
    },
    {
     "s": "Iowa State",
-    "t": "The Cyclones have averaged 57,062 a home game since 2012, over 84 games \u2014 the second-best in the league.",
+    "t": "The Cyclones have averaged 56,748 a home game since 2012, over 89 games \u2014 the third-best in the league.",
     "w": [
      "Iowa State"
     ]
    },
    {
     "s": "TCU",
-    "t": "The Horned Frogs have averaged 44,410 a home game since 2012, over 82 games.",
+    "t": "The Horned Frogs have averaged 44,051 a home game since 2012, over 87 games.",
     "w": [
      "TCU"
     ]
    },
    {
     "s": "Kansas",
-    "t": "The Jayhawks have averaged 33,870 a home game since 2012, over 83 games \u2014 the second-lowest in the league.",
+    "t": "The Jayhawks have averaged 33,740 a home game since 2012, over 88 games \u2014 the second-lowest in the league.",
     "w": [
      "Kansas"
     ]
    },
    {
     "s": "Texas Tech",
-    "t": "The Red Raiders have averaged 56,663 a home game since 2012, over 80 games \u2014 the third-best in the league.",
+    "t": "The Red Raiders have averaged 56,893 a home game since 2012, over 86 games \u2014 the second-best in the league.",
     "w": [
      "Texas Tech"
     ]
@@ -305,10 +313,10 @@
    },
    {
     "s": "BYU",
-    "t": "The biggest crowd BYU has drawn since 2012 is 64,794, against Utah in 2025.",
+    "t": "The biggest crowd BYU has drawn since 2012 is 65,179, against Notre Dame in 2026.",
     "w": [
      "BYU",
-     "Utah"
+     "Notre Dame"
     ]
    },
    {
@@ -432,46 +440,46 @@
     ]
    },
    {
-    "t": "This tracker holds 1,377 home games, back to 2012 \u2014 62,688,999 people through the gates."
+    "t": "This tracker holds 1,459 home games, back to 2012 \u2014 66,517,259 people through the gates."
    },
    {
     "s": "UCF",
-    "t": "UCF has averaged 39,927 a home game since 2012, over 84 games \u2014 the fourth-lowest in the league.",
+    "t": "UCF has averaged 40,178 a home game since 2012, over 89 games \u2014 the fourth-lowest in the league.",
     "w": [
      "UCF"
     ]
    },
    {
     "s": "UCF",
-    "t": "UCF has filled its stadium 18 times in 84 home games since 2012 \u2014 21%, the fourth-lowest in the league, against a league average of 30%.",
+    "t": "UCF has filled its stadium 21 times in 89 home games since 2012 \u2014 24%, against a league average of 30%.",
     "w": [
      "UCF"
     ]
    },
    {
     "s": "Utah",
-    "t": "Utah has averaged 48,375 a home game since 2012, over 83 games.",
+    "t": "Utah has averaged 48,605 a home game since 2012, over 89 games.",
     "w": [
      "Utah"
     ]
    },
    {
     "s": "Utah",
-    "t": "Utah has filled its stadium for every one of its 83 home games since 2012 \u2014 every season, every opponent, and the only team in the league that can say it.",
+    "t": "Utah has filled its stadium for every one of its 89 home games since 2012 \u2014 every season, every opponent, and the only team in the league that can say it.",
     "w": [
      "Utah"
     ]
    },
    {
     "s": "West Virginia",
-    "t": "West Virginia has averaged 54,299 a home game since 2012, over 82 games \u2014 the fourth-best in the league.",
+    "t": "West Virginia has averaged 54,135 a home game since 2012, over 87 games \u2014 the fourth-best in the league.",
     "w": [
      "West Virginia"
     ]
    },
    {
     "s": "West Virginia",
-    "t": "West Virginia has filled its stadium 19 times in 82 home games since 2012 \u2014 23%, against a league average of 30%.",
+    "t": "West Virginia has filled its stadium 19 times in 87 home games since 2012 \u2014 22%, the fourth-lowest in the league, against a league average of 30%.",
     "w": [
      "West Virginia"
     ]
@@ -568,11 +576,11 @@
    },
    {
     "on": "09-05",
-    "s": "Iowa State",
-    "t": "In 2015, Iowa State drew 61,500 against Northern Iowa.",
+    "s": "BYU",
+    "t": "In 2026, BYU drew 64,077 against Utah Tech.",
     "w": [
-     "Iowa State",
-     "Northern Iowa"
+     "BYU",
+     "Utah Tech"
     ]
    },
    {
@@ -632,10 +640,10 @@
    {
     "on": "09-12",
     "s": "BYU",
-    "t": "In 2015, BYU drew 63,470 against Boise State.",
+    "t": "In 2026, BYU drew 64,409 against Arizona.",
     "w": [
-     "BYU",
-     "Boise State"
+     "Arizona",
+     "BYU"
     ]
    },
    {
@@ -875,10 +883,10 @@
    {
     "on": "10-09",
     "s": "BYU",
-    "t": "In 2021, BYU drew 63,470 against Boise State.",
+    "t": "In 2026, BYU drew 64,632 against Iowa State.",
     "w": [
      "BYU",
-     "Boise State"
+     "Iowa State"
     ]
    },
    {
@@ -946,11 +954,11 @@
    },
    {
     "on": "10-17",
-    "s": "Kansas State",
-    "t": "In 2015, Kansas State drew 52,867 against Oklahoma.",
+    "s": "BYU",
+    "t": "In 2026, BYU drew 65,179 against Notre Dame.",
     "w": [
-     "Kansas State",
-     "Oklahoma"
+     "BYU",
+     "Notre Dame"
     ]
    },
    {
@@ -1072,11 +1080,11 @@
    },
    {
     "on": "10-31",
-    "s": "Texas Tech",
-    "t": "In 2015, Texas Tech drew 54,872 against Oklahoma State.",
+    "s": "BYU",
+    "t": "In 2026, BYU drew 63,332 against Arizona State.",
     "w": [
-     "Oklahoma State",
-     "Texas Tech"
+     "Arizona State",
+     "BYU"
     ]
    },
    {
@@ -1135,11 +1143,11 @@
    },
    {
     "on": "11-07",
-    "s": "Oklahoma State",
-    "t": "In 2015, Oklahoma State drew 59,061 against TCU.",
+    "s": "Texas Tech",
+    "t": "In 2026, Texas Tech drew 60,229 against West Virginia.",
     "w": [
-     "Oklahoma State",
-     "TCU"
+     "Texas Tech",
+     "West Virginia"
     ]
    },
    {
@@ -1433,7 +1441,7 @@
     "t": "Survivor gives you one team a week and never the same team twice. Sixteen teams, and the season is longer than that."
    },
    {
-    "t": "The 2026 market has opened on 22 games so far. Games without a posted line are shown, and are not pickable."
+    "t": "The 2026 market has opened on 108 games so far. Games without a posted line are shown, and are not pickable."
    },
    {
     "t": "The board shows the chalk: what simply taking every favorite would have scored. In 2025 that was 56.5%, and most people do not beat it."

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>How our rating is calculated — Big12ology</title>
+<meta name=description content="The one rating on this site we compute ourselves: least squares over every result, home field measured rather than assumed, and the out-of-sample numbers that justify it.">
+<link rel=canonical href="https://big12ology.com/season/model-how.html">
+<link rel=icon type=image/svg+xml href="favicon.svg">
+<link rel=icon type=image/png sizes=32x32 href="favicon-32.png">
+<link rel=apple-touch-icon href="favicon-180.png">
+<script>(function(){try{var t=localStorage.getItem("b12-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}else{document.documentElement.style.colorScheme="light dark";}}catch(e){}})();</script>
+<script>(function(){try{var b=localStorage.getItem("b12-cards");if(!b)return;var o=JSON.parse(b);if(!o||o.v!==1||!o.d)return;var l=o.d[location.pathname];if(!l||!l.length)return;var s=l.filter(function(k){return /^[A-Za-z][\w-]*$/.test(k)}).map(function(k){return"#"+k+">*:not(h2):not(h3){display:none}#"+k+"{padding-bottom:8px}"}).join("");if(!s)return;var e=document.createElement("style");e.id="b12-precollapse";e.textContent=s;document.head.appendChild(e)}catch(e){}})();</script>
+<link rel=stylesheet href="brand.css?v=98c30a0a">
+<script defer src="theme.js?v=ab3fca05"></script>
+<script src="state.js?v=f7c7de71"></script>
+<script src="metrics.js?v=8a5fb0cb"></script>
+<script defer src="cards.js?v=c5a69787"></script>
+<meta property=og:type content=article>
+<meta property=og:site_name content=Big12ology>
+<meta property=og:title content="How our rating is calculated">
+<meta property=og:description content="Least squares over every result, home field measured rather than assumed, and the out-of-sample numbers that justify it.">
+<meta property=og:url content="https://big12ology.com/season/model-how.html">
+<meta property=og:image content="https://big12ology.com/season/og.png">
+<meta name=twitter:card content=summary_large_image>
+<style>
+:root {
+  --bg: #f6f4ef; --panel: #ffffff; --ink: #1a1c20; --dim: #666d7b;
+  --line: #e2ddd2; --accent: #0B6E77; --accent2: #003087;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
+    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
+  }
+}
+:root[data-theme="dark"] {
+    --bg: #14161a; --panel: #1d2026; --ink: #e8e6e1; --dim: #9aa0aa;
+    --line: #2e323a; --accent: #3FC7CE; --accent2: #7aa2ff;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font:var(--t-subhead)/1.65 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+main { max-width: var(--chrome-w); margin: 0 auto;
+  padding: 26px 20px 48px; }
+main > p, main > ol, main > ul, main > h2, main > h3, main > table,
+main > .aside, main > .worked, main > .backlink { max-width: 840px; }
+h2 { font-size: var(--t-lead); margin: 34px 0 10px; }
+h3 { font-size: var(--t-subhead); margin: 22px 0 8px; }
+p, li { font-size: var(--t-subhead); }
+a { color: var(--accent2); }
+.lead { font-size: var(--t-subhead); }
+ol.rules > li { margin: 10px 0; }
+ol.rules b { color: var(--ink); }
+.aside { background: var(--panel); border: 1px solid var(--line);
+  border-left: 4px solid var(--accent); border-radius: 8px;
+  padding: 12px 16px; font-size: var(--t-copy); color: var(--dim); margin: 16px 0; }
+.worked { background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 18px 22px; margin: 16px 0; }
+.worked ol { padding-left: 20px; }
+.worked li { margin: 8px 0; font-size: var(--t-copy); }
+.worked li.seeded { font-weight: 700; }
+.worked .meta { color: var(--dim); font-size: var(--t-label); margin: 0 0 10px; }
+table.models { border-collapse: collapse; width: 100%; margin: 12px 0; }
+table.models th, table.models td { text-align: left; padding: 8px 10px;
+  border-bottom: 1px solid var(--line); font-size: var(--t-copy); vertical-align: top; }
+table.models th { font-size: var(--t-meta); text-transform: uppercase;
+  letter-spacing: .05em; color: var(--dim); }
+.backlink { display: inline-block; margin-top: 8px; }
+.card { background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 16px 20px; margin: 0 0 18px; }
+.card h2 { margin: 0 0 8px; font-size: var(--t-label); text-transform: uppercase;
+  letter-spacing: .06em; color: var(--dim); }
+.matchup { display: flex; align-items: center; gap: 18px;
+  margin: 10px 0 4px; flex-wrap: wrap; }
+.side { display: flex; align-items: center; gap: 12px; font-size: var(--t-headline);
+  font-weight: 700; border-bottom: 4px solid var(--line);
+  padding: 6px 10px 10px 2px; }
+.tname { letter-spacing: -.01em; }
+.vs { color: var(--dim); font-weight: 400; font-size: var(--t-subhead); padding: 0 6px; }
+.seed { display: inline-block; background: var(--accent); color: #fff;
+  border-radius: 6px; font-size: var(--t-label); width: 22px; height: 22px;
+  line-height: 22px; text-align: center; vertical-align: 3px;
+  margin-right: 4px; }
+.badge { font-size: var(--t-fine); border-radius: 20px; padding: 2px 9px;
+  vertical-align: 1px; font-weight: 600; letter-spacing: .03em; }
+.badge.ok { background: #13653626; color: #136536; }
+.badge.warn { background: #b4530926; color: #b45309; }
+/* One tile, both themes — see the note on .mark in the main sheet. */
+.mark { vertical-align: -3px; margin-right: 7px; object-fit: contain;
+  background: #f0ede6; border-radius: 4px; padding: 2px; }
+.nomark { display: inline-block; width: 16px; height: 16px;
+  line-height: 16px; text-align: center; border-radius: 4px;
+  background: color-mix(in srgb, var(--dim) 18%, transparent);
+  color: var(--dim); font-weight: 700; font-size: var(--t-meta); cursor: help; }
+.dim { color: var(--dim); }
+.note { color: var(--dim); font-size: var(--t-row); }
+
+
+/* The one table on this page. Figures right-aligned under their headers and
+   in the same tabular figures the rest of the site uses for numbers, so the
+   columns line up instead of drifting with the digits. */
+.scorewrap { overflow-x:auto; margin:14px 0 4px }
+.scoretab { border-collapse:collapse; font-size:var(--t-label);
+  font-variant-numeric:tabular-nums; min-width:32rem }
+.scoretab th, .scoretab td { padding:7px 16px 7px 0; white-space:nowrap;
+  border-bottom:1px solid var(--line) }
+.scoretab thead th { font-size:var(--t-fine); text-transform:uppercase;
+  letter-spacing:.05em; color:var(--dim); font-weight:600;
+  border-bottom:2px solid var(--line) }
+.scoretab .num, .scoretab thead th:not(:first-child) { text-align:right }
+.scoretab tbody th { text-align:left; font-weight:600 }
+.scoretab tbody tr:last-child th,
+.scoretab tbody tr:last-child td { border-bottom:0 }
+
+</style>
+</head>
+<body>
+<a class=skip-link href="#main">Skip to content</a>
+<nav class=b12-topbar><a class=b12-brand href="/" aria-label="Big12ology home"><picture><source srcset="brand/big12ology-compact-dark.svg" media="(prefers-color-scheme: dark)"><img src="brand/big12ology-compact-dark.svg" alt="Big12ology"></picture></a><a class=on href="/season/">Football</a><a href="/basketball/">Men’s Basketball</a><a href="/womens-basketball/">Women’s Basketball</a><span class=b12-right><span class=b12-theme></span></span></nav>
+<header class="b12-head tabbed">
+  <div class=hwrap>
+    <div>
+      <h1>Big 12 Football <span class=yrpills><span class=yron>2026</span><a href='2025/model-how.html'>2025</a><a href='2024/model-how.html'>2024</a></span></h1>
+      <p>Unofficial fan tool. Applies the official Big 12 tiebreaking procedures to live results after every game.</p>
+    </div>
+  </div>
+  <nav class=b12-tabs aria-label="Football sections"><a class=on aria-current=page href="/season/">Season</a><a href="/schedule/">Schedule</a><a href="/attendance/">Attendance</a><a href="/pools/">Pools</a></nav>
+</header>
+<nav class=subnav><a href=./ class=off>The Brief</a><a href=race.html class=off>The Race</a><a href=standings.html class=off>The Standings</a><a href=lab.html class=off>The Lab</a><a href=teams.html class=off>The Teams</a><a href=cutline.html class=off>The Cut Line</a><a href=ladder.html class=off>The Ladder</a><a href=how.html class=off>The Rules</a><a href=model.html class=on>The Model</a><a href=empire.html class=off>The Empire</a><a href=history.html class=off>The Archive</a></nav>
+<main id=main tabindex="-1">
+<svg class=sprite width=0 height=0 aria-hidden=true style='position:absolute'><symbol id='i-clock' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/></symbol><symbol id='i-pin' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0'/><path d='M17.657 16.657 13.414 20.9a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z'/></symbol><symbol id='i-tv' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='7' width='18' height='13' rx='2'/><path d='M16 3l-4 4l-4 -4'/></symbol><symbol id='i-roof' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 21h18'/><path d='M4 21v-10a8 8 0 0 1 16 0v10'/><path d='M9 21v-9a3 3 0 0 1 6 0v9'/></symbol><symbol id='i-temp' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5'/><path d='M10 9h4'/></symbol><symbol id='i-sun' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='4'/><path d='M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7'/></symbol><symbol id='i-wind' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24'/><path d='M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24'/><path d='M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24'/></symbol><symbol id='i-rain' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M11 20v1m4 -3v1m-8 -1v1'/></symbol><symbol id='i-snow' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M11 15v.01m0 3v.01m0 3v.01m4 -4v.01m0 3v.01m-8 -4v.01m0 3v.01'/></symbol><symbol id='i-storm' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/><path d='M13 14l-2 4l3 0l-2 4'/></symbol><symbol id='i-history' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 8v4l3 3'/><path d='M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5'/></symbol><symbol id='i-chart' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 20h18'/><rect x='5' y='12' width='4' height='8'/><rect x='10' y='8' width='4' height='12'/><rect x='15' y='4' width='4' height='16'/></symbol><symbol id='i-note' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='4' width='16' height='16' rx='2'/><path d='M9 8h6M9 12h6M9 16h3'/></symbol><symbol id='i-out' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 6H6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6'/><path d='M11 13l9 -9'/><path d='M15 4h5v5'/></symbol><symbol id='i-star' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1.002l3.086 -6.253l3.086 6.253l6.9 1.002l-5 4.867l1.179 6.873z'/></symbol><symbol id='i-spark' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z'/><path d='M16 6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z'/><path d='M9 18a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z'/></symbol><symbol id='i-chev' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6l6 -6'/></symbol><symbol id='i-chevdown' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 7l5 5l5 -5'/><path d='M7 13l5 5l5 -5'/></symbol><symbol id='i-chevup' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 11l5 -5l5 5'/><path d='M7 17l5 -5l5 5'/></symbol><symbol id='i-filter' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z'/></symbol><symbol id='i-filteroff' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M8 4h12v2.172a2 2 0 0 1 -.586 1.414l-3.914 3.914m-.5 3.5v4l-6 2v-8.5l-4.489 -4.923a2 2 0 0 1 -.511 -1.34v-2.237'/><path d='M3 3l18 18'/></symbol><symbol id='i-share' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/><path d='M8.7 10.7l6.6 -3.4'/><path d='M8.7 13.3l6.6 3.4'/></symbol><symbol id='i-check' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12l5 5l10 -10'/></symbol><symbol id='i-eraser' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3'/><path d='M18 13.3l-6.3 -6.3'/></symbol></svg>
+
+
+<p class=backlink><a href="model.html">&#8592; The ratings</a></p>
+
+<p class=lead>The Lab weighs several ratings of who is better. Most of them
+are published elsewhere and quoted here. One is computed on this site, from
+the same results everything else on it is built from, and this page is what
+it does.</p>
+
+<h2>One sentence</h2>
+<p>Every game says <b>the home team won by this much</b>. The rating is the
+set of team numbers that comes closest to explaining all of them at once.</p>
+<p class=note>Formally: choose ratings and a home-field number minimizing the
+squared error of <code>margin = rating(home) − rating(away) + home
+field</code> across every result.</p>
+
+<h2>Whose method this is</h2>
+<p>The method is <b>Kenneth Massey’s</b> least-squares rating, set out in
+his 1997 thesis
+<a href="https://masseyratings.com/theory/massey97.pdf">Statistical Models
+Applied to the Rating of Sports Teams</a> and used in various forms ever
+since, including as a component of the old BCS formula. Massey publishes his
+own ratings at <a href="https://masseyratings.com/">masseyratings.com</a>;
+those are his and are not reproduced here. What follows is his method applied
+to this site’s own results.</p>
+
+<p>Three things depart from the plain version:</p>
+<ul>
+  <li><b>Ratings are shrunk toward zero.</b> Textbook least squares believes
+  every result completely. A penalty on large ratings means a team only
+  travels far from average when the evidence keeps insisting, which matters
+  most when there is least evidence.</li>
+  <li><b>Non-FBS opponents are kept, pooled into one team.</b> The usual
+  treatment is to drop those games. Keeping them recovers roughly 126
+  results a season.</li>
+  <li><b>Home field is measured, not assumed.</b> It is fitted alongside the
+  ratings rather than set to a constant beforehand.</li>
+</ul>
+<p class=note>Each is described below, with what it is worth.</p>
+
+<h2>What comes out</h2>
+<ul>
+  <li><b>Ratings in points.</b> A team rated 8 higher than another is an
+  eight-point favorite on a neutral field. No conversion and no scaling
+  constant — the number already is the margin it predicts.</li>
+  <li><b>A measured home field.</b> It is a free parameter of the fit rather
+  than a constant chosen in advance, so the games decide it. Over a full
+  season it settles near three points.</li>
+  <li><b>Zero is average.</b> Ratings are centered: positive is better than a
+  typical FBS team, negative is worse.</li>
+</ul>
+
+<h2>How it treats a season</h2>
+<p><b>Every game counts the same, whenever it was played.</b> A result from
+September carries the same weight in December as one from last week. Recency
+weighting was tested and made the rating less accurate, not more.</p>
+
+<p><b>Ratings are pulled toward the middle.</b> A team that has won once by 40
+is not four touchdowns better than the field; it has one result. The fit is
+charged for large ratings, so a rating only travels far from zero when the
+evidence keeps insisting. The effect is large in September and fades on its
+own as games accumulate.</p>
+
+<p><b>Games against FCS opposition count, together.</b> Beating an FCS side by
+three says something, so those results are used, with every non-FBS opponent
+treated as a single pooled team. Rated individually they would contribute
+mostly the noise of teams that played one FBS game all year.</p>
+
+<p><b>Blowouts are not capped.</b> A 45-point win is entered as 45. Damping
+them was tested and, alongside the pull toward the middle, changed nothing.</p>
+
+<h2>Early in a season</h2>
+<p>For the first month, no arithmetic can separate <em>this team is
+better</em> from <em>this team was at home</em>. The give-away is the home
+field number: fitted on two weeks it reads around twelve points, four times
+what it should be, because it is absorbing differences the games have not
+yet pinned on anyone. It settles once teams have played five.</p>
+<p>Until then the rating is not published, and last season’s is shown in
+its place, pulled toward average to reflect that a year has passed. The Lab
+labels it with the season it came from, as it does for any rating still on
+last year’s numbers.</p>
+
+<h2>How accurate it is</h2>
+<p>Measured the way it is used: rate the weeks already played, predict the
+week ahead, repeat for every week of a finished season. Against the same
+games, with and without the two adjustments above:</p>
+<div class=scorewrap><table class=scoretab><thead><tr><th scope=col>season</th><th scope=col>without</th><th scope=col>with</th><th scope=col>improvement</th><th scope=col>95% interval</th><th scope=col>weeks better</th></tr></thead><tbody><tr><th scope=row>2024</th><td class=num>13.96</td><td class=num>12.60</td><td class=num><b>1.24</b></td><td class=num>0.76 to 1.72</td><td class=num>10 of 12</td></tr><tr><th scope=row>2025</th><td class=num>13.70</td><td class=num>12.43</td><td class=num><b>1.33</b></td><td class=num>0.77 to 1.91</td><td class=num>9 of 12</td></tr></tbody></table></div><p class=note>Average miss per game, in points — lower is better. The interval is a paired bootstrap over every prediction.</p>
+<p class=note>Roughly a point and a quarter of accuracy per game, holding
+across two independent seasons and winning 10 of 12 weeks in 2024 and 9 of 12
+in 2025. Against the published systems on the same out-of-sample games it is
+ahead of some and level with the best of them.</p>
+
+<footer class=b12-footer>Results from <a href="https://collegefootballdata.com">collegefootballdata.com</a> and <a href="https://www.espn.com/college-football/scoreboard">ESPN</a> · procedure per the <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf">official Big 12 tiebreaker policy</a> · marks via Wikimedia Commons (<a href="/season/logos/SOURCES.json">SOURCES.json</a>) · updated {{BUILD_STAMP}}.<br>Not affiliated with the Big 12 Conference; marks belong to their owners, shown for identification only. · <a href="/privacy">Privacy</a> · <a href="mailto:dept@big12ology.com">dept@big12ology.com</a></footer>
+</body>
+</html>
