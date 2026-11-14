@@ -1231,10 +1231,10 @@
   "tbd": false,
   "home": "Auburn",
   "away": "Arizona",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 69,
+  "ap": 80,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1247,7 +1247,8 @@
   "attendance": null,
   "espn": "401909741",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374947,
@@ -1255,10 +1256,10 @@
   "tbd": false,
   "home": "Arizona State",
   "away": "UL Monroe",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 92,
+  "ap": 62,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1271,7 +1272,8 @@
   "attendance": null,
   "espn": "401917980",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 374976,
