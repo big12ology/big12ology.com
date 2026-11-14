@@ -1623,10 +1623,10 @@
   "tbd": false,
   "home": "Kansas State",
   "away": "Minnesota",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 65,
+  "ap": 68,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -1642,7 +1642,8 @@
   "aseed": null,
   "tv": [
    "B1G+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401916153,
@@ -1677,10 +1678,10 @@
   "tbd": false,
   "home": "Colorado",
   "away": "Youngstown State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 72,
+  "ap": 63,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1696,7 +1697,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401906965,
