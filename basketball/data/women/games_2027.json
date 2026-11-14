@@ -1490,10 +1490,10 @@
   "tbd": false,
   "home": "West Virginia",
   "away": "Northwestern",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 66,
+  "ap": 53,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -1509,7 +1509,8 @@
   "aseed": null,
   "tv": [
    "CBSSN"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401919058,
@@ -1517,10 +1518,10 @@
   "tbd": false,
   "home": "UCF",
   "away": "Le Moyne",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 77,
+  "ap": 44,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1536,7 +1537,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401918942,
