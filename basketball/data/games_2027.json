@@ -1290,11 +1290,10 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null,
+  "attendance": 11869,
   "espn": "401919847",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372809,
@@ -1315,11 +1314,10 @@
   "venue_id": 82,
   "city": "Providence",
   "state": "RI",
-  "attendance": null,
+  "attendance": 12400,
   "espn": "401909534",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372805,
@@ -1340,11 +1338,10 @@
   "venue_id": 76,
   "city": "Dayton",
   "state": "OH",
-  "attendance": null,
+  "attendance": 13407,
   "espn": "401911188",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372817,
@@ -1947,30 +1944,6 @@
   "aseed": null
  },
  {
-  "id": 372909,
-  "start": "2026-11-23T05:00:00.000Z",
-  "tbd": true,
-  "home": "Kansas",
-  "away": "Denver",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": false,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Allen Fieldhouse",
-  "venue_id": 1,
-  "city": "Lawrence",
-  "state": "KS",
-  "attendance": null,
-  "espn": "401909788",
-  "hseed": null,
-  "aseed": null
- },
- {
   "id": 375258,
   "start": "2026-11-23T22:00:00.000Z",
   "tbd": false,
@@ -1991,6 +1964,30 @@
   "state": "HI",
   "attendance": null,
   "espn": "401921708",
+  "hseed": null,
+  "aseed": null
+ },
+ {
+  "id": 372909,
+  "start": "2026-11-24T01:00:00.000Z",
+  "tbd": false,
+  "home": "Kansas",
+  "away": "Denver",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": false,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Allen Fieldhouse",
+  "venue_id": 1,
+  "city": "Lawrence",
+  "state": "KS",
+  "attendance": null,
+  "espn": "401909788",
   "hseed": null,
   "aseed": null
  },
