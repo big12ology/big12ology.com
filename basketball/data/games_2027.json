@@ -1327,10 +1327,10 @@
   "tbd": false,
   "home": "Dayton",
   "away": "Cincinnati",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 72,
+  "ap": 95,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1343,7 +1343,8 @@
   "attendance": null,
   "espn": "401911188",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372817,
