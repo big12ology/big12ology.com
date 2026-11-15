@@ -2567,7 +2567,9 @@
       "role": "away",
       "venue": "Jack Trice Stadium",
       "city": "Ames",
-      "state": "IA"
+      "state": "IA",
+      "pointsFor": 13,
+      "pointsAgainst": 41
     },
     {
       "team": "Colorado",
@@ -2611,7 +2613,10 @@
       "espnId": 401856859,
       "conferenceGame": true,
       "opponent": "Cincinnati",
-      "attendance": null
+      "attendance": 50162,
+      "pointsFor": 41,
+      "pointsAgainst": 13,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)"
     },
     {
       "team": "Kansas",
@@ -2625,7 +2630,9 @@
       "role": "away",
       "venue": "Milan Puskar Stadium",
       "city": "Morgantown",
-      "state": "WV"
+      "state": "WV",
+      "pointsFor": 37,
+      "pointsAgainst": 14
     },
     {
       "team": "Kansas State",
@@ -2639,7 +2646,9 @@
       "role": "away",
       "venue": "Amon G. Carter Stadium",
       "city": "Fort Worth",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 10,
+      "pointsAgainst": 20
     },
     {
       "team": "Oklahoma State",
@@ -2659,7 +2668,15 @@
       "espnId": 401856862,
       "conferenceGame": true,
       "opponent": "Kansas State",
-      "attendance": null
+      "attendance": 37203,
+      "pointsFor": 20,
+      "pointsAgainst": 10,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 60,
+        "windMph": 10,
+        "precipIn": 0
+      }
     },
     {
       "team": "Texas Tech",
@@ -2707,7 +2724,15 @@
       "espnId": 401856861,
       "conferenceGame": true,
       "opponent": "Kansas",
-      "attendance": null
+      "attendance": 45629,
+      "pointsFor": 14,
+      "pointsAgainst": 37,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 45,
+        "windMph": 13,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",

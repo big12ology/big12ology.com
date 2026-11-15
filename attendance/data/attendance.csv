@@ -1442,6 +1442,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Iowa State,4,2026-09-26,Utah,true,Jack Trice Stadium,52150,61500,0.8480,false
 2026,Iowa State,5,2026-10-03,West Virginia,true,Jack Trice Stadium,52724,61500,0.8573,false
 2026,Iowa State,9,2026-10-31,Oklahoma State,true,Jack Trice Stadium,50295,61500,0.8178,false
+2026,Iowa State,11,2026-11-14,Cincinnati,true,Jack Trice Stadium,50162,61500,0.8156,false
 2026,Kansas,1,2026-09-04,Long Island University,false,David Booth Kansas Memorial Stadium,30904,32000,0.9657,false
 2026,Kansas,2,2026-09-11,Missouri,false,David Booth Kansas Memorial Stadium,32000,32000,1.0000,false
 2026,Kansas,5,2026-10-03,Middle Tennessee,false,David Booth Kansas Memorial Stadium,32000,32000,1.0000,false
@@ -1462,6 +1463,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,TCU,5,2026-10-03,BYU,true,Amon G. Carter Stadium,38327,46000,0.8332,false
 2026,TCU,8,2026-10-24,West Virginia,true,Amon G. Carter Stadium,36216,46000,0.7873,false
 2026,TCU,9,2026-10-31,Kansas,true,Amon G. Carter Stadium,32549,46000,0.7076,false
+2026,TCU,11,2026-11-14,Kansas State,true,Amon G. Carter Stadium,37203,46000,0.8088,false
 2026,Texas Tech,1,2026-09-05,Abilene Christian,false,Galaxy Stadium,60229,60229,1.0000,false
 2026,Texas Tech,3,2026-09-18,Houston,true,Galaxy Stadium,60229,60229,1.0000,false
 2026,Texas Tech,4,2026-09-26,Sam Houston,false,Galaxy Stadium,59704,60229,0.9913,false
@@ -1484,3 +1486,4 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,West Virginia,4,2026-09-26,Oklahoma State,true,Milan Puskar Stadium,57756,60000,0.9626,false
 2026,West Virginia,6,2026-10-10,Arizona,true,Milan Puskar Stadium,50121,60000,0.8354,false
 2026,West Virginia,7,2026-10-17,Cincinnati,true,Milan Puskar Stadium,48106,60000,0.8018,false
+2026,West Virginia,11,2026-11-14,Kansas,true,Milan Puskar Stadium,45629,60000,0.7605,false

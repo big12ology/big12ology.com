@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 83
+    "agree": 86
   },
   "games": [
     {
@@ -914,6 +914,39 @@
       "espnId": 401856860,
       "ours": 47495,
       "espn": 47495,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Iowa State",
+      "week": 11,
+      "opponent": "Cincinnati",
+      "date": "2026-11-14",
+      "espnId": 401856859,
+      "ours": 50162,
+      "espn": 50162,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "TCU",
+      "week": 11,
+      "opponent": "Kansas State",
+      "date": "2026-11-14",
+      "espnId": 401856862,
+      "ours": 37203,
+      "espn": 37203,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "West Virginia",
+      "week": 11,
+      "opponent": "Kansas",
+      "date": "2026-11-14",
+      "espnId": 401856861,
+      "ours": 45629,
+      "espn": 45629,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }
