@@ -1731,10 +1731,10 @@
   "tbd": false,
   "home": "South Dakota State",
   "away": "Oklahoma State",
-  "hp": 80,
-  "ap": 90,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1750,8 +1750,7 @@
   "aseed": null,
   "tv": [
    "CBSSN"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916187,
@@ -1759,10 +1758,10 @@
   "tbd": false,
   "home": "Maryland Eastern Shore",
   "away": "Cincinnati",
-  "hp": 52,
-  "ap": 66,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1778,8 +1777,7 @@
   "aseed": null,
   "tv": [
    "MEAC Network"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917942,

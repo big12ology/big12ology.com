@@ -1365,8 +1365,7 @@
   "attendance": null,
   "espn": "401909774",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 374967,
@@ -1401,7 +1400,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": true,
   "conf": false,
   "tourney": false,
