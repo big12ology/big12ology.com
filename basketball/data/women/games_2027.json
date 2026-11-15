@@ -1642,8 +1642,7 @@
   "aseed": null,
   "tv": [
    "B1G+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916153,
@@ -1664,14 +1663,13 @@
   "venue_id": null,
   "city": "Provo",
   "state": "UT",
-  "attendance": null,
+  "attendance": 1701,
   "espn": "401916153",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401923476,
@@ -1692,14 +1690,13 @@
   "venue_id": null,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null,
+  "attendance": 2036,
   "espn": "401923476",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906965,
@@ -1726,8 +1723,7 @@
   "aseed": null,
   "tv": [
    "B1G+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401907050,
@@ -1865,33 +1861,6 @@
   ]
  },
  {
-  "id": 401916083,
-  "start": "2026-11-15T21:00:00.000Z",
-  "tbd": false,
-  "home": "Arizona State",
-  "away": "Penn State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": false,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Desert Financial Arena",
-  "venue_id": null,
-  "city": "Tempe",
-  "state": "AZ",
-  "attendance": null,
-  "espn": "401916083",
-  "hseed": null,
-  "aseed": null,
-  "tv": [
-   "ESPN+"
-  ]
- },
- {
   "id": 401917930,
   "start": "2026-11-15T23:00:00.000Z",
   "tbd": false,
@@ -1939,6 +1908,33 @@
   "state": "AZ",
   "attendance": null,
   "espn": "401913057",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN+"
+  ]
+ },
+ {
+  "id": 401916083,
+  "start": "2026-11-16T21:00:00.000Z",
+  "tbd": false,
+  "home": "Arizona State",
+  "away": "Penn State",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": false,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Desert Financial Arena",
+  "venue_id": null,
+  "city": "Tempe",
+  "state": "AZ",
+  "attendance": null,
+  "espn": "401916083",
   "hseed": null,
   "aseed": null,
   "tv": [
@@ -3141,7 +3137,9 @@
   "espn": "401916120",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401903571,
