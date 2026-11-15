@@ -1707,10 +1707,10 @@
   "tbd": false,
   "home": "Kansas",
   "away": "Nebraska",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 73,
+  "ap": 105,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -1726,7 +1726,8 @@
   "aseed": null,
   "tv": [
    "B1G+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401907050,
