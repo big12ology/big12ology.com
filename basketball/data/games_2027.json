@@ -1397,10 +1397,10 @@
   "tbd": false,
   "home": "Texas",
   "away": "Baylor",
-  "hp": 75,
-  "ap": 72,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "in_progress",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -1413,8 +1413,7 @@
   "attendance": null,
   "espn": "401906866",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372828,

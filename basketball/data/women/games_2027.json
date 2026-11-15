@@ -1787,10 +1787,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "Abilene Christian",
-  "hp": 88,
-  "ap": 55,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1806,8 +1806,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918466,
@@ -1815,10 +1814,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "East Texas A&M",
-  "hp": 100,
-  "ap": 66,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1834,8 +1833,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918943,
@@ -1843,10 +1841,10 @@
   "tbd": false,
   "home": "Texas Tech",
   "away": "SE Louisiana",
-  "hp": 85,
-  "ap": 51,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1862,8 +1860,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917930,
