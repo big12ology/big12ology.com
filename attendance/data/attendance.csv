@@ -1406,6 +1406,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Arizona,5,2026-10-03,Cincinnati,true,Casino Del Sol Stadium,43760,50782,0.8617,false
 2026,Arizona,8,2026-10-24,Iowa State,true,Casino Del Sol Stadium,45477,50782,0.8955,false
 2026,Arizona,10,2026-11-06,TCU,true,Casino Del Sol Stadium,40501,50782,0.7975,false
+2026,Arizona,11,2026-11-14,Utah,true,Casino Del Sol Stadium,48858,50782,0.9621,false
 2026,Arizona State,1,2026-09-05,Morgan State,false,Mountain America Stadium,54004,53599,1.0076,false
 2026,Arizona State,5,2026-10-03,Baylor,true,Mountain America Stadium,54063,53599,1.0087,false
 2026,Arizona State,6,2026-10-10,Hawai'i,false,Mountain America Stadium,47931,53599,0.8943,false
@@ -1416,6 +1417,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,BYU,6,2026-10-09,Iowa State,true,LaVell Edwards Stadium,64632,62073,1.0412,false
 2026,BYU,7,2026-10-17,Notre Dame,false,LaVell Edwards Stadium,65179,62073,1.0500,false
 2026,BYU,9,2026-10-31,Arizona State,true,LaVell Edwards Stadium,63332,62073,1.0203,false
+2026,BYU,11,2026-11-14,Baylor,true,LaVell Edwards Stadium,63008,62073,1.0151,false
 2026,Baylor,2,2026-09-12,Prairie View A&M,false,McLane Stadium,38642,45140,0.8560,false
 2026,Baylor,3,2026-09-19,Louisiana Tech,false,McLane Stadium,41343,45140,0.9159,false
 2026,Baylor,4,2026-09-26,Colorado,true,McLane Stadium,40015,45140,0.8865,false
@@ -1458,6 +1460,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Oklahoma State,3,2026-09-19,Murray State,false,Boone Pickens Stadium,52168,52202,0.9993,false
 2026,Oklahoma State,6,2026-10-10,UCF,true,Boone Pickens Stadium,52168,52202,0.9993,false
 2026,Oklahoma State,8,2026-10-24,Colorado,true,Boone Pickens Stadium,52168,52202,0.9993,false
+2026,Oklahoma State,11,2026-11-14,Texas Tech,true,Boone Pickens Stadium,52168,52202,0.9993,false
 2026,TCU,2,2026-09-12,Grambling,false,Amon G. Carter Stadium,37600,46000,0.8174,false
 2026,TCU,3,2026-09-19,Arkansas State,false,Amon G. Carter Stadium,46139,46000,1.0030,false
 2026,TCU,5,2026-10-03,BYU,true,Amon G. Carter Stadium,38327,46000,0.8332,false
@@ -1475,6 +1478,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,UCF,4,2026-09-26,TCU,true,Acrisure Bounce House,43212,44206,0.9775,false
 2026,UCF,8,2026-10-24,BYU,true,Acrisure Bounce House,45112,44206,1.0205,false
 2026,UCF,9,2026-10-30,Baylor,true,Acrisure Bounce House,45906,44206,1.0385,false
+2026,UCF,11,2026-11-14,Arizona State,true,Acrisure Bounce House,44114,44206,0.9979,false
 2026,Utah,1,2026-09-03,Idaho,false,Rice-Eccles Stadium,51444,51444,1.0000,false
 2026,Utah,2,2026-09-12,Arkansas,false,Rice-Eccles Stadium,51532,51444,1.0017,false
 2026,Utah,3,2026-09-19,Utah State,false,Rice-Eccles Stadium,51455,51444,1.0002,false

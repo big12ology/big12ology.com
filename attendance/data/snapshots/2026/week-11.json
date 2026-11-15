@@ -54,7 +54,7 @@
       "color": "#003da5",
       "logo": "assets/logos/byu.png",
       "multiVenue": false,
-      "games": 5,
+      "games": 6,
       "weeks": [
         {
           "week": 1,
@@ -80,10 +80,15 @@
           "week": 9,
           "attendance": 63332,
           "pct": 1.020282570521805
+        },
+        {
+          "week": 11,
+          "attendance": 63008,
+          "pct": 1.015062909799752
         }
       ],
-      "total": 321629,
-      "pct": 1.0362927520822258
+      "total": 384637,
+      "pct": 1.0327544450351467
     },
     {
       "team": "Utah",
@@ -137,7 +142,7 @@
       "color": "#ba9b37",
       "logo": "assets/logos/ucf.svg",
       "multiVenue": false,
-      "games": 5,
+      "games": 6,
       "weeks": [
         {
           "week": 1,
@@ -163,10 +168,15 @@
           "week": 9,
           "attendance": 45906,
           "pct": 1.0384563181468578
+        },
+        {
+          "week": 11,
+          "attendance": 44114,
+          "pct": 0.9979188345473465
         }
       ],
-      "total": 221977,
-      "pct": 1.0042844862688323
+      "total": 266091,
+      "pct": 1.0032235443152513
     },
     {
       "team": "Texas Tech",
@@ -220,7 +230,7 @@
       "color": "#ff7300",
       "logo": "assets/logos/okst.svg",
       "multiVenue": false,
-      "games": 4,
+      "games": 5,
       "weeks": [
         {
           "week": 2,
@@ -241,10 +251,15 @@
           "week": 8,
           "attendance": 52168,
           "pct": 0.999348683958469
+        },
+        {
+          "week": 11,
+          "attendance": 52168,
+          "pct": 0.999348683958469
         }
       ],
-      "total": 207539,
-      "pct": 0.9939226466418911
+      "total": 259707,
+      "pct": 0.9950078541052066
     },
     {
       "team": "Kansas",
@@ -447,6 +462,50 @@
       "pct": 0.8893833578379892
     },
     {
+      "team": "Arizona",
+      "stadium": "Casino Del Sol Stadium",
+      "capacity": 50782,
+      "capacityEstimate": null,
+      "color": "#0c234b",
+      "logo": "assets/logos/ariz.svg",
+      "multiVenue": false,
+      "games": 6,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 40129,
+          "pct": 0.7902209444291284
+        },
+        {
+          "week": 3,
+          "attendance": 40413,
+          "pct": 0.7958134772163366
+        },
+        {
+          "week": 5,
+          "attendance": 43760,
+          "pct": 0.861722657634595
+        },
+        {
+          "week": 8,
+          "attendance": 45477,
+          "pct": 0.8955338505769761
+        },
+        {
+          "week": 10,
+          "attendance": 40501,
+          "pct": 0.7975463746996967
+        },
+        {
+          "week": 11,
+          "attendance": 48858,
+          "pct": 0.962112559568351
+        }
+      ],
+      "total": 259138,
+      "pct": 0.8504916440208473
+    },
+    {
       "team": "West Virginia",
       "stadium": "Milan Puskar Stadium",
       "capacity": 60000,
@@ -533,45 +592,6 @@
       ],
       "total": 307528,
       "pct": 0.833409214092141
-    },
-    {
-      "team": "Arizona",
-      "stadium": "Casino Del Sol Stadium",
-      "capacity": 50782,
-      "capacityEstimate": null,
-      "color": "#0c234b",
-      "logo": "assets/logos/ariz.svg",
-      "multiVenue": false,
-      "games": 5,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 40129,
-          "pct": 0.7902209444291284
-        },
-        {
-          "week": 3,
-          "attendance": 40413,
-          "pct": 0.7958134772163366
-        },
-        {
-          "week": 5,
-          "attendance": 43760,
-          "pct": 0.861722657634595
-        },
-        {
-          "week": 8,
-          "attendance": 45477,
-          "pct": 0.8955338505769761
-        },
-        {
-          "week": 10,
-          "attendance": 40501,
-          "pct": 0.7975463746996967
-        }
-      ],
-      "total": 210280,
-      "pct": 0.8281674609113465
     },
     {
       "team": "TCU",
@@ -737,10 +757,10 @@
     },
     {
       "week": 11,
-      "games": 4,
-      "attendance": 180489,
-      "capacity": 217683,
-      "pct": 0.8291368641556759
+      "games": 8,
+      "attendance": 388637,
+      "capacity": 426946,
+      "pct": 0.9102720250336108
     },
     {
       "week": 12,
@@ -758,9 +778,9 @@
     }
   ],
   "totals": {
-    "games": 86,
-    "attendance": 4008749,
-    "capacity": 4302289,
-    "pct": 0.9317712036546127
+    "games": 90,
+    "attendance": 4216897,
+    "capacity": 4511552,
+    "pct": 0.9346887722894471
   }
 }
