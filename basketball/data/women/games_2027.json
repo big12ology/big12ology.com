@@ -1744,14 +1744,13 @@
   "venue_id": null,
   "city": "Brookings",
   "state": "SD",
-  "attendance": null,
+  "attendance": 2689,
   "espn": "401907050",
   "hseed": null,
   "aseed": null,
   "tv": [
    "CBSSN"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916187,
@@ -1778,8 +1777,7 @@
   "aseed": null,
   "tv": [
    "MEAC Network"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917942,
@@ -1800,14 +1798,13 @@
   "venue_id": null,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null,
+  "attendance": 2621,
   "espn": "401917942",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918466,
@@ -1834,8 +1831,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918943,
@@ -1856,14 +1852,13 @@
   "venue_id": null,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null,
+  "attendance": 4387,
   "espn": "401918943",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917930,
@@ -1871,10 +1866,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "UIC",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 69,
+  "ap": 64,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1884,7 +1879,7 @@
   "venue_id": null,
   "city": "Ames",
   "state": "IA",
-  "attendance": null,
+  "attendance": 8886,
   "espn": "401917930",
   "hseed": null,
   "aseed": null,
