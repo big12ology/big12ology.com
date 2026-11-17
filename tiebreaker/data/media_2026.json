@@ -715,6 +715,39 @@
    "type": "tv"
   }
  ],
+ "401856873": [
+  {
+   "outlet": "Fox",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
+ "401856874": [
+  {
+   "outlet": "ESPN2",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
+ "401856877": [
+  {
+   "outlet": "ESPN2",
+   "type": "tv",
+   "via": "espn.com"
+  },
+  {
+   "outlet": "ESPN",
+   "type": "tv",
+   "via": "espn.com"
+  }
+ ],
+ "401856878": [
+  {
+   "outlet": "ESPN+",
+   "type": "web",
+   "via": "espn.com"
+  }
+ ],
  "401856879": [
   {
    "outlet": "ESPN",

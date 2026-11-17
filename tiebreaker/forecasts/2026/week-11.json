@@ -20,7 +20,7 @@
    "home": "Kansas",
    "margin": -6.38,
    "p_home": 0.323,
-   "spread": 5.5,
+   "spread": 5.6,
    "systems": {
     "Big12ology": -1.93,
     "Elo": -3.15,
@@ -65,7 +65,7 @@
    "home": "UCF",
    "margin": 0.05,
    "p_home": 0.502,
-   "spread": -2.2,
+   "spread": -2.3,
    "systems": {
     "Big12ology": 4.38,
     "Elo": -6.0,
@@ -236,7 +236,7 @@
   }
  },
  "games_complete": 104,
- "generated": "2026-11-17T01:24:27+00:00",
+ "generated": "2026-11-17T07:32:50+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
