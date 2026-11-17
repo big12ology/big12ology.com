@@ -1947,10 +1947,10 @@
   "tbd": false,
   "home": "Utah",
   "away": "Houston Christian",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 98,
+  "ap": 49,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1966,7 +1966,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401907167,
