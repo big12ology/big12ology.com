@@ -986,22 +986,52 @@
   "spread": -4.7
  },
  "372836": {
-  "as_of": "2026-11-16T18:45:39+00:00",
+  "as_of": "2026-11-17T16:49:14+00:00",
   "books": [
    {
-    "over_under": 155.5,
+    "over_under": 158.5,
     "provider": "DraftKings",
+    "spread": -17.5
+   },
+   {
+    "over_under": 158.5,
+    "provider": "FanDuel",
     "spread": -16.5
    },
    {
-    "over_under": 154.5,
-    "provider": "FanDuel",
+    "over_under": 157.5,
+    "provider": "BetRivers",
+    "spread": -18.5
+   },
+   {
+    "over_under": 158.0,
+    "provider": "LowVig.ag",
     "spread": -16.5
+   },
+   {
+    "over_under": 158.0,
+    "provider": "BetOnline.ag",
+    "spread": -16.5
+   },
+   {
+    "over_under": 158.5,
+    "provider": "BetMGM",
+    "spread": -16.5
+   },
+   {
+    "over_under": 158.0,
+    "provider": "BetUS",
+    "spread": -16.5
+   },
+   {
+    "over_under": 158.5,
+    "provider": "Bovada",
+    "spread": -17.5
    }
   ],
-  "over_under": 155.0,
+  "over_under": 158.2,
   "source": "the-odds-api.com",
-  "spread": -16.5
+  "spread": -17.0
  },
  "374504": {
   "as_of": "2026-11-02T18:38:05+00:00",
@@ -1961,35 +1991,148 @@
   "source": "the-odds-api.com",
   "spread": -39.1
  },
- "375075": {
-  "as_of": "2026-11-16T18:45:39+00:00",
+ "375062": {
+  "as_of": "2026-11-17T16:49:14+00:00",
   "books": [
    {
-    "over_under": 143.5,
+    "over_under": 145.5,
+    "provider": "BetOnline.ag",
+    "spread": -13.0
+   },
+   {
+    "over_under": 145.5,
+    "provider": "LowVig.ag",
+    "spread": -13.0
+   },
+   {
+    "over_under": 145.5,
+    "provider": "FanDuel",
+    "spread": -12.5
+   },
+   {
+    "over_under": 145.5,
     "provider": "DraftKings",
-    "spread": 15.5
+    "spread": -12.5
+   },
+   {
+    "over_under": 145.5,
+    "provider": "BetRivers",
+    "spread": -12.5
+   },
+   {
+    "over_under": 145.5,
+    "provider": "BetMGM",
+    "spread": -12.5
+   },
+   {
+    "over_under": 145.5,
+    "provider": "BetUS",
+    "spread": -13.0
+   },
+   {
+    "over_under": 146.0,
+    "provider": "Bovada",
+    "spread": -12.5
+   }
+  ],
+  "over_under": 145.6,
+  "source": "the-odds-api.com",
+  "spread": -12.7
+ },
+ "375075": {
+  "as_of": "2026-11-17T16:49:14+00:00",
+  "books": [
+   {
+    "over_under": 142.5,
+    "provider": "DraftKings",
+    "spread": 17.5
    },
    {
     "over_under": 142.5,
     "provider": "FanDuel",
-    "spread": 13.5
-   }
-  ],
-  "over_under": 143.0,
-  "source": "the-odds-api.com",
-  "spread": 14.5
- },
- "375087": {
-  "as_of": "2026-11-16T18:45:39+00:00",
-  "books": [
+    "spread": 17.5
+   },
+   {
+    "over_under": 143.5,
+    "provider": "BetRivers",
+    "spread": 18.5
+   },
    {
     "over_under": 142.5,
+    "provider": "BetOnline.ag",
+    "spread": 17.5
+   },
+   {
+    "over_under": 142.5,
+    "provider": "LowVig.ag",
+    "spread": 17.5
+   },
+   {
+    "over_under": 142.5,
+    "provider": "BetMGM",
+    "spread": 17.5
+   },
+   {
+    "over_under": 142.5,
+    "provider": "BetUS",
+    "spread": 17.5
+   },
+   {
+    "over_under": 142.5,
+    "provider": "Bovada",
+    "spread": 17.5
+   }
+  ],
+  "over_under": 142.6,
+  "source": "the-odds-api.com",
+  "spread": 17.6
+ },
+ "375087": {
+  "as_of": "2026-11-17T16:49:14+00:00",
+  "books": [
+   {
+    "over_under": 144.5,
     "provider": "DraftKings",
+    "spread": -1.5
+   },
+   {
+    "over_under": 143.5,
+    "provider": "FanDuel",
+    "spread": -1.5
+   },
+   {
+    "over_under": 143.5,
+    "provider": "BetRivers",
+    "spread": 0.5
+   },
+   {
+    "over_under": 144.0,
+    "provider": "LowVig.ag",
+    "spread": -1.0
+   },
+   {
+    "over_under": 144.0,
+    "provider": "BetOnline.ag",
+    "spread": -1.0
+   },
+   {
+    "over_under": 143.5,
+    "provider": "BetMGM",
+    "spread": -1.5
+   },
+   {
+    "over_under": 144.0,
+    "provider": "BetUS",
+    "spread": -1.0
+   },
+   {
+    "over_under": 144.5,
+    "provider": "Bovada",
     "spread": -1.5
    }
   ],
-  "over_under": 142.5,
+  "over_under": 143.9,
   "source": "the-odds-api.com",
-  "spread": -1.5
+  "spread": -1.1
  }
 }
