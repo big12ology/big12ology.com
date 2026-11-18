@@ -2041,14 +2041,13 @@
   "venue_id": null,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null,
+  "attendance": 3145,
   "espn": "401906984",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401920441,
@@ -2069,14 +2068,13 @@
   "venue_id": null,
   "city": "Houston",
   "state": "TX",
-  "attendance": null,
+  "attendance": 751,
   "espn": "401920441",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916084,
@@ -2097,14 +2095,13 @@
   "venue_id": null,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 2501,
   "espn": "401916084",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916154,
@@ -2112,10 +2109,10 @@
   "tbd": false,
   "home": "BYU",
   "away": "Utah State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 90,
+  "ap": 78,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2125,7 +2122,7 @@
   "venue_id": null,
   "city": "Provo",
   "state": "UT",
-  "attendance": null,
+  "attendance": 1718,
   "espn": "401916154",
   "hseed": null,
   "aseed": null,
@@ -2139,10 +2136,10 @@
   "tbd": false,
   "home": "Cincinnati",
   "away": "Western Carolina",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 63,
+  "ap": 45,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -4244,33 +4241,6 @@
   ]
  },
  {
-  "id": 401906969,
-  "start": "2026-12-06T18:00:00.000Z",
-  "tbd": false,
-  "home": "Kansas",
-  "away": "Kansas City",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": false,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Allen Fieldhouse",
-  "venue_id": null,
-  "city": "Lawrence",
-  "state": "KS",
-  "attendance": null,
-  "espn": "401906969",
-  "hseed": null,
-  "aseed": null,
-  "tv": [
-   "ESPN+"
-  ]
- },
- {
   "id": 401918007,
   "start": "2026-12-06T18:00:00.000Z",
   "tbd": false,
@@ -4298,33 +4268,6 @@
   ]
  },
  {
-  "id": 401906990,
-  "start": "2026-12-06T19:00:00.000Z",
-  "tbd": false,
-  "home": "Kansas State",
-  "away": "Stephen F. Austin",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": false,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Bramlage Coliseum",
-  "venue_id": null,
-  "city": "Manhattan",
-  "state": "KS",
-  "attendance": null,
-  "espn": "401906990",
-  "hseed": null,
-  "aseed": null,
-  "tv": [
-   "ESPN+"
-  ]
- },
- {
   "id": 401916192,
   "start": "2026-12-06T19:00:00.000Z",
   "tbd": false,
@@ -4345,6 +4288,60 @@
   "state": "OH",
   "attendance": null,
   "espn": "401916192",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN+"
+  ]
+ },
+ {
+  "id": 401906969,
+  "start": "2026-12-06T20:00:00.000Z",
+  "tbd": false,
+  "home": "Kansas",
+  "away": "Kansas City",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": false,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Allen Fieldhouse",
+  "venue_id": null,
+  "city": "Lawrence",
+  "state": "KS",
+  "attendance": null,
+  "espn": "401906969",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN+"
+  ]
+ },
+ {
+  "id": 401906990,
+  "start": "2026-12-06T20:00:00.000Z",
+  "tbd": false,
+  "home": "Kansas State",
+  "away": "Stephen F. Austin",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": false,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Bramlage Coliseum",
+  "venue_id": null,
+  "city": "Manhattan",
+  "state": "KS",
+  "attendance": null,
+  "espn": "401906990",
   "hseed": null,
   "aseed": null,
   "tv": [
@@ -4482,7 +4479,9 @@
   "espn": "401916088",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401918937,
@@ -5048,31 +5047,6 @@
   ]
  },
  {
-  "id": 401917937,
-  "start": "2026-12-13T18:00:00.000Z",
-  "tbd": false,
-  "home": "Iowa State",
-  "away": "Chicago State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": false,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Hilton Coliseum",
-  "venue_id": null,
-  "city": "Ames",
-  "state": "IA",
-  "attendance": null,
-  "espn": "401917937",
-  "hseed": null,
-  "aseed": null,
-  "tv": []
- },
- {
   "id": 401906971,
   "start": "2026-12-13T20:00:00.000Z",
   "tbd": false,
@@ -5174,6 +5148,33 @@
   "state": "AZ",
   "attendance": null,
   "espn": "401913064",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN+"
+  ]
+ },
+ {
+  "id": 401917937,
+  "start": "2026-12-13T23:00:00.000Z",
+  "tbd": false,
+  "home": "Iowa State",
+  "away": "Chicago State",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": false,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Hilton Coliseum",
+  "venue_id": null,
+  "city": "Ames",
+  "state": "IA",
+  "attendance": null,
+  "espn": "401917937",
   "hseed": null,
   "aseed": null,
   "tv": [
@@ -5528,6 +5529,33 @@
   ]
  },
  {
+  "id": 401922857,
+  "start": "2026-12-19T19:00:00.000Z",
+  "tbd": false,
+  "home": "Kansas State",
+  "away": "Iowa State",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": true,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Bramlage Coliseum",
+  "venue_id": null,
+  "city": "Manhattan",
+  "state": "KS",
+  "attendance": null,
+  "espn": "401922857",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN+"
+  ]
+ },
+ {
   "id": 401922856,
   "start": "2026-12-19T21:00:00.000Z",
   "tbd": false,
@@ -5548,33 +5576,6 @@
   "state": "AZ",
   "attendance": null,
   "espn": "401922856",
-  "hseed": null,
-  "aseed": null,
-  "tv": [
-   "ESPN+"
-  ]
- },
- {
-  "id": 401922857,
-  "start": "2026-12-19T22:00:00.000Z",
-  "tbd": false,
-  "home": "Kansas State",
-  "away": "Iowa State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": true,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Bramlage Coliseum",
-  "venue_id": null,
-  "city": "Manhattan",
-  "state": "KS",
-  "attendance": null,
-  "espn": "401922857",
   "hseed": null,
   "aseed": null,
   "tv": [
@@ -5901,7 +5902,9 @@
   "espn": "401922865",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401922867,
