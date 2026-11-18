@@ -2056,10 +2056,10 @@
   "tbd": false,
   "home": "Houston",
   "away": "Texas A&M-Corpus Christi",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 70,
+  "ap": 57,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2075,7 +2075,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401916084,
@@ -2083,10 +2084,10 @@
   "tbd": false,
   "home": "Arizona State",
   "away": "San Diego",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 66,
+  "ap": 55,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2102,7 +2103,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401916154,
