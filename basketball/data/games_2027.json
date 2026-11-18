@@ -1506,7 +1506,7 @@
   "venue_id": 10,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 5504,
   "espn": "401921756",
   "hseed": null,
   "aseed": null
