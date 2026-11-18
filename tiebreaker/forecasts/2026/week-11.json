@@ -50,7 +50,7 @@
    "home": "West Virginia",
    "margin": -8.53,
    "p_home": 0.266,
-   "spread": 8.2,
+   "spread": 8.3,
    "systems": {
     "Big12ology": -6.64,
     "Elo": -6.56,
@@ -65,7 +65,7 @@
    "home": "UCF",
    "margin": 0.05,
    "p_home": 0.502,
-   "spread": -2.4,
+   "spread": -2.2,
    "systems": {
     "Big12ology": 4.38,
     "Elo": -6.0,
@@ -236,7 +236,7 @@
   }
  },
  "games_complete": 104,
- "generated": "2026-11-18T00:21:30+00:00",
+ "generated": "2026-11-18T17:24:26+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
