@@ -1960,14 +1960,13 @@
   "venue_id": null,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null,
+  "attendance": 1524,
   "espn": "401918934",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401907167,
@@ -1988,14 +1987,13 @@
   "venue_id": null,
   "city": "Morgantown",
   "state": "WV",
-  "attendance": null,
+  "attendance": 9328,
   "espn": "401907167",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401919059,
@@ -2003,10 +2001,10 @@
   "tbd": false,
   "home": "UCF",
   "away": "North Florida",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 82,
+  "ap": 64,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2016,7 +2014,7 @@
   "venue_id": null,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 1141,
   "espn": "401919059",
   "hseed": null,
   "aseed": null,
@@ -3037,7 +3035,9 @@
   "espn": "401929205",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "BDG Sports Live"
+  ]
  },
  {
   "id": 401923185,
@@ -3089,7 +3089,9 @@
   "espn": "401903569",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "FloSports"
+  ]
  },
  {
   "id": 401903558,
@@ -3114,7 +3116,9 @@
   "espn": "401903558",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "FloSports"
+  ]
  },
  {
   "id": 401916120,
@@ -3166,7 +3170,9 @@
   "espn": "401903571",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "FloSports"
+  ]
  },
  {
   "id": 401919062,
@@ -3216,7 +3222,9 @@
   "espn": "401903572",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "FloSports"
+  ]
  },
  {
   "id": 401913719,
@@ -3241,7 +3249,9 @@
   "espn": "401913719",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ION"
+  ]
  },
  {
   "id": 401927837,
@@ -3316,7 +3326,9 @@
   "espn": "401917933",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "BDG Sports Live"
+  ]
  },
  {
   "id": 401929189,
@@ -3393,7 +3405,9 @@
   "espn": "401903574",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "FloSports"
+  ]
  },
  {
   "id": 401906986,
@@ -3418,7 +3432,9 @@
   "espn": "401906986",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ION"
+  ]
  },
  {
   "id": 401903575,
@@ -3443,7 +3459,9 @@
   "espn": "401903575",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "FloSports"
+  ]
  },
  {
   "id": 401919063,
@@ -3493,7 +3511,9 @@
   "espn": "401903576",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "FloSports"
+  ]
  },
  {
   "id": 401918005,
@@ -3518,7 +3538,9 @@
   "espn": "401918005",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ION"
+  ]
  },
  {
   "id": 401929184,
@@ -3568,7 +3590,9 @@
   "espn": "401906059",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "BallerTV"
+  ]
  },
  {
   "id": 401916087,
@@ -3620,7 +3644,9 @@
   "espn": "401906987",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ION"
+  ]
  },
  {
   "id": 401917934,
