@@ -2247,10 +2247,10 @@
   "tbd": false,
   "home": "Minnesota",
   "away": "Kansas",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 76,
+  "ap": 58,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2267,7 +2267,8 @@
   "tv": [
    "Peacock",
    "NBCSN"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401920276,
@@ -2275,10 +2276,10 @@
   "tbd": false,
   "home": "New Mexico",
   "away": "Colorado",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 58,
+  "ap": 75,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2294,7 +2295,8 @@
   "aseed": null,
   "tv": [
    "MW+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401906092,
