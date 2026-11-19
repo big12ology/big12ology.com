@@ -1,4 +1,32 @@
 {
+ "401906092": {
+  "as_of": "2026-11-19T17:29:15+00:00",
+  "books": [
+   {
+    "over_under": 128.5,
+    "provider": "DraftKings",
+    "spread": -6.5
+   },
+   {
+    "over_under": 129.5,
+    "provider": "BetOnline.ag",
+    "spread": -6.0
+   },
+   {
+    "over_under": 129.5,
+    "provider": "LowVig.ag",
+    "spread": -6.0
+   },
+   {
+    "over_under": 128.5,
+    "provider": "FanDuel",
+    "spread": -5.5
+   }
+  ],
+  "over_under": 129.0,
+  "source": "the-odds-api.com",
+  "spread": -6.0
+ },
  "401906965": {
   "as_of": "2026-11-14T13:04:11+00:00",
   "books": [

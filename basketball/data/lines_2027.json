@@ -2258,5 +2258,149 @@
   "over_under": 157.5,
   "source": "the-odds-api.com",
   "spread": -35.9
+ },
+ "375132": {
+  "as_of": "2026-11-19T17:29:12+00:00",
+  "books": [
+   {
+    "over_under": 162.5,
+    "provider": "BetOnline.ag",
+    "spread": 0.0
+   },
+   {
+    "over_under": 162.5,
+    "provider": "LowVig.ag",
+    "spread": 0.0
+   },
+   {
+    "over_under": 162.5,
+    "provider": "FanDuel",
+    "spread": 1.5
+   },
+   {
+    "over_under": 162.5,
+    "provider": "DraftKings",
+    "spread": -1.5
+   },
+   {
+    "over_under": 162.5,
+    "provider": "BetMGM",
+    "spread": -1.5
+   },
+   {
+    "over_under": 163.0,
+    "provider": "BetUS",
+    "spread": 0.0
+   },
+   {
+    "over_under": 162.5,
+    "provider": "BetRivers",
+    "spread": -0.5
+   },
+   {
+    "over_under": 162.5,
+    "provider": "Bovada",
+    "spread": -1.0
+   }
+  ],
+  "over_under": 162.6,
+  "source": "the-odds-api.com",
+  "spread": -0.4
+ },
+ "378688": {
+  "as_of": "2026-11-19T17:29:12+00:00",
+  "books": [
+   {
+    "over_under": 148.0,
+    "provider": "BetOnline.ag",
+    "spread": 7.5
+   },
+   {
+    "over_under": 148.0,
+    "provider": "LowVig.ag",
+    "spread": 7.5
+   },
+   {
+    "over_under": 147.5,
+    "provider": "FanDuel",
+    "spread": 7.5
+   },
+   {
+    "over_under": 147.5,
+    "provider": "DraftKings",
+    "spread": 7.5
+   },
+   {
+    "over_under": 147.5,
+    "provider": "Bovada",
+    "spread": 8.5
+   },
+   {
+    "over_under": 148.5,
+    "provider": "BetRivers",
+    "spread": 8.5
+   },
+   {
+    "over_under": 147.5,
+    "provider": "BetMGM",
+    "spread": 7.5
+   },
+   {
+    "over_under": 147.5,
+    "provider": "BetUS",
+    "spread": 8.0
+   }
+  ],
+  "over_under": 147.8,
+  "source": "the-odds-api.com",
+  "spread": 7.8
+ },
+ "378689": {
+  "as_of": "2026-11-19T17:29:12+00:00",
+  "books": [
+   {
+    "over_under": 150.5,
+    "provider": "BetOnline.ag",
+    "spread": 3.0
+   },
+   {
+    "over_under": 150.5,
+    "provider": "LowVig.ag",
+    "spread": 3.0
+   },
+   {
+    "over_under": 150.5,
+    "provider": "FanDuel",
+    "spread": 2.5
+   },
+   {
+    "over_under": 150.5,
+    "provider": "DraftKings",
+    "spread": 3.5
+   },
+   {
+    "over_under": 150.5,
+    "provider": "Bovada",
+    "spread": 2.5
+   },
+   {
+    "over_under": 150.5,
+    "provider": "BetRivers",
+    "spread": 2.5
+   },
+   {
+    "over_under": 150.5,
+    "provider": "BetMGM",
+    "spread": 3.5
+   },
+   {
+    "over_under": 151.0,
+    "provider": "BetUS",
+    "spread": 3.0
+   }
+  ],
+  "over_under": 150.6,
+  "source": "the-odds-api.com",
+  "spread": 2.9
  }
 }
