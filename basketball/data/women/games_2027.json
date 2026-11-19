@@ -2163,10 +2163,10 @@
   "tbd": false,
   "home": "Northern Iowa",
   "away": "Iowa State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 57,
+  "ap": 72,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2182,7 +2182,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401907051,
@@ -2190,10 +2191,10 @@
   "tbd": false,
   "home": "Oklahoma State",
   "away": "St. John's",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 77,
+  "ap": 63,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2209,7 +2210,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401918003,
@@ -2217,10 +2219,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "UT Arlington",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 96,
+  "ap": 48,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2236,7 +2238,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401906966,

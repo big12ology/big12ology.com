@@ -1613,10 +1613,10 @@
   "tbd": false,
   "home": "Texas Tech",
   "away": "New Orleans",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 86,
+  "ap": 41,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1629,7 +1629,8 @@
   "attendance": null,
   "espn": "401921134",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 375104,
@@ -1637,10 +1638,10 @@
   "tbd": false,
   "home": "Cincinnati",
   "away": "Youngstown State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 91,
+  "ap": 54,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1653,7 +1654,8 @@
   "attendance": null,
   "espn": "401920751",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 378684,
