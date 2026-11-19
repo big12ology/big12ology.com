@@ -2276,10 +2276,10 @@
   "tbd": false,
   "home": "New Mexico",
   "away": "Colorado",
-  "hp": 58,
-  "ap": 75,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2295,8 +2295,7 @@
   "aseed": null,
   "tv": [
    "MW+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906092,
