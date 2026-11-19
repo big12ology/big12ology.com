@@ -1663,10 +1663,10 @@
   "tbd": false,
   "home": "West Virginia",
   "away": "Kansas",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 82,
+  "ap": 86,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -1679,7 +1679,8 @@
   "attendance": null,
   "espn": "401920515",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372854,
