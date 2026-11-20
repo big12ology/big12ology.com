@@ -1781,10 +1781,10 @@
   "tbd": false,
   "home": "West Virginia",
   "away": "Florida",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 72,
+  "ap": 85,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -1797,7 +1797,8 @@
   "attendance": null,
   "espn": "401920517",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 375132,

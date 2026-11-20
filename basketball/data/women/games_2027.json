@@ -2149,7 +2149,7 @@
   "venue_id": null,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null,
+  "attendance": 1779,
   "espn": "401916188",
   "hseed": null,
   "aseed": null,
@@ -2176,14 +2176,13 @@
   "venue_id": null,
   "city": "Cedar Falls",
   "state": "IA",
-  "attendance": null,
+  "attendance": 3102,
   "espn": "401917931",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401907051,
@@ -2204,14 +2203,13 @@
   "venue_id": null,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null,
+  "attendance": 2674,
   "espn": "401907051",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918003,
@@ -2232,14 +2230,13 @@
   "venue_id": null,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null,
+  "attendance": 2501,
   "espn": "401918003",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906966,
@@ -2260,15 +2257,14 @@
   "venue_id": null,
   "city": "Minneapolis",
   "state": "MN",
-  "attendance": null,
+  "attendance": 3872,
   "espn": "401906966",
   "hseed": null,
   "aseed": null,
   "tv": [
    "Peacock",
    "NBCSN"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401920276,
@@ -2289,14 +2285,13 @@
   "venue_id": null,
   "city": "Albuquerque",
   "state": "NM",
-  "attendance": null,
+  "attendance": 3912,
   "espn": "401920276",
   "hseed": null,
   "aseed": null,
   "tv": [
    "MW+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906092,
