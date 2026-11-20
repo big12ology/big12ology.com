@@ -50,7 +50,7 @@
    "home": "West Virginia",
    "margin": -8.53,
    "p_home": 0.266,
-   "spread": 7.4,
+   "spread": 7.3,
    "systems": {
     "Big12ology": -6.64,
     "Elo": -6.56,
@@ -80,7 +80,7 @@
    "home": "Arizona State",
    "margin": -5.28,
    "p_home": 0.35,
-   "spread": 2.6,
+   "spread": 2.5,
    "systems": {
     "Big12ology": -5.43,
     "Elo": -0.07,
@@ -95,7 +95,7 @@
    "home": "Baylor",
    "margin": -2.54,
    "p_home": 0.427,
-   "spread": 4.9,
+   "spread": 4.6,
    "systems": {
     "Big12ology": 3.61,
     "Elo": -5.96,
@@ -236,7 +236,7 @@
   }
  },
  "games_complete": 104,
- "generated": "2026-11-20T14:59:18+00:00",
+ "generated": "2026-11-20T23:33:04+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
