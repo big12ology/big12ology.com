@@ -1830,10 +1830,10 @@
   "tbd": false,
   "home": "Kansas",
   "away": "Houston",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 83,
+  "ap": 92,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -1846,7 +1846,8 @@
   "attendance": null,
   "espn": "401920518",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 375164,
