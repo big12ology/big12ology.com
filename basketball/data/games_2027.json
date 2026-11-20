@@ -1626,7 +1626,7 @@
   "venue_id": 201,
   "city": "Lubbock",
   "state": "TX",
-  "attendance": null,
+  "attendance": 11791,
   "espn": "401921134",
   "hseed": null,
   "aseed": null
@@ -1650,7 +1650,7 @@
   "venue_id": 14,
   "city": "Cincinnati",
   "state": "OH",
-  "attendance": null,
+  "attendance": 9009,
   "espn": "401920751",
   "hseed": null,
   "aseed": null
@@ -1698,7 +1698,7 @@
   "venue_id": 176,
   "city": "Boulder",
   "state": "CO",
-  "attendance": null,
+  "attendance": 4382,
   "espn": "401909762",
   "hseed": null,
   "aseed": null
@@ -1722,7 +1722,7 @@
   "venue_id": 8,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 14688,
   "espn": "401909742",
   "hseed": null,
   "aseed": null
@@ -1746,7 +1746,7 @@
   "venue_id": 204,
   "city": "Provo",
   "state": "UT",
-  "attendance": null,
+  "attendance": 17245,
   "espn": "401921742",
   "hseed": null,
   "aseed": null
@@ -1770,7 +1770,7 @@
   "venue_id": 203,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 4942,
   "espn": "401921734",
   "hseed": null,
   "aseed": null
@@ -1797,8 +1797,7 @@
   "attendance": null,
   "espn": "401920517",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 375132,
