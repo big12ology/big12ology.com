@@ -2299,10 +2299,10 @@
   "tbd": false,
   "home": "North Carolina",
   "away": "Texas Tech",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 61,
+  "ap": 47,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2318,7 +2318,8 @@
   "aseed": null,
   "tv": [
    "ESPN2"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401919060,
@@ -2326,10 +2327,10 @@
   "tbd": false,
   "home": "UCF",
   "away": "Stetson",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 71,
+  "ap": 58,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2345,7 +2346,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401913058,
