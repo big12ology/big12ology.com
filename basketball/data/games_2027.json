@@ -1818,11 +1818,10 @@
   "venue_id": 150,
   "city": "Fort Worth",
   "state": "TX",
-  "attendance": null,
+  "attendance": 7066,
   "espn": "401919050",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 378689,
@@ -1843,11 +1842,10 @@
   "venue_id": 457,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null,
+  "attendance": 5020,
   "espn": "401920518",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 375164,
@@ -1855,10 +1853,10 @@
   "tbd": false,
   "home": "Minnesota",
   "away": "Oklahoma State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 85,
+  "ap": 70,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,

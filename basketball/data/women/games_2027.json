@@ -2318,8 +2318,7 @@
   "aseed": null,
   "tv": [
    "ESPN2"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401919060,
@@ -2340,14 +2339,13 @@
   "venue_id": null,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 808,
   "espn": "401919060",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401913058,
@@ -2368,14 +2366,13 @@
   "venue_id": null,
   "city": "Tucson",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 4658,
   "espn": "401913058",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401907052,
@@ -2803,7 +2800,9 @@
   "espn": "401906985",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "ESPN+"
+  ]
  },
  {
   "id": 401921427,
