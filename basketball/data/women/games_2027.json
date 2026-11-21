@@ -2488,10 +2488,10 @@
   "tbd": false,
   "home": "Florida State",
   "away": "UCF",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 81,
+  "ap": 54,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2507,7 +2507,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401923003,
