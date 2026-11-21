@@ -1046,7 +1046,9 @@
       var inner = byWeek[wk].map(function (g) {
         var id = String(g.id);
         var fav = favs()[id];
-        var date = (g.start || "").slice(5, 10).replace("-", "/");
+        // Built by pk_day in build.py, never sliced off `start`: that is
+        // UTC, and a night kickoff is already tomorrow there.
+        var date = g.day || "";
         var was = actualWinner(g);
         // "at" names a host, and a neutral-site game has none: Arizona State
         // did not travel to Kansas, they both traveled to Wembley. The feed

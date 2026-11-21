@@ -25,7 +25,8 @@
   "home": "Iowa State",
   "kickoff": "2026-11-14T17:00:00.000Z",
   "neutral": false,
-  "spread": -3.0
+  "spread": -3.0,
+  "tbd": false
  },
  "season": 2026,
  "spotlight": {
@@ -42,6 +43,6 @@
   },
   "total": 48,
   "week": 11,
-  "when": "Sun, Nov 15"
+  "when": "Sat, Nov 14"
  }
 }

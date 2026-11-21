@@ -55,7 +55,7 @@ done
 echo "  build.py: a rebuild over an existing tree changes nothing"
 
 # --- assemble.sh ----------------------------------------------------------
-export B12_BUILD_STAMP="January 1, 00:00 UTC"
+export B12_BUILD_STAMP="January 1, 12:00 AM ET"
 for pass in 1 2; do
   B12_PICKEM=1 "$ROOT/tools/assemble.sh" "$TMP/dist$pass" >/dev/null
 done

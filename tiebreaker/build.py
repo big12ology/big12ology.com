@@ -2683,7 +2683,7 @@ def build_brief(year, games, overrides, systems, sims, matchcard,
                      key=lambda g: g["start"], default=None)
         lede = "The season has not kicked off yet. "
         if opener:
-            lede += (f"It opens {esc(pretty_date(opener['start'], 'long'))} "
+            lede += (f"It opens {esc(game_date(opener, 'long'))} "
                      f"with {esc(opener['away'])} at {esc(opener['home'])}. ")
         if board:
             lede += ("The models make "
@@ -3139,7 +3139,7 @@ def kickoff(g):
     if not iso:
         return "<span class=dim>time TBD</span>"
     if g.get("start_tbd"):
-        return (f"<span class=dim>{esc(pretty_date(iso))} · time TBD</span>")
+        return (f"<span class=dim>{esc(game_date(g))} · time TBD</span>")
     try:
         when = datetime.datetime.fromisoformat(iso.replace("Z", "+00:00"))
     except ValueError:
@@ -4333,13 +4333,25 @@ _DOW = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
 
 
 def pretty_date(iso, style="short"):
-    """Dates for prose. The year is omitted — readers know what season they
-    are looking at. style: 'short' (Sat, Sep 12) or 'long' (Saturday,
-    August 29)."""
+    """Dates for prose. The year is omitted, since readers know what season
+    they are looking at. style: 'short' (Sat, Sep 12) or 'long' (Saturday,
+    August 29).
+
+    A full timestamp is read on the Central calendar, never sliced: `start`
+    is UTC, and slicing it filed every evening kickoff under the next day.
+    A plain date is taken as given. For a game, prefer game_date(g), which
+    also knows what a TBD placeholder means; this is the fallback for
+    callers that only hold a timestamp."""
     if not iso:
         return ""
     try:
-        d = datetime.date.fromisoformat(iso[:10])
+        if len(iso) > 10 and "T" in iso:
+            t = datetime.datetime.fromisoformat(iso.replace("Z", "+00:00"))
+            if t.tzinfo is None:
+                t = t.replace(tzinfo=datetime.timezone.utc)
+            d = t.astimezone(pickem_mod.CENTRAL).date()
+        else:
+            d = datetime.date.fromisoformat(iso[:10])
     except ValueError:
         return iso[:10]
     if style == "long":
@@ -4687,7 +4699,13 @@ def render(year, games):
     # (app.js does, for the heading), so only the grouping moves.
     lab_games = [dict({k: v for k, v in g.items()
                        if k not in JSONLD_ONLY_FIELDS},
-                      week=lab_week(g, year))
+                      week=lab_week(g, year),
+                      # The pick list's date, on the same calendar the
+                      # schedule files the game under (pk_day). app.js used
+                      # to slice it off the UTC `start`, which put every
+                      # evening kickoff on the next day.
+                      day=(lambda d: f"{d:%m/%d}" if d else "")(
+                          pk_day(g)))
                  for g in games]
     payload = json.dumps({
         "year": year,
@@ -8105,6 +8123,7 @@ def write_hub(year, games, lines, sims_race, lev_top=None):
         hub["next"] = {
             "home": nxt["home"], "away": nxt["away"],
             "kickoff": nxt["start"],
+            "tbd": bool(nxt.get("start_tbd")),
             # The home number, same convention as everywhere else: negative
             # means the home side is giving points. Rounded to the half at
             # which a line is actually quoted.
@@ -8157,7 +8176,11 @@ def write_hub(year, games, lines, sims_race, lev_top=None):
             globals()["BASE"] = was
         hub["spotlight"] = {
             "away": lev_top["away"], "home": lev_top["home"],
-            "when": pretty_date(lev_top.get("start")),
+            "when": next((game_date(x) for x in games
+                          if x["home"] == lev_top["home"]
+                          and x["away"] == lev_top["away"]
+                          and x.get("start") == lev_top.get("start")),
+                         pretty_date(lev_top.get("start"))),
             "week": lev_top.get("week"),
             "total": round((lev_top.get("total") or 0) * 100),
             # WHERE THE ARROWS POINT FROM. Every cell in the fork prints a

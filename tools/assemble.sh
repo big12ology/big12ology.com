@@ -277,7 +277,9 @@ done < <(find "$DIST" -type f \( -name '*.html' -o -name '*.xml' -o -name '*.txt
 # Overridable so a build can be reproduced. Two assembles a minute apart
 # differ only here, and a determinism check that could not pin it would have
 # to diff around the one line that is supposed to change.
-STAMP="${B12_BUILD_STAMP:-$(date -u '+%B %-d, %H:%M UTC')}"
+# Eastern, labeled, because nobody reading this lives on UTC: it is the same
+# fixed clock the site's other promises ("live by 5am ET") are made on.
+STAMP="${B12_BUILD_STAMP:-$(TZ=America/New_York date '+%B %-d, %-I:%M %p ET')}"
 echo "stamping footers: $STAMP"
 while IFS= read -r page; do
   grep -q '{{BUILD_STAMP}}' "$page" || continue
@@ -346,13 +348,18 @@ def line(sp):
     return f"{nxt.get('home') if sp < 0 else nxt.get('away')} −{n}"
 
 
-def when(iso):
-    """A readable UTC instant, for before the script runs and instead of it.
+def when(iso, tbd=False):
+    """A readable Eastern instant, for before the script runs and instead of it.
 
     The page rewrites this to the reader's own zone on load, which is the only
-    correct answer — a kickoff has one instant and sixteen local times. Until
-    then it says UTC and says so, because a deadline printed without a zone is
-    a bug this project has already decided about.
+    correct answer: a kickoff has one instant and sixteen local times. Until
+    then it says ET and says so, because a deadline printed without a zone is
+    a bug this project has already decided about, and UTC is a zone nobody
+    watching a game is in.
+
+    A TBD kickoff carries a placeholder hour, so only its date is printed,
+    read off the placeholder's own (UTC) calendar the way build.py's pk_day
+    files it; the page's script leaves it alone.
     """
     if not iso:
         return ""
@@ -360,7 +367,11 @@ def when(iso):
         t = datetime.datetime.fromisoformat(iso.replace("Z", "+00:00"))
     except ValueError:
         return ""
-    return t.strftime("%a %-d %b, %H:%M UTC")
+    if tbd:
+        return t.strftime("%a, %b %-d") + " · time TBD"
+    from zoneinfo import ZoneInfo
+    t = t.astimezone(ZoneInfo("America/New_York"))
+    return t.strftime("%a, %b %-d, %-I:%M %p ET")
 
 
 # Computed before the dict rather than inline, because the alternative is a
@@ -371,12 +382,14 @@ if spot and spot.get("week") is not None:
     spot_week = f" in week {spot['week']}"
 
 tok = {
-    "HUB_NEXT_WHEN": e(when(nxt.get("kickoff"))),
+    "HUB_NEXT_WHEN": e(when(nxt.get("kickoff"), nxt.get("tbd"))),
     "HUB_NEXT_AWAY": e(nxt.get("away") or ""),
     "HUB_NEXT_HOME": e(nxt.get("home") or ""),
     "HUB_NEXT_JOIN": "vs" if nxt.get("neutral") else "at",
     "HUB_NEXT_LINE": e(line(nxt.get("spread"))),
-    "HUB_NEXT_ISO": e(nxt.get("kickoff") or ""),
+    # Empty for a TBD kickoff, so the page's script has no instant to
+    # localize or count down to: the hour behind it is a placeholder.
+    "HUB_NEXT_ISO": e("" if nxt.get("tbd") else (nxt.get("kickoff") or "")),
     "HUB_CCG_A": e(ccg[0]["team"]) if len(ccg) > 0 else "",
     "HUB_CCG_B": e(ccg[1]["team"]) if len(ccg) > 1 else "",
     "HUB_CCG_A_PCT": f"{round(ccg[0]['p'] * 100)}%" if len(ccg) > 0 else "",

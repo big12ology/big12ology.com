@@ -241,8 +241,11 @@
       { timeZone: "America/New_York", hour: "numeric", minute: "2-digit" });
     var local = open.toLocaleTimeString(undefined,
       { hour: "numeric", minute: "2-digit" });
-    var when = t.toLocaleDateString("en-US",
-      { weekday: "long", month: "long", day: "numeric" }) +
+    // The date on the same Eastern clock as the hour beside it. Read in the
+    // viewer's zone it named Monday in Honolulu over a Tuesday 6am ET.
+    var when = open.toLocaleDateString("en-US",
+      { weekday: "long", month: "long", day: "numeric",
+        timeZone: "America/New_York" }) +
       " at " + et + " ET" +
       (local === et ? "" : " (" + local + " your time)");
     function draw() {
@@ -539,7 +542,13 @@
   function shortDate(iso) {
     var d = new Date(iso);
     if (isNaN(d)) return "";
-    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    // Read on the UTC calendar on purpose, and only here: the placeholder sits
+    // a few hours past midnight UTC on the real date (05:00Z for CFBD,
+    // midnight Eastern for CBBD), so the viewer's own zone walks it back to
+    // the day before anywhere west of Eastern. Same rule as pk_day in
+    // build.py, which is what the schedule files a TBD game under.
+    return d.toLocaleDateString(undefined,
+      { month: "short", day: "numeric", timeZone: "UTC" });
   }
 
   // A game is only "at 12:30" until 12:30. After that the kickoff time is the
