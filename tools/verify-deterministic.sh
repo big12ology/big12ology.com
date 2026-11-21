@@ -72,12 +72,14 @@ echo "  assemble.sh: two runs at a fixed stamp, identical dist"
 unset B12_BUILD_STAMP
 B12_PICKEM=1 "$ROOT/tools/assemble.sh" "$TMP/dist3" >/dev/null
 # A changed line is allowed to be a build stamp, and the way to recognize one
-# is the stamp's own shape — "August 10, 23:50 UTC" — not the words the footer
+# is the stamp's own shape — "August 10, 7:50 PM ET" — not the words the footer
 # happens to put in front of it. This matched on "last updated" and started
 # reporting a second clock the day the footer copy dropped the "last": a
 # wording change failing a check about determinism, which is the sort of false
 # alarm that gets a check switched off.
-STAMPRE='^(diff |---|[0-9]+(,[0-9]+)?c[0-9]+(,[0-9]+)?$|[<>] .*[0-9]{2}:[0-9]{2} UTC)'
+# The stamp moved from UTC to Eastern on 2026-11-20; this matched only the
+# old shape and failed the first run after, reporting the new stamp as a leak.
+STAMPRE='^(diff |---|[0-9]+(,[0-9]+)?c[0-9]+(,[0-9]+)?$|[<>] .*[0-9]{1,2}:[0-9]{2} [AP]M ET)'
 if diff -r "$TMP/dist1" "$TMP/dist3" >"$TMP/diff-stamp" 2>&1; then
   echo "  (the stamp happened to match; nothing to check)"
 else

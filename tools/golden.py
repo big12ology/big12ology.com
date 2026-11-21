@@ -65,7 +65,7 @@ ENV = dict(os.environ, B12_PICKEM="1")
 # being built at the same moment.
 CLOCKS = re.compile(
     r'\{\{BUILD_STAMP\}\}'
-    r'|updated [A-Z][a-z]+ \d+, \d\d:\d\d UTC'
+    r'|updated [A-Z][a-z]+ \d+, \d{1,2}:\d\d [AP]M ET'
     r'|<lastBuildDate>[^<]*</lastBuildDate>'
     r'|"generated": "[^"]*"')
 
