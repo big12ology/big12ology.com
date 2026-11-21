@@ -2393,14 +2393,13 @@
   "venue_id": null,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null,
+  "attendance": 2625,
   "espn": "401907052",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916085,
@@ -2421,14 +2420,13 @@
   "venue_id": null,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 2154,
   "espn": "401916085",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918935,
@@ -2449,14 +2447,13 @@
   "venue_id": null,
   "city": "Salt Lake City",
   "state": "UT",
-  "attendance": null,
+  "attendance": 1710,
   "espn": "401918935",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918467,
@@ -2477,14 +2474,13 @@
   "venue_id": null,
   "city": "Inglewood",
   "state": "CA",
-  "attendance": null,
+  "attendance": 3390,
   "espn": "401918467",
   "hseed": null,
   "aseed": null,
   "tv": [
    "BTN"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401913710,
@@ -2831,7 +2827,9 @@
   "espn": "401921427",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "BDG Sports Live"
+  ]
  },
  {
   "id": 401913059,

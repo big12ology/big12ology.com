@@ -1890,11 +1890,10 @@
   "venue_id": 275,
   "city": "Charleston",
   "state": "SC",
-  "attendance": null,
+  "attendance": 2291,
   "espn": "401921419",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 372875,
@@ -1915,11 +1914,10 @@
   "venue_id": 202,
   "city": "Manhattan",
   "state": "KS",
-  "attendance": null,
+  "attendance": 6590,
   "espn": "401909799",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 375152,
@@ -1940,11 +1938,10 @@
   "venue_id": 119,
   "city": "Nashville",
   "state": "TN",
-  "attendance": null,
+  "attendance": 8142,
   "espn": "401921757",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 375220,
