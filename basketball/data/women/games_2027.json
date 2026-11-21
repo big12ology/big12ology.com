@@ -2464,10 +2464,10 @@
   "tbd": false,
   "home": "USC",
   "away": "Baylor",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 78,
+  "ap": 69,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2483,7 +2483,8 @@
   "aseed": null,
   "tv": [
    "BTN"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401913710,
