@@ -2835,7 +2835,14 @@
       "espnId": 401856867,
       "conferenceGame": true,
       "opponent": "Colorado",
-      "attendance": null
+      "attendance": null,
+      "pointsFor": 35,
+      "pointsAgainst": 28,
+      "weather": {
+        "tempF": 60,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Colorado",
@@ -2849,7 +2856,9 @@
       "role": "away",
       "venue": "Nippert Stadium",
       "city": "Cincinnati",
-      "state": "OH"
+      "state": "OH",
+      "pointsFor": 28,
+      "pointsAgainst": 35
     },
     {
       "team": "Houston",
@@ -2877,7 +2886,9 @@
       "role": "away",
       "venue": "FBC Mortgage Stadium",
       "city": "Orlando",
-      "state": "FL"
+      "state": "FL",
+      "pointsFor": 17,
+      "pointsAgainst": 48
     },
     {
       "team": "Kansas",
@@ -2945,7 +2956,15 @@
       "espnId": 401856869,
       "conferenceGame": true,
       "opponent": "Iowa State",
-      "attendance": null
+      "attendance": 34043,
+      "pointsFor": 48,
+      "pointsAgainst": 17,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 73,
+        "windMph": 5,
+        "precipIn": 0
+      }
     },
     {
       "team": "Utah",

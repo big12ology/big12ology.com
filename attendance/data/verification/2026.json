@@ -1,7 +1,8 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 90
+    "agree": 91,
+    "missing_both": 1
   },
   "games": [
     {
@@ -991,6 +992,28 @@
       "espnId": 401856861,
       "ours": 45629,
       "espn": 45629,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Cincinnati",
+      "week": 12,
+      "opponent": "Colorado",
+      "date": "2026-11-21",
+      "espnId": 401856867,
+      "ours": null,
+      "espn": null,
+      "source": "CFBD",
+      "status": "missing_both"
+    },
+    {
+      "team": "UCF",
+      "week": 12,
+      "opponent": "Iowa State",
+      "date": "2026-11-20",
+      "espnId": 401856869,
+      "ours": 34043,
+      "espn": 34043,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }
