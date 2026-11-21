@@ -1902,10 +1902,10 @@
   "tbd": false,
   "home": "Kansas State",
   "away": "Campbell",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 70,
+  "ap": 80,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1918,7 +1918,8 @@
   "attendance": null,
   "espn": "401909799",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 375152,
@@ -1926,10 +1927,10 @@
   "tbd": false,
   "home": "Vanderbilt",
   "away": "UCF",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 82,
+  "ap": 74,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1942,7 +1943,8 @@
   "attendance": null,
   "espn": "401921757",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 375220,
