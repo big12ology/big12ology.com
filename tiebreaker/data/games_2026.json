@@ -2231,7 +2231,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-11-21T17:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": true,
   "venue": "Nippert Stadium",
   "venue_id": 3854,
@@ -2243,8 +2243,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 35,
+  "away_points": 28
  },
  {
   "id": 401856868,
