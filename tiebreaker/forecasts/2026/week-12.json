@@ -15,21 +15,6 @@
    },
    "week": 12
   },
-  "401856866": {
-   "away": "BYU",
-   "home": "Kansas",
-   "margin": -6.38,
-   "p_home": 0.323,
-   "spread": 5.2,
-   "systems": {
-    "Big12ology": -1.93,
-    "Elo": -3.15,
-    "FPI": -7.5,
-    "SP+": -10.7,
-    "SRS": -8.6
-   },
-   "week": 12
-  },
   "401856868": {
    "away": "Houston",
    "home": "West Virginia",
@@ -205,12 +190,12 @@
    "week": 13
   }
  },
- "games_complete": 106,
- "generated": "2026-11-21T20:32:44+00:00",
+ "games_complete": 107,
+ "generated": "2026-11-21T21:21:48+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
-  "rating_sigma": 3.709,
+  "rating_sigma": 3.693,
   "systems": {
    "Big12ology": {
     "regressed": null,
@@ -237,47 +222,47 @@
  "season": 2026,
  "teams": {
   "Arizona": {
-   "exp_w": 5.533,
-   "p_ccg": 0.0015
+   "exp_w": 5.54,
+   "p_ccg": 0.0007
   },
   "Arizona State": {
-   "exp_w": 4.537,
+   "exp_w": 4.54,
    "p_ccg": 0.0
   },
   "BYU": {
-   "exp_w": 6.544,
-   "p_ccg": 0.3605
+   "exp_w": 6.872,
+   "p_ccg": 0.4929
   },
   "Baylor": {
-   "exp_w": 4.838,
-   "p_ccg": 0.0005
+   "exp_w": 4.84,
+   "p_ccg": 0.0
   },
   "Cincinnati": {
-   "exp_w": 3.129,
+   "exp_w": 3.128,
    "p_ccg": 0.0
   },
   "Colorado": {
-   "exp_w": 2.47,
+   "exp_w": 2.473,
    "p_ccg": 0.0
   },
   "Houston": {
-   "exp_w": 5.307,
-   "p_ccg": 0.001
+   "exp_w": 5.31,
+   "p_ccg": 0.0013
   },
   "Iowa State": {
-   "exp_w": 3.64,
+   "exp_w": 3.641,
    "p_ccg": 0.0
   },
   "Kansas": {
-   "exp_w": 2.616,
+   "exp_w": 2.289,
    "p_ccg": 0.0
   },
   "Kansas State": {
-   "exp_w": 1.643,
+   "exp_w": 1.635,
    "p_ccg": 0.0
   },
   "Oklahoma State": {
-   "exp_w": 5.359,
+   "exp_w": 5.354,
    "p_ccg": 0.0002
   },
   "TCU": {
@@ -285,19 +270,19 @@
    "p_ccg": 0.0
   },
   "Texas Tech": {
-   "exp_w": 7.349,
-   "p_ccg": 0.6416
+   "exp_w": 7.344,
+   "p_ccg": 0.5132
   },
   "UCF": {
-   "exp_w": 4.53,
+   "exp_w": 4.527,
    "p_ccg": 0.0
   },
   "Utah": {
    "exp_w": 8.667,
-   "p_ccg": 0.9945
+   "p_ccg": 0.9917
   },
   "West Virginia": {
-   "exp_w": 2.341,
+   "exp_w": 2.34,
    "p_ccg": 0.0
   }
  },
