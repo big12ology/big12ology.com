@@ -88,8 +88,12 @@ for season in (2025, 2026):
         if span > worst_h:
             worst_w, worst_h = w, span
         # Opening week is genuinely Thursday-to-Labor-Day. Everything else is
-        # a weekend, and 48h is the line between the two.
-        limit = 120 if w <= 1 else 48
+        # one weekend, and a weekend can start on Thursday: 2026's rivalry
+        # week runs from TCU at Texas Tech on Thanksgiving night to Saturday's
+        # late kicks, 50h, which a 48h line failed on 2026-11-21 with nothing
+        # misfiled. 72h is Thursday through Saturday and still a fraction of
+        # the nine days CFBD's grouping spans.
+        limit = 120 if w <= 1 else 72
         check(span <= limit,
               f"{season} week {w} spans {span:.0f}h, over the {limit}h limit")
     print(f"{season}: {len(by_week)} weeks, widest is week {worst_w} "
@@ -172,10 +176,24 @@ check(all(e.get("unpickable") in (pickem.NO_LINE, pickem.NO_KICKOFF)
       "an unpickable game must say which of the two reasons applies")
 
 # A kickoff nobody has set cannot set the lock, and cannot be picked.
-tbd = [g for g in games26 if g.get("start_tbd")]
-check(tbd, "2026 should still have unannounced kickoff windows to test")
-tbd_week = pickem.week_of(tbd[0], 2026)
-s = pickem.build_slate(2026, games26, lines26, week=tbd_week)
+#
+# Built here rather than found in the data: by late November every window is
+# announced and the committed season has no TBD game left, which failed this
+# file on 2026-11-21 with nothing broken. So take a week with playable games
+# and mark the one whose kickoff WOULD set the lock as unannounced, which is
+# the hardest case: the lock has to move off it, not merely skip it.
+tbd_games = [dict(g) for g in games26]
+tbd_week = next(s["week"] for s in mixed if s["pickable_count"])
+first_play = min((e for e in pickem.build_slate(
+                     2026, games26, lines26, week=tbd_week)["games"]
+                  if not e.get("unpickable")),
+                 key=lambda e: e["kickoff_at"])
+for g in tbd_games:
+    if g["id"] == first_play["game_id"]:
+        g["start_tbd"] = True
+tbd = [g for g in tbd_games if g.get("start_tbd")]
+check(tbd, "a TBD game to test with")
+s = pickem.build_slate(2026, tbd_games, lines26, week=tbd_week)
 tbd_ids = {g["id"] for g in tbd}
 for e in s["games"]:
     if e["game_id"] in tbd_ids:
