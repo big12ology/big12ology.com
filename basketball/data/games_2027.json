@@ -1877,10 +1877,10 @@
   "tbd": false,
   "home": "Utah",
   "away": "Dayton",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 46,
+  "ap": 63,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -1893,7 +1893,8 @@
   "attendance": null,
   "espn": "401921419",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372875,
