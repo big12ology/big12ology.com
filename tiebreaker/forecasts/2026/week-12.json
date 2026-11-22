@@ -1,20 +1,5 @@
 {
  "games": {
-  "401856870": {
-   "away": "Oklahoma State",
-   "home": "Arizona State",
-   "margin": -5.28,
-   "p_home": 0.35,
-   "spread": 2.6,
-   "systems": {
-    "Big12ology": -5.43,
-    "Elo": -0.07,
-    "FPI": -6.28,
-    "SP+": -7.1,
-    "SRS": -7.5
-   },
-   "week": 12
-  },
   "401856873": {
    "away": "Arizona State",
    "home": "Arizona",
@@ -130,12 +115,12 @@
    "week": 13
   }
  },
- "games_complete": 111,
- "generated": "2026-11-22T06:01:54+00:00",
+ "games_complete": 112,
+ "generated": "2026-11-22T07:21:42+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
-  "rating_sigma": 3.63,
+  "rating_sigma": 3.615,
   "systems": {
    "Big12ology": {
     "regressed": null,
@@ -162,19 +147,19 @@
  "season": 2026,
  "teams": {
   "Arizona": {
-   "exp_w": 5.814,
+   "exp_w": 5.816,
    "p_ccg": 0.0
   },
   "Arizona State": {
-   "exp_w": 4.543,
+   "exp_w": 4.184,
    "p_ccg": 0.0
   },
   "BYU": {
    "exp_w": 6.871,
-   "p_ccg": 0.1981
+   "p_ccg": 0.1976
   },
   "Baylor": {
-   "exp_w": 4.416,
+   "exp_w": 4.41,
    "p_ccg": 0.0
   },
   "Cincinnati": {
@@ -182,47 +167,47 @@
    "p_ccg": 0.0
   },
   "Colorado": {
-   "exp_w": 2.471,
+   "exp_w": 2.468,
    "p_ccg": 0.0
   },
   "Houston": {
-   "exp_w": 5.584,
+   "exp_w": 5.59,
    "p_ccg": 0.0
   },
   "Iowa State": {
-   "exp_w": 3.643,
+   "exp_w": 3.641,
    "p_ccg": 0.0
   },
   "Kansas": {
-   "exp_w": 2.286,
+   "exp_w": 2.285,
    "p_ccg": 0.0
   },
   "Kansas State": {
-   "exp_w": 1.357,
+   "exp_w": 1.359,
    "p_ccg": 0.0
   },
   "Oklahoma State": {
-   "exp_w": 5.357,
+   "exp_w": 5.715,
    "p_ccg": 0.0
   },
   "TCU": {
-   "exp_w": 3.228,
+   "exp_w": 3.226,
    "p_ccg": 0.0
   },
   "Texas Tech": {
-   "exp_w": 7.772,
-   "p_ccg": 0.8019
+   "exp_w": 7.774,
+   "p_ccg": 0.8024
   },
   "UCF": {
-   "exp_w": 4.529,
+   "exp_w": 4.532,
    "p_ccg": 0.0
   },
   "Utah": {
-   "exp_w": 8.942,
+   "exp_w": 8.938,
    "p_ccg": 1.0
   },
   "West Virginia": {
-   "exp_w": 2.058,
+   "exp_w": 2.062,
    "p_ccg": 0.0
   }
  },
