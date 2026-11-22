@@ -1,8 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 91,
-    "missing_both": 1
+    "agree": 95
   },
   "games": [
     {
@@ -996,15 +995,37 @@
       "status": "agree"
     },
     {
+      "team": "Baylor",
+      "week": 12,
+      "opponent": "Texas Tech",
+      "date": "2026-11-21",
+      "espnId": 401856871,
+      "ours": 46765,
+      "espn": 46765,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "Cincinnati",
       "week": 12,
       "opponent": "Colorado",
       "date": "2026-11-21",
       "espnId": 401856867,
-      "ours": null,
-      "espn": null,
-      "source": "CFBD",
-      "status": "missing_both"
+      "ours": 36792,
+      "espn": 36792,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Kansas",
+      "week": 12,
+      "opponent": "BYU",
+      "date": "2026-11-21",
+      "espnId": 401856866,
+      "ours": 30121,
+      "espn": 30121,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
     },
     {
       "team": "UCF",
@@ -1014,6 +1035,17 @@
       "espnId": 401856869,
       "ours": 34043,
       "espn": 34043,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "West Virginia",
+      "week": 12,
+      "opponent": "Houston",
+      "date": "2026-11-21",
+      "espnId": 401856868,
+      "ours": 37380,
+      "espn": 37380,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }

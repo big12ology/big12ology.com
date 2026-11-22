@@ -2815,7 +2815,9 @@
       "role": "away",
       "venue": "Memorial Stadium",
       "city": "Lawrence",
-      "state": "KS"
+      "state": "KS",
+      "pointsFor": 31,
+      "pointsAgainst": 29
     },
     {
       "team": "Baylor",
@@ -2825,7 +2827,15 @@
       "espnId": 401856871,
       "conferenceGame": true,
       "opponent": "Texas Tech",
-      "attendance": null
+      "attendance": 46765,
+      "pointsFor": 10,
+      "pointsAgainst": 20,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 70,
+        "windMph": 9,
+        "precipIn": 0
+      }
     },
     {
       "team": "Cincinnati",
@@ -2835,9 +2845,10 @@
       "espnId": 401856867,
       "conferenceGame": true,
       "opponent": "Colorado",
-      "attendance": null,
+      "attendance": 36792,
       "pointsFor": 35,
       "pointsAgainst": 28,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
       "weather": {
         "tempF": 60,
         "windMph": 3,
@@ -2872,7 +2883,9 @@
       "role": "away",
       "venue": "Milan Puskar Stadium",
       "city": "Morgantown",
-      "state": "WV"
+      "state": "WV",
+      "pointsFor": 34,
+      "pointsAgainst": 31
     },
     {
       "team": "Iowa State",
@@ -2898,7 +2911,15 @@
       "espnId": 401856866,
       "conferenceGame": true,
       "opponent": "BYU",
-      "attendance": null
+      "attendance": 30121,
+      "pointsFor": 29,
+      "pointsAgainst": 31,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 67,
+        "windMph": 15,
+        "precipIn": 0
+      }
     },
     {
       "team": "Kansas State",
@@ -2946,7 +2967,9 @@
       "role": "away",
       "venue": "McLane Stadium",
       "city": "Waco",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 20,
+      "pointsAgainst": 10
     },
     {
       "team": "UCF",
@@ -2988,7 +3011,15 @@
       "espnId": 401856868,
       "conferenceGame": true,
       "opponent": "Houston",
-      "attendance": null
+      "attendance": 37380,
+      "pointsFor": 31,
+      "pointsAgainst": 34,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 68,
+        "windMph": 3,
+        "precipIn": 0
+      }
     },
     {
       "team": "Arizona",

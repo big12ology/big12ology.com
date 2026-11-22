@@ -218,45 +218,6 @@
       "pct": 0.9950078541052066
     },
     {
-      "team": "Kansas",
-      "stadium": "David Booth Kansas Memorial Stadium",
-      "capacity": 32000,
-      "capacityEstimate": null,
-      "color": "#0051ba",
-      "logo": "assets/logos/ku.svg",
-      "multiVenue": false,
-      "games": 5,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 30904,
-          "pct": 0.96575
-        },
-        {
-          "week": 2,
-          "attendance": 32000,
-          "pct": 1
-        },
-        {
-          "week": 5,
-          "attendance": 32000,
-          "pct": 1
-        },
-        {
-          "week": 8,
-          "attendance": 32000,
-          "pct": 1
-        },
-        {
-          "week": 10,
-          "attendance": 31008,
-          "pct": 0.969
-        }
-      ],
-      "total": 157912,
-      "pct": 0.98695
-    },
-    {
       "team": "Colorado",
       "stadium": "Folsom Field",
       "capacity": 50183,
@@ -294,6 +255,50 @@
       ],
       "total": 245778,
       "pct": 0.9795269314309627
+    },
+    {
+      "team": "Kansas",
+      "stadium": "David Booth Kansas Memorial Stadium",
+      "capacity": 32000,
+      "capacityEstimate": null,
+      "color": "#0051ba",
+      "logo": "assets/logos/ku.svg",
+      "multiVenue": false,
+      "games": 6,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 30904,
+          "pct": 0.96575
+        },
+        {
+          "week": 2,
+          "attendance": 32000,
+          "pct": 1
+        },
+        {
+          "week": 5,
+          "attendance": 32000,
+          "pct": 1
+        },
+        {
+          "week": 8,
+          "attendance": 32000,
+          "pct": 1
+        },
+        {
+          "week": 10,
+          "attendance": 31008,
+          "pct": 0.969
+        },
+        {
+          "week": 12,
+          "attendance": 30121,
+          "pct": 0.94128125
+        }
+      ],
+      "total": 188033,
+      "pct": 0.9793385416666667
     },
     {
       "team": "UCF",
@@ -391,7 +396,7 @@
       "color": "#154734",
       "logo": "assets/logos/bay.svg",
       "multiVenue": false,
-      "games": 5,
+      "games": 6,
       "weeks": [
         {
           "week": 2,
@@ -417,10 +422,15 @@
           "week": 10,
           "attendance": 39229,
           "pct": 0.8690518387239698
+        },
+        {
+          "week": 12,
+          "attendance": 46765,
+          "pct": 1.0359991138679663
         }
       ],
-      "total": 205863,
-      "pct": 0.9121089942401418
+      "total": 252628,
+      "pct": 0.9327573475114459
     },
     {
       "team": "Cincinnati",
@@ -430,7 +440,7 @@
       "color": "#e00122",
       "logo": "assets/logos/cin.svg",
       "multiVenue": false,
-      "games": 6,
+      "games": 7,
       "weeks": [
         {
           "week": 1,
@@ -461,10 +471,15 @@
           "week": 9,
           "attendance": 36487,
           "pct": 0.957965763495064
+        },
+        {
+          "week": 12,
+          "attendance": 36792,
+          "pct": 0.9659735349716446
         }
       ],
-      "total": 203249,
-      "pct": 0.8893833578379892
+      "total": 240041,
+      "pct": 0.9003248117142257
     },
     {
       "team": "Arizona",
@@ -509,50 +524,6 @@
       ],
       "total": 259138,
       "pct": 0.8504916440208473
-    },
-    {
-      "team": "West Virginia",
-      "stadium": "Milan Puskar Stadium",
-      "capacity": 60000,
-      "capacityEstimate": null,
-      "color": "#002855",
-      "logo": "assets/logos/wvu.svg",
-      "multiVenue": false,
-      "games": 6,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 54158,
-          "pct": 0.9026333333333333
-        },
-        {
-          "week": 2,
-          "attendance": 47049,
-          "pct": 0.78415
-        },
-        {
-          "week": 4,
-          "attendance": 57756,
-          "pct": 0.9626
-        },
-        {
-          "week": 6,
-          "attendance": 50121,
-          "pct": 0.83535
-        },
-        {
-          "week": 7,
-          "attendance": 48106,
-          "pct": 0.8017666666666666
-        },
-        {
-          "week": 11,
-          "attendance": 45629,
-          "pct": 0.7604833333333333
-        }
-      ],
-      "total": 302819,
-      "pct": 0.8411638888888889
     },
     {
       "team": "Iowa State",
@@ -641,6 +612,55 @@
       ],
       "total": 228034,
       "pct": 0.8262101449275362
+    },
+    {
+      "team": "West Virginia",
+      "stadium": "Milan Puskar Stadium",
+      "capacity": 60000,
+      "capacityEstimate": null,
+      "color": "#002855",
+      "logo": "assets/logos/wvu.svg",
+      "multiVenue": false,
+      "games": 7,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 54158,
+          "pct": 0.9026333333333333
+        },
+        {
+          "week": 2,
+          "attendance": 47049,
+          "pct": 0.78415
+        },
+        {
+          "week": 4,
+          "attendance": 57756,
+          "pct": 0.9626
+        },
+        {
+          "week": 6,
+          "attendance": 50121,
+          "pct": 0.83535
+        },
+        {
+          "week": 7,
+          "attendance": 48106,
+          "pct": 0.8017666666666666
+        },
+        {
+          "week": 11,
+          "attendance": 45629,
+          "pct": 0.7604833333333333
+        },
+        {
+          "week": 12,
+          "attendance": 37380,
+          "pct": 0.623
+        }
+      ],
+      "total": 340199,
+      "pct": 0.809997619047619
     },
     {
       "team": "Houston",
@@ -769,10 +789,10 @@
     },
     {
       "week": 12,
-      "games": 1,
-      "attendance": 34043,
-      "capacity": 44206,
-      "pct": 0.7700990815726372
+      "games": 5,
+      "attendance": 185101,
+      "capacity": 219434,
+      "pct": 0.8435383760037186
     },
     {
       "week": 13,
@@ -783,9 +803,9 @@
     }
   ],
   "totals": {
-    "games": 91,
-    "attendance": 4250940,
-    "capacity": 4555758,
-    "pct": 0.9330917050466684
+    "games": 95,
+    "attendance": 4401998,
+    "capacity": 4730986,
+    "pct": 0.9304610074939981
   }
 }

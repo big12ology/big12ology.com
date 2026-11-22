@@ -1423,12 +1423,14 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Baylor,4,2026-09-26,Colorado,true,McLane Stadium,40015,45140,0.8865,false
 2026,Baylor,7,2026-10-17,TCU,true,McLane Stadium,46634,45140,1.0331,false
 2026,Baylor,10,2026-11-07,Iowa State,true,McLane Stadium,39229,45140,0.8691,false
+2026,Baylor,12,2026-11-21,Texas Tech,true,McLane Stadium,46765,45140,1.0360,false
 2026,Cincinnati,1,2026-09-05,Boston College,false,Nippert Stadium,37097,38088,0.9740,false
 2026,Cincinnati,2,2026-09-12,Western Carolina,false,Nippert Stadium,34827,38088,0.9144,false
 2026,Cincinnati,3,2026-09-19,Miami (OH),false,Nippert Stadium,19188,38088,0.5038,false
 2026,Cincinnati,4,2026-09-26,Kansas State,true,Nippert Stadium,37562,38088,0.9862,false
 2026,Cincinnati,8,2026-10-24,Texas Tech,true,Nippert Stadium,38088,38088,1.0000,false
 2026,Cincinnati,9,2026-10-31,Utah,true,Nippert Stadium,36487,38088,0.9580,false
+2026,Cincinnati,12,2026-11-21,Colorado,true,Nippert Stadium,36792,38088,0.9660,false
 2026,Colorado,2,2026-09-12,Weber State,false,Folsom Field,49363,50183,0.9837,false
 2026,Colorado,5,2026-10-03,Texas Tech,true,Folsom Field,50106,50183,0.9985,false
 2026,Colorado,7,2026-10-17,Utah,true,Folsom Field,52489,50183,1.0460,false
@@ -1450,6 +1452,7 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,Kansas,5,2026-10-03,Middle Tennessee,false,David Booth Kansas Memorial Stadium,32000,32000,1.0000,false
 2026,Kansas,8,2026-10-24,Baylor,true,David Booth Kansas Memorial Stadium,32000,32000,1.0000,false
 2026,Kansas,10,2026-11-07,UCF,true,David Booth Kansas Memorial Stadium,31008,32000,0.9690,false
+2026,Kansas,12,2026-11-21,BYU,true,David Booth Kansas Memorial Stadium,30121,32000,0.9413,false
 2026,Kansas State,1,2026-09-05,Nicholls,false,Bill Snyder Family Football Stadium,51719,50000,1.0344,false
 2026,Kansas State,2,2026-09-12,Washington State,false,Bill Snyder Family Football Stadium,51759,50000,1.0352,false
 2026,Kansas State,3,2026-09-19,Tulane,false,Bill Snyder Family Football Stadium,51846,50000,1.0369,false
@@ -1492,3 +1495,4 @@ season,team,week,date,opponent,conference_game,venue,attendance,capacity,pct_of_
 2026,West Virginia,6,2026-10-10,Arizona,true,Milan Puskar Stadium,50121,60000,0.8354,false
 2026,West Virginia,7,2026-10-17,Cincinnati,true,Milan Puskar Stadium,48106,60000,0.8018,false
 2026,West Virginia,11,2026-11-14,Kansas,true,Milan Puskar Stadium,45629,60000,0.7605,false
+2026,West Virginia,12,2026-11-21,Houston,true,Milan Puskar Stadium,37380,60000,0.6230,false
