@@ -1974,10 +1974,10 @@
   "tbd": false,
   "home": "Oklahoma State",
   "away": "Virginia Tech",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 106,
+  "ap": 80,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -1990,7 +1990,8 @@
   "attendance": null,
   "espn": "401920381",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 375237,
