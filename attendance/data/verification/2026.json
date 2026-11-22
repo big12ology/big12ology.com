@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 95
+    "agree": 98
   },
   "games": [
     {
@@ -995,6 +995,17 @@
       "status": "agree"
     },
     {
+      "team": "Arizona State",
+      "week": 12,
+      "opponent": "Oklahoma State",
+      "date": "2026-11-21",
+      "espnId": 401856870,
+      "ours": 51154,
+      "espn": 51154,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
       "team": "Baylor",
       "week": 12,
       "opponent": "Texas Tech",
@@ -1024,6 +1035,28 @@
       "espnId": 401856866,
       "ours": 30121,
       "espn": 30121,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Kansas State",
+      "week": 12,
+      "opponent": "Arizona",
+      "date": "2026-11-21",
+      "espnId": 401856865,
+      "ours": 49807,
+      "espn": 49807,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "TCU",
+      "week": 12,
+      "opponent": "Utah",
+      "date": "2026-11-21",
+      "espnId": 401856872,
+      "ours": 36906,
+      "espn": 36906,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     },

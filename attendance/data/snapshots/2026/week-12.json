@@ -3,50 +3,6 @@
   "throughWeek": 12,
   "rows": [
     {
-      "team": "Kansas State",
-      "stadium": "Bill Snyder Family Football Stadium",
-      "capacity": 50000,
-      "capacityEstimate": null,
-      "color": "#3c0969",
-      "logo": "assets/logos/ksu.svg",
-      "multiVenue": false,
-      "games": 6,
-      "weeks": [
-        {
-          "week": 1,
-          "attendance": 51719,
-          "pct": 1.03438
-        },
-        {
-          "week": 2,
-          "attendance": 51759,
-          "pct": 1.03518
-        },
-        {
-          "week": 3,
-          "attendance": 51846,
-          "pct": 1.03692
-        },
-        {
-          "week": 6,
-          "attendance": 51569,
-          "pct": 1.03138
-        },
-        {
-          "week": 7,
-          "attendance": 51961,
-          "pct": 1.03922
-        },
-        {
-          "week": 10,
-          "attendance": 52134,
-          "pct": 1.04268
-        }
-      ],
-      "total": 310988,
-      "pct": 1.0366266666666666
-    },
-    {
       "team": "BYU",
       "stadium": "LaVell Edwards Stadium",
       "capacity": 62073,
@@ -89,6 +45,55 @@
       ],
       "total": 384637,
       "pct": 1.0327544450351467
+    },
+    {
+      "team": "Kansas State",
+      "stadium": "Bill Snyder Family Football Stadium",
+      "capacity": 50000,
+      "capacityEstimate": null,
+      "color": "#3c0969",
+      "logo": "assets/logos/ksu.svg",
+      "multiVenue": false,
+      "games": 7,
+      "weeks": [
+        {
+          "week": 1,
+          "attendance": 51719,
+          "pct": 1.03438
+        },
+        {
+          "week": 2,
+          "attendance": 51759,
+          "pct": 1.03518
+        },
+        {
+          "week": 3,
+          "attendance": 51846,
+          "pct": 1.03692
+        },
+        {
+          "week": 6,
+          "attendance": 51569,
+          "pct": 1.03138
+        },
+        {
+          "week": 7,
+          "attendance": 51961,
+          "pct": 1.03922
+        },
+        {
+          "week": 10,
+          "attendance": 52134,
+          "pct": 1.04268
+        },
+        {
+          "week": 12,
+          "attendance": 49807,
+          "pct": 0.99614
+        }
+      ],
+      "total": 360795,
+      "pct": 1.0308428571428572
     },
     {
       "team": "Utah",
@@ -357,7 +362,7 @@
       "color": "#8e0c3a",
       "logo": "assets/logos/asu.svg",
       "multiVenue": false,
-      "games": 5,
+      "games": 6,
       "weeks": [
         {
           "week": 1,
@@ -383,10 +388,15 @@
           "week": 10,
           "attendance": 54166,
           "pct": 1.0105785555700666
+        },
+        {
+          "week": 12,
+          "attendance": 51154,
+          "pct": 0.954383477303681
         }
       ],
-      "total": 256552,
-      "pct": 0.9573014421910857
+      "total": 307706,
+      "pct": 0.9568151147098516
     },
     {
       "team": "Baylor",
@@ -577,7 +587,7 @@
       "color": "#4d1979",
       "logo": "assets/logos/tcu.svg",
       "multiVenue": false,
-      "games": 6,
+      "games": 7,
       "weeks": [
         {
           "week": 2,
@@ -608,10 +618,15 @@
           "week": 11,
           "attendance": 37203,
           "pct": 0.8087608695652174
+        },
+        {
+          "week": 12,
+          "attendance": 36906,
+          "pct": 0.802304347826087
         }
       ],
-      "total": 228034,
-      "pct": 0.8262101449275362
+      "total": 264940,
+      "pct": 0.8227950310559006
     },
     {
       "team": "West Virginia",
@@ -789,10 +804,10 @@
     },
     {
       "week": 12,
-      "games": 5,
-      "attendance": 185101,
-      "capacity": 219434,
-      "pct": 0.8435383760037186
+      "games": 8,
+      "attendance": 322968,
+      "capacity": 369033,
+      "pct": 0.8751737649478502
     },
     {
       "week": 13,
@@ -803,9 +818,9 @@
     }
   ],
   "totals": {
-    "games": 95,
-    "attendance": 4401998,
-    "capacity": 4730986,
-    "pct": 0.9304610074939981
+    "games": 98,
+    "attendance": 4539865,
+    "capacity": 4880585,
+    "pct": 0.9301886966418985
   }
 }

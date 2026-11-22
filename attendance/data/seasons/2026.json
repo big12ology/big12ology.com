@@ -2791,7 +2791,9 @@
       "role": "away",
       "venue": "Bill Snyder Family Stadium",
       "city": "Manhattan",
-      "state": "KS"
+      "state": "KS",
+      "pointsFor": 35,
+      "pointsAgainst": 28
     },
     {
       "team": "Arizona State",
@@ -2801,7 +2803,15 @@
       "espnId": 401856870,
       "conferenceGame": true,
       "opponent": "Oklahoma State",
-      "attendance": null
+      "attendance": 51154,
+      "pointsFor": 27,
+      "pointsAgainst": 30,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 59,
+        "windMph": 2,
+        "precipIn": 0
+      }
     },
     {
       "team": "BYU",
@@ -2929,7 +2939,15 @@
       "espnId": 401856865,
       "conferenceGame": true,
       "opponent": "Arizona",
-      "attendance": null
+      "attendance": 49807,
+      "pointsFor": 28,
+      "pointsAgainst": 35,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 57,
+        "windMph": 2,
+        "precipIn": 0.06
+      }
     },
     {
       "team": "Oklahoma State",
@@ -2943,7 +2961,9 @@
       "role": "away",
       "venue": "Mountain America Stadium",
       "city": "Tempe",
-      "state": "AZ"
+      "state": "AZ",
+      "pointsFor": 30,
+      "pointsAgainst": 27
     },
     {
       "team": "TCU",
@@ -2953,7 +2973,15 @@
       "espnId": 401856872,
       "conferenceGame": true,
       "opponent": "Utah",
-      "attendance": null
+      "attendance": 36906,
+      "pointsFor": 17,
+      "pointsAgainst": 38,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 64,
+        "windMph": 7,
+        "precipIn": 0.01
+      }
     },
     {
       "team": "Texas Tech",
@@ -3001,7 +3029,9 @@
       "role": "away",
       "venue": "Amon G. Carter Stadium",
       "city": "Fort Worth",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 38,
+      "pointsAgainst": 17
     },
     {
       "team": "West Virginia",
