@@ -2600,10 +2600,10 @@
   "tbd": false,
   "home": "UNLV",
   "away": "Cincinnati",
-  "hp": 85,
-  "ap": 58,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2619,8 +2619,7 @@
   "aseed": null,
   "tv": [
    "ESPN Unlmtd"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401913867,
