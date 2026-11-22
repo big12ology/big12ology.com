@@ -1949,10 +1949,10 @@
   "tbd": false,
   "home": "Cincinnati",
   "away": "UMass Lowell",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 78,
+  "ap": 68,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -1965,7 +1965,8 @@
   "attendance": null,
   "espn": "401921748",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 375231,
