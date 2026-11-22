@@ -30,21 +30,6 @@
    },
    "week": 12
   },
-  "401856871": {
-   "away": "Texas Tech",
-   "home": "Baylor",
-   "margin": -2.54,
-   "p_home": 0.427,
-   "spread": 4.8,
-   "systems": {
-    "Big12ology": 3.61,
-    "Elo": -5.96,
-    "FPI": -3.37,
-    "SP+": -6.2,
-    "SRS": -0.8
-   },
-   "week": 12
-  },
   "401856872": {
    "away": "Utah",
    "home": "TCU",
@@ -175,12 +160,12 @@
    "week": 13
   }
  },
- "games_complete": 108,
- "generated": "2026-11-21T21:33:09+00:00",
+ "games_complete": 109,
+ "generated": "2026-11-22T00:02:23+00:00",
  "model": {
   "margin_sigma": 13.5,
   "n_sims": 40000,
-  "rating_sigma": 3.677,
+  "rating_sigma": 3.661,
   "systems": {
    "Big12ology": {
     "regressed": null,
@@ -207,19 +192,19 @@
  "season": 2026,
  "teams": {
   "Arizona": {
-   "exp_w": 5.536,
-   "p_ccg": 0.0001
+   "exp_w": 5.537,
+   "p_ccg": 0.0
   },
   "Arizona State": {
-   "exp_w": 4.545,
+   "exp_w": 4.539,
    "p_ccg": 0.0
   },
   "BYU": {
    "exp_w": 6.872,
-   "p_ccg": 0.4946
+   "p_ccg": 0.2019
   },
   "Baylor": {
-   "exp_w": 4.85,
+   "exp_w": 4.418,
    "p_ccg": 0.0
   },
   "Cincinnati": {
@@ -227,44 +212,44 @@
    "p_ccg": 0.0
   },
   "Colorado": {
-   "exp_w": 2.466,
+   "exp_w": 2.473,
    "p_ccg": 0.0
   },
   "Houston": {
    "exp_w": 5.582,
-   "p_ccg": 0.0019
+   "p_ccg": 0.0
   },
   "Iowa State": {
    "exp_w": 3.641,
    "p_ccg": 0.0
   },
   "Kansas": {
-   "exp_w": 2.293,
+   "exp_w": 2.285,
    "p_ccg": 0.0
   },
   "Kansas State": {
-   "exp_w": 1.636,
+   "exp_w": 1.639,
    "p_ccg": 0.0
   },
   "Oklahoma State": {
-   "exp_w": 5.348,
-   "p_ccg": 0.0002
+   "exp_w": 5.359,
+   "p_ccg": 0.0
   },
   "TCU": {
-   "exp_w": 3.499,
+   "exp_w": 3.502,
    "p_ccg": 0.0
   },
   "Texas Tech": {
-   "exp_w": 7.34,
-   "p_ccg": 0.5105
+   "exp_w": 7.769,
+   "p_ccg": 0.8019
   },
   "UCF": {
-   "exp_w": 4.534,
+   "exp_w": 4.527,
    "p_ccg": 0.0
   },
   "Utah": {
-   "exp_w": 8.666,
-   "p_ccg": 0.9927
+   "exp_w": 8.667,
+   "p_ccg": 0.9962
   },
   "West Virginia": {
    "exp_w": 2.062,
