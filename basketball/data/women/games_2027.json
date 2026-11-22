@@ -2651,10 +2651,10 @@
   "tbd": false,
   "home": "South Dakota State",
   "away": "Kansas",
-  "hp": 77,
-  "ap": 70,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2670,8 +2670,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401917932,
@@ -2679,10 +2678,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "Drake",
-  "hp": 62,
-  "ap": 42,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2698,8 +2697,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918468,
@@ -2707,10 +2705,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Northern Kentucky",
-  "hp": 96,
-  "ap": 42,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2726,8 +2724,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918004,
@@ -2735,10 +2732,10 @@
   "tbd": false,
   "home": "TCU",
   "away": "Utah State",
-  "hp": 85,
-  "ap": 26,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2754,8 +2751,7 @@
   "aseed": null,
   "tv": [
    "ESPN2"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401907053,
