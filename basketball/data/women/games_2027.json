@@ -2507,8 +2507,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401923003,
@@ -2529,14 +2528,13 @@
   "venue_id": null,
   "city": "Houston",
   "state": "TX",
-  "attendance": null,
+  "attendance": 908,
   "espn": "401923003",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401918944,
@@ -2563,8 +2561,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916155,
@@ -2585,14 +2582,13 @@
   "venue_id": null,
   "city": "Provo",
   "state": "UT",
-  "attendance": null,
+  "attendance": 1911,
   "espn": "401916155",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916189,
@@ -2613,14 +2609,13 @@
   "venue_id": null,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null,
+  "attendance": 1213,
   "espn": "401916189",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN Unlmtd"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401913867,
@@ -2805,9 +2800,7 @@
   "espn": "401906985",
   "hseed": null,
   "aseed": null,
-  "tv": [
-   "ESPN+"
-  ]
+  "tv": []
  },
  {
   "id": 401921427,
@@ -3184,31 +3177,6 @@
   ]
  },
  {
-  "id": 401919062,
-  "start": "2026-11-27T05:00:00.000Z",
-  "tbd": true,
-  "home": "UCF",
-  "away": "Charlotte",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": true,
-  "conf": false,
-  "tourney": false,
-  "notes": "Florida Gulf Classic",
-  "season_type": "regular",
-  "venue": "Community School of Naples",
-  "venue_id": null,
-  "city": "Naples",
-  "state": "FL",
-  "attendance": null,
-  "espn": "401919062",
-  "hseed": null,
-  "aseed": null,
-  "tv": []
- },
- {
   "id": 401903572,
   "start": "2026-11-27T16:00:00.000Z",
   "tbd": false,
@@ -3308,6 +3276,31 @@
   "state": "FL",
   "attendance": null,
   "espn": "401916156",
+  "hseed": null,
+  "aseed": null,
+  "tv": []
+ },
+ {
+  "id": 401919062,
+  "start": "2026-11-27T20:30:00.000Z",
+  "tbd": false,
+  "home": "UCF",
+  "away": "Charlotte",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": true,
+  "conf": false,
+  "tourney": false,
+  "notes": "Florida Gulf Classic",
+  "season_type": "regular",
+  "venue": "Community School of Naples",
+  "venue_id": null,
+  "city": "Naples",
+  "state": "FL",
+  "attendance": null,
+  "espn": "401919062",
   "hseed": null,
   "aseed": null,
   "tv": []
@@ -3473,31 +3466,6 @@
   ]
  },
  {
-  "id": 401919063,
-  "start": "2026-11-28T05:00:00.000Z",
-  "tbd": true,
-  "home": "UCF",
-  "away": "Central Michigan",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": true,
-  "conf": false,
-  "tourney": false,
-  "notes": "Florida Gulf Classic",
-  "season_type": "regular",
-  "venue": "Community School of Naples",
-  "venue_id": null,
-  "city": "Naples",
-  "state": "FL",
-  "attendance": null,
-  "espn": "401919063",
-  "hseed": null,
-  "aseed": null,
-  "tv": []
- },
- {
   "id": 401903576,
   "start": "2026-11-28T16:00:00.000Z",
   "tbd": false,
@@ -3550,6 +3518,31 @@
   "tv": [
    "ION"
   ]
+ },
+ {
+  "id": 401919063,
+  "start": "2026-11-28T18:15:00.000Z",
+  "tbd": false,
+  "home": "UCF",
+  "away": "Central Michigan",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": true,
+  "conf": false,
+  "tourney": false,
+  "notes": "Florida Gulf Classic",
+  "season_type": "regular",
+  "venue": "Community School of Naples",
+  "venue_id": null,
+  "city": "Naples",
+  "state": "FL",
+  "attendance": null,
+  "espn": "401919063",
+  "hseed": null,
+  "aseed": null,
+  "tv": []
  },
  {
   "id": 401929184,

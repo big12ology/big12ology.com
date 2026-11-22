@@ -3121,8 +3121,8 @@
  },
  {
   "id": 373070,
-  "start": "2026-12-06T05:00:00.000Z",
-  "tbd": true,
+  "start": "2026-12-06T18:00:00.000Z",
+  "tbd": false,
   "home": "UCF",
   "away": "American University",
   "hp": null,
@@ -3145,8 +3145,8 @@
  },
  {
   "id": 373073,
-  "start": "2026-12-06T05:00:00.000Z",
-  "tbd": true,
+  "start": "2026-12-06T22:00:00.000Z",
+  "tbd": false,
   "home": "Kansas",
   "away": "Missouri",
   "hp": null,
