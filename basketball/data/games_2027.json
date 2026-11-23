@@ -1965,8 +1965,7 @@
   "attendance": null,
   "espn": "401921748",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 375231,
@@ -1987,11 +1986,10 @@
   "venue_id": 275,
   "city": "Charleston",
   "state": "SC",
-  "attendance": null,
+  "attendance": 1630,
   "espn": "401920381",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 375237,
@@ -2012,11 +2010,10 @@
   "venue_id": 275,
   "city": "Charleston",
   "state": "SC",
-  "attendance": null,
+  "attendance": 1114,
   "espn": "401921420",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 375258,
