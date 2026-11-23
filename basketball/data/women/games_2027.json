@@ -2808,10 +2808,10 @@
   "tbd": false,
   "home": "Iowa",
   "away": "Utah",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 75,
+  "ap": 66,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2827,7 +2827,8 @@
   "aseed": null,
   "tv": [
    "BDG Sports Live"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401913059,
