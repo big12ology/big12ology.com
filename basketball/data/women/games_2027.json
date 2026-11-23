@@ -2789,10 +2789,10 @@
   "tbd": false,
   "home": "Kansas State",
   "away": "Missouri",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 72,
+  "ap": 64,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2806,7 +2806,8 @@
   "espn": "401906985",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [],
+  "src": "espn"
  },
  {
   "id": 401921427,
