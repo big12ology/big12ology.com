@@ -2806,10 +2806,10 @@
   "id": 401921427,
   "start": "2026-11-23T18:30:00.000Z",
   "tbd": false,
-  "home": "Iowa",
-  "away": "Utah",
-  "hp": 75,
-  "ap": 66,
+  "home": "Utah",
+  "away": "Iowa",
+  "hp": 66,
+  "ap": 75,
   "final": true,
   "status": "final",
   "neutral": true,
@@ -2821,23 +2821,22 @@
   "venue_id": null,
   "city": "Nassau",
   "state": "Bahamas",
-  "attendance": null,
+  "attendance": 487,
   "espn": "401921427",
   "hseed": null,
   "aseed": null,
   "tv": [
    "BDG Sports Live"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401913059,
   "start": "2026-11-23T22:00:00.000Z",
   "tbd": false,
-  "home": "Arizona",
-  "away": "Vanderbilt",
-  "hp": 62,
-  "ap": 93,
+  "home": "Vanderbilt",
+  "away": "Arizona",
+  "hp": 93,
+  "ap": 62,
   "final": true,
   "status": "final",
   "neutral": true,
@@ -2849,12 +2848,11 @@
   "venue_id": null,
   "city": "Jacksonville",
   "state": "FL",
-  "attendance": null,
+  "attendance": 321,
   "espn": "401913059",
   "hseed": null,
   "aseed": null,
-  "tv": [],
-  "src": "espn"
+  "tv": []
  },
  {
   "id": 401923482,
@@ -2875,14 +2873,13 @@
   "venue_id": null,
   "city": "Houston",
   "state": "TX",
-  "attendance": null,
+  "attendance": 1040,
   "espn": "401923482",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401928216,
@@ -3021,8 +3018,8 @@
   "id": 401929205,
   "start": "2026-11-25T21:00:00.000Z",
   "tbd": false,
-  "home": "Utah",
-  "away": "Miami",
+  "home": "Miami",
+  "away": "Utah",
   "hp": null,
   "ap": null,
   "final": false,
@@ -4246,33 +4243,6 @@
   ]
  },
  {
-  "id": 401918007,
-  "start": "2026-12-06T18:00:00.000Z",
-  "tbd": false,
-  "home": "TCU",
-  "away": "Texas",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": true,
-  "conf": false,
-  "tourney": false,
-  "notes": "Hoops with Heart",
-  "season_type": "regular",
-  "venue": "Ariat Arena",
-  "venue_id": null,
-  "city": "Fort Worth",
-  "state": "TX",
-  "attendance": null,
-  "espn": "401918007",
-  "hseed": null,
-  "aseed": null,
-  "tv": [
-   "ESPN2"
-  ]
- },
- {
   "id": 401916192,
   "start": "2026-12-06T19:00:00.000Z",
   "tbd": false,
@@ -4513,6 +4483,33 @@
   "aseed": null,
   "tv": [
    "ESPN+"
+  ]
+ },
+ {
+  "id": 401918007,
+  "start": "2026-12-06T22:00:00.000Z",
+  "tbd": false,
+  "home": "TCU",
+  "away": "Texas",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": true,
+  "conf": false,
+  "tourney": false,
+  "notes": "Hoops with Heart",
+  "season_type": "regular",
+  "venue": "Ariat Arena",
+  "venue_id": null,
+  "city": "Fort Worth",
+  "state": "TX",
+  "attendance": null,
+  "espn": "401918007",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN2"
   ]
  },
  {
