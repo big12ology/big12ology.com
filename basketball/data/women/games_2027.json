@@ -2862,10 +2862,10 @@
   "tbd": false,
   "home": "Houston",
   "away": "Prairie View A&M",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 106,
+  "ap": 52,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2881,7 +2881,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401928216,
