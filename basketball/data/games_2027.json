@@ -2071,10 +2071,10 @@
   "tbd": false,
   "home": "Arizona",
   "away": "Colorado State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 96,
+  "ap": 83,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2087,7 +2087,8 @@
   "attendance": null,
   "espn": "401909743",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372925,
