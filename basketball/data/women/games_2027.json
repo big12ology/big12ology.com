@@ -2836,10 +2836,10 @@
   "tbd": false,
   "home": "Arizona",
   "away": "Vanderbilt",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 62,
+  "ap": 93,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2853,7 +2853,8 @@
   "espn": "401913059",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [],
+  "src": "espn"
  },
  {
   "id": 401923482,

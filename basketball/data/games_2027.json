@@ -2021,10 +2021,10 @@
   "tbd": false,
   "home": "BYU",
   "away": "Washington",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 83,
+  "ap": 77,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2037,7 +2037,8 @@
   "attendance": null,
   "espn": "401921708",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372909,
