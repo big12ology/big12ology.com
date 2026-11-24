@@ -2046,10 +2046,10 @@
   "tbd": false,
   "home": "Kansas",
   "away": "Denver",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 84,
+  "ap": 67,
+  "final": true,
+  "status": "final",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2062,7 +2062,8 @@
   "attendance": null,
   "espn": "401909788",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372912,
