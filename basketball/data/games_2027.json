@@ -2218,10 +2218,10 @@
   "tbd": false,
   "home": "Alabama",
   "away": "Baylor",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 63,
+  "ap": 68,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2234,7 +2234,8 @@
   "attendance": null,
   "espn": "401906762",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 372935,
