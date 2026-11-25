@@ -2943,10 +2943,10 @@
   "tbd": false,
   "home": "Utah Valley",
   "away": "BYU",
-  "hp": 48,
-  "ap": 77,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2962,8 +2962,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916086,
@@ -2971,10 +2970,10 @@
   "tbd": false,
   "home": "Arizona State",
   "away": "San Jos\u00e9 State",
-  "hp": 75,
-  "ap": 50,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": false,
   "conf": false,
   "tourney": false,
@@ -2990,8 +2989,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401913060,
