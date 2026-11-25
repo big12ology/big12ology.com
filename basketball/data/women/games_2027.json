@@ -2887,10 +2887,10 @@
   "tbd": false,
   "home": "West Virginia",
   "away": "Florida",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 70,
+  "ap": 62,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2906,7 +2906,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401919061,
