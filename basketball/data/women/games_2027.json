@@ -72,7 +72,7 @@
   "venue_id": null,
   "city": "Stillwater",
   "state": "OK",
-  "attendance": null,
+  "attendance": 4576,
   "espn": "401907046",
   "hseed": null,
   "aseed": null,
@@ -2900,14 +2900,13 @@
   "venue_id": null,
   "city": "Nassau",
   "state": "Bahamas",
-  "attendance": null,
+  "attendance": 289,
   "espn": "401928216",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401919061,
@@ -2928,14 +2927,13 @@
   "venue_id": null,
   "city": "Orlando",
   "state": "FL",
-  "attendance": null,
+  "attendance": 854,
   "espn": "401919061",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401923132,
@@ -2956,14 +2954,13 @@
   "venue_id": null,
   "city": "Orem",
   "state": "UT",
-  "attendance": null,
+  "attendance": 1605,
   "espn": "401923132",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916086,
@@ -2984,14 +2981,13 @@
   "venue_id": null,
   "city": "Tempe",
   "state": "AZ",
-  "attendance": null,
+  "attendance": 2180,
   "espn": "401916086",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401913060,
@@ -3016,7 +3012,9 @@
   "espn": "401913060",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "Spiideo"
+  ]
  },
  {
   "id": 401929205,
@@ -3257,7 +3255,9 @@
   "espn": "401927837",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "BDG Sports Live"
+  ]
  },
  {
   "id": 401916156,
@@ -3282,7 +3282,9 @@
   "espn": "401916156",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "BallerTV"
+  ]
  },
  {
   "id": 401919062,
@@ -3359,7 +3361,9 @@
   "espn": "401929189",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "BDG Sports Live"
+  ]
  },
  {
   "id": 401916121,
@@ -3571,7 +3575,9 @@
   "espn": "401929184",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "BDG Sports Live"
+  ]
  },
  {
   "id": 401906059,
@@ -3677,7 +3683,9 @@
   "espn": "401917934",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [
+   "BDG Sports Live"
+  ]
  },
  {
   "id": 401906110,
