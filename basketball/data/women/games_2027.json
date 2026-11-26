@@ -3008,14 +3008,13 @@
   "venue_id": null,
   "city": "Jacksonville",
   "state": "FL",
-  "attendance": null,
+  "attendance": 177,
   "espn": "401913060",
   "hseed": null,
   "aseed": null,
   "tv": [
    "Spiideo"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401929205,
@@ -3036,14 +3035,13 @@
   "venue_id": null,
   "city": "Nassau",
   "state": "Bahamas",
-  "attendance": null,
+  "attendance": 457,
   "espn": "401929205",
   "hseed": null,
   "aseed": null,
   "tv": [
    "BDG Sports Live"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401923185,
