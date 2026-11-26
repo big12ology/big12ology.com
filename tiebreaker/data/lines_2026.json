@@ -6963,7 +6963,7 @@
  "401856875": {
   "spread": -2.2,
   "spread_open": -1.5,
-  "over_under": 50.0,
+  "over_under": 49.5,
   "over_under_open": 51.0,
   "home_ml": -122.5,
   "away_ml": 102.5,
@@ -6972,7 +6972,7 @@
     "provider": "DraftKings",
     "spread": -2.5,
     "spread_open": -1.5,
-    "over_under": 50.5,
+    "over_under": 49.5,
     "over_under_open": 50.5,
     "home_ml": -125,
     "away_ml": 105
@@ -6990,28 +6990,28 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 2,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-11-25T03:51:13+00:00"
+  "as_of": "2026-11-26T01:24:03+00:00"
  },
  "401856877": {
-  "spread": -6.5,
+  "spread": -6.2,
   "spread_open": -6.8,
-  "over_under": 65.2,
+  "over_under": 64.8,
   "over_under_open": 67.2,
-  "home_ml": -256.5,
-  "away_ml": 210.0,
+  "home_ml": -252.5,
+  "away_ml": 207.5,
   "books": [
    {
     "provider": "DraftKings",
     "spread": -6.5,
     "spread_open": -6.5,
-    "over_under": 65.5,
+    "over_under": 64.5,
     "over_under_open": 67.5,
-    "home_ml": -238,
-    "away_ml": 195
+    "home_ml": -230,
+    "away_ml": 190
    },
    {
     "provider": "Bovada",
-    "spread": -6.5,
+    "spread": -6,
     "spread_open": -7,
     "over_under": 65,
     "over_under_open": 67,
@@ -7022,10 +7022,10 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 2,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-11-25T03:51:13+00:00"
+  "as_of": "2026-11-26T01:24:03+00:00"
  },
  "401856874": {
-  "spread": -4.8,
+  "spread": -4.5,
   "spread_open": -5.2,
   "over_under": 55.5,
   "over_under_open": 55.0,
@@ -7043,7 +7043,7 @@
    },
    {
     "provider": "Bovada",
-    "spread": -5,
+    "spread": -4.5,
     "spread_open": -6,
     "over_under": 55.5,
     "over_under_open": 55.5,
@@ -7054,30 +7054,30 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 2,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-11-25T03:51:13+00:00"
+  "as_of": "2026-11-26T01:24:03+00:00"
  },
  "401856880": {
-  "spread": -25.5,
+  "spread": -26.2,
   "spread_open": -20.8,
-  "over_under": 67.8,
+  "over_under": 66.8,
   "over_under_open": 68.5,
   "home_ml": -2150.0,
   "away_ml": 1075.0,
   "books": [
    {
     "provider": "Bovada",
-    "spread": -25.5,
+    "spread": -26,
     "spread_open": -21,
-    "over_under": 68,
+    "over_under": 67,
     "over_under_open": 68.5,
     "home_ml": -1500,
     "away_ml": 850
    },
    {
     "provider": "DraftKings",
-    "spread": -25.5,
+    "spread": -26.5,
     "spread_open": -20.5,
-    "over_under": 67.5,
+    "over_under": 66.5,
     "over_under_open": 68.5,
     "home_ml": -2800,
     "away_ml": 1300
@@ -7086,7 +7086,7 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 2,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-11-25T03:51:13+00:00"
+  "as_of": "2026-11-26T01:24:03+00:00"
  },
  "401856876": {
   "spread": -15.5,
@@ -7118,15 +7118,15 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 2,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-11-25T03:51:13+00:00"
+  "as_of": "2026-11-26T01:24:03+00:00"
  },
  "401856878": {
   "spread": -3.5,
   "spread_open": -5.0,
-  "over_under": 53.2,
+  "over_under": 53.0,
   "over_under_open": 54.8,
-  "home_ml": -190.0,
-  "away_ml": 160.0,
+  "home_ml": -192.5,
+  "away_ml": 162.0,
   "books": [
    {
     "provider": "DraftKings",
@@ -7134,14 +7134,14 @@
     "spread_open": -5.5,
     "over_under": 53.5,
     "over_under_open": 54.5,
-    "home_ml": -180,
-    "away_ml": 150
+    "home_ml": -185,
+    "away_ml": 154
    },
    {
     "provider": "Bovada",
     "spread": -3.5,
     "spread_open": -4.5,
-    "over_under": 53,
+    "over_under": 52.5,
     "over_under_open": 55,
     "home_ml": -200,
     "away_ml": 170
@@ -7150,6 +7150,6 @@
   "source": "collegefootballdata.com",
   "spread_open_books": 2,
   "spread_open_src": "collegefootballdata.com",
-  "as_of": "2026-11-25T03:51:13+00:00"
+  "as_of": "2026-11-26T01:24:03+00:00"
  }
 }

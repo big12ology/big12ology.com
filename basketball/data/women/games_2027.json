@@ -2995,10 +2995,10 @@
   "tbd": false,
   "home": "George Washington",
   "away": "Arizona",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 69,
+  "ap": 72,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3014,7 +3014,8 @@
   "aseed": null,
   "tv": [
    "Spiideo"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401929205,
@@ -3022,10 +3023,10 @@
   "tbd": false,
   "home": "Miami",
   "away": "Utah",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 79,
+  "ap": 75,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3041,7 +3042,8 @@
   "aseed": null,
   "tv": [
    "BDG Sports Live"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401923185,
