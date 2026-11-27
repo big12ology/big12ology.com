@@ -3184,10 +3184,10 @@
   "tbd": false,
   "home": "Oregon",
   "away": "Colorado",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 66,
+  "ap": 68,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3203,7 +3203,8 @@
   "aseed": null,
   "tv": [
    "FloSports"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401913719,
