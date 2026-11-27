@@ -2573,10 +2573,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Gonzaga",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 64,
+  "ap": 72,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2589,7 +2589,8 @@
   "attendance": null,
   "espn": "401920540",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 378720,
