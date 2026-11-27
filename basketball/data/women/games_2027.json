@@ -3049,10 +3049,10 @@
   "tbd": false,
   "home": "Notre Dame",
   "away": "West Virginia",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 78,
+  "ap": 64,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3068,7 +3068,8 @@
   "aseed": null,
   "tv": [
    "ESPN2"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401903569,
@@ -3076,10 +3077,10 @@
   "tbd": false,
   "home": "Colorado",
   "away": "Georgia",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 61,
+  "ap": 52,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3095,7 +3096,8 @@
   "aseed": null,
   "tv": [
    "FloSports"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401903558,
@@ -3103,10 +3105,10 @@
   "tbd": false,
   "home": "Washington State",
   "away": "Kansas",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 58,
+  "ap": 69,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3122,7 +3124,8 @@
   "aseed": null,
   "tv": [
    "FloSports"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401916120,
