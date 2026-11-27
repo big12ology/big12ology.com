@@ -3161,10 +3161,10 @@
   "tbd": false,
   "home": "Miami (OH)",
   "away": "Cincinnati",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 70,
+  "ap": 56,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3180,7 +3180,8 @@
   "aseed": null,
   "tv": [
    "FloSports"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401903572,
