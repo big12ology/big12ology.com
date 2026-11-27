@@ -3062,14 +3062,13 @@
   "venue_id": null,
   "city": "Nassau",
   "state": "Bahamas",
-  "attendance": null,
+  "attendance": 326,
   "espn": "401923185",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN2"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401903569,
@@ -3090,14 +3089,13 @@
   "venue_id": null,
   "city": "Cancun",
   "state": "Mexico",
-  "attendance": null,
+  "attendance": 423,
   "espn": "401903569",
   "hseed": null,
   "aseed": null,
   "tv": [
    "FloSports"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401903558,
@@ -3118,14 +3116,13 @@
   "venue_id": null,
   "city": "Cancun",
   "state": "Mexico",
-  "attendance": null,
+  "attendance": 250,
   "espn": "401903558",
   "hseed": null,
   "aseed": null,
   "tv": [
    "FloSports"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916120,
@@ -3146,14 +3143,13 @@
   "venue_id": null,
   "city": "Charlotte Amalie",
   "state": "Virgin Islands",
-  "attendance": null,
+  "attendance": 890,
   "espn": "401916120",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401903571,
@@ -3174,14 +3170,13 @@
   "venue_id": null,
   "city": "Cancun",
   "state": "Mexico",
-  "attendance": null,
+  "attendance": 250,
   "espn": "401903571",
   "hseed": null,
   "aseed": null,
   "tv": [
    "FloSports"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401903572,
@@ -3609,6 +3604,33 @@
   "aseed": null,
   "tv": [
    "BallerTV"
+  ]
+ },
+ {
+  "id": 401921215,
+  "start": "2026-11-28T20:00:00.000Z",
+  "tbd": false,
+  "home": "Santa Clara",
+  "away": "Texas Tech",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": true,
+  "conf": false,
+  "tourney": false,
+  "notes": "Paradise Jam - Island Division - Championship",
+  "season_type": "regular",
+  "venue": "Elridge Blake Sports and Fitness Center",
+  "venue_id": null,
+  "city": "Charlotte Amalie",
+  "state": "Virgin Islands",
+  "attendance": null,
+  "espn": "401921215",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN+"
   ]
  },
  {
