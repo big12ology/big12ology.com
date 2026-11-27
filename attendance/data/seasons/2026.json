@@ -15,7 +15,8 @@
     "Week 10",
     "Week 11",
     "Week 12",
-    "Week 13"
+    "Week 13",
+    "Week 14"
   ],
   "games": [
     {
@@ -3193,7 +3194,9 @@
       "role": "away",
       "venue": "Galaxy Stadium",
       "city": "Lubbock",
-      "state": "TX"
+      "state": "TX",
+      "pointsFor": 27,
+      "pointsAgainst": 48
     },
     {
       "team": "Texas Tech",
@@ -3203,7 +3206,15 @@
       "espnId": 401856879,
       "conferenceGame": true,
       "opponent": "TCU",
-      "attendance": null
+      "attendance": 60229,
+      "pointsFor": 48,
+      "pointsAgainst": 27,
+      "attendanceSource": "ESPN gamepackage (not yet in CFBD)",
+      "weather": {
+        "tempF": 46,
+        "windMph": 6,
+        "precipIn": 0
+      }
     },
     {
       "team": "UCF",
@@ -3242,6 +3253,34 @@
       "venue": "Rice-Eccles Stadium",
       "city": "Salt Lake City",
       "state": "UT"
+    },
+    {
+      "team": "Texas Tech",
+      "week": 14,
+      "date": "2026-12-04",
+      "time": "19:00",
+      "espnId": 401869533,
+      "conferenceGame": false,
+      "opponent": "Utah",
+      "attendance": null,
+      "role": "neutral",
+      "venue": "AT&T Stadium",
+      "city": "Arlington",
+      "state": "TX"
+    },
+    {
+      "team": "Utah",
+      "week": 14,
+      "date": "2026-12-04",
+      "time": "19:00",
+      "espnId": 401869533,
+      "conferenceGame": false,
+      "opponent": "Texas Tech",
+      "attendance": null,
+      "role": "neutral",
+      "venue": "AT&T Stadium",
+      "city": "Arlington",
+      "state": "TX"
     }
   ],
   "conferences": {

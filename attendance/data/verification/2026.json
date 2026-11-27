@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "summary": {
-    "agree": 98
+    "agree": 99
   },
   "games": [
     {
@@ -1079,6 +1079,17 @@
       "espnId": 401856868,
       "ours": 37380,
       "espn": 37380,
+      "source": "ESPN gamepackage (not yet in CFBD)",
+      "status": "agree"
+    },
+    {
+      "team": "Texas Tech",
+      "week": 13,
+      "opponent": "TCU",
+      "date": "2026-11-26",
+      "espnId": 401856879,
+      "ours": 60229,
+      "espn": 60229,
       "source": "ESPN gamepackage (not yet in CFBD)",
       "status": "agree"
     }
