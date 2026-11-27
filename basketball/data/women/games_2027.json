@@ -3212,10 +3212,10 @@
   "tbd": false,
   "home": "Georgia Tech",
   "away": "TCU",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 66,
+  "ap": 75,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3231,7 +3231,8 @@
   "aseed": null,
   "tv": [
    "ION"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401927837,
@@ -3239,10 +3240,10 @@
   "tbd": false,
   "home": "Washington",
   "away": "Oklahoma State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 73,
+  "ap": 62,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3258,7 +3259,8 @@
   "aseed": null,
   "tv": [
    "BDG Sports Live"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401916156,
@@ -3266,10 +3268,10 @@
   "tbd": false,
   "home": "BYU",
   "away": "Fairfield",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 60,
+  "ap": 62,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3285,7 +3287,8 @@
   "aseed": null,
   "tv": [
    "BallerTV"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401919062,
