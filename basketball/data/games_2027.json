@@ -2538,11 +2538,10 @@
   "venue_id": 13,
   "city": "Las Vegas",
   "state": "NV",
-  "attendance": null,
+  "attendance": 1533,
   "espn": "401920538",
   "hseed": null,
-  "aseed": null,
-  "src": "espn"
+  "aseed": null
  },
  {
   "id": 378722,
@@ -2553,7 +2552,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": true,
   "conf": false,
   "tourney": false,
