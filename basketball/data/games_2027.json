@@ -2525,10 +2525,10 @@
   "tbd": false,
   "home": "Creighton",
   "away": "TCU",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "in_progress",
+  "hp": 95,
+  "ap": 87,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -2541,7 +2541,8 @@
   "attendance": null,
   "espn": "401920538",
   "hseed": null,
-  "aseed": null
+  "aseed": null,
+  "src": "espn"
  },
  {
   "id": 378722,
