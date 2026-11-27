@@ -3133,10 +3133,10 @@
   "tbd": false,
   "home": "Texas Tech",
   "away": "Air Force",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 66,
+  "ap": 60,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3152,7 +3152,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401903571,
