@@ -2518,5 +2518,26 @@
   "away_class": "fbs",
   "home_points": null,
   "away_points": null
+ },
+ {
+  "id": 401869533,
+  "week": 14,
+  "notes": "Edward Jones Big 12 Championship",
+  "ccg": true,
+  "start": "2026-12-05T01:00:00.000Z",
+  "completed": false,
+  "conference_game": false,
+  "venue": "AT&T Stadium",
+  "venue_id": 3687,
+  "neutral_site": true,
+  "start_tbd": false,
+  "home": "Utah",
+  "away": "Texas Tech",
+  "home_conf": "Big 12",
+  "away_conf": "Big 12",
+  "home_class": "fbs",
+  "away_class": "fbs",
+  "home_points": null,
+  "away_points": null
  }
 ]

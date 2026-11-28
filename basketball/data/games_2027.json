@@ -2816,7 +2816,7 @@
   "hp": null,
   "ap": null,
   "final": false,
-  "status": "scheduled",
+  "status": "in_progress",
   "neutral": true,
   "conf": false,
   "tourney": false,

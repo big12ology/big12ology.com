@@ -3462,10 +3462,10 @@
   "tbd": false,
   "home": "Minnesota",
   "away": "Cincinnati",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 69,
+  "ap": 50,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3481,7 +3481,8 @@
   "aseed": null,
   "tv": [
    "FloSports"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401903576,
