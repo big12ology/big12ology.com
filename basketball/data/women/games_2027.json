@@ -3378,10 +3378,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Penn State",
-  "hp": 84,
-  "ap": 56,
-  "final": true,
-  "status": "final",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3397,8 +3397,7 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401903574,
