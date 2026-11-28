@@ -3197,14 +3197,13 @@
   "venue_id": null,
   "city": "Cancun",
   "state": "Mexico",
-  "attendance": null,
+  "attendance": 316,
   "espn": "401903572",
   "hseed": null,
   "aseed": null,
   "tv": [
    "FloSports"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401913719,
@@ -3225,23 +3224,22 @@
   "venue_id": null,
   "city": "Fort Myers",
   "state": "FL",
-  "attendance": null,
+  "attendance": 593,
   "espn": "401913719",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ION"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401927837,
   "start": "2026-11-27T18:30:00.000Z",
   "tbd": false,
-  "home": "Washington",
-  "away": "Oklahoma State",
-  "hp": 73,
-  "ap": 62,
+  "home": "Oklahoma State",
+  "away": "Washington",
+  "hp": 62,
+  "ap": 73,
   "final": true,
   "status": "final",
   "neutral": true,
@@ -3253,14 +3251,13 @@
   "venue_id": null,
   "city": "Fort Myers",
   "state": "FL",
-  "attendance": null,
+  "attendance": 741,
   "espn": "401927837",
   "hseed": null,
   "aseed": null,
   "tv": [
    "BDG Sports Live"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916156,
@@ -3287,17 +3284,16 @@
   "aseed": null,
   "tv": [
    "BallerTV"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401919062,
   "start": "2026-11-27T20:30:00.000Z",
   "tbd": false,
-  "home": "UCF",
-  "away": "Charlotte",
-  "hp": 82,
-  "ap": 70,
+  "home": "Charlotte",
+  "away": "UCF",
+  "hp": 70,
+  "ap": 82,
   "final": true,
   "status": "final",
   "neutral": true,
@@ -3313,17 +3309,16 @@
   "espn": "401919062",
   "hseed": null,
   "aseed": null,
-  "tv": [],
-  "src": "espn"
+  "tv": []
  },
  {
   "id": 401917933,
   "start": "2026-11-27T21:00:00.000Z",
   "tbd": false,
-  "home": "Iowa State",
-  "away": "Belmont",
-  "hp": 89,
-  "ap": 54,
+  "home": "Belmont",
+  "away": "Iowa State",
+  "hp": 54,
+  "ap": 89,
   "final": true,
   "status": "final",
   "neutral": true,
@@ -3335,23 +3330,22 @@
   "venue_id": null,
   "city": "Nassau",
   "state": "Bahamas",
-  "attendance": null,
+  "attendance": 447,
   "espn": "401917933",
   "hseed": null,
   "aseed": null,
   "tv": [
    "BDG Sports Live"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401929189,
   "start": "2026-11-27T21:00:00.000Z",
   "tbd": false,
-  "home": "Houston",
-  "away": "Creighton",
-  "hp": 91,
-  "ap": 64,
+  "home": "Creighton",
+  "away": "Houston",
+  "hp": 64,
+  "ap": 91,
   "final": true,
   "status": "final",
   "neutral": true,
@@ -3363,14 +3357,13 @@
   "venue_id": null,
   "city": "Fort Myers",
   "state": "FL",
-  "attendance": null,
+  "attendance": 141,
   "espn": "401929189",
   "hseed": null,
   "aseed": null,
   "tv": [
    "BDG Sports Live"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401916121,
@@ -3397,12 +3390,11 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401903574,
-  "start": "2026-11-27T23:30:00.000Z",
+  "start": "2026-11-27T23:50:00.000Z",
   "tbd": false,
   "home": "Kansas",
   "away": "Miami (OH)",
@@ -3419,14 +3411,13 @@
   "venue_id": null,
   "city": "Cancun",
   "state": "Mexico",
-  "attendance": null,
+  "attendance": 250,
   "espn": "401903574",
   "hseed": null,
   "aseed": null,
   "tv": [
    "FloSports"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401906986,
@@ -3447,18 +3438,17 @@
   "venue_id": null,
   "city": "Fort Myers",
   "state": "FL",
-  "attendance": null,
+  "attendance": 1262,
   "espn": "401906986",
   "hseed": null,
   "aseed": null,
   "tv": [
    "ION"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401903575,
-  "start": "2026-11-28T02:00:00.000Z",
+  "start": "2026-11-28T02:20:00.000Z",
   "tbd": false,
   "home": "Minnesota",
   "away": "Cincinnati",
@@ -3475,14 +3465,13 @@
   "venue_id": null,
   "city": "Cancun",
   "state": "Mexico",
-  "attendance": null,
+  "attendance": 300,
   "espn": "401903575",
   "hseed": null,
   "aseed": null,
   "tv": [
    "FloSports"
-  ],
-  "src": "espn"
+  ]
  },
  {
   "id": 401903576,
@@ -3699,6 +3688,31 @@
   ]
  },
  {
+  "id": 401921214,
+  "start": "2026-11-29T01:00:00.000Z",
+  "tbd": false,
+  "home": "Baylor",
+  "away": "Seton Hall",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": true,
+  "conf": false,
+  "tourney": false,
+  "notes": "Paradise Jam - Reef Division - Championship",
+  "season_type": "regular",
+  "venue": "Elridge Blake Sports and Fitness Center",
+  "venue_id": null,
+  "city": "Charlotte Amalie",
+  "state": "Virgin Islands",
+  "attendance": null,
+  "espn": "401921214",
+  "hseed": null,
+  "aseed": null,
+  "tv": []
+ },
+ {
   "id": 401917934,
   "start": "2026-11-29T18:30:00.000Z",
   "tbd": false,
@@ -3778,6 +3792,31 @@
   "tv": [
    "ESPN+"
   ]
+ },
+ {
+  "id": 401929191,
+  "start": "2026-11-29T23:30:00.000Z",
+  "tbd": false,
+  "home": "Houston",
+  "away": "Tennessee",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": true,
+  "conf": false,
+  "tourney": false,
+  "notes": "Coconut Hoops - Great Egret Division - Championship",
+  "season_type": "regular",
+  "venue": "Alico Arena",
+  "venue_id": null,
+  "city": "Fort Myers",
+  "state": "FL",
+  "attendance": null,
+  "espn": "401929191",
+  "hseed": null,
+  "aseed": null,
+  "tv": []
  },
  {
   "id": 401907168,
@@ -4966,33 +5005,6 @@
   "tv": []
  },
  {
-  "id": 401907171,
-  "start": "2026-12-12T23:00:00.000Z",
-  "tbd": false,
-  "home": "Villanova",
-  "away": "West Virginia",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
-  "neutral": false,
-  "conf": false,
-  "tourney": false,
-  "notes": null,
-  "season_type": "regular",
-  "venue": "Finneran Pavilion",
-  "venue_id": null,
-  "city": "Villanova",
-  "state": "PA",
-  "attendance": null,
-  "espn": "401907171",
-  "hseed": null,
-  "aseed": null,
-  "tv": [
-   "ESPN+"
-  ]
- },
- {
   "id": 401917751,
   "start": "2026-12-12T23:00:00.000Z",
   "tbd": false,
@@ -5013,6 +5025,33 @@
   "state": "CO",
   "attendance": null,
   "espn": "401917751",
+  "hseed": null,
+  "aseed": null,
+  "tv": [
+   "ESPN+"
+  ]
+ },
+ {
+  "id": 401907171,
+  "start": "2026-12-12T23:05:00.000Z",
+  "tbd": false,
+  "home": "Villanova",
+  "away": "West Virginia",
+  "hp": null,
+  "ap": null,
+  "final": false,
+  "status": "scheduled",
+  "neutral": false,
+  "conf": false,
+  "tourney": false,
+  "notes": null,
+  "season_type": "regular",
+  "venue": "Finneran Pavilion",
+  "venue_id": null,
+  "city": "Villanova",
+  "state": "PA",
+  "attendance": null,
+  "espn": "401907171",
   "hseed": null,
   "aseed": null,
   "tv": [
