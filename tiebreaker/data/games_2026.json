@@ -2378,7 +2378,7 @@
   "notes": "",
   "ccg": false,
   "start": "2026-11-28T02:00:00.000Z",
-  "completed": false,
+  "completed": true,
   "conference_game": true,
   "venue": "Rice-Eccles Stadium",
   "venue_id": 587,
@@ -2390,8 +2390,8 @@
   "away_conf": "Big 12",
   "home_class": "fbs",
   "away_class": "fbs",
-  "home_points": null,
-  "away_points": null
+  "home_points": 52,
+  "away_points": 28
  },
  {
   "id": 401856875,
