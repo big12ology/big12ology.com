@@ -3406,10 +3406,10 @@
   "tbd": false,
   "home": "Kansas",
   "away": "Miami (OH)",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 75,
+  "ap": 63,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3425,7 +3425,8 @@
   "aseed": null,
   "tv": [
    "FloSports"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401906986,
@@ -3433,10 +3434,10 @@
   "tbd": false,
   "home": "NC State",
   "away": "Kansas State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 85,
+  "ap": 70,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3452,7 +3453,8 @@
   "aseed": null,
   "tv": [
    "ION"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401903575,
