@@ -3479,10 +3479,10 @@
   "tbd": false,
   "home": "Maryland Eastern Shore",
   "away": "Colorado",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 49,
+  "ap": 83,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3498,7 +3498,8 @@
   "aseed": null,
   "tv": [
    "FloSports"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401918005,
@@ -3506,10 +3507,10 @@
   "tbd": false,
   "home": "Mississippi State",
   "away": "TCU",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 74,
+  "ap": 89,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3525,7 +3526,8 @@
   "aseed": null,
   "tv": [
    "ION"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401919063,
