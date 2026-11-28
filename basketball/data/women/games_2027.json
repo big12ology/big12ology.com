@@ -3296,10 +3296,10 @@
   "tbd": false,
   "home": "UCF",
   "away": "Charlotte",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 82,
+  "ap": 70,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3313,7 +3313,8 @@
   "espn": "401919062",
   "hseed": null,
   "aseed": null,
-  "tv": []
+  "tv": [],
+  "src": "espn"
  },
  {
   "id": 401917933,
@@ -3321,10 +3322,10 @@
   "tbd": false,
   "home": "Iowa State",
   "away": "Belmont",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 89,
+  "ap": 54,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3340,7 +3341,8 @@
   "aseed": null,
   "tv": [
    "BDG Sports Live"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401929189,
@@ -3348,10 +3350,10 @@
   "tbd": false,
   "home": "Houston",
   "away": "Creighton",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 91,
+  "ap": 64,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3367,7 +3369,8 @@
   "aseed": null,
   "tv": [
    "BDG Sports Live"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401916121,
@@ -3375,10 +3378,10 @@
   "tbd": false,
   "home": "Baylor",
   "away": "Penn State",
-  "hp": null,
-  "ap": null,
-  "final": false,
-  "status": "scheduled",
+  "hp": 84,
+  "ap": 56,
+  "final": true,
+  "status": "final",
   "neutral": true,
   "conf": false,
   "tourney": false,
@@ -3394,7 +3397,8 @@
   "aseed": null,
   "tv": [
    "ESPN+"
-  ]
+  ],
+  "src": "espn"
  },
  {
   "id": 401903574,
